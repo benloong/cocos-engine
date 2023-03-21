@@ -77,8 +77,7 @@ _proto._color = function (node) {
 
 _proto._render = function (node) {
     let comp = node._renderComponent;
-    comp._checkBacth(_batcher, node._cullingMask);
-    comp._assembler.fillBuffers(comp, _batcher);
+    _batcher._commit(comp);
     this._next._func(node);
 };
 

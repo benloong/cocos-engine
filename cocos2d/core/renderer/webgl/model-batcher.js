@@ -65,6 +65,8 @@ var ModelBatcher = function (device, renderScene) {
     this._buffer = this._meshBuffer;
 
     this._batchedModels = [];
+    this._commits = [];
+    this._flushFlag = 0;
     this._dummyNode = new cc.Node();
     this._sortKey = 0;
 
@@ -75,6 +77,19 @@ var ModelBatcher = function (device, renderScene) {
     this.worldMatDirty = 0;
 };
 
+function getAABB(node) {
+    let width = node._contentSize.width;
+    let height = node._contentSize.height;
+    let rect = cc.rect(
+        -node._anchorPoint.x * width,
+        -node._anchorPoint.y * height,
+        width,
+        height);
+
+    rect.transformMat4(rect, node._worldMatrix);
+    return rect;
+}
+
 ModelBatcher.prototype = {
     constructor: ModelBatcher,
     
@@ -82,6 +97,8 @@ ModelBatcher.prototype = {
         // Reset pools
         this._iaPool.reset();
 
+        this._commits.length = 0;
+        this._flushFlag = 0;
         // Reset scene
         let scene = this._renderScene;
         let models = this._batchedModels;
@@ -132,7 +149,66 @@ ModelBatcher.prototype = {
         this._renderScene.addModel(model);
     },
 
+    _commit (renderComponent) {
+        if (this.worldMatDirty) {
+            if (renderComponent._assembler.updateWorldVerts) {
+                renderComponent._assembler.updateWorldVerts(renderComponent);
+            }
+        }
+        this._flushFlag = 1;
+        renderComponent._aabb = getAABB(renderComponent.node);
+        renderComponent._matHash = renderComponent._materials[0] && renderComponent._materials[0].getHash() || 0;
+        let aabb = renderComponent._aabb;
+        let hash = renderComponent._matHash;
+        let mask = renderComponent.node._cullingMask;
+
+        let j = this._commits.length;
+        for (; j > 0; j--) {
+            if (renderComponent instanceof cc.Mask) {
+                break;
+            }
+
+            let comp = this._commits[j - 1];
+
+            if (comp instanceof cc.Mask) {
+                break;
+            }
+
+            if (comp.node._cullingMask != mask) {
+                break;
+            }
+
+            if (aabb.intersects(comp._aabb)) {
+                break;
+            }
+
+            if (comp._matHash == hash) {
+                break;
+            }
+        }
+
+        this._commits.splice(j, 0, renderComponent);
+    },
+
+    _flushCommits() {
+        if (!this._flushFlag) {
+            return;
+        }
+        this._flushFlag = 0;
+
+        const comps = this._commits;
+        for (let i = 0; i < comps.length; i++) {
+            let comp = comps[i];
+            comp._checkBacth(this, comp.node._cullingMask);
+            comp._assembler.fillBuffers(comp, this);
+        }
+        // reset queue
+        this._commits.length = 0;
+    },
+
     _flush () {
+        this._flushCommits();
+
         let material = this.material,
             buffer = this._buffer,
             indiceCount = buffer.indiceOffset - buffer.indiceStart;
