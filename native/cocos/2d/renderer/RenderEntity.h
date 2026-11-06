@@ -24,8 +24,6 @@
 
 #pragma once
 #include <array>
-#include <functional>
-#include <utility>
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/StencilManager.h"
 #include "base/Macros.h"
@@ -163,10 +161,21 @@ public:
 
     inline void setMaskMode(MaskMode mode) { _entityAttrLayout.maskMode = static_cast<uint8_t>(mode); }
 
-    inline void setPrepareCallback(std::function<void(float)> callback) { _prepareCallback = std::move(callback); }
+    /**
+     * Lightweight owner interface used by native 2D components to generate
+     * geometry just before Batcher2d consumes the draw info. Keeping a raw
+     * listener pointer avoids a std::function per RenderEntity.
+     */
+    class IPrepareListener {
+    public:
+        virtual ~IPrepareListener() = default;
+        virtual void prepareRenderEntity(float opacity) = 0;
+    };
+
+    inline void setPrepareListener(IPrepareListener *listener) { _prepareListener = listener; }
     inline void prepare(float opacity) {
-        if (_prepareCallback) {
-            _prepareCallback(opacity);
+        if (_prepareListener != nullptr) {
+            _prepareListener->prepareRenderEntity(opacity);
         }
     }
 
@@ -193,7 +202,7 @@ private:
     uint8_t _paddings[1];
 
     float _opacity{1.0F};
-    std::function<void(float)> _prepareCallback;
+    IPrepareListener *_prepareListener{nullptr};
 };
 
 #if defined(__x86_64__) || defined(__amd64__) || defined(__aarch64__)

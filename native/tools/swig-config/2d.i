@@ -95,8 +95,9 @@
 %ignore cc::RenderEntity::setEnumStencilStage;
 %ignore cc::RenderEntity::getVBColorDirty;
 %ignore cc::RenderEntity::setVBColorDirty;
-%ignore cc::RenderEntity::setPrepareCallback;
+%ignore cc::RenderEntity::setPrepareListener;
 %ignore cc::RenderEntity::prepare;
+%ignore cc::RenderEntity::IPrepareListener;
 
 %ignore cc::UITransform::getBoundingBox;
 %ignore cc::UITransform::getBoundingBoxToWorld;

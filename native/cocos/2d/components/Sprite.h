@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "base/Ptr.h"
+#include "2d/renderer/RenderEntity.h"
 #include "math/Color.h"
 #include "math/Geometry.h"
 #include "math/Vec2.h"
@@ -37,7 +38,6 @@ namespace cc {
 class Material;
 class Node;
 class RenderDrawInfo;
-class RenderEntity;
 class TextureBase;
 class UITransform;
 
@@ -49,7 +49,7 @@ class UITransform;
  * the Node. Batcher2d::walk() calls prepare(finalOpacity) through the
  * RenderEntity callback before consuming the draw info.
  */
-class Sprite final {
+class Sprite final : public RenderEntity::IPrepareListener {
 public:
     Sprite();
     ~Sprite();
@@ -92,6 +92,7 @@ public:
 
     void setDirty() { _dirty = true; }
     void prepare(float opacity);
+    void prepareRenderEntity(float opacity) override { prepare(opacity); }
 
 private:
     void updateVertexColors(float opacity);

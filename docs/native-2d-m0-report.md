@@ -119,7 +119,7 @@ M0 没有把 `cocos/2d/framework/ui-transform.ts`、`cocos/2d/components/sprite.
 
 ### 2.3 prepare callback 的临时形态
 
-`RenderEntity` 使用 `std::function<void(float)>` 保存 prepare 回调。它简单、对 JS entity 无行为变化，但会给每个 RenderEntity 增加一个 `std::function` 的体积。M1 应改为更轻的 typed owner（例如 `UIComponent*` + 虚函数），避免影响所有 2D entity 的内存占用。
+M0 曾用 `std::function<void(float)>` 保存 prepare 回调。M1 首步已改为轻量 `RenderEntity::IPrepareListener`（裸指针 + 纯虚 `prepareRenderEntity`），`Sprite` 直接实现该接口，避免每个 RenderEntity 携带 `std::function` 的体积。
 
 ## 3. 尚未完成 / 阻塞
 
@@ -151,7 +151,7 @@ Web/native 像素对照 harness 已有 `compare-png.js` + `visual-check.js`（�
 - 原生 JS 场景加载/getComponent：目前只有 JS/Jest 的 `deserialize`/`getComponent`/`instantiate` 和 JSB 类级验证；
 - Web/native 固定场景的**完整引擎像素**采集：已产出几何级像素报告（`run-sprite-quad-parity.ps1`，diffPixels=0）；但完整 GPU 渲染仍被内置资产包阻塞。`web/index.html` 可 `BOOT OK`，`web/scene.html` 可 `SCENE OK`；关闭 dynamic atlas 后 `render.html` 到 `RENDER OK`，但 Sprite 不绘制，因为最小 bootstrap 没有 `ui-sprite-material` 等内置材质（`builtinResMgr` 资源列表只有 texture），`Sprite._material` 为空、`_canRender()` 为 false。完整 Web 渲染需要 Creator 的 builtin 资产包/材质；
 - 完整帧时间、JS 堆、JSB 调用次数基线，以及 Label/Mask/RichText 混合场景（当前只有 Sprite 几何/prepare 的初步对照）；
-- `Vec2` 相关绑定、`std::function` owner 体积等 M1 已知项。
+- `Vec2` 相关绑定等 M1 已知项；`std::function` owner 已在 M1 首步替换为 `IPrepareListener`。
 
 建议：可以启动 M1 的基础设施和 `UITransform` 生产薄壳；生产 `Sprite`/`Label` 替换以补齐上述验证为前置条件。
 

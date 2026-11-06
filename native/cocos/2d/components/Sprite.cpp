@@ -48,12 +48,11 @@ constexpr uint32_t INDEX_COUNT = 6;
 
 Sprite::Sprite() {
     _entity = new RenderEntity(RenderEntityType::STATIC);
-    _entity->setPrepareCallback([this](float opacity) {
-        prepare(opacity);
-    });
+    _entity->setPrepareListener(this);
 }
 
 Sprite::~Sprite() {
+    _entity->setPrepareListener(nullptr);
     setNode(nullptr);
 }
 
