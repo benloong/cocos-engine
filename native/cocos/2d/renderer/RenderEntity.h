@@ -24,6 +24,8 @@
 
 #pragma once
 #include <array>
+#include <functional>
+#include <utility>
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/StencilManager.h"
 #include "base/Macros.h"
@@ -144,6 +146,29 @@ public:
     }
 
     inline uint32_t getPriority() const { return _entityAttrLayout.priority; }
+    inline void setPriority(uint32_t priority) { _entityAttrLayout.priority = priority; }
+
+    inline void setColor(const Color& color) {
+        _entityAttrLayout.colorR = color.r;
+        _entityAttrLayout.colorG = color.g;
+        _entityAttrLayout.colorB = color.b;
+        _entityAttrLayout.colorA = color.a;
+    }
+
+    inline void setEnabled(bool enabled) {
+        _entityAttrLayout.enabledIndex = enabled ? 1U : 0U;
+    }
+
+    inline void setFillColorType(FillColorType type) { _entityAttrLayout.fillColorType = type; }
+
+    inline void setMaskMode(MaskMode mode) { _entityAttrLayout.maskMode = static_cast<uint8_t>(mode); }
+
+    inline void setPrepareCallback(std::function<void(float)> callback) { _prepareCallback = std::move(callback); }
+    inline void prepare(float opacity) {
+        if (_prepareCallback) {
+            _prepareCallback(opacity);
+        }
+    }
 
 private:
     CC_DISALLOW_COPY_MOVE_ASSIGN(RenderEntity);
@@ -168,6 +193,7 @@ private:
     uint8_t _paddings[1];
 
     float _opacity{1.0F};
+    std::function<void(float)> _prepareCallback;
 };
 
 #if defined(__x86_64__) || defined(__amd64__) || defined(__aarch64__)

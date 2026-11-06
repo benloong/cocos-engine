@@ -17,6 +17,8 @@
 #include "2d/renderer/Batcher2d.h"
 #include "2d/renderer/RenderEntity.h"
 #include "2d/renderer/UIModelProxy.h"
+#include "2d/framework/UITransform.h"
+#include "2d/components/Sprite.h"
 %}
 
 // Insert code at the beginning of generated source file (.cpp)
@@ -93,6 +95,18 @@
 %ignore cc::RenderEntity::setEnumStencilStage;
 %ignore cc::RenderEntity::getVBColorDirty;
 %ignore cc::RenderEntity::setVBColorDirty;
+%ignore cc::RenderEntity::setPrepareCallback;
+%ignore cc::RenderEntity::prepare;
+
+%ignore cc::UITransform::getBoundingBox;
+%ignore cc::UITransform::getBoundingBoxToWorld;
+%ignore cc::UITransform::getContentSize;
+%ignore cc::UITransform::getAnchorPoint;
+%ignore cc::UITransform::setContentSize;
+%ignore cc::UITransform::setAnchorPoint;
+%ignore cc::UITransform::convertToNodeSpaceAR;
+%ignore cc::UITransform::convertToWorldSpaceAR;
+%ignore cc::UITransform::containsWorldPoint;
 
 // ----- Rename Section ------
 // Brief: Classes, methods or attributes needs to be renamed
@@ -186,7 +200,9 @@
 %import "core/data/Object.h"
 %import "core/assets/Asset.h"
 %import "core/assets/Material.h"
+%import "core/assets/TextureBase.h"
 %import "core/scene-graph/Node.h"
+%import "math/Geometry.h"
 
 %import "2d/renderer/StencilManager.h"
 %import "math/Color.h"
@@ -198,3 +214,5 @@
 %include "2d/renderer/RenderEntity.h"
 %include "2d/renderer/UIModelProxy.h"
 %include "2d/renderer/Batcher2d.h"
+%include "2d/framework/UITransform.h"
+%include "2d/components/Sprite.h"

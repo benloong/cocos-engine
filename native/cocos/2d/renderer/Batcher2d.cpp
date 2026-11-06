@@ -245,6 +245,11 @@ void Batcher2d::walk(Node* node, float parentOpacity, bool parentColorDirty) { /
                 entity->setVBColorDirty(true);
             }
 
+            // Native 2D components generate their geometry here, before the
+            // batcher consumes the draw info. JS-driven entities have no
+            // callback and this is a no-op.
+            entity->prepare(finalOpacity);
+
             if (ENABLE_SORTING_2D && sorting2DCount > 0) {
                 if (entity->getIsMask()) {
                     flushRecordedUIRenderers();

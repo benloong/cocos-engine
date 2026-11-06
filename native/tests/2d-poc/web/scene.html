@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head><body>
+<div id="GameDiv" style="width:320px;height:240px"><div id="Cocos3dGameContainer"><canvas id="GameCanvas" width="320" height="240"></canvas></div></div>
+<pre id="o">loading</pre>
+<script src="/node_modules/systemjs/dist/system.js"></script>
+<script>
+(async function () {
+  const el = document.getElementById('o');
+  const log = (s) => { el.textContent = s; };
+  try {
+    const root = `${location.origin}/bin/dev/cc/`;
+    const cc = await System.import(`${root}base.js`);
+    await System.import(`${root}gfx-webgl2.js`);
+    await System.import(`${root}legacy-pipeline.js`);
+    const cc2d = await System.import(`${root}2d.js`);
+    await cc.game.init({ settingsPath: `${location.origin}/native/tests/2d-poc/web/empty-settings.json` });
+    cc.game._shouldLoadLaunchScene = false;
+
+    const scene = new cc.Scene('web-2d-poc');
+    cc.director.runSceneImmediate(scene);
+
+    const canvasNode = new cc.Node('Canvas');
+    scene.addChild(canvasNode);
+    const canvasTransform = canvasNode.addComponent(cc2d.UITransform);
+    canvasTransform.setContentSize(new cc.Size(320, 240));
+    const canvas = canvasNode.addComponent(cc2d.Canvas);
+
+    const cameraNode = new cc.Node('UICamera');
+    cameraNode.parent = canvasNode;
+    const camera = cameraNode.addComponent(cc.Camera);
+    camera.projection = cc.Camera.ProjectionType.ORTHO;
+    camera.orthoHeight = 120;
+    camera.near = 1;
+    camera.far = 2000;
+    camera.clearFlags = cc.Camera.ClearFlag.SOLID_COLOR;
+    camera.clearColor = new cc.Color(0, 0, 0, 255);
+    camera.visibility = cc.Layers.Enum.UI_2D;
+    canvas.cameraComponent = camera;
+
+    const spriteNode = new cc.Node('Sprite');
+    spriteNode.parent = canvasNode;
+    spriteNode.layer = cc.Layers.Enum.UI_2D;
+    const spriteTransform = spriteNode.addComponent(cc2d.UITransform);
+    spriteTransform.setContentSize(new cc.Size(160, 160));
+    const sprite = spriteNode.addComponent(cc2d.Sprite);
+    const texture = cc.builtinResMgr.get('white-texture');
+    const frame = new cc2d.SpriteFrame();
+    frame.texture = texture;
+    frame.rect = new cc.Rect(0, 0, 1, 1);
+    frame.originalSize = new cc.Size(1, 1);
+    sprite.spriteFrame = frame;
+    sprite.color = new cc.Color(255, 64, 32, 255);
+    sprite.sizeMode = cc2d.Sprite.SizeMode.CUSTOM;
+
+    window.__cc2dWeb = { cc, cc2d, scene, canvas, camera, sprite };
+    log('SCENE OK');
+  } catch (e) {
+    log(`ERR ${e && e.stack ? e.stack : e}`);
+    throw e;
+  }
+})();
+</script></body></html>

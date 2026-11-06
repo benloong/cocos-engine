@@ -2095,6 +2095,14 @@ cocos_source_files(
     cocos/2d/renderer/RenderEntity.cpp
     cocos/2d/renderer/StencilManager.h
     cocos/2d/renderer/StencilManager.cpp
+    cocos/2d/renderer/SpriteGeometry.h
+    cocos/2d/renderer/SpriteGeometry.cpp
+    cocos/2d/framework/UITransformMath.h
+    cocos/2d/framework/UITransformMath.cpp
+    cocos/2d/framework/UITransform.h
+    cocos/2d/framework/UITransform.cpp
+    cocos/2d/components/Sprite.h
+    cocos/2d/components/Sprite.cpp
 )
 
 ##### box2d
