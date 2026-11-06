@@ -1,0 +1,12 @@
+{
+  "ui-opacity": {
+    "source": "cocos/2d/components/ui-opacity.ts",
+    "shell": "cocos/2d/components/ui-opacity.jsb.ts",
+    "enabled": true
+  },
+  "ui-transform": {
+    "source": "cocos/2d/framework/ui-transform.ts",
+    "shell": "cocos/2d/framework/ui-transform.jsb.ts",
+    "enabled": false
+  }
+}

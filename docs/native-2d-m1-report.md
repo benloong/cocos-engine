@@ -200,12 +200,28 @@ native 2D PoC: PASS
 
 这不是引擎的 `deserialize()`/预制体实现，而是 native JS 运行时对场景 record 的最小加载回归，覆盖了 record → Node/组件 attach → bbox/opacity 的链路。
 
-## 11. M1 剩余工作
+## 11. 本轮完成：组件开关清单
+
+新增 `native/tests/2d-poc/m1-components.json`，显式记录每个 M1 组件的开关状态：
+
+- `ui-opacity`：enabled，override 指向 `ui-opacity.jsb.ts`；
+- `ui-transform`：disabled，`cc.config.json` 不允许存在 override。
+
+`check-m1-shells.js` 会：
+
+- 读取 `cc.config.json` 的所有 NATIVE `moduleOverrides` 并合并；
+- 校验 enabled 组件的 override 必须指向对应壳；
+- 校验 disabled 组件的 override 必须不存在；
+- 继续检查壳行数与禁用代码。
+
+输出：`18 checks, 0 failures`。这提供了 M1 的显式特性开关/回滚边界，避免误启用未验证组件。
+
+## 12. M1 剩余工作
 
 1. 启用 `ui-transform.jsb.ts` override 前的收尾：`isHit` UI 空间语义、完整引擎 JS bundle 中的 onLoad、场景资产反序列化。
 2. 补齐原生 JSB 缺口（`setPositionJS` 已加；其余 Node/场景 API）和预制体 regression。
-3. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
+3. 绑定/shim/override 模板化脚本；特性开关清单已建立（`m1-components.json`）。
 
-## 12. 下一步
+## 13. 下一步
 
 先用真实引擎 JS bundle/场景资产跑一次 `UITransform` 壳的 onLoad + 场景反序列化回归；同时修 `isHit` 或明确 deprecated 回退。通过后再打开 `cc.config.json` 的 `ui-transform.ts → ui-transform.jsb.ts` override。

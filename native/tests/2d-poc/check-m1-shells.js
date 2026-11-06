@@ -27,6 +27,22 @@ const check = (ok, message) => {
     }
 };
 
+const config = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cc.config.json'), 'utf8'));
+const nativeOverrides = Object.assign({}, ...(config.moduleOverrides || [])
+    .filter((entry) => typeof entry.test === 'string' && entry.test.includes('NATIVE'))
+    .map((entry) => entry.overrides || {}));
+const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'm1-components.json'), 'utf8'));
+
+for (const [name, entry] of Object.entries(manifest)) {
+    check(fs.existsSync(path.join(__dirname, '../../../', entry.shell)), `${name}: shell exists`);
+    const actual = nativeOverrides[entry.source];
+    if (entry.enabled) {
+        check(actual === entry.shell, `${name}: enabled override points at shell`);
+    } else {
+        check(actual === undefined, `${name}: disabled override is absent`);
+    }
+}
+
 for (const item of FILES) {
     const source = fs.readFileSync(item.file, 'utf8');
     const lines = source.split(/\r?\n/);
