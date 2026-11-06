@@ -179,12 +179,31 @@ JSB 输出：`jsb bindings result: OK`，原生 `native 2D PoC: PASS`。
 
 Jest：2 passed。这补上了“壳在 JS 侧的生命周期/转发”验证，仍不等价于真实引擎 JS bundle 中的场景反序列化。
 
-## 10. M1 剩余工作
+## 10. 本轮完成：原生 JS 场景 record 加载
+
+在原生 V8 中执行一段“最小场景加载器”：
+
+- 输入 JSON record（root：position 10/20、size 100×50、anchor 0.5、opacity 128，child：position 50/0、size 20×20）；
+- 递归创建 `jsb.Node`、`n2d.UITransform`、`n2d.UIOpacity`；
+- `setPositionJS` 写入位置，组件 attach；
+- 校验 root world bbox `(-40,-5,110,50)`、opacity 128、child width 20。
+
+输出：
+
+```
+jsb bindings result: OK
+jsb scene record: OK
+native 2D PoC: PASS
+```
+
+这不是引擎的 `deserialize()`/预制体实现，而是 native JS 运行时对场景 record 的最小加载回归，覆盖了 record → Node/组件 attach → bbox/opacity 的链路。
+
+## 11. M1 剩余工作
 
 1. 启用 `ui-transform.jsb.ts` override 前的收尾：`isHit` UI 空间语义、完整引擎 JS bundle 中的 onLoad、场景资产反序列化。
 2. 补齐原生 JSB 缺口（`setPositionJS` 已加；其余 Node/场景 API）和预制体 regression。
 3. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
 
-## 11. 下一步
+## 12. 下一步
 
 先用真实引擎 JS bundle/场景资产跑一次 `UITransform` 壳的 onLoad + 场景反序列化回归；同时修 `isHit` 或明确 deprecated 回退。通过后再打开 `cc.config.json` 的 `ui-transform.ts → ui-transform.jsb.ts` override。

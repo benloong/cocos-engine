@@ -342,6 +342,64 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
     check(ok && result.isString() && result.toString() == "OK", "jsb n2d.UITransform/Sprite bindings");
 }
 
+void testJsSceneRecord(se::ScriptEngine *scriptEngine) {
+    const char *record = R"JSON({
+        "name": "root",
+        "position": [10, 20],
+        "size": [100, 50],
+        "anchor": [0.5, 0.5],
+        "opacity": 128,
+        "children": [
+            { "name": "child", "position": [50, 0], "size": [20, 20], "anchor": [0.5, 0.5] }
+        ]
+    })JSON";
+
+    std::string script = R"JS(
+(function () {
+    var record = )JS";
+    script += record;
+    script += R"JS(;
+    function load(record, parent) {
+        var node = new jsb.Node(record.name);
+        parent.addChild(node);
+        if (record.position) node.setPositionJS(record.position[0], record.position[1], 0);
+        var transform = null;
+        if (record.size) {
+            transform = new n2d.UITransform(node);
+            transform.setContentSizeXY(record.size[0], record.size[1]);
+            if (record.anchor) transform.setAnchorPointXY(record.anchor[0], record.anchor[1]);
+        }
+        var opacity = null;
+        if (record.opacity !== undefined) {
+            opacity = new n2d.UIOpacity(node);
+            opacity.setOpacity(record.opacity);
+        }
+        var children = [];
+        (record.children || []).forEach(function (child) {
+            children.push(load(child, node));
+        });
+        return { node: node, transform: transform, opacity: opacity, children: children };
+    }
+    var scene = new jsb.Scene('scene-record');
+    var root = load(record, scene);
+    if (!root.transform) return 'missing root transform';
+    if (root.transform.getBoundingBoxToWorldX() !== -40) return 'unexpected record bbox x';
+    if (root.transform.getBoundingBoxToWorldWidth() !== 110) return 'unexpected record bbox width';
+    if (root.transform.getBoundingBoxToWorldHeight() !== 50) return 'unexpected record bbox height';
+    if (!root.opacity || root.opacity.getOpacity() !== 128) return 'unexpected record opacity';
+    if (!root.children[0].transform) return 'missing child transform';
+    if (root.children[0].transform.getBoundingBoxWidth() !== 20) return 'unexpected child width';
+    return 'OK';
+})()
+)JS";
+
+    se::Value result;
+    const bool ok = scriptEngine->evalString(script.c_str(), static_cast<uint32_t>(script.size()), &result);
+    std::printf("jsb scene record: %s\n", result.isString() ? result.toString().c_str() : "<not string>");
+    std::fflush(stdout);
+    check(ok && result.isString() && result.toString() == "OK", "jsb scene record attach");
+}
+
 void testSpritePrepare() {
     cc::Node node("native-sprite");
     cc::UITransform transform(&node);
@@ -499,6 +557,7 @@ int main() {
         std::printf("uitransform done\n");
         std::fflush(stdout);
         testJsBindings(scriptEngine);
+        testJsSceneRecord(scriptEngine);
         std::printf("jsb bindings done\n");
         std::fflush(stdout);
         testSpriteGeometry();
