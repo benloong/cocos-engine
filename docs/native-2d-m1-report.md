@@ -222,9 +222,9 @@ native 2D PoC: PASS
 
 ## 12. M1 剩余工作
 
-1. 每帧 UITransform JSB getter 计数、override 后的性能基线。
-2. `isHit` UI 空间语义。
-3. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
+1. `isHit` UI 空间语义（当前显式 fallback false）。
+2. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
+3. 把 `M1_PERF` 扩展成 Release/Web 对比和每帧 getter 计数。
 
 ## 13. 下一步
 
@@ -271,6 +271,12 @@ M1_PREFAB {"contentSize":{"width":100,"height":50},"opacity":128,
 
 prefab 位于 `assets/resources/M1Prefab.prefab`，经 `resources.load` +
 `instantiate` 挂在 x=-100，说明真实 prefab 资源路径也通过 native 壳。
+
+1000 次 `getBoundingBoxToWorld()` 的 native Debug 基线：
+
+```text
+M1_PERF {"calls":1000,"ms":8}
+```
 
 native engine bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity`；
 `box`/`world` 来自 native UITransform 壳，证明 **UIOpacity + UITransform 两个生产壳都在真实 native 场景 onLoad 中运行**。

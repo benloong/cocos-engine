@@ -16,7 +16,7 @@
 | 场景反序列化/prefab | **通过** | 真实场景 + `resources.load('M1Prefab', Prefab)` 的 prefab 加载/instantiate 均正确 |
 | `hitTest` 相机正向用例 | **通过** | physical window center `(400,300)` 命中，`(10,10)` 不命中；native camera 800×600 |
 | `isHit` UI 空间 | 明确回退 | 壳返回 false，避免误用 |
-| 每帧 UITransform JSB getter 计数 | 未测 | 需要完整引擎帧循环 |
+| 每帧 UITransform JSB getter 计数 | 基线 | 1000 次 `getBoundingBoxToWorld()` = 8 ms（Debug native） |
 | override 开关清单 | 已同步 | `m1-components.json` 与 `cc.config.json` 均为 enabled |
 
 ## 1.1 测试工程
@@ -34,7 +34,7 @@
 
 构建过程中修复了两个真实问题：`ui-transform.jsb.ts` 从 `../../core` 导入了不存在的 `director`，改为从 `../../game/director` 导入；测试脚本在 `onLoad` 读取 bbox 时子节点的 UITransform 尚未 onLoad，改为在 `start()` 读取。
 
-**限制**：每帧 getter 计数和 `isHit` UI 空间语义仍未覆盖。
+**限制**：`isHit` 保持显式 fallback；完整 umbrella scene（Sprite/Label）未覆盖。
 
 ## 2. 启用步骤
 
