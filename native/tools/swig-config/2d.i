@@ -102,6 +102,7 @@
 
 %ignore cc::UITransform::getBoundingBox;
 %ignore cc::UITransform::getBoundingBoxToWorld;
+%ignore cc::UITransform::getBoundingBoxTo;
 %ignore cc::UITransform::getContentSize;
 %ignore cc::UITransform::getAnchorPoint;
 %ignore cc::UITransform::setContentSize;

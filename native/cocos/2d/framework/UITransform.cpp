@@ -99,6 +99,41 @@ Rect UITransform::getBoundingBoxToWorld() const {
     return result;
 }
 
+Rect UITransform::getBoundingBoxTo(const Mat4 &targetMat) const {
+    Rect result;
+    bool initialized = false;
+    const Mat4 inverseTarget = targetMat.getInversed();
+
+    if (_node != nullptr) {
+        for (const auto &child : _node->getChildren()) {
+            if (!child || !child->isActive()) {
+                continue;
+            }
+            auto *childTransform = static_cast<UITransform *>(child->getUIComponent(TYPE_ID));
+            if (childTransform == nullptr || childTransform->_contentSize.x <= 0.F || childTransform->_contentSize.y <= 0.F) {
+                continue;
+            }
+            Mat4 matrix;
+            Mat4::multiply(child->getWorldMatrix(), inverseTarget, &matrix);
+            const Rect childLocal = UITransformMath::getSelfBoundingBox(childTransform->_contentSize, childTransform->_anchorPoint);
+            const Rect childRect = UITransformMath::transformRect(childLocal, matrix);
+            result = initialized ? result.unionWithRect(childRect) : childRect;
+            initialized = true;
+        }
+    }
+
+    if (_contentSize.x > 0.F && _contentSize.y > 0.F) {
+        const Rect local = UITransformMath::getSelfBoundingBox(_contentSize, _anchorPoint);
+        Mat4 matrix = inverseTarget;
+        if (_node != nullptr) {
+            Mat4::multiply(_node->getWorldMatrix(), inverseTarget, &matrix);
+        }
+        const Rect selfRect = UITransformMath::transformRect(local, matrix);
+        result = initialized ? result.unionWithRect(selfRect) : selfRect;
+    }
+    return result;
+}
+
 Vec2 UITransform::convertToNodeSpaceAR(const Vec2 &worldPoint) const {
     if (_node == nullptr) {
         return worldPoint;

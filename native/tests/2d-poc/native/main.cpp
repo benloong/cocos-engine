@@ -40,6 +40,7 @@
 #include "core/assets/Material.h"
 #include "core/assets/Texture2D.h"
 #include "core/scene-graph/Node.h"
+#include "math/Mat4.h"
 #include "platform/FileUtils.h"
 #include "renderer/GFXDeviceManager.h"
 
@@ -140,6 +141,14 @@ void testUITransformChildBounds() {
     checkNear(box.y, -50.F, "child bbox bottom");
     checkNear(box.width, 175.F, "child bbox width");
     checkNear(box.height, 100.F, "child bbox height");
+
+    cc::Mat4 target;
+    cc::Mat4::createTranslation(-100.F, 0.F, 0.F, &target);
+    const cc::Rect localBox = parentTransform.getBoundingBoxTo(target);
+    checkNear(localBox.x, 50.F, "target-space bbox left");
+    checkNear(localBox.y, -50.F, "target-space bbox bottom");
+    checkNear(localBox.width, 175.F, "target-space bbox width");
+    checkNear(localBox.height, 100.F, "target-space bbox height");
 }
 
 void testComponentAttach() {

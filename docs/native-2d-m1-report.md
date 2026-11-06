@@ -125,11 +125,12 @@ JSB 运行时已验证：
 - `onLoad` 创建 `new n2d.UITransform(this.node)` 并 flush 尺寸/anchor/priority；
 - contentSize/anchor/priority setter 走 native 标量 API；
 - 包围盒/转换走 native 标量桥；
+- native `getBoundingBoxTo(Mat4)` 已实现并测试（target-space 逆矩阵 + 直接子节点 + 自身）；
 - `hitTest` 走 native `UITransform::hitTestXY`（相机 `screenToWorld` + 可见性 + 节点空间命中）；
 - `detach` 在 onDestroy；
 - 198 代码行（271 行含 license）。
 
-**尚未启用 `cc.config.json` override**：`hitTest` 已接 native 相机路径，但 `getBoundingBoxTo` 还没有 target matrix 语义，且完整原生 JS 场景回归未跑；启用前需要先补场景测试，避免 UI 布局/输入回归。`hitTestXY` 已在无场景时返回 false 的 JSB 路径验证。
+**尚未启用 `cc.config.json` override**：native `getBoundingBoxTo(Mat4)` 已实现，但 JS 壳尚未绑定/转发 Mat4 参数（当前仍回退 world bbox）；完整原生 JS 场景回归也未跑。启用前需要先补 Mat4 桥和场景测试，避免 UI 布局/输入回归。`hitTestXY` 已在无场景时返回 false 的 JSB 路径验证。
 
 ## 7. M1 剩余工作
 

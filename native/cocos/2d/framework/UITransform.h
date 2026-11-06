@@ -28,6 +28,7 @@
 
 #include "core/component/Component.h"
 #include "math/Geometry.h"
+#include "math/Mat4.h"
 #include "math/Vec2.h"
 
 namespace cc {
@@ -85,6 +86,7 @@ public:
      * Bounding box in world space (self + direct active children).
      */
     Rect getBoundingBoxToWorld() const;
+    Rect getBoundingBoxTo(const Mat4 &targetMat) const;
 
     Vec2 convertToNodeSpaceAR(const Vec2 &worldPoint) const;
     Vec2 convertToWorldSpaceAR(const Vec2 &nodePoint) const;
