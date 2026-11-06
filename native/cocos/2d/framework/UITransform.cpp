@@ -26,8 +26,11 @@
 
 #include "2d/framework/UITransformMath.h"
 #include "core/scene-graph/Node.h"
+#include "core/scene-graph/Scene.h"
 #include "math/Mat4.h"
 #include "math/Vec3.h"
+#include "scene/Camera.h"
+#include "scene/RenderScene.h"
 
 namespace cc {
 
@@ -117,6 +120,34 @@ bool UITransform::containsWorldPoint(const Vec2 &worldPoint) const {
         return false;
     }
     return UITransformMath::containsWorldPoint(worldPoint, _contentSize, _anchorPoint, _node->getWorldMatrix());
+}
+
+bool UITransform::hitTestXY(float screenX, float screenY) const {
+    if (_node == nullptr || _contentSize.x <= 0.F || _contentSize.y <= 0.F) {
+        return false;
+    }
+    auto *scene = _node->getScene();
+    if (scene == nullptr) {
+        return false;
+    }
+    auto *renderScene = scene->getRenderScene();
+    if (renderScene == nullptr) {
+        return false;
+    }
+
+    for (const auto &camera : renderScene->getCameras()) {
+        if (camera == nullptr || (camera->getVisibility() & _node->getLayer()) == 0) {
+            continue;
+        }
+        const Vec3 world = camera->screenToWorld(Vec3(screenX, screenY, 0.F));
+        const Vec2 local = convertToNodeSpaceAR(Vec2(world.x, world.y));
+        const float x = local.x + _anchorPoint.x * _contentSize.x;
+        const float y = local.y + _anchorPoint.y * _contentSize.y;
+        if (x >= 0.F && y >= 0.F && x <= _contentSize.x && y <= _contentSize.y) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // namespace cc

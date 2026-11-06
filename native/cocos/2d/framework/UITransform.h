@@ -104,6 +104,7 @@ public:
     float convertToWorldSpaceARX(float x, float y) const { return convertToWorldSpaceAR(Vec2(x, y)).x; }
     float convertToWorldSpaceARY(float x, float y) const { return convertToWorldSpaceAR(Vec2(x, y)).y; }
     bool containsWorldPointXY(float x, float y) const { return containsWorldPoint(Vec2(x, y)); }
+    bool hitTestXY(float screenX, float screenY) const;
 
     void detach() { setNode(nullptr); }
 

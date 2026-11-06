@@ -174,11 +174,8 @@ export class UITransform extends Component {
     }
 
     public hitTest (screenPoint: Vec2, windowId = 0): boolean {
-        // Screen-space conversion needs the native camera path; keep the
-        // candidate honest until that lands instead of doing JS geometry.
-        void screenPoint;
         void windowId;
-        return false;
+        return this._native ? this._native.hitTestXY(screenPoint.x, screenPoint.y) : false;
     }
 
     public convertToNodeSpaceAR (worldPoint: Vec3, out?: Vec3): Vec3 {

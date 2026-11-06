@@ -199,6 +199,7 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    if (t.getBoundingBoxWidth() !== 100 || t.getBoundingBoxHeight() !== 50) return 'unexpected bbox size';"
         "    if (t.convertToWorldSpaceARX(3, 4) !== 3 || t.convertToWorldSpaceARY(3, 4) !== 4) return 'unexpected world conversion';"
         "    if (t.containsWorldPointXY(0, 0)) return 'unexpected hit';"
+        "    if (t.hitTestXY(0, 0)) return 'unexpected screen hit';"
         "    t.detach();"
         "    var s = new n2d.Sprite();"
         "    s.setColorRGBA(255, 128, 0, 255);"
