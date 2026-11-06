@@ -7,6 +7,6 @@
   "ui-transform": {
     "source": "cocos/2d/framework/ui-transform.ts",
     "shell": "cocos/2d/framework/ui-transform.jsb.ts",
-    "enabled": false
+    "enabled": true
   }
 }

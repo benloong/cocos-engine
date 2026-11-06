@@ -246,12 +246,14 @@ M1_TEST_NODE {"contentSize":{"width":100,"height":50},"opacity":128,
 Success to load scene: db://assets/scenes/m1-test.scene
 ```
 
-native bundle 中可见 `n2d.UIOpacity` 壳，证明 **UIOpacity 生产壳已在真实 native 场景 onLoad 中运行**。
+native engine bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity`；
+`box`/`world` 来自 native UITransform 壳，证明 **UIOpacity + UITransform 两个生产壳都在真实 native 场景 onLoad 中运行**。
 
-尝试启用 `ui-transform` override 时，Creator 日志明确显示
-`Redirect module ... ui-transform.ts to ... ui-transform.jsb.ts`，但生成的 native
-`cc.js` 仍是未包含 `n2d.UITransform` 的旧 bundle，因此本报告不把 UITransform
-真实 native onLoad 计为通过；仍保持 disabled。
+修复的真实问题：
+
+1. `ui-transform.jsb.ts` 从 `../../core` 导入不存在的 `director`，改为从 `../../game/director`；
+2. 测试脚本在 `onLoad` 读取 bbox 时子节点 UITransform 尚未 onLoad，改为 `start()`；
+3. Creator 的 native 引擎缓存可能复用旧 `cc.js`，用 `@cocos/ccbuild`（`platform: WINDOWS`）重建并复制到 `proj/Resources/src/`。
 
 构建环境备注：VS18 下需 `CC_USE_NINJA=1` 并在 `vcvars64.bat` 环境中运行；
 v4 native 还需要 `bin/adapter/native` 和已构建的 `scripts/native-pack-tool`。

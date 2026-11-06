@@ -352,6 +352,7 @@
                 "cocos/2d/renderer/native-2d.ts": "cocos/2d/renderer/native-2d.jsb.ts",
                 "cocos/2d/poc/native-2d-poc.ts": "cocos/2d/poc/native-2d-poc.jsb.ts",
                 "cocos/2d/components/ui-opacity.ts": "cocos/2d/components/ui-opacity.jsb.ts",
+                "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
                 "cocos/gfx/base/pipeline-state.ts": "cocos/gfx/base/pipeline-state.jsb.ts",
                 "cocos/gfx/base/pipeline-sub-state.ts": "cocos/gfx/base/pipeline-sub-state.jsb.ts",
                 "cocos/gfx/index.ts": "cocos/gfx/index.jsb.ts",

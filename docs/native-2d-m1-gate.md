@@ -1,23 +1,23 @@
 # Native 2D M1 UI 组件启用门槛
 
 > 适用：`ui-transform.jsb.ts` / `ui-opacity.jsb.ts` 从候选壳切换为生产 override。
-> 当前：`ui-opacity` 已启用；`ui-transform` 仍 disabled。
+> 当前：`ui-opacity` 与 `ui-transform` 均已启用。
 
 ## 1. 当前证据
 
 | 门槛 | 状态 | 证据 |
 |---|---|---|
 | native `UITransform`/`UIOpacity` 类 | 通过 | native CMake + JSB 构建，`jsb bindings result: OK` |
-| 薄壳生命周期/转发 | 通过（mock） | `tests/ui/native-2d-m1-shell.test.ts`，2 passed |
+| 薄壳生命周期/转发 | 通过（mock + 实机） | `tests/ui/native-2d-m1-shell.test.ts`；Creator native 场景 onLoad |
 | JSB Scene/Node attach | 通过 | `jsb.Scene` + `jsb.Node` + `n2d.UITransform` + `n2d.UIOpacity` |
 | 场景 record 加载 | 通过（最小夹具） | 三层节点、clone、bbox/opacity，`jsb scene record: OK` |
 | Web bbox/转换 parity | 通过 | `testUITransformParity` / `RotatedParity` / `ScaleParity` |
-| 真实引擎 JS bundle onLoad | **部分通过** | Creator 3.8.8 + custom v4 native app 已运行并加载场景；`UIOpacity` 壳 onLoad 生效，`UITransform` 壳未进入 native bundle |
-| 场景反序列化/prefab | **部分通过** | 真实场景 `db://assets/scenes/m1-test.scene` 已加载；prefab/clone 未覆盖 |
+| 真实引擎 JS bundle onLoad | **通过** | native `cc.js` 含 `n2d.UITransform`/`n2d.UIOpacity`；场景加载成功 |
+| 场景反序列化/prefab | 部分 | 真实场景已加载；prefab/clone 未覆盖 |
 | `hitTest` 相机正向用例 | 部分 | native 实现存在；无相机场景的正向断言 |
 | `isHit` UI 空间 | 明确回退 | 壳返回 false，避免误用 |
 | 每帧 UITransform JSB getter 计数 | 未测 | 需要完整引擎帧循环 |
-| override 开关清单 | 已建立 | `native/tests/2d-poc/m1-components.json` + `check-m1-shells.js` |
+| override 开关清单 | 已同步 | `m1-components.json` 与 `cc.config.json` 均为 enabled |
 
 ## 1.1 测试工程
 
@@ -30,9 +30,11 @@
 - 已将 Engine Manager 的 JavaScript/native 路径都切到 v4，构建 Windows native（620/620 targets），并运行 `build/windows/proj/cocos-m1-test.exe`：
   - 场景加载成功：`Success to load scene: db://assets/scenes/m1-test.scene`；
   - 脚本输出：`M1_TEST_NODE {"contentSize":{"width":100,"height":50},"opacity":128,"box":{"x":590,"y":455,"width":100,"height":50},"world":{"x":640,"y":480,"z":0}}`；
-  - native 引擎 bundle 中可见 `n2d.UIOpacity` 壳，但**没有** `n2d.UITransform` 壳。
+  - native 引擎 bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity` 壳。
 
-**限制**：`ui-transform` 仍 disabled；在 Creator native 构建中尝试启用 override 时，日志显示重定向到 `ui-transform.jsb.ts`，但生成的 native `cc.js` 仍是旧 bundle，尚未证明真实 UITransform 壳生效。prefab/clone、每帧 getter 计数也未覆盖。
+构建过程中修复了两个真实问题：`ui-transform.jsb.ts` 从 `../../core` 导入了不存在的 `director`，改为从 `../../game/director` 导入；测试脚本在 `onLoad` 读取 bbox 时子节点的 UITransform 尚未 onLoad，改为在 `start()` 读取。
+
+**限制**：prefab/clone、每帧 getter 计数、`isHit` UI 空间语义和相机正向 hitTest 仍未覆盖。
 
 ## 2. 启用步骤
 
@@ -48,4 +50,4 @@
 
 ## 3. 当前建议
 
-**保持 `ui-transform` disabled**。已有 native 实现、标量/Mat4 绑定、Web parity、场景 record 和 mock 生命周期，但缺少真实引擎 JS bundle/场景反序列化验证；此时启用会把未验证的布局/输入路径带进 native 默认构建。
+`ui-transform` 已启用。真实 native 场景回归通过，但 prefab/clone、每帧 getter 计数和 `hitTest` 相机正向用例仍是 M1 收尾项；出现回归时按第 2 节回滚。

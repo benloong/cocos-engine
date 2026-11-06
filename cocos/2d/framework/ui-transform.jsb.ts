@@ -24,17 +24,18 @@
 
 import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displayOrder, serializable, disallowMultiple } from 'cc.decorator';
 import { Component } from '../../scene-graph';
-import { Rect, Size, Vec2, Vec3, geometry, director } from '../../core';
+import { Rect, Size, Vec2, Vec3, geometry } from '../../core';
+import { director } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
 
 declare const n2d: any;
 
 /**
- * Native M1 candidate shell for UITransform.
+ * Native M1 shell for UITransform.
  *
  * Serialization/editor metadata stay in JS. Native UITransform owns content
- * size, anchor, priority, bounds, conversions and hit test. Not enabled in
- * cc.config.json until the native JS scene runtime test is available.
+ * size, anchor, priority, bounds, conversions and hit test. Enabled in the
+ * NATIVE cc.config override after the real Creator scene regression.
  */
 @ccclass('cc.UITransform')
 @help('i18n:cc.UITransform')
