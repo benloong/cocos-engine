@@ -25,6 +25,7 @@
 // Insert code at the beginning of generated source file (.cpp)
 %{
 #include "bindings/auto/jsb_2d_auto.h"
+#include "bindings/auto/jsb_cocos_auto.h"
 #include "bindings/auto/jsb_scene_auto.h"
 #include "bindings/auto/jsb_gfx_auto.h"
 #include "bindings/auto/jsb_assets_auto.h"
@@ -202,6 +203,8 @@
 
 %import "core/data/Object.h"
 %import "core/assets/Asset.h"
+%import "math/MathBase.h"
+%import "math/Mat4.h"
 %import "core/assets/Material.h"
 %import "core/assets/TextureBase.h"
 %import "core/scene-graph/Node.h"

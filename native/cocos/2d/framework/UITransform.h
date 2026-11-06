@@ -108,6 +108,11 @@ public:
     bool containsWorldPointXY(float x, float y) const { return containsWorldPoint(Vec2(x, y)); }
     bool hitTestXY(float screenX, float screenY) const;
 
+    float getBoundingBoxToX(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).x; }
+    float getBoundingBoxToY(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).y; }
+    float getBoundingBoxToWidth(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).width; }
+    float getBoundingBoxToHeight(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).height; }
+
     void detach() { setNode(nullptr); }
 
 private:

@@ -231,8 +231,15 @@ export class UITransform extends Component {
     }
 
     public getBoundingBoxTo (targetMat: any): Rect {
-        void targetMat;
-        return this.getBoundingBoxToWorld();
+        if (!this._native) {
+            return new Rect(0, 0, 0, 0);
+        }
+        return new Rect(
+            this._native.getBoundingBoxToX(targetMat),
+            this._native.getBoundingBoxToY(targetMat),
+            this._native.getBoundingBoxToWidth(targetMat),
+            this._native.getBoundingBoxToHeight(targetMat),
+        );
     }
 
     public getComputeAABB (out?: geometry.AABB): geometry.AABB {
