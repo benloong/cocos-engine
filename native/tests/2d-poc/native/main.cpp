@@ -173,6 +173,38 @@ void testUITransformParity() {
     checkNear(world.y, 50.F, "parity convert world y");
 }
 
+void testUITransformScaleParity() {
+    cc::Node scaled("scaled");
+    scaled.setScale(2.F, 2.F, 1.F);
+    scaled.updateWorldTransform();
+    cc::UITransform scaledTransform(&scaled);
+    scaledTransform.setContentSize(100.F, 100.F);
+    const cc::Rect box = scaledTransform.getBoundingBox();
+    checkNear(box.x, -100.F, "scaled bbox x");
+    checkNear(box.y, -100.F, "scaled bbox y");
+    checkNear(box.width, 200.F, "scaled bbox width");
+    checkNear(box.height, 200.F, "scaled bbox height");
+
+    cc::Node parent("scaled-parent");
+    parent.setPosition(10.F, 10.F, 0.F);
+    parent.setScale(2.F, 2.F, 1.F);
+    parent.updateWorldTransform();
+    auto *child = new cc::Node("scaled-child");
+    child->setParent(&parent);
+    child->setPosition(10.F, 0.F, 0.F);
+    child->updateWorldTransform();
+    cc::UITransform childTransform(child);
+    childTransform.setContentSize(20.F, 20.F);
+    const cc::Vec2 world = childTransform.convertToWorldSpaceAR(cc::Vec2(0.F, 0.F));
+    checkNear(world.x, 30.F, "scaled nested world x");
+    checkNear(world.y, 10.F, "scaled nested world y");
+    const cc::Rect childBox = childTransform.getBoundingBoxToWorld();
+    checkNear(childBox.x, 10.F, "scaled nested bbox x");
+    checkNear(childBox.y, -10.F, "scaled nested bbox y");
+    checkNear(childBox.width, 40.F, "scaled nested bbox width");
+    checkNear(childBox.height, 40.F, "scaled nested bbox height");
+}
+
 void testUITransformChildBounds() {
     cc::Node parent("parent");
     cc::UITransform parentTransform(&parent);
@@ -590,6 +622,7 @@ int main() {
         se::AutoHandleScope scope;
         testUITransform();
         testUITransformParity();
+        testUITransformScaleParity();
         testUITransformChildBounds();
         testUITransformRotatedParity();
         testComponentAttach();
