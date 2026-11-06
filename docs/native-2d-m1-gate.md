@@ -13,7 +13,7 @@
 | 场景 record 加载 | 通过（最小夹具） | 三层节点、clone、bbox/opacity，`jsb scene record: OK` |
 | Web bbox/转换 parity | 通过 | `testUITransformParity` / `RotatedParity` / `ScaleParity` |
 | 真实引擎 JS bundle onLoad | **通过** | native `cc.js` 含 `n2d.UITransform`/`n2d.UIOpacity`；场景加载成功 |
-| 场景反序列化/prefab | 通过（场景 + instantiate clone） | 真实场景已加载；`instantiate(M1TestNode)` 的 content/opacity/bbox 均正确 |
+| 场景反序列化/prefab | **通过** | 真实场景 + `resources.load('M1Prefab', Prefab)` 的 prefab 加载/instantiate 均正确 |
 | `hitTest` 相机正向用例 | **通过** | physical window center `(400,300)` 命中，`(10,10)` 不命中；native camera 800×600 |
 | `isHit` UI 空间 | 明确回退 | 壳返回 false，避免误用 |
 | 每帧 UITransform JSB getter 计数 | 未测 | 需要完整引擎帧循环 |
@@ -34,7 +34,7 @@
 
 构建过程中修复了两个真实问题：`ui-transform.jsb.ts` 从 `../../core` 导入了不存在的 `director`，改为从 `../../game/director` 导入；测试脚本在 `onLoad` 读取 bbox 时子节点的 UITransform 尚未 onLoad，改为在 `start()` 读取。
 
-**限制**：真实 `.prefab` 资源形式、每帧 getter 计数和 `isHit` UI 空间语义仍未覆盖。
+**限制**：每帧 getter 计数和 `isHit` UI 空间语义仍未覆盖。
 
 ## 2. 启用步骤
 

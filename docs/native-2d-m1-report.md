@@ -222,10 +222,9 @@ native 2D PoC: PASS
 
 ## 12. M1 剩余工作
 
-1. 以真实 `.prefab` 资源（而非仅 `instantiate` clone）验证 prefab 加载/编辑回归。
-2. 每帧 UITransform JSB getter 计数、override 后的性能基线。
-3. `isHit` UI 空间语义。
-4. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
+1. 每帧 UITransform JSB getter 计数、override 后的性能基线。
+2. `isHit` UI 空间语义。
+3. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
 
 ## 13. 下一步
 
@@ -253,7 +252,7 @@ Success to load scene: db://assets/scenes/m1-test.scene
 
 `M1_CLONE` 由 `instantiate(M1TestNode)` 创建并挂在 x=100，验证了组件 clone/反序列化路径。
 
-同一场景的 `M1_HIT` 为：
+`M1_HIT` 为：
 
 ```text
 M1_HIT {"hit":true,"miss":false,"windowSize":{"width":800,"height":600}}
@@ -261,6 +260,17 @@ M1_HIT {"hit":true,"miss":false,"windowSize":{"width":800,"height":600}}
 
 `hitTest` 必须使用**物理窗口坐标**（`screen.windowSize / 2` = 400,300），
 不能用 1280×960 设计分辨率中心；native camera viewport 为 800×600。
+
+另加载真实 prefab 资源：
+
+```text
+M1_PREFAB {"contentSize":{"width":100,"height":50},"opacity":128,
+"box":{"x":490,"y":455,"width":100,"height":50},
+"world":{"x":540,"y":480,"z":0}}
+```
+
+prefab 位于 `assets/resources/M1Prefab.prefab`，经 `resources.load` +
+`instantiate` 挂在 x=-100，说明真实 prefab 资源路径也通过 native 壳。
 
 native engine bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity`；
 `box`/`world` 来自 native UITransform 壳，证明 **UIOpacity + UITransform 两个生产壳都在真实 native 场景 onLoad 中运行**。
