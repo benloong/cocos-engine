@@ -187,7 +187,8 @@ Jest：2 passed。这补上了“壳在 JS 侧的生命周期/转发”验证，
 - 递归创建 `jsb.Node`、`n2d.UITransform`、`n2d.UIOpacity`；
 - `setPositionJS` 写入位置，组件 attach；
 - 校验 root world bbox `(-40,-5,175,50)`、root opacity 128、child width 50/opacity 64、grandchild width 20；
-- child 采用 `opacityFirst`（先 UIOpacity 后 UITransform），验证组件挂载顺序不影响多槽位。
+- child 采用 `opacityFirst`（先 UIOpacity 后 UITransform），验证组件挂载顺序不影响多槽位；
+- 复制 record 后覆盖 name/position/size/opacity 并清空 children，重新加载为 clone：bbox `(-30,-20,40,40)`、opacity 32，且原 root bbox/opacity 不变。
 
 输出：
 

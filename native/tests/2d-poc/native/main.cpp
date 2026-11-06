@@ -404,6 +404,19 @@ void testJsSceneRecord(se::ScriptEngine *scriptEngine) {
     if (!root.children[0].transform || root.children[0].transform.getBoundingBoxWidth() !== 50) return 'unexpected child width';
     if (!root.children[0].opacity || root.children[0].opacity.getOpacity() !== 64) return 'unexpected child opacity';
     if (!root.children[0].children[0].transform || root.children[0].children[0].transform.getBoundingBoxWidth() !== 20) return 'unexpected grandchild width';
+
+    var cloneRecord = JSON.parse(JSON.stringify(record));
+    cloneRecord.name = 'clone';
+    cloneRecord.position = [-10, 0];
+    cloneRecord.size = [40, 40];
+    cloneRecord.opacity = 32;
+    cloneRecord.children = [];
+    var cloneRoot = load(cloneRecord, scene);
+    if (cloneRoot.transform.getBoundingBoxToWorldX() !== -30) return 'unexpected clone bbox x';
+    if (cloneRoot.transform.getBoundingBoxToWorldWidth() !== 40) return 'unexpected clone bbox width';
+    if (cloneRoot.opacity.getOpacity() !== 32) return 'unexpected clone opacity';
+    if (root.transform.getBoundingBoxToWorldWidth() !== 175) return 'original changed after clone';
+    if (root.opacity.getOpacity() !== 128) return 'original opacity changed after clone';
     return 'OK';
 })()
 )JS";
