@@ -159,6 +159,18 @@ void testUITransformParity() {
     checkClose(box.y, -99.6F, 0.05F, "parity rotated bbox y");
     checkClose(box.width, 254.56F, 0.05F, "parity rotated bbox width");
     checkClose(box.height, 254.56F, 0.05F, "parity rotated bbox height");
+
+    cc::Node convertNode("convert");
+    convertNode.setPosition(50.F, 50.F, 0.F);
+    convertNode.updateWorldTransform();
+    cc::UITransform convertTransform(&convertNode);
+    convertTransform.setContentSize(180.F, 180.F);
+    const cc::Vec2 local = convertTransform.convertToNodeSpaceAR(cc::Vec2(0.F, 0.F));
+    checkNear(local.x, -50.F, "parity convert local x");
+    checkNear(local.y, -50.F, "parity convert local y");
+    const cc::Vec2 world = convertTransform.convertToWorldSpaceAR(cc::Vec2(0.F, 0.F));
+    checkNear(world.x, 50.F, "parity convert world x");
+    checkNear(world.y, 50.F, "parity convert world y");
 }
 
 void testUITransformChildBounds() {

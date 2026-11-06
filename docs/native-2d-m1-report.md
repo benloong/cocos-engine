@@ -144,7 +144,8 @@ JSB 运行时已验证：
 - rotation 45° → bbox 约 `(36.86,-99.6,254.56,254.56)`；
 - `getBoundingBoxToWorld` 父子场景（父 180×180 anchor 0.1/0.6，子 300×150@(50,58)）→ `(-50,-58,300,241)`；
 - 父节点旋转 45° → 约 `(-114.76,-39.1,355.67,324.56)`；
-- `getBoundingBoxTo` target 旋转 60°、位置 (100.5,-10.5) → 约 `(-109.46,23.98,136.6,136.6)`。
+- `getBoundingBoxTo` target 旋转 60°、位置 (100.5,-10.5) → 约 `(-109.46,23.98,136.6,136.6)`；
+- 节点 (50,50)、size 180×180：`convertToNodeSpaceAR(0,0)` → `(-50,-50)`，`convertToWorldSpaceAR(0,0)` → `(50,50)`。
 
 原生 Debug/Release 输出：`native 2D PoC: PASS`。
 
