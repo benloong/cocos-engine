@@ -30,6 +30,7 @@
 #include <vector>
 
 #include "2d/components/Sprite.h"
+#include "2d/framework/UIOpacity.h"
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/RenderEntity.h"
@@ -138,6 +139,25 @@ void testComponentAttach() {
     delete detached;
 }
 
+void testUIOpacity() {
+    cc::Node node("ui-opacity");
+    cc::UITransform transform(&node);
+    cc::UIOpacity opacity(&node);
+
+    check(node.getUIComponent(cc::UITransform::TYPE_ID) == &transform, "UITransform in multi slot");
+    check(node.getUIComponent(cc::UIOpacity::TYPE_ID) == &opacity, "UIOpacity in multi slot");
+    check(node.getUIComponent() != nullptr, "first UI component");
+
+    opacity.setOpacity(128.F);
+    checkNear(node._getLocalOpacity(), 128.F / 255.F, "UIOpacity applies to node");
+
+    opacity.setEnabled(false);
+    checkNear(node._getLocalOpacity(), 1.F, "UIOpacity disable resets node opacity");
+
+    opacity.setEnabled(true);
+    checkNear(node._getLocalOpacity(), 128.F / 255.F, "UIOpacity enable reapplies");
+}
+
 void testJsBindings(se::ScriptEngine *scriptEngine) {
     se::Object *globalObject = scriptEngine->getGlobalObject();
     check(globalObject != nullptr, "global object");
@@ -155,6 +175,9 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    var s = new n2d.Sprite();"
         "    s.setColorRGBA(255, 128, 0, 255);"
         "    s.setTrim(false);"
+        "    var o = new n2d.UIOpacity();"
+        "    o.setOpacity(128);"
+        "    if (o.getOpacity() !== 128) return 'unexpected opacity';"
         "    return 'OK';"
         "  } catch (e) { return String(e); }"
         "})()";
@@ -315,6 +338,7 @@ int main() {
         se::AutoHandleScope scope;
         testUITransform();
         testComponentAttach();
+        testUIOpacity();
         std::printf("uitransform done\n");
         std::fflush(stdout);
         testJsBindings(scriptEngine);

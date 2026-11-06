@@ -231,11 +231,13 @@ public:
     inline void setUserData(UserData *data) { _userData = data; }
 
     /**
-     * Non-owning slot for the native M1 UI component (UITransform/UIOpacity).
+     * Non-owning slots for native M1 UI components (UITransform/UIOpacity).
      * Render components keep using UserData/RenderEntity.
      */
-    inline Component *getUIComponent() const { return _uiComponent; }
-    inline void setUIComponent(Component *component) { _uiComponent = component; }
+    inline Component *getUIComponent() const { return _uiComponents.empty() ? nullptr : _uiComponents.front(); }
+    Component *getUIComponent(uint32_t typeId) const;
+    void addUIComponent(Component *component);
+    void removeUIComponent(Component *component);
     inline void insertChild(Node *child, index_t siblingIndex) {
         child->setParent(this);
         child->setSiblingIndex(siblingIndex);
@@ -611,6 +613,7 @@ public:
     inline se::Object *_getSharedArrayBufferObject() const { return _sharedMemoryActor.getSharedArrayBufferObject(); } // NOLINT
 
     inline float _getLocalOpacity() const { return _localOpacity; } // NOLINT
+    inline void _setLocalOpacity(float v) { _localOpacity = v; }    // NOLINT
 
     inline float _getFinalOpacity() const { return _finalOpacity; } // NOLINT
     inline void _setFinalOpacity(float v) { _finalOpacity = v; }    // NOLINT
@@ -692,7 +695,7 @@ public:
 private:
     Scene *_scene{nullptr};
     IntrusivePtr<UserData> _userData;
-    Component *_uiComponent{nullptr};
+    ccstd::vector<Component *> _uiComponents;
 
     ccstd::vector<IntrusivePtr<Node>> _children;
     bindings::NativeMemorySharedToScriptActor _sharedMemoryActor;

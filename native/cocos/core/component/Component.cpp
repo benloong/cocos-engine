@@ -29,8 +29,8 @@
 namespace cc {
 
 Component::~Component() {
-    if (_node != nullptr && _node->getUIComponent() == this) {
-        _node->setUIComponent(nullptr);
+    if (_node != nullptr) {
+        _node->removeUIComponent(this);
     }
 }
 
@@ -40,12 +40,12 @@ void Component::setNode(Node *node) {
     }
 
     Node *oldNode = _node;
-    if (oldNode != nullptr && oldNode->getUIComponent() == this) {
-        oldNode->setUIComponent(nullptr);
+    if (oldNode != nullptr) {
+        oldNode->removeUIComponent(this);
     }
     _node = node;
     if (_node != nullptr) {
-        _node->setUIComponent(this);
+        _node->addUIComponent(this);
     }
 
     if (oldNode != nullptr) {

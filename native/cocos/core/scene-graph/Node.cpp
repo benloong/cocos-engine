@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #include "core/scene-graph/Node.h"
+#include <algorithm>
 #include "base/StringUtil.h"
 #include "core/component/Component.h"
 #include "core/data/Object.h"
@@ -78,16 +79,43 @@ Node::Node(const ccstd::string &name) {
 }
 
 Node::~Node() {
-    if (_uiComponent != nullptr) {
-        Component *component = _uiComponent;
-        _uiComponent = nullptr;
-        component->onNodeDestroyed();
+    if (!_uiComponents.empty()) {
+        auto components = std::move(_uiComponents);
+        for (Component *component : components) {
+            component->onNodeDestroyed();
+        }
     }
     if (!_children.empty()) {
         // Reset children's _parent to nullptr to avoid dangerous pointer
         for (const auto &child : _children) {
             child->_parent = nullptr;
         }
+    }
+}
+
+Component *Node::getUIComponent(uint32_t typeId) const {
+    for (Component *component : _uiComponents) {
+        if (component != nullptr && component->getTypeId() == typeId) {
+            return component;
+        }
+    }
+    return nullptr;
+}
+
+void Node::addUIComponent(Component *component) {
+    if (component == nullptr) {
+        return;
+    }
+    auto it = std::find(_uiComponents.begin(), _uiComponents.end(), component);
+    if (it == _uiComponents.end()) {
+        _uiComponents.push_back(component);
+    }
+}
+
+void Node::removeUIComponent(Component *component) {
+    auto it = std::find(_uiComponents.begin(), _uiComponents.end(), component);
+    if (it != _uiComponents.end()) {
+        _uiComponents.erase(it);
     }
 }
 

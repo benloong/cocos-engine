@@ -2101,6 +2101,8 @@ cocos_source_files(
     cocos/2d/framework/UITransformMath.cpp
     cocos/2d/framework/UITransform.h
     cocos/2d/framework/UITransform.cpp
+    cocos/2d/framework/UIOpacity.h
+    cocos/2d/framework/UIOpacity.cpp
     cocos/2d/components/Sprite.h
     cocos/2d/components/Sprite.cpp
 )

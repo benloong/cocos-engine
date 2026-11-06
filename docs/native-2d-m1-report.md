@@ -49,17 +49,42 @@ M0 的 prepare 回调使用 `std::function<void(float)>`，会让每个 `RenderE
 - Debug 原生测试：`native 2D PoC: PASS`；
 - `run-m0-checks.ps1` 全部通过。
 
-## 3. M1 剩余工作
+## 3. 本轮完成：多组件槽位与 UIOpacity
 
-1. 单槽位 `Component` 已接入；后续把单槽扩展为多组件槽位（`UITransform` + `UIOpacity` 并存）或按类型细分槽位。
-2. 生产 `UITransform` 的 `.jsb.ts` 替换：
+- `Node` 的单 `Component*` 槽改为非 owning 的 `ccstd::vector<Component*>`：
+  - `addUIComponent/removeUIComponent`；
+  - `getUIComponent(typeId)` 按类型查找，`getUIComponent()` 返回第一个；
+  - Node 析构时对所有组件调用 `onNodeDestroyed()`。
+- `Component` 的 attach/detach 改为 add/remove 槽位，支持 `UITransform` 与 `UIOpacity` 并存。
+- 新增 `native/cocos/2d/framework/UIOpacity.h/.cpp`：
+  - `TYPE_ID = 2`，0~255 opacity；
+  - attach/onEnable 写入 `Node::_localOpacity`；
+  - disable/detach 重置为 1；
+  - 不包含序列化/registry。
+- 绑定：
+  - `2d.i` 生成 `UIOpacity`，并在生成头文件里显式 include；
+  - JSB 测试新增 `new n2d.UIOpacity()` + `setOpacity(128)` + `getOpacity()`。
+
+### 验证
+
+- 多槽位：`getUIComponent(UITransform::TYPE_ID)` 与 `getUIComponent(UIOpacity::TYPE_ID)` 同时命中；
+- opacity：128 → `Node::_localOpacity = 128/255`，disable → 1，enable → 128/255；
+- JSB：`jsb bindings result: OK`（含 UIOpacity）；
+- Debug clean rebuild：604/604，`native 2D PoC: PASS`；
+- Release clean rebuild：604/604，`native 2D PoC: PASS`；
+- 1000 Sprite：Debug 约 987 ns/sprite；Release 218.4 ns/sprite；
+- 原生 working set：Release 约 5267 bytes/sprite；
+- `run-m0-checks.ps1` 全部通过。
+
+## 4. M1 剩余工作
+
+1. 生产 `UITransform`/`UIOpacity` 的 `.jsb.ts` 替换：
    - 保留序列化字段与编辑器元数据；
    - setter 在 attach 前缓存、attach 后 flush；
-   - contentSize/anchor/boundingBox/convert/hitTest 走 native。
-3. `UIOpacity` 与 Node opacity 联动。
-4. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
-5. 场景加载/预制体回归。
+   - contentSize/anchor/boundingBox/convert/hitTest/opacity 走 native。
+2. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
+3. 场景加载/预制体回归。
 
-## 4. 下一步
+## 5. 下一步
 
-用现有 `UITransform` + `Component` 槽位做第一条 attach/detach + 序列化回归链路；暂不替换生产 `cc.UITransform`，先用独立 `n2d.M1UITransform` 验证挂载协议和多组件槽位。
+用现有 `UITransform` + `UIOpacity` + 多组件槽位做第一条生产 `.jsb.ts` 替换：先保留 `cc.UITransform` 的序列化字段，在 `onLoad` attach native，验证 contentSize/anchor/hitTest 与 Web 一致，再补 UIOpacity 壳。
