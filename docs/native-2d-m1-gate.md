@@ -14,7 +14,7 @@
 | Web bbox/转换 parity | 通过 | `testUITransformParity` / `RotatedParity` / `ScaleParity` |
 | 真实引擎 JS bundle onLoad | **通过** | native `cc.js` 含 `n2d.UITransform`/`n2d.UIOpacity`；场景加载成功 |
 | 场景反序列化/prefab | **通过** | 真实场景 + `resources.load('M1Prefab', Prefab)` 的 prefab 加载/instantiate 均正确 |
-| 依赖组件 umbrella（Label） | **通过** | `cc.Label` 与 native UITransform 共享 100×50，字符串 `M1UMBRELLA` |
+| 依赖组件 umbrella（Label/Sprite） | **通过（attach）** | Label `M1UMBRELLA` 与 Sprite 组件均共享 native UITransform 100×50；Sprite 无 frame，未验证渲染 |
 | `hitTest` 相机正向用例 | **通过** | physical window center `(400,300)` 命中，`(10,10)` 不命中；native camera 800×600 |
 | `isHit` UI 空间 | **通过** | UI 点经相机/visibleRect 转 world 后调用 native `containsWorldPointXY`；`(640,480)` 命中，`(10,10)` 不命中 |
 | 每帧 UITransform JSB getter 计数 | 基线 | 1000 次 `getBoundingBoxToWorld()` = 7 ms（Debug native） |

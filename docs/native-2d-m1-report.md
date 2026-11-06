@@ -222,7 +222,7 @@ native 2D PoC: PASS
 
 ## 12. M1 剩余工作
 
-1. Sprite 渲染与更完整的 native umbrella scene。
+1. Sprite 绑定真实 spriteFrame/material 的渲染回归。
 2. 把 `M1_PERF` 扩展成 Release/Web 对比和每帧 getter 计数。
 3. 验证 `isHit` 的 mask 分支。
 
@@ -274,7 +274,11 @@ M1_UI_HIT {"hit":true,"miss":false}
 
 ```text
 M1_LABEL {"string":"M1UMBRELLA","size":{"width":100,"height":50}}
+M1_SPRITE {"hasFrame":false,"size":{"width":100,"height":50}}
 ```
+
+两者都与同一 native UITransform 共享 100×50；Sprite 当前未绑定 frame，
+因此只验证组件 attach，不声明 Sprite 渲染通过。
 
 另加载真实 prefab 资源：
 
