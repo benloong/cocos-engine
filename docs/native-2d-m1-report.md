@@ -222,7 +222,7 @@ native 2D PoC: PASS
 
 ## 12. M1 剩余工作
 
-1. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
+1. Sprite 渲染与更完整的 native umbrella scene。
 2. 把 `M1_PERF` 扩展成 Release/Web 对比和每帧 getter 计数。
 3. 验证 `isHit` 的 mask 分支。
 
@@ -269,6 +269,12 @@ M1_UI_HIT {"hit":true,"miss":false}
 
 它把 UI 点经相机和 `visibleRect.center` 转成 world，再调用 native
 `containsWorldPointXY`。
+
+依赖 UITransform 的 native `cc.Label` 也已加载：
+
+```text
+M1_LABEL {"string":"M1UMBRELLA","size":{"width":100,"height":50}}
+```
 
 另加载真实 prefab 资源：
 
