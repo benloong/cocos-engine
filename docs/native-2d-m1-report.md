@@ -117,7 +117,20 @@ JSB 运行时已验证：
 
 这些方法让后续 `ui-transform.jsb.ts` 不需要 Vec2 返回值即可驱动 bbox/convert。
 
-## 6. M1 剩余工作
+## 6. 本轮完成：UITransform 候选壳（未启用）
+
+新增 `cocos/2d/framework/ui-transform.jsb.ts`：
+
+- 保留 `@ccclass('cc.UITransform')`、`@serializable _contentSize/_anchorPoint`、优先级、菜单元数据；
+- `onLoad` 创建 `new n2d.UITransform(this.node)` 并 flush 尺寸/anchor/priority；
+- contentSize/anchor/priority setter 走 native 标量 API；
+- 包围盒/转换走 native 标量桥；
+- `detach` 在 onDestroy；
+- 198 代码行（271 行含 license）。
+
+**尚未启用 `cc.config.json` override**：当前壳的 `hitTest` 仍返回 false、`getBoundingBoxTo` 还没有 target matrix 语义；在完整原生 JS 场景回归前启用会导致 UI 输入/布局回归。下一步先补 native JS 场景测试，再打开开关。
+
+## 7. M1 剩余工作
 
 1. 生产 `UITransform` 的 `.jsb.ts` 替换：
    - 保留序列化字段与编辑器元数据；
@@ -126,6 +139,6 @@ JSB 运行时已验证：
 2. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
 3. 场景加载/预制体回归。
 
-## 7. 下一步
+## 8. 下一步
 
 以 `UIOpacity` 壳为模板做 `UITransform` 生产壳：先保留 `cc.UITransform` 的序列化字段，在 `onLoad` attach native，内容尺寸/anchor/包围盒/转换/hitTest 走 native；随后补 Web 对照用例和特性开关。

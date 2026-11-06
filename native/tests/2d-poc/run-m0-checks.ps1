@@ -27,6 +27,12 @@ if ($LASTEXITCODE -ne 0) {
     throw "Thin-shell contract failed with exit code $LASTEXITCODE"
 }
 
+Write-Host '== M1 shells =='
+node (Join-Path $PSScriptRoot 'check-m1-shells.js')
+if ($LASTEXITCODE -ne 0) {
+    throw "M1 shell checks failed with exit code $LASTEXITCODE"
+}
+
 if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
     Write-Host '== Web/native sprite quad parity =='
     & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'run-sprite-quad-parity.ps1')
