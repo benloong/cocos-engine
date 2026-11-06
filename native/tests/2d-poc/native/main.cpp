@@ -56,6 +56,8 @@ int cocos_main(int /*argc*/, const char ** /*argv*/) {
 }
 
 bool register_all_native2d(se::Object *globalObject);
+bool register_all_engine(se::Object *globalObject);
+bool register_all_scene(se::Object *globalObject);
 
 namespace {
 
@@ -283,6 +285,8 @@ void testUIOpacity() {
 void testJsBindings(se::ScriptEngine *scriptEngine) {
     se::Object *globalObject = scriptEngine->getGlobalObject();
     check(globalObject != nullptr, "global object");
+    check(register_all_engine(globalObject), "register_all_engine");
+    check(register_all_scene(globalObject), "register_all_scene");
     check(register_all_native2d(globalObject), "register_all_native2d");
 
     const char *script =
@@ -309,6 +313,20 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    o.setActive(false);"
         "    o.setActive(true);"
         "    o.detach();"
+        "    var node = new jsb.Node('jsb-node');"
+        "    var attached = new n2d.UITransform(node);"
+        "    if (attached.getWidth() !== 100) return 'unexpected attached width';"
+        "    attached.detach();"
+        "    var scene = new jsb.Scene('jsb-scene');"
+        "    var sceneNode = new jsb.Node('scene-node');"
+        "    scene.addChild(sceneNode);"
+        "    var sceneTransform = new n2d.UITransform(sceneNode);"
+        "    sceneTransform.setContentSizeXY(100, 50);"
+        "    if (sceneTransform.getBoundingBoxWidth() !== 100) return 'unexpected scene width';"
+        "    var sceneOpacity = new n2d.UIOpacity(sceneNode);"
+        "    sceneOpacity.setOpacity(128);"
+        "    sceneOpacity.detach();"
+        "    sceneTransform.detach();"
         "    return 'OK';"
         "  } catch (e) { return String(e); }"
         "})()";

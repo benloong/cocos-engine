@@ -149,15 +149,27 @@ JSB 运行时已验证：
 
 这验证了 native contentSize/anchor/SRT、父子世界包围盒和 target-space 旋转与 Web 测试期望一致。
 
-## 8. M1 剩余工作
+## 8. 本轮完成：原生 JS 场景 attach 冒烟
 
-1. 生产 `UITransform` 的 `.jsb.ts` 替换：
-   - 保留序列化字段与编辑器元数据；
-   - setter 在 attach 前缓存、attach 后 flush；
-   - contentSize/anchor/boundingBox/convert/hitTest 走 native。
-2. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
-3. 场景加载/预制体回归。
+在原生 smoke test 中注册 `register_all_engine` / `register_all_scene` / `register_all_native2d`，然后直接执行 JS：
 
-## 9. 下一步
+- `new jsb.Node('jsb-node')`；
+- `new n2d.UITransform(node)` → attach，`getWidth` 为默认 100；
+- `new jsb.Scene('jsb-scene')` + `scene.addChild(node)`；
+- 场景节点上 `new n2d.UITransform(sceneNode)` + `setContentSizeXY` + bbox；
+- 同一节点上再 `new n2d.UIOpacity(sceneNode)`，验证多组件槽位；
+- 所有 native 组件 `detach()`。
 
-以 `UIOpacity` 壳为模板做 `UITransform` 生产壳：先保留 `cc.UITransform` 的序列化字段，在 `onLoad` attach native，内容尺寸/anchor/包围盒/转换/hitTest 走 native；随后补 Web 对照用例和特性开关。
+JSB 输出：`jsb bindings result: OK`，原生 `native 2D PoC: PASS`。
+
+这证明 **原生 JS 运行时可以创建 Scene/Node 并挂载 native UITransform/UIOpacity**，而不是只验证类级构造。仍未覆盖：场景资产反序列化、TS 薄壳在真实引擎 JS bundle 中的 onLoad、`Node.setPosition` 等未绑定 API。
+
+## 9. M1 剩余工作
+
+1. 启用 `ui-transform.jsb.ts` override 前的收尾：`isHit` UI 空间语义、完整引擎 JS bundle 中的 onLoad、场景资产反序列化。
+2. 补齐原生 JSB 缺口（如 `Node.setPosition` 未绑定）和预制体 regression。
+3. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
+
+## 10. 下一步
+
+先用真实引擎 JS bundle/场景资产跑一次 `UITransform` 壳的 onLoad + 场景反序列化回归；同时修 `isHit` 或明确 deprecated 回退。通过后再打开 `cc.config.json` 的 `ui-transform.ts → ui-transform.jsb.ts` override。
