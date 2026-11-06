@@ -113,6 +113,7 @@ JSB 运行时已验证：
 - `setContentSizeXY(100,50)` + anchor 0.5 → bbox `(-50,-25,100,50)`；
 - `convertToWorldSpaceARX/Y(3,4)` → `(3,4)`（无 Node 的 identity 情况）；
 - `containsWorldPointXY` 为 false；
+- `jsb.Mat4` identity 传入 `getBoundingBoxToX/Width` → `-50/100`；
 - `jsb bindings result: OK`。
 
 这些方法让后续 `ui-transform.jsb.ts` 不需要 Vec2 返回值即可驱动 bbox/convert。
@@ -131,7 +132,7 @@ JSB 运行时已验证：
 - `detach` 在 onDestroy；
 - 198 代码行（271 行含 license）。
 
-**尚未启用 `cc.config.json` override**：`getBoundingBoxTo` 的 Mat4 桥已打通，但完整原生 JS 场景回归仍未跑；`isHit` 仍把 UI 点当世界点（deprecated API），启用前需要补相机/UI 空间语义或明确回退。`hitTestXY` 已在无场景时返回 false 的 JSB 路径验证。
+**尚未启用 `cc.config.json` override**：`getBoundingBoxTo` 的 Mat4 桥已打通，但完整原生 JS 场景回归仍未跑；`isHit` 是 deprecated UI 空间 API，壳现在明确返回 false，避免把 UI 点误当世界点。`hitTestXY`（screen 空间）已实现并在无场景时验证返回 false。
 
 ## 7. 本轮完成：UITransform Web 期望值对照
 

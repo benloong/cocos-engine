@@ -170,7 +170,10 @@ export class UITransform extends Component {
     }
 
     public isHit (uiPoint: Vec2): boolean {
-        return this._native ? this._native.containsWorldPointXY(uiPoint.x, uiPoint.y) : false;
+        // Deprecated UI-space API. The native hit path currently receives
+        // screen coordinates, so do not silently treat a UI point as world.
+        void uiPoint;
+        return false;
     }
 
     public hitTest (screenPoint: Vec2, windowId = 0): boolean {
