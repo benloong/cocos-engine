@@ -82,13 +82,30 @@ public:
     Rect getBoundingBox() const;
 
     /**
-     * Bounding box in world space (self only for the M0 PoC).
+     * Bounding box in world space (self + direct active children).
      */
     Rect getBoundingBoxToWorld() const;
 
     Vec2 convertToNodeSpaceAR(const Vec2 &worldPoint) const;
     Vec2 convertToWorldSpaceAR(const Vec2 &nodePoint) const;
     bool containsWorldPoint(const Vec2 &worldPoint) const;
+
+    // Scalar wrappers for the JS thin shell (Vec2 is not bound yet).
+    float getBoundingBoxX() const { return getBoundingBox().x; }
+    float getBoundingBoxY() const { return getBoundingBox().y; }
+    float getBoundingBoxWidth() const { return getBoundingBox().width; }
+    float getBoundingBoxHeight() const { return getBoundingBox().height; }
+    float getBoundingBoxToWorldX() const { return getBoundingBoxToWorld().x; }
+    float getBoundingBoxToWorldY() const { return getBoundingBoxToWorld().y; }
+    float getBoundingBoxToWorldWidth() const { return getBoundingBoxToWorld().width; }
+    float getBoundingBoxToWorldHeight() const { return getBoundingBoxToWorld().height; }
+    float convertToNodeSpaceARX(float x, float y) const { return convertToNodeSpaceAR(Vec2(x, y)).x; }
+    float convertToNodeSpaceARY(float x, float y) const { return convertToNodeSpaceAR(Vec2(x, y)).y; }
+    float convertToWorldSpaceARX(float x, float y) const { return convertToWorldSpaceAR(Vec2(x, y)).x; }
+    float convertToWorldSpaceARY(float x, float y) const { return convertToWorldSpaceAR(Vec2(x, y)).y; }
+    bool containsWorldPointXY(float x, float y) const { return containsWorldPoint(Vec2(x, y)); }
+
+    void detach() { setNode(nullptr); }
 
 private:
     Vec2 _contentSize{100.F, 100.F};

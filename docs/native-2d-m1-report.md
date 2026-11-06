@@ -99,7 +99,25 @@ M0 的 prepare 回调使用 `std::function<void(float)>`，会让每个 `RenderE
 
 > 尚未做原生 JS 运行时场景加载，因此“生产 shell 的 onLoad attach”尚未在完整引擎 JS 环境中执行；目前覆盖 Web 类型检查、JSB 类级调用和原生 C++ 生命周期。
 
-## 5. M1 剩余工作
+## 5. 本轮完成：UITransform 标量绑定桥
+
+为生产 `UITransform` 壳准备不依赖 `Vec2` 绑定的 native 标量 API：
+
+- 包围盒：`getBoundingBoxX/Y/Width/Height`、`getBoundingBoxToWorldX/Y/Width/Height`；
+- 坐标转换：`convertToNodeSpaceARX/Y`、`convertToWorldSpaceARX/Y`；
+- 命中：`containsWorldPointXY`；
+- detach：`detach()`。
+
+JSB 运行时已验证：
+
+- `setContentSizeXY(100,50)` + anchor 0.5 → bbox `(-50,-25,100,50)`；
+- `convertToWorldSpaceARX/Y(3,4)` → `(3,4)`（无 Node 的 identity 情况）；
+- `containsWorldPointXY` 为 false；
+- `jsb bindings result: OK`。
+
+这些方法让后续 `ui-transform.jsb.ts` 不需要 Vec2 返回值即可驱动 bbox/convert。
+
+## 6. M1 剩余工作
 
 1. 生产 `UITransform` 的 `.jsb.ts` 替换：
    - 保留序列化字段与编辑器元数据；
@@ -108,6 +126,6 @@ M0 的 prepare 回调使用 `std::function<void(float)>`，会让每个 `RenderE
 2. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
 3. 场景加载/预制体回归。
 
-## 6. 下一步
+## 7. 下一步
 
 以 `UIOpacity` 壳为模板做 `UITransform` 生产壳：先保留 `cc.UITransform` 的序列化字段，在 `onLoad` attach native，内容尺寸/anchor/包围盒/转换/hitTest 走 native；随后补 Web 对照用例和特性开关。
