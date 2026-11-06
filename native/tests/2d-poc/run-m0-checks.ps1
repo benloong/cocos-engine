@@ -62,6 +62,7 @@ if (Test-Path $jest) {
             'tests/ui/ui-transform.test.ts' `
             'tests/ui/sprite.test.ts' `
             'tests/ui/native-2d-poc.test.ts' `
+            'tests/ui/native-2d-m1-shell.test.ts' `
             'tests/ui/native-2d-poc-bench.test.ts'
         if ($LASTEXITCODE -ne 0) {
             throw "Jest failed with exit code $LASTEXITCODE"
