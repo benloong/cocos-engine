@@ -75,6 +75,13 @@ void checkNear(float actual, float expected, const char *message) {
     }
 }
 
+void checkClose(float actual, float expected, float epsilon, const char *message) {
+    if (std::fabs(actual - expected) > epsilon) {
+        std::printf("FAIL: %s expected %f got %f\n", message, expected, actual);
+        ++gFailures;
+    }
+}
+
 void testUITransform() {
     cc::Node node("native-2d-poc");
     node.setPosition(10.F, 20.F, 0.F);
@@ -118,6 +125,38 @@ void testSpriteGeometry() {
     checkNear(quad.vertices[3].position.y, 50.F, "quad right-top y");
     check(quad.indices[0] == 0 && quad.indices[1] == 1 && quad.indices[2] == 2,
           "quad index order");
+}
+
+void testUITransformParity() {
+    cc::Node node("parity");
+    node.updateWorldTransform();
+    cc::UITransform transform(&node);
+    transform.setContentSize(180.F, 180.F);
+
+    cc::Rect box = transform.getBoundingBox();
+    checkNear(box.x, -90.F, "parity bbox x");
+    checkNear(box.y, -90.F, "parity bbox y");
+    checkNear(box.width, 180.F, "parity bbox width");
+    checkNear(box.height, 180.F, "parity bbox height");
+
+    transform.setAnchorPoint(0.1F, 0.6F);
+    box = transform.getBoundingBox();
+    checkNear(box.x, -18.F, "parity anchor bbox x");
+    checkNear(box.y, -108.F, "parity anchor bbox y");
+
+    node.setPosition(100.5F, -10.5F, 0.F);
+    node.updateWorldTransform();
+    box = transform.getBoundingBox();
+    checkNear(box.x, 82.5F, "parity position bbox x");
+    checkNear(box.y, -118.5F, "parity position bbox y");
+
+    node.setRotationFromEuler(0.F, 0.F, 45.F);
+    node.updateWorldTransform();
+    box = transform.getBoundingBox();
+    checkClose(box.x, 36.86F, 0.05F, "parity rotated bbox x");
+    checkClose(box.y, -99.6F, 0.05F, "parity rotated bbox y");
+    checkClose(box.width, 254.56F, 0.05F, "parity rotated bbox width");
+    checkClose(box.height, 254.56F, 0.05F, "parity rotated bbox height");
 }
 
 void testUITransformChildBounds() {
@@ -378,6 +417,7 @@ int main() {
     {
         se::AutoHandleScope scope;
         testUITransform();
+        testUITransformParity();
         testUITransformChildBounds();
         testComponentAttach();
         testUIOpacity();

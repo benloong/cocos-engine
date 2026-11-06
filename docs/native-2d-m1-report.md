@@ -132,7 +132,20 @@ JSB 运行时已验证：
 
 **尚未启用 `cc.config.json` override**：native `getBoundingBoxTo(Mat4)` 已实现，但 JS 壳尚未绑定/转发 Mat4 参数（当前仍回退 world bbox）；完整原生 JS 场景回归也未跑。启用前需要先补 Mat4 桥和场景测试，避免 UI 布局/输入回归。`hitTestXY` 已在无场景时返回 false 的 JSB 路径验证。
 
-## 7. M1 剩余工作
+## 7. 本轮完成：UITransform Web 期望值对照
+
+把 `tests/ui/ui-transform.test.ts` 的关键期望值搬到原生回归：
+
+- 180×180、anchor 0.5 → bbox `(-90,-90,180,180)`；
+- anchor 0.1/0.6 → bbox `(-18,-108,180,180)`；
+- position 100.5/-10.5 → bbox `(82.5,-118.5,180,180)`；
+- rotation 45° → bbox 约 `(36.86,-99.6,254.56,254.56)`。
+
+原生 Debug 输出：`native 2D PoC: PASS`。
+
+这验证了 native contentSize/anchor/SRT 包围盒与 Web 测试期望一致，但还没有覆盖 `getBoundingBoxToWorld` 父子旋转和 `getBoundingBoxTo` 的完整矩阵场景。
+
+## 8. M1 剩余工作
 
 1. 生产 `UITransform` 的 `.jsb.ts` 替换：
    - 保留序列化字段与编辑器元数据；
@@ -141,6 +154,6 @@ JSB 运行时已验证：
 2. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
 3. 场景加载/预制体回归。
 
-## 8. 下一步
+## 9. 下一步
 
 以 `UIOpacity` 壳为模板做 `UITransform` 生产壳：先保留 `cc.UITransform` 的序列化字段，在 `onLoad` attach native，内容尺寸/anchor/包围盒/转换/hitTest 走 native；随后补 Web 对照用例和特性开关。
