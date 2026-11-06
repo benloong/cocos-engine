@@ -272,6 +272,15 @@ public:
     void setPositionInternal(float x, float y, float z, bool calledFromJS);
     // It is invoked after deserialization. It only sets position value, not triggers other logic.
     inline void setPositionForJS(float x, float y, float z) { _localPosition.set(x, y, z); }
+
+    /**
+     * JSB convenience for tests/tools: update the local position and refresh
+     * the world transform immediately.
+     */
+    void setPositionJS(float x, float y, float z) {
+        setPositionForJS(x, y, z);
+        updateWorldTransform();
+    }
     /**
      * @en Get position in local coordinate system, please try to pass `out` vector and reuse it to avoid garbage.
      * @zh 获取本地坐标，注意，尽可能传递复用的 [[Vec3]] 以避免产生垃圾。

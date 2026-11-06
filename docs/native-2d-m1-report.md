@@ -156,13 +156,14 @@ JSB 运行时已验证：
 - `new jsb.Node('jsb-node')`；
 - `new n2d.UITransform(node)` → attach，`getWidth` 为默认 100；
 - `new jsb.Scene('jsb-scene')` + `scene.addChild(node)`；
-- 场景节点上 `new n2d.UITransform(sceneNode)` + `setContentSizeXY` + bbox；
+- 场景节点上 `setPositionJS(10,20,0)`，再 `new n2d.UITransform(sceneNode)` + `setContentSizeXY(100,50)`；
+  bbox 为 `(-40,-5,100,50)`，验证位置进入 native 世界矩阵；
 - 同一节点上再 `new n2d.UIOpacity(sceneNode)`，验证多组件槽位；
 - 所有 native 组件 `detach()`。
 
 JSB 输出：`jsb bindings result: OK`，原生 `native 2D PoC: PASS`。
 
-这证明 **原生 JS 运行时可以创建 Scene/Node 并挂载 native UITransform/UIOpacity**，而不是只验证类级构造。仍未覆盖：场景资产反序列化、TS 薄壳在真实引擎 JS bundle 中的 onLoad、`Node.setPosition` 等未绑定 API。
+这证明 **原生 JS 运行时可以创建 Scene/Node、设置位置并挂载 native UITransform/UIOpacity**，而不是只验证类级构造。仍未覆盖：场景资产反序列化、TS 薄壳在真实引擎 JS bundle 中的 onLoad。`Node.setPosition` 本身仍被 scene.i 忽略（供 TS Node 层使用），测试通过新增的 `setPositionJS` 绑定完成。
 
 ## 9. 本轮完成：薄壳生命周期 mock 测试
 
@@ -180,7 +181,7 @@ Jest：2 passed。这补上了“壳在 JS 侧的生命周期/转发”验证，
 ## 10. M1 剩余工作
 
 1. 启用 `ui-transform.jsb.ts` override 前的收尾：`isHit` UI 空间语义、完整引擎 JS bundle 中的 onLoad、场景资产反序列化。
-2. 补齐原生 JSB 缺口（如 `Node.setPosition` 未绑定）和预制体 regression。
+2. 补齐原生 JSB 缺口（`setPositionJS` 已加；其余 Node/场景 API）和预制体 regression。
 3. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
 
 ## 11. 下一步
