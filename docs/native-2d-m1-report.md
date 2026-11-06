@@ -222,13 +222,14 @@ native 2D PoC: PASS
 
 ## 12. M1 剩余工作
 
-1. 启用 `ui-transform.jsb.ts` override 前的收尾：`isHit` UI 空间语义、完整引擎 JS bundle 中的 onLoad、场景资产反序列化。
-2. 补齐原生 JSB 缺口（`setPositionJS` 已加；其余 Node/场景 API）和预制体 regression。
-3. 绑定/shim/override 模板化脚本；特性开关清单已建立（`m1-components.json`）。
+1. prefab/clone、属性覆盖和跨场景 UI 层级回归。
+2. 每帧 UITransform JSB getter 计数、override 后的性能基线。
+3. `hitTest` 相机正向用例和 `isHit` UI 空间语义。
+4. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
 
 ## 13. 下一步
 
-启用门槛已整理到 [native-2d-m1-gate.md](./native-2d-m1-gate.md)。当前 `ui-transform` 保持 disabled；先用真实引擎 JS bundle/场景资产跑一次壳的 onLoad + 反序列化回归，再按 gate 文档启用 override。
+`ui-transform` 已按 [native-2d-m1-gate.md](./native-2d-m1-gate.md) 启用并通过真实 native 场景回归。下一步补 prefab/clone、每帧 getter 计数和相机 hitTest 正向用例。
 
 ## 14. 真实 Creator 原生运行
 
