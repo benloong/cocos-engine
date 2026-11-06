@@ -12,8 +12,8 @@
 | JSB Scene/Node attach | 通过 | `jsb.Scene` + `jsb.Node` + `n2d.UITransform` + `n2d.UIOpacity` |
 | 场景 record 加载 | 通过（最小夹具） | 三层节点、clone、bbox/opacity，`jsb scene record: OK` |
 | Web bbox/转换 parity | 通过 | `testUITransformParity` / `RotatedParity` / `ScaleParity` |
-| 真实引擎 JS bundle onLoad | **未跑** | v4 worktree 无 Creator JS bundle/场景资产 |
-| 场景反序列化/prefab | **未跑** | 仅有手写 record 夹具，不是引擎 `deserialize()` |
+| 真实引擎 JS bundle onLoad | **部分通过** | Creator 3.8.8 + custom v4 native app 已运行并加载场景；`UIOpacity` 壳 onLoad 生效，`UITransform` 壳未进入 native bundle |
+| 场景反序列化/prefab | **部分通过** | 真实场景 `db://assets/scenes/m1-test.scene` 已加载；prefab/clone 未覆盖 |
 | `hitTest` 相机正向用例 | 部分 | native 实现存在；无相机场景的正向断言 |
 | `isHit` UI 空间 | 明确回退 | 壳返回 false，避免误用 |
 | 每帧 UITransform JSB getter 计数 | 未测 | 需要完整引擎帧循环 |
@@ -26,9 +26,13 @@
 - Creator 3.8.8 `empty-2d` 模板；
 - 场景 `assets/scenes/m1-test.scene`：Canvas + Camera + `M1TestNode`（UITransform 100×50、UIOpacity 128）；
 - 脚本 `assets/scripts/M1Test.ts` 输出 `M1_TEST_NODE`（contentSize/opacity/world bbox/convert）；
-- 已用 Creator 3.8.8 成功构建 `web-desktop`（无 Missing class）。
+- 已用 Creator 3.8.8 成功构建 `web-desktop`（无 Missing class）；
+- 已将 Engine Manager 的 JavaScript/native 路径都切到 v4，构建 Windows native（620/620 targets），并运行 `build/windows/proj/cocos-m1-test.exe`：
+  - 场景加载成功：`Success to load scene: db://assets/scenes/m1-test.scene`；
+  - 脚本输出：`M1_TEST_NODE {"contentSize":{"width":100,"height":50},"opacity":128,"box":{"x":590,"y":455,"width":100,"height":50},"world":{"x":640,"y":480,"z":0}}`；
+  - native 引擎 bundle 中可见 `n2d.UIOpacity` 壳，但**没有** `n2d.UITransform` 壳。
 
-**限制**：该工程当前使用 Creator 3.8.8 内置引擎，不是 v4 引擎；它验证工程/场景/脚本结构，但不能替代 v4 native JS bundle 的 onLoad/反序列化验证。要测试 v4 native，需要 Creator 4.0 兼容编辑器并配置 custom engine。
+**限制**：`ui-transform` 仍 disabled；在 Creator native 构建中尝试启用 override 时，日志显示重定向到 `ui-transform.jsb.ts`，但生成的 native `cc.js` 仍是旧 bundle，尚未证明真实 UITransform 壳生效。prefab/clone、每帧 getter 计数也未覆盖。
 
 ## 2. 启用步骤
 

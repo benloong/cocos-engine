@@ -124,6 +124,9 @@ export class WindowsPackTool extends NativePackTool {
     }
 
     getCmakeGenerator() {
+        if (process.env.CC_USE_NINJA === '1') {
+            return '2026';
+        }
         return this.params.platformParams.vsVersion || '';
     }
 
