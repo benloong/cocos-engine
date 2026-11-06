@@ -26,12 +26,11 @@
 
 #include <cstdint>
 
+#include "core/component/Component.h"
 #include "math/Geometry.h"
 #include "math/Vec2.h"
 
 namespace cc {
-
-class Node;
 
 /**
  * Native data/logic for the 2D UITransform.
@@ -43,13 +42,14 @@ class Node;
  * M0 scope: content size, anchor point, priority, local/world bounding box and
  * point conversion. Child aggregation and camera-aware hit tests are M1.
  */
-class UITransform final {
+class UITransform final : public Component {
 public:
+    static constexpr uint32_t TYPE_ID = 1;
+
     UITransform() = default;
     explicit UITransform(Node *node);
 
-    Node *getNode() const { return _node; }
-    void setNode(Node *node) { _node = node; }
+    uint32_t getTypeId() const override { return TYPE_ID; }
 
     const Vec2 &getContentSize() const { return _contentSize; }
     void setContentSize(const Vec2 &size);
@@ -91,7 +91,6 @@ public:
     bool containsWorldPoint(const Vec2 &worldPoint) const;
 
 private:
-    Node *_node{nullptr};
     Vec2 _contentSize{100.F, 100.F};
     Vec2 _anchorPoint{0.5F, 0.5F};
     int32_t _priority{0};

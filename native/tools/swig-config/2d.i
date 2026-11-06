@@ -215,5 +215,6 @@
 %include "2d/renderer/RenderEntity.h"
 %include "2d/renderer/UIModelProxy.h"
 %include "2d/renderer/Batcher2d.h"
+%include "core/component/Component.h"
 %include "2d/framework/UITransform.h"
 %include "2d/components/Sprite.h"

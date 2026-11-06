@@ -118,6 +118,26 @@ void testSpriteGeometry() {
           "quad index order");
 }
 
+void testComponentAttach() {
+    cc::Node node("component-attach");
+    {
+        cc::UITransform transform(&node);
+        check(node.getUIComponent() == &transform, "component attached to node");
+        check(transform.getNode() == &node, "component node link");
+        check(transform.getTypeId() == cc::UITransform::TYPE_ID, "component type id");
+    }
+    check(node.getUIComponent() == nullptr, "component detached on destroy");
+
+    auto *detached = new cc::UITransform();
+    {
+        cc::Node other("component-node-destroyed");
+        detached->setNode(&other);
+        check(other.getUIComponent() == detached, "component attached for node destroy");
+    }
+    check(detached->getNode() == nullptr, "component cleared on node destroy");
+    delete detached;
+}
+
 void testJsBindings(se::ScriptEngine *scriptEngine) {
     se::Object *globalObject = scriptEngine->getGlobalObject();
     check(globalObject != nullptr, "global object");
@@ -294,6 +314,7 @@ int main() {
     {
         se::AutoHandleScope scope;
         testUITransform();
+        testComponentAttach();
         std::printf("uitransform done\n");
         std::fflush(stdout);
         testJsBindings(scriptEngine);

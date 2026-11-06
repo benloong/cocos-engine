@@ -145,6 +145,8 @@ using namespace cc;
 %ignore cc::Node::rotate;
 %ignore cc::Node::setUserData;
 %ignore cc::Node::getUserData;
+%ignore cc::Node::setUIComponent;
+%ignore cc::Node::getUIComponent;
 %ignore cc::Node::getChildren;
 %ignore cc::Node::rotateForJS;
 %ignore cc::Node::setScale;

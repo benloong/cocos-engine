@@ -2203,6 +2203,8 @@ cocos_source_files(
     cocos/core/data/Object.h
     cocos/core/data/JSBNativeDataHolder.h
     cocos/core/scene-graph/Layers.h
+    cocos/core/component/Component.h
+    cocos/core/component/Component.cpp
     cocos/core/scene-graph/Node.cpp
     cocos/core/scene-graph/Node.h
     cocos/core/scene-graph/NodeEnum.h

@@ -48,6 +48,7 @@ enum class SkewType : uint8_t {
 };
 
 class Scene;
+class Component;
 /**
  * Event types emitted by Node
  */
@@ -228,6 +229,13 @@ public:
     inline index_t getSiblingIndex() const { return _siblingIndex; }
     inline UserData *getUserData() { return _userData.get(); }
     inline void setUserData(UserData *data) { _userData = data; }
+
+    /**
+     * Non-owning slot for the native M1 UI component (UITransform/UIOpacity).
+     * Render components keep using UserData/RenderEntity.
+     */
+    inline Component *getUIComponent() const { return _uiComponent; }
+    inline void setUIComponent(Component *component) { _uiComponent = component; }
     inline void insertChild(Node *child, index_t siblingIndex) {
         child->setParent(this);
         child->setSiblingIndex(siblingIndex);
@@ -684,6 +692,7 @@ public:
 private:
     Scene *_scene{nullptr};
     IntrusivePtr<UserData> _userData;
+    Component *_uiComponent{nullptr};
 
     ccstd::vector<IntrusivePtr<Node>> _children;
     bindings::NativeMemorySharedToScriptActor _sharedMemoryActor;

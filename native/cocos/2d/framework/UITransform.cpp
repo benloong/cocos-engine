@@ -31,8 +31,8 @@
 
 namespace cc {
 
-UITransform::UITransform(Node *node)
-: _node(node) {
+UITransform::UITransform(Node *node) {
+    setNode(node);
 }
 
 void UITransform::setContentSize(const Vec2 &size) {

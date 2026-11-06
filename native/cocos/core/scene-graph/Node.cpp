@@ -24,6 +24,7 @@
 
 #include "core/scene-graph/Node.h"
 #include "base/StringUtil.h"
+#include "core/component/Component.h"
 #include "core/data/Object.h"
 #include "core/memop/CachedArray.h"
 #include "core/platform/Debug.h"
@@ -77,6 +78,11 @@ Node::Node(const ccstd::string &name) {
 }
 
 Node::~Node() {
+    if (_uiComponent != nullptr) {
+        Component *component = _uiComponent;
+        _uiComponent = nullptr;
+        component->onNodeDestroyed();
+    }
     if (!_children.empty()) {
         // Reset children's _parent to nullptr to avoid dangerous pointer
         for (const auto &child : _children) {
