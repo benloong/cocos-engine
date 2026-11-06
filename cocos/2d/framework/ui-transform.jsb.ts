@@ -24,11 +24,14 @@
 
 import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displayOrder, serializable, disallowMultiple } from 'cc.decorator';
 import { Component } from '../../scene-graph';
-import { Rect, Size, Vec2, Vec3, geometry } from '../../core';
+import { Rect, Size, Vec2, Vec3, geometry, Mat4, visibleRect } from '../../core';
 import { director } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
 
 declare const n2d: any;
+
+const _isHitWorld = new Vec2();
+const _isHitMat4 = new Mat4();
 
 /**
  * Native M1 shell for UITransform.
@@ -171,9 +174,28 @@ export class UITransform extends Component {
     }
 
     public isHit (uiPoint: Vec2): boolean {
-        // Deprecated UI-space API. The native hit path currently receives
-        // screen coordinates, so do not silently treat a UI point as world.
-        void uiPoint;
+        if (!this._native) {
+            return false;
+        }
+        const cameras = this._getRenderScene().cameras;
+        for (let i = 0; i < cameras.length; i++) {
+            const camera = cameras[i];
+            if (!(camera.visibility & this.node.layer)) {
+                continue;
+            }
+
+            camera.node.getWorldRT(_isHitMat4);
+            const m12 = _isHitMat4.m12;
+            const m13 = _isHitMat4.m13;
+            const center = visibleRect.center;
+            _isHitMat4.m12 = center.x - (_isHitMat4.m00 * m12 + _isHitMat4.m04 * m13);
+            _isHitMat4.m13 = center.y - (_isHitMat4.m01 * m12 + _isHitMat4.m05 * m13);
+            Mat4.invert(_isHitMat4, _isHitMat4);
+            Vec2.transformMat4(_isHitWorld, uiPoint, _isHitMat4);
+            if (this._native.containsWorldPointXY(_isHitWorld.x, _isHitWorld.y)) {
+                return true;
+            }
+        }
         return false;
     }
 

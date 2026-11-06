@@ -222,9 +222,9 @@ native 2D PoC: PASS
 
 ## 12. M1 剩余工作
 
-1. `isHit` UI 空间语义（当前显式 fallback false）。
-2. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
-3. 把 `M1_PERF` 扩展成 Release/Web 对比和每帧 getter 计数。
+1. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
+2. 把 `M1_PERF` 扩展成 Release/Web 对比和每帧 getter 计数。
+3. 验证 `isHit` 的 mask 分支。
 
 ## 13. 下一步
 
@@ -261,6 +261,15 @@ M1_HIT {"hit":true,"miss":false,"windowSize":{"width":800,"height":600}}
 `hitTest` 必须使用**物理窗口坐标**（`screen.windowSize / 2` = 400,300），
 不能用 1280×960 设计分辨率中心；native camera viewport 为 800×600。
 
+deprecated `isHit(uiPoint)` 也已接通：
+
+```text
+M1_UI_HIT {"hit":true,"miss":false}
+```
+
+它把 UI 点经相机和 `visibleRect.center` 转成 world，再调用 native
+`containsWorldPointXY`。
+
 另加载真实 prefab 资源：
 
 ```text
@@ -275,7 +284,7 @@ prefab 位于 `assets/resources/M1Prefab.prefab`，经 `resources.load` +
 1000 次 `getBoundingBoxToWorld()` 的 native Debug 基线：
 
 ```text
-M1_PERF {"calls":1000,"ms":8}
+M1_PERF {"calls":1000,"ms":7}
 ```
 
 native engine bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity`；
