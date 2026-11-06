@@ -19,6 +19,17 @@
 | 每帧 UITransform JSB getter 计数 | 未测 | 需要完整引擎帧循环 |
 | override 开关清单 | 已建立 | `native/tests/2d-poc/m1-components.json` + `check-m1-shells.js` |
 
+## 1.1 测试工程
+
+已在 workspace 根目录创建 `../cocos-m1-test`（相对本文件）：
+
+- Creator 3.8.8 `empty-2d` 模板；
+- 场景 `assets/scenes/m1-test.scene`：Canvas + Camera + `M1TestNode`（UITransform 100×50、UIOpacity 128）；
+- 脚本 `assets/scripts/M1Test.ts` 输出 `M1_TEST_NODE`（contentSize/opacity/world bbox/convert）；
+- 已用 Creator 3.8.8 成功构建 `web-desktop`（无 Missing class）。
+
+**限制**：该工程当前使用 Creator 3.8.8 内置引擎，不是 v4 引擎；它验证工程/场景/脚本结构，但不能替代 v4 native JS bundle 的 onLoad/反序列化验证。要测试 v4 native，需要 Creator 4.0 兼容编辑器并配置 custom engine。
+
 ## 2. 启用步骤
 
 1. 在真实 Creator 工程/native JS bundle 中加载包含 `cc.UITransform` 的场景；
