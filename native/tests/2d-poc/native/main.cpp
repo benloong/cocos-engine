@@ -350,7 +350,17 @@ void testJsSceneRecord(se::ScriptEngine *scriptEngine) {
         "anchor": [0.5, 0.5],
         "opacity": 128,
         "children": [
-            { "name": "child", "position": [50, 0], "size": [20, 20], "anchor": [0.5, 0.5] }
+            {
+                "name": "child",
+                "position": [100, 0],
+                "size": [50, 50],
+                "anchor": [0.5, 0.5],
+                "opacity": 64,
+                "opacityFirst": true,
+                "children": [
+                    { "name": "grandchild", "position": [50, 0], "size": [20, 20], "anchor": [0.5, 0.5] }
+                ]
+            }
         ]
     })JSON";
 
@@ -364,16 +374,20 @@ void testJsSceneRecord(se::ScriptEngine *scriptEngine) {
         parent.addChild(node);
         if (record.position) node.setPositionJS(record.position[0], record.position[1], 0);
         var transform = null;
+        var opacity = null;
+        function createOpacity() {
+            if (record.opacity !== undefined && opacity === null) {
+                opacity = new n2d.UIOpacity(node);
+                opacity.setOpacity(record.opacity);
+            }
+        }
+        if (record.opacityFirst) createOpacity();
         if (record.size) {
             transform = new n2d.UITransform(node);
             transform.setContentSizeXY(record.size[0], record.size[1]);
             if (record.anchor) transform.setAnchorPointXY(record.anchor[0], record.anchor[1]);
         }
-        var opacity = null;
-        if (record.opacity !== undefined) {
-            opacity = new n2d.UIOpacity(node);
-            opacity.setOpacity(record.opacity);
-        }
+        createOpacity();
         var children = [];
         (record.children || []).forEach(function (child) {
             children.push(load(child, node));
@@ -384,11 +398,12 @@ void testJsSceneRecord(se::ScriptEngine *scriptEngine) {
     var root = load(record, scene);
     if (!root.transform) return 'missing root transform';
     if (root.transform.getBoundingBoxToWorldX() !== -40) return 'unexpected record bbox x';
-    if (root.transform.getBoundingBoxToWorldWidth() !== 110) return 'unexpected record bbox width';
+    if (root.transform.getBoundingBoxToWorldWidth() !== 175) return 'unexpected record bbox width';
     if (root.transform.getBoundingBoxToWorldHeight() !== 50) return 'unexpected record bbox height';
     if (!root.opacity || root.opacity.getOpacity() !== 128) return 'unexpected record opacity';
-    if (!root.children[0].transform) return 'missing child transform';
-    if (root.children[0].transform.getBoundingBoxWidth() !== 20) return 'unexpected child width';
+    if (!root.children[0].transform || root.children[0].transform.getBoundingBoxWidth() !== 50) return 'unexpected child width';
+    if (!root.children[0].opacity || root.children[0].opacity.getOpacity() !== 64) return 'unexpected child opacity';
+    if (!root.children[0].children[0].transform || root.children[0].children[0].transform.getBoundingBoxWidth() !== 20) return 'unexpected grandchild width';
     return 'OK';
 })()
 )JS";

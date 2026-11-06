@@ -183,10 +183,11 @@ Jest：2 passed。这补上了“壳在 JS 侧的生命周期/转发”验证，
 
 在原生 V8 中执行一段“最小场景加载器”：
 
-- 输入 JSON record（root：position 10/20、size 100×50、anchor 0.5、opacity 128，child：position 50/0、size 20×20）；
+- 输入 JSON record（root：position 10/20、size 100×50、anchor 0.5、opacity 128；child：position 100/0、size 50×50、opacity 64、`opacityFirst`；grandchild：position 50/0、size 20×20）；
 - 递归创建 `jsb.Node`、`n2d.UITransform`、`n2d.UIOpacity`；
 - `setPositionJS` 写入位置，组件 attach；
-- 校验 root world bbox `(-40,-5,110,50)`、opacity 128、child width 20。
+- 校验 root world bbox `(-40,-5,175,50)`、root opacity 128、child width 50/opacity 64、grandchild width 20；
+- child 采用 `opacityFirst`（先 UIOpacity 后 UITransform），验证组件挂载顺序不影响多槽位。
 
 输出：
 
