@@ -190,6 +190,57 @@ void testUITransformChildBounds() {
     checkNear(localBox.height, 100.F, "target-space bbox height");
 }
 
+void testUITransformRotatedParity() {
+    cc::Node parent("parent");
+    parent.setPosition(50.F, 50.F, 0.F);
+
+    auto *node = new cc::Node("node");
+    node->setParent(&parent);
+    cc::UITransform transform(node);
+    transform.setContentSize(180.F, 180.F);
+    transform.setAnchorPoint(0.1F, 0.6F);
+
+    auto *child = new cc::Node("child");
+    child->setParent(node);
+    child->setPosition(50.F, 58.F, 0.F);
+    cc::UITransform childTransform(child);
+    childTransform.setContentSize(300.F, 150.F);
+
+    parent.updateWorldTransform();
+    node->updateWorldTransform();
+    child->updateWorldTransform();
+
+    cc::Rect box = transform.getBoundingBoxToWorld();
+    checkNear(box.x, -50.F, "world child bbox x");
+    checkNear(box.y, -58.F, "world child bbox y");
+    checkNear(box.width, 300.F, "world child bbox width");
+    checkNear(box.height, 241.F, "world child bbox height");
+
+    parent.setRotationFromEuler(0.F, 0.F, 45.F);
+    parent.updateWorldTransform();
+    node->updateWorldTransform();
+    child->updateWorldTransform();
+    box = transform.getBoundingBoxToWorld();
+    checkClose(box.x, -114.76F, 0.05F, "rotated world bbox x");
+    checkClose(box.y, -39.1F, 0.05F, "rotated world bbox y");
+    checkClose(box.width, 355.67F, 0.05F, "rotated world bbox width");
+    checkClose(box.height, 324.56F, 0.05F, "rotated world bbox height");
+
+    cc::Node targetNode("target");
+    targetNode.setPosition(100.5F, -10.5F, 0.F);
+    targetNode.setRotationFromEuler(0.F, 0.F, 60.F);
+    targetNode.updateWorldTransform();
+
+    cc::Node source("source");
+    cc::UITransform sourceTransform(&source);
+    sourceTransform.setContentSize(100.F, 100.F);
+    const cc::Rect targetBox = sourceTransform.getBoundingBoxTo(targetNode.getWorldMatrix());
+    checkClose(targetBox.x, -109.46F, 0.05F, "rotated target bbox x");
+    checkClose(targetBox.y, 23.98F, 0.05F, "rotated target bbox y");
+    checkClose(targetBox.width, 136.6F, 0.05F, "rotated target bbox width");
+    checkClose(targetBox.height, 136.6F, 0.05F, "rotated target bbox height");
+}
+
 void testComponentAttach() {
     cc::Node node("component-attach");
     {
@@ -419,6 +470,7 @@ int main() {
         testUITransform();
         testUITransformParity();
         testUITransformChildBounds();
+        testUITransformRotatedParity();
         testComponentAttach();
         testUIOpacity();
         std::printf("uitransform done\n");
