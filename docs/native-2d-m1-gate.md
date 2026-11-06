@@ -14,7 +14,7 @@
 | Web bbox/转换 parity | 通过 | `testUITransformParity` / `RotatedParity` / `ScaleParity` |
 | 真实引擎 JS bundle onLoad | **通过** | native `cc.js` 含 `n2d.UITransform`/`n2d.UIOpacity`；场景加载成功 |
 | 场景反序列化/prefab | 通过（场景 + instantiate clone） | 真实场景已加载；`instantiate(M1TestNode)` 的 content/opacity/bbox 均正确 |
-| `hitTest` 相机正向用例 | 部分 | native 实现存在；无相机场景的正向断言 |
+| `hitTest` 相机正向用例 | **失败** | 真实场景 `hitTest(640,480)` 仍为 false；JS 创建的 native node 未关联 native render scene/camera |
 | `isHit` UI 空间 | 明确回退 | 壳返回 false，避免误用 |
 | 每帧 UITransform JSB getter 计数 | 未测 | 需要完整引擎帧循环 |
 | override 开关清单 | 已同步 | `m1-components.json` 与 `cc.config.json` 均为 enabled |

@@ -253,6 +253,15 @@ Success to load scene: db://assets/scenes/m1-test.scene
 
 `M1_CLONE` 由 `instantiate(M1TestNode)` 创建并挂在 x=100，验证了组件 clone/反序列化路径。
 
+同一场景的 `M1_HIT` 仍为：
+
+```text
+M1_HIT {"hit":false,"miss":false}
+```
+
+即 `hitTest(640,480)` 没有命中。JS 创建的 native node 尚未关联 native
+render scene/camera；这是后续要补的 M1 项。
+
 native engine bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity`；
 `box`/`world` 来自 native UITransform 壳，证明 **UIOpacity + UITransform 两个生产壳都在真实 native 场景 onLoad 中运行**。
 
