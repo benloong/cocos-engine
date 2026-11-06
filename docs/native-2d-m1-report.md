@@ -78,15 +78,36 @@ M0 的 prepare 回调使用 `std::function<void(float)>`，会让每个 `RenderE
 - 原生 working set：Release 约 5267 bytes/sprite；
 - `run-m0-checks.ps1` 全部通过。
 
-## 4. M1 剩余工作
+## 4. 本轮完成：生产 UIOpacity `.jsb.ts` 替换
 
-1. 生产 `UITransform`/`UIOpacity` 的 `.jsb.ts` 替换：
+- 新增 `cocos/2d/components/ui-opacity.jsb.ts`：
+  - 保留 `@ccclass('cc.UIOpacity')`、`@serializable _opacity`、执行顺序/菜单/编辑器元数据；
+  - `onLoad` 创建 `new n2d.UIOpacity(this.node)`，并 flush 序列化后的 opacity；
+  - `opacity` setter 同步 `n2d.UIOpacity.setOpacity`；
+  - `onEnable/onDisable` 转发 `setActive`；
+  - `onDestroy` 调 `detach`。
+- `cc.config.json` 的 NATIVE override 增加：
+  `cocos/2d/components/ui-opacity.ts → ui-opacity.jsb.ts`。
+- 原生 `UIOpacity` 增加 `setActive/detach` 绑定，JSB 测试覆盖。
+
+### 验证
+
+- `tsc --noEmit` 通过（含 `.jsb.ts`）；
+- JSB：`new n2d.UIOpacity()`、`setOpacity/getOpacity`、`setActive/detach` → `jsb bindings result: OK`；
+- 原生 Debug：`native 2D PoC: PASS`；
+- 薄壳：86 行（48 代码行），无 geometry/assembler/update。
+
+> 尚未做原生 JS 运行时场景加载，因此“生产 shell 的 onLoad attach”尚未在完整引擎 JS 环境中执行；目前覆盖 Web 类型检查、JSB 类级调用和原生 C++ 生命周期。
+
+## 5. M1 剩余工作
+
+1. 生产 `UITransform` 的 `.jsb.ts` 替换：
    - 保留序列化字段与编辑器元数据；
    - setter 在 attach 前缓存、attach 后 flush；
-   - contentSize/anchor/boundingBox/convert/hitTest/opacity 走 native。
+   - contentSize/anchor/boundingBox/convert/hitTest 走 native。
 2. 绑定/shim/override 模板化脚本与特性开关（按组件回退 JS）。
 3. 场景加载/预制体回归。
 
-## 5. 下一步
+## 6. 下一步
 
-用现有 `UITransform` + `UIOpacity` + 多组件槽位做第一条生产 `.jsb.ts` 替换：先保留 `cc.UITransform` 的序列化字段，在 `onLoad` attach native，验证 contentSize/anchor/hitTest 与 Web 一致，再补 UIOpacity 壳。
+以 `UIOpacity` 壳为模板做 `UITransform` 生产壳：先保留 `cc.UITransform` 的序列化字段，在 `onLoad` attach native，内容尺寸/anchor/包围盒/转换/hitTest 走 native；随后补 Web 对照用例和特性开关。

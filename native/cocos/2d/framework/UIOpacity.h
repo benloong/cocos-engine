@@ -43,6 +43,8 @@ public:
 
     float getOpacity() const { return _opacity; }
     void setOpacity(float opacity);
+    void setActive(bool enabled) { setEnabled(enabled); }
+    void detach() { setNode(nullptr); }
 
     void onEnable() override;
     void onDisable() override;

@@ -201,6 +201,9 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    var o = new n2d.UIOpacity();"
         "    o.setOpacity(128);"
         "    if (o.getOpacity() !== 128) return 'unexpected opacity';"
+        "    o.setActive(false);"
+        "    o.setActive(true);"
+        "    o.detach();"
         "    return 'OK';"
         "  } catch (e) { return String(e); }"
         "})()";
