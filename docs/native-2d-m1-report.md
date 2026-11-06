@@ -147,7 +147,8 @@ JSB 运行时已验证：
 - `getBoundingBoxTo` target 旋转 60°、位置 (100.5,-10.5) → 约 `(-109.46,23.98,136.6,136.6)`；
 - 节点 (50,50)、size 180×180：`convertToNodeSpaceAR(0,0)` → `(-50,-50)`，`convertToWorldSpaceAR(0,0)` → `(50,50)`；
 - scale 2 的 100×100：bbox `(-100,-100,200,200)`；
-- 父 (10,10) scale 2、子 (10,0) 20×20：子 world `(30,10)`，子 world bbox `(10,-10,40,40)`。
+- 父 (10,10) scale 2、子 (10,0) 20×20：子 world `(30,10)`，子 world bbox `(10,-10,40,40)`；
+- 100×100、scale 2、rotation 45°：bbox `282.84×282.84`。
 
 原生 Debug/Release 输出：`native 2D PoC: PASS`。
 
@@ -227,4 +228,4 @@ native 2D PoC: PASS
 
 ## 13. 下一步
 
-先用真实引擎 JS bundle/场景资产跑一次 `UITransform` 壳的 onLoad + 场景反序列化回归；同时修 `isHit` 或明确 deprecated 回退。通过后再打开 `cc.config.json` 的 `ui-transform.ts → ui-transform.jsb.ts` override。
+启用门槛已整理到 [native-2d-m1-gate.md](./native-2d-m1-gate.md)。当前 `ui-transform` 保持 disabled；先用真实引擎 JS bundle/场景资产跑一次壳的 onLoad + 反序列化回归，再按 gate 文档启用 override。

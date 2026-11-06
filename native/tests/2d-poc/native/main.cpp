@@ -203,6 +203,16 @@ void testUITransformScaleParity() {
     checkNear(childBox.y, -10.F, "scaled nested bbox y");
     checkNear(childBox.width, 40.F, "scaled nested bbox width");
     checkNear(childBox.height, 40.F, "scaled nested bbox height");
+
+    cc::Node rotatedScaled("rotated-scaled");
+    rotatedScaled.setScale(2.F, 2.F, 1.F);
+    rotatedScaled.setRotationFromEuler(0.F, 0.F, 45.F);
+    rotatedScaled.updateWorldTransform();
+    cc::UITransform rotatedScaledTransform(&rotatedScaled);
+    rotatedScaledTransform.setContentSize(100.F, 100.F);
+    const cc::Rect rotatedBox = rotatedScaledTransform.getBoundingBox();
+    checkClose(rotatedBox.width, 282.84F, 0.1F, "scaled rotated bbox width");
+    checkClose(rotatedBox.height, 282.84F, 0.1F, "scaled rotated bbox height");
 }
 
 void testUITransformChildBounds() {
