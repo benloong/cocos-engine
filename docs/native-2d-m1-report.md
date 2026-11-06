@@ -56,6 +56,7 @@ M0 的 prepare 回调使用 `std::function<void(float)>`，会让每个 `RenderE
   - `getUIComponent(typeId)` 按类型查找，`getUIComponent()` 返回第一个；
   - Node 析构时对所有组件调用 `onNodeDestroyed()`。
 - `Component` 的 attach/detach 改为 add/remove 槽位，支持 `UITransform` 与 `UIOpacity` 并存。
+- `UITransform::getBoundingBoxToWorld` 加入 active 子节点的并集（仅自包围盒，不递归子节点），与 Web 的直接子节点语义一致；零尺寸子节点跳过。
 - 新增 `native/cocos/2d/framework/UIOpacity.h/.cpp`：
   - `TYPE_ID = 2`，0~255 opacity；
   - attach/onEnable 写入 `Node::_localOpacity`；
@@ -68,6 +69,7 @@ M0 的 prepare 回调使用 `std::function<void(float)>`，会让每个 `RenderE
 ### 验证
 
 - 多槽位：`getUIComponent(UITransform::TYPE_ID)` 与 `getUIComponent(UIOpacity::TYPE_ID)` 同时命中；
+- 子节点包围盒：父 100×100 @0、子 50×50 @(100,0)，world bbox 为 `(-50,-50,175,100)`；
 - opacity：128 → `Node::_localOpacity = 128/255`，disable → 1，enable → 128/255；
 - JSB：`jsb bindings result: OK`（含 UIOpacity）；
 - Debug clean rebuild：604/604，`native 2D PoC: PASS`；

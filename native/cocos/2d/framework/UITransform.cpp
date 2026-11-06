@@ -69,11 +69,31 @@ Rect UITransform::getBoundingBox() const {
 }
 
 Rect UITransform::getBoundingBoxToWorld() const {
-    const Rect local = UITransformMath::getSelfBoundingBox(_contentSize, _anchorPoint);
-    if (_node == nullptr) {
-        return local;
+    Rect result;
+    bool initialized = false;
+
+    if (_node != nullptr) {
+        for (const auto &child : _node->getChildren()) {
+            if (!child || !child->isActive()) {
+                continue;
+            }
+            auto *childTransform = static_cast<UITransform *>(child->getUIComponent(TYPE_ID));
+            if (childTransform == nullptr || childTransform->_contentSize.x <= 0.F || childTransform->_contentSize.y <= 0.F) {
+                continue;
+            }
+            const Rect childLocal = UITransformMath::getSelfBoundingBox(childTransform->_contentSize, childTransform->_anchorPoint);
+            const Rect childWorld = UITransformMath::transformRect(childLocal, child->getWorldMatrix());
+            result = initialized ? result.unionWithRect(childWorld) : childWorld;
+            initialized = true;
+        }
     }
-    return UITransformMath::transformRect(local, _node->getWorldMatrix());
+
+    if (_contentSize.x > 0.F && _contentSize.y > 0.F) {
+        const Rect local = UITransformMath::getSelfBoundingBox(_contentSize, _anchorPoint);
+        const Rect selfWorld = _node == nullptr ? local : UITransformMath::transformRect(local, _node->getWorldMatrix());
+        result = initialized ? result.unionWithRect(selfWorld) : selfWorld;
+    }
+    return result;
 }
 
 Vec2 UITransform::convertToNodeSpaceAR(const Vec2 &worldPoint) const {

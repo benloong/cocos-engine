@@ -119,6 +119,29 @@ void testSpriteGeometry() {
           "quad index order");
 }
 
+void testUITransformChildBounds() {
+    cc::Node parent("parent");
+    cc::UITransform parentTransform(&parent);
+    parentTransform.setContentSize(100.F, 100.F);
+    parentTransform.setAnchorPoint(0.5F, 0.5F);
+    parent.updateWorldTransform();
+
+    auto *child = new cc::Node("child");
+    child->setParent(&parent);
+    child->setPosition(100.F, 0.F, 0.F);
+    child->updateWorldTransform();
+    cc::UITransform childTransform(child);
+    childTransform.setContentSize(50.F, 50.F);
+    childTransform.setAnchorPoint(0.5F, 0.5F);
+    child->updateWorldTransform();
+
+    const cc::Rect box = parentTransform.getBoundingBoxToWorld();
+    checkNear(box.x, -50.F, "child bbox left");
+    checkNear(box.y, -50.F, "child bbox bottom");
+    checkNear(box.width, 175.F, "child bbox width");
+    checkNear(box.height, 100.F, "child bbox height");
+}
+
 void testComponentAttach() {
     cc::Node node("component-attach");
     {
@@ -337,6 +360,7 @@ int main() {
     {
         se::AutoHandleScope scope;
         testUITransform();
+        testUITransformChildBounds();
         testComponentAttach();
         testUIOpacity();
         std::printf("uitransform done\n");
