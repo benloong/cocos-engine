@@ -222,7 +222,7 @@ native 2D PoC: PASS
 
 ## 12. M1 剩余工作
 
-1. prefab/clone、属性覆盖和跨场景 UI 层级回归。
+1. 以真实 `.prefab` 资源（而非仅 `instantiate` clone）验证 prefab 加载/编辑回归。
 2. 每帧 UITransform JSB getter 计数、override 后的性能基线。
 3. `hitTest` 相机正向用例和 `isHit` UI 空间语义。
 4. 用完整 native umbrella scene 覆盖 Sprite/Label 等依赖 UITransform 的组件。
@@ -244,8 +244,14 @@ native 2D PoC: PASS
 M1_TEST_NODE {"contentSize":{"width":100,"height":50},"opacity":128,
 "box":{"x":590,"y":455,"width":100,"height":50},
 "world":{"x":640,"y":480,"z":0}}
+
+M1_CLONE {"contentSize":{"width":100,"height":50},"opacity":128,
+"box":{"x":690,"y":455,"width":100,"height":50},
+"world":{"x":740,"y":480,"z":0}}
 Success to load scene: db://assets/scenes/m1-test.scene
 ```
+
+`M1_CLONE` 由 `instantiate(M1TestNode)` 创建并挂在 x=100，验证了组件 clone/反序列化路径。
 
 native engine bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity`；
 `box`/`world` 来自 native UITransform 壳，证明 **UIOpacity + UITransform 两个生产壳都在真实 native 场景 onLoad 中运行**。
