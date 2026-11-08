@@ -2,7 +2,7 @@
 
 > 对应计划：[native-2d-module-sinking-plan.zh-CN.md](./native-2d-module-sinking-plan.zh-CN.md) 的 M1。
 > 范围：仅 `cocos/2d`；不引用其他分支代码。
-> 状态：进行中。
+> 状态：M1 核心已完成（2026-11-08）。真实 Creator v4 native 场景、prefab、hitTest/isHit、Label/Sprite attach 均已验证；剩余硬化项见 §12。
 
 ## 1. 本轮完成：RenderEntity prepare owner
 
