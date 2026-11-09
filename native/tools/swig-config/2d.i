@@ -19,6 +19,7 @@
 #include "2d/renderer/UIModelProxy.h"
 #include "2d/framework/UITransform.h"
 #include "2d/framework/UIOpacity.h"
+#include "2d/framework/UIRenderer.h"
 #include "2d/components/Sprite.h"
 %}
 
@@ -223,4 +224,5 @@
 %include "core/component/Component.h"
 %include "2d/framework/UITransform.h"
 %include "2d/framework/UIOpacity.h"
+%include "2d/framework/UIRenderer.h"
 %include "2d/components/Sprite.h"

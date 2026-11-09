@@ -27,35 +27,37 @@
 #include <cstdint>
 #include <vector>
 
-#include "base/Ptr.h"
+#include "2d/framework/UIRenderer.h"
 #include "2d/renderer/RenderEntity.h"
-#include "math/Color.h"
+#include "base/Ptr.h"
 #include "math/Geometry.h"
 #include "math/Vec2.h"
 
 namespace cc {
 
-class Material;
 class Node;
 class RenderDrawInfo;
 class TextureBase;
 class UITransform;
 
 /**
- * M0 vertical slice for a native Sprite in SIMPLE mode.
+ * M0/M2 vertical slice for a native Sprite in SIMPLE mode.
  *
  * The JS Sprite shell owns Component identity, serialization and lifecycle.
- * The shell forwards frame/material/color changes and attaches this object to
- * the Node. Batcher2d::walk() calls prepare(finalOpacity) through the
- * RenderEntity callback before consuming the draw info.
+ * UIRenderer owns color/material/priority; this class owns frame data,
+ * geometry and the RenderEntity.
  */
-class Sprite final : public RenderEntity::IPrepareListener {
+class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener {
 public:
+    static constexpr uint32_t TYPE_ID = UIRenderer::TYPE_ID + 1;
+
     Sprite();
-    ~Sprite();
+    ~Sprite() override;
+
+    uint32_t getTypeId() const override { return TYPE_ID; }
 
     void setNode(Node *node);
-    Node *getNode() const { return _node; }
+    Node *getNode() const { return Component::getNode(); }
 
     void setUITransform(UITransform *transform) { _transform = transform; }
     UITransform *getUITransform() const { return _transform; }
@@ -74,19 +76,15 @@ public:
                   bool rotated);
     void clearFrame();
 
-    void setMaterial(Material *material);
-    Material *getMaterial() const { return _material; }
-
     void setColor(const Color &color);
     void setColorRGBA(float red, float green, float blue, float alpha);
-    const Color &getColor() const { return _color; }
+    void setMaterial(Material *material);
+    void setPriority(int32_t priority);
 
     void setEnabled(bool enabled);
 
     void setTrim(bool trim);
     bool isTrim() const { return _trim; }
-
-    void setPriority(int32_t priority);
 
     RenderEntity *getRenderEntity() const { return _entity.get(); }
 
@@ -97,10 +95,8 @@ public:
 private:
     void updateVertexColors(float opacity);
 
-    Node *_node{nullptr};
     UITransform *_transform{nullptr};
     TextureBase *_texture{nullptr};
-    Material *_material{nullptr};
 
     Rect _frameRect;
     Vec2 _originalSize;
@@ -110,9 +106,6 @@ private:
     bool _trim{true};
     bool _dirty{true};
     float _lastOpacity{-1.F};
-
-    Color _color{255, 255, 255, 255};
-    int32_t _priority{0};
 
     IntrusivePtr<RenderEntity> _entity;
     std::vector<float> _vertices;

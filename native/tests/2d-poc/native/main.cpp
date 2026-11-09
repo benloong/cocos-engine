@@ -495,6 +495,11 @@ void testSpritePrepare() {
     sprite.setNode(&node);
     sprite.setUITransform(&transform);
     sprite.setMaterial(material);
+    check(sprite.getTypeId() == cc::Sprite::TYPE_ID, "sprite type id");
+    sprite.setColorRGBA(10.F, 20.F, 30.F, 255.F);
+    check(sprite.getColor().r == 10 && sprite.getColor().g == 20 && sprite.getColor().b == 30, "ui renderer color");
+    sprite.setPriority(7);
+    check(sprite.getPriority() == 7, "ui renderer priority");
     sprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
 
     cc::RenderEntity *entity = sprite.getRenderEntity();

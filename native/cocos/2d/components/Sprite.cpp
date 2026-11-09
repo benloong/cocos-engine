@@ -57,18 +57,19 @@ Sprite::~Sprite() {
 }
 
 void Sprite::setNode(Node *node) {
-    if (_node == node) {
+    if (getNode() == node) {
         return;
     }
 
-    if (_node != nullptr && _entity != nullptr) {
+    if (getNode() != nullptr && _entity != nullptr) {
         _entity->setNode(nullptr);
     }
 
-    _node = node;
-    if (_node != nullptr && _entity != nullptr) {
-        _entity->setNode(_node);
-        _entity->setEnabled(true);
+    Component::setNode(node);
+
+    if (getNode() != nullptr && _entity != nullptr) {
+        _entity->setNode(getNode());
+        _entity->setEnabled(isEnabled());
     }
     _dirty = true;
 }
@@ -108,10 +109,7 @@ void Sprite::clearFrame() {
 }
 
 void Sprite::setMaterial(Material *material) {
-    if (_material == material) {
-        return;
-    }
-    _material = material;
+    UIRenderer::setMaterial(material);
     _dirty = true;
 }
 
@@ -119,7 +117,7 @@ void Sprite::setColor(const Color &color) {
     if (_color.r == color.r && _color.g == color.g && _color.b == color.b && _color.a == color.a) {
         return;
     }
-    _color = color;
+    UIRenderer::setColor(color);
     if (_entity != nullptr) {
         _entity->setColor(_color);
     }
@@ -134,6 +132,7 @@ void Sprite::setColorRGBA(float red, float green, float blue, float alpha) {
 }
 
 void Sprite::setEnabled(bool enabled) {
+    Component::setEnabled(enabled);
     if (_entity != nullptr) {
         _entity->setEnabled(enabled);
     }
@@ -144,7 +143,7 @@ void Sprite::setPriority(int32_t priority) {
     if (_priority == priority) {
         return;
     }
-    _priority = priority;
+    UIRenderer::setPriority(priority);
     if (_entity != nullptr) {
         _entity->setPriority(static_cast<uint32_t>(_priority));
     }
