@@ -99,6 +99,8 @@ public:
     float getFillRange() const { return _fillRange; }
     void setFillCenter(float x, float y);
 
+    void setSizeMode(int32_t sizeMode);
+    int32_t getSizeMode() const { return _sizeMode; }
     RenderEntity *getRenderEntity() const { return _entity.get(); }
 
     void setDirty() { _dirty = true; }
@@ -107,6 +109,7 @@ public:
 
 private:
     void updateVertexColors(float opacity);
+    void applySizeMode();
 
     UITransform *_transform{nullptr};
     TextureBase *_texture{nullptr};
@@ -123,6 +126,7 @@ private:
     float _fillStart{0.F};
     float _fillRange{1.F};
     Vec2 _fillCenter{0.F, 0.F};
+    int32_t _sizeMode{1};
     float _insetLeft{0.F};
     float _insetRight{0.F};
     float _insetTop{0.F};

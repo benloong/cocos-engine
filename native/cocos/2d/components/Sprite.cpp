@@ -116,6 +116,7 @@ void Sprite::setFrame(SpriteFrame *frame) {
     _insetRight = frame->getInsetRight();
     _insetTop = frame->getInsetTop();
     _insetBottom = frame->getInsetBottom();
+    applySizeMode();
     _dirty = true;
 }
 
@@ -209,6 +210,26 @@ void Sprite::setPriority(int32_t priority) {
         _entity->setPriority(static_cast<uint32_t>(_priority));
     }
     _dirty = true;
+}
+
+void Sprite::setSizeMode(int32_t sizeMode) {
+    if (_sizeMode == sizeMode) {
+        return;
+    }
+    _sizeMode = sizeMode;
+    applySizeMode();
+    _dirty = true;
+}
+
+void Sprite::applySizeMode() {
+    if (_transform == nullptr) {
+        return;
+    }
+    if (_sizeMode == 1) {
+        _transform->setContentSize(_frameRect.width, _frameRect.height);
+    } else if (_sizeMode == 2) {
+        _transform->setContentSize(_originalSize.x, _originalSize.y);
+    }
 }
 
 void Sprite::setTrim(bool trim) {

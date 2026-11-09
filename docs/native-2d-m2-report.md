@@ -56,7 +56,8 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `color`/`priority`/`enabled` 转发；
 - `customMaterial` 转发到 native `setMaterial`；
 - `getSharedMaterial/setSharedMaterial` 转发到 native indexed material；
-- `type`/`fillType`/`sizeMode` 保留序列化字段，但当前只声明 SIMPLE 路径；
+- `type`/`fillType`/`fillStart`/`fillRange`/`fillCenter` 转发；
+- `sizeMode` 转发；TRIMMED 使用 frame rect，RAW 使用 originalSize 更新 UITransform；
 - 不包含几何、assembler 或材质实例逻辑。
 
 当前 **未启用**：`native/tests/2d-poc/m2-components.json` 中
@@ -182,7 +183,8 @@ C++ 断言：
 - 继承的 `setColorRGBA/getColor`；
 - 继承的 `setPriority/getPriority`；
 - `getRenderMaterial() == 显式 material`；
-- `getSharedMaterial(0/1)` 分别返回主材质和第二个 shared material。
+- `getSharedMaterial(0/1)` 分别返回主材质和第二个 shared material；
+- `sizeMode=1` 使用 frame rect 50×60，`sizeMode=2` 使用 originalSize 80×90。
 
 Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame 字段
 （含 insets）、frame 转发、disable/destroy。

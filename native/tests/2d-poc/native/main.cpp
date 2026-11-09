@@ -517,6 +517,24 @@ void testSpritePrepare() {
     check(sprite.getPriority() == 7, "ui renderer priority");
     sprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
 
+    cc::Node sizeNode("native-sprite-size-mode");
+    cc::UITransform sizeTransform(&sizeNode);
+    sizeTransform.setContentSize(100.F, 100.F);
+    cc::Sprite sizeSprite;
+    sizeSprite.setNode(&sizeNode);
+    sizeSprite.setUITransform(&sizeTransform);
+    cc::SpriteFrame sizeFrame;
+    sizeFrame.setTexture(texture);
+    sizeFrame.setRect(0.F, 0.F, 50.F, 60.F);
+    sizeFrame.setOriginalSize(80.F, 90.F);
+    sizeSprite.setSizeMode(1);
+    sizeSprite.setFrame(&sizeFrame);
+    check(sizeTransform.getContentSize().x == 50.F && sizeTransform.getContentSize().y == 60.F,
+          "sprite trimmed size mode uses frame rect");
+    sizeSprite.setSizeMode(2);
+    check(sizeTransform.getContentSize().x == 80.F && sizeTransform.getContentSize().y == 90.F,
+          "sprite raw size mode uses original size");
+
     cc::RenderEntity *entity = sprite.getRenderEntity();
     check(entity != nullptr, "sprite render entity");
     if (entity == nullptr) {

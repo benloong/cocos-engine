@@ -143,6 +143,7 @@ export class Sprite extends UIRenderer {
 
     set sizeMode (value: number) {
         this._sizeMode = value;
+        this._native?.setSizeMode(value);
     }
 
     get fillCenter (): Vec2 {
@@ -205,6 +206,7 @@ export class Sprite extends UIRenderer {
         this._native.setFillStart(this._fillStart);
         this._native.setFillRange(this._fillRange);
         this._native.setFillCenter(this._fillCenter.x, this._fillCenter.y);
+        this._native.setSizeMode(this._sizeMode);
         this._native.setPriority(this.priority);
         this._syncFrame();
         this._native.setEnabled(this.enabledInHierarchy);
