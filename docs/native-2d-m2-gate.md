@@ -26,8 +26,10 @@
 ## 2. 未通过 / 未覆盖
 
 1. **自动 Web-native 像素对照**：PrintWindow/BitBlt/DWM thumbnail 为黑屏；
-   Windows Graphics Capture 返回 `E_ACCESSDENIED`（窗口与 monitor 均被拒绝），
-   暂无自动截图。
+   Windows Graphics Capture 返回 `E_ACCESSDENIED`。RenderTexture 探针
+   （独立 UI 相机 + 256×256 RT）调用 `readPixels` 时五种模式都返回同一份
+   均匀缓冲且 red=0，说明当前 custom pipeline 下 UI 相机没有写入 RT，
+   需要修 RenderTexture/custom pipeline 的 target 选择，不能直接接入 CI。
 2. **完整性能 KPI**：本次实测 JS `updateRenderer` 235.3 ns/sprite、1000
    Sprite 场景 341.8 ns/sprite；native Debug prepare 516.7 ns/op，M0 Release
    为 231 ns/sprite。当前微基准没有达到 ≥30% 的 M2 KPI，整帧 CPU/JS 堆/JSB

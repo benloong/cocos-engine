@@ -165,8 +165,7 @@ C++ 测试：
 
 因此 native 侧 Sprite 不仅完成 draw 提交，也已实际显示；自动截图
 （PrintWindow/BitBlt/DWM thumbnail）仍无法捕获该 GPU 内容，Windows
-Graphics Capture 返回 `E_ACCESSDENIED`，所以 Web/native 像素对照仍需人工
-或专门 harness。Sprite override 已按 M2 收尾决策启用。
+Graphics Capture 返回 `E_ACCESSDENIED`。RenderTexture 探针（独立 UI 相机 + 256×256 RT）五种模式读到同一份均匀缓冲、red=0，当前 custom pipeline 下 UI 相机未写入 RT。Sprite override 已按 M2 收尾决策启用。
 
 ## 6. 验证
 
