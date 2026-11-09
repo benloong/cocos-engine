@@ -2,7 +2,7 @@
 
 > 适用：`sprite.jsb.ts` 从候选壳切换为 NATIVE 生产 override。
 > 当前：`sprite.enabled = true`，Sprite override 已启用。
-> 已知风险：自动 GPU 截图被系统拒绝，Web/native 自动像素 diff 和完整性能 KPI 尚未闭环。
+> 已知风险：RenderTexture 五种模式探针已通过；Web golden 和 ≥30% 性能 KPI 尚未闭环。
 
 ## 1. 已通过
 
@@ -29,13 +29,14 @@
 1. **自动 Web-native 像素对照**：Windows Graphics Capture 返回
    `E_ACCESSDENIED`；RenderTexture 离屏探针已通过，五种模式 red>0。
    仍需把 Web 端 golden 拉进来做真正的 Web/native diff。
-2. **完整性能 KPI**：本次实测 JS `updateRenderer` 235.3 ns/sprite、1000
-   Sprite 场景 341.8 ns/sprite；native Debug prepare 516.7 ns/op，M0 Release
-   为 231 ns/sprite。当前微基准没有达到 ≥30% 的 M2 KPI，整帧 CPU/JS 堆/JSB
-   调用仍需场景级测量。
-3. material instance 解析（shared material 已下沉）。
-4. SpriteFrame 完整 native 资产化与 insets 边界。
-5. Tiled/Filled 的旋转 atlas frame 坐标组合。
+2. **完整性能 KPI**：Release 中位数 native 225.0 ns/sprite、JS 316.6 ns/sprite，
+   提升 28.9%（最好样本 41%，未稳定达到 ≥30%）；native prepare 60.1 ns/op。
+3. **Web golden**：v4 Web 构建在 headless Chrome 下报
+   `texSubImage2D Overload resolution failed`，headful 也仅显示空画布；
+   目前只有 native RT 像素探针，没有 Web golden diff。
+4. material instance 解析（shared material 已下沉）。
+5. SpriteFrame 完整 native 资产化与 insets 边界。
+6. Tiled/Filled 的旋转 atlas frame 坐标组合。
 
 ## 3. 启用记录
 
