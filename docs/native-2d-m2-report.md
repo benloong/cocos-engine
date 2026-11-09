@@ -163,9 +163,20 @@ C++ 测试：
 - `M1_SPRITE_FRAME {"hasFrame":true}`；
 - 人工确认：运行中的 `cocos-m1-test` native 窗口可见 64×64 红色 Sprite。
 
-因此 native 侧 Sprite 不仅完成 draw 提交，也已实际显示；自动截图
-（PrintWindow/BitBlt/DWM thumbnail）仍无法捕获该 GPU 内容，Windows
-Graphics Capture 返回 `E_ACCESSDENIED`。RenderTexture 探针（独立 UI 相机 + 256×256 RT）五种模式读到同一份均匀缓冲、red=0，当前 custom pipeline 下 UI 相机未写入 RT。Sprite override 已按 M2 收尾决策启用。
+因此 native 侧 Sprite 不仅完成 draw 提交，也已实际显示。WGC/PrintWindow
+无法捕获，但改用 **Canvas 相机 targetTexture + 256×256 RenderTexture +
+readPixels** 的离屏探针后，五种模式都读到了红色像素：
+
+```text
+SIMPLE  red=438 maxR=128
+SLICED  red=300 maxR=175
+TILED   red=300 maxR=175
+FILLED_H red=300 maxR=175
+FILLED_RADIAL red=300 maxR=175
+M2_PIXEL_RESULT {"ok":true}
+```
+
+探针通过 `run-m2-pixel-probe.ps1` 接入可选的 M2 回归（`CC_M2_APP_EXE`）。
 
 ## 6. 验证
 
@@ -176,6 +187,7 @@ jsb bindings result: OK
 75 checks, 0 failures      # 含 sliced/filled/tiled/radial mesh
 18 checks, 0 failures      # M1 shell contract
 Jest: 1 passed             # Sprite M2 shell mock
+M2 pixel probe: PASS       # RenderTexture, five modes
 ```
 
 性能补充：

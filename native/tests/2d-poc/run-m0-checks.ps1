@@ -41,6 +41,16 @@ if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
     }
 }
 
+if ($env:CC_M2_APP_EXE) {
+    Write-Host '== M2 RenderTexture pixel probe =='
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'run-m2-pixel-probe.ps1') -Exe $env:CC_M2_APP_EXE
+    if ($LASTEXITCODE -ne 0) {
+        throw "M2 pixel probe failed with exit code $LASTEXITCODE"
+    }
+} else {
+    Write-Host 'skip M2 pixel probe: set CC_M2_APP_EXE to cocos-m1-test.exe'
+}
+
 $tsc = Join-Path $nodeModules '.bin/tsc.cmd'
 if (Test-Path $tsc) {
     Write-Host '== TypeScript typecheck =='

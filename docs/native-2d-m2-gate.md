@@ -20,16 +20,15 @@
 | Batcher2d batch | 通过 | `Batcher2d::batches 2` |
 | custom pipeline 提交 | 通过 | `draw2D` → `submitUICommands` → pass phase 匹配 → `cmdBuff->draw` |
 | 可见渲染 | 通过（人工） | native 窗口可见 64×64 红色 Sprite |
+| RenderTexture 像素 | 通过 | Canvas 相机 targetTexture + 256×256 RT + readPixels；五种模式 red>0，`M2_PIXEL_RESULT ok` |
 | override 启用运行 | 通过 | `new n2d.Sprite()`、真实 SpriteFrame、无 TypeError、应用响应正常 |
 | 回归 | 通过 | `75 checks, 0 failures`；M0 checks passed；Jest 16/16 |
 
 ## 2. 未通过 / 未覆盖
 
-1. **自动 Web-native 像素对照**：PrintWindow/BitBlt/DWM thumbnail 为黑屏；
-   Windows Graphics Capture 返回 `E_ACCESSDENIED`。RenderTexture 探针
-   （独立 UI 相机 + 256×256 RT）调用 `readPixels` 时五种模式都返回同一份
-   均匀缓冲且 red=0，说明当前 custom pipeline 下 UI 相机没有写入 RT，
-   需要修 RenderTexture/custom pipeline 的 target 选择，不能直接接入 CI。
+1. **自动 Web-native 像素对照**：Windows Graphics Capture 返回
+   `E_ACCESSDENIED`；RenderTexture 离屏探针已通过，五种模式 red>0。
+   仍需把 Web 端 golden 拉进来做真正的 Web/native diff。
 2. **完整性能 KPI**：本次实测 JS `updateRenderer` 235.3 ns/sprite、1000
    Sprite 场景 341.8 ns/sprite；native Debug prepare 516.7 ns/op，M0 Release
    为 231 ns/sprite。当前微基准没有达到 ≥30% 的 M2 KPI，整帧 CPU/JS 堆/JSB
@@ -48,11 +47,12 @@
 3. 重新生成 native engine bundle，`cc.js` 包含 `new n2d.Sprite()`；
 4. 重新编译 native exe，运行 Creator 场景；
 5. 真实 64×64 PNG SpriteFrame 显示，应用无崩溃/TypeError；
-6. `run-m0-checks.ps1` 全量通过。
+6. `run-m0-checks.ps1` 全量通过；
+7. `run-m2-pixel-probe.ps1` 通过：五种模式 `red>0`，`M2_PIXEL_RESULT ok`。
 
 未执行：
 
-- Web/native 自动像素 diff；
+- Web 端 golden 与 native RT 像素 diff；
 - 完整性能基准。
 
 ## 4. 当前建议
@@ -61,5 +61,5 @@ Sprite override 已启用，但按以下方式监控：
 
 - 任何 native 2D 视觉回归优先回滚 `cc.config.json` 的 Sprite override 与
   `m2-components.json` 开关，并重建 engine bundle；
-- 在 CI/发布前补齐自动截图（需要允许 Graphics Capture 的会话/权限）和性能基线；
+- CI/发布前把 Web golden 接到 RenderTexture 探针，做真正的像素 diff；
 - material instance、SpriteFrame 完整资产化、旋转 atlas 组合按 M3 前置项处理。
