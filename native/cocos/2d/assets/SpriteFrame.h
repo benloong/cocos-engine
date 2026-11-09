@@ -71,6 +71,17 @@ public:
     void setRotated(bool rotated) { _rotated = rotated; }
     bool isRotated() const { return _rotated; }
 
+    void setInsets(float left, float right, float top, float bottom) {
+        _insetLeft = left;
+        _insetRight = right;
+        _insetTop = top;
+        _insetBottom = bottom;
+    }
+    float getInsetLeft() const { return _insetLeft; }
+    float getInsetRight() const { return _insetRight; }
+    float getInsetTop() const { return _insetTop; }
+    float getInsetBottom() const { return _insetBottom; }
+
 private:
     TextureBase *_texture{nullptr};
     float _x{0.F};
@@ -81,6 +92,10 @@ private:
     float _originalHeight{0.F};
     float _offsetX{0.F};
     float _offsetY{0.F};
+    float _insetLeft{0.F};
+    float _insetRight{0.F};
+    float _insetTop{0.F};
+    float _insetBottom{0.F};
     bool _rotated{false};
 };
 

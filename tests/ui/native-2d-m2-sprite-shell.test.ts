@@ -8,6 +8,7 @@ const nativeFrame = {
     setOriginalSize: jest.fn(),
     setOffset: jest.fn(),
     setRotated: jest.fn(),
+    setInsets: jest.fn(),
 };
 
 const nativeSprite = {
@@ -46,12 +47,17 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
         originalSize: { width: 5, height: 6 },
         offset: { x: 7, y: 8 },
         rotated: false,
+        insetLeft: 1,
+        insetRight: 2,
+        insetTop: 3,
+        insetBottom: 4,
     } as any;
     expect(nativeFrame.setTexture).toHaveBeenLastCalledWith(texture);
     expect(nativeFrame.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
     expect(nativeFrame.setOriginalSize).toHaveBeenLastCalledWith(5, 6);
     expect(nativeFrame.setOffset).toHaveBeenLastCalledWith(7, 8);
     expect(nativeFrame.setRotated).toHaveBeenLastCalledWith(false);
+    expect(nativeFrame.setInsets).toHaveBeenLastCalledWith(1, 2, 3, 4);
     expect(nativeSprite.setFrame).toHaveBeenLastCalledWith(nativeFrame);
 
     sprite.color = new Color(10, 20, 30, 255);

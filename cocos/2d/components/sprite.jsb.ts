@@ -219,6 +219,7 @@ export class Sprite extends UIRenderer {
         nativeFrame.setOriginalSize(original.width, original.height);
         nativeFrame.setOffset(offset.x, offset.y);
         nativeFrame.setRotated(frame.rotated);
+        nativeFrame.setInsets(frame.insetLeft, frame.insetRight, frame.insetTop, frame.insetBottom);
         this._native.setFrame(nativeFrame);
     }
 }

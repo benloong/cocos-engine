@@ -41,7 +41,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 
 新增 `native/cocos/2d/assets/SpriteFrame.h`：
 
-- texture / rect / originalSize / offset / rotated 字段；
+- texture / rect / originalSize / offset / rotated / 九宫格 insets 字段；
 - `Sprite::setFrame(SpriteFrame*)` 重载，一次 JSB 调用复制全部字段；
 - texture 尺寸从 `TextureBase::getWidth/getHeight` 获取；
 - JS 壳构造 `n2d.SpriteFrame` 后调用单参数 `setFrame`。
@@ -105,8 +105,8 @@ C++ 断言：
 - `getRenderMaterial() == 显式 material`；
 - `getSharedMaterial(0/1)` 分别返回主材质和第二个 shared material。
 
-Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame 字段、
-frame 转发、disable/destroy。
+Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame 字段
+（含 insets）、frame 转发、disable/destroy。
 
 ## 7. 尚未完成
 

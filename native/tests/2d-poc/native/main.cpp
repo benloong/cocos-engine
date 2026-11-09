@@ -369,6 +369,7 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    sf.setOriginalSize(1, 1);"
         "    sf.setOffset(0, 0);"
         "    sf.setRotated(false);"
+        "    sf.setInsets(1, 2, 3, 4);"
         "    var s = new n2d.Sprite();"
         "    s.setColorRGBA(255, 128, 0, 255);"
         "    s.setTrim(false);"
