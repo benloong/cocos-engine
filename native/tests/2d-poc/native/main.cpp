@@ -504,6 +504,10 @@ void testSpritePrepare() {
     sprite.setUITransform(&transform);
     sprite.setMaterial(material);
     check(sprite.getRenderMaterial() == material, "ui renderer material");
+    auto *material2 = new cc::Material();
+    sprite.setSharedMaterial(material2, 1);
+    check(sprite.getSharedMaterial(1) == material2, "ui renderer shared material");
+    check(sprite.getSharedMaterial(0) == material, "ui renderer shared material zero");
     check(sprite.getTypeId() == cc::Sprite::TYPE_ID, "sprite type id");
     sprite.setColorRGBA(10.F, 20.F, 30.F, 255.F);
     check(sprite.getColor().r == 10 && sprite.getColor().g == 20 && sprite.getColor().b == 30, "ui renderer color");

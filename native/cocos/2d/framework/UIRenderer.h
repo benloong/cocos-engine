@@ -25,6 +25,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 #include "core/component/Component.h"
 #include "math/Color.h"
@@ -58,6 +59,9 @@ public:
     Material *getMaterial() const { return _material; }
     Material *getRenderMaterial() const;
 
+    void setSharedMaterial(Material *material, uint32_t index);
+    Material *getSharedMaterial(uint32_t index = 0) const;
+
     void setPriority(int32_t priority);
     int32_t getPriority() const { return _priority; }
 
@@ -69,6 +73,7 @@ public:
 protected:
     Color _color{255, 255, 255, 255};
     Material *_material{nullptr};
+    std::vector<Material *> _materials;
     int32_t _priority{0};
     uint32_t _srcBlendFactor{2}; // gfx::BlendFactor::SRC_ALPHA
     uint32_t _dstBlendFactor{4}; // gfx::BlendFactor::ONE_MINUS_SRC_ALPHA

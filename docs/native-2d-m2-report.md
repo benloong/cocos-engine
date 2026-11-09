@@ -14,6 +14,7 @@
 - `setColor/setColorRGBA/getColor`；
 - `setMaterial/getMaterial/getRenderMaterial`（显式 material 优先，否则
   `ui-sprite-material`）；
+- `setSharedMaterial/getSharedMaterial`（按 index 保存材质数组）；
 - `setPriority/getPriority`。
 
 `Sprite` 改为：
@@ -101,7 +102,8 @@ C++ 断言：
 - `Sprite::getTypeId() == Sprite::TYPE_ID`；
 - 继承的 `setColorRGBA/getColor`；
 - 继承的 `setPriority/getPriority`；
-- `getRenderMaterial() == 显式 material`。
+- `getRenderMaterial() == 显式 material`；
+- `getSharedMaterial(0/1)` 分别返回主材质和第二个 shared material。
 
 Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame 字段、
 frame 转发、disable/destroy。

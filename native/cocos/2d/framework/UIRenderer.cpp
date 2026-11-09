@@ -45,6 +45,24 @@ void UIRenderer::setColorRGBA(float red, float green, float blue, float alpha) {
 
 void UIRenderer::setMaterial(Material *material) {
     _material = material;
+    setSharedMaterial(material, 0);
+}
+
+void UIRenderer::setSharedMaterial(Material *material, uint32_t index) {
+    if (_materials.size() <= index) {
+        _materials.resize(index + 1, nullptr);
+    }
+    _materials[index] = material;
+    if (index == 0) {
+        _material = material;
+    }
+}
+
+Material *UIRenderer::getSharedMaterial(uint32_t index) const {
+    if (index >= _materials.size()) {
+        return nullptr;
+    }
+    return _materials[index];
 }
 
 void UIRenderer::setPriority(int32_t priority) {
