@@ -15,6 +15,7 @@
 - `setMaterial/getMaterial/getRenderMaterial`（显式 material 优先，否则
   `ui-sprite-material`）；
 - `setSharedMaterial/getSharedMaterial`（按 index 保存材质数组）；
+- `getMaterialInstance`：有 effect 时复制 parent material，空 material 回退 shared；
 - `setPriority/getPriority`。
 
 `Sprite` 改为：
@@ -204,6 +205,7 @@ C++ 断言：
 - 继承的 `setPriority/getPriority`；
 - `getRenderMaterial() == 显式 material`；
 - `getSharedMaterial(0/1)` 分别返回主材质和第二个 shared material；
+- 空 material 的 `getMaterialInstance(0)` 回退到 shared material；
 - `sizeMode=1` 使用 frame rect 50×60，`sizeMode=2` 使用 originalSize 80×90。
 
 Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame 字段

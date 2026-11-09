@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "base/Ptr.h"
 #include "core/component/Component.h"
 #include "math/Color.h"
 
@@ -58,6 +59,7 @@ public:
     void setMaterial(Material *material);
     Material *getMaterial() const { return _material; }
     Material *getRenderMaterial() const;
+    Material *getMaterialInstance(uint32_t index = 0) const;
 
     void setSharedMaterial(Material *material, uint32_t index);
     Material *getSharedMaterial(uint32_t index = 0) const;
@@ -73,6 +75,7 @@ public:
 protected:
     Color _color{255, 255, 255, 255};
     Material *_material{nullptr};
+    mutable IntrusivePtr<Material> _materialInstance;
     std::vector<Material *> _materials;
     int32_t _priority{0};
     uint32_t _srcBlendFactor{2}; // gfx::BlendFactor::SRC_ALPHA

@@ -69,7 +69,30 @@ void UIRenderer::setPriority(int32_t priority) {
     _priority = priority;
 }
 
+Material *UIRenderer::getMaterialInstance(uint32_t index) const {
+    if (index != 0) {
+        return getSharedMaterial(index);
+    }
+    if (_materialInstance != nullptr) {
+        return _materialInstance.get();
+    }
+    Material *parent = getSharedMaterial(0);
+    if (parent == nullptr) {
+        parent = BuiltinResMgr::getInstance()->get<Material>("ui-sprite-material");
+    }
+    if (parent == nullptr || parent->getEffectAsset() == nullptr) {
+        return parent;
+    }
+    auto *instance = new Material();
+    instance->copy(parent);
+    _materialInstance = instance;
+    return instance;
+}
+
 Material *UIRenderer::getRenderMaterial() const {
+    if (_materialInstance != nullptr) {
+        return _materialInstance.get();
+    }
     if (_material != nullptr) {
         return _material;
     }

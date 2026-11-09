@@ -30,7 +30,7 @@
 1. **Web golden**：v4 Web 构建在 headless Chrome 下报
    `texSubImage2D Overload resolution failed`，headful 也仅显示空画布；
    目前只有 native RT 像素探针，没有 Web golden diff。
-2. material instance 解析（shared material 已下沉）。
+2. native `getMaterialInstance` 已加；JS 壳的 MaterialInstance 转发和真实 effect 用例仍待补。
 3. SpriteFrame 完整 native 资产化与 insets 边界。
 4. Tiled/Filled 的旋转 atlas frame 坐标组合。
 ## 3. 启用记录
