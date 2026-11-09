@@ -202,6 +202,64 @@ void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix) {
     }
 }
 
+SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params) {
+    SpriteMesh mesh;
+    const float width = params.contentSize.x;
+    const float height = params.contentSize.y;
+    const float textureWidth = params.textureSize.x;
+    const float textureHeight = params.textureSize.y;
+    const Rect &rect = params.frameRect;
+    if (width <= 0.F || height <= 0.F || textureWidth <= 0.F || textureHeight <= 0.F ||
+        rect.width <= 0.F || rect.height <= 0.F) {
+        return mesh;
+    }
+
+    const float appX = params.anchorPoint.x * width;
+    const float appY = params.anchorPoint.y * height;
+    const float left = -appX;
+    const float bottom = -appY;
+
+    const float u0 = rect.x / textureWidth;
+    const float vBottom = (rect.y + rect.height) / textureHeight;
+    const uint32_t columns = static_cast<uint32_t>(std::ceil(width / rect.width));
+    const uint32_t rows = static_cast<uint32_t>(std::ceil(height / rect.height));
+
+    for (uint32_t row = 0; row < rows; ++row) {
+        const float tileY = std::min(rect.height, height - static_cast<float>(row) * rect.height);
+        const float y0 = bottom + static_cast<float>(row) * rect.height;
+        const float y1 = y0 + tileY;
+        const float vTop = (rect.y + rect.height - tileY) / textureHeight;
+        for (uint32_t col = 0; col < columns; ++col) {
+            const float tileX = std::min(rect.width, width - static_cast<float>(col) * rect.width);
+            const float x0 = left + static_cast<float>(col) * rect.width;
+            const float x1 = x0 + tileX;
+            const float uRight = (rect.x + tileX) / textureWidth;
+            const uint16_t base = static_cast<uint16_t>(mesh.vertices.size());
+
+            SpriteVertex v00;
+            SpriteVertex v10;
+            SpriteVertex v01;
+            SpriteVertex v11;
+            v00.position.set(x0, y0, 0.F);
+            v10.position.set(x1, y0, 0.F);
+            v01.position.set(x0, y1, 0.F);
+            v11.position.set(x1, y1, 0.F);
+            v00.uv.set(u0, vBottom);
+            v10.uv.set(uRight, vBottom);
+            v01.uv.set(u0, vTop);
+            v11.uv.set(uRight, vTop);
+            mesh.vertices.insert(mesh.vertices.end(), {v00, v10, v01, v11});
+            mesh.indices.insert(mesh.indices.end(), {
+                base, static_cast<uint16_t>(base + 1), static_cast<uint16_t>(base + 2),
+                static_cast<uint16_t>(base + 1), static_cast<uint16_t>(base + 3), static_cast<uint16_t>(base + 2),
+            });
+        }
+    }
+
+    mesh.valid = true;
+    return mesh;
+}
+
 SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params) {
     SpriteMesh mesh;
     if (params.fillType == 2) {

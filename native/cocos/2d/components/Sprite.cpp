@@ -272,6 +272,30 @@ void Sprite::prepare(float opacity) {
                 _vertices[offset + 4] = mesh.vertices[i].uv.y;
             }
             _indices = mesh.indices;
+        } else if (_type == 2) {
+            TiledSpriteGeometryParams params;
+            params.contentSize = _transform->getContentSize();
+            params.anchorPoint = _transform->getAnchorPoint();
+            params.frameRect = _frameRect;
+            params.textureSize = _textureSize;
+
+            SpriteMesh mesh = buildTiledSpriteMesh(params);
+            if (!mesh.valid) {
+                return;
+            }
+            transformSpriteMesh(mesh, _node->getWorldMatrix());
+            vertexCount = static_cast<uint32_t>(mesh.vertices.size());
+            indexCount = static_cast<uint32_t>(mesh.indices.size());
+            _vertices.assign(vertexCount * VERTEX_STRIDE, 0.F);
+            for (uint32_t i = 0; i < vertexCount; ++i) {
+                const uint32_t offset = i * VERTEX_STRIDE;
+                _vertices[offset + 0] = mesh.vertices[i].position.x;
+                _vertices[offset + 1] = mesh.vertices[i].position.y;
+                _vertices[offset + 2] = mesh.vertices[i].position.z;
+                _vertices[offset + 3] = mesh.vertices[i].uv.x;
+                _vertices[offset + 4] = mesh.vertices[i].uv.y;
+            }
+            _indices = mesh.indices;
         } else if (_type == 3) {
             FilledSpriteGeometryParams params;
             params.contentSize = _transform->getContentSize();

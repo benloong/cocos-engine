@@ -240,6 +240,25 @@ void testFilledMesh() {
     }
 }
 
+void testTiledMesh() {
+    cc::TiledSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(200.F, 100.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+
+    const cc::SpriteMesh mesh = cc::buildTiledSpriteMesh(params);
+    check(mesh.valid, "tiled mesh is valid");
+    check(mesh.vertices.size() == 8, "tiled mesh has 8 vertices");
+    check(mesh.indices.size() == 12, "tiled mesh has 12 indices");
+    if (mesh.vertices.size() == 8) {
+        checkNear(mesh.vertices[0].position.x, -100.F, "tiled first x");
+        checkNear(mesh.vertices[0].position.y, -50.F, "tiled first y");
+        checkNear(mesh.vertices[4].position.x, 0.F, "tiled second x");
+        checkNear(mesh.vertices[7].position.x, 100.F, "tiled last x");
+    }
+}
+
 void testInvalidUntrimmed() {
     cc::SimpleSpriteGeometryParams params;
     params.contentSize = cc::Vec2(100.F, 100.F);
@@ -263,6 +282,7 @@ int main() {
     testTransformQuad();
     testSlicedMesh();
     testFilledMesh();
+    testTiledMesh();
     testInvalidUntrimmed();
 
     std::printf("%d checks, %d failures\n", gChecks, gFailures);

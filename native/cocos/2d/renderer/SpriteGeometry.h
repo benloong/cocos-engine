@@ -105,6 +105,18 @@ struct FilledSpriteGeometryParams final {
  */
 SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params);
 
+struct TiledSpriteGeometryParams final {
+    Vec2 contentSize{100.F, 100.F};
+    Vec2 anchorPoint{0.5F, 0.5F};
+    Rect frameRect;
+    Vec2 textureSize;
+};
+
+/**
+ * Build repeated frame tiles clipped to the content rect.
+ */
+SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params);
+
 void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix);
 
 /**

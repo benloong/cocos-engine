@@ -588,6 +588,27 @@ void testSpritePrepare() {
         }
     }
 
+    cc::Node tiledNode("native-sprite-tiled");
+    cc::UITransform tiledTransform(&tiledNode);
+    tiledTransform.setContentSize(200.F, 100.F);
+    cc::Sprite tiledSprite;
+    tiledSprite.setNode(&tiledNode);
+    tiledSprite.setUITransform(&tiledTransform);
+    tiledSprite.setMaterial(material);
+    tiledSprite.setType(2);
+    tiledSprite.setFrame(texture, 0.F, 0.F, 100.F, 100.F, 100.F, 100.F, 0.F, 0.F, 1.F, 1.F, false);
+    cc::RenderEntity *tiledEntity = tiledSprite.getRenderEntity();
+    check(tiledEntity != nullptr, "tiled sprite render entity");
+    if (tiledEntity != nullptr) {
+        tiledEntity->prepare(1.F);
+        cc::RenderDrawInfo *tiledDrawInfo = tiledEntity->getStaticRenderDrawInfo(0);
+        check(tiledDrawInfo != nullptr, "tiled sprite draw info");
+        if (tiledDrawInfo != nullptr) {
+            check(tiledDrawInfo->getVbCount() == 8, "tiled sprite vertex count");
+            check(tiledDrawInfo->getIbCount() == 12, "tiled sprite index count");
+        }
+    }
+
     constexpr int kPrepareIterations = 10000;
     const auto start = std::chrono::steady_clock::now();    for (int i = 0; i < kPrepareIterations; ++i) {
         sprite.setDirty();
