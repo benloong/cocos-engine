@@ -164,8 +164,9 @@ C++ 测试：
 - 人工确认：运行中的 `cocos-m1-test` native 窗口可见 64×64 红色 Sprite。
 
 因此 native 侧 Sprite 不仅完成 draw 提交，也已实际显示；自动截图
-（PrintWindow/BitBlt/DWM thumbnail）仍无法捕获该 GPU 内容，所以 Web/native
-像素对照仍需人工或专门 harness。验证后 Sprite override 保持 disabled。
+（PrintWindow/BitBlt/DWM thumbnail）仍无法捕获该 GPU 内容，Windows
+Graphics Capture 返回 `E_ACCESSDENIED`，所以 Web/native 像素对照仍需人工
+或专门 harness。Sprite override 已按 M2 收尾决策启用。
 
 ## 6. 验证
 
@@ -177,6 +178,15 @@ jsb bindings result: OK
 18 checks, 0 failures      # M1 shell contract
 Jest: 1 passed             # Sprite M2 shell mock
 ```
+
+性能补充：
+
+- JS `updateRenderer` 235.3 ns/sprite；
+- JS 1000 Sprite 场景 341.8 ns/sprite；
+- native Debug prepare 516.7 ns/op；
+- M0 native Release 231 ns/sprite。
+
+微基准尚未达到 M2 的 ≥30% CPU KPI；整帧场景仍需测量。
 
 C++ 断言：
 

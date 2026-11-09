@@ -28,8 +28,10 @@
 1. **自动 Web-native 像素对照**：PrintWindow/BitBlt/DWM thumbnail 为黑屏；
    Windows Graphics Capture 返回 `E_ACCESSDENIED`（窗口与 monitor 均被拒绝），
    暂无自动截图。
-2. **完整性能 KPI**：已有 M0 的 1000 Sprite Release 231 ns/sprite 与
-   JS 0.26~0.55 µs/sprite 基线，但 M2 启用后的整帧 CPU/JS 堆/JSB 调用未测。
+2. **完整性能 KPI**：本次实测 JS `updateRenderer` 235.3 ns/sprite、1000
+   Sprite 场景 341.8 ns/sprite；native Debug prepare 516.7 ns/op，M0 Release
+   为 231 ns/sprite。当前微基准没有达到 ≥30% 的 M2 KPI，整帧 CPU/JS 堆/JSB
+   调用仍需场景级测量。
 3. material instance 解析（shared material 已下沉）。
 4. SpriteFrame 完整 native 资产化与 insets 边界。
 5. Tiled/Filled 的旋转 atlas frame 坐标组合。
