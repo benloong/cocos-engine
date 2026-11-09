@@ -72,11 +72,16 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `Sprite::prepare` 生成 drawInfo：`vb=4, ib=6`，material/texture 非空；
 - `Batcher2d::fillBuffersAndMergeBatches` 结束时 `Batcher2d::batches 2`
   （Sprite + profiler）；
-- 但 `UIPhase::render` 从未被调用；项目使用 custom pipeline，说明
-  `draw2D`/`submitUICommands` 路径没有进入，或 phase/Canvas-RenderRoot
-  没有触发；
+- 项目 custom pipeline 实际进入 `NativeExecutor::draw2D`；
+- `submitUICommands` 收到 `batches=2`、`phase=1`、cameraVis=1108344832，
+  两个 batch 的 `vis=33554432` 均通过 camera 过滤；
+- batch pass phase=1，与 phaseLayoutID=1 匹配，最终执行到 `cmdBuff->draw`；
 - native sprite shader 编译成功；
 - `M1_SPRITE_FRAME {"hasFrame":true}`。
+
+因此 native 侧的 Sprite batch 已经完成提交；当前无法确认可见像素是
+截图 harness 的问题，而不是渲染链缺失。验证后 Sprite override 仍保持
+disabled，等待可靠像素对照。
 
 但窗口截图/PrintWindow 仍无法可靠捕获 GPU 内容，因此 **可见渲染和 Web/native
 像素对照仍未通过**；验证后 Sprite override 保持 disabled。
@@ -103,15 +108,14 @@ frame 转发、disable/destroy。
 
 ## 7. 尚未完成
 
-1. 可见渲染与可靠 native 截图/像素对照；
-2. custom pipeline 的 `draw2D`/`submitUICommands`/`UIPhase` 调用链；
-3. UIRenderer shared material/material instance 解析；
-4. Sprite sliced/tiled/filled/radial 模式；
-5. SpriteFrame insets/native 资产化；
-6. TS UIRenderer 继承链最终决策。
+1. 可靠的 native 截图与 Web/native 像素对照；
+2. UIRenderer shared material/material instance 解析；
+3. Sprite sliced/tiled/filled/radial 模式；
+4. SpriteFrame insets/native 资产化；
+5. TS UIRenderer 继承链最终决策。
 
 ## 8. 下一步
 
-先确认 custom pipeline 是否进入 `draw2D`/`submitUICommands`，以及 Canvas/
-RenderRoot2D 在 native 下如何触发 UI phase；这是当前可见渲染的阻塞点。
-通过后再做 shared material、其余 Sprite 模式和可靠像素 harness。
+native Sprite 已经走通 drawInfo → batch → custom pipeline `draw2D` →
+`submitUICommands` → draw。下一步集中解决可靠截图/像素对照，再在此基础上
+补 shared material、其余 Sprite 模式和默认启用决策。
