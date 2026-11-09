@@ -213,13 +213,12 @@ export class Sprite extends UIRenderer {
         const rect = frame.rect;
         const original = frame.originalSize;
         const offset = frame.offset;
-        this._native.setFrame(
-            texture,
-            rect.x, rect.y, rect.width, rect.height,
-            original.width, original.height,
-            offset.x, offset.y,
-            texture.width, texture.height,
-            frame.rotated,
-        );
+        const nativeFrame = new n2d.SpriteFrame();
+        nativeFrame.setTexture(texture);
+        nativeFrame.setRect(rect.x, rect.y, rect.width, rect.height);
+        nativeFrame.setOriginalSize(original.width, original.height);
+        nativeFrame.setOffset(offset.x, offset.y);
+        nativeFrame.setRotated(frame.rotated);
+        this._native.setFrame(nativeFrame);
     }
 }

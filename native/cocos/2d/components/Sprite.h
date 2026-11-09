@@ -38,6 +38,7 @@ namespace cc {
 class Node;
 class RenderDrawInfo;
 class TextureBase;
+class SpriteFrame;
 class UITransform;
 
 /**
@@ -74,6 +75,7 @@ public:
                   float textureWidth,
                   float textureHeight,
                   bool rotated);
+    void setFrame(SpriteFrame *frame);
     void clearFrame();
 
     void setColor(const Color &color);

@@ -2,19 +2,19 @@
 
 > 对应计划：[native-2d-module-sinking-plan.zh-CN.md](./native-2d-module-sinking-plan.zh-CN.md) 的 M2。
 > 范围：仅 `cocos/2d`；不引用其他分支代码。
-> 状态：M2 基础设施 + Sprite SIMPLE 薄壳候选已完成；override 尚未启用，材质和其余模式未开始。
+> 状态：M2 基础设施、Sprite SIMPLE 薄壳候选、SpriteFrame native 缓存已完成；override 未启用，可见渲染/像素对照和其余模式未完成。
 
-## 1. 本轮完成：native UIRenderer 基座
+## 1. native UIRenderer 基座
 
 新增 `native/cocos/2d/framework/UIRenderer.h/.cpp`：
 
 - 继承 `Component`，进入 native Node 的 UI 组件槽位；
 - `TYPE_ID = 3`；
-- 持有 color、material、priority、src/dst blend factor；
-- 提供 `setColor/setColorRGBA/getColor`、`setMaterial/getMaterial`、
-  `getRenderMaterial`（自定义 material 优先，否则 `ui-sprite-material`）、
-  `setPriority/getPriority`、blend factor accessor；
-- 不包含几何、文本、材质实例解析或逐帧逻辑。
+- color、material、priority、src/dst blend factor；
+- `setColor/setColorRGBA/getColor`；
+- `setMaterial/getMaterial/getRenderMaterial`（显式 material 优先，否则
+  `ui-sprite-material`）；
+- `setPriority/getPriority`。
 
 `Sprite` 改为：
 
@@ -25,25 +25,33 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `TYPE_ID = 4`；
 - 复用 UIRenderer 的 color/material/priority；
 - 继续持有 frame、RenderEntity 和 SIMPLE 几何；
-- 通过 `Component::setNode` 注册到 Node UI 槽位；
-- `prepare()` 仍由 `RenderEntity::IPrepareListener` 驱动。
+- 通过 `Component::setNode` 注册到 Node UI 槽位。
 
 ## 2. 绑定与构建
 
-- `native/CMakeLists.txt` 登记 `UIRenderer.h/.cpp`；
+- `native/CMakeLists.txt` 登记 `UIRenderer.h/.cpp`、`SpriteFrame.h`；
 - `native/tools/swig-config/2d.i` 在 `Sprite.h` 前 include/`%include`
-  `UIRenderer.h`；
-- 生成绑定包含 `cc::UIRenderer` 与 `__jsb_cc_UIRenderer_proto`；
-- Debug clean rebuild 605/605 targets。
+  `UIRenderer.h`、`SpriteFrame.h`；
+- 生成绑定包含 `cc::UIRenderer`、`cc::SpriteFrame`；
+- V8 冒烟：`new n2d.UIRenderer()`、`new n2d.SpriteFrame()` 及 setter 通过；
+- Debug clean rebuild 605/605（M2 基座阶段）。
 
-## 3. 本轮完成：Sprite SIMPLE 薄壳候选
+## 3. SpriteFrame native 缓存
 
-新增 `cocos/2d/components/sprite.jsb.ts`（168 行有效代码）：
+新增 `native/cocos/2d/assets/SpriteFrame.h`：
+
+- texture / rect / originalSize / offset / rotated 字段；
+- `Sprite::setFrame(SpriteFrame*)` 重载，一次 JSB 调用复制全部字段；
+- texture 尺寸从 `TextureBase::getWidth/getHeight` 获取；
+- JS 壳构造 `n2d.SpriteFrame` 后调用单参数 `setFrame`。
+
+## 4. Sprite SIMPLE 薄壳
+
+`cocos/2d/components/sprite.jsb.ts`（约 182 行有效代码）：
 
 - `@ccclass('cc.Sprite')` 和序列化字段；
 - `onLoad` 创建 `n2d.Sprite`、`setNode`、绑定 native UITransform；
-- `spriteFrame` 将 texture/rect/originalSize/offset/rotated 批量转发到
-  native `setFrame`；
+- `spriteFrame` 构造 native SpriteFrame 并转发；
 - `color`/`priority`/`enabled` 转发；
 - `customMaterial` 转发到 native `setMaterial`；
 - `type`/`fillType`/`sizeMode` 保留序列化字段，但当前只声明 SIMPLE 路径；
@@ -52,64 +60,54 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 当前 **未启用**：`native/tests/2d-poc/m2-components.json` 中
 `sprite.enabled = false`，`cc.config.json` 没有 Sprite override。
 
-曾在 Creator 测试工程中临时启用验证：native bundle 包含 `new n2d.Sprite()`，
-`spriteFrame = builtinResMgr.get('default-spriteframe')` 后：
+## 5. 真实 Creator 探测
 
-- 原生 `Sprite::setNode`/`setFrame` 被调用；
-- 重新编译含 UIRenderer 的 native exe 后，`Batcher2d::walk` 到达
-  `M1TestNode`，并且实际执行到 `callPrepare`；`RenderEntity` enabled、
-  opacity 0.501961、listener 非空；
-- 换成 16×16 的 `default-texture` SpriteFrame 后 `setFrame rect 0 0 16 16`；
-- native Sprite shader 编译成功；
-- `Sprite::prepare` 确认生成 drawInfo：`vb=4, ib=6`，material/texture
-  指针均非空；
-- `Batcher2d::fillBuffersAndMergeBatches` 结束时 `Batcher2d::batches 2`，
-  说明 Sprite batch 已生成并加入 RenderScene（另一条为 profiler）；
+临时启用 override 后确认：
+
+- native bundle 包含 `new n2d.Sprite()`；
+- `Sprite::setNode`/`setFrame` 被调用；
+- 换用 16×16 `default-texture` SpriteFrame 后 `setFrame rect 0 0 16 16`；
+- `Batcher2d::walk` 到达 `M1TestNode` 并执行到 `callPrepare`；
+- `RenderEntity` enabled、opacity 0.501961、listener 非空；
+- `Sprite::prepare` 生成 drawInfo：`vb=4, ib=6`，material/texture 非空；
+- `Batcher2d::fillBuffersAndMergeBatches` 结束时 `Batcher2d::batches 2`
+  （Sprite + profiler）；
+- native sprite shader 编译成功；
 - `M1_SPRITE_FRAME {"hasFrame":true}`。
 
-但窗口截图/PrintWindow 仍是黑屏或桌面内容，无法确认可见像素；因此本报告
-不把“可见渲染/像素对照”计为通过。下一步需要检查 RenderScene 消费 batch 的
-路径、camera/pipeline 过滤，并搭建可靠的 native 截图 harness。
+但窗口截图/PrintWindow 仍无法可靠捕获 GPU 内容，因此 **可见渲染和 Web/native
+像素对照仍未通过**；验证后 Sprite override 保持 disabled。
 
-### 验证
-
-新增 Jest：
-
-```text
-PASS tests/ui/native-2d-m2-sprite-shell.test.ts
-  √ Sprite M2 shell attaches and forwards SIMPLE frame data
-```
-
-覆盖：native 构造/Node 绑定、color 转发、customMaterial 转发、frame 全字段转发、disable/destroy。
-
-## 4. 验证
+## 6. 验证
 
 ```
 native 2D PoC: PASS
+jsb bindings result: OK
 39 checks, 0 failures      # pure C++ math/geometry
 18 checks, 0 failures      # M1 shell contract
 Jest: 1 passed             # Sprite M2 shell mock
 ```
 
-新增 C++ 断言：
+C++ 断言：
 
 - `Sprite::getTypeId() == Sprite::TYPE_ID`；
 - 继承的 `setColorRGBA/getColor`；
-- 继承的 `setPriority/getPriority`。
+- 继承的 `setPriority/getPriority`；
+- `getRenderMaterial() == 显式 material`。
 
-原生 1000 Sprite 场景仍通过，未观察到 UIRenderer 继承导致的 ABI/生命周期问题。
+Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame 字段、
+frame 转发、disable/destroy。
 
-## 5. 尚未完成
+## 7. 尚未完成
 
-1. Sprite override 尚未在 Creator 场景中启用和做像素对照；
-2. native UIRenderer 的材质解析：
-   `getSharedMaterial/setSharedMaterial`、material instance、ui-sprite 系列；
-3. Sprite 的 sliced/tiled/filled/radial 模式；
-4. SpriteFrame 的 native 缓存（rect/offset/rotated/insets）；
-5. TS `UIRenderer` 继承链的最终决策（extends Renderer vs extends Component）。
+1. 可见渲染与可靠 native 截图/像素对照；
+2. RenderScene/camera/pipeline 对 batch 的最终消费验证；
+3. UIRenderer shared material/material instance 解析；
+4. Sprite sliced/tiled/filled/radial 模式；
+5. SpriteFrame insets/native 资产化；
+6. TS UIRenderer 继承链最终决策。
 
-## 6. 下一步
+## 8. 下一步
 
-在 Creator 测试工程中给 Sprite 绑定真实 SpriteFrame，启用
-`sprite.jsb.ts` override，验证 SIMPLE 渲染和像素对照；通过后再做材质解析和
-其余四种模式。
+在可靠的 native 截图 harness 下验证 SIMPLE 可见渲染；然后补 shared
+material、其余 Sprite 模式，并决定是否默认启用 Sprite override。

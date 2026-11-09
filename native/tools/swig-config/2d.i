@@ -20,6 +20,7 @@
 #include "2d/framework/UITransform.h"
 #include "2d/framework/UIOpacity.h"
 #include "2d/framework/UIRenderer.h"
+#include "2d/assets/SpriteFrame.h"
 #include "2d/components/Sprite.h"
 %}
 
@@ -225,4 +226,5 @@
 %include "2d/framework/UITransform.h"
 %include "2d/framework/UIOpacity.h"
 %include "2d/framework/UIRenderer.h"
+%include "2d/assets/SpriteFrame.h"
 %include "2d/components/Sprite.h"

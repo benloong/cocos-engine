@@ -24,6 +24,7 @@
 
 #include "2d/components/Sprite.h"
 
+#include "2d/assets/SpriteFrame.h"
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/RenderEntity.h"
@@ -95,6 +96,22 @@ void Sprite::setFrame(TextureBase *texture,
     if (_entity != nullptr) {
         _entity->setEnabled(true);
     }
+}
+
+void Sprite::setFrame(SpriteFrame *frame) {
+    if (frame == nullptr) {
+        clearFrame();
+        return;
+    }
+    TextureBase *texture = frame->getTexture();
+    const float textureWidth = texture == nullptr ? 0.F : static_cast<float>(texture->getWidth());
+    const float textureHeight = texture == nullptr ? 0.F : static_cast<float>(texture->getHeight());
+    setFrame(texture,
+             frame->getRectX(), frame->getRectY(), frame->getRectWidth(), frame->getRectHeight(),
+             frame->getOriginalWidth(), frame->getOriginalHeight(),
+             frame->getOffsetX(), frame->getOffsetY(),
+             textureWidth, textureHeight,
+             frame->isRotated());
 }
 
 void Sprite::clearFrame() {
