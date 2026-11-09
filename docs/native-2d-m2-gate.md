@@ -27,8 +27,9 @@
 
 ## 2. 未通过 / 未覆盖
 
-1. **Web golden**：v4 Web 构建在 headless Chrome 下报
-   `texSubImage2D Overload resolution failed`，headful 也仅显示空画布；
+1. **Web golden**：Web 构建在 Chrome headless 下调用
+   `cc.game._updateCallback()` 时抛 `texSubImage2D ... Overload resolution failed`
+   （WebGL2 和 WebGL1 都复现），画面停在 Cocos splash；headful 在 RDP 下黑屏。
    目前只有 native RT 像素探针，没有 Web golden diff。
 2. native `getMaterialInstance` 已加；JS 壳的 MaterialInstance 转发和真实 effect 用例仍待补。
 3. SpriteFrame 完整 native 资产化与 insets 边界。
