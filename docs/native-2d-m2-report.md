@@ -12,6 +12,7 @@
 - `TYPE_ID = 3`；
 - 持有 color、material、priority、src/dst blend factor；
 - 提供 `setColor/setColorRGBA/getColor`、`setMaterial/getMaterial`、
+  `getRenderMaterial`（自定义 material 优先，否则 `ui-sprite-material`）、
   `setPriority/getPriority`、blend factor accessor；
 - 不包含几何、文本、材质实例解析或逐帧逻辑。
 
