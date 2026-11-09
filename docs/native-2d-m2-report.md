@@ -54,13 +54,17 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 `spriteFrame = builtinResMgr.get('default-spriteframe')` 后：
 
 - 原生 `Sprite::setNode`/`setFrame` 被调用；
-- `Batcher2d::walk` 到达 `M1TestNode`，`RenderEntity` enabled、opacity 非零；
+- 重新编译含 UIRenderer 的 native exe 后，`Batcher2d::walk` 到达
+  `M1TestNode`，并且实际执行到 `callPrepare`；`RenderEntity` enabled、
+  opacity 0.501961、listener 非空；
+- 换成 16×16 的 `default-texture` SpriteFrame 后 `setFrame rect 0 0 16 16`；
 - native Sprite shader 编译成功；
 - `M1_SPRITE_FRAME {"hasFrame":true}`。
 
 但没有观察到可见 Sprite，也没有 Web/native 像素对照，因此验证后恢复为
-disabled。下一步需要定位“prepare 已调用但无可见 draw”的原因（默认
-`spriteFrame` 尺寸/纹理、Canvas/RenderRoot 或材质路径）。
+disabled。下一步需要定位“`prepare` 已调用但无可见 draw”的原因：检查
+`Sprite::prepare` 是否真正生成 drawInfo、材质/texture 是否进入 draw、Canvas/
+RenderRoot 的 native 渲染入口和 camera。
 
 ### 验证
 
