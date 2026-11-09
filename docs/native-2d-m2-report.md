@@ -2,7 +2,7 @@
 
 > 对应计划：[native-2d-module-sinking-plan.zh-CN.md](./native-2d-module-sinking-plan.zh-CN.md) 的 M2。
 > 范围：仅 `cocos/2d`；不引用其他分支代码。
-> 状态：M2 基础设施、Sprite 五种模式几何/prepare、SpriteFrame native 缓存已完成；override 未启用，可见渲染/像素对照未完成。
+> 状态：M2 Sprite override 已启用；五种模式、SpriteFrame native 缓存、custom pipeline 提交和人工可见渲染已确认。自动 GPU 截图被系统权限拒绝，Web/native 自动像素 diff 和完整性能 KPI 仍是遗留风险。
 
 ## 1. native UIRenderer 基座
 
@@ -61,9 +61,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `srcBlendFactor`/`dstBlendFactor` 转发到 native UIRenderer；
 - 不包含几何、assembler 或材质实例逻辑。
 
-当前 **未启用**：`native/tests/2d-poc/m2-components.json` 中
-`sprite.enabled = false`，`cc.config.json` 没有 Sprite override。
-
+当前 **已启用**：`native/tests/2d-poc/m2-components.json` 中 `sprite.enabled = true`，`cc.config.json` 已增加 Sprite override。
 ## 4.1 Sliced 几何（builder 阶段）
 
 `SpriteGeometry` 新增：

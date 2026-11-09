@@ -2,7 +2,7 @@
   "sprite": {
     "source": "cocos/2d/components/sprite.ts",
     "shell": "cocos/2d/components/sprite.jsb.ts",
-    "enabled": false,
-    "note": "M2 SIMPLE shell candidate; temporary Creator attach/shader validation passed, pixel parity pending"
+    "enabled": true,
+    "note": "M2 Sprite shell enabled; five modes + native SpriteFrame + custom pipeline verified; automated GPU capture blocked by OS permission"
   }
 }

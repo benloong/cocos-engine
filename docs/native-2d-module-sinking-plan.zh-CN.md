@@ -265,7 +265,7 @@
 
 ### M2：UIRenderer + Sprite（6~8 周）
 
-> 进度：native UIRenderer 基座、Sprite 五种模式几何/prepare 和 SIMPLE 薄壳候选已完成，见 [native-2d-m2-report.md](./native-2d-m2-report.md)；启用门槛见 [native-2d-m2-gate.md](./native-2d-m2-gate.md)。
+> 进度：M2 Sprite override 已启用，五种模式、SpriteFrame native 缓存和 custom pipeline 可见渲染已确认；自动 GPU 像素 diff/完整性能 KPI 仍遗留，见 [native-2d-m2-report.md](./native-2d-m2-report.md) 与 [native-2d-m2-gate.md](./native-2d-m2-gate.md)。
 
 - 内容：
   - native `UIRenderer`（color/material/stencil/blend/renderData/priority 的 UI 子集）；

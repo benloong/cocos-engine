@@ -226,8 +226,14 @@ void Sprite::applySizeMode() {
         return;
     }
     if (_sizeMode == 1) {
+        if (_frameRect.width <= 0.F || _frameRect.height <= 0.F) {
+            return;
+        }
         _transform->setContentSize(_frameRect.width, _frameRect.height);
     } else if (_sizeMode == 2) {
+        if (_originalSize.x <= 0.F || _originalSize.y <= 0.F) {
+            return;
+        }
         _transform->setContentSize(_originalSize.x, _originalSize.y);
     }
 }
