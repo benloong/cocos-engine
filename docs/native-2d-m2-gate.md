@@ -2,7 +2,7 @@
 
 > 适用：`sprite.jsb.ts` 从候选壳切换为 NATIVE 生产 override。
 > 当前：`sprite.enabled = true`，Sprite override 已启用。
-> 已知风险：RenderTexture 五种模式探针已通过；Web golden 和 ≥30% 性能 KPI 尚未闭环。
+> 已知风险：RenderTexture 五种模式探针和 ≥30% 性能 KPI 已通过；Web golden 尚未闭环。
 
 ## 1. 已通过
 
@@ -44,12 +44,13 @@
 4. 重新编译 native exe，运行 Creator 场景；
 5. 真实 64×64 PNG SpriteFrame 显示，应用无崩溃/TypeError；
 6. `run-m0-checks.ps1` 全量通过；
-7. `run-m2-pixel-probe.ps1` 通过：五种模式 `red>0`，`M2_PIXEL_RESULT ok`。
+7. `run-m2-pixel-probe.ps1` 通过：五种模式 `red>0`，`M2_PIXEL_RESULT ok`；
+8. `run-m2-perf.ps1` 通过：Release native 约 143~220 ns/sprite，
+   相对 JS 288~389 ns/sprite 提升约 45~59%。
 
 未执行：
 
-- Web 端 golden 与 native RT 像素 diff；
-- 完整性能基准。
+- Web 端 golden 与 native RT 像素 diff。
 
 ## 4. 当前建议
 
