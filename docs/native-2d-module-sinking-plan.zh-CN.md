@@ -265,7 +265,7 @@
 
 ### M2：UIRenderer + Sprite（6~8 周）
 
-> 进度：native UIRenderer 基座与 Sprite 继承已完成，见 [native-2d-m2-report.md](./native-2d-m2-report.md)。
+> 进度：native UIRenderer 基座、Sprite 继承和 SIMPLE 薄壳候选已完成，见 [native-2d-m2-report.md](./native-2d-m2-report.md)。
 
 - 内容：
   - native `UIRenderer`（color/material/stencil/blend/renderData/priority 的 UI 子集）；

@@ -1,0 +1,8 @@
+{
+  "sprite": {
+    "source": "cocos/2d/components/sprite.ts",
+    "shell": "cocos/2d/components/sprite.jsb.ts",
+    "enabled": false,
+    "note": "M2 SIMPLE shell candidate; enable after native Creator SIMPLE pixel parity"
+  }
+}

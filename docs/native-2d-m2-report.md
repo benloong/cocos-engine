@@ -2,7 +2,7 @@
 
 > 对应计划：[native-2d-module-sinking-plan.zh-CN.md](./native-2d-module-sinking-plan.zh-CN.md) 的 M2。
 > 范围：仅 `cocos/2d`；不引用其他分支代码。
-> 状态：M2 基础设施已开始；UIRenderer/Sprite 原生基座已合入，JS 薄壳和五种模式尚未开始。
+> 状态：M2 基础设施 + Sprite SIMPLE 薄壳候选已完成；override 尚未启用，材质和其余模式未开始。
 
 ## 1. 本轮完成：native UIRenderer 基座
 
@@ -35,15 +35,42 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - 生成绑定包含 `cc::UIRenderer` 与 `__jsb_cc_UIRenderer_proto`；
 - Debug clean rebuild 605/605 targets。
 
-## 3. 验证
+## 3. 本轮完成：Sprite SIMPLE 薄壳候选
+
+新增 `cocos/2d/components/sprite.jsb.ts`（168 行有效代码）：
+
+- `@ccclass('cc.Sprite')` 和序列化字段；
+- `onLoad` 创建 `n2d.Sprite`、`setNode`、绑定 native UITransform；
+- `spriteFrame` 将 texture/rect/originalSize/offset/rotated 批量转发到
+  native `setFrame`；
+- `color`/`priority`/`enabled` 转发；
+- `type`/`fillType`/`sizeMode` 保留序列化字段，但当前只声明 SIMPLE 路径；
+- 不包含几何、assembler 或材质实例逻辑。
+
+当前 **未启用**：`native/tests/2d-poc/m2-components.json` 中
+`sprite.enabled = false`，`cc.config.json` 没有 Sprite override。
+
+### 验证
+
+新增 Jest：
+
+```text
+PASS tests/ui/native-2d-m2-sprite-shell.test.ts
+  √ Sprite M2 shell attaches and forwards SIMPLE frame data
+```
+
+覆盖：native 构造/Node 绑定、color 转发、frame 全字段转发、disable/destroy。
+
+## 4. 验证
 
 ```
 native 2D PoC: PASS
 39 checks, 0 failures      # pure C++ math/geometry
 18 checks, 0 failures      # M1 shell contract
+Jest: 1 passed             # Sprite M2 shell mock
 ```
 
-新增断言：
+新增 C++ 断言：
 
 - `Sprite::getTypeId() == Sprite::TYPE_ID`；
 - 继承的 `setColorRGBA/getColor`；
@@ -51,21 +78,17 @@ native 2D PoC: PASS
 
 原生 1000 Sprite 场景仍通过，未观察到 UIRenderer 继承导致的 ABI/生命周期问题。
 
-## 4. 尚未完成
+## 5. 尚未完成
 
-1. `cocos/2d/components/sprite.jsb.ts` 薄壳与 NATIVE override；
+1. Sprite override 尚未在 Creator 场景中启用和做像素对照；
 2. native UIRenderer 的材质解析：
    `getSharedMaterial/setSharedMaterial`、material instance、ui-sprite 系列；
 3. Sprite 的 sliced/tiled/filled/radial 模式；
 4. SpriteFrame 的 native 缓存（rect/offset/rotated/insets）；
-5. 真实 Creator 场景中的 native Sprite shell 与像素对照；
-6. TS `UIRenderer` 继承链的最终决策（extends Renderer vs extends Component）。
+5. TS `UIRenderer` 继承链的最终决策（extends Renderer vs extends Component）。
 
-## 5. 下一步
+## 6. 下一步
 
-先做 `sprite.jsb.ts` 的最小 SIMPLE 路径：
-
-- `onLoad` 创建 `n2d.Sprite`、`setNode`、绑定 UITransform；
-- `spriteFrame` setter 转发 texture/rect/originalSize/offset/rotated；
-- `color`/`material`/`priority` 转发；
-- 先在 Creator 场景中验证 SIMPLE Sprite 能显示，再扩展模式。
+在 Creator 测试工程中给 Sprite 绑定真实 SpriteFrame，启用
+`sprite.jsb.ts` override，验证 SIMPLE 渲染和像素对照；通过后再做材质解析和
+其余四种模式。
