@@ -24,6 +24,9 @@
 
 #include "2d/framework/UIRenderer.h"
 
+#include "core/assets/Material.h"
+#include "core/builtin/BuiltinResMgr.h"
+
 namespace cc {
 
 UIRenderer::UIRenderer() = default;
@@ -46,6 +49,13 @@ void UIRenderer::setMaterial(Material *material) {
 
 void UIRenderer::setPriority(int32_t priority) {
     _priority = priority;
+}
+
+Material *UIRenderer::getRenderMaterial() const {
+    if (_material != nullptr) {
+        return _material;
+    }
+    return BuiltinResMgr::getInstance()->get<Material>("ui-sprite-material");
 }
 
 } // namespace cc

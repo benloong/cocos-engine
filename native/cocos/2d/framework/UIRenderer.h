@@ -56,6 +56,7 @@ public:
 
     void setMaterial(Material *material);
     Material *getMaterial() const { return _material; }
+    Material *getRenderMaterial() const;
 
     void setPriority(int32_t priority);
     int32_t getPriority() const { return _priority; }

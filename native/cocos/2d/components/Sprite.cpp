@@ -30,7 +30,6 @@
 #include "2d/renderer/SpriteGeometry.h"
 #include "core/assets/Material.h"
 #include "core/assets/TextureBase.h"
-#include "core/builtin/BuiltinResMgr.h"
 #include "core/scene-graph/Node.h"
 #include "math/Mat4.h"
 
@@ -169,10 +168,7 @@ void Sprite::prepare(float opacity) {
         return;
     }
 
-    Material *material = _material;
-    if (material == nullptr) {
-        material = BuiltinResMgr::getInstance()->get<Material>("ui-sprite-material");
-    }
+    Material *material = getRenderMaterial();
     if (material == nullptr) {
         return;
     }
