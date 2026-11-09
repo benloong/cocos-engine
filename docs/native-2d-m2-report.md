@@ -55,6 +55,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `spriteFrame` 构造 native SpriteFrame 并转发；
 - `color`/`priority`/`enabled` 转发；
 - `customMaterial` 转发到 native `setMaterial`；
+- `getSharedMaterial/setSharedMaterial` 转发到 native indexed material；
 - `type`/`fillType`/`sizeMode` 保留序列化字段，但当前只声明 SIMPLE 路径；
 - 不包含几何、assembler 或材质实例逻辑。
 
@@ -189,7 +190,7 @@ Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame �
 ## 7. 尚未完成
 
 1. 可靠的 native 截图与 Web/native 像素对照；
-2. shared material 的 JS 壳转发与 material instance 解析；
+2. material instance 解析；
 3. SpriteFrame 完整 native 资产化/insets 边界用例；
 4. TS UIRenderer 继承链最终决策；
 5. 默认启用 Sprite override 的决策。

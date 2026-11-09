@@ -175,6 +175,18 @@ export class Sprite extends UIRenderer {
         this._syncMaterial();
     }
 
+    public getSharedMaterial (idx = 0): Material | null {
+        if (this._native) {
+            return this._native.getSharedMaterial(idx);
+        }
+        return super.getSharedMaterial(idx);
+    }
+
+    public setSharedMaterial (material: Material | null, index: number, forceUpdate = false): void {
+        super.setSharedMaterial(material, index, forceUpdate);
+        this._native?.setSharedMaterial(material, index);
+    }
+
     public __preload (): void {
         // Native lifecycle owns the render entity; avoid the JS assembler path.
     }

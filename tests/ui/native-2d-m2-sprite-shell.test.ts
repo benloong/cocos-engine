@@ -16,6 +16,8 @@ const nativeSprite = {
     setUITransform: jest.fn(),
     setColorRGBA: jest.fn(),
     setMaterial: jest.fn(),
+    setSharedMaterial: jest.fn(),
+    getSharedMaterial: jest.fn(() => ({})),
     setType: jest.fn(),
     setFillType: jest.fn(),
     setFillStart: jest.fn(),
@@ -73,6 +75,12 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     const material = {} as any;
     sprite.customMaterial = material;
     expect(nativeSprite.setMaterial).toHaveBeenLastCalledWith(material);
+    const material2 = {} as any;
+    sprite.setSharedMaterial(material2, 1);
+    expect(nativeSprite.setSharedMaterial).toHaveBeenLastCalledWith(material2, 1);
+    const shared = sprite.getSharedMaterial(0);
+    expect(shared).toEqual({});
+    expect(nativeSprite.getSharedMaterial).toHaveBeenCalledWith(0);
     sprite.onDisable();
     expect(nativeSprite.setEnabled).toHaveBeenLastCalledWith(false);
     sprite.onDestroy();
