@@ -61,12 +61,13 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - native Sprite shader 编译成功；
 - `Sprite::prepare` 确认生成 drawInfo：`vb=4, ib=6`，material/texture
   指针均非空；
+- `Batcher2d::fillBuffersAndMergeBatches` 结束时 `Batcher2d::batches 2`，
+  说明 Sprite batch 已生成并加入 RenderScene（另一条为 profiler）；
 - `M1_SPRITE_FRAME {"hasFrame":true}`。
 
-但没有观察到可见 Sprite，也没有 Web/native 像素对照，因此验证后恢复为
-disabled。下一步不再是检查 `prepare`，而是定位 Batcher2d 之后的批处理/提交：
-检查 batch 是否生成、camera visibility、Canvas/RenderRoot2D 的 native 渲染
-入口以及最终 draw call。
+但窗口截图/PrintWindow 仍是黑屏或桌面内容，无法确认可见像素；因此本报告
+不把“可见渲染/像素对照”计为通过。下一步需要检查 RenderScene 消费 batch 的
+路径、camera/pipeline 过滤，并搭建可靠的 native 截图 harness。
 
 ### 验证
 
