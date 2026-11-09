@@ -77,7 +77,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 纯 C++ 测试新增 `testSlicedMesh`：
 
 ```text
-73 checks, 0 failures
+75 checks, 0 failures
 ```
 
 `Sprite::prepare` 已接入 `_type == 1`（SLICED）分支：使用
@@ -124,7 +124,7 @@ C++ 测试：
 
 - `testTiledMesh`：200×100 content + 100×100 frame → 8 顶点/12 索引；
 - Sprite TILED drawInfo 8/12；
-- `73 checks, 0 failures`。
+- `75 checks, 0 failures`。
 
 ## 4.4 Radial fill
 
@@ -133,6 +133,7 @@ C++ 测试：
 - `buildRadialSpriteMesh()`：以 fillCenter 为扇心，按 fillStart/fillRange
   生成三角扇；
 - 24 段半圆（fillRange=0.5）时 26 顶点/72 索引；
+- 扇边半径按射线与 content 矩形边界的交点裁剪，不再越出 Sprite 边界；
 - 顶点 UV 按内容坐标映射回 frameRect；
 - `buildFilledSpriteMesh` 的 fillType=2 委托给 radial builder。
 
@@ -173,7 +174,7 @@ disabled，等待可靠像素对照。
 native 2D PoC: PASS
 jsb bindings result: OK
 39 checks, 0 failures      # 旧 pure C++ 基线
-73 checks, 0 failures      # 含 sliced/filled/tiled/radial mesh
+75 checks, 0 failures      # 含 sliced/filled/tiled/radial mesh
 18 checks, 0 failures      # M1 shell contract
 Jest: 1 passed             # Sprite M2 shell mock
 ```

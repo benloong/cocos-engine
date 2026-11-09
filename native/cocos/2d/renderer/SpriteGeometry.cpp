@@ -282,15 +282,30 @@ SpriteMesh buildRadialSpriteMesh(const FilledSpriteGeometryParams &params) {
     const float appY = params.anchorPoint.y * height;
     const float left = -appX;
     const float bottom = -appY;
+    const float right = width - appX;
+    const float top = height - appY;
     const float cx = params.fillCenter.x;
     const float cy = params.fillCenter.y;
-    const float radius = std::max(
-        std::sqrt((cx - left) * (cx - left) + (cy - bottom) * (cy - bottom)),
-        std::sqrt((cx - (width - appX)) * (cx - (width - appX)) + (cy - (height - appY)) * (cy - (height - appY))));
 
     constexpr float PI = 3.14159265358979323846F;
     const float startAngle = PI * 0.5F - 2.F * PI * params.fillStart;
     const uint32_t segments = std::max(3U, static_cast<uint32_t>(std::ceil(48.F * range)));
+
+    auto radiusToEdge = [&](float dx, float dy) {
+        float distance = 1e30F;
+        constexpr float EPSILON = 1e-6F;
+        if (dx > EPSILON) {
+            distance = std::min(distance, (right - cx) / dx);
+        } else if (dx < -EPSILON) {
+            distance = std::min(distance, (left - cx) / dx);
+        }
+        if (dy > EPSILON) {
+            distance = std::min(distance, (top - cy) / dy);
+        } else if (dy < -EPSILON) {
+            distance = std::min(distance, (bottom - cy) / dy);
+        }
+        return std::max(0.F, distance);
+    };
 
     auto makeVertex = [&](float x, float y) {
         SpriteVertex vertex;
@@ -307,7 +322,10 @@ SpriteMesh buildRadialSpriteMesh(const FilledSpriteGeometryParams &params) {
     for (uint32_t i = 0; i <= segments; ++i) {
         const float t = static_cast<float>(i) / static_cast<float>(segments);
         const float angle = startAngle - 2.F * PI * range * t;
-        mesh.vertices.push_back(makeVertex(cx + std::cos(angle) * radius, cy + std::sin(angle) * radius));
+        const float dx = std::cos(angle);
+        const float dy = std::sin(angle);
+        const float distance = radiusToEdge(dx, dy);
+        mesh.vertices.push_back(makeVertex(cx + dx * distance, cy + dy * distance));
     }
 
     mesh.indices.reserve(segments * 3);

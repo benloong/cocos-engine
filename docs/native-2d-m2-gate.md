@@ -19,7 +19,7 @@
 | Creator native 挂载 | 通过 | shell onLoad/setNode/setFrame |
 | Batcher2d batch | 通过 | `Batcher2d::batches 2` |
 | custom pipeline 提交 | 通过 | `draw2D` → `submitUICommands` → pass phase 匹配 → `cmdBuff->draw` |
-| 回归 | 通过 | `73 checks, 0 failures`；M0 checks passed |
+| 回归 | 通过 | `75 checks, 0 failures`；M0 checks passed |
 
 ## 2. 未通过 / 未覆盖
 

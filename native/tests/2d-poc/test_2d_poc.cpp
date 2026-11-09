@@ -276,6 +276,8 @@ void testRadialMesh() {
     if (mesh.vertices.size() == 26) {
         checkNear(mesh.vertices[0].uv.x, 0.5F, "radial center u");
         checkNear(mesh.vertices[0].uv.y, 0.5F, "radial center v");
+        checkNear(mesh.vertices[1].position.x, 0.F, "radial first edge x");
+        checkNear(mesh.vertices[1].position.y, 50.F, "radial first edge clips to content top");
     }
 }
 
