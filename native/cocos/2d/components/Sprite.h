@@ -88,6 +88,9 @@ public:
     void setTrim(bool trim);
     bool isTrim() const { return _trim; }
 
+    void setType(int32_t type);
+    int32_t getType() const { return _type; }
+
     RenderEntity *getRenderEntity() const { return _entity.get(); }
 
     void setDirty() { _dirty = true; }
@@ -107,6 +110,11 @@ private:
     bool _rotated{false};
     bool _trim{true};
     bool _dirty{true};
+    int32_t _type{0};
+    float _insetLeft{0.F};
+    float _insetRight{0.F};
+    float _insetTop{0.F};
+    float _insetBottom{0.F};
     float _lastOpacity{-1.F};
 
     IntrusivePtr<RenderEntity> _entity;

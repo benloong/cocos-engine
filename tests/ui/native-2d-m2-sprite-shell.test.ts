@@ -16,6 +16,7 @@ const nativeSprite = {
     setUITransform: jest.fn(),
     setColorRGBA: jest.fn(),
     setMaterial: jest.fn(),
+    setType: jest.fn(),
     setPriority: jest.fn(),
     setEnabled: jest.fn(),
     setFrame: jest.fn(),
@@ -38,6 +39,7 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     sprite.onLoad();
     expect((global as any).n2d.Sprite).toHaveBeenCalled();
     expect(nativeSprite.setNode).toHaveBeenCalledWith(node);
+    expect(nativeSprite.setType).toHaveBeenCalledWith(0);
     expect(nativeSprite.setColorRGBA).toHaveBeenCalledWith(255, 255, 255, 255);
 
     const texture = { width: 128, height: 256 };

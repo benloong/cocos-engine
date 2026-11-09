@@ -30,6 +30,7 @@
 #include <vector>
 
 #include "2d/components/Sprite.h"
+#include "2d/assets/SpriteFrame.h"
 #include "2d/framework/UIOpacity.h"
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/RenderDrawInfo.h"
@@ -537,9 +538,34 @@ void testSpritePrepare() {
         check(drawInfo->getTexture() == texture->getGFXTexture(), "sprite texture");
     }
 
+    cc::Node slicedNode("native-sprite-sliced");
+    cc::UITransform slicedTransform(&slicedNode);
+    slicedTransform.setContentSize(200.F, 200.F);
+    cc::Sprite slicedSprite;
+    slicedSprite.setNode(&slicedNode);
+    slicedSprite.setUITransform(&slicedTransform);
+    slicedSprite.setMaterial(material);
+    slicedSprite.setType(1);
+    cc::SpriteFrame slicedFrame;
+    slicedFrame.setTexture(texture);
+    slicedFrame.setRect(0.F, 0.F, 1.F, 1.F);
+    slicedFrame.setOriginalSize(1.F, 1.F);
+    slicedFrame.setInsets(0.F, 0.F, 0.F, 0.F);
+    slicedSprite.setFrame(&slicedFrame);
+    cc::RenderEntity *slicedEntity = slicedSprite.getRenderEntity();
+    check(slicedEntity != nullptr, "sliced sprite render entity");
+    if (slicedEntity != nullptr) {
+        slicedEntity->prepare(1.F);
+        cc::RenderDrawInfo *slicedDrawInfo = slicedEntity->getStaticRenderDrawInfo(0);
+        check(slicedDrawInfo != nullptr, "sliced sprite draw info");
+        if (slicedDrawInfo != nullptr) {
+            check(slicedDrawInfo->getVbCount() == 16, "sliced sprite vertex count");
+            check(slicedDrawInfo->getIbCount() == 54, "sliced sprite index count");
+        }
+    }
+
     constexpr int kPrepareIterations = 10000;
-    const auto start = std::chrono::steady_clock::now();
-    for (int i = 0; i < kPrepareIterations; ++i) {
+    const auto start = std::chrono::steady_clock::now();    for (int i = 0; i < kPrepareIterations; ++i) {
         sprite.setDirty();
         entity->prepare(1.F);
     }

@@ -112,6 +112,19 @@ void Sprite::setFrame(SpriteFrame *frame) {
              frame->getOffsetX(), frame->getOffsetY(),
              textureWidth, textureHeight,
              frame->isRotated());
+    _insetLeft = frame->getInsetLeft();
+    _insetRight = frame->getInsetRight();
+    _insetTop = frame->getInsetTop();
+    _insetBottom = frame->getInsetBottom();
+    _dirty = true;
+}
+
+void Sprite::setType(int32_t type) {
+    if (_type == type) {
+        return;
+    }
+    _type = type;
+    _dirty = true;
 }
 
 void Sprite::clearFrame() {
@@ -196,34 +209,66 @@ void Sprite::prepare(float opacity) {
     }
 
     if (_dirty) {
-        SimpleSpriteGeometryParams params;
-        params.contentSize = _transform->getContentSize();
-        params.anchorPoint = _transform->getAnchorPoint();
-        params.frameRect = _frameRect;
-        params.originalSize = _originalSize;
-        params.offset = _offset;
-        params.textureSize = _textureSize;
-        params.trim = _trim;
-        params.rotated = _rotated;
+        uint32_t vertexCount = 0;
+        uint32_t indexCount = 0;
 
-        SpriteQuad quad = buildSimpleSpriteQuad(params);
-        if (!quad.valid) {
-            return;
+        if (_type == 1) {
+            SlicedSpriteGeometryParams params;
+            params.contentSize = _transform->getContentSize();
+            params.anchorPoint = _transform->getAnchorPoint();
+            params.frameRect = _frameRect;
+            params.textureSize = _textureSize;
+            params.insetLeft = _insetLeft;
+            params.insetRight = _insetRight;
+            params.insetTop = _insetTop;
+            params.insetBottom = _insetBottom;
+
+            SpriteMesh mesh = buildSlicedSpriteMesh(params);
+            if (!mesh.valid) {
+                return;
+            }
+            transformSpriteMesh(mesh, _node->getWorldMatrix());
+            vertexCount = static_cast<uint32_t>(mesh.vertices.size());
+            indexCount = static_cast<uint32_t>(mesh.indices.size());
+            _vertices.assign(vertexCount * VERTEX_STRIDE, 0.F);
+            for (uint32_t i = 0; i < vertexCount; ++i) {
+                const uint32_t offset = i * VERTEX_STRIDE;
+                _vertices[offset + 0] = mesh.vertices[i].position.x;
+                _vertices[offset + 1] = mesh.vertices[i].position.y;
+                _vertices[offset + 2] = mesh.vertices[i].position.z;
+                _vertices[offset + 3] = mesh.vertices[i].uv.x;
+                _vertices[offset + 4] = mesh.vertices[i].uv.y;
+            }
+            _indices = mesh.indices;
+        } else {
+            SimpleSpriteGeometryParams params;
+            params.contentSize = _transform->getContentSize();
+            params.anchorPoint = _transform->getAnchorPoint();
+            params.frameRect = _frameRect;
+            params.originalSize = _originalSize;
+            params.offset = _offset;
+            params.textureSize = _textureSize;
+            params.trim = _trim;
+            params.rotated = _rotated;
+
+            SpriteQuad quad = buildSimpleSpriteQuad(params);
+            if (!quad.valid) {
+                return;
+            }
+            transformSpriteQuad(quad, _node->getWorldMatrix());
+            vertexCount = VERTEX_COUNT;
+            indexCount = INDEX_COUNT;
+            _vertices.assign(VERTEX_COUNT * VERTEX_STRIDE, 0.F);
+            for (uint32_t i = 0; i < VERTEX_COUNT; ++i) {
+                const uint32_t offset = i * VERTEX_STRIDE;
+                _vertices[offset + 0] = quad.vertices[i].position.x;
+                _vertices[offset + 1] = quad.vertices[i].position.y;
+                _vertices[offset + 2] = quad.vertices[i].position.z;
+                _vertices[offset + 3] = quad.vertices[i].uv.x;
+                _vertices[offset + 4] = quad.vertices[i].uv.y;
+            }
+            _indices.assign(quad.indices, quad.indices + INDEX_COUNT);
         }
-        transformSpriteQuad(quad, _node->getWorldMatrix());
-
-        _vertices.assign(VERTEX_COUNT * VERTEX_STRIDE, 0.F);
-        for (uint32_t i = 0; i < VERTEX_COUNT; ++i) {
-            const uint32_t offset = i * VERTEX_STRIDE;
-            _vertices[offset + 0] = quad.vertices[i].position.x;
-            _vertices[offset + 1] = quad.vertices[i].position.y;
-            _vertices[offset + 2] = quad.vertices[i].position.z;
-            _vertices[offset + 3] = quad.vertices[i].uv.x;
-            _vertices[offset + 4] = quad.vertices[i].uv.y;
-            // Color channels are filled by updateVertexColors().
-        }
-
-        _indices.assign(quad.indices, quad.indices + INDEX_COUNT);
 
         _entity->setStaticDrawInfoSize(1);
         RenderDrawInfo *drawInfo = _entity->getStaticRenderDrawInfo(0);
@@ -234,8 +279,8 @@ void Sprite::prepare(float opacity) {
         drawInfo->setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
         drawInfo->setIsMeshBuffer(true);
         drawInfo->setStride(static_cast<uint8_t>(VERTEX_STRIDE));
-        drawInfo->setVbCount(VERTEX_COUNT);
-        drawInfo->setIbCount(INDEX_COUNT);
+        drawInfo->setVbCount(vertexCount);
+        drawInfo->setIbCount(indexCount);
         drawInfo->setVDataBuffer(_vertices.data());
         drawInfo->setIDataBuffer(_indices.data());
         drawInfo->setMaterial(material);
@@ -265,7 +310,8 @@ void Sprite::updateVertexColors(float opacity) {
     const float green = static_cast<float>(_color.g) / 255.F;
     const float blue = static_cast<float>(_color.b) / 255.F;
 
-    for (uint32_t i = 0; i < VERTEX_COUNT; ++i) {
+    const uint32_t vertexCount = static_cast<uint32_t>(_vertices.size() / VERTEX_STRIDE);
+    for (uint32_t i = 0; i < vertexCount; ++i) {
         const uint32_t offset = i * VERTEX_STRIDE + 5;
         _vertices[offset + 0] = red;
         _vertices[offset + 1] = green;

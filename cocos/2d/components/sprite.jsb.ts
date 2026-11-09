@@ -107,6 +107,7 @@ export class Sprite extends UIRenderer {
 
     set type (value: number) {
         this._type = value;
+        this._native?.setType(value);
     }
 
     get fillType (): number {
@@ -167,6 +168,7 @@ export class Sprite extends UIRenderer {
         }
         this._syncColor();
         this._syncMaterial();
+        this._native.setType(this._type);
         this._native.setPriority(this.priority);
         this._syncFrame();
         this._native.setEnabled(this.enabledInHierarchy);

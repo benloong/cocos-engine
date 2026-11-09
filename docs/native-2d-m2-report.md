@@ -77,7 +77,13 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 54 checks, 0 failures
 ```
 
-尚未接入 `Sprite::prepare` / `Sprite.Type.SLICED` 分支。
+`Sprite::prepare` 已接入 `_type == 1`（SLICED）分支：使用
+`buildSlicedSpriteMesh`、`transformSpriteMesh`，并生成 16 顶点/54 索引的
+drawInfo。`sprite.jsb.ts` 的 `type` setter 转发到 native `setType`。
+
+C++ 测试覆盖 SLICED drawInfo 顶点/索引数。
+
+尚未接入 Tiled/Filled/Radial。
 
 ## 5. 真实 Creator 探测
 
@@ -131,7 +137,7 @@ Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame �
 
 1. 可靠的 native 截图与 Web/native 像素对照；
 2. UIRenderer shared material/material instance 解析；
-3. Sprite sliced/tiled/filled/radial 模式；
+3. Sprite Tiled/Filled/Radial 模式；
 4. SpriteFrame insets/native 资产化；
 5. TS UIRenderer 继承链最终决策。
 
