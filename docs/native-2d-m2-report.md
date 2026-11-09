@@ -59,12 +59,14 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
   opacity 0.501961、listener 非空；
 - 换成 16×16 的 `default-texture` SpriteFrame 后 `setFrame rect 0 0 16 16`；
 - native Sprite shader 编译成功；
+- `Sprite::prepare` 确认生成 drawInfo：`vb=4, ib=6`，material/texture
+  指针均非空；
 - `M1_SPRITE_FRAME {"hasFrame":true}`。
 
 但没有观察到可见 Sprite，也没有 Web/native 像素对照，因此验证后恢复为
-disabled。下一步需要定位“`prepare` 已调用但无可见 draw”的原因：检查
-`Sprite::prepare` 是否真正生成 drawInfo、材质/texture 是否进入 draw、Canvas/
-RenderRoot 的 native 渲染入口和 camera。
+disabled。下一步不再是检查 `prepare`，而是定位 Batcher2d 之后的批处理/提交：
+检查 batch 是否生成、camera visibility、Canvas/RenderRoot2D 的 native 渲染
+入口以及最终 draw call。
 
 ### 验证
 
