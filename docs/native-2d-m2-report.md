@@ -162,11 +162,12 @@ C++ 测试：
   两个 batch 的 `vis=33554432` 均通过 camera 过滤；
 - batch pass phase=1，与 phaseLayoutID=1 匹配，最终执行到 `cmdBuff->draw`；
 - native sprite shader 编译成功；
-- `M1_SPRITE_FRAME {"hasFrame":true}`。
+- `M1_SPRITE_FRAME {"hasFrame":true}`；
+- 人工确认：运行中的 `cocos-m1-test` native 窗口可见 64×64 红色 Sprite。
 
-因此 native 侧的 Sprite batch 已经完成提交；当前无法确认可见像素是
-截图 harness 的问题，而不是渲染链缺失。验证后 Sprite override 保持
-disabled，等待可靠像素对照。
+因此 native 侧 Sprite 不仅完成 draw 提交，也已实际显示；自动截图
+（PrintWindow/BitBlt/DWM thumbnail）仍无法捕获该 GPU 内容，所以 Web/native
+像素对照仍需人工或专门 harness。验证后 Sprite override 保持 disabled。
 
 ## 6. 验证
 

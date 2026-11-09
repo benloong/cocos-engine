@@ -19,11 +19,13 @@
 | Creator native 挂载 | 通过 | shell onLoad/setNode/setFrame |
 | Batcher2d batch | 通过 | `Batcher2d::batches 2` |
 | custom pipeline 提交 | 通过 | `draw2D` → `submitUICommands` → pass phase 匹配 → `cmdBuff->draw` |
+| 可见渲染 | 通过（人工） | native 窗口可见 64×64 红色 Sprite |
 | 回归 | 通过 | `75 checks, 0 failures`；M0 checks passed |
 
 ## 2. 未通过 / 未覆盖
 
-1. **可见像素/Web-native 像素对照**：窗口截图/PrintWindow 不可靠，无法确认实际画面。
+1. **自动 Web-native 像素对照**：人工确认 Sprite 可见，但 PrintWindow/
+   BitBlt/DWM thumbnail 仍捕获为黑屏，缺少自动像素 diff。
 2. material instance 解析（shared material 已下沉）。
 3. SpriteFrame 完整 native 资产化与 insets 边界。
 4. Tiled/Filled 的旋转 atlas frame 坐标组合。
@@ -42,6 +44,6 @@
 
 ## 4. 当前建议
 
-保持 `sprite.enabled = false`。native 几何、drawInfo、batch 和 custom pipeline
-提交链已通，但缺少可见像素对照，默认启用会把未经验证的 Sprite 渲染带进
-所有 native 项目。
+保持 `sprite.enabled = false`。native 几何、drawInfo、batch、custom pipeline
+提交和可见渲染已确认，但缺少自动 Web/native 像素对照，默认启用仍会带来
+未被回归覆盖的视觉风险。
