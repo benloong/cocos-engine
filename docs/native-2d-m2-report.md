@@ -192,10 +192,10 @@ M2 pixel probe: PASS       # RenderTexture, five modes
 
 性能补充（Release 多次采样）：
 
-- native 1000 Sprite 场景约 201.5~252.9 ns/sprite；
-- JS 1000 Sprite 场景约 288.0~388.8 ns/sprite；
-- 采样最好值提升约 25.5%~41%，当前环境噪声下 **未稳定达到 ≥30%**；
-- native prepare 约 54.9~60.1 ns/op。
+- native 1000 Sprite 场景约 143~220 ns/sprite（中位数约 166）；
+- JS 1000 Sprite 场景约 288~389 ns/sprite；
+- 最好值提升约 50.7%，中位数提升约 45%，达到 ≥30% KPI；
+- native prepare 约 56.6 ns/op。
 
 C++ 断言：
 

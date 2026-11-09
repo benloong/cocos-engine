@@ -49,6 +49,8 @@ constexpr uint32_t INDEX_COUNT = 6;
 Sprite::Sprite() {
     _entity = new RenderEntity(RenderEntityType::STATIC);
     _entity->setPrepareListener(this);
+    _vertices.reserve(64U * VERTEX_STRIDE);
+    _indices.reserve(128U);
 }
 
 Sprite::~Sprite() {

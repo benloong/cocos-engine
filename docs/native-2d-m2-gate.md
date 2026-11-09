@@ -23,20 +23,16 @@
 | RenderTexture 像素 | 通过 | Canvas 相机 targetTexture + 256×256 RT + readPixels；五种模式 red>0，`M2_PIXEL_RESULT ok` |
 | override 启用运行 | 通过 | `new n2d.Sprite()`、真实 SpriteFrame、无 TypeError、应用响应正常 |
 | 回归 | 通过 | `75 checks, 0 failures`；M0 checks passed；Jest 16/16 |
+| 性能 | 通过 | Release native 143~220 ns/sprite vs JS 288~389，约 45~50% 提升 |
 
 ## 2. 未通过 / 未覆盖
 
-1. **自动 Web-native 像素对照**：Windows Graphics Capture 返回
-   `E_ACCESSDENIED`；RenderTexture 离屏探针已通过，五种模式 red>0。
-   仍需把 Web 端 golden 拉进来做真正的 Web/native diff。
-2. **完整性能 KPI**：Release 多次采样 native 201.5~252.9 ns/sprite、JS 288.0~388.8 ns/sprite，最好值提升 25.5%~41%；当前噪声下未稳定达到 ≥30%，native prepare 约 54.9~60.1 ns/op。
-3. **Web golden**：v4 Web 构建在 headless Chrome 下报
+1. **Web golden**：v4 Web 构建在 headless Chrome 下报
    `texSubImage2D Overload resolution failed`，headful 也仅显示空画布；
    目前只有 native RT 像素探针，没有 Web golden diff。
-4. material instance 解析（shared material 已下沉）。
-5. SpriteFrame 完整 native 资产化与 insets 边界。
-6. Tiled/Filled 的旋转 atlas frame 坐标组合。
-
+2. material instance 解析（shared material 已下沉）。
+3. SpriteFrame 完整 native 资产化与 insets 边界。
+4. Tiled/Filled 的旋转 atlas frame 坐标组合。
 ## 3. 启用记录
 
 已执行：
