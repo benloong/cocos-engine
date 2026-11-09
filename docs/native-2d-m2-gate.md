@@ -29,8 +29,7 @@
 1. **自动 Web-native 像素对照**：Windows Graphics Capture 返回
    `E_ACCESSDENIED`；RenderTexture 离屏探针已通过，五种模式 red>0。
    仍需把 Web 端 golden 拉进来做真正的 Web/native diff。
-2. **完整性能 KPI**：Release 中位数 native 225.0 ns/sprite、JS 316.6 ns/sprite，
-   提升 28.9%（最好样本 41%，未稳定达到 ≥30%）；native prepare 60.1 ns/op。
+2. **完整性能 KPI**：Release 多次采样 native 201.5~252.9 ns/sprite、JS 288.0~388.8 ns/sprite，最好值提升 25.5%~41%；当前噪声下未稳定达到 ≥30%，native prepare 约 54.9~60.1 ns/op。
 3. **Web golden**：v4 Web 构建在 headless Chrome 下报
    `texSubImage2D Overload resolution failed`，headful 也仅显示空画布；
    目前只有 native RT 像素探针，没有 Web golden diff。

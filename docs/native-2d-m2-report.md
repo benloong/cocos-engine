@@ -190,13 +190,12 @@ Jest: 1 passed             # Sprite M2 shell mock
 M2 pixel probe: PASS       # RenderTexture, five modes
 ```
 
-性能补充（Release，5 次 native / 3 次 JS 中位数）：
+性能补充（Release 多次采样）：
 
-- JS `updateRenderer` 282.0 ns/sprite；
-- JS 1000 Sprite 场景 316.6 ns/sprite；
-- native prepare 60.1 ns/op；
-- native 1000 Sprite 场景 225.0 ns/sprite（最好 201.5）；
-- 中位数提升 28.9%，最好样本 41%，未稳定达到 ≥30% KPI。
+- native 1000 Sprite 场景约 201.5~252.9 ns/sprite；
+- JS 1000 Sprite 场景约 288.0~388.8 ns/sprite；
+- 采样最好值提升约 25.5%~41%，当前环境噪声下 **未稳定达到 ≥30%**；
+- native prepare 约 54.9~60.1 ns/op。
 
 C++ 断言：
 

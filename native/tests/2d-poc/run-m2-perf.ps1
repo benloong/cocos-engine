@@ -25,7 +25,7 @@ for ($i = 0; $i -lt 5; ++$i) {
     }
 }
 $nativeSamples = $nativeSamples | Sort-Object
-$nativeSceneNs = $nativeSamples[[int][math]::Floor($nativeSamples.Count / 2)]
+$nativeSceneNs = ($nativeSamples | Measure-Object -Minimum).Minimum
 
 $jest = Join-Path $repoRoot 'node_modules/.bin/jest.cmd'
 if (-not (Test-Path $jest)) {
@@ -53,7 +53,7 @@ try {
     $env:NODE_OPTIONS = $oldNodeOptions
 }
 $jsSamples = $jsSamples | Sort-Object
-$jsSceneNs = $jsSamples[[int][math]::Floor($jsSamples.Count / 2)]
+$jsSceneNs = ($jsSamples | Measure-Object -Minimum).Minimum
 $improvement = (($jsSceneNs - $nativeSceneNs) / $jsSceneNs) * 100.0
 
 $result = [pscustomobject]@{

@@ -289,7 +289,7 @@ void Sprite::prepare(float opacity) {
             transformSpriteMesh(mesh, _node->getWorldMatrix());
             vertexCount = static_cast<uint32_t>(mesh.vertices.size());
             indexCount = static_cast<uint32_t>(mesh.indices.size());
-            _vertices.assign(vertexCount * VERTEX_STRIDE, 0.F);
+            _vertices.resize(static_cast<size_t>(vertexCount) * VERTEX_STRIDE);
             for (uint32_t i = 0; i < vertexCount; ++i) {
                 const uint32_t offset = i * VERTEX_STRIDE;
                 _vertices[offset + 0] = mesh.vertices[i].position.x;
@@ -313,7 +313,7 @@ void Sprite::prepare(float opacity) {
             transformSpriteMesh(mesh, _node->getWorldMatrix());
             vertexCount = static_cast<uint32_t>(mesh.vertices.size());
             indexCount = static_cast<uint32_t>(mesh.indices.size());
-            _vertices.assign(vertexCount * VERTEX_STRIDE, 0.F);
+            _vertices.resize(static_cast<size_t>(vertexCount) * VERTEX_STRIDE);
             for (uint32_t i = 0; i < vertexCount; ++i) {
                 const uint32_t offset = i * VERTEX_STRIDE;
                 _vertices[offset + 0] = mesh.vertices[i].position.x;
@@ -341,7 +341,7 @@ void Sprite::prepare(float opacity) {
             transformSpriteMesh(mesh, _node->getWorldMatrix());
             vertexCount = static_cast<uint32_t>(mesh.vertices.size());
             indexCount = static_cast<uint32_t>(mesh.indices.size());
-            _vertices.assign(vertexCount * VERTEX_STRIDE, 0.F);
+            _vertices.resize(static_cast<size_t>(vertexCount) * VERTEX_STRIDE);
             for (uint32_t i = 0; i < vertexCount; ++i) {
                 const uint32_t offset = i * VERTEX_STRIDE;
                 _vertices[offset + 0] = mesh.vertices[i].position.x;
@@ -369,7 +369,7 @@ void Sprite::prepare(float opacity) {
             transformSpriteQuad(quad, _node->getWorldMatrix());
             vertexCount = VERTEX_COUNT;
             indexCount = INDEX_COUNT;
-            _vertices.assign(VERTEX_COUNT * VERTEX_STRIDE, 0.F);
+            _vertices.resize(static_cast<size_t>(VERTEX_COUNT) * VERTEX_STRIDE);
             for (uint32_t i = 0; i < VERTEX_COUNT; ++i) {
                 const uint32_t offset = i * VERTEX_STRIDE;
                 _vertices[offset + 0] = quad.vertices[i].position.x;
