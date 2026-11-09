@@ -57,6 +57,7 @@ gen/
 assets/
 !/cocos/core/assets
 !/cocos/3d/assets
+!/cocos/2d/assets
 local.properties
 
 # Ignore python compiled files
