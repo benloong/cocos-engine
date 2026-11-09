@@ -564,6 +564,30 @@ void testSpritePrepare() {
         }
     }
 
+    cc::Node filledNode("native-sprite-filled");
+    cc::UITransform filledTransform(&filledNode);
+    filledTransform.setContentSize(100.F, 100.F);
+    cc::Sprite filledSprite;
+    filledSprite.setNode(&filledNode);
+    filledSprite.setUITransform(&filledTransform);
+    filledSprite.setMaterial(material);
+    filledSprite.setType(3);
+    filledSprite.setFillType(0);
+    filledSprite.setFillStart(0.25F);
+    filledSprite.setFillRange(0.5F);
+    filledSprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
+    cc::RenderEntity *filledEntity = filledSprite.getRenderEntity();
+    check(filledEntity != nullptr, "filled sprite render entity");
+    if (filledEntity != nullptr) {
+        filledEntity->prepare(1.F);
+        cc::RenderDrawInfo *filledDrawInfo = filledEntity->getStaticRenderDrawInfo(0);
+        check(filledDrawInfo != nullptr, "filled sprite draw info");
+        if (filledDrawInfo != nullptr) {
+            check(filledDrawInfo->getVbCount() == 4, "filled sprite vertex count");
+            check(filledDrawInfo->getIbCount() == 6, "filled sprite index count");
+        }
+    }
+
     constexpr int kPrepareIterations = 10000;
     const auto start = std::chrono::steady_clock::now();    for (int i = 0; i < kPrepareIterations; ++i) {
         sprite.setDirty();

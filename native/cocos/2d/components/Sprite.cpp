@@ -127,6 +127,38 @@ void Sprite::setType(int32_t type) {
     _dirty = true;
 }
 
+void Sprite::setFillType(int32_t fillType) {
+    if (_fillType == fillType) {
+        return;
+    }
+    _fillType = fillType;
+    _dirty = true;
+}
+
+void Sprite::setFillStart(float fillStart) {
+    if (_fillStart == fillStart) {
+        return;
+    }
+    _fillStart = fillStart;
+    _dirty = true;
+}
+
+void Sprite::setFillRange(float fillRange) {
+    if (_fillRange == fillRange) {
+        return;
+    }
+    _fillRange = fillRange;
+    _dirty = true;
+}
+
+void Sprite::setFillCenter(float x, float y) {
+    if (_fillCenter.x == x && _fillCenter.y == y) {
+        return;
+    }
+    _fillCenter.set(x, y);
+    _dirty = true;
+}
+
 void Sprite::clearFrame() {
     _texture = nullptr;
     _frameRect.setRect(0.F, 0.F, 0.F, 0.F);
@@ -224,6 +256,34 @@ void Sprite::prepare(float opacity) {
             params.insetBottom = _insetBottom;
 
             SpriteMesh mesh = buildSlicedSpriteMesh(params);
+            if (!mesh.valid) {
+                return;
+            }
+            transformSpriteMesh(mesh, _node->getWorldMatrix());
+            vertexCount = static_cast<uint32_t>(mesh.vertices.size());
+            indexCount = static_cast<uint32_t>(mesh.indices.size());
+            _vertices.assign(vertexCount * VERTEX_STRIDE, 0.F);
+            for (uint32_t i = 0; i < vertexCount; ++i) {
+                const uint32_t offset = i * VERTEX_STRIDE;
+                _vertices[offset + 0] = mesh.vertices[i].position.x;
+                _vertices[offset + 1] = mesh.vertices[i].position.y;
+                _vertices[offset + 2] = mesh.vertices[i].position.z;
+                _vertices[offset + 3] = mesh.vertices[i].uv.x;
+                _vertices[offset + 4] = mesh.vertices[i].uv.y;
+            }
+            _indices = mesh.indices;
+        } else if (_type == 3) {
+            FilledSpriteGeometryParams params;
+            params.contentSize = _transform->getContentSize();
+            params.anchorPoint = _transform->getAnchorPoint();
+            params.frameRect = _frameRect;
+            params.textureSize = _textureSize;
+            params.fillType = _fillType;
+            params.fillStart = _fillStart;
+            params.fillRange = _fillRange;
+            params.fillCenter = _fillCenter;
+
+            SpriteMesh mesh = buildFilledSpriteMesh(params);
             if (!mesh.valid) {
                 return;
             }

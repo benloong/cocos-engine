@@ -74,7 +74,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 纯 C++ 测试新增 `testSlicedMesh`：
 
 ```text
-54 checks, 0 failures
+61 checks, 0 failures
 ```
 
 `Sprite::prepare` 已接入 `_type == 1`（SLICED）分支：使用
@@ -83,7 +83,28 @@ drawInfo。`sprite.jsb.ts` 的 `type` setter 转发到 native `setType`。
 
 C++ 测试覆盖 SLICED drawInfo 顶点/索引数。
 
-尚未接入 Tiled/Filled/Radial。
+尚未接入 Tiled/Radial。
+
+## 4.2 Filled 几何（H/V）
+
+`SpriteGeometry` 新增：
+
+- `FilledSpriteGeometryParams`（content/anchor/frame/texture/fillType/fillStart/fillRange/fillCenter）；
+- `buildFilledSpriteMesh()`：
+  - horizontal/vertical fill 生成裁剪 quad（4 顶点、6 索引）；
+  - fillStart/fillRange clamp；
+  - UV 随 fill 区间裁剪；
+  - radial fill 暂返回 invalid。
+
+`Sprite::prepare` 已接入 `_type == 3`（FILLED）分支；`sprite.jsb.ts` 转发
+`type/fillType/fillStart/fillRange/fillCenter`。
+
+C++ 测试：
+
+- `testFilledMesh`：x/(-25,25)、u/(0.25,0.75)；
+- Sprite FILLED drawInfo 4/6。
+
+尚未实现 radial fill 和 Tiled。
 
 ## 5. 真实 Creator 探测
 
@@ -117,7 +138,7 @@ disabled，等待可靠像素对照。
 native 2D PoC: PASS
 jsb bindings result: OK
 39 checks, 0 failures      # 旧 pure C++ 基线
-54 checks, 0 failures      # 含 sliced mesh
+61 checks, 0 failures      # 含 sliced/filled mesh
 18 checks, 0 failures      # M1 shell contract
 Jest: 1 passed             # Sprite M2 shell mock
 ```

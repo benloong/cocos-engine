@@ -218,6 +218,28 @@ void testSlicedMesh() {
     }
 }
 
+void testFilledMesh() {
+    cc::FilledSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(100.F, 100.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+    params.fillType = 0;
+    params.fillStart = 0.25F;
+    params.fillRange = 0.5F;
+
+    const cc::SpriteMesh mesh = cc::buildFilledSpriteMesh(params);
+    check(mesh.valid, "filled mesh is valid");
+    check(mesh.vertices.size() == 4, "filled mesh has 4 vertices");
+    check(mesh.indices.size() == 6, "filled mesh has 6 indices");
+    if (mesh.vertices.size() == 4) {
+        checkNear(mesh.vertices[0].position.x, -25.F, "filled bottom-left x");
+        checkNear(mesh.vertices[1].position.x, 25.F, "filled bottom-right x");
+        checkNear(mesh.vertices[0].uv.x, 0.25F, "filled left u");
+        checkNear(mesh.vertices[1].uv.x, 0.75F, "filled right u");
+    }
+}
+
 void testInvalidUntrimmed() {
     cc::SimpleSpriteGeometryParams params;
     params.contentSize = cc::Vec2(100.F, 100.F);
@@ -240,6 +262,7 @@ int main() {
     testSimpleQuadRotatedUV();
     testTransformQuad();
     testSlicedMesh();
+    testFilledMesh();
     testInvalidUntrimmed();
 
     std::printf("%d checks, %d failures\n", gChecks, gFailures);

@@ -202,4 +202,78 @@ void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix) {
     }
 }
 
+SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params) {
+    SpriteMesh mesh;
+    if (params.fillType == 2) {
+        return mesh; // radial fill is a follow-up
+    }
+
+    const float width = params.contentSize.x;
+    const float height = params.contentSize.y;
+    const float textureWidth = params.textureSize.x;
+    const float textureHeight = params.textureSize.y;
+    const Rect &rect = params.frameRect;
+    if (width <= 0.F || height <= 0.F || textureWidth <= 0.F || textureHeight <= 0.F ||
+        rect.width <= 0.F || rect.height <= 0.F) {
+        return mesh;
+    }
+
+    const float start = std::clamp(params.fillStart, 0.F, 1.F);
+    const float end = std::clamp(params.fillStart + params.fillRange, 0.F, 1.F);
+    if (end <= start) {
+        return mesh;
+    }
+
+    const float appX = params.anchorPoint.x * width;
+    const float appY = params.anchorPoint.y * height;
+    const float left = -appX;
+    const float bottom = -appY;
+    const float right = width - appX;
+    const float top = height - appY;
+
+    const float u0 = rect.x / textureWidth;
+    const float u3 = (rect.x + rect.width) / textureWidth;
+    const float vBottom = (rect.y + rect.height) / textureHeight;
+    const float vTop = rect.y / textureHeight;
+
+    float x0 = left;
+    float x1 = right;
+    float y0 = bottom;
+    float y1 = top;
+    float uLeft = u0;
+    float uRight = u3;
+    float vBottomOut = vBottom;
+    float vTopOut = vTop;
+
+    if (params.fillType == 0) {
+        x0 = left + width * start;
+        x1 = left + width * end;
+        uLeft = (rect.x + rect.width * start) / textureWidth;
+        uRight = (rect.x + rect.width * end) / textureWidth;
+    } else {
+        y0 = bottom + height * start;
+        y1 = bottom + height * end;
+        vBottomOut = (rect.y + rect.height * (1.F - start)) / textureHeight;
+        vTopOut = (rect.y + rect.height * (1.F - end)) / textureHeight;
+    }
+
+    SpriteVertex v00;
+    SpriteVertex v10;
+    SpriteVertex v01;
+    SpriteVertex v11;
+    v00.position.set(x0, y0, 0.F);
+    v10.position.set(x1, y0, 0.F);
+    v01.position.set(x0, y1, 0.F);
+    v11.position.set(x1, y1, 0.F);
+    v00.uv.set(uLeft, vBottomOut);
+    v10.uv.set(uRight, vBottomOut);
+    v01.uv.set(uLeft, vTopOut);
+    v11.uv.set(uRight, vTopOut);
+
+    mesh.vertices = {v00, v10, v01, v11};
+    mesh.indices = {0, 1, 2, 1, 3, 2};
+    mesh.valid = true;
+    return mesh;
+}
+
 } // namespace cc

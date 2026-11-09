@@ -88,6 +88,23 @@ struct SlicedSpriteGeometryParams final {
  */
 SpriteMesh buildSlicedSpriteMesh(const SlicedSpriteGeometryParams &params);
 
+struct FilledSpriteGeometryParams final {
+    Vec2 contentSize{100.F, 100.F};
+    Vec2 anchorPoint{0.5F, 0.5F};
+    Rect frameRect;
+    Vec2 textureSize;
+    int32_t fillType{0}; // 0 horizontal, 1 vertical, 2 radial
+    float fillStart{0.F};
+    float fillRange{1.F};
+    Vec2 fillCenter{0.F, 0.F};
+};
+
+/**
+ * Build the FILLED geometry for horizontal/vertical fill. Radial fill is not
+ * implemented yet and returns an invalid mesh.
+ */
+SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params);
+
 void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix);
 
 /**

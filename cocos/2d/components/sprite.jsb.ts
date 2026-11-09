@@ -76,7 +76,7 @@ export class Sprite extends UIRenderer {
     @serializable
     protected _fillStart = 0;
     @serializable
-    protected _fillRange = 0;
+    protected _fillRange = 1;
     @serializable
     protected _isTrimmedMode = true;
     @serializable
@@ -116,6 +116,25 @@ export class Sprite extends UIRenderer {
 
     set fillType (value: number) {
         this._fillType = value;
+        this._native?.setFillType(value);
+    }
+
+    get fillStart (): number {
+        return this._fillStart;
+    }
+
+    set fillStart (value: number) {
+        this._fillStart = value;
+        this._native?.setFillStart(value);
+    }
+
+    get fillRange (): number {
+        return this._fillRange;
+    }
+
+    set fillRange (value: number) {
+        this._fillRange = value;
+        this._native?.setFillRange(value);
     }
 
     get sizeMode (): number {
@@ -132,6 +151,7 @@ export class Sprite extends UIRenderer {
 
     set fillCenter (value: Vec2) {
         this._fillCenter.set(value);
+        this._native?.setFillCenter(value.x, value.y);
     }
 
     get color (): Readonly<Color> {
@@ -169,6 +189,10 @@ export class Sprite extends UIRenderer {
         this._syncColor();
         this._syncMaterial();
         this._native.setType(this._type);
+        this._native.setFillType(this._fillType);
+        this._native.setFillStart(this._fillStart);
+        this._native.setFillRange(this._fillRange);
+        this._native.setFillCenter(this._fillCenter.x, this._fillCenter.y);
         this._native.setPriority(this.priority);
         this._syncFrame();
         this._native.setEnabled(this.enabledInHierarchy);

@@ -91,6 +91,14 @@ public:
     void setType(int32_t type);
     int32_t getType() const { return _type; }
 
+    void setFillType(int32_t fillType);
+    int32_t getFillType() const { return _fillType; }
+    void setFillStart(float fillStart);
+    float getFillStart() const { return _fillStart; }
+    void setFillRange(float fillRange);
+    float getFillRange() const { return _fillRange; }
+    void setFillCenter(float x, float y);
+
     RenderEntity *getRenderEntity() const { return _entity.get(); }
 
     void setDirty() { _dirty = true; }
@@ -111,6 +119,10 @@ private:
     bool _trim{true};
     bool _dirty{true};
     int32_t _type{0};
+    int32_t _fillType{0};
+    float _fillStart{0.F};
+    float _fillRange{1.F};
+    Vec2 _fillCenter{0.F, 0.F};
     float _insetLeft{0.F};
     float _insetRight{0.F};
     float _insetTop{0.F};
