@@ -2,7 +2,7 @@
 
 > 对应计划：[native-2d-module-sinking-plan.zh-CN.md](./native-2d-module-sinking-plan.zh-CN.md) 的 M2。
 > 范围：仅 `cocos/2d`；不引用其他分支代码。
-> 状态：M2 基础设施、Sprite SIMPLE 薄壳候选、SpriteFrame native 缓存已完成；override 未启用，可见渲染/像素对照和其余模式未完成。
+> 状态：M2 基础设施、Sprite 五种模式几何/prepare、SpriteFrame native 缓存已完成；override 未启用，可见渲染/像素对照未完成。
 
 ## 1. native UIRenderer 基座
 
@@ -74,7 +74,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 纯 C++ 测试新增 `testSlicedMesh`：
 
 ```text
-68 checks, 0 failures
+73 checks, 0 failures
 ```
 
 `Sprite::prepare` 已接入 `_type == 1`（SLICED）分支：使用
@@ -104,8 +104,6 @@ C++ 测试：
 - `testFilledMesh`：x/(-25,25)、u/(0.25,0.75)；
 - Sprite FILLED drawInfo 4/6。
 
-尚未实现 radial fill 和 Tiled。
-
 ## 4.3 Tiled 几何
 
 `SpriteGeometry` 新增：
@@ -123,7 +121,22 @@ C++ 测试：
 
 - `testTiledMesh`：200×100 content + 100×100 frame → 8 顶点/12 索引；
 - Sprite TILED drawInfo 8/12；
-- `68 checks, 0 failures`。
+- `73 checks, 0 failures`。
+
+## 4.4 Radial fill
+
+`SpriteGeometry` 新增：
+
+- `buildRadialSpriteMesh()`：以 fillCenter 为扇心，按 fillStart/fillRange
+  生成三角扇；
+- 24 段半圆（fillRange=0.5）时 26 顶点/72 索引；
+- 顶点 UV 按内容坐标映射回 frameRect；
+- `buildFilledSpriteMesh` 的 fillType=2 委托给 radial builder。
+
+`Sprite::prepare` 的 FILLED 分支已自动覆盖 radial；C++ 测试校验
+26/72 的 drawInfo。
+
+至此 Sprite 的 SIMPLE/SLICED/TILED/FILLED（H/V/RADIAL）五种路径均已接入。
 
 ## 5. 真实 Creator 探测
 
@@ -157,7 +170,7 @@ disabled，等待可靠像素对照。
 native 2D PoC: PASS
 jsb bindings result: OK
 39 checks, 0 failures      # 旧 pure C++ 基线
-68 checks, 0 failures      # 含 sliced/filled/tiled mesh
+73 checks, 0 failures      # 含 sliced/filled/tiled/radial mesh
 18 checks, 0 failures      # M1 shell contract
 Jest: 1 passed             # Sprite M2 shell mock
 ```
@@ -176,13 +189,13 @@ Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame �
 ## 7. 尚未完成
 
 1. 可靠的 native 截图与 Web/native 像素对照；
-2. UIRenderer shared material/material instance 解析；
-3. Sprite Radial 模式；
-4. SpriteFrame insets/native 资产化；
-5. TS UIRenderer 继承链最终决策。
+2. shared material 的 JS 壳转发与 material instance 解析；
+3. SpriteFrame 完整 native 资产化/insets 边界用例；
+4. TS UIRenderer 继承链最终决策；
+5. 默认启用 Sprite override 的决策。
 
 ## 8. 下一步
 
-native Sprite 已经走通 drawInfo → batch → custom pipeline `draw2D` →
-`submitUICommands` → draw。下一步集中解决可靠截图/像素对照，再在此基础上
-补 shared material、其余 Sprite 模式和默认启用决策。
+native Sprite 已经走通 SIMPLE/SLICED/TILED/FILLED 五种 drawInfo 路径以及
+drawInfo → batch → custom pipeline `draw2D` → `submitUICommands` → draw。
+下一步集中解决可靠截图/像素对照，再决定默认启用。

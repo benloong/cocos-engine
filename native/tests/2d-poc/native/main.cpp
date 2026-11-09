@@ -609,6 +609,30 @@ void testSpritePrepare() {
         }
     }
 
+    cc::Node radialNode("native-sprite-radial");
+    cc::UITransform radialTransform(&radialNode);
+    radialTransform.setContentSize(100.F, 100.F);
+    cc::Sprite radialSprite;
+    radialSprite.setNode(&radialNode);
+    radialSprite.setUITransform(&radialTransform);
+    radialSprite.setMaterial(material);
+    radialSprite.setType(3);
+    radialSprite.setFillType(2);
+    radialSprite.setFillStart(0.F);
+    radialSprite.setFillRange(0.5F);
+    radialSprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
+    cc::RenderEntity *radialEntity = radialSprite.getRenderEntity();
+    check(radialEntity != nullptr, "radial sprite render entity");
+    if (radialEntity != nullptr) {
+        radialEntity->prepare(1.F);
+        cc::RenderDrawInfo *radialDrawInfo = radialEntity->getStaticRenderDrawInfo(0);
+        check(radialDrawInfo != nullptr, "radial sprite draw info");
+        if (radialDrawInfo != nullptr) {
+            check(radialDrawInfo->getVbCount() == 26, "radial sprite vertex count");
+            check(radialDrawInfo->getIbCount() == 72, "radial sprite index count");
+        }
+    }
+
     constexpr int kPrepareIterations = 10000;
     const auto start = std::chrono::steady_clock::now();    for (int i = 0; i < kPrepareIterations; ++i) {
         sprite.setDirty();

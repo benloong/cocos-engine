@@ -25,6 +25,7 @@
 #include "2d/renderer/SpriteGeometry.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace cc {
 
@@ -260,12 +261,71 @@ SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params) {
     return mesh;
 }
 
-SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params) {
+SpriteMesh buildRadialSpriteMesh(const FilledSpriteGeometryParams &params) {
     SpriteMesh mesh;
-    if (params.fillType == 2) {
-        return mesh; // radial fill is a follow-up
+    const float width = params.contentSize.x;
+    const float height = params.contentSize.y;
+    const float textureWidth = params.textureSize.x;
+    const float textureHeight = params.textureSize.y;
+    const Rect &rect = params.frameRect;
+    if (width <= 0.F || height <= 0.F || textureWidth <= 0.F || textureHeight <= 0.F ||
+        rect.width <= 0.F || rect.height <= 0.F) {
+        return mesh;
     }
 
+    const float range = std::clamp(params.fillRange, 0.F, 1.F);
+    if (range <= 0.F) {
+        return mesh;
+    }
+
+    const float appX = params.anchorPoint.x * width;
+    const float appY = params.anchorPoint.y * height;
+    const float left = -appX;
+    const float bottom = -appY;
+    const float cx = params.fillCenter.x;
+    const float cy = params.fillCenter.y;
+    const float radius = std::max(
+        std::sqrt((cx - left) * (cx - left) + (cy - bottom) * (cy - bottom)),
+        std::sqrt((cx - (width - appX)) * (cx - (width - appX)) + (cy - (height - appY)) * (cy - (height - appY))));
+
+    constexpr float PI = 3.14159265358979323846F;
+    const float startAngle = PI * 0.5F - 2.F * PI * params.fillStart;
+    const uint32_t segments = std::max(3U, static_cast<uint32_t>(std::ceil(48.F * range)));
+
+    auto makeVertex = [&](float x, float y) {
+        SpriteVertex vertex;
+        vertex.position.set(x, y, 0.F);
+        const float u = rect.x / textureWidth + ((x - left) / width) * (rect.width / textureWidth);
+        const float v = rect.y / textureHeight + (1.F - (y - bottom) / height) * (rect.height / textureHeight);
+        vertex.uv.set(u, v);
+        return vertex;
+    };
+
+    mesh.vertices.reserve(segments + 2);
+    mesh.vertices.push_back(makeVertex(cx, cy));
+
+    for (uint32_t i = 0; i <= segments; ++i) {
+        const float t = static_cast<float>(i) / static_cast<float>(segments);
+        const float angle = startAngle - 2.F * PI * range * t;
+        mesh.vertices.push_back(makeVertex(cx + std::cos(angle) * radius, cy + std::sin(angle) * radius));
+    }
+
+    mesh.indices.reserve(segments * 3);
+    for (uint32_t i = 1; i <= segments; ++i) {
+        mesh.indices.push_back(0);
+        mesh.indices.push_back(static_cast<uint16_t>(i));
+        mesh.indices.push_back(static_cast<uint16_t>(i + 1));
+    }
+
+    mesh.valid = true;
+    return mesh;
+}
+
+SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params) {
+    if (params.fillType == 2) {
+        return buildRadialSpriteMesh(params);
+    }
+    SpriteMesh mesh;
     const float width = params.contentSize.x;
     const float height = params.contentSize.y;
     const float textureWidth = params.textureSize.x;

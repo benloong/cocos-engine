@@ -117,6 +117,12 @@ struct TiledSpriteGeometryParams final {
  */
 SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params);
 
+/**
+ * Build a radial filled fan. The fan is centered at fillCenter (local node
+ * space) and spans fillRange turns from fillStart.
+ */
+SpriteMesh buildRadialSpriteMesh(const FilledSpriteGeometryParams &params);
+
 void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix);
 
 /**

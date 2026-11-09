@@ -259,6 +259,26 @@ void testTiledMesh() {
     }
 }
 
+void testRadialMesh() {
+    cc::FilledSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(100.F, 100.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+    params.fillType = 2;
+    params.fillStart = 0.F;
+    params.fillRange = 0.5F;
+
+    const cc::SpriteMesh mesh = cc::buildRadialSpriteMesh(params);
+    check(mesh.valid, "radial mesh is valid");
+    check(mesh.vertices.size() == 26, "radial mesh has center + 25 fan vertices");
+    check(mesh.indices.size() == 72, "radial mesh has 24 fan triangles");
+    if (mesh.vertices.size() == 26) {
+        checkNear(mesh.vertices[0].uv.x, 0.5F, "radial center u");
+        checkNear(mesh.vertices[0].uv.y, 0.5F, "radial center v");
+    }
+}
+
 void testInvalidUntrimmed() {
     cc::SimpleSpriteGeometryParams params;
     params.contentSize = cc::Vec2(100.F, 100.F);
@@ -283,6 +303,7 @@ int main() {
     testSlicedMesh();
     testFilledMesh();
     testTiledMesh();
+    testRadialMesh();
     testInvalidUntrimmed();
 
     std::printf("%d checks, %d failures\n", gChecks, gFailures);
