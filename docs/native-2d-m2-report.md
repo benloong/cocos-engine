@@ -67,6 +67,9 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - native bundle 包含 `new n2d.Sprite()`；
 - `Sprite::setNode`/`setFrame` 被调用；
 - 换用 16×16 `default-texture` SpriteFrame 后 `setFrame rect 0 0 16 16`；
+- 用真实 `assets/resources/M2Sprite.png`（64×64 红色贴图）加载
+  `resources.load('M2Sprite/spriteFrame')` 成功，`M1_SPRITE_TEXTURE
+  {"hasFrame":true}`；
 - `Batcher2d::walk` 到达 `M1TestNode` 并执行到 `callPrepare`；
 - `RenderEntity` enabled、opacity 0.501961、listener 非空；
 - `Sprite::prepare` 生成 drawInfo：`vb=4, ib=6`，material/texture 非空；
@@ -80,11 +83,8 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `M1_SPRITE_FRAME {"hasFrame":true}`。
 
 因此 native 侧的 Sprite batch 已经完成提交；当前无法确认可见像素是
-截图 harness 的问题，而不是渲染链缺失。验证后 Sprite override 仍保持
+截图 harness 的问题，而不是渲染链缺失。验证后 Sprite override 保持
 disabled，等待可靠像素对照。
-
-但窗口截图/PrintWindow 仍无法可靠捕获 GPU 内容，因此 **可见渲染和 Web/native
-像素对照仍未通过**；验证后 Sprite override 保持 disabled。
 
 ## 6. 验证
 
