@@ -72,6 +72,9 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `Sprite::prepare` 生成 drawInfo：`vb=4, ib=6`，material/texture 非空；
 - `Batcher2d::fillBuffersAndMergeBatches` 结束时 `Batcher2d::batches 2`
   （Sprite + profiler）；
+- 但 `UIPhase::render` 从未被调用；项目使用 custom pipeline，说明
+  `draw2D`/`submitUICommands` 路径没有进入，或 phase/Canvas-RenderRoot
+  没有触发；
 - native sprite shader 编译成功；
 - `M1_SPRITE_FRAME {"hasFrame":true}`。
 
@@ -101,7 +104,7 @@ frame 转发、disable/destroy。
 ## 7. 尚未完成
 
 1. 可见渲染与可靠 native 截图/像素对照；
-2. RenderScene/camera/pipeline 对 batch 的最终消费验证；
+2. custom pipeline 的 `draw2D`/`submitUICommands`/`UIPhase` 调用链；
 3. UIRenderer shared material/material instance 解析；
 4. Sprite sliced/tiled/filled/radial 模式；
 5. SpriteFrame insets/native 资产化；
@@ -109,5 +112,6 @@ frame 转发、disable/destroy。
 
 ## 8. 下一步
 
-在可靠的 native 截图 harness 下验证 SIMPLE 可见渲染；然后补 shared
-material、其余 Sprite 模式，并决定是否默认启用 Sprite override。
+先确认 custom pipeline 是否进入 `draw2D`/`submitUICommands`，以及 Canvas/
+RenderRoot2D 在 native 下如何触发 UI phase；这是当前可见渲染的阻塞点。
+通过后再做 shared material、其余 Sprite 模式和可靠像素 harness。
