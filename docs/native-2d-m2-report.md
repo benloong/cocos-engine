@@ -51,9 +51,16 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 `sprite.enabled = false`，`cc.config.json` 没有 Sprite override。
 
 曾在 Creator 测试工程中临时启用验证：native bundle 包含 `new n2d.Sprite()`，
-`spriteFrame = builtinResMgr.get('default-spriteframe')` 后 native Sprite
-shader 编译成功，`M1_SPRITE_FRAME {"hasFrame":true}`；但尚未取得可见像素/
-像素对照，因此验证后恢复为 disabled。
+`spriteFrame = builtinResMgr.get('default-spriteframe')` 后：
+
+- 原生 `Sprite::setNode`/`setFrame` 被调用；
+- `Batcher2d::walk` 到达 `M1TestNode`，`RenderEntity` enabled、opacity 非零；
+- native Sprite shader 编译成功；
+- `M1_SPRITE_FRAME {"hasFrame":true}`。
+
+但没有观察到可见 Sprite，也没有 Web/native 像素对照，因此验证后恢复为
+disabled。下一步需要定位“prepare 已调用但无可见 draw”的原因（默认
+`spriteFrame` 尺寸/纹理、Canvas/RenderRoot 或材质路径）。
 
 ### 验证
 
