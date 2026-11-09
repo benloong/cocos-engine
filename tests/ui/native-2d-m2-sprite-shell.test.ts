@@ -6,6 +6,7 @@ const nativeSprite = {
     setNode: jest.fn(),
     setUITransform: jest.fn(),
     setColorRGBA: jest.fn(),
+    setMaterial: jest.fn(),
     setPriority: jest.fn(),
     setEnabled: jest.fn(),
     setFrame: jest.fn(),
@@ -43,6 +44,9 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
 
     sprite.color = new Color(10, 20, 30, 255);
     expect(nativeSprite.setColorRGBA).toHaveBeenLastCalledWith(10, 20, 30, 255);
+    const material = {} as any;
+    sprite.customMaterial = material;
+    expect(nativeSprite.setMaterial).toHaveBeenLastCalledWith(material);
     sprite.onDisable();
     expect(nativeSprite.setEnabled).toHaveBeenLastCalledWith(false);
     sprite.onDestroy();

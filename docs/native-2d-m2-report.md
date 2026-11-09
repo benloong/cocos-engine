@@ -45,6 +45,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `spriteFrame` 将 texture/rect/originalSize/offset/rotated 批量转发到
   native `setFrame`；
 - `color`/`priority`/`enabled` 转发；
+- `customMaterial` 转发到 native `setMaterial`；
 - `type`/`fillType`/`sizeMode` 保留序列化字段，但当前只声明 SIMPLE 路径；
 - 不包含几何、assembler 或材质实例逻辑。
 
@@ -79,7 +80,7 @@ PASS tests/ui/native-2d-m2-sprite-shell.test.ts
   √ Sprite M2 shell attaches and forwards SIMPLE frame data
 ```
 
-覆盖：native 构造/Node 绑定、color 转发、frame 全字段转发、disable/destroy。
+覆盖：native 构造/Node 绑定、color 转发、customMaterial 转发、frame 全字段转发、disable/destroy。
 
 ## 4. 验证
 

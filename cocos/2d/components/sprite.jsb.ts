@@ -23,6 +23,7 @@
 */
 
 import { ccclass, displayOrder, executionOrder, help, menu, serializable, type } from 'cc.decorator';
+import { Material } from '../../asset/assets';
 import { Color } from '../../core/math/color';
 import { Vec2 } from '../../core/math/vec2';
 import { SpriteFrame } from '../assets/sprite-frame';
@@ -144,6 +145,15 @@ export class Sprite extends UIRenderer {
         this._syncColor();
     }
 
+    get customMaterial (): Material | null {
+        return this._customMaterial;
+    }
+
+    set customMaterial (value: Material | null) {
+        this._customMaterial = value;
+        this._syncMaterial();
+    }
+
     public __preload (): void {
         // Native lifecycle owns the render entity; avoid the JS assembler path.
     }
@@ -156,6 +166,7 @@ export class Sprite extends UIRenderer {
             this._native.setUITransform(transform._native);
         }
         this._syncColor();
+        this._syncMaterial();
         this._native.setPriority(this.priority);
         this._syncFrame();
         this._native.setEnabled(this.enabledInHierarchy);
@@ -180,6 +191,12 @@ export class Sprite extends UIRenderer {
     private _syncColor (): void {
         if (this._native) {
             this._native.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
+        }
+    }
+
+    private _syncMaterial (): void {
+        if (this._native && this._customMaterial) {
+            this._native.setMaterial(this._customMaterial);
         }
     }
 
