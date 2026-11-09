@@ -58,6 +58,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `getSharedMaterial/setSharedMaterial` 转发到 native indexed material；
 - `type`/`fillType`/`fillStart`/`fillRange`/`fillCenter` 转发；
 - `sizeMode` 转发；TRIMMED 使用 frame rect，RAW 使用 originalSize 更新 UITransform；
+- `srcBlendFactor`/`dstBlendFactor` 转发到 native UIRenderer；
 - 不包含几何、assembler 或材质实例逻辑。
 
 当前 **未启用**：`native/tests/2d-poc/m2-components.json` 中

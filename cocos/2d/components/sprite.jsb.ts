@@ -24,6 +24,7 @@
 
 import { ccclass, displayOrder, executionOrder, help, menu, serializable, type } from 'cc.decorator';
 import { Material } from '../../asset/assets';
+import { BlendFactor } from '../../gfx';
 import { Color } from '../../core/math/color';
 import { Vec2 } from '../../core/math/vec2';
 import { SpriteFrame } from '../assets/sprite-frame';
@@ -146,6 +147,24 @@ export class Sprite extends UIRenderer {
         this._native?.setSizeMode(value);
     }
 
+    get srcBlendFactor (): BlendFactor {
+        return this._srcBlendFactor;
+    }
+
+    set srcBlendFactor (value: BlendFactor) {
+        this._srcBlendFactor = value;
+        this._native?.setSrcBlendFactor(value);
+    }
+
+    get dstBlendFactor (): BlendFactor {
+        return this._dstBlendFactor;
+    }
+
+    set dstBlendFactor (value: BlendFactor) {
+        this._dstBlendFactor = value;
+        this._native?.setDstBlendFactor(value);
+    }
+
     get fillCenter (): Vec2 {
         return this._fillCenter;
     }
@@ -207,6 +226,8 @@ export class Sprite extends UIRenderer {
         this._native.setFillRange(this._fillRange);
         this._native.setFillCenter(this._fillCenter.x, this._fillCenter.y);
         this._native.setSizeMode(this._sizeMode);
+        this._native.setSrcBlendFactor(this._srcBlendFactor);
+        this._native.setDstBlendFactor(this._dstBlendFactor);
         this._native.setPriority(this.priority);
         this._syncFrame();
         this._native.setEnabled(this.enabledInHierarchy);
