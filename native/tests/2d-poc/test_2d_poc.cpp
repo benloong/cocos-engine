@@ -184,6 +184,40 @@ void testTransformQuad() {
     checkNear(quad.vertices[3].position.y, 70.F, "world transformed quad top");
 }
 
+void testSlicedMesh() {
+    cc::SlicedSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(200.F, 200.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+    params.insetLeft = 10.F;
+    params.insetRight = 10.F;
+    params.insetTop = 10.F;
+    params.insetBottom = 10.F;
+
+    const cc::SpriteMesh mesh = cc::buildSlicedSpriteMesh(params);
+    check(mesh.valid, "sliced mesh is valid");
+    check(mesh.vertices.size() == 16, "sliced mesh has 16 vertices");
+    check(mesh.indices.size() == 54, "sliced mesh has 54 indices");
+
+    if (mesh.vertices.size() == 16 && mesh.indices.size() == 54) {
+        checkNear(mesh.vertices[0].position.x, -100.F, "sliced bottom-left x");
+        checkNear(mesh.vertices[0].position.y, -100.F, "sliced bottom-left y");
+        checkNear(mesh.vertices[0].uv.x, 0.F, "sliced bottom-left u");
+        checkNear(mesh.vertices[0].uv.y, 1.F, "sliced bottom-left v");
+
+        checkNear(mesh.vertices[15].position.x, 100.F, "sliced top-right x");
+        checkNear(mesh.vertices[15].position.y, 100.F, "sliced top-right y");
+        checkNear(mesh.vertices[15].uv.x, 1.F, "sliced top-right u");
+        checkNear(mesh.vertices[15].uv.y, 0.F, "sliced top-right v");
+
+        checkNear(mesh.vertices[5].position.x, -90.F, "sliced first inset x");
+        checkNear(mesh.vertices[5].uv.x, 0.1F, "sliced first inset u");
+        checkNear(mesh.vertices[10].position.y, 90.F, "sliced top inset y");
+        checkNear(mesh.vertices[10].uv.y, 0.1F, "sliced top inset v");
+    }
+}
+
 void testInvalidUntrimmed() {
     cc::SimpleSpriteGeometryParams params;
     params.contentSize = cc::Vec2(100.F, 100.F);
@@ -205,6 +239,7 @@ int main() {
     testSimpleQuadUntrimmed();
     testSimpleQuadRotatedUV();
     testTransformQuad();
+    testSlicedMesh();
     testInvalidUntrimmed();
 
     std::printf("%d checks, %d failures\n", gChecks, gFailures);

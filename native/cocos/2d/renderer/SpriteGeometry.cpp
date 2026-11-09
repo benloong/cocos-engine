@@ -24,6 +24,8 @@
 
 #include "2d/renderer/SpriteGeometry.h"
 
+#include <algorithm>
+
 namespace cc {
 
 SpriteQuad buildSimpleSpriteQuad(const SimpleSpriteGeometryParams &params) {
@@ -110,6 +112,90 @@ void transformSpriteQuad(SpriteQuad &quad, const Mat4 &worldMatrix) {
     }
 
     for (auto &vertex : quad.vertices) {
+        Vec3 transformed;
+        Vec3::transformMat4(vertex.position, worldMatrix, &transformed);
+        vertex.position = transformed;
+    }
+}
+
+SpriteMesh buildSlicedSpriteMesh(const SlicedSpriteGeometryParams &params) {
+    SpriteMesh mesh;
+
+    const float width = params.contentSize.x;
+    const float height = params.contentSize.y;
+    const float textureWidth = params.textureSize.x;
+    const float textureHeight = params.textureSize.y;
+    if (width <= 0.F || height <= 0.F || textureWidth <= 0.F || textureHeight <= 0.F) {
+        return mesh;
+    }
+
+    const Rect &rect = params.frameRect;
+    if (rect.width <= 0.F || rect.height <= 0.F) {
+        return mesh;
+    }
+
+    const float appX = params.anchorPoint.x * width;
+    const float appY = params.anchorPoint.y * height;
+    const float left = -appX;
+    const float bottom = -appY;
+    const float right = width - appX;
+    const float top = height - appY;
+
+    const float insetLeft = std::clamp(params.insetLeft, 0.F, width);
+    const float insetRight = std::clamp(params.insetRight, 0.F, width);
+    const float insetBottom = std::clamp(params.insetBottom, 0.F, height);
+    const float insetTop = std::clamp(params.insetTop, 0.F, height);
+
+    const float x1 = std::min(left + insetLeft, right);
+    const float x2 = std::max(right - insetRight, left);
+    const float y1 = std::min(bottom + insetBottom, top);
+    const float y2 = std::max(top - insetTop, bottom);
+
+    const float u0 = rect.x / textureWidth;
+    const float u3 = (rect.x + rect.width) / textureWidth;
+    const float u1 = std::min(u0 + insetLeft / textureWidth, u3);
+    const float u2 = std::max(u3 - insetRight / textureWidth, u0);
+
+    const float vBottom = (rect.y + rect.height) / textureHeight;
+    const float vTop = rect.y / textureHeight;
+    const float v1 = std::max(vBottom - insetBottom / textureHeight, vTop);
+    const float v2 = std::min(vTop + insetTop / textureHeight, vBottom);
+
+    const float xs[4] = {left, x1, x2, right};
+    const float ys[4] = {bottom, y1, y2, top};
+    const float us[4] = {u0, u1, u2, u3};
+    const float vs[4] = {vBottom, v1, v2, vTop};
+
+    mesh.vertices.reserve(16);
+    for (uint32_t row = 0; row < 4; ++row) {
+        for (uint32_t col = 0; col < 4; ++col) {
+            SpriteVertex vertex;
+            vertex.position.set(xs[col], ys[row], 0.F);
+            vertex.uv.set(us[col], vs[row]);
+            mesh.vertices.push_back(vertex);
+        }
+    }
+
+    mesh.indices.reserve(54);
+    for (uint32_t row = 0; row < 3; ++row) {
+        for (uint32_t col = 0; col < 3; ++col) {
+            const uint16_t v00 = static_cast<uint16_t>(row * 4 + col);
+            const uint16_t v10 = static_cast<uint16_t>(v00 + 1);
+            const uint16_t v01 = static_cast<uint16_t>(v00 + 4);
+            const uint16_t v11 = static_cast<uint16_t>(v01 + 1);
+            mesh.indices.insert(mesh.indices.end(), {v00, v10, v01, v10, v11, v01});
+        }
+    }
+
+    mesh.valid = true;
+    return mesh;
+}
+
+void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix) {
+    if (!mesh.valid) {
+        return;
+    }
+    for (auto &vertex : mesh.vertices) {
         Vec3 transformed;
         Vec3::transformMat4(vertex.position, worldMatrix, &transformed);
         vertex.position = transformed;

@@ -25,6 +25,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 #include "math/Geometry.h"
 #include "math/Mat4.h"
@@ -58,6 +59,36 @@ struct SimpleSpriteGeometryParams final {
     bool trim{true};
     bool rotated{false};
 };
+
+/**
+ * Dynamic mesh for the multi-quad Sprite modes (sliced/tiled/filled).
+ */
+struct SpriteMesh final {
+    std::vector<SpriteVertex> vertices;
+    std::vector<uint16_t> indices;
+    bool valid{false};
+};
+
+struct SlicedSpriteGeometryParams final {
+    Vec2 contentSize{100.F, 100.F};
+    Vec2 anchorPoint{0.5F, 0.5F};
+    Rect frameRect;
+    Vec2 textureSize;
+    float insetLeft{0.F};
+    float insetRight{0.F};
+    float insetTop{0.F};
+    float insetBottom{0.F};
+};
+
+/**
+ * Build the 9-slice geometry for Sprite.Type.SLICED.
+ *
+ * Produces a 4x4 vertex grid and 9 quads (54 indices). Insets are clamped to
+ * the content size so degenerate frames do not produce inverted quads.
+ */
+SpriteMesh buildSlicedSpriteMesh(const SlicedSpriteGeometryParams &params);
+
+void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix);
 
 /**
  * Build the geometry for Sprite.Type.SIMPLE.

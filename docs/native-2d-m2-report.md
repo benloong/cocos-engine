@@ -61,6 +61,24 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 当前 **未启用**：`native/tests/2d-poc/m2-components.json` 中
 `sprite.enabled = false`，`cc.config.json` 没有 Sprite override。
 
+## 4.1 Sliced 几何（builder 阶段）
+
+`SpriteGeometry` 新增：
+
+- `SpriteMesh { vertices, indices, valid }`；
+- `SlicedSpriteGeometryParams`（contentSize/anchor/frameRect/textureSize/insets）；
+- `buildSlicedSpriteMesh()`：4×4 顶点网格、9 个 quad、54 个索引；
+- insets 会 clamp 到 contentSize，避免反向 quad；
+- `transformSpriteMesh()` 支持世界矩阵。
+
+纯 C++ 测试新增 `testSlicedMesh`：
+
+```text
+54 checks, 0 failures
+```
+
+尚未接入 `Sprite::prepare` / `Sprite.Type.SLICED` 分支。
+
 ## 5. 真实 Creator 探测
 
 临时启用 override 后确认：
@@ -92,7 +110,8 @@ disabled，等待可靠像素对照。
 ```
 native 2D PoC: PASS
 jsb bindings result: OK
-39 checks, 0 failures      # pure C++ math/geometry
+39 checks, 0 failures      # 旧 pure C++ 基线
+54 checks, 0 failures      # 含 sliced mesh
 18 checks, 0 failures      # M1 shell contract
 Jest: 1 passed             # Sprite M2 shell mock
 ```
