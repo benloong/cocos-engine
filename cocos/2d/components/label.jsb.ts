@@ -380,7 +380,14 @@ export class Label extends UIRenderer {
         }
         this._native.setBitmapAtlas(font.spriteFrame.native, font.fontSize > 0 ? font.fontSize : this._lineHeight);
         this._native.clearGlyphs();
+        this._native.clearKerning();
         const definitions = font.fontDefDictionary?.letterDefinitions ?? {};
+        const kerning = font.fntConfig?.kerningDict ?? {};
+        for (const left of Object.keys(kerning)) {
+            for (const right of Object.keys(kerning[left])) {
+                this._native.addKerning(Number(left), Number(right), kerning[left][right]);
+            }
+        }
         for (const key of Object.keys(definitions)) {
             const glyph = definitions[key];
             this._native.addGlyph(

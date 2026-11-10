@@ -242,6 +242,16 @@ void Label::clearBitmapFont() {
     _dirty = true;
 }
 
+void Label::clearKerning() {
+    _kerning.clear();
+    _dirty = true;
+}
+
+void Label::addKerning(int32_t left, int32_t right, float amount) {
+    _kerning[(static_cast<uint64_t>(static_cast<uint32_t>(left)) << 32U) | static_cast<uint32_t>(right)] = amount;
+    _dirty = true;
+}
+
 void Label::clearGlyphs() {
     _glyphs.clear();
     _glyphMap.clear();
@@ -250,7 +260,7 @@ void Label::clearGlyphs() {
 
 void Label::addGlyph(int32_t code, float u, float v, float w, float h, float offsetX, float offsetY, float xAdvance) {
     _glyphMap[code] = _glyphs.size();
-    _glyphs.push_back(Glyph{u, v, w, h, offsetX, offsetY, xAdvance});
+    _glyphs.push_back(Glyph{code, u, v, w, h, offsetX, offsetY, xAdvance});
     _dirty = true;
 }
 
@@ -305,11 +315,13 @@ void Label::rebuildBitmapTexture() {
     float lineWidth = 0.0F;
     float contentWidth = 0.0F;
 
+    int32_t previousCode = -1;
     for (const std::string &codepoint : splitUtf8(_string)) {
         if (codepoint == "\n") {
             contentWidth = std::max(contentWidth, lineWidth);
             lines.emplace_back();
             lineWidth = 0.0F;
+            previousCode = -1;
             continue;
         }
         const int32_t code = utf8CodePoint(codepoint);
@@ -318,13 +330,19 @@ void Label::rebuildBitmapTexture() {
             continue;
         }
         const Glyph &glyph = _glyphs[found->second];
-        if (_wrap && lineWidth + glyph.xAdvance > maxWidth && !lines.back().empty()) {
+        float kerning = 0.0F;
+        if (previousCode >= 0) {
+            const auto kern = _kerning.find((static_cast<uint64_t>(static_cast<uint32_t>(previousCode)) << 32U) | static_cast<uint32_t>(code));
+            if (kern != _kerning.end()) { kerning = kern->second; }
+        }
+        if (_wrap && lineWidth + kerning + glyph.xAdvance > maxWidth && !lines.back().empty()) {
             contentWidth = std::max(contentWidth, lineWidth);
             lines.emplace_back();
             lineWidth = 0.0F;
         }
         lines.back().push_back(found->second);
-        lineWidth += glyph.xAdvance;
+        lineWidth += kerning + glyph.xAdvance;
+        previousCode = code;
     }
     contentWidth = std::max(contentWidth, lineWidth);
 
@@ -339,9 +357,14 @@ void Label::rebuildBitmapTexture() {
 
     for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex) {
         float cursorX = 1.0F;
+        int32_t drawPreviousCode = -1;
         const float lineTop = 1.0F + static_cast<float>(lineIndex) * lineHeight;
         for (const size_t glyphIndex : lines[lineIndex]) {
             const Glyph &glyph = _glyphs[glyphIndex];
+            if (drawPreviousCode >= 0) {
+                const auto kern = _kerning.find((static_cast<uint64_t>(static_cast<uint32_t>(drawPreviousCode)) << 32U) | static_cast<uint32_t>(glyph.code));
+                if (kern != _kerning.end()) { cursorX += kern->second; }
+            }
             const int32_t destX = static_cast<int32_t>(std::round(cursorX + glyph.offsetX));
             const int32_t destY = static_cast<int32_t>(std::round(lineTop + glyph.offsetY));
             const int32_t srcX = static_cast<int32_t>(std::round(glyph.u));
@@ -370,6 +393,7 @@ void Label::rebuildBitmapTexture() {
                 }
             }
             cursorX += glyph.xAdvance;
+            drawPreviousCode = glyph.code;
         }
     }
 

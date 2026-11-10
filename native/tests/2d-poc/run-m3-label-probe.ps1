@@ -44,6 +44,7 @@ try {
     if ($bitmapLines.Count -lt 1) { throw 'BMFont label missing' }
     $bitmap = $bitmapLines[0].Line.Substring($bitmapLines[0].Line.IndexOf('M3_BITMAP_LABEL ') + 16) | ConvertFrom-Json
     if ($bitmap.textureWidth -le 0 -or $bitmap.opaque -le 0) { throw 'BMFont atlas path produced no pixels' }
+    if ($bitmap.textureWidth -ge 66) { throw 'BMFont kerning was not applied' }
 
     $pixelLines = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
     $pixels = @{}

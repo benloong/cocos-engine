@@ -179,7 +179,7 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 
 native Label 增加 bitmap 分支：JS 壳把 `BitmapFont.spriteFrame.native` 和 glyph definitions 传给 native，native 从 `ImageAsset` 读 atlas RGBA 数据并合成文本纹理。
 
-- 程序化 atlas `ABBA`：66×23，lines=1，opaque=1024。
+- 程序化 atlas `ABBA`：未加 kerning 66×23、opaque=1024；加入 A→B -4 kerning 后 62×23、opaque=960。
 - `run-m3-label-probe.ps1` 会断言 BMFont 纹理和 opaque 像素。
 
 Letter/cacheMode 仍未覆盖。

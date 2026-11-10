@@ -75,6 +75,8 @@ public:
     void clearBitmapFont();
     void clearGlyphs();
     void addGlyph(int32_t code, float u, float v, float w, float h, float offsetX, float offsetY, float xAdvance);
+    void clearKerning();
+    void addKerning(int32_t left, int32_t right, float amount);
     void setEnableOutline(bool enable);
     void setOutlineColor(const Color &color);
     void setOutlineWidth(float width);
@@ -133,6 +135,7 @@ private:
     uint32_t _lastOpaquePixels{0};
 
     struct Glyph {
+        int32_t code{0};
         float u{0.0F};
         float v{0.0F};
         float w{0.0F};
@@ -146,6 +149,7 @@ private:
     float _bitmapLineHeight{0.0F};
     std::vector<Glyph> _glyphs;
     std::unordered_map<int32_t, size_t> _glyphMap;
+    std::unordered_map<uint64_t, float> _kerning;
 
     IntrusivePtr<Texture2D> _texture;
     IntrusivePtr<SpriteFrame> _frame;
