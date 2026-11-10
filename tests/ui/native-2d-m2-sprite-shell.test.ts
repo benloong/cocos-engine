@@ -4,6 +4,8 @@ import { Color } from '../../cocos/core/math/color';
 
 const nativeFrame = {
     setTexture: jest.fn(),
+    setUuid: jest.fn(),
+    setName: jest.fn(),
     setRect: jest.fn(),
     setOriginalSize: jest.fn(),
     setOffset: jest.fn(),
@@ -62,6 +64,8 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     const texture = { width: 128, height: 256 };
     sprite.spriteFrame = {
         texture,
+        uuid: 'frame-uuid',
+        name: 'frame-name',
         rect: { x: 1, y: 2, width: 3, height: 4 },
         originalSize: { width: 5, height: 6 },
         offset: { x: 7, y: 8 },
@@ -71,6 +75,8 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
         insetTop: 3,
         insetBottom: 4,
     } as any;
+    expect(nativeFrame.setUuid).toHaveBeenLastCalledWith('frame-uuid');
+    expect(nativeFrame.setName).toHaveBeenLastCalledWith('frame-name');
     expect(nativeFrame.setTexture).toHaveBeenLastCalledWith(texture);
     expect(nativeFrame.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
     expect(nativeFrame.setOriginalSize).toHaveBeenLastCalledWith(5, 6);

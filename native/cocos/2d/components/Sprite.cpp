@@ -105,6 +105,7 @@ void Sprite::setFrame(SpriteFrame *frame) {
         clearFrame();
         return;
     }
+    _spriteFrame = frame;
     TextureBase *texture = frame->getTexture();
     const float textureWidth = texture == nullptr ? 0.F : static_cast<float>(texture->getWidth());
     const float textureHeight = texture == nullptr ? 0.F : static_cast<float>(texture->getHeight());
@@ -163,6 +164,7 @@ void Sprite::setFillCenter(float x, float y) {
 }
 
 void Sprite::clearFrame() {
+    _spriteFrame = nullptr;
     _texture = nullptr;
     _frameRect.setRect(0.F, 0.F, 0.F, 0.F);
     if (_entity != nullptr) {
@@ -283,6 +285,7 @@ void Sprite::prepare(float opacity) {
             params.insetRight = _insetRight;
             params.insetTop = _insetTop;
             params.insetBottom = _insetBottom;
+            params.rotated = _rotated;
 
             SpriteMesh mesh = buildSlicedSpriteMesh(params);
             if (!mesh.valid) {
@@ -307,6 +310,7 @@ void Sprite::prepare(float opacity) {
             params.anchorPoint = _transform->getAnchorPoint();
             params.frameRect = _frameRect;
             params.textureSize = _textureSize;
+            params.rotated = _rotated;
 
             SpriteMesh mesh = buildTiledSpriteMesh(params);
             if (!mesh.valid) {
@@ -335,6 +339,7 @@ void Sprite::prepare(float opacity) {
             params.fillStart = _fillStart;
             params.fillRange = _fillRange;
             params.fillCenter = _fillCenter;
+            params.rotated = _rotated;
 
             SpriteMesh mesh = buildFilledSpriteMesh(params);
             if (!mesh.valid) {

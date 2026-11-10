@@ -14,7 +14,8 @@
 | Sprite TILED | 通过（drawInfo） | 200×100 / 100×100 frame → 8/12 |
 | Sprite FILLED H/V | 通过（drawInfo） | 裁剪 quad 4/6 |
 | Sprite FILLED RADIAL | 通过（drawInfo） | 26 顶点 / 72 索引，边界裁剪 |
-| SpriteFrame native cache | 通过 | texture/rect/originalSize/offset/rotated/insets |
+| SpriteFrame native asset | 通过 | RefCounted + IntrusivePtr texture、uuid/name、rect/offset/original/insets |
+| 旋转 atlas | 通过 | SIMPLE/SLICED/TILED/FILLED/RADIAL 纯 C++ 用例 |
 | 真实 PNG → SpriteFrame | 通过 | `resources.load('M2Sprite/spriteFrame')` 成功 |
 | Creator native 挂载 | 通过 | shell onLoad/setNode/setFrame |
 | Batcher2d batch | 通过 | `Batcher2d::batches 2` |
@@ -28,8 +29,7 @@
 
 ## 2. 未通过 / 未覆盖
 
-1. SpriteFrame 完整 native 资产化与 insets 边界。
-2. Tiled/Filled 的旋转 atlas frame 坐标组合。
+无阻塞项。TS `UIRenderer` 继承链与默认启用策略留到 M3 前评审。
 ## 3. 启用记录
 
 已执行：
@@ -56,4 +56,4 @@ Sprite override 已启用，但按以下方式监控：
 - 任何 native 2D 视觉回归优先回滚 `cc.config.json` 的 Sprite override 与
   `m2-components.json` 开关，并重建 engine bundle；
 - CI/发布前把 Web golden 接到 RenderTexture 探针，做真正的像素 diff；
-- SpriteFrame 完整资产化、旋转 atlas 组合按 M3 前置项处理。
+- M3 直接进入 Label/文本栈；M2 的 SpriteFrame/旋转 atlas 已闭环。

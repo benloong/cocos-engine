@@ -78,6 +78,7 @@ struct SlicedSpriteGeometryParams final {
     float insetRight{0.F};
     float insetTop{0.F};
     float insetBottom{0.F};
+    bool rotated{false};
 };
 
 /**
@@ -97,6 +98,7 @@ struct FilledSpriteGeometryParams final {
     float fillStart{0.F};
     float fillRange{1.F};
     Vec2 fillCenter{0.F, 0.F};
+    bool rotated{false};
 };
 
 /**
@@ -110,6 +112,7 @@ struct TiledSpriteGeometryParams final {
     Vec2 anchorPoint{0.5F, 0.5F};
     Rect frameRect;
     Vec2 textureSize;
+    bool rotated{false};
 };
 
 /**

@@ -29,6 +29,24 @@
 
 namespace cc {
 
+namespace {
+
+Vec2 frameUV(float fx, float fy, const Rect &rect, const Vec2 &textureSize, bool rotated) {
+    const float texW = textureSize.x <= 0.F ? 1.F : textureSize.x;
+    const float texH = textureSize.y <= 0.F ? 1.F : textureSize.y;
+    if (rotated) {
+        return Vec2(
+            (rect.x + fy * rect.height) / texW,
+            (rect.y + fx * rect.width) / texH);
+    }
+    return Vec2(
+        (rect.x + fx * rect.width) / texW,
+        (rect.y + (1.F - fy) * rect.height) / texH);
+}
+
+} // namespace
+
+
 SpriteQuad buildSimpleSpriteQuad(const SimpleSpriteGeometryParams &params) {
     SpriteQuad quad;
 
@@ -81,27 +99,10 @@ SpriteQuad buildSimpleSpriteQuad(const SimpleSpriteGeometryParams &params) {
     const float texH = params.textureSize.y;
     const Rect &rect = params.frameRect;
 
-    if (params.rotated) {
-        const float l = texW <= 0.F ? 0.F : rect.x / texW;
-        const float r = texW <= 0.F ? 1.F : (rect.x + rect.height) / texW;
-        const float t = texH <= 0.F ? 0.F : rect.y / texH;
-        const float b = texH <= 0.F ? 1.F : (rect.y + rect.width) / texH;
-
-        quad.vertices[0].uv.set(l, t);
-        quad.vertices[1].uv.set(l, b);
-        quad.vertices[2].uv.set(r, t);
-        quad.vertices[3].uv.set(r, b);
-    } else {
-        const float l = texW <= 0.F ? 0.F : rect.x / texW;
-        const float r = texW <= 0.F ? 1.F : (rect.x + rect.width) / texW;
-        const float b = texH <= 0.F ? 1.F : (rect.y + rect.height) / texH;
-        const float t = texH <= 0.F ? 0.F : rect.y / texH;
-
-        quad.vertices[0].uv.set(l, b);
-        quad.vertices[1].uv.set(r, b);
-        quad.vertices[2].uv.set(l, t);
-        quad.vertices[3].uv.set(r, t);
-    }
+    quad.vertices[0].uv = frameUV(0.F, 0.F, rect, params.textureSize, params.rotated);
+    quad.vertices[1].uv = frameUV(1.F, 0.F, rect, params.textureSize, params.rotated);
+    quad.vertices[2].uv = frameUV(0.F, 1.F, rect, params.textureSize, params.rotated);
+    quad.vertices[3].uv = frameUV(1.F, 1.F, rect, params.textureSize, params.rotated);
 
     quad.valid = true;
     return quad;
@@ -152,27 +153,16 @@ SpriteMesh buildSlicedSpriteMesh(const SlicedSpriteGeometryParams &params) {
     const float y1 = std::min(bottom + insetBottom, top);
     const float y2 = std::max(top - insetTop, bottom);
 
-    const float u0 = rect.x / textureWidth;
-    const float u3 = (rect.x + rect.width) / textureWidth;
-    const float u1 = std::min(u0 + insetLeft / textureWidth, u3);
-    const float u2 = std::max(u3 - insetRight / textureWidth, u0);
-
-    const float vBottom = (rect.y + rect.height) / textureHeight;
-    const float vTop = rect.y / textureHeight;
-    const float v1 = std::max(vBottom - insetBottom / textureHeight, vTop);
-    const float v2 = std::min(vTop + insetTop / textureHeight, vBottom);
-
     const float xs[4] = {left, x1, x2, right};
     const float ys[4] = {bottom, y1, y2, top};
-    const float us[4] = {u0, u1, u2, u3};
-    const float vs[4] = {vBottom, v1, v2, vTop};
-
+    const float us[4] = {0.F, insetLeft / rect.width, 1.F - insetRight / rect.width, 1.F};
+    const float vs[4] = {0.F, insetBottom / rect.height, 1.F - insetTop / rect.height, 1.F};
     mesh.vertices.reserve(16);
     for (uint32_t row = 0; row < 4; ++row) {
         for (uint32_t col = 0; col < 4; ++col) {
             SpriteVertex vertex;
             vertex.position.set(xs[col], ys[row], 0.F);
-            vertex.uv.set(us[col], vs[row]);
+            vertex.uv = frameUV(us[col], vs[row], rect, params.textureSize, params.rotated);
             mesh.vertices.push_back(vertex);
         }
     }
@@ -220,8 +210,6 @@ SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params) {
     const float left = -appX;
     const float bottom = -appY;
 
-    const float u0 = rect.x / textureWidth;
-    const float vBottom = (rect.y + rect.height) / textureHeight;
     const uint32_t columns = static_cast<uint32_t>(std::ceil(width / rect.width));
     const uint32_t rows = static_cast<uint32_t>(std::ceil(height / rect.height));
 
@@ -229,12 +217,10 @@ SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params) {
         const float tileY = std::min(rect.height, height - static_cast<float>(row) * rect.height);
         const float y0 = bottom + static_cast<float>(row) * rect.height;
         const float y1 = y0 + tileY;
-        const float vTop = (rect.y + rect.height - tileY) / textureHeight;
         for (uint32_t col = 0; col < columns; ++col) {
             const float tileX = std::min(rect.width, width - static_cast<float>(col) * rect.width);
             const float x0 = left + static_cast<float>(col) * rect.width;
             const float x1 = x0 + tileX;
-            const float uRight = (rect.x + tileX) / textureWidth;
             const uint16_t base = static_cast<uint16_t>(mesh.vertices.size());
 
             SpriteVertex v00;
@@ -245,10 +231,12 @@ SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params) {
             v10.position.set(x1, y0, 0.F);
             v01.position.set(x0, y1, 0.F);
             v11.position.set(x1, y1, 0.F);
-            v00.uv.set(u0, vBottom);
-            v10.uv.set(uRight, vBottom);
-            v01.uv.set(u0, vTop);
-            v11.uv.set(uRight, vTop);
+            const float fx1 = tileX / rect.width;
+            const float fy1 = tileY / rect.height;
+            v00.uv = frameUV(0.F, 0.F, rect, params.textureSize, params.rotated);
+            v10.uv = frameUV(fx1, 0.F, rect, params.textureSize, params.rotated);
+            v01.uv = frameUV(0.F, fy1, rect, params.textureSize, params.rotated);
+            v11.uv = frameUV(fx1, fy1, rect, params.textureSize, params.rotated);
             mesh.vertices.insert(mesh.vertices.end(), {v00, v10, v01, v11});
             mesh.indices.insert(mesh.indices.end(), {
                 base, static_cast<uint16_t>(base + 1), static_cast<uint16_t>(base + 2),
@@ -310,9 +298,7 @@ SpriteMesh buildRadialSpriteMesh(const FilledSpriteGeometryParams &params) {
     auto makeVertex = [&](float x, float y) {
         SpriteVertex vertex;
         vertex.position.set(x, y, 0.F);
-        const float u = rect.x / textureWidth + ((x - left) / width) * (rect.width / textureWidth);
-        const float v = rect.y / textureHeight + (1.F - (y - bottom) / height) * (rect.height / textureHeight);
-        vertex.uv.set(u, v);
+        vertex.uv = frameUV((x - left) / width, (y - bottom) / height, rect, params.textureSize, params.rotated);
         return vertex;
     };
 
@@ -367,32 +353,26 @@ SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params) {
     const float right = width - appX;
     const float top = height - appY;
 
-    const float u0 = rect.x / textureWidth;
-    const float u3 = (rect.x + rect.width) / textureWidth;
-    const float vBottom = (rect.y + rect.height) / textureHeight;
-    const float vTop = rect.y / textureHeight;
-
     float x0 = left;
     float x1 = right;
     float y0 = bottom;
     float y1 = top;
-    float uLeft = u0;
-    float uRight = u3;
-    float vBottomOut = vBottom;
-    float vTopOut = vTop;
+    float fx0 = 0.F;
+    float fx1 = 1.F;
+    float fy0 = 0.F;
+    float fy1 = 1.F;
 
     if (params.fillType == 0) {
         x0 = left + width * start;
         x1 = left + width * end;
-        uLeft = (rect.x + rect.width * start) / textureWidth;
-        uRight = (rect.x + rect.width * end) / textureWidth;
+        fx0 = start;
+        fx1 = end;
     } else {
         y0 = bottom + height * start;
         y1 = bottom + height * end;
-        vBottomOut = (rect.y + rect.height * (1.F - start)) / textureHeight;
-        vTopOut = (rect.y + rect.height * (1.F - end)) / textureHeight;
+        fy0 = start;
+        fy1 = end;
     }
-
     SpriteVertex v00;
     SpriteVertex v10;
     SpriteVertex v01;
@@ -401,10 +381,10 @@ SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params) {
     v10.position.set(x1, y0, 0.F);
     v01.position.set(x0, y1, 0.F);
     v11.position.set(x1, y1, 0.F);
-    v00.uv.set(uLeft, vBottomOut);
-    v10.uv.set(uRight, vBottomOut);
-    v01.uv.set(uLeft, vTopOut);
-    v11.uv.set(uRight, vTopOut);
+    v00.uv = frameUV(fx0, fy0, rect, params.textureSize, params.rotated);
+    v10.uv = frameUV(fx1, fy0, rect, params.textureSize, params.rotated);
+    v01.uv = frameUV(fx0, fy1, rect, params.textureSize, params.rotated);
+    v11.uv = frameUV(fx1, fy1, rect, params.textureSize, params.rotated);
 
     mesh.vertices = {v00, v10, v01, v11};
     mesh.indices = {0, 1, 2, 1, 3, 2};

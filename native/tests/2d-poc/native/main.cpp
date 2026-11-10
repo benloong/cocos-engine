@@ -525,12 +525,12 @@ void testSpritePrepare() {
     cc::Sprite sizeSprite;
     sizeSprite.setNode(&sizeNode);
     sizeSprite.setUITransform(&sizeTransform);
-    cc::SpriteFrame sizeFrame;
-    sizeFrame.setTexture(texture);
-    sizeFrame.setRect(0.F, 0.F, 50.F, 60.F);
-    sizeFrame.setOriginalSize(80.F, 90.F);
+    auto *sizeFrame = new cc::SpriteFrame();
+    sizeFrame->setTexture(texture);
+    sizeFrame->setRect(0.F, 0.F, 50.F, 60.F);
+    sizeFrame->setOriginalSize(80.F, 90.F);
     sizeSprite.setSizeMode(1);
-    sizeSprite.setFrame(&sizeFrame);
+    sizeSprite.setFrame(sizeFrame);
     check(sizeTransform.getContentSize().x == 50.F && sizeTransform.getContentSize().y == 60.F,
           "sprite trimmed size mode uses frame rect");
     sizeSprite.setSizeMode(2);
@@ -566,12 +566,12 @@ void testSpritePrepare() {
     slicedSprite.setUITransform(&slicedTransform);
     slicedSprite.setMaterial(material);
     slicedSprite.setType(1);
-    cc::SpriteFrame slicedFrame;
-    slicedFrame.setTexture(texture);
-    slicedFrame.setRect(0.F, 0.F, 1.F, 1.F);
-    slicedFrame.setOriginalSize(1.F, 1.F);
-    slicedFrame.setInsets(0.F, 0.F, 0.F, 0.F);
-    slicedSprite.setFrame(&slicedFrame);
+    auto *slicedFrame = new cc::SpriteFrame();
+    slicedFrame->setTexture(texture);
+    slicedFrame->setRect(0.F, 0.F, 1.F, 1.F);
+    slicedFrame->setOriginalSize(1.F, 1.F);
+    slicedFrame->setInsets(0.F, 0.F, 0.F, 0.F);
+    slicedSprite.setFrame(slicedFrame);
     cc::RenderEntity *slicedEntity = slicedSprite.getRenderEntity();
     check(slicedEntity != nullptr, "sliced sprite render entity");
     if (slicedEntity != nullptr) {

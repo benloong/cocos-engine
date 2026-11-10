@@ -25,23 +25,26 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
+
+#include "base/Ptr.h"
+#include "base/RefCounted.h"
+#include "core/assets/TextureBase.h"
 
 namespace cc {
 
-class TextureBase;
-
 /**
- * Small native value object for the SpriteFrame fields the Sprite assembler
- * needs. The JS SpriteFrame remains the serialized asset; this object is a
- * transient cache passed across JSB instead of 12 scalar arguments.
+ * Native SpriteFrame asset. It keeps the texture alive and carries the frame
+ * fields the Sprite assembler needs; the JS SpriteFrame remains the serialized
+ * asset and forwards these fields through a cached native frame.
  */
-class SpriteFrame {
+class SpriteFrame final : public RefCounted {
 public:
     SpriteFrame() = default;
-    ~SpriteFrame() = default;
+    ~SpriteFrame() override = default;
 
     void setTexture(TextureBase *texture) { _texture = texture; }
-    TextureBase *getTexture() const { return _texture; }
+    TextureBase *getTexture() const { return _texture.get(); }
 
     void setRect(float x, float y, float width, float height) {
         _x = x;
@@ -82,8 +85,15 @@ public:
     float getInsetTop() const { return _insetTop; }
     float getInsetBottom() const { return _insetBottom; }
 
+    void setUuid(const std::string &uuid) { _uuid = uuid; }
+    const std::string &getUuid() const { return _uuid; }
+    void setName(const std::string &name) { _name = name; }
+    const std::string &getName() const { return _name; }
+
 private:
-    TextureBase *_texture{nullptr};
+    IntrusivePtr<TextureBase> _texture;
+    std::string _uuid;
+    std::string _name;
     float _x{0.F};
     float _y{0.F};
     float _width{0.F};

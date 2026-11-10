@@ -281,6 +281,91 @@ void testRadialMesh() {
     }
 }
 
+void testRotatedSlicedMesh() {
+    cc::SlicedSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(100.F, 100.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+    params.insetLeft = 10.F;
+    params.insetRight = 10.F;
+    params.insetTop = 10.F;
+    params.insetBottom = 10.F;
+    params.rotated = true;
+
+    const cc::SpriteMesh mesh = cc::buildSlicedSpriteMesh(params);
+    check(mesh.valid && mesh.vertices.size() == 16, "rotated sliced mesh valid");
+    if (mesh.vertices.size() == 16) {
+        checkNear(mesh.vertices[0].uv.x, 0.F, "rotated sliced first u");
+        checkNear(mesh.vertices[0].uv.y, 0.F, "rotated sliced first v");
+        checkNear(mesh.vertices[5].uv.x, 0.1F, "rotated sliced inset u");
+        checkNear(mesh.vertices[5].uv.y, 0.1F, "rotated sliced inset v");
+        checkNear(mesh.vertices[15].uv.x, 1.F, "rotated sliced last u");
+        checkNear(mesh.vertices[15].uv.y, 1.F, "rotated sliced last v");
+    }
+}
+
+void testRotatedTiledMesh() {
+    cc::TiledSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(200.F, 100.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+    params.rotated = true;
+
+    const cc::SpriteMesh mesh = cc::buildTiledSpriteMesh(params);
+    check(mesh.valid && mesh.vertices.size() == 8, "rotated tiled mesh valid");
+    if (mesh.vertices.size() == 8) {
+        checkNear(mesh.vertices[0].uv.x, 0.F, "rotated tiled first u");
+        checkNear(mesh.vertices[0].uv.y, 0.F, "rotated tiled first v");
+        checkNear(mesh.vertices[7].uv.x, 1.F, "rotated tiled last u");
+        checkNear(mesh.vertices[7].uv.y, 1.F, "rotated tiled last v");
+    }
+}
+
+void testRotatedFilledMesh() {
+    cc::FilledSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(100.F, 100.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+    params.fillType = 0;
+    params.fillStart = 0.F;
+    params.fillRange = 0.5F;
+    params.rotated = true;
+
+    const cc::SpriteMesh mesh = cc::buildFilledSpriteMesh(params);
+    check(mesh.valid && mesh.vertices.size() == 4, "rotated filled mesh valid");
+    if (mesh.vertices.size() == 4) {
+        checkNear(mesh.vertices[0].uv.x, 0.F, "rotated filled left u");
+        checkNear(mesh.vertices[0].uv.y, 0.F, "rotated filled left v");
+        checkNear(mesh.vertices[1].uv.x, 0.F, "rotated filled right u");
+        checkNear(mesh.vertices[1].uv.y, 0.5F, "rotated filled right v");
+        checkNear(mesh.vertices[3].uv.x, 1.F, "rotated filled top u");
+        checkNear(mesh.vertices[3].uv.y, 0.5F, "rotated filled top v");
+    }
+}
+
+void testRotatedRadialMesh() {
+    cc::FilledSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(100.F, 100.F);
+    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
+    params.textureSize = cc::Vec2(100.F, 100.F);
+    params.fillType = 2;
+    params.fillRange = 0.5F;
+    params.rotated = true;
+
+    const cc::SpriteMesh mesh = cc::buildRadialSpriteMesh(params);
+    check(mesh.valid && mesh.vertices.size() == 26, "rotated radial mesh valid");
+    if (mesh.vertices.size() == 26) {
+        checkNear(mesh.vertices[0].uv.x, 0.5F, "rotated radial center u");
+        checkNear(mesh.vertices[0].uv.y, 0.5F, "rotated radial center v");
+        checkNear(mesh.vertices[1].uv.x, 1.F, "rotated radial top u");
+        checkNear(mesh.vertices[1].uv.y, 0.5F, "rotated radial top v");
+    }
+}
+
 void testInvalidUntrimmed() {
     cc::SimpleSpriteGeometryParams params;
     params.contentSize = cc::Vec2(100.F, 100.F);
@@ -306,6 +391,10 @@ int main() {
     testFilledMesh();
     testTiledMesh();
     testRadialMesh();
+    testRotatedSlicedMesh();
+    testRotatedTiledMesh();
+    testRotatedFilledMesh();
+    testRotatedRadialMesh();
     testInvalidUntrimmed();
 
     std::printf("%d checks, %d failures\n", gChecks, gFailures);

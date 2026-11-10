@@ -134,6 +134,7 @@ private:
     float _lastOpacity{-1.F};
 
     IntrusivePtr<RenderEntity> _entity;
+    IntrusivePtr<SpriteFrame> _spriteFrame;
     std::vector<float> _vertices;
     std::vector<uint16_t> _indices;
 };

@@ -42,7 +42,9 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 
 新增 `native/cocos/2d/assets/SpriteFrame.h`：
 
-- texture / rect / originalSize / offset / rotated / 九宫格 insets 字段；
+- RefCounted asset，`IntrusivePtr<TextureBase>` 持有 texture；
+- uuid/name、rect / originalSize / offset / rotated / 九宫格 insets 字段；
+- Sprite 持有 `IntrusivePtr<SpriteFrame>`，JS 壳按 SpriteFrame 缓存 native frame；
 - `Sprite::setFrame(SpriteFrame*)` 重载，一次 JSB 调用复制全部字段；
 - texture 尺寸从 `TextureBase::getWidth/getHeight` 获取；
 - JS 壳构造 `n2d.SpriteFrame` 后调用单参数 `setFrame`。
@@ -214,12 +216,11 @@ Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame �
 
 ## 7. 尚未完成
 
-1. SpriteFrame 完整 native 资产化/insets 边界用例；
-2. TS UIRenderer 继承链最终决策；
-3. 默认启用 Sprite override 的决策。
+1. TS UIRenderer 继承链最终决策；
+2. 默认启用 Sprite override 的决策。
 
 ## 8. 下一步
 
 native Sprite 已经走通 SIMPLE/SLICED/TILED/FILLED 五种 drawInfo 路径以及
 drawInfo → batch → custom pipeline `draw2D` → `submitUICommands` → draw。
-下一步补 SpriteFrame 资产化边界和旋转 atlas 用例。
+SpriteFrame native 资产化、旋转 atlas 组合和 Web/native golden 已闭环，下一步进入 M3。
