@@ -46,6 +46,11 @@ try {
     if ($bitmap.textureWidth -le 0 -or $bitmap.opaque -le 0) { throw 'BMFont atlas path produced no pixels' }
     if ($bitmap.textureWidth -ge 66) { throw 'BMFont kerning was not applied' }
 
+    $charAsciiLines = @(Get-Content $log | Select-String -Pattern 'M3_CHAR_ASCII ')
+    if ($charAsciiLines.Count -lt 1) { throw 'ASCII CHAR Label missing' }
+    $charAscii = $charAsciiLines[0].Line.Substring($charAsciiLines[0].Line.IndexOf('M3_CHAR_ASCII ') + 14) | ConvertFrom-Json
+    if ($charAscii.textureWidth -le 0 -or $charAscii.opaque -le 0) { throw 'ASCII CHAR Label produced no pixels' }
+
     $charLines = @(Get-Content $log | Select-String -Pattern 'M3_CHAR_LABEL ')
     if ($charLines.Count -lt 1) { throw 'CHAR Label missing' }
     $charLabel = $charLines[0].Line.Substring($charLines[0].Line.IndexOf('M3_CHAR_LABEL ') + 14) | ConvertFrom-Json
@@ -81,6 +86,7 @@ try {
     Write-Host ("  BMFont {0}x{1}, opaque={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.opaque)
     Write-Host ("  Real BMFont {0}x{1}, opaque={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.opaque)
     Write-Host ("  CHAR Label {0}x{1}, opaque={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $charLabel.opaque)
+    Write-Host ("  CHAR ASCII {0}x{1}, opaque={2}" -f $charAscii.textureWidth, $charAscii.textureHeight, $charAscii.opaque)
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, lines={3}, opaque={4}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines, $_.opaque)
     }
