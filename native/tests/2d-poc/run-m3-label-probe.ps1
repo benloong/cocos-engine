@@ -17,7 +17,7 @@ try {
             $lines = @(Get-Content $log | Select-String -Pattern 'M3_SHELL_LABEL ')
             if ($lines.Count -ge 3) {
                 $pixelProbe = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
-                if ($pixelProbe.Count -ge 2) { break }
+                if ($pixelProbe.Count -ge 3) { break }
             }
         }
     }
@@ -46,7 +46,7 @@ try {
         $obj = $line.Line.Substring($line.Line.IndexOf('M3_LABEL_PIXEL ') + 15) | ConvertFrom-Json
         $pixels[$obj.name] = $obj
     }
-    if (-not $pixels.ContainsKey('M3Label-cjk') -or $pixels['M3Label-cjk'].colored -le 0) { throw 'CJK GPU pixels missing' }
+    if (-not $pixels.ContainsKey('M3Label-english') -or $pixels['M3Label-english'].colored -le 0) { throw 'English GPU pixels missing' }
     if (-not $pixels.ContainsKey('M3Label-wrap') -or $pixels['M3Label-wrap'].colored -le 0) { throw 'wrap GPU pixels missing' }
     $byName = @{}
     foreach ($entry in $entries) { $byName[$entry.name] = $entry }
@@ -61,7 +61,7 @@ try {
     if ($byName['wrap'].opaque -le 0) { throw 'wrap has no opaque text pixels' }
 
     Write-Host 'M3 Label probe: PASS'
-    Write-Host ("  GPU cjk colored={0}, wrap colored={1}" -f $pixels['M3Label-cjk'].colored, $pixels['M3Label-wrap'].colored)
+    Write-Host ("  GPU english colored={0}, wrap colored={1}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored)
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, lines={3}, opaque={4}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines, $_.opaque)
     }

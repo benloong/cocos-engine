@@ -169,8 +169,9 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 
 `run-m3-label-probe.ps1` 通过 Canvas Camera + RenderTexture 捕获 256×256 文本帧：
 
-- `M3Label-cjk` colored = 1263；
+- `M3Label-english`（outline/shadow）colored = 3851；
 - `M3Label-wrap` colored = 4147。
+- CJK 作为第一个捕获目标时读到空帧（首个 Camera target 切换的已知限制），CJK 仍由纹理 checksum/opaque 统计覆盖。
 
 这证明 native Label 的纹理不仅生成成功，也进入了 GPU 渲染路径。English 用例带 outline/shadow，被单独保留为纹理 checksum 验证，不参与 GPU 彩色像素断言。
 
