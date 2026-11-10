@@ -29,8 +29,7 @@
 
 1. **Web/native 像素对照**：Web 构建改用程序化 64×64 红色纹理后，Chrome
    headless + 手动 tick 能渲染并执行探针，`M2_PIXEL_RESULT ok`，五种模式
-   red>0、maxR=128；native 探针同样 red>0、maxR=128。两者 red 计数因
-   camera/viewport 不同（Web 968，native 354），尚无逐像素 diff。
+   red>0、maxR=128；native 探针同样 red>0、maxR=128。两者 red 计数因 camera/viewport/DPR 不同，仍有差异，尚无逐像素 diff。
 2. native `getMaterialInstance` 已加；JS 壳的 MaterialInstance 转发和真实 effect 用例仍待补。
 3. SpriteFrame 完整 native 资产化与 insets 边界。
 4. Tiled/Filled 的旋转 atlas frame 坐标组合。
