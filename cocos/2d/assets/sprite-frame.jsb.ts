@@ -23,9 +23,10 @@
 */
 
 import { ccclass } from 'cc.decorator';
-import { Rect, Size, Vec2 } from '../../core';
+import { js, Rect, Size, Vec2 } from '../../core';
 import { Asset } from '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
+import { Texture2D } from '../../asset/assets/texture-2d';
 
 declare const n2d: any;
 
@@ -89,6 +90,10 @@ export class SpriteFrame extends Asset {
 
     get texture (): TextureBase | null {
         return this._texture;
+    }
+
+    set _textureSource (value: TextureBase | null) {
+        this.texture = value;
     }
 
     set texture (value: TextureBase | null) {
@@ -264,7 +269,7 @@ export class SpriteFrame extends Asset {
         };
     }
 
-    public _deserialize (data: any): void {
+    public _deserialize (data: any, handle: any): void {
         if (data.rect) { this._rect = new Rect(data.rect.x, data.rect.y, data.rect.width, data.rect.height); }
         if (data.offset) { this._offset = new Vec2(data.offset.x, data.offset.y); }
         if (data.originalSize) { this._originalSize = new Size(data.originalSize.width, data.originalSize.height); }
@@ -281,6 +286,9 @@ export class SpriteFrame extends Asset {
                 data.capInsets[INSET_RIGHT],
                 data.capInsets[INSET_BOTTOM],
             ];
+        }
+        if (data.texture && handle?.result) {
+            handle.result.push(this, '_textureSource', data.texture, js.getClassId(Texture2D));
         }
         this._syncNative();
     }

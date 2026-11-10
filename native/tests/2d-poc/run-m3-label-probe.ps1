@@ -46,6 +46,11 @@ try {
     if ($bitmap.textureWidth -le 0 -or $bitmap.opaque -le 0) { throw 'BMFont atlas path produced no pixels' }
     if ($bitmap.textureWidth -ge 66) { throw 'BMFont kerning was not applied' }
 
+    $realLines = @(Get-Content $log | Select-String -Pattern 'M3_REAL_BMFONT ')
+    if ($realLines.Count -lt 1) { throw 'real BitmapFont label missing' }
+    $realFont = $realLines[0].Line.Substring($realLines[0].Line.IndexOf('M3_REAL_BMFONT ') + 15) | ConvertFrom-Json
+    if ($realFont.textureWidth -le 0 -or $realFont.opaque -le 0) { throw 'real BitmapFont produced no pixels' }
+
     $pixelLines = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
     $pixels = @{}
     foreach ($line in $pixelLines) {
@@ -69,6 +74,7 @@ try {
     Write-Host 'M3 Label probe: PASS'
     Write-Host ("  GPU english colored={0}, wrap colored={1}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored)
     Write-Host ("  BMFont {0}x{1}, opaque={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.opaque)
+    Write-Host ("  Real BMFont {0}x{1}, opaque={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.opaque)
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, lines={3}, opaque={4}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines, $_.opaque)
     }
