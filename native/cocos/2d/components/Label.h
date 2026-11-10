@@ -71,6 +71,8 @@ public:
     void setHorizontalAlign(int32_t align);
     void setVerticalAlign(int32_t align);
     void setSpacingX(float spacing);
+    void setCacheMode(int32_t mode);
+    int32_t getCacheMode() const { return _cacheMode; }
     void setBitmapAtlas(SpriteFrame *atlas, float lineHeight);
     void clearBitmapFont();
     void clearGlyphs();
@@ -115,6 +117,7 @@ private:
     float _spacingX{0.0F};
     bool _wrap{false};
     int32_t _overflow{0};
+    int32_t _cacheMode{0};
     int32_t _hAlign{0};
     int32_t _vAlign{0};
     bool _enableOutline{false};

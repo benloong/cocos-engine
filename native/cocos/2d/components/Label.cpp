@@ -264,6 +264,12 @@ void Label::addGlyph(int32_t code, float u, float v, float w, float h, float off
     _dirty = true;
 }
 
+void Label::setCacheMode(int32_t mode) {
+    if (_cacheMode == mode) { return; }
+    _cacheMode = mode;
+    _dirty = true;
+}
+
 void Label::setColor(const Color &color) {
     UIRenderer::setColor(color);
     _renderer.setColor(color);

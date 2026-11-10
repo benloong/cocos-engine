@@ -25,6 +25,7 @@ const nativeLabel = {
     setShadowColor: jest.fn(),
     setShadowBlur: jest.fn(),
     setShadowOffset: jest.fn(),
+    setCacheMode: jest.fn(),
     getContentHeight: jest.fn(() => 90),
 };
 
@@ -53,6 +54,7 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.horizontalAlign = HorizontalTextAlignment.CENTER;
     label.verticalAlign = 2;
     label.spacingX = 2;
+    label.cacheMode = 2;
 
     expect(nativeLabel.setString).toHaveBeenLastCalledWith('Hello');
     expect(nativeLabel.setFont).toHaveBeenLastCalledWith('24px Arial');
@@ -62,6 +64,7 @@ test('Label M3 shell attaches and forwards text properties', () => {
     expect(nativeLabel.setHorizontalAlign).toHaveBeenLastCalledWith(1);
     expect(nativeLabel.setVerticalAlign).toHaveBeenLastCalledWith(2);
     expect(nativeLabel.setSpacingX).toHaveBeenLastCalledWith(2);
+    expect(nativeLabel.setCacheMode).toHaveBeenLastCalledWith(2);
 
     label.color = new Color(10, 20, 30, 255);
     expect(nativeLabel.setColorRGBA).toHaveBeenLastCalledWith(10, 20, 30, 255);

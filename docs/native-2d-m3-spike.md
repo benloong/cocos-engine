@@ -185,7 +185,7 @@ native Label 增加 bitmap 分支：JS 壳把 `BitmapFont.spriteFrame.native` �
 真实资产最初失败的原因：`SpriteFrame` 薄壳的 `_deserialize` 没有把 `data.texture` 作为依赖挂到 `_textureSource`，导致 SpriteFrame.texture 为空；补齐 handle 依赖后真实 BMFont 正常合成。
 - `run-m3-label-probe.ps1` 会断言 BMFont 纹理和 opaque 像素。
 
-Letter/cacheMode 仍未覆盖。
+Letter/cacheMode：`cacheMode` 已从 `label.jsb.ts` 转发到 native 并存储；真正的 CHAR 字符图集尚未实现，当前仍走纹理合成路径。
 
 ## 11. M3.1 当前进度
 

@@ -309,6 +309,7 @@ export class Label extends UIRenderer {
 
     set cacheMode (value: CacheMode) {
         this._cacheMode = value;
+        this._native?.setCacheMode(value);
     }
 
     get color (): Readonly<Color> {
@@ -429,5 +430,6 @@ export class Label extends UIRenderer {
         this._native?.setShadowColor(this._shadowColor);
         this._native?.setShadowBlur(this._shadowBlur);
         this._native?.setShadowOffset(this._shadowOffset.x, this._shadowOffset.y);
+        this._native?.setCacheMode(this._cacheMode);
     }
 }
