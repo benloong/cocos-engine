@@ -151,7 +151,19 @@ CJK 的 native width 为 160，说明 UTF-8 字符串和字形测量正常；日
 - Spike 暴露了 SpriteFrame 薄壳的 API 完整性要求：Label 需要 `getGFXTexture`、`getGFXSampler`、`getHash`、`getSamplerInfo`、`_calculateUV`、`isRotated` 等；已在薄壳补齐转发；
 - Web 截图确认 CJK/换行正常：`assets/m3-web-label.png`；native 窗口在 headless/OpenGL 下无法 PrintWindow 截图，改用 `n2d.TextMetrics` 的 CJK 宽度 160 验证字符串完整。
 
-## 8. M3.1 入口
+## 8. M3.1 native Label 初步结果
+
+native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 native 纹理，shell 通过 `n2d.Label` 转发。
+
+| case | native texture | lines | contentSize | opaque px |
+|---|---|---|---|---|
+| Hello Label, 32 | 242 × 42 | 1 | 240 × 40 | 1304 |
+| 你好，世界, 32 | 242 × 42 | 1 | 240 × 40 | 1059 |
+| 长文本, 24, wrap | 222 × 92 | 3 | 220 × 90 | 3373 |
+
+文本像素 checksum 非零，说明 native Canvas delegate 确实栅格化了文本；CJK 与英文的 opaque 像素数不同。
+
+## 9. M3.1 入口
 
 已新增 native 文本测量入口：
 

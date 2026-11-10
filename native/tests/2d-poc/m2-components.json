@@ -1,4 +1,9 @@
 {
+  "label": {
+    "source": "cocos/2d/components/label.ts",
+    "shell": "cocos/2d/components/label.jsb.ts",
+    "enabled": true
+  },
   "spriteFrame": {
     "source": "cocos/2d/assets/sprite-frame.ts",
     "shell": "cocos/2d/assets/sprite-frame.jsb.ts",

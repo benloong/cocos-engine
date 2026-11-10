@@ -2110,6 +2110,8 @@ cocos_source_files(
     cocos/2d/assets/SpriteFrame.h
     cocos/2d/components/Sprite.h
     cocos/2d/components/Sprite.cpp
+    cocos/2d/components/Label.h
+    cocos/2d/components/Label.cpp
 )
 
 ##### box2d
