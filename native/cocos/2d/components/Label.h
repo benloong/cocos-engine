@@ -37,8 +37,10 @@
 namespace cc {
 
 class Texture2D;
+class LetterAtlas;
 class SpriteFrame;
 class Texture2D;
+class LetterAtlas;
 class UITransform;
 
 /**
@@ -105,6 +107,7 @@ public:
 private:
     void rebuildTexture();
     void rebuildBitmapTexture();
+    void rebuildLetterTexture();
 
     Sprite _renderer;
     UITransform *_transform{nullptr};

@@ -2099,6 +2099,8 @@ cocos_source_files(
     cocos/2d/renderer/SpriteGeometry.cpp
     cocos/2d/renderer/TextMetrics.h
     cocos/2d/renderer/TextMetrics.cpp
+    cocos/2d/renderer/LetterAtlas.h
+    cocos/2d/renderer/LetterAtlas.cpp
     cocos/2d/framework/UITransformMath.h
     cocos/2d/framework/UITransformMath.cpp
     cocos/2d/framework/UITransform.h

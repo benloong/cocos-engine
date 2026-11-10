@@ -25,12 +25,15 @@
 #include "2d/components/Label.h"
 
 #include <algorithm>
+#include <memory>
+#include <unordered_map>
 #include <cmath>
 #include <cstdio>
 #include <vector>
 
 #include "2d/assets/SpriteFrame.h"
 #include "2d/framework/UITransform.h"
+#include "2d/renderer/LetterAtlas.h"
 #include "core/assets/AssetEnum.h"
 #include "core/assets/ImageAsset.h"
 #include "core/assets/Texture2D.h"
@@ -39,6 +42,8 @@
 namespace cc {
 
 namespace {
+
+std::unordered_map<std::string, std::shared_ptr<LetterAtlas>> gLetterAtlases;
 
 constexpr float BASELINE_RATIO = 0.26F;
 
@@ -302,6 +307,111 @@ void Label::prepareRenderEntity(float opacity) {
     _renderer.prepare(opacity);
 }
 
+void Label::rebuildLetterTexture() {
+    auto &atlasPtr = gLetterAtlases[_font];
+    if (!atlasPtr) { atlasPtr = std::make_shared<LetterAtlas>(); }
+    LetterAtlas &atlas = *atlasPtr;
+
+    const float lineHeight = _lineHeight > 0.0F ? _lineHeight : _fontSize;
+    const float maxWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
+        ? _transform->getContentSize().x
+        : 100000.0F;
+
+    std::vector<std::vector<LetterAtlas::Glyph>> lines;
+    lines.emplace_back();
+    float lineWidth = 0.0F;
+    float contentWidth = 0.0F;
+
+    for (const std::string &codepoint : splitUtf8(_string)) {
+        if (codepoint == "\n") {
+            contentWidth = std::max(contentWidth, lineWidth);
+            lines.emplace_back();
+            lineWidth = 0.0F;
+            continue;
+        }
+        const int32_t code = utf8CodePoint(codepoint);
+        if (!atlas.ensureGlyph(code, _font, lineHeight)) { continue; }
+        const LetterAtlas::Glyph *glyph = atlas.getGlyph(code);
+        if (glyph == nullptr) { continue; }
+        if (_wrap && lineWidth + glyph->advance > maxWidth && !lines.back().empty()) {
+            contentWidth = std::max(contentWidth, lineWidth);
+            lines.emplace_back();
+            lineWidth = 0.0F;
+        }
+        lines.back().push_back(*glyph);
+        lineWidth += glyph->advance;
+    }
+    contentWidth = std::max(contentWidth, lineWidth);
+
+    const float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
+    const uint32_t outWidth = static_cast<uint32_t>(std::ceil(std::max(contentWidth, 1.0F))) + 2U;
+    const uint32_t outHeight = static_cast<uint32_t>(std::ceil(contentHeight)) + 2U;
+    std::vector<uint8_t> pixels(static_cast<size_t>(outWidth) * outHeight * 4U, 0U);
+    const uint8_t *atlasPixels = atlas.getData();
+
+    for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex) {
+        float cursorX = 1.0F;
+        const float lineTop = 1.0F + static_cast<float>(lineIndex) * lineHeight;
+        for (const LetterAtlas::Glyph &glyph : lines[lineIndex]) {
+            if (glyph.width > 1 && glyph.height > 1) {
+                const int32_t destX = static_cast<int32_t>(std::round(cursorX + glyph.offsetX));
+                const int32_t destY = static_cast<int32_t>(std::round(lineTop + glyph.offsetY));
+                for (int32_t y = 0; y < glyph.height; ++y) {
+                    const int32_t dy = destY + y;
+                    if (dy < 0 || dy >= static_cast<int32_t>(outHeight) || glyph.y + y >= LetterAtlas::ATLAS_HEIGHT) { continue; }
+                    for (int32_t x = 0; x < glyph.width; ++x) {
+                        const int32_t dx = destX + x;
+                        if (dx < 0 || dx >= static_cast<int32_t>(outWidth) || glyph.x + x >= LetterAtlas::ATLAS_WIDTH) { continue; }
+                        const size_t src = (static_cast<size_t>(glyph.y + y) * LetterAtlas::ATLAS_WIDTH + (glyph.x + x)) * 4U;
+                        const size_t dst = (static_cast<size_t>(dy) * outWidth + static_cast<size_t>(dx)) * 4U;
+                        const uint32_t alpha = atlasPixels[src + 3U] * _color.a / 255U;
+                        pixels[dst] = static_cast<uint8_t>(255U * _color.r / 255U);
+                        pixels[dst + 1U] = static_cast<uint8_t>(255U * _color.g / 255U);
+                        pixels[dst + 2U] = static_cast<uint8_t>(255U * _color.b / 255U);
+                        pixels[dst + 3U] = static_cast<uint8_t>(alpha);
+                    }
+                }
+            }
+            cursorX += glyph.advance;
+        }
+    }
+
+    if (_texture == nullptr) { _texture = new Texture2D(); }
+    ITexture2DCreateInfo info;
+    info.width = outWidth;
+    info.height = outHeight;
+    info.format = PixelFormat::RGBA8888;
+    info.mipmapLevel = 1U;
+    _texture->reset(info);
+    _texture->uploadData(pixels.data());
+
+    if (_frame == nullptr) { _frame = new SpriteFrame(); }
+    _frame->setTexture(_texture);
+    _frame->setRect(0.0F, 0.0F, static_cast<float>(outWidth), static_cast<float>(outHeight));
+    _frame->setOriginalSize(static_cast<float>(outWidth), static_cast<float>(outHeight));
+    _frame->setOffset(0.0F, 0.0F);
+    _frame->setRotated(false);
+
+    _lastTextureWidth = static_cast<float>(outWidth);
+    _lastTextureHeight = static_cast<float>(outHeight);
+    _lastLineCount = static_cast<int32_t>(lines.size());
+    _lastContentWidth = contentWidth;
+    _lastContentHeight = contentHeight;
+    _lastPixelChecksum = 0U;
+    _lastOpaquePixels = 0U;
+    for (size_t i = 3; i < pixels.size(); i += 4U) {
+        _lastPixelChecksum = _lastPixelChecksum * 31U + pixels[i];
+        if (pixels[i] > 0U) { ++_lastOpaquePixels; }
+    }
+
+    const float finalWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
+        ? _transform->getContentSize().x
+        : contentWidth;
+    if (_overflow == 3 && _transform != nullptr) {
+        _transform->setContentSize(finalWidth, contentHeight);
+    }
+    _renderer.setFrame(_frame);
+}
 void Label::rebuildBitmapTexture() {
     auto *atlasTexture = dynamic_cast<Texture2D *>(_bitmapAtlas->getTexture());
     ImageAsset *image = atlasTexture != nullptr ? atlasTexture->getImage() : nullptr;
@@ -445,6 +555,10 @@ void Label::rebuildBitmapTexture() {
 }
 void Label::rebuildTexture() {
     _dirty = false;
+    if (_cacheMode == 2) {
+        rebuildLetterTexture();
+        return;
+    }
     if (_bitmapAtlas != nullptr && !_glyphs.empty()) {
         rebuildBitmapTexture();
         return;
