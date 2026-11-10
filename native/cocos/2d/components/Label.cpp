@@ -357,18 +357,46 @@ void Label::rebuildTexture() {
         } else if (_hAlign == 2) {
             x = static_cast<float>(textureWidth) - lineWidth - 1.0F;
         }
-        if (_enableOutline && _outlineWidth > 0.0F) {
-            char outline[64] = {0};
-            std::snprintf(outline, sizeof(outline), "rgba(%u,%u,%u,%.3f)",
-                          static_cast<unsigned>(_outlineColor.r),
-                          static_cast<unsigned>(_outlineColor.g),
-                          static_cast<unsigned>(_outlineColor.b),
-                          static_cast<double>(_outlineColor.a) / 255.0);
-            context.setLineWidth(_outlineWidth);
-            context.setStrokeStyle(outline);
-            context.strokeText(line, x, textTop + static_cast<float>(i) * lineHeight, 0.0F);
+        const float lineY = textTop + static_cast<float>(i) * lineHeight;
+        auto fillWithColor = [&](float dx, float dy, const Color &color) {
+            char rgba[64] = {0};
+            std::snprintf(rgba, sizeof(rgba), "rgba(%u,%u,%u,%.3f)",
+                          static_cast<unsigned>(color.r),
+                          static_cast<unsigned>(color.g),
+                          static_cast<unsigned>(color.b),
+                          static_cast<double>(color.a) / 255.0);
+            context.setFillStyle(rgba);
+            context.fillText(line, x + dx, lineY + dy, 0.0F);
+        };
+
+        if (_enableShadow) {
+            const float blur = std::max(_shadowBlur, 1.0F);
+            for (int pass = 0; pass < 9; ++pass) {
+                const int px = (pass % 3) - 1;
+                const int py = (pass / 3) - 1;
+                fillWithColor(_shadowOffsetX + static_cast<float>(px) * blur,
+                              _shadowOffsetY + static_cast<float>(py) * blur,
+                              _shadowColor);
+            }
         }
-        context.fillText(line, x, textTop + static_cast<float>(i) * lineHeight, 0.0F);
+
+        if (_enableOutline && _outlineWidth > 0.0F) {
+            for (int pass = 0; pass < 8; ++pass) {
+                const float angle = static_cast<float>(pass) * 0.7853981634F;
+                fillWithColor(std::cos(angle) * _outlineWidth,
+                              std::sin(angle) * _outlineWidth,
+                              _outlineColor);
+            }
+        }
+
+        char fillColor[64] = {0};
+        std::snprintf(fillColor, sizeof(fillColor), "rgba(%u,%u,%u,%.3f)",
+                      static_cast<unsigned>(_color.r),
+                      static_cast<unsigned>(_color.g),
+                      static_cast<unsigned>(_color.b),
+                      static_cast<double>(_color.a) / 255.0);
+        context.setFillStyle(fillColor);
+        context.fillText(line, x, lineY, 0.0F);
     }
     cc::Data pixels;
     context.setCanvasBufferUpdatedCallback([&pixels](const cc::Data &data) {

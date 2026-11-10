@@ -277,7 +277,7 @@
 
 ### M3：Label + 文本栈（8~10 周，风险最高）
 
-> 进度：M3.0 spike 完成；M3.1 native Label/TTF 薄壳已落地，支持测量、换行、水平/垂直对齐、RESIZE_HEIGHT：`docs/native-2d-m3-spike.md`。CLAMP/SHRINK、Outline/Shadow、BmFont/Letter 仍待补。
+> 进度：M3.0 spike 完成；M3.1 native Label/TTF 薄壳已落地，支持测量、换行、水平/垂直对齐、RESIZE_HEIGHT：`docs/native-2d-m3-spike.md`。CLAMP/SHRINK 基础路径、Outline/Shadow 已接入；BmFont/Letter/cacheMode 仍待补。
 
 - 内容：
   - 文本测量/排版（TTF、BmFont、Letter）、换行/对齐/overflow；

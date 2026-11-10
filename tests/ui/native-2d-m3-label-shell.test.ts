@@ -68,4 +68,14 @@ test('Label M3 shell attaches and forwards text properties', () => {
 
     label.lateUpdate();
     expect(node.getComponent(UITransform)?.contentSize.height).toBe(90);
+
+    label.enableOutline = true;
+    label.outlineWidth = 2;
+    expect(nativeLabel.setEnableOutline).toHaveBeenLastCalledWith(true);
+    expect(nativeLabel.setOutlineWidth).toHaveBeenLastCalledWith(2);
+
+    label.enableShadow = true;
+    label.shadowBlur = 2;
+    expect(nativeLabel.setEnableShadow).toHaveBeenLastCalledWith(true);
+    expect(nativeLabel.setShadowBlur).toHaveBeenLastCalledWith(2);
 });
