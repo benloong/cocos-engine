@@ -21,9 +21,21 @@ try {
     if ($lines.Count -lt 3) {
         throw "expected 3 M3_SHELL_LABEL lines, got $($lines.Count)"
     }
+    $measureLines = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_MEASURE ')
     $entries = foreach ($line in $lines) {
         $json = $line.Line.Substring($line.Line.IndexOf('M3_SHELL_LABEL ') + 15)
         $json | ConvertFrom-Json
+    }
+    $measure = @{}
+    foreach ($line in $measureLines) {
+        $obj = $line.Line.Substring($line.Line.IndexOf('M3_LABEL_MEASURE ') + 17) | ConvertFrom-Json
+        $measure[$obj.name] = $obj
+    }
+    $expected = @{ english = @(240, 50.4); cjk = @(240, 50.4); wrap = @(220, 97.8) }
+    foreach ($name in $expected.Keys) {
+        if (-not $measure.ContainsKey($name)) { throw "missing measurement $name" }
+        if ([math]::Abs($measure[$name].width - $expected[$name][0]) -gt 0.5) { throw "$name width parity failed" }
+        if ([math]::Abs($measure[$name].height - $expected[$name][1]) -gt 0.5) { throw "$name height parity failed" }
     }
     $byName = @{}
     foreach ($entry in $entries) { $byName[$entry.name] = $entry }

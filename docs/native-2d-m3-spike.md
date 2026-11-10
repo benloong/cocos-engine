@@ -157,9 +157,9 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 
 | case | native texture | lines | contentSize | opaque px |
 |---|---|---|---|---|
-| Hello Label, 32 | 242 × 42 | 1 | 240 × 40 | 1304 |
-| 你好，世界, 32 | 242 × 42 | 1 | 240 × 40 | 1059 |
-| 长文本, 24, wrap | 222 × 92 | 3 | 220 × 90 | 3373 |
+| Hello Label, 32 | 242 × 53 | 1 | 240 × 50.4 | 3409 (outline) |
+| 你好，世界, 32 | 242 × 53 | 1 | 240 × 50.4 | 1059 |
+| 长文本, 24, wrap | 222 × 100 | 3 | 220 × 97.8 | 3373 |
 
 文本像素 checksum 非零，说明 native Canvas delegate 确实栅格化了文本；CJK 与英文的 opaque 像素数不同。
 

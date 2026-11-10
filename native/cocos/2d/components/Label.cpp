@@ -39,6 +39,8 @@ namespace cc {
 
 namespace {
 
+constexpr float BASELINE_RATIO = 0.26F;
+
 std::vector<std::string> splitUtf8(const std::string &text) {
     std::vector<std::string> out;
     for (size_t i = 0; i < text.size();) {
@@ -301,7 +303,7 @@ void Label::rebuildTexture() {
     }
     contentWidth = std::max(contentWidth, 1.0F);
 
-    const float contentHeight = std::max(lineHeight * static_cast<float>(lines.size()), 1.0F);
+    const float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
     if (_overflow == 2 && _transform->getContentSize().y > 0.0F
         && contentHeight > _transform->getContentSize().y + 0.5F && _fontSize > 4.0F) {
         _fontSize *= 0.9F;
