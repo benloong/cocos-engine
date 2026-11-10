@@ -32,6 +32,7 @@
 #include "2d/assets/SpriteFrame.h"
 #include "2d/framework/UITransform.h"
 #include "core/assets/AssetEnum.h"
+#include "core/assets/ImageAsset.h"
 #include "core/assets/Texture2D.h"
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
 
@@ -62,6 +63,23 @@ std::vector<std::string> splitUtf8(const std::string &text) {
         i += len;
     }
     return out;
+}
+
+int32_t utf8CodePoint(const std::string &text) {
+    if (text.empty()) { return 0; }
+    const unsigned char c = static_cast<unsigned char>(text[0]);
+    if ((c & 0x80U) == 0U) { return c; }
+    if ((c & 0xE0U) == 0xC0U && text.size() >= 2U) {
+        return ((c & 0x1FU) << 6) | (static_cast<unsigned char>(text[1]) & 0x3FU);
+    }
+    if ((c & 0xF0U) == 0xE0U && text.size() >= 3U) {
+        return ((c & 0x0FU) << 12) | ((static_cast<unsigned char>(text[1]) & 0x3FU) << 6) | (static_cast<unsigned char>(text[2]) & 0x3FU);
+    }
+    if ((c & 0xF8U) == 0xF0U && text.size() >= 4U) {
+        return ((c & 0x07U) << 18) | ((static_cast<unsigned char>(text[1]) & 0x3FU) << 12)
+             | ((static_cast<unsigned char>(text[2]) & 0x3FU) << 6) | (static_cast<unsigned char>(text[3]) & 0x3FU);
+    }
+    return c;
 }
 
 float measureText(CanvasRenderingContext2D &context, const std::string &text) {
@@ -210,6 +228,32 @@ void Label::setShadowOffset(float x, float y) {
     _shadowOffsetY = y;
     _dirty = true;
 }
+void Label::setBitmapAtlas(SpriteFrame *atlas, float lineHeight) {
+    _bitmapAtlas = atlas;
+    _bitmapLineHeight = lineHeight;
+    _dirty = true;
+}
+
+void Label::clearBitmapFont() {
+    _bitmapAtlas = nullptr;
+    _bitmapLineHeight = 0.0F;
+    _glyphs.clear();
+    _glyphMap.clear();
+    _dirty = true;
+}
+
+void Label::clearGlyphs() {
+    _glyphs.clear();
+    _glyphMap.clear();
+    _dirty = true;
+}
+
+void Label::addGlyph(int32_t code, float u, float v, float w, float h, float offsetX, float offsetY, float xAdvance) {
+    _glyphMap[code] = _glyphs.size();
+    _glyphs.push_back(Glyph{u, v, w, h, offsetX, offsetY, xAdvance});
+    _dirty = true;
+}
+
 void Label::setColor(const Color &color) {
     UIRenderer::setColor(color);
     _renderer.setColor(color);
@@ -242,8 +286,139 @@ void Label::prepareRenderEntity(float opacity) {
     _renderer.prepare(opacity);
 }
 
+void Label::rebuildBitmapTexture() {
+    auto *atlasTexture = dynamic_cast<Texture2D *>(_bitmapAtlas->getTexture());
+    ImageAsset *image = atlasTexture != nullptr ? atlasTexture->getImage() : nullptr;
+    if (image == nullptr || image->getData() == nullptr || image->getWidth() == 0U || image->getHeight() == 0U) {
+        _renderer.clearFrame();
+        return;
+    }
+
+    const float lineHeight = _bitmapLineHeight > 0.0F ? _bitmapLineHeight : _fontSize;
+    const float maxWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
+        ? _transform->getContentSize().x
+        : 100000.0F;
+    const float baselineRatio = 0.26F;
+
+    std::vector<std::vector<size_t>> lines;
+    lines.emplace_back();
+    float lineWidth = 0.0F;
+    float contentWidth = 0.0F;
+
+    for (const std::string &codepoint : splitUtf8(_string)) {
+        if (codepoint == "\n") {
+            contentWidth = std::max(contentWidth, lineWidth);
+            lines.emplace_back();
+            lineWidth = 0.0F;
+            continue;
+        }
+        const int32_t code = utf8CodePoint(codepoint);
+        const auto found = _glyphMap.find(code);
+        if (found == _glyphMap.end()) {
+            continue;
+        }
+        const Glyph &glyph = _glyphs[found->second];
+        if (_wrap && lineWidth + glyph.xAdvance > maxWidth && !lines.back().empty()) {
+            contentWidth = std::max(contentWidth, lineWidth);
+            lines.emplace_back();
+            lineWidth = 0.0F;
+        }
+        lines.back().push_back(found->second);
+        lineWidth += glyph.xAdvance;
+    }
+    contentWidth = std::max(contentWidth, lineWidth);
+
+    const float contentHeight = std::max((static_cast<float>(lines.size()) + baselineRatio) * lineHeight, 1.0F);
+    const uint32_t outWidth = static_cast<uint32_t>(std::ceil(std::max(contentWidth, 1.0F))) + 2U;
+    const uint32_t outHeight = static_cast<uint32_t>(std::ceil(contentHeight)) + 2U;
+    std::vector<uint8_t> pixels(static_cast<size_t>(outWidth) * outHeight * 4U, 0U);
+
+    const uint32_t atlasWidth = image->getWidth();
+    const uint32_t atlasHeight = image->getHeight();
+    const uint8_t *atlasData = image->getData();
+
+    for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex) {
+        float cursorX = 1.0F;
+        const float lineTop = 1.0F + static_cast<float>(lineIndex) * lineHeight;
+        for (const size_t glyphIndex : lines[lineIndex]) {
+            const Glyph &glyph = _glyphs[glyphIndex];
+            const int32_t destX = static_cast<int32_t>(std::round(cursorX + glyph.offsetX));
+            const int32_t destY = static_cast<int32_t>(std::round(lineTop + glyph.offsetY));
+            const int32_t srcX = static_cast<int32_t>(std::round(glyph.u));
+            const int32_t srcY = static_cast<int32_t>(std::round(glyph.v));
+            const int32_t glyphW = static_cast<int32_t>(std::round(glyph.w));
+            const int32_t glyphH = static_cast<int32_t>(std::round(glyph.h));
+            for (int32_t y = 0; y < glyphH; ++y) {
+                const int32_t sy = srcY + y;
+                const int32_t dy = destY + y;
+                if (sy < 0 || sy >= static_cast<int32_t>(atlasHeight) || dy < 0 || dy >= static_cast<int32_t>(outHeight)) {
+                    continue;
+                }
+                for (int32_t x = 0; x < glyphW; ++x) {
+                    const int32_t sx = srcX + x;
+                    const int32_t dx = destX + x;
+                    if (sx < 0 || sx >= static_cast<int32_t>(atlasWidth) || dx < 0 || dx >= static_cast<int32_t>(outWidth)) {
+                        continue;
+                    }
+                    const size_t src = (static_cast<size_t>(sy) * atlasWidth + static_cast<size_t>(sx)) * 4U;
+                    const size_t dst = (static_cast<size_t>(dy) * outWidth + static_cast<size_t>(dx)) * 4U;
+                    const uint32_t alpha = atlasData[src + 3U] * _color.a / 255U;
+                    pixels[dst] = static_cast<uint8_t>(atlasData[src] * _color.r / 255U);
+                    pixels[dst + 1U] = static_cast<uint8_t>(atlasData[src + 1U] * _color.g / 255U);
+                    pixels[dst + 2U] = static_cast<uint8_t>(atlasData[src + 2U] * _color.b / 255U);
+                    pixels[dst + 3U] = static_cast<uint8_t>(alpha);
+                }
+            }
+            cursorX += glyph.xAdvance;
+        }
+    }
+
+    if (_texture == nullptr) {
+        _texture = new Texture2D();
+    }
+    ITexture2DCreateInfo info;
+    info.width = outWidth;
+    info.height = outHeight;
+    info.format = PixelFormat::RGBA8888;
+    info.mipmapLevel = 1U;
+    _texture->reset(info);
+    _texture->uploadData(pixels.data());
+
+    if (_frame == nullptr) {
+        _frame = new SpriteFrame();
+    }
+    _frame->setTexture(_texture);
+    _frame->setRect(0.0F, 0.0F, static_cast<float>(outWidth), static_cast<float>(outHeight));
+    _frame->setOriginalSize(static_cast<float>(outWidth), static_cast<float>(outHeight));
+    _frame->setOffset(0.0F, 0.0F);
+    _frame->setRotated(false);
+
+    _lastTextureWidth = static_cast<float>(outWidth);
+    _lastTextureHeight = static_cast<float>(outHeight);
+    _lastLineCount = static_cast<int32_t>(lines.size());
+    _lastContentWidth = contentWidth;
+    _lastContentHeight = contentHeight;
+    _lastPixelChecksum = 0U;
+    _lastOpaquePixels = 0U;
+    for (size_t i = 3; i < pixels.size(); i += 4U) {
+        _lastPixelChecksum = _lastPixelChecksum * 31U + pixels[i];
+        if (pixels[i] > 0U) { ++_lastOpaquePixels; }
+    }
+
+    const float finalWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
+        ? _transform->getContentSize().x
+        : contentWidth;
+    if (_overflow == 3 && _transform != nullptr) {
+        _transform->setContentSize(finalWidth, contentHeight);
+    }
+    _renderer.setFrame(_frame);
+}
 void Label::rebuildTexture() {
     _dirty = false;
+    if (_bitmapAtlas != nullptr && !_glyphs.empty()) {
+        rebuildBitmapTexture();
+        return;
+    }
 
     if (_string.empty() || _transform == nullptr) {
         _renderer.clearFrame();

@@ -175,7 +175,16 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 
 这证明 native Label 的纹理不仅生成成功，也进入了 GPU 渲染路径。English 用例带 outline/shadow，被单独保留为纹理 checksum 验证，不参与 GPU 彩色像素断言。
 
-## 10. M3.1 当前进度
+## 10. M3.2 BMFont 初步结果
+
+native Label 增加 bitmap 分支：JS 壳把 `BitmapFont.spriteFrame.native` 和 glyph definitions 传给 native，native 从 `ImageAsset` 读 atlas RGBA 数据并合成文本纹理。
+
+- 程序化 atlas `ABBA`：66×23，lines=1，opaque=1024。
+- `run-m3-label-probe.ps1` 会断言 BMFont 纹理和 opaque 像素。
+
+Letter/cacheMode 仍未覆盖。
+
+## 11. M3.1 当前进度
 
 已完成：
 

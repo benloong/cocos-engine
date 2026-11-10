@@ -40,6 +40,11 @@ try {
         if ([math]::Abs($measure[$name].width - $expected[$name][0]) -gt 0.5) { throw "$name width parity failed" }
         if ([math]::Abs($measure[$name].height - $expected[$name][1]) -gt 0.5) { throw "$name height parity failed" }
     }
+    $bitmapLines = @(Get-Content $log | Select-String -Pattern 'M3_BITMAP_LABEL ')
+    if ($bitmapLines.Count -lt 1) { throw 'BMFont label missing' }
+    $bitmap = $bitmapLines[0].Line.Substring($bitmapLines[0].Line.IndexOf('M3_BITMAP_LABEL ') + 16) | ConvertFrom-Json
+    if ($bitmap.textureWidth -le 0 -or $bitmap.opaque -le 0) { throw 'BMFont atlas path produced no pixels' }
+
     $pixelLines = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
     $pixels = @{}
     foreach ($line in $pixelLines) {
@@ -62,6 +67,7 @@ try {
 
     Write-Host 'M3 Label probe: PASS'
     Write-Host ("  GPU english colored={0}, wrap colored={1}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored)
+    Write-Host ("  BMFont {0}x{1}, opaque={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.opaque)
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, lines={3}, opaque={4}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines, $_.opaque)
     }

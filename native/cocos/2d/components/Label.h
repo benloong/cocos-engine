@@ -25,6 +25,8 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "2d/components/Sprite.h"
 #include "2d/framework/UIRenderer.h"
@@ -36,6 +38,7 @@ namespace cc {
 
 class Texture2D;
 class SpriteFrame;
+class Texture2D;
 class UITransform;
 
 /**
@@ -68,6 +71,10 @@ public:
     void setHorizontalAlign(int32_t align);
     void setVerticalAlign(int32_t align);
     void setSpacingX(float spacing);
+    void setBitmapAtlas(SpriteFrame *atlas, float lineHeight);
+    void clearBitmapFont();
+    void clearGlyphs();
+    void addGlyph(int32_t code, float u, float v, float w, float h, float offsetX, float offsetY, float xAdvance);
     void setEnableOutline(bool enable);
     void setOutlineColor(const Color &color);
     void setOutlineWidth(float width);
@@ -93,6 +100,7 @@ public:
 
 private:
     void rebuildTexture();
+    void rebuildBitmapTexture();
 
     Sprite _renderer;
     UITransform *_transform{nullptr};
@@ -123,6 +131,21 @@ private:
     float _lastContentHeight{0.0F};
     uint32_t _lastPixelChecksum{0};
     uint32_t _lastOpaquePixels{0};
+
+    struct Glyph {
+        float u{0.0F};
+        float v{0.0F};
+        float w{0.0F};
+        float h{0.0F};
+        float offsetX{0.0F};
+        float offsetY{0.0F};
+        float xAdvance{0.0F};
+    };
+
+    IntrusivePtr<SpriteFrame> _bitmapAtlas;
+    float _bitmapLineHeight{0.0F};
+    std::vector<Glyph> _glyphs;
+    std::unordered_map<int32_t, size_t> _glyphMap;
 
     IntrusivePtr<Texture2D> _texture;
     IntrusivePtr<SpriteFrame> _frame;

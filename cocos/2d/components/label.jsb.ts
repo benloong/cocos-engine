@@ -225,7 +225,12 @@ export class Label extends UIRenderer {
     set font (value: any) {
         this._font = value;
         this._useSystemFont = !value;
-        this._syncFont();
+        if (value && value.spriteFrame && value.fontDefDictionary) {
+            this._applyBitmapFont(value);
+        } else {
+            this._native?.clearBitmapFont();
+            this._syncFont();
+        }
     }
 
     get useSystemFont (): boolean {
@@ -369,6 +374,28 @@ export class Label extends UIRenderer {
         this._native?.setShadowOffset(value.x, value.y);
     }
 
+    private _applyBitmapFont (font: any): void {
+        if (!this._native || !font.spriteFrame) {
+            return;
+        }
+        this._native.setBitmapAtlas(font.spriteFrame.native, font.fontSize > 0 ? font.fontSize : this._lineHeight);
+        this._native.clearGlyphs();
+        const definitions = font.fontDefDictionary?.letterDefinitions ?? {};
+        for (const key of Object.keys(definitions)) {
+            const glyph = definitions[key];
+            this._native.addGlyph(
+                Number(key),
+                glyph.u,
+                glyph.v,
+                glyph.w,
+                glyph.h,
+                glyph.offsetX,
+                glyph.offsetY,
+                glyph.xAdvance,
+            );
+        }
+    }
+
     private _syncFont (): void {
         this._native?.setFont(`${this._fontSize}px ${this._fontFamily}`);
         this._native?.setFontSize(this._fontSize);
@@ -385,6 +412,9 @@ export class Label extends UIRenderer {
         this._native?.setVerticalAlign(this._verticalAlign);
         this._native?.setSpacingX(this._spacingX);
         this._native?.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
+        if (this._font && this._font.spriteFrame && this._font.fontDefDictionary) {
+            this._applyBitmapFont(this._font);
+        }
         this._native?.setEnableOutline(this._enableOutline);
         this._native?.setOutlineColor(this._outlineColor);
         this._native?.setOutlineWidth(this._outlineWidth);
