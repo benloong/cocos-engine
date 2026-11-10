@@ -277,7 +277,7 @@
 
 ### M3：Label + 文本栈（8~10 周，风险最高）
 
-> 进度：M3.0 spike 进行中，parity 矩阵/后端验证见 `docs/native-2d-m3-spike.md`。
+> 进度：M3.0 spike 完成，`n2d.TextMetrics` native 测量入口已落地；parity 结果见 `docs/native-2d-m3-spike.md`。
 
 - 内容：
   - 文本测量/排版（TTF、BmFont、Letter）、换行/对齐/overflow；

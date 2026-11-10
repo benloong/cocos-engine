@@ -120,6 +120,8 @@ M3_LABEL_MEASURE {
 
 ## 7. Spike 初步结果
 
+![Web Label CJK/wrap](./assets/m3-web-label.png)
+
 `cocos-m1-test` 的 `LabelSpike.ts` 在 Web 和 CLI 构建的 native app 上各跑一次：
 
 | case | Web bbox | native bbox | 结果 |
@@ -147,9 +149,22 @@ CJK 的 native width 为 160，说明 UTF-8 字符串和字形测量正常；日
 - 240 宽度下单行高度 50.4，220 宽度下三行高度 97.8，符合 lineHeight 预期；
 - Label 仍然走 JS Label 组件，未启用 native Label override；
 - Spike 暴露了 SpriteFrame 薄壳的 API 完整性要求：Label 需要 `getGFXTexture`、`getGFXSampler`、`getHash`、`getSamplerInfo`、`_calculateUV`、`isRotated` 等；已在薄壳补齐转发；
-- 下一步要补 CJK 的截图验证，再决定是否把 native Label 的测量 API 独立出来。
+- Web 截图确认 CJK/换行正常：`assets/m3-web-label.png`；native 窗口在 headless/OpenGL 下无法 PrintWindow 截图，改用 `n2d.TextMetrics` 的 CJK 宽度 160 验证字符串完整。
 
-## 8. 后续拆分
+## 8. M3.1 入口
+
+已新增 native 文本测量入口：
+
+```text
+native/cocos/2d/renderer/TextMetrics.h/.cpp
+n2d.TextMetrics
+  setFont(font)
+  measure(text) -> Size
+```
+
+它只封装平台 `CanvasRenderingContext2D::measureText`，不包含布局/换行；布局在 M3.1 内继续实现。
+
+## 9. 后续拆分
 
 - M3.1：TTF Label 单行/多行 + native 测量；
 - M3.2：wrap/align/overflow；
