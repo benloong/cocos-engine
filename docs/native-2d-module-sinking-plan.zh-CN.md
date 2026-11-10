@@ -288,6 +288,8 @@
 
 ### M4：Mask + Graphics（5~6 周）
 
+> 进度：**未开始**。当前 native 没有 Mask/Graphics；收口路径与门禁见 [native-2d-m4-plan.md](./native-2d-m4-plan.md)。
+
 - 内容：
   - native `Mask`（RECT/GRAPHICS_SPRITE/GRAPHICS_STENCIL，inverted、segments、alphaThreshold）；
   - StencilManager 联动、嵌套遮罩；
