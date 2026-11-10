@@ -2,7 +2,7 @@
 
 > 适用：`sprite.jsb.ts` 从候选壳切换为 NATIVE 生产 override。
 > 当前：`sprite.enabled = true`，Sprite override 已启用。
-> 已知风险：RenderTexture 五种模式探针和 ≥30% 性能 KPI 已通过；Web golden 尚未闭环。
+> 已知风险：RenderTexture 五种模式在 native/Web 均通过且 red=7936、center=[128,0,0,255]、maxR=128；性能 KPI 通过。
 
 ## 1. 已通过
 
@@ -20,19 +20,16 @@
 | Batcher2d batch | 通过 | `Batcher2d::batches 2` |
 | custom pipeline 提交 | 通过 | `draw2D` → `submitUICommands` → pass phase 匹配 → `cmdBuff->draw` |
 | 可见渲染 | 通过（人工） | native 窗口可见 64×64 红色 Sprite |
-| RenderTexture 像素 | 通过 | Canvas 相机 targetTexture + 256×256 RT + readPixels；五种模式 red>0，`M2_PIXEL_RESULT ok` |
+| RenderTexture 像素 | 通过 | native/Web 均为 red=7936、maxR=128、center=[128,0,0,255] |
 | override 启用运行 | 通过 | `new n2d.Sprite()`、真实 SpriteFrame、无 TypeError、应用响应正常 |
 | 回归 | 通过 | `75 checks, 0 failures`；M0 checks passed；Jest 16/16 |
 | 性能 | 通过 | Release native 143~220 ns/sprite vs JS 288~389，约 45~50% 提升 |
 
 ## 2. 未通过 / 未覆盖
 
-1. **Web/native 像素对照**：Web 构建改用程序化 64×64 红色纹理后，Chrome
-   headless + 手动 tick 能渲染并执行探针，`M2_PIXEL_RESULT ok`，五种模式
-   red>0、maxR=128；native 探针同样 red>0、maxR=128。两者 red 计数因 camera/viewport/DPR 不同，仍有差异，尚无逐像素 diff。
-2. native `getMaterialInstance` 已加；JS 壳的 MaterialInstance 转发和真实 effect 用例仍待补。
-3. SpriteFrame 完整 native 资产化与 insets 边界。
-4. Tiled/Filled 的旋转 atlas frame 坐标组合。
+1. JS 壳的 MaterialInstance 转发和真实 effect 用例仍待补（native API 已完成）。
+2. SpriteFrame 完整 native 资产化与 insets 边界。
+3. Tiled/Filled 的旋转 atlas frame 坐标组合。
 ## 3. 启用记录
 
 已执行：

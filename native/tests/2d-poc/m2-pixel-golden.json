@@ -1,0 +1,15 @@
+{
+  "width": 256,
+  "height": 256,
+  "modes": [
+    "SIMPLE",
+    "SLICED",
+    "TILED",
+    "FILLED_H",
+    "FILLED_RADIAL"
+  ],
+  "expectedRed": 7936,
+  "maxR": 128,
+  "center": [128, 0, 0, 255],
+  "note": "Native and Web both use a procedural 64x64 red texture, one Sprite, hidden clone/prefab, contentSize 64x64, probe orthoHeight 128."
+}

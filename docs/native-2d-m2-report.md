@@ -2,7 +2,7 @@
 
 > 对应计划：[native-2d-module-sinking-plan.zh-CN.md](./native-2d-module-sinking-plan.zh-CN.md) 的 M2。
 > 范围：仅 `cocos/2d`；不引用其他分支代码。
-> 状态：M2 Sprite override 已启用；五种模式、SpriteFrame native 缓存、custom pipeline 提交、人工可见渲染、native/Web RenderTexture 像素探针和 ≥30% 性能 KPI 均已确认。逐像素 Web/native diff 仍是遗留项。
+> 状态：M2 Sprite override 已启用；五种模式、SpriteFrame native 缓存、custom pipeline 提交、人工可见渲染、native/Web RenderTexture 像素 golden（red=7936、center=[128,0,0,255]）和 ≥30% 性能 KPI 均已确认。JS MaterialInstance 转发仍待补。
 
 ## 1. native UIRenderer 基座
 
@@ -213,14 +213,13 @@ Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame �
 
 ## 7. 尚未完成
 
-1. Web/native 逐像素 golden diff（两边探针均已通过，但 red 计数不同）；
-2. JS 壳 MaterialInstance 转发与真实 effect 用例；
-3. SpriteFrame 完整 native 资产化/insets 边界用例；
-4. TS UIRenderer 继承链最终决策；
-5. 默认启用 Sprite override 的决策。
+1. JS 壳 MaterialInstance 转发与真实 effect 用例；
+2. SpriteFrame 完整 native 资产化/insets 边界用例；
+3. TS UIRenderer 继承链最终决策；
+4. 默认启用 Sprite override 的决策。
 
 ## 8. 下一步
 
 native Sprite 已经走通 SIMPLE/SLICED/TILED/FILLED 五种 drawInfo 路径以及
 drawInfo → batch → custom pipeline `draw2D` → `submitUICommands` → draw。
-下一步集中解决可靠截图/像素对照，再决定默认启用。
+下一步补 JS MaterialInstance 转发、SpriteFrame 资产化边界和旋转 atlas 用例。

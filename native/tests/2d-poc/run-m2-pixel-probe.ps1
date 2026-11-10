@@ -38,6 +38,17 @@ try {
 
     $resultLine = ($text -split "`r?`n" | Where-Object { $_ -match 'M2_PIXEL_RESULT' } | Select-Object -Last 1)
     Write-Host $resultLine
+    $jsonText = ($resultLine -replace '^.*M2_PIXEL_RESULT\s*', '')
+    $result = $jsonText | ConvertFrom-Json
+    $golden = Get-Content (Join-Path $PSScriptRoot 'm2-pixel-golden.json') -Raw | ConvertFrom-Json
+    foreach ($item in $result.results) {
+        if ($item.red -ne $golden.expectedRed -or $item.maxR -ne $golden.maxR) {
+            throw "M2 pixel golden mismatch for $($item.mode): red=$($item.red) maxR=$($item.maxR)"
+        }
+        if (($item.center -join ',') -ne ($golden.center -join ',')) {
+            throw "M2 pixel golden center mismatch for $($item.mode): $($item.center -join ',')"
+        }
+    }
     if ($text -match 'M2_PIXEL_PASS') {
         Write-Host 'M2 pixel probe: PASS'
         exit 0
