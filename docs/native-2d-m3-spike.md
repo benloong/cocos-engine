@@ -163,7 +163,7 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 
 文本像素 checksum 非零，说明 native Canvas delegate 确实栅格化了文本；CJK 与英文的 opaque 像素数不同。
 
-开启 outline+shadow 后 English 的 checksum 从 667236035 变为 226913612，opaque 从 1304 变为 3409，说明 outline/shadow 的多偏移 fillText 路径生效。Web 端 win32 `strokeText` 是空实现，因此 native 用多偏移 fillText 模拟描边和阴影。
+开启 outline+shadow 后 English 的 checksum 从 667236035 变为 226913612，opaque 从 1304 变为 3409，说明 outline/shadow 的多偏移 fillText 路径生效。通过 `LabelOutline/LabelShadow` 组件再验证：English checksum 2387670896、opaque 3697，组件 setter 路径也生效。Web 端 win32 `strokeText` 是空实现，因此 native 用多偏移 fillText 模拟描边和阴影。
 
 ## 9. M3.1 当前进度
 
@@ -172,11 +172,11 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 - native Label TTF 测量、断行、水平/垂直对齐；
 - `RESIZE_HEIGHT` 与基础 `CLAMP`、`SHRINK`；
 - JS `label.jsb.ts` 薄壳、`LabelOutline/LabelShadow` 所需字段；
-- native 文本纹理与不透明像素统计。
+- native 文本纹理与不透明像素统计；
+- Outline/Shadow 多偏移 fillText 与 LabelOutline/LabelShadow 组件路径。
 
 未完成：
 
-- Outline/Shadow 已用多偏移 fillText 验证纹理像素变化；GPU 显示层仍未截图。
 - BmFont/Letter/cacheMode 未下沉；
 - GPU 级文本像素 golden 仍缺失（当前用 native 纹理统计代理）。
 
