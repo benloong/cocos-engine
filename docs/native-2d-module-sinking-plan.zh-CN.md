@@ -265,7 +265,7 @@
 
 ### M2：UIRenderer + Sprite（6~8 周）
 
-> 进度：M2 Sprite override 已启用，五种模式、SpriteFrame native 缓存和 custom pipeline 可见渲染已确认；自动 GPU 像素 diff/完整性能 KPI 仍遗留，见 [native-2d-m2-report.md](./native-2d-m2-report.md) 与 [native-2d-m2-gate.md](./native-2d-m2-gate.md)。
+> 进度：**M2 已完成**。Sprite override、五种模式、SpriteFrame 薄壳、custom pipeline、Web/native 像素 golden、性能 KPI 均通过；详见 [native-2d-m2-report.md](./native-2d-m2-report.md)。
 
 - 内容：
   - native `UIRenderer`（color/material/stencil/blend/renderData/priority 的 UI 子集）；
@@ -276,6 +276,8 @@
 - 退出标准：五种 Sprite 模式与 Web 像素对照（容差内）；属性动态切换序列通过；2D 密集场景 CPU 下降达到 KPI（建议 ≥30%）；`sprite.jsb.ts` 壳 ≤ 300 行，无几何/材质选择逻辑，稳态每帧 0 次 JSB 调用。
 
 ### M3：Label + 文本栈（8~10 周，风险最高）
+
+> 进度：M3.0 spike 进行中，parity 矩阵/后端验证见 `docs/native-2d-m3-spike.md`。
 
 - 内容：
   - 文本测量/排版（TTF、BmFont、Letter）、换行/对齐/overflow；

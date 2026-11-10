@@ -57,10 +57,26 @@ export class SpriteFrame extends Asset {
     protected _pivot = new Vec2(0.5, 0.5);
     protected _meshType = 0;
 
+    public uv: number[] = [];
     private _nativeFrame: any = null;
 
     constructor (name?: string) {
         super(name);
+    }
+
+    public _calculateUV (): void {
+        const texture = this._texture;
+        if (!texture) {
+            return;
+        }
+        const rect = this._rect;
+        const tw = texture.width || 1;
+        const th = texture.height || 1;
+        const l = rect.x / tw;
+        const r = (rect.x + (this._rotated ? rect.height : rect.width)) / tw;
+        const t = rect.y / th;
+        const b = (rect.y + (this._rotated ? rect.width : rect.height)) / th;
+        this.uv = [l, t, l, b, r, t, r, b];
     }
 
     public get native (): any {
@@ -147,6 +163,64 @@ export class SpriteFrame extends Asset {
 
     get meshType (): number { return this._meshType; }
     set meshType (value: number) { this._meshType = value; }
+
+    public textureLoaded (): boolean {
+        return this._texture !== null;
+    }
+
+    public isRotated (): boolean {
+        return this._rotated;
+    }
+
+    public setRotated (rotated: boolean): void {
+        this.rotated = rotated;
+    }
+
+    public getRect (out?: Rect): Rect {
+        if (out) { out.set(this._rect); return out; }
+        return this._rect.clone();
+    }
+
+    public setRect (rect: Rect): void {
+        this.rect = rect;
+    }
+
+    public getOriginalSize (out?: Size): Size {
+        if (out) { out.set(this._originalSize); return out; }
+        return this._originalSize.clone();
+    }
+
+    public setOriginalSize (size: Size): void {
+        this.originalSize = size;
+    }
+
+    public getOffset (out?: Vec2): Vec2 {
+        if (out) { out.set(this._offset); return out; }
+        return this._offset.clone();
+    }
+
+    public setOffset (offset: Vec2): void {
+        this.offset = offset;
+    }
+
+    public _calculateSlicedUV (): void {
+        this._calculateUV();
+    }
+    public getGFXTexture (): any {
+        return this._texture ? this._texture.getGFXTexture() : null;
+    }
+
+    public getGFXSampler (): any {
+        return this._texture ? this._texture.getGFXSampler() : null;
+    }
+
+    public getHash (): number {
+        return this._texture ? this._texture.getHash() : 0;
+    }
+
+    public getSamplerInfo (): any {
+        return this._texture ? this._texture.getSamplerInfo() : null;
+    }
 
     public reset (info?: any, clearData = false): void {
         if (clearData || !info) {
