@@ -25,7 +25,7 @@
 import { ccclass, displayOrder, executionOrder, help, menu, multiline, requireComponent, serializable, type } from 'cc.decorator';
 import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
 import { Material } from '../../asset/assets';
-import { Color } from '../../core';
+import { Color, Vec2 } from '../../core';
 import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
 
@@ -107,6 +107,13 @@ export class Label extends UIRenderer {
     protected _useSystemFont = true;
 
     protected _font: any = null;
+    protected _enableOutline = false;
+    protected _outlineColor = new Color(0, 0, 0, 255);
+    protected _outlineWidth = 0;
+    protected _enableShadow = false;
+    protected _shadowColor = new Color(0, 0, 0, 255);
+    protected _shadowBlur = 0;
+    protected _shadowOffset = new Vec2(0, 0);
 
     private _native: any = null;
 
@@ -320,6 +327,48 @@ export class Label extends UIRenderer {
         this._native?.setMaterial(value);
     }
 
+    get enableOutline (): boolean { return this._enableOutline; }
+    set enableOutline (value: boolean) {
+        this._enableOutline = value;
+        this._native?.setEnableOutline(value);
+    }
+
+    get outlineColor (): Readonly<Color> { return this._outlineColor; }
+    set outlineColor (value: Color) {
+        this._outlineColor.set(value);
+        this._native?.setOutlineColor(value);
+    }
+
+    get outlineWidth (): number { return this._outlineWidth; }
+    set outlineWidth (value: number) {
+        this._outlineWidth = value;
+        this._native?.setOutlineWidth(value);
+    }
+
+    get enableShadow (): boolean { return this._enableShadow; }
+    set enableShadow (value: boolean) {
+        this._enableShadow = value;
+        this._native?.setEnableShadow(value);
+    }
+
+    get shadowColor (): Readonly<Color> { return this._shadowColor; }
+    set shadowColor (value: Color) {
+        this._shadowColor.set(value);
+        this._native?.setShadowColor(value);
+    }
+
+    get shadowBlur (): number { return this._shadowBlur; }
+    set shadowBlur (value: number) {
+        this._shadowBlur = value;
+        this._native?.setShadowBlur(value);
+    }
+
+    get shadowOffset (): Vec2 { return this._shadowOffset; }
+    set shadowOffset (value: Vec2) {
+        this._shadowOffset.set(value);
+        this._native?.setShadowOffset(value.x, value.y);
+    }
+
     private _syncFont (): void {
         this._native?.setFont(`${this._fontSize}px ${this._fontFamily}`);
         this._native?.setFontSize(this._fontSize);
@@ -336,5 +385,12 @@ export class Label extends UIRenderer {
         this._native?.setVerticalAlign(this._verticalAlign);
         this._native?.setSpacingX(this._spacingX);
         this._native?.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
+        this._native?.setEnableOutline(this._enableOutline);
+        this._native?.setOutlineColor(this._outlineColor);
+        this._native?.setOutlineWidth(this._outlineWidth);
+        this._native?.setEnableShadow(this._enableShadow);
+        this._native?.setShadowColor(this._shadowColor);
+        this._native?.setShadowBlur(this._shadowBlur);
+        this._native?.setShadowOffset(this._shadowOffset.x, this._shadowOffset.y);
     }
 }

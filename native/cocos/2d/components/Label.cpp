@@ -106,6 +106,10 @@ void Label::setFont(const std::string &font) {
         return;
     }
     _font = font;
+    const size_t px = font.find("px ");
+    if (px != std::string::npos) {
+        _fontFamily = font.substr(px + 3U);
+    }
     _dirty = true;
 }
 
@@ -165,6 +169,45 @@ void Label::setSpacingX(float spacing) {
     _dirty = true;
 }
 
+void Label::setEnableOutline(bool enable) {
+    if (_enableOutline == enable) { return; }
+    _enableOutline = enable;
+    _dirty = true;
+}
+
+void Label::setOutlineColor(const Color &color) {
+    _outlineColor = color;
+    _dirty = true;
+}
+
+void Label::setOutlineWidth(float width) {
+    if (std::fabs(_outlineWidth - width) < 0.01F) { return; }
+    _outlineWidth = width;
+    _dirty = true;
+}
+
+void Label::setEnableShadow(bool enable) {
+    if (_enableShadow == enable) { return; }
+    _enableShadow = enable;
+    _dirty = true;
+}
+
+void Label::setShadowColor(const Color &color) {
+    _shadowColor = color;
+    _dirty = true;
+}
+
+void Label::setShadowBlur(float blur) {
+    if (std::fabs(_shadowBlur - blur) < 0.01F) { return; }
+    _shadowBlur = blur;
+    _dirty = true;
+}
+
+void Label::setShadowOffset(float x, float y) {
+    _shadowOffsetX = x;
+    _shadowOffsetY = y;
+    _dirty = true;
+}
 void Label::setColor(const Color &color) {
     UIRenderer::setColor(color);
     _renderer.setColor(color);
@@ -259,6 +302,14 @@ void Label::rebuildTexture() {
     contentWidth = std::max(contentWidth, 1.0F);
 
     const float contentHeight = std::max(lineHeight * static_cast<float>(lines.size()), 1.0F);
+    if (_overflow == 2 && _transform->getContentSize().y > 0.0F
+        && contentHeight > _transform->getContentSize().y + 0.5F && _fontSize > 4.0F) {
+        _fontSize *= 0.9F;
+        _font = std::to_string(static_cast<int>(_fontSize)) + "px " + _fontFamily;
+        _dirty = true;
+        rebuildTexture();
+        return;
+    }
     const uint32_t textureWidth = static_cast<uint32_t>(std::ceil(contentWidth)) + 2U;
     uint32_t textureHeight = static_cast<uint32_t>(std::ceil(contentHeight)) + 2U;
     if (_overflow == 1 && _transform->getContentSize().y > 0.0F) {
@@ -277,6 +328,18 @@ void Label::rebuildTexture() {
                   static_cast<unsigned>(_color.b),
                   static_cast<double>(_color.a) / 255.0);
     context.setFillStyle(fill);
+    if (_enableShadow) {
+        char shadow[64] = {0};
+        std::snprintf(shadow, sizeof(shadow), "rgba(%u,%u,%u,%.3f)",
+                      static_cast<unsigned>(_shadowColor.r),
+                      static_cast<unsigned>(_shadowColor.g),
+                      static_cast<unsigned>(_shadowColor.b),
+                      static_cast<double>(_shadowColor.a) / 255.0);
+        context.setShadowColor(shadow);
+        context.setShadowBlur(_shadowBlur);
+        context.setShadowOffsetX(_shadowOffsetX);
+        context.setShadowOffsetY(_shadowOffsetY);
+    }
 
     float textTop = 1.0F;
     if (_vAlign == 1) {
@@ -293,6 +356,17 @@ void Label::rebuildTexture() {
             x = (static_cast<float>(textureWidth) - lineWidth) * 0.5F;
         } else if (_hAlign == 2) {
             x = static_cast<float>(textureWidth) - lineWidth - 1.0F;
+        }
+        if (_enableOutline && _outlineWidth > 0.0F) {
+            char outline[64] = {0};
+            std::snprintf(outline, sizeof(outline), "rgba(%u,%u,%u,%.3f)",
+                          static_cast<unsigned>(_outlineColor.r),
+                          static_cast<unsigned>(_outlineColor.g),
+                          static_cast<unsigned>(_outlineColor.b),
+                          static_cast<double>(_outlineColor.a) / 255.0);
+            context.setLineWidth(_outlineWidth);
+            context.setStrokeStyle(outline);
+            context.strokeText(line, x, textTop + static_cast<float>(i) * lineHeight, 0.0F);
         }
         context.fillText(line, x, textTop + static_cast<float>(i) * lineHeight, 0.0F);
     }

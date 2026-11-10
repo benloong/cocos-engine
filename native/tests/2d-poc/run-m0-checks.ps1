@@ -47,6 +47,12 @@ if ($env:CC_M2_APP_EXE) {
     if ($LASTEXITCODE -ne 0) {
         throw "M2 pixel probe failed with exit code $LASTEXITCODE"
     }
+
+    Write-Host '== M3 Label texture probe =='
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'run-m3-label-probe.ps1') -AppExe $env:CC_M2_APP_EXE
+    if ($LASTEXITCODE -ne 0) {
+        throw "M3 Label probe failed with exit code $LASTEXITCODE"
+    }
 } else {
     Write-Host 'skip M2 pixel probe: set CC_M2_APP_EXE to cocos-m1-test.exe'
 }

@@ -68,6 +68,13 @@ public:
     void setHorizontalAlign(int32_t align);
     void setVerticalAlign(int32_t align);
     void setSpacingX(float spacing);
+    void setEnableOutline(bool enable);
+    void setOutlineColor(const Color &color);
+    void setOutlineWidth(float width);
+    void setEnableShadow(bool enable);
+    void setShadowColor(const Color &color);
+    void setShadowBlur(float blur);
+    void setShadowOffset(float x, float y);
     float getTextureWidth() const { return _lastTextureWidth; }
     float getTextureHeight() const { return _lastTextureHeight; }
     int32_t getLineCount() const { return _lastLineCount; }
@@ -92,6 +99,7 @@ private:
 
     std::string _string;
     std::string _font{"32px Arial"};
+    std::string _fontFamily{"Arial"};
     float _fontSize{32.0F};
     float _lineHeight{0.0F};
     float _spacingX{0.0F};
@@ -99,6 +107,14 @@ private:
     int32_t _overflow{0};
     int32_t _hAlign{0};
     int32_t _vAlign{0};
+    bool _enableOutline{false};
+    Color _outlineColor{0, 0, 0, 255};
+    float _outlineWidth{0.0F};
+    bool _enableShadow{false};
+    Color _shadowColor{0, 0, 0, 255};
+    float _shadowBlur{0.0F};
+    float _shadowOffsetX{0.0F};
+    float _shadowOffsetY{0.0F};
     bool _dirty{true};
     float _lastTextureWidth{0.0F};
     float _lastTextureHeight{0.0F};

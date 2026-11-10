@@ -18,6 +18,13 @@ const nativeLabel = {
     setVerticalAlign: jest.fn(),
     setSpacingX: jest.fn(),
     setColorRGBA: jest.fn(),
+    setEnableOutline: jest.fn(),
+    setOutlineColor: jest.fn(),
+    setOutlineWidth: jest.fn(),
+    setEnableShadow: jest.fn(),
+    setShadowColor: jest.fn(),
+    setShadowBlur: jest.fn(),
+    setShadowOffset: jest.fn(),
     getContentHeight: jest.fn(() => 90),
 };
 

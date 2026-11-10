@@ -163,7 +163,22 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 
 文本像素 checksum 非零，说明 native Canvas delegate 确实栅格化了文本；CJK 与英文的 opaque 像素数不同。
 
-## 9. M3.1 入口
+## 9. M3.1 当前进度
+
+已完成：
+
+- native Label TTF 测量、断行、水平/垂直对齐；
+- `RESIZE_HEIGHT` 与基础 `CLAMP`、`SHRINK`；
+- JS `label.jsb.ts` 薄壳、`LabelOutline/LabelShadow` 所需字段；
+- native 文本纹理与不透明像素统计。
+
+未完成：
+
+- Outline/Shadow 的真实像素效果未验证；
+- BmFont/Letter/cacheMode 未下沉；
+- GPU 级文本像素 golden 仍缺失（当前用 native 纹理统计代理）。
+
+## 10. M3.1 入口
 
 已新增 native 文本测量入口：
 
