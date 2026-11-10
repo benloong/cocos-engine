@@ -17,7 +17,7 @@ try {
             $lines = @(Get-Content $log | Select-String -Pattern 'M3_SHELL_LABEL ')
             if ($lines.Count -ge 3) {
                 $pixelProbe = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
-                if ($pixelProbe.Count -ge 3) { break }
+                if ($pixelProbe.Count -ge 5) { break }
             }
         }
     }
@@ -83,7 +83,7 @@ try {
     if ($byName['wrap'].opaque -le 0) { throw 'wrap has no opaque text pixels' }
 
     Write-Host 'M3 Label probe: PASS'
-    Write-Host ("  GPU english colored={0}, wrap colored={1}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored)
+    Write-Host ("  GPU english colored={0}, wrap colored={1}, cjk colored={2}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored, $pixels['M3Label-cjk'].colored)
     Write-Host ("  BMFont {0}x{1}, opaque={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.opaque)
     Write-Host ("  Real BMFont {0}x{1}, opaque={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.opaque)
     Write-Host ("  CHAR Label {0}x{1}, opaque={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $charLabel.opaque)

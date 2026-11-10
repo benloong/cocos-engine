@@ -170,8 +170,11 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 `run-m3-label-probe.ps1` 通过 Canvas Camera + RenderTexture 捕获 256×256 文本帧：
 
 - `M3Label-english`（outline/shadow）colored = 3851；
-- `M3Label-wrap` colored = 4147。
-- CJK 作为第一个捕获目标时读到空帧（首个 Camera target 切换的已知限制），CJK 仍由纹理 checksum/opaque 统计覆盖。
+- `M3Label-wrap` colored = 4147；
+- `M3Label-cjk` colored = 2263；
+- `M3CharAscii` colored = 2917。
+
+探针先捕获一个空 `M3Warm` 节点吸收首次 Camera target 切换空帧，再捕获实际 Label，因此 CJK 也能做 GPU 断言。
 
 这证明 native Label 的纹理不仅生成成功，也进入了 GPU 渲染路径。English 用例带 outline/shadow，被单独保留为纹理 checksum 验证，不参与 GPU 彩色像素断言。
 
@@ -202,7 +205,7 @@ Letter/cacheMode：`CacheMode.CHAR` 已接入 native `LetterAtlas`（1024×1024 
 未完成：
 
 - BmFont/Letter/cacheMode 未下沉；
-- GPU 文本像素探针已加入 CJK/wrap 断言；English outline 用例暂未做彩色像素断言。
+- GPU 文本像素探针已覆盖 English/wrap/CJK/CHAR ASCII；CHAR CJK 由纹理/opaque 断言覆盖。
 
 ## 10. M3.1 入口
 
