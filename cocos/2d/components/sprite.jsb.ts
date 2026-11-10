@@ -87,8 +87,6 @@ export class Sprite extends UIRenderer {
     protected _atlas: any = null;
 
     private _native: any = null;
-    private _nativeFrame: any = null;
-    private _nativeFrameSource: SpriteFrame | null = null;
 
     @type(SpriteFrame)
     @displayOrder(5)
@@ -256,8 +254,6 @@ export class Sprite extends UIRenderer {
             this._native.setEnabled(false);
             this._native.setNode(null);
             this._native = null;
-            this._nativeFrame = null;
-            this._nativeFrameSource = null;
         }
     }
 
@@ -280,27 +276,13 @@ export class Sprite extends UIRenderer {
         const frame = this._spriteFrame;
         if (!frame || !frame.texture) {
             this._native.clearFrame();
-            this._nativeFrame = null;
-            this._nativeFrameSource = null;
             return;
         }
-        const texture = frame.texture;
-        const rect = frame.rect;
-        const original = frame.originalSize;
-        const offset = frame.offset;
-        if (!this._nativeFrame || this._nativeFrameSource !== frame) {
-            this._nativeFrame = new n2d.SpriteFrame();
-            this._nativeFrameSource = frame;
-            this._nativeFrame.setUuid(frame.uuid || '');
-            this._nativeFrame.setName(frame.name || '');
+        const nativeFrame = (frame as any).native;
+        if (!nativeFrame) {
+            this._native.clearFrame();
+            return;
         }
-        const nativeFrame = this._nativeFrame;
-        nativeFrame.setTexture(texture);
-        nativeFrame.setRect(rect.x, rect.y, rect.width, rect.height);
-        nativeFrame.setOriginalSize(original.width, original.height);
-        nativeFrame.setOffset(offset.x, offset.y);
-        nativeFrame.setRotated(frame.rotated);
-        nativeFrame.setInsets(frame.insetLeft, frame.insetRight, frame.insetTop, frame.insetBottom);
         this._native.setFrame(nativeFrame);
     }
 }

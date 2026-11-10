@@ -14,7 +14,8 @@
 | Sprite TILED | 通过（drawInfo） | 200×100 / 100×100 frame → 8/12 |
 | Sprite FILLED H/V | 通过（drawInfo） | 裁剪 quad 4/6 |
 | Sprite FILLED RADIAL | 通过（drawInfo） | 26 顶点 / 72 索引，边界裁剪 |
-| SpriteFrame native asset | 通过 | RefCounted + IntrusivePtr texture、uuid/name、rect/offset/original/insets |
+| SpriteFrame native asset | 通过 | Asset + IntrusivePtr texture、uuid/name、rect/offset/original/insets |
+| SpriteFrame 薄壳 | 通过 | `sprite-frame.jsb.ts` 持有 native frame，Sprite 使用 `spriteFrame.native` |
 | 旋转 atlas | 通过 | SIMPLE/SLICED/TILED/FILLED/RADIAL 纯 C++ 用例 |
 | 真实 PNG → SpriteFrame | 通过 | `resources.load('M2Sprite/spriteFrame')` 成功 |
 | Creator native 挂载 | 通过 | shell onLoad/setNode/setFrame |

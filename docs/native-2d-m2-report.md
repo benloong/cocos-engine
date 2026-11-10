@@ -38,16 +38,16 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - V8 冒烟：`new n2d.UIRenderer()`、`new n2d.SpriteFrame()` 及 setter 通过；
 - Debug clean rebuild 605/605（M2 基座阶段）。
 
-## 3. SpriteFrame native 缓存
+## 3. SpriteFrame 薄壳与 native 资产
 
 新增 `native/cocos/2d/assets/SpriteFrame.h`：
 
-- RefCounted asset，`IntrusivePtr<TextureBase>` 持有 texture；
+- 继承 `Asset`（RefCounted/CCObject 生命周期），`IntrusivePtr<TextureBase>` 持有 texture；
 - uuid/name、rect / originalSize / offset / rotated / 九宫格 insets 字段；
-- Sprite 持有 `IntrusivePtr<SpriteFrame>`，JS 壳按 SpriteFrame 缓存 native frame；
+- Sprite 持有 `IntrusivePtr<SpriteFrame>`；
 - `Sprite::setFrame(SpriteFrame*)` 重载，一次 JSB 调用复制全部字段；
 - texture 尺寸从 `TextureBase::getWidth/getHeight` 获取；
-- JS 壳构造 `n2d.SpriteFrame` 后调用单参数 `setFrame`。
+- 新增 `cocos/2d/assets/sprite-frame.jsb.ts`：JS 保留 Asset/序列化 API，持有 native `n2d.SpriteFrame`，Sprite 直接使用 `spriteFrame.native`。
 
 ## 4. Sprite SIMPLE 薄壳
 
@@ -55,7 +55,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 
 - `@ccclass('cc.Sprite')` 和序列化字段；
 - `onLoad` 创建 `n2d.Sprite`、`setNode`、绑定 native UITransform；
-- `spriteFrame` 构造 native SpriteFrame 并转发；
+- `spriteFrame.native` 转发到 native `setFrame`；
 - `color`/`priority`/`enabled` 转发；
 - `customMaterial` 转发到 native `setMaterial`；
 - `getSharedMaterial/setSharedMaterial` 转发到 native indexed material；

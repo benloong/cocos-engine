@@ -28,7 +28,7 @@
 #include <string>
 
 #include "base/Ptr.h"
-#include "base/RefCounted.h"
+#include "core/assets/Asset.h"
 #include "core/assets/TextureBase.h"
 
 namespace cc {
@@ -38,8 +38,10 @@ namespace cc {
  * fields the Sprite assembler needs; the JS SpriteFrame remains the serialized
  * asset and forwards these fields through a cached native frame.
  */
-class SpriteFrame final : public RefCounted {
+class SpriteFrame final : public Asset {
 public:
+    using Super = Asset;
+
     SpriteFrame() = default;
     ~SpriteFrame() override = default;
 
@@ -85,15 +87,8 @@ public:
     float getInsetTop() const { return _insetTop; }
     float getInsetBottom() const { return _insetBottom; }
 
-    void setUuid(const std::string &uuid) { _uuid = uuid; }
-    const std::string &getUuid() const { return _uuid; }
-    void setName(const std::string &name) { _name = name; }
-    const std::string &getName() const { return _name; }
-
 private:
     IntrusivePtr<TextureBase> _texture;
-    std::string _uuid;
-    std::string _name;
     float _x{0.F};
     float _y{0.F};
     float _width{0.F};

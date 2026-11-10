@@ -64,6 +64,7 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     const texture = { width: 128, height: 256 };
     sprite.spriteFrame = {
         texture,
+        native: nativeFrame,
         uuid: 'frame-uuid',
         name: 'frame-name',
         rect: { x: 1, y: 2, width: 3, height: 4 },
@@ -75,14 +76,6 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
         insetTop: 3,
         insetBottom: 4,
     } as any;
-    expect(nativeFrame.setUuid).toHaveBeenLastCalledWith('frame-uuid');
-    expect(nativeFrame.setName).toHaveBeenLastCalledWith('frame-name');
-    expect(nativeFrame.setTexture).toHaveBeenLastCalledWith(texture);
-    expect(nativeFrame.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
-    expect(nativeFrame.setOriginalSize).toHaveBeenLastCalledWith(5, 6);
-    expect(nativeFrame.setOffset).toHaveBeenLastCalledWith(7, 8);
-    expect(nativeFrame.setRotated).toHaveBeenLastCalledWith(false);
-    expect(nativeFrame.setInsets).toHaveBeenLastCalledWith(1, 2, 3, 4);
     expect(nativeSprite.setFrame).toHaveBeenLastCalledWith(nativeFrame);
 
     sprite.color = new Color(10, 20, 30, 255);
