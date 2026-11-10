@@ -69,6 +69,7 @@ try {
     }
     if (-not $pixels.ContainsKey('M3Label-english') -or $pixels['M3Label-english'].colored -le 0) { throw 'English GPU pixels missing' }
     if (-not $pixels.ContainsKey('M3Label-wrap') -or $pixels['M3Label-wrap'].colored -le 0) { throw 'wrap GPU pixels missing' }
+    if (-not $pixels.ContainsKey('M3CharAscii') -or $pixels['M3CharAscii'].colored -le 0) { throw 'CHAR ASCII GPU pixels missing' }
     $byName = @{}
     foreach ($entry in $entries) { $byName[$entry.name] = $entry }
 
@@ -86,7 +87,7 @@ try {
     Write-Host ("  BMFont {0}x{1}, opaque={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.opaque)
     Write-Host ("  Real BMFont {0}x{1}, opaque={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.opaque)
     Write-Host ("  CHAR Label {0}x{1}, opaque={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $charLabel.opaque)
-    Write-Host ("  CHAR ASCII {0}x{1}, opaque={2}" -f $charAscii.textureWidth, $charAscii.textureHeight, $charAscii.opaque)
+    Write-Host ("  CHAR ASCII {0}x{1}, opaque={2}, GPU colored={3}" -f $charAscii.textureWidth, $charAscii.textureHeight, $charAscii.opaque, $pixels['M3CharAscii'].colored)
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, lines={3}, opaque={4}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines, $_.opaque)
     }
