@@ -165,7 +165,16 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 
 开启 outline+shadow 后 English 的 checksum 从 667236035 变为 226913612，opaque 从 1304 变为 3409，说明 outline/shadow 的多偏移 fillText 路径生效。通过 `LabelOutline/LabelShadow` 组件再验证：English checksum 2387670896、opaque 3697，组件 setter 路径也生效。Web 端 win32 `strokeText` 是空实现，因此 native 用多偏移 fillText 模拟描边和阴影。
 
-## 9. M3.1 当前进度
+## 9. GPU 文本像素回归
+
+`run-m3-label-probe.ps1` 通过 Canvas Camera + RenderTexture 捕获 256×256 文本帧：
+
+- `M3Label-cjk` colored = 1263；
+- `M3Label-wrap` colored = 4147。
+
+这证明 native Label 的纹理不仅生成成功，也进入了 GPU 渲染路径。English 用例带 outline/shadow，被单独保留为纹理 checksum 验证，不参与 GPU 彩色像素断言。
+
+## 10. M3.1 当前进度
 
 已完成：
 
@@ -178,7 +187,7 @@ native `Label` + `label.jsb.ts` 已接通，TextProcessing 生成 322×42 的 na
 未完成：
 
 - BmFont/Letter/cacheMode 未下沉；
-- GPU 级文本像素 golden 仍缺失（当前用 native 纹理统计代理）。
+- GPU 文本像素探针已加入 CJK/wrap 断言；English outline 用例暂未做彩色像素断言。
 
 ## 10. M3.1 入口
 
