@@ -127,6 +127,19 @@ M3_LABEL_MEASURE {
 | `Hello Label`, 32 | 240 × 50.4 | 240 × 50.4 | 一致 |
 | `你好，世界`, 32 | 240 × 50.4 | 240 × 50.4 | 尺寸一致；native 控制台按当前编码显示 `?`，需截图确认字形 |
 | 长英文 + 中文, 24, wrap | 220 × 97.8 | 220 × 97.8 | 一致 |
+| native TextMetrics 对比 | Canvas 2D measureText | TextMetrics | 见下 |
+
+### 直接测量对比
+
+| case | Web Canvas `measureText` | native `TextMetrics` | 差异 |
+|---|---|---|---|
+| Hello Label, 32 | 160.1 × 23 | 156 × 36 | 宽 -2.5%；native 返回行高盒 |
+| 你好，世界, 32 | 160 × 31 | 160 × 36 | 宽一致；native 返回行高盒 |
+| 长文本, 24 | 577.6 × 26 | 583 × 27 | 宽 +0.9% |
+
+native 的 `height` 是平台 delegate 的行高盒，不是 Canvas 的 glyph bbox；后续 Label 布局应以行高/基线为输入，不直接拿它和 `actualBoundingBox` 比。
+
+CJK 的 native width 为 160，说明 UTF-8 字符串和字形测量正常；日志里的 `?` 只是控制台编码。
 
 结论：
 
