@@ -56,6 +56,12 @@ try {
     $charLabel = $charLines[0].Line.Substring($charLines[0].Line.IndexOf('M3_CHAR_LABEL ') + 14) | ConvertFrom-Json
     if ($charLabel.textureWidth -le 0 -or $charLabel.opaque -le 0) { throw 'CHAR Label produced no pixels' }
 
+    $bitmapAtlasLines = @(Get-Content $log | Select-String -Pattern 'M3_BITMAP_ATLAS ')
+    if ($bitmapAtlasLines.Count -lt 1) { throw 'BITMAP atlas label missing' }
+    $bitmapAtlas = $bitmapAtlasLines[0].Line.Substring($bitmapAtlasLines[0].Line.IndexOf('M3_BITMAP_ATLAS ') + 16) | ConvertFrom-Json
+    if ($bitmapAtlas.a.id -ne $bitmapAtlas.b.id) { throw 'BITMAP labels do not share an atlas texture' }
+    if ($bitmapAtlas.a.w -le 0 -or $bitmapAtlas.b.w -le 0 -or $bitmapAtlas.a.x -eq $bitmapAtlas.b.x) { throw 'BITMAP atlas regions invalid' }
+
     $realLines = @(Get-Content $log | Select-String -Pattern 'M3_REAL_BMFONT ')
     if ($realLines.Count -lt 1) { throw 'real BitmapFont label missing' }
     $realFont = $realLines[0].Line.Substring($realLines[0].Line.IndexOf('M3_REAL_BMFONT ') + 15) | ConvertFrom-Json
@@ -88,6 +94,7 @@ try {
     Write-Host ("  Real BMFont {0}x{1}, opaque={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.opaque)
     Write-Host ("  CHAR Label {0}x{1}, opaque={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $charLabel.opaque)
     Write-Host ("  CHAR ASCII {0}x{1}, opaque={2}, GPU colored={3}" -f $charAscii.textureWidth, $charAscii.textureHeight, $charAscii.opaque, $pixels['M3CharAscii'].colored)
+    Write-Host ("  BITMAP atlas id={0}, a.x={1}, b.x={2}" -f $bitmapAtlas.a.id, $bitmapAtlas.a.x, $bitmapAtlas.b.x)
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, lines={3}, opaque={4}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines, $_.opaque)
     }

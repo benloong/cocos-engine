@@ -33,6 +33,7 @@
 
 #include "2d/assets/SpriteFrame.h"
 #include "2d/framework/UITransform.h"
+#include "2d/renderer/DynamicAtlas.h"
 #include "2d/renderer/LetterAtlas.h"
 #include "core/assets/AssetEnum.h"
 #include "core/assets/ImageAsset.h"
@@ -383,6 +384,7 @@ void Label::rebuildLetterTexture() {
     info.format = PixelFormat::RGBA8888;
     info.mipmapLevel = 1U;
     _texture->reset(info);
+    _lastPixels = pixels;
     _texture->uploadData(pixels.data());
 
     if (_frame == nullptr) { _frame = new SpriteFrame(); }
@@ -411,6 +413,7 @@ void Label::rebuildLetterTexture() {
         _transform->setContentSize(finalWidth, contentHeight);
     }
     _renderer.setFrame(_frame);
+    applyBitmapAtlas();
 }
 void Label::rebuildBitmapTexture() {
     auto *atlasTexture = dynamic_cast<Texture2D *>(_bitmapAtlas->getTexture());
@@ -522,6 +525,7 @@ void Label::rebuildBitmapTexture() {
     info.format = PixelFormat::RGBA8888;
     info.mipmapLevel = 1U;
     _texture->reset(info);
+    _lastPixels = pixels;
     _texture->uploadData(pixels.data());
 
     if (_frame == nullptr) {
@@ -551,6 +555,30 @@ void Label::rebuildBitmapTexture() {
     if (_overflow == 3 && _transform != nullptr) {
         _transform->setContentSize(finalWidth, contentHeight);
     }
+    _renderer.setFrame(_frame);
+    applyBitmapAtlas();
+}
+void Label::applyBitmapAtlas() {
+    if (_cacheMode != 1 || _lastPixels.empty() || _lastTextureWidth <= 0.0F || _lastTextureHeight <= 0.0F) {
+        return;
+    }
+    Rect region;
+    if (!DynamicAtlas::get().add(static_cast<uint32_t>(_lastTextureWidth),
+                                 static_cast<uint32_t>(_lastTextureHeight),
+                                 _lastPixels.data(), region)) {
+        return;
+    }
+    if (_frame == nullptr) { _frame = new SpriteFrame(); }
+    _frame->setTexture(DynamicAtlas::get().getTexture());
+    _frame->setRect(region.x, region.y, region.width, region.height);
+    _frame->setOriginalSize(region.width, region.height);
+    _frame->setOffset(0.0F, 0.0F);
+    _frame->setRotated(false);
+    _lastAtlasTextureId = DynamicAtlas::get().getTextureId();
+    _lastAtlasX = region.x;
+    _lastAtlasY = region.y;
+    _lastAtlasWidth = region.width;
+    _lastAtlasHeight = region.height;
     _renderer.setFrame(_frame);
 }
 void Label::rebuildTexture() {
@@ -743,6 +771,7 @@ void Label::rebuildTexture() {
             ++_lastOpaquePixels;
         }
     }
+    _lastPixels.assign(bytes, bytes + pixels.getSize());
     _texture->uploadData(bytes);
 
     _lastTextureWidth = static_cast<float>(textureWidth);
@@ -764,6 +793,7 @@ void Label::rebuildTexture() {
         _transform->setContentSize(finalWidth, contentHeight);
     }
     _renderer.setFrame(_frame);
+    applyBitmapAtlas();
 }
 
 } // namespace cc

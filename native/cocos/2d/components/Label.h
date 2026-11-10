@@ -75,6 +75,11 @@ public:
     void setSpacingX(float spacing);
     void setCacheMode(int32_t mode);
     int32_t getCacheMode() const { return _cacheMode; }
+    uint64_t getAtlasTextureId() const { return _lastAtlasTextureId; }
+    float getAtlasX() const { return _lastAtlasX; }
+    float getAtlasY() const { return _lastAtlasY; }
+    float getAtlasWidth() const { return _lastAtlasWidth; }
+    float getAtlasHeight() const { return _lastAtlasHeight; }
     void setBitmapAtlas(SpriteFrame *atlas, float lineHeight);
     void clearBitmapFont();
     void clearGlyphs();
@@ -108,6 +113,7 @@ private:
     void rebuildTexture();
     void rebuildBitmapTexture();
     void rebuildLetterTexture();
+    void applyBitmapAtlas();
 
     Sprite _renderer;
     UITransform *_transform{nullptr};
@@ -139,6 +145,12 @@ private:
     float _lastContentHeight{0.0F};
     uint32_t _lastPixelChecksum{0};
     uint32_t _lastOpaquePixels{0};
+    std::vector<uint8_t> _lastPixels;
+    uint64_t _lastAtlasTextureId{0};
+    float _lastAtlasX{0.0F};
+    float _lastAtlasY{0.0F};
+    float _lastAtlasWidth{0.0F};
+    float _lastAtlasHeight{0.0F};
 
     struct Glyph {
         int32_t code{0};
