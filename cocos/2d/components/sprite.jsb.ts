@@ -24,6 +24,7 @@
 
 import { ccclass, displayOrder, executionOrder, help, menu, serializable, type } from 'cc.decorator';
 import { Material } from '../../asset/assets';
+import type { MaterialInstance } from '../../render-scene/core/material-instance';
 import { BlendFactor } from '../../gfx';
 import { Color } from '../../core/math/color';
 import { Vec2 } from '../../core/math/vec2';
@@ -205,6 +206,13 @@ export class Sprite extends UIRenderer {
     public setSharedMaterial (material: Material | null, index: number, forceUpdate = false): void {
         super.setSharedMaterial(material, index, forceUpdate);
         this._native?.setSharedMaterial(material, index);
+    }
+
+    public getMaterialInstance (idx = 0): MaterialInstance | null {
+        if (this._native) {
+            return this._native.getMaterialInstance(idx) as MaterialInstance;
+        }
+        return super.getMaterialInstance(idx);
     }
 
     public __preload (): void {

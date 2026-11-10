@@ -27,7 +27,7 @@
 
 ## 2. 未通过 / 未覆盖
 
-1. JS 壳的 MaterialInstance 转发和真实 effect 用例仍待补（native API 已完成）。
+1. 真实 effect 的 material instance 用例仍待补（API/JS 转发已完成）。
 2. SpriteFrame 完整 native 资产化与 insets 边界。
 3. Tiled/Filled 的旋转 atlas frame 坐标组合。
 ## 3. 启用记录

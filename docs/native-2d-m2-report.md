@@ -57,6 +57,7 @@ class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener
 - `color`/`priority`/`enabled` 转发；
 - `customMaterial` 转发到 native `setMaterial`；
 - `getSharedMaterial/setSharedMaterial` 转发到 native indexed material；
+- `getMaterialInstance` 转发到 native material instance；
 - `type`/`fillType`/`fillStart`/`fillRange`/`fillCenter` 转发；
 - `sizeMode` 转发；TRIMMED 使用 frame rect，RAW 使用 originalSize 更新 UITransform；
 - `srcBlendFactor`/`dstBlendFactor` 转发到 native UIRenderer；
@@ -213,13 +214,12 @@ Jest 覆盖：native 构造/Node 绑定、color、customMaterial、SpriteFrame �
 
 ## 7. 尚未完成
 
-1. JS 壳 MaterialInstance 转发与真实 effect 用例；
-2. SpriteFrame 完整 native 资产化/insets 边界用例；
-3. TS UIRenderer 继承链最终决策；
-4. 默认启用 Sprite override 的决策。
+1. SpriteFrame 完整 native 资产化/insets 边界用例；
+2. TS UIRenderer 继承链最终决策；
+3. 默认启用 Sprite override 的决策。
 
 ## 8. 下一步
 
 native Sprite 已经走通 SIMPLE/SLICED/TILED/FILLED 五种 drawInfo 路径以及
 drawInfo → batch → custom pipeline `draw2D` → `submitUICommands` → draw。
-下一步补 JS MaterialInstance 转发、SpriteFrame 资产化边界和旋转 atlas 用例。
+下一步补 SpriteFrame 资产化边界和旋转 atlas 用例。

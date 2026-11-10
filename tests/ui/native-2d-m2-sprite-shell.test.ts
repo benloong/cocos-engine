@@ -11,6 +11,8 @@ const nativeFrame = {
     setInsets: jest.fn(),
 };
 
+const nativeMaterial = { parent: null } as any;
+
 const nativeSprite = {
     setNode: jest.fn(),
     setUITransform: jest.fn(),
@@ -18,6 +20,7 @@ const nativeSprite = {
     setMaterial: jest.fn(),
     setSharedMaterial: jest.fn(),
     getSharedMaterial: jest.fn(() => ({})),
+    getMaterialInstance: jest.fn(() => nativeMaterial),
     setType: jest.fn(),
     setFillType: jest.fn(),
     setFillStart: jest.fn(),
@@ -84,6 +87,8 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     const material2 = {} as any;
     sprite.setSharedMaterial(material2, 1);
     expect(nativeSprite.setSharedMaterial).toHaveBeenLastCalledWith(material2, 1);
+    const instance = sprite.getMaterialInstance(0);
+    expect(instance).toBe(nativeMaterial);
     const shared = sprite.getSharedMaterial(0);
     expect(shared).toEqual({});
     expect(nativeSprite.getSharedMaterial).toHaveBeenCalledWith(0);
