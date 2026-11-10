@@ -21,15 +21,15 @@
 | custom pipeline 提交 | 通过 | `draw2D` → `submitUICommands` → pass phase 匹配 → `cmdBuff->draw` |
 | 可见渲染 | 通过（人工） | native 窗口可见 64×64 红色 Sprite |
 | RenderTexture 像素 | 通过 | native/Web 均为 red=7936、maxR=128、center=[128,0,0,255] |
+| Material instance | 通过 | `M2_MATERIAL_INSTANCE hasInstance=true distinct=true`，真实 ui-sprite effect |
 | override 启用运行 | 通过 | `new n2d.Sprite()`、真实 SpriteFrame、无 TypeError、应用响应正常 |
 | 回归 | 通过 | `75 checks, 0 failures`；M0 checks passed；Jest 16/16 |
 | 性能 | 通过 | Release native 143~220 ns/sprite vs JS 288~389，约 45~50% 提升 |
 
 ## 2. 未通过 / 未覆盖
 
-1. 真实 effect 的 material instance 用例仍待补（API/JS 转发已完成）。
-2. SpriteFrame 完整 native 资产化与 insets 边界。
-3. Tiled/Filled 的旋转 atlas frame 坐标组合。
+1. SpriteFrame 完整 native 资产化与 insets 边界。
+2. Tiled/Filled 的旋转 atlas frame 坐标组合。
 ## 3. 启用记录
 
 已执行：
@@ -56,4 +56,4 @@ Sprite override 已启用，但按以下方式监控：
 - 任何 native 2D 视觉回归优先回滚 `cc.config.json` 的 Sprite override 与
   `m2-components.json` 开关，并重建 engine bundle；
 - CI/发布前把 Web golden 接到 RenderTexture 探针，做真正的像素 diff；
-- material instance、SpriteFrame 完整资产化、旋转 atlas 组合按 M3 前置项处理。
+- SpriteFrame 完整资产化、旋转 atlas 组合按 M3 前置项处理。

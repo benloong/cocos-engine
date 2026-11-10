@@ -39,6 +39,7 @@
 #include "bindings/jswrapper/SeApi.h"
 #include "core/Root.h"
 #include "core/assets/Material.h"
+
 #include "core/assets/Texture2D.h"
 #include "core/scene-graph/Node.h"
 #include "math/Mat4.h"

@@ -36,6 +36,11 @@ try {
         throw "M2 pixel probe timed out. Log: $log"
     }
 
+    $materialLine = ($text -split "`r?`n" | Where-Object { $_ -match 'M2_MATERIAL_INSTANCE' } | Select-Object -Last 1)
+    if (-not $materialLine -or $materialLine -notmatch '"hasInstance":true' -or $materialLine -notmatch '"distinct":true') {
+        throw "M2 material instance probe did not report a distinct native instance: $materialLine"
+    }
+
     $resultLine = ($text -split "`r?`n" | Where-Object { $_ -match 'M2_PIXEL_RESULT' } | Select-Object -Last 1)
     Write-Host $resultLine
     $jsonText = ($resultLine -replace '^.*M2_PIXEL_RESULT\s*', '')

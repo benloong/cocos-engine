@@ -2,7 +2,7 @@
 
 > 对应计划：[native-2d-module-sinking-plan.zh-CN.md](./native-2d-module-sinking-plan.zh-CN.md) 的 M2。
 > 范围：仅 `cocos/2d`；不引用其他分支代码。
-> 状态：M2 Sprite override 已启用；五种模式、SpriteFrame native 缓存、custom pipeline 提交、人工可见渲染、native/Web RenderTexture 像素 golden（red=7936、center=[128,0,0,255]）和 ≥30% 性能 KPI 均已确认。JS MaterialInstance 转发仍待补。
+> 状态：M2 Sprite override 已启用；五种模式、SpriteFrame native 缓存、custom pipeline 提交、人工可见渲染、native/Web RenderTexture 像素 golden（red=7936、center=[128,0,0,255]）、真实 effect material instance 和 ≥30% 性能 KPI 均已确认。
 
 ## 1. native UIRenderer 基座
 
