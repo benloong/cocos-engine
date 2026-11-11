@@ -48,6 +48,8 @@ public:
     void setNode(Node *node);
     void setUITransform(UITransform *transform);
     void setType(int32_t type);
+    void setSpriteFrame(SpriteFrame *frame);
+    void setAlphaThreshold(float alphaThreshold);
     void setInverted(bool inverted);
     void setEnabled(bool enabled);
     void setMaterial(Material *material);
@@ -55,7 +57,15 @@ public:
 
 private:
     Sprite _renderer;
+    void applyFrame();
+
     IntrusivePtr<Texture2D> _texture;
+    IntrusivePtr<Texture2D> _ellipseTexture;
+    IntrusivePtr<SpriteFrame> _ellipseFrame;
+    IntrusivePtr<SpriteFrame> _spriteFrame;
+    Material *_material{nullptr};
+    int32_t _type{0};
+    float _alphaThreshold{0.1F};
     IntrusivePtr<SpriteFrame> _frame;
     bool _inverted{false};
 };

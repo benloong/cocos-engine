@@ -288,7 +288,7 @@
 
 ### M4：Mask + Graphics（5~6 周）
 
-> 进度：M4.0 RECT Mask 通过；ELLIPSE/SPRITE/GRAPHICS 与 Graphics 未开始。见 [native-2d-m4-plan.md](./native-2d-m4-plan.md)。
+> 进度：M4.0 RECT、M4.1 ELLIPSE/SPRITE_STENCIL 通过；GRAPHICS_STENCIL/嵌套/Graphics 未开始。见 [native-2d-m4-plan.md](./native-2d-m4-plan.md)。
 
 - 内容：
   - native `Mask`（RECT/GRAPHICS_SPRITE/GRAPHICS_STENCIL，inverted、segments、alphaThreshold）；

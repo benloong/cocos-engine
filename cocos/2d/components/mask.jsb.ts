@@ -24,7 +24,7 @@
 
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
 import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
-import { Material } from '../../asset/assets';
+import { Material, SpriteFrame } from '../../asset/assets';
 import { Component } from '../../scene-graph/component';
 import { UITransform } from '../framework/ui-transform';
 
@@ -65,6 +65,7 @@ export class Mask extends Component {
     protected _alphaThreshold = 0.1;
 
     private _native: any = null;
+    private _spriteFrame: SpriteFrame | null = null;
 
     public onLoad (): void {
         this._native = new n2d.Mask();
@@ -73,12 +74,16 @@ export class Mask extends Component {
         if (transform && (transform as any)._native) {
             this._native.setUITransform((transform as any)._native);
         }
-        const material = builtinResMgr.get<Material>('ui-sprite-material');
+        const material = builtinResMgr.get<Material>('ui-alpha-test-material');
         if (material) {
             this._native.setMaterial(material);
         }
         this._native.setType(this._type);
         this._native.setInverted(this._inverted);
+        this._native.setAlphaThreshold(this._alphaThreshold);
+        if (this._spriteFrame) {
+            this._native.setSpriteFrame((this._spriteFrame as any).native);
+        }
         this._native.setPriority(0);
         this._native.setEnabled(this.enabledInHierarchy);
     }
@@ -125,6 +130,15 @@ export class Mask extends Component {
         this._segments = value;
     }
 
+    get spriteFrame (): SpriteFrame | null {
+        return this._spriteFrame;
+    }
+
+    set spriteFrame (value: SpriteFrame | null) {
+        this._spriteFrame = value;
+        this._native?.setSpriteFrame((value as any)?.native ?? null);
+    }
+
     get radius (): number {
         return this._radius;
     }
@@ -139,6 +153,7 @@ export class Mask extends Component {
 
     set alphaThreshold (value: number) {
         this._alphaThreshold = value;
+        this._native?.setAlphaThreshold(value);
     }
 
 

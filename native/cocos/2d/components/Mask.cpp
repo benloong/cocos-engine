@@ -24,6 +24,8 @@
 
 #include "2d/components/Mask.h"
 
+#include <cmath>
+
 #include "2d/assets/SpriteFrame.h"
 #include "core/assets/AssetEnum.h"
 #include "core/assets/Texture2D.h"
@@ -31,6 +33,7 @@
 namespace cc {
 
 Mask::Mask() {
+    _renderer.setSizeMode(0);
     _texture = new Texture2D();
     ITexture2DCreateInfo info;
     info.width = 2;
@@ -46,7 +49,7 @@ Mask::Mask() {
     _frame->setOriginalSize(2.0F, 2.0F);
     _frame->setOffset(0.0F, 0.0F);
     _frame->setRotated(false);
-    _renderer.setFrame(_frame);
+    applyFrame();
     _renderer.setColorRGBA(255.0F, 255.0F, 255.0F, 255.0F);
     _renderer.getRenderEntity()->setMaskMode(MaskMode::MASK);
 }
@@ -61,9 +64,64 @@ void Mask::setUITransform(UITransform *transform) {
     _renderer.setUITransform(transform);
 }
 
+void Mask::applyFrame() {
+    SpriteFrame *frame = _frame.get();
+    if (_type == 1) {
+        if (_ellipseTexture == nullptr) {
+            _ellipseTexture = new Texture2D();
+            ITexture2DCreateInfo info;
+            info.width = 64;
+            info.height = 64;
+            info.format = PixelFormat::RGBA8888;
+            info.mipmapLevel = 1U;
+            _ellipseTexture->reset(info);
+            std::vector<uint8_t> pixels(64U * 64U * 4U, 0U);
+            for (int32_t y = 0; y < 64; ++y) {
+                for (int32_t x = 0; x < 64; ++x) {
+                    const float nx = (static_cast<float>(x) + 0.5F) / 32.0F - 1.0F;
+                    const float ny = (static_cast<float>(y) + 0.5F) / 32.0F - 1.0F;
+                    if (nx * nx + ny * ny <= 1.0F) {
+                        const size_t i = (static_cast<size_t>(y) * 64U + x) * 4U;
+                        pixels[i] = 255U;
+                        pixels[i + 1U] = 255U;
+                        pixels[i + 2U] = 255U;
+                        pixels[i + 3U] = 255U;
+                    }
+                }
+            }
+            _ellipseTexture->uploadData(pixels.data());
+            _ellipseFrame = new SpriteFrame();
+            _ellipseFrame->setTexture(_ellipseTexture);
+            _ellipseFrame->setRect(0.0F, 0.0F, 64.0F, 64.0F);
+            _ellipseFrame->setOriginalSize(64.0F, 64.0F);
+            _ellipseFrame->setOffset(0.0F, 0.0F);
+            _ellipseFrame->setRotated(false);
+        }
+        frame = _ellipseFrame.get();
+    } else if (_type == 3 && _spriteFrame != nullptr) {
+        frame = _spriteFrame.get();
+    }
+    if (frame != nullptr) {
+        _renderer.setFrame(frame);
+    }
+}
 void Mask::setType(int32_t type) {
-    // M4.0: RECT only; other types remain a no-op.
-    (void)type;
+    _type = type;
+    applyFrame();
+}
+
+void Mask::setSpriteFrame(SpriteFrame *frame) {
+    _spriteFrame = frame;
+    if (_type == 3) {
+        applyFrame();
+    }
+}
+
+void Mask::setAlphaThreshold(float alphaThreshold) {
+    _alphaThreshold = alphaThreshold;
+    if (_material != nullptr) {
+        _material->setPropertyFloat32("alphaThreshold", alphaThreshold);
+    }
 }
 
 void Mask::setInverted(bool inverted) {
@@ -76,6 +134,10 @@ void Mask::setEnabled(bool enabled) {
 }
 
 void Mask::setMaterial(Material *material) {
+    _material = material;
+    if (_material != nullptr) {
+        _material->setPropertyFloat32("alphaThreshold", _alphaThreshold);
+    }
     _renderer.setMaterial(material);
 }
 
