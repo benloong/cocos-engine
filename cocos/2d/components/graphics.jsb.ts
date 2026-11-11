@@ -134,15 +134,19 @@ export class Graphics extends UIRenderer {
     }
 
     public roundRect (x: number, y: number, w: number, h: number, radius: number): void {
-        this._native?.rect(x, y, w, h);
+        this._native?.roundRect(x, y, w, h, radius);
     }
 
     public circle (x: number, y: number, radius: number): void {
         this._native?.circle(x, y, radius);
     }
 
-    public arc (cx: number, cy: number, r: number): void {
-        this._native?.circle(cx, cy, r);
+    public ellipse (x: number, y: number, radiusX: number, radiusY: number): void {
+        this._native?.ellipse(x, y, radiusX, radiusY);
+    }
+
+    public arc (cx: number, cy: number, r: number, startAngle = 0, endAngle = 6.283185307, counterclockwise = false): void {
+        this._native?.arc(cx, cy, r, startAngle, endAngle, counterclockwise);
     }
 
     public bezierCurveTo (c1x: number, c1y: number, c2x: number, c2y: number, x: number, y: number): void {

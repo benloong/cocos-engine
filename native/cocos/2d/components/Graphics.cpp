@@ -73,6 +73,46 @@ void Graphics::circle(float x, float y, float radius) {
     }
 }
 
+void Graphics::ellipse(float x, float y, float radiusX, float radiusY) {
+    _path.clear();
+    constexpr int32_t SEGMENTS = 48;
+    for (int32_t i = 0; i < SEGMENTS; ++i) {
+        const float angle = 6.283185307F * static_cast<float>(i) / SEGMENTS;
+        _path.emplace_back(x + CANVAS_CENTER + std::cos(angle) * radiusX,
+                           y + CANVAS_CENTER + std::sin(angle) * radiusY);
+    }
+}
+
+void Graphics::arc(float x, float y, float radius, float startAngle, float endAngle, bool counterclockwise) {
+    _path.clear();
+    constexpr int32_t SEGMENTS = 32;
+    const float sweep = endAngle - startAngle;
+    for (int32_t i = 0; i <= SEGMENTS; ++i) {
+        const float t = static_cast<float>(i) / SEGMENTS;
+        const float angle = counterclockwise ? startAngle - sweep * t : startAngle + sweep * t;
+        _path.emplace_back(x + CANVAS_CENTER + std::cos(angle) * radius,
+                           y + CANVAS_CENTER + std::sin(angle) * radius);
+    }
+}
+
+void Graphics::roundRect(float x, float y, float w, float h, float radius) {
+    const float r = std::min(std::max(radius, 0.0F), std::min(w, h) * 0.5F);
+    if (r <= 0.0F) { rect(x, y, w, h); return; }
+    _path.clear();
+    constexpr int32_t SEGMENTS = 8;
+    auto addArc = [this, r](float cx, float cy, float start, float end) {
+        constexpr int32_t ARC_SEGMENTS = 8;
+        for (int32_t i = 0; i <= ARC_SEGMENTS; ++i) {
+            const float a = start + (end - start) * static_cast<float>(i) / ARC_SEGMENTS;
+            _path.emplace_back(cx + CANVAS_CENTER + std::cos(a) * r,
+                               cy + CANVAS_CENTER + std::sin(a) * r);
+        }
+    };
+    addArc(x + r, y + r, 3.14159265F, 4.71238898F);
+    addArc(x + w - r, y + r, 4.71238898F, 6.28318531F);
+    addArc(x + w - r, y + h - r, 0.0F, 1.57079633F);
+    addArc(x + r, y + h - r, 1.57079633F, 3.14159265F);
+}
 void Graphics::bezierCurveTo(float c1x, float c1y, float c2x, float c2y, float x, float y) {
     if (_path.empty()) { return; }
     const Vec2 start = _path.back();

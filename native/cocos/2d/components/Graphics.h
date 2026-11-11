@@ -45,6 +45,9 @@ public:
     void close();
     void rect(float x, float y, float w, float h);
     void circle(float x, float y, float radius);
+    void ellipse(float x, float y, float radiusX, float radiusY);
+    void arc(float x, float y, float radius, float startAngle, float endAngle, bool counterclockwise);
+    void roundRect(float x, float y, float w, float h, float radius);
     void bezierCurveTo(float c1x, float c1y, float c2x, float c2y, float x, float y);
     void quadraticCurveTo(float cx, float cy, float x, float y);
     void fill();
