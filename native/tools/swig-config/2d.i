@@ -25,6 +25,7 @@
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
 #include "2d/components/Mask.h"
+#include "2d/components/Graphics.h"
 %}
 
 // Insert code at the beginning of generated source file (.cpp)
@@ -234,3 +235,4 @@
 %include "2d/components/Sprite.h"
 %include "2d/components/Label.h"
 %include "2d/components/Mask.h"
+%include "2d/components/Graphics.h"

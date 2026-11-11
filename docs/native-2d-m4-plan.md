@@ -1,6 +1,6 @@
 # Native 2D M4 Mask + Graphics 收口计划
 
-> 状态：**M4.0 RECT + M4.1 ELLIPSE/SPRITE_STENCIL 已完成**。GRAPHICS_STENCIL、嵌套 Mask 与 Graphics 仍未开始。
+> 状态：**M4.0 RECT + M4.1 ELLIPSE/SPRITE_STENCIL + M4.2 Graphics 基础已完成**。GRAPHICS_STENCIL、嵌套 Mask、native 三角化仍未完成。
 > 结论：现在不能把 M4 标记为收口；本文给出可执行的收口路径和门禁。
 
 ## 1. 现状核对
@@ -61,7 +61,7 @@ native/cocos/2d/components/Label.*
 - `SPRITE_STENCIL`（SpriteFrame alpha）；通过：sprite red=3360（右半 alpha）；
 - `segments` / `alphaThreshold`。
 
-### M4.2 Graphics 基础
+### M4.2 Graphics 基础（兼容栅格化已通过）
 
 先明确边界：
 
@@ -69,7 +69,7 @@ native/cocos/2d/components/Label.*
 - native 负责 path flatten、三角化、mesh 提交；
 - 或者 M4 作为兼容阶段，用 Canvas 路径栅格化为纹理，后续再替换为 native 三角化。
 
-必做路径：
+已落地：\n\n- `graphics.jsb.ts` 薄壳；\n- 256×256 CPU 光栅化；\n- rect/circle/moveTo/lineTo/bezier/quadratic；\n- fill/stroke/lineWidth/颜色；\n- M4 Graphics 探针 opaque=6400。\n\n尚未覆盖：\n\n- `roundRect` 圆角、ellipse、arc 角度；\n- lineJoin/lineCap/miterLimit；\n- native 三角化与 GPU buffer；\n- GRAPHICS_STENCIL。\n\n必做路径：
 
 - moveTo/lineTo/bezierCurveTo/quadraticCurveTo/arc/ellipse/rect/roundRect/close；
 - fill / stroke；

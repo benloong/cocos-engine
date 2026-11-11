@@ -2118,6 +2118,8 @@ cocos_source_files(
     cocos/2d/components/Label.cpp
     cocos/2d/components/Mask.h
     cocos/2d/components/Mask.cpp
+    cocos/2d/components/Graphics.h
+    cocos/2d/components/Graphics.cpp
 )
 
 ##### box2d
