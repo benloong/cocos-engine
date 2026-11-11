@@ -358,6 +358,7 @@
                 "cocos/2d/components/mask.ts": "cocos/2d/components/mask.jsb.ts",
                 "cocos/2d/components/graphics.ts": "cocos/2d/components/graphics.jsb.ts",
                 "cocos/2d/assets/sprite-frame.ts": "cocos/2d/assets/sprite-frame.jsb.ts",
+                "cocos/2d/assets/sprite-atlas.ts": "cocos/2d/assets/sprite-atlas.jsb.ts",
                 "cocos/gfx/base/pipeline-state.ts": "cocos/gfx/base/pipeline-state.jsb.ts",
                 "cocos/gfx/base/pipeline-sub-state.ts": "cocos/gfx/base/pipeline-sub-state.jsb.ts",
                 "cocos/gfx/index.ts": "cocos/gfx/index.jsb.ts",

@@ -64,7 +64,17 @@ M5_RICHTEXT {
 pwsh -NoProfile -File v4/native/tests/2d-poc/run-m5-richtext-probe.ps1
 ```
 
-## 4. 当前边界
+## 4. imageAtlas 薄壳
+
+新增 native `SpriteAtlas` Asset + `sprite-atlas.jsb.ts` 薄壳：
+
+- native 持有 `name → SpriteFrame` map；
+- JS 保留序列化 map 并转发；
+- `getSpriteFrame/getSpriteFrames/getTexture/add/remove/clear`。
+
+RichText 探针已构造 `imageAtlas` 和 `<img src='icon'/>`，但当前 app 的 M5 定时探针没有执行，**图片段尚无可信像素证据**。
+
+## 5. 当前边界
 
 已覆盖：
 
@@ -75,13 +85,13 @@ pwsh -NoProfile -File v4/native/tests/2d-poc/run-m5-richtext-probe.ps1
 
 未覆盖：
 
-- `<img>` / `imageAtlas` 图片段；
+- `<img>` / `imageAtlas` 图片段：薄壳已接，像素门禁未通过；
 - `<br>`、`<size>`、`<outline>`、`<shadow>`；
 - 点击事件/hit test；
 - 复杂对齐/最大宽度；
 - 与 Web RichText 的逐像素对照。
 
-## 5. 下一步
+## 6. 下一步
 
 1. 图片段：`imageAtlas` + SpriteFrame + `<img>`；
 2. 样式标签完整矩阵；
