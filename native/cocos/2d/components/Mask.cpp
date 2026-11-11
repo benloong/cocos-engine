@@ -112,7 +112,7 @@ void Mask::setType(int32_t type) {
 
 void Mask::setSpriteFrame(SpriteFrame *frame) {
     _spriteFrame = frame;
-    if (_type == 3) {
+    if (_type == 2 || _type == 3) {
         applyFrame();
     }
 }
