@@ -69,7 +69,22 @@ native/cocos/2d/components/Label.*
 - native 负责 path flatten、三角化、mesh 提交；
 - 或者 M4 作为兼容阶段，用 Canvas 路径栅格化为纹理，后续再替换为 native 三角化。
 
-已落地：\n\n- `graphics.jsb.ts` 薄壳；\n- 256×256 CPU 光栅化；\n- rect/circle/moveTo/lineTo/bezier/quadratic；\n- fill/stroke/lineWidth/颜色；\n- M4 Graphics 探针 opaque=6400。\n\n尚未覆盖：\n\n- `roundRect` 圆角、ellipse、arc 角度；\n- lineJoin/lineCap/miterLimit；\n- native 三角化与 GPU buffer；\n- GRAPHICS_STENCIL。\n\n必做路径：
+已落地：
+
+- `graphics.jsb.ts` 薄壳；
+- 256×256 CPU 光栅化；
+- rect/circle/moveTo/lineTo/bezier/quadratic；
+- fill/stroke/lineWidth/颜色；
+- M4 Graphics 探针 opaque=6400。
+
+尚未覆盖：
+
+- `roundRect` 圆角、ellipse、arc 角度；
+- lineJoin/lineCap/miterLimit；
+- native 三角化与 GPU buffer；
+- GRAPHICS_STENCIL。
+
+必做路径：
 
 - moveTo/lineTo/bezierCurveTo/quadraticCurveTo/arc/ellipse/rect/roundRect/close；
 - fill / stroke；
