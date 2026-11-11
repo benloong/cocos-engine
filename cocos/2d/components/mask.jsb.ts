@@ -26,7 +26,9 @@ import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } 
 import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
 import { Material, SpriteFrame } from '../../asset/assets';
 import { Component } from '../../scene-graph/component';
+import { Node } from '../../scene-graph/node';
 import { UITransform } from '../framework/ui-transform';
+import { Graphics } from './graphics';
 
 declare const n2d: any;
 
@@ -66,6 +68,9 @@ export class Mask extends Component {
 
     private _native: any = null;
     private _spriteFrame: SpriteFrame | null = null;
+    private _graphics: Graphics | null = null;
+    private _graphicsNode: Node | null = null;
+    private _lastGraphicsFrame: any = null;
 
     public onLoad (): void {
         this._native = new n2d.Mask();
@@ -79,6 +84,9 @@ export class Mask extends Component {
             this._native.setMaterial(material);
         }
         this._native.setType(this._type);
+        if (this._type === MaskType.GRAPHICS_STENCIL) {
+            this.graphics;
+        }
         this._native.setInverted(this._inverted);
         this._native.setAlphaThreshold(this._alphaThreshold);
         if (this._spriteFrame) {
@@ -128,6 +136,32 @@ export class Mask extends Component {
 
     set segments (value: number) {
         this._segments = value;
+    }
+
+    get graphics (): Graphics | null {
+        if (!this._graphicsNode) {
+            this._graphicsNode = new Node('MaskGraphics');
+            this._graphicsNode.parent = this.node;
+            this._graphicsNode.setPosition(0, 0, 0);
+            const transform = this._graphicsNode.addComponent(UITransform);
+            transform.setContentSize(256, 256);
+        }
+        if (!this._graphics) {
+            this._graphics = this._graphicsNode.getComponent(Graphics)
+                ?? this._graphicsNode.addComponent(Graphics);
+        }
+        return this._graphics;
+    }
+
+    public lateUpdate (): void {
+        if (this._type !== MaskType.GRAPHICS_STENCIL || !this._graphics) {
+            return;
+        }
+        const frame = (this._graphics as any)._native?.getFrame?.();
+        if (frame && frame !== this._lastGraphicsFrame) {
+            this._lastGraphicsFrame = frame;
+            this._native?.setSpriteFrame(frame);
+        }
     }
 
     get spriteFrame (): SpriteFrame | null {

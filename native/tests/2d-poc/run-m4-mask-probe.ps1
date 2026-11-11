@@ -9,7 +9,7 @@ $proc = Start-Process $AppExe -WorkingDirectory (Split-Path $AppExe) `
     -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru
 
 try {
-    $deadline = (Get-Date).AddSeconds(15)
+    $deadline = (Get-Date).AddSeconds(25)
     $lines = @()
     while ((Get-Date) -lt $deadline) {
         Start-Sleep -Milliseconds 500

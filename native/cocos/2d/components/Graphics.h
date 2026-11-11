@@ -57,6 +57,7 @@ public:
     float getTextureWidth() const { return _lastWidth; }
     float getTextureHeight() const { return _lastHeight; }
     uint32_t getOpaquePixels() const { return _lastOpaque; }
+    SpriteFrame *getFrame() const { return _frame.get(); }
 
 private:
     void flush();

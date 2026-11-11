@@ -98,7 +98,7 @@ void Mask::applyFrame() {
             _ellipseFrame->setRotated(false);
         }
         frame = _ellipseFrame.get();
-    } else if (_type == 3 && _spriteFrame != nullptr) {
+    } else if ((_type == 2 || _type == 3) && _spriteFrame != nullptr) {
         frame = _spriteFrame.get();
     }
     if (frame != nullptr) {
