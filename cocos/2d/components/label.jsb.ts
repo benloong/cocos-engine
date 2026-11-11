@@ -132,6 +132,11 @@ export class Label extends UIRenderer {
         this._syncAll();
     }
 
+    public updateRenderData (_force = false): void {
+        // Native Label rebuilds on its text/transform setters; RichText still
+        // calls this after laying out a segment. Keep the JS API compatible.
+    }
+
     public lateUpdate (): void {
         if (!this._native || this._overflow !== Overflow.RESIZE_HEIGHT) {
             return;

@@ -299,6 +299,8 @@
 
 ### M5：RichText 与剩余组件（5~7 周）
 
+> 进度：M5.0 RichText 文本段垂直切片通过：JS 解析 + 7 个 native Label 段，colored=4095；图片段/事件/复杂排版未完成。见 [native-2d-m5-richtext.md](./native-2d-m5-richtext.md)。
+
 - 内容：
   - `RichText`（HTML 解析、嵌套 Label/Sprite、图片混排、布局/换行/对齐）；
   - `UIMeshRenderer`、`UIMesh`（v4 新增组件，需单独实现）；
