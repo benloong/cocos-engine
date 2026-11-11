@@ -1,6 +1,6 @@
 # Cocos 4.0 Native 2D 模块 JS 组件下沉方案
 
-> 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、UIStaticBatch、UIMeshRenderer、UIMesh、Canvas/RenderRoot2D 及配套 assembler/assets/event）。
+> 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、UIMeshRenderer、UIMesh、Canvas/RenderRoot2D 及配套 assembler/assets/event）。已弃用的 `UIStaticBatch` 不纳入范围。
 > 不包含：`cocos/ui` 控件（Button/ScrollView/EditBox/Widget/Layout 等）以及动画、粒子、骨骼、物理、3D UI 桥接、编辑器逻辑、用户脚本。范围已冻结，`cocos/ui` 不进入本次任何阶段。
 > 目标读者：引擎 2D/JSB/构建方向的同学。
 
@@ -34,7 +34,7 @@
 | 子目录 | 行数 | 主要内容 | 当前实现 |
 |---|---:|---|---|
 | `framework/` | 2,577 | `UITransform`、`UIRenderer`、`UIComponent`、`Canvas`、`RenderRoot2D`、`SpriteRenderer`、`UIRendererManager`、`UISkew` | TS |
-| `components/` | 5,721 | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText`、`UIOpacity`、`UIStaticBatch`、`UIMeshRenderer`、`UIMesh` | TS |
+| `components/` | 5,721 | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText`、`UIOpacity`、`UIMeshRenderer`、`UIMesh` | TS |
 | `renderer/` | 4,299 | `Batcher2D`、`RenderData`、`MeshRenderData`、`MeshBuffer`、`RenderEntity`、`RenderDrawInfo`、`StencilManager`、`StaticVBAccessor` | TS 编排 + C++ 核心 |
 | `assembler/` | 6,060 | Sprite 五种模式（simple/sliced/tiled/bar/radial）、Label（TTF/BmFont/Letter/排版）、Graphics（路径/earcut） | TS |
 | `assets/` | 1,871 | `SpriteFrame`、`SpriteAtlas`、`TTFFont`、`LabelAtlas`、`BitmapFont` | TS |
@@ -301,7 +301,8 @@
 
 - 内容：
   - `RichText`（HTML 解析、嵌套 Label/Sprite、图片混排、布局/换行/对齐）；
-  - `UIStaticBatch`、`UIMeshRenderer`、`UIMesh`（v4 新增组件，需单独实现）；
+  - `UIMeshRenderer`、`UIMesh`（v4 新增组件，需单独实现）；
+  - `UIStaticBatch` **已弃用，不实现、不纳入 native 范围**；
   - `Canvas`/`RenderRoot2D`/`SpriteRenderer`/`UIRendererManager` 的 native 桥；注意 `Canvas` 依赖 `cocos/misc` 的 Camera 与 `cocos/ui` 的 Widget/view（这些不迁移），若桥接成本高于收益则保持 JS 壳，只把渲染入口下沉；
   - `UISkew`（`ui-skew` feature）。
 - 退出标准：UI 场景级对照（节点几何、文本段、图片段、事件）。
@@ -336,7 +337,7 @@
 | TS 侧 | native 落点 | 说明 |
 |---|---|---|
 | `2d/framework/` | `native/cocos/2d/framework/` | `UITransform`、`UIRenderer`、`Canvas`、`RenderRoot2D`、`UIOpacity` |
-| `2d/components/` | `native/cocos/2d/components/` | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText`、`UIStaticBatch`、`UIMeshRenderer`、`UIMesh` |
+| `2d/components/` | `native/cocos/2d/components/` | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText`、`UIMeshRenderer`、`UIMesh` |
 | `2d/renderer/` | `native/cocos/2d/renderer/` | Sprite 几何、文本布局、Graphics 路径、材质选择、命中测试辅助 |
 | `2d/assets/` | `native/cocos/2d/assets/` | `SpriteFrame` 先行；`SpriteAtlas`/`TTFFont`/`LabelAtlas` 按阶段 |
 | `2d/event/` | `native/cocos/2d/event/` | `UITransform.contains/hitTest` 的 native 版本 |
@@ -344,7 +345,7 @@
 
 ### 7.3 依赖顺序
 
-`UITransform` → `UIRenderer`/`Sprite` → `Label`（复用 7.1 的第 3 条文本后端）→ `Mask` → `Graphics` → `RichText` → `UIStaticBatch`/`UIMeshRenderer`/`UIMesh`/`Canvas`/`UISkew`。
+`UITransform` → `UIRenderer`/`Sprite` → `Label`（复用 7.1 的第 3 条文本后端）→ `Mask` → `Graphics` → `RichText` → `UIMeshRenderer`/`UIMesh`/`Canvas`/`UISkew`。
 
 ### 7.4 明确不做
 
