@@ -1,6 +1,6 @@
 # Native 2D M4 Mask + Graphics 收口计划
 
-> 状态：**未开始**。当前 v4 只有 JS `Mask`/`Graphics`，native 侧没有对应组件。
+> 状态：**M4.0 RECT Mask 已完成**。native Mask/JS 薄壳/黑白 stencil 像素回归通过；ELLIPSE/SPRITE/GRAPHICS 与 Graphics 仍未开始。
 > 结论：现在不能把 M4 标记为收口；本文给出可执行的收口路径和门禁。
 
 ## 1. 现状核对
@@ -29,7 +29,7 @@ native/cocos/2d/components/Label.*
 
 ## 2. Mask 收口拆分
 
-### M4.0 RECT Mask
+### M4.0 RECT Mask（已通过）
 
 目标：`Mask.Type.GRAPHICS_RECT` + `inverted` + 尺寸/圆角。
 
@@ -42,10 +42,16 @@ native/cocos/2d/components/Label.*
 - JS 薄壳 `mask.jsb.ts`，保留序列化；
 - 子树渲染被裁剪。
 
+结果：
+
+- `M4_MASK_PIXEL` normal red=6400（80×80）；
+- inverted red=44800；
+- 嵌套两层 Mask 尚未测。
+
 退出：
 
-- 矩形裁剪像素对照；
-- inverted 像素对照；
+- 矩形裁剪像素对照；通过；
+- inverted 像素对照；通过；
 - 嵌套两层 Mask 的 stencil 恢复正确。
 
 ### M4.1 椭圆 / Sprite / Graphics Stencil

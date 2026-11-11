@@ -355,6 +355,7 @@
                 "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
                 "cocos/2d/components/sprite.ts": "cocos/2d/components/sprite.jsb.ts",
                 "cocos/2d/components/label.ts": "cocos/2d/components/label.jsb.ts",
+                "cocos/2d/components/mask.ts": "cocos/2d/components/mask.jsb.ts",
                 "cocos/2d/assets/sprite-frame.ts": "cocos/2d/assets/sprite-frame.jsb.ts",
                 "cocos/gfx/base/pipeline-state.ts": "cocos/gfx/base/pipeline-state.jsb.ts",
                 "cocos/gfx/base/pipeline-sub-state.ts": "cocos/gfx/base/pipeline-sub-state.jsb.ts",
