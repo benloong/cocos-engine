@@ -131,11 +131,13 @@ void Label::setFont(const std::string &font) {
     if (_font == font) {
         return;
     }
-    _font = font;
     const size_t px = font.find("px ");
     if (px != std::string::npos) {
         _fontFamily = font.substr(px + 3U);
+        const std::string size = font.substr(0, px);
+        try { _fontSize = std::stof(size); } catch (...) {}
     }
+    updateFont();
     _dirty = true;
 }
 

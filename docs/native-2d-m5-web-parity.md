@@ -24,7 +24,7 @@
 | labels | 9 | 9 |
 | sprites | 1 | 1 |
 | contentSize | 300×104.32 | 300×104.32（已修） |
-| colored | 10100 | 8135 |
+| colored | 10100 | 8337 |
 | hit / miss | true / false | true / false |
 | outlineWidth | 只有 outline 段为 2（已修） | 只有 outline 段为 2 |
 
@@ -58,7 +58,7 @@ native：
 
 ```text
 Web 10100
-native 8135
+native 8337
 ```
 
 主要由 outline 泄漏和高度差导致，不能直接作为像素通过。
