@@ -64,15 +64,34 @@ M5_RICHTEXT {
 pwsh -NoProfile -File v4/native/tests/2d-poc/run-m5-richtext-probe.ps1
 ```
 
-## 4. imageAtlas 薄壳
+## 4. imageAtlas 薄壳与图片段
 
-新增 native `SpriteAtlas` Asset + `sprite-atlas.jsb.ts` 薄壳：
+新增 `sprite-atlas.jsb.ts` 薄壳：
 
-- native 持有 `name → SpriteFrame` map；
-- JS 保留序列化 map 并转发；
-- `getSpriteFrame/getSpriteFrames/getTexture/add/remove/clear`。
+- JS 保留序列化 `name → SpriteFrame` map；
+- `getSpriteFrame/getSpriteFrames/getTexture/add/remove/clear`；
+- native `SpriteAtlas` Asset 已实现，但当前 SWIG 构造在 Windows 原生下会直接退出，薄壳暂时禁用 native 注册，只用 JS map 提供 RichText 查找。
 
-RichText 探针已构造 `imageAtlas` 和 `<img src='icon'/>`，但当前 app 的 M5 定时探针没有执行，**图片段尚无可信像素证据**。
+M5-only 运行结果：
+
+```text
+M5_RICHTEXT_BEGIN
+M5_ATLAS {"found":true}
+M5_RICHTEXT {
+  children:9,
+  labels:8,
+  sprites:1,
+  width:300,
+  height:104.32,
+  colored:4633
+}
+```
+
+说明：
+
+- `imageAtlas.getSpriteFrame('icon')` 非空；
+- `<img src='icon'/>` 生成了 1 个 native Sprite 段；
+- 图片段像素参与 GPU 输出，colored 从纯文本的 4095 提升到 4633。
 
 ## 5. 当前边界
 
@@ -81,11 +100,12 @@ RichText 探针已构造 `imageAtlas` 和 `<img src='icon'/>`，但当前 app �
 - 多段文本；
 - color/b/i 样式；
 - 自动换行；
-- native Label 渲染。
+- native Label 渲染；
+- `imageAtlas` + `<img>` 图片段。
 
 未覆盖：
 
-- `<img>` / `imageAtlas` 图片段：薄壳已接，像素门禁未通过；
+- native SpriteAtlas SWIG 构造（当前禁用，需单独修 binding）；
 - `<br>`、`<size>`、`<outline>`、`<shadow>`；
 - 点击事件/hit test；
 - 复杂对齐/最大宽度；
@@ -93,7 +113,7 @@ RichText 探针已构造 `imageAtlas` 和 `<img src='icon'/>`，但当前 app �
 
 ## 6. 下一步
 
-1. 图片段：`imageAtlas` + SpriteFrame + `<img>`；
+1. 修 native `SpriteAtlas` SWIG 构造并重新启用薄壳 native 注册；
 2. 样式标签完整矩阵；
 3. 事件/hit test；
 4. Web/native 场景级对照。

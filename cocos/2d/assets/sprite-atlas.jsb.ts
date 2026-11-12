@@ -29,12 +29,19 @@ export class SpriteAtlas extends Asset {
 
     constructor (name?: string) {
         super(name);
-        this._native = new n2d.SpriteAtlas();
+    }
+
+    private ensureNative (): any {
+        if (this._native) {
+            return this._native;
+        }
+        // Native SpriteAtlas binding is disabled until its SWIG constructor is verified.
+        return null;
     }
 
     public addSpriteFrame (name: string, frame: SpriteFrame | null): void {
         this.spriteFrames[name] = frame;
-        this._native?.addSpriteFrame(name, (frame as any)?.native ?? null);
+        this.ensureNative()?.addSpriteFrame(name, (frame as any)?.native ?? null);
     }
 
     public getSpriteFrame (key: string): SpriteFrame | null {
@@ -61,12 +68,12 @@ export class SpriteAtlas extends Asset {
 
     public removeSpriteFrame (name: string): void {
         delete this.spriteFrames[name];
-        this._native?.removeSpriteFrame(name);
+        this.ensureNative()?.removeSpriteFrame(name);
     }
 
     public clear (): void {
         this.spriteFrames = {};
-        this._native?.clear();
+        this.ensureNative()?.clear();
     }
 
     public _deserialize (serializeData: any, handle: any): void {
