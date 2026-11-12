@@ -70,7 +70,7 @@ pwsh -NoProfile -File v4/native/tests/2d-poc/run-m5-richtext-probe.ps1
 
 - JS 保留序列化 `name → SpriteFrame` map；
 - `getSpriteFrame/getSpriteFrames/getTexture/add/remove/clear`；
-- native `SpriteAtlas` Asset 已实现，但当前 SWIG 构造在 Windows 原生下会直接退出，薄壳暂时禁用 native 注册，只用 JS map 提供 RichText 查找。
+- native `SpriteAtlas` Asset 已启用；此前崩溃是因为薄壳字段名 `_native` 覆盖了 `Asset._native`，已改为 `_nativeAtlas`。
 
 M5-only 运行结果：
 
@@ -105,7 +105,7 @@ M5_RICHTEXT {
 
 未覆盖：
 
-- native SpriteAtlas SWIG 构造（当前禁用，需单独修 binding）；
+- native SpriteAtlas 已启用（`_nativeAtlas` 字段隔离）；
 - `<br>`、`<size>`、`<outline>`、`<shadow>`；
 - 点击事件/hit test；
 - 复杂对齐/最大宽度；
@@ -113,7 +113,7 @@ M5_RICHTEXT {
 
 ## 6. 下一步
 
-1. 修 native `SpriteAtlas` SWIG 构造并重新启用薄壳 native 注册；
+1. native SpriteAtlas 已重新启用；
 2. 样式标签完整矩阵；
 3. 事件/hit test；
 4. Web/native 场景级对照。

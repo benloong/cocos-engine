@@ -25,23 +25,30 @@ export class SpriteAtlas extends Asset {
     @editable
     public spriteFrames: ISpriteFrameList = {};
 
-    private _native: any = null;
+    private _nativeAtlas: any = null;
 
     constructor (name?: string) {
         super(name);
     }
 
     private ensureNative (): any {
-        if (this._native) {
-            return this._native;
+        if (this._nativeAtlas) {
+            return this._nativeAtlas;
         }
-        // Native SpriteAtlas binding is disabled until its SWIG constructor is verified.
-        return null;
+        try {
+            this._nativeAtlas = new n2d.SpriteAtlas();
+        } catch (error) {
+            console.log(`SpriteAtlas native unavailable: ${String(error)}`);
+        }
+        return this._nativeAtlas;
     }
 
     public addSpriteFrame (name: string, frame: SpriteFrame | null): void {
         this.spriteFrames[name] = frame;
-        this.ensureNative()?.addSpriteFrame(name, (frame as any)?.native ?? null);
+        const nativeFrame = (frame as any)?.native ?? null;
+        if (this.ensureNative() && nativeFrame) {
+            this._nativeAtlas.addSpriteFrame(String(name ?? ''), nativeFrame);
+        }
     }
 
     public getSpriteFrame (key: string): SpriteFrame | null {
