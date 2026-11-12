@@ -53,7 +53,7 @@ M2 / M3 / M0 / Jest 20 全部通过
 - 只覆盖 color/b/i + img；
 - 未覆盖 br/size/outline/shadow；
 - 未覆盖事件、复杂对齐；
-- 未做 Web 像素对照。
+- 已做 Web/native 场景级对照；italic 宽度为已知差异，colored 只做 ±20% sanity；不做逐像素 golden。
 
 ## 5. M5 剩余
 
@@ -64,6 +64,6 @@ M2 / M3 / M0 / Jest 20 全部通过
 
 ## 6. 下一步
 
-1. 修 native SpriteAtlas binding；
-2. 补 RichText 标签/事件；
-3. 再进 UIMeshRenderer/UIMesh/Canvas/UISkew。
+1. 进入 UIMeshRenderer/UIMesh；
+2. Canvas/RenderRoot2D 桥接评估；
+3. UISkew。
