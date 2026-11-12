@@ -1343,6 +1343,8 @@ this._measureText(styleIndex) as unknown as (s: string) => number,
         label.isBold = false;
         label.isItalic = false;
         label.isUnderline = false;
+        label.enableOutline = false;
+        label.outlineWidth = 0;
     }
 }
 
