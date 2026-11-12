@@ -23,6 +23,8 @@
 ****************************************************************************/
 
 #include "2d/renderer/Batcher2d.h"
+
+#include <algorithm>
 #include "application/ApplicationManager.h"
 #include "base/TypeDef.h"
 #include "core/Root.h"
@@ -163,6 +165,21 @@ void Batcher2d::updateDescriptorSet() {
 
 void Batcher2d::syncRootNodesToNative(ccstd::vector<Node*>&& rootNodes) {
     _rootNodeArr = std::move(rootNodes);
+}
+
+void Batcher2d::addRootNode(Node* node) {
+    if (node == nullptr) { return; }
+    const auto it = std::find(_rootNodeArr.begin(), _rootNodeArr.end(), node);
+    if (it == _rootNodeArr.end()) {
+        _rootNodeArr.push_back(node);
+    }
+}
+
+void Batcher2d::removeRootNode(Node* node) {
+    const auto it = std::find(_rootNodeArr.begin(), _rootNodeArr.end(), node);
+    if (it != _rootNodeArr.end()) {
+        _rootNodeArr.erase(it);
+    }
 }
 
 void Batcher2d::fillBuffersAndMergeBatches() {

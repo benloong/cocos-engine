@@ -56,7 +56,8 @@ Jest: 20 passed
 ## 5. 不在 M5.0 范围
 
 - `UIMeshRenderer`、`UIMesh`、`UISkew`：**不下沉**；
-- Canvas/RenderRoot2D/SpriteRenderer 桥：待决策；
+- RenderRoot2D：已下沉；
+- Canvas Camera/Widget/适配：待下沉；
 - 弃用的 `UIStaticBatch` 不实现。
 
 ## 6. 结论

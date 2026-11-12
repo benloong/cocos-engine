@@ -60,6 +60,8 @@ public:
     void reset();
 
     void syncRootNodesToNative(ccstd::vector<Node*>&& rootNodes);
+    void addRootNode(Node* node);
+    void removeRootNode(Node* node);
     void releaseDescriptorSetCache(gfx::Texture* texture, gfx::Sampler* sampler);
 
     UIMeshBuffer* getMeshBuffer(uint16_t accId, uint16_t bufferId);

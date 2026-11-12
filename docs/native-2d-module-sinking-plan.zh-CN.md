@@ -299,7 +299,7 @@
 
 ### M5：RichText（5~7 周）
 
-> 进度：**M5.0 RichText 收口通过（Windows）**。文本/图片/样式矩阵/hit test/Web 对照完成；italic 宽度为已知差异。`UIMeshRenderer`/`UIMesh`/`UISkew` 明确不下沉；M5 仅剩 Canvas/RenderRoot2D 桥接决策。见 [native-2d-m5-gate.md](./native-2d-m5-gate.md) 与 [native-2d-m5-report.md](./native-2d-m5-report.md)。
+> 进度：**M5.0 RichText 收口通过**；**M5.1 RenderRoot2D 下沉通过**（native Batcher root 注册 + JS 薄壳）。Canvas 的 Camera/Widget/适配仍在 JS。UIMeshRenderer/UIMesh/UISkew 不下沉。见 [native-2d-m5.1-renderroot.md](./native-2d-m5.1-renderroot.md)。
 
 - 内容：
   - `RichText`（HTML 解析、嵌套 Label/Sprite、图片混排、布局/换行/对齐）；

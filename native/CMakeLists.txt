@@ -2111,6 +2111,8 @@ cocos_source_files(
     cocos/2d/framework/UIOpacity.cpp
     cocos/2d/framework/UIRenderer.h
     cocos/2d/framework/UIRenderer.cpp
+    cocos/2d/framework/RenderRoot2D.h
+    cocos/2d/framework/RenderRoot2D.cpp
     cocos/2d/assets/SpriteFrame.h
     cocos/2d/assets/SpriteAtlas.h
     cocos/2d/assets/SpriteAtlas.cpp
