@@ -31,6 +31,7 @@
 
 #include "2d/components/Sprite.h"
 #include "2d/assets/SpriteFrame.h"
+#include "2d/assets/SpriteAtlas.h"
 #include "2d/framework/UIOpacity.h"
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/RenderDrawInfo.h"
@@ -86,6 +87,19 @@ void checkClose(float actual, float expected, float epsilon, const char *message
     }
 }
 
+void testSpriteAtlas() {
+    auto *atlas = new cc::SpriteAtlas();
+    auto *frame = new cc::SpriteFrame();
+    check(atlas != nullptr && frame != nullptr, "SpriteAtlas/frame allocated");
+    atlas->addSpriteFrame("icon", frame);
+    check(atlas->getSpriteFrameCount() == 1, "SpriteAtlas count after add");
+    check(atlas->getSpriteFrame("icon") == frame, "SpriteAtlas lookup by name");
+    atlas->removeSpriteFrame("icon");
+    check(atlas->getSpriteFrameCount() == 0, "SpriteAtlas count after remove");
+    atlas->addSpriteFrame("icon", frame);
+    atlas->clear();
+    check(atlas->getSpriteFrameCount() == 0, "SpriteAtlas count after clear");
+}
 void testUITransform() {
     cc::Node node("native-2d-poc");
     node.setPosition(10.F, 20.F, 0.F);
@@ -764,6 +778,9 @@ int main() {
     scriptEngine->start();
     {
         se::AutoHandleScope scope;
+        testSpriteAtlas();
+        std::printf("sprite atlas done\n");
+        std::fflush(stdout);
         testUITransform();
         testUITransformParity();
         testUITransformScaleParity();
