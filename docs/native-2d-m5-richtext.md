@@ -93,7 +93,7 @@ M5_RICHTEXT {
 - `<img src='icon'/>` 生成了 1 个 native Sprite 段；
 - 图片段像素参与 GPU 输出，colored 从纯文本的 4095 提升到 4633。
 
-## 5. 样式矩阵\n\n标签覆盖：\n\n- `<size>`：fontSize 20/40；\n- `<color>`；\n- `<br>`：换行；\n- `<outline color width>`：outline=true/width=2；\n- `<b>`：native font 变 bold；\n- `<i>`：native font 变 italic；\n- `<u>`：native 下划线；\n- `<img>`：imageAtlas。\n\n矩阵探针：\n\n```text\nchildren=10, labels=9, sprites=1, 300x136.32, colored=7513\n```\n\n## 6. 当前边界
+## 5. 样式矩阵\n\n标签覆盖：\n\n- `<size>`：fontSize 20/40；\n- `<color>`；\n- `<br>`：换行；\n- `<outline color width>`：outline=true/width=2；\n- `<b>`：native font 变 bold；\n- `<i>`：native font 变 italic；\n- `<u>`：native 下划线；\n- `<img>`：imageAtlas。\n\n矩阵探针：\n\n```text\nchildren=10, labels=9, sprites=1, 300x136.32, colored=7513\n```\n\n## 6. 事件/hit test\n\n矩阵探针额外验证：\n\n```text\nhit=true, miss=false\n```\n\n使用 `UITransform.getBoundingBoxToWorld()` + RichText `_containsTouchLocation`；说明段级命中区域可用。事件分发仍由 JS RichText 负责。\n\n## 7. 当前边界
 
 已覆盖：
 
@@ -111,7 +111,7 @@ M5_RICHTEXT {
 - 复杂对齐/最大宽度；
 - 与 Web RichText 的逐像素对照。
 
-## 7. 下一步
+## 8. 下一步
 
 1. native SpriteAtlas 已重新启用；
 2. 样式标签完整矩阵；
