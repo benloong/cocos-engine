@@ -78,6 +78,9 @@ export class Label extends UIRenderer {
 
     @serializable
     protected _fontSize = 40;
+    protected _isBold = false;
+    protected _isItalic = false;
+    protected _isUnderline = false;
 
     @serializable
     protected _lineHeight = 40;
@@ -189,6 +192,24 @@ export class Label extends UIRenderer {
 
     get fontSize (): number {
         return this._fontSize;
+    }
+
+    get isBold (): boolean { return this._isBold; }
+    set isBold (value: boolean) {
+        this._isBold = value;
+        this._native?.setIsBold(value);
+    }
+
+    get isItalic (): boolean { return this._isItalic; }
+    set isItalic (value: boolean) {
+        this._isItalic = value;
+        this._native?.setIsItalic(value);
+    }
+
+    get isUnderline (): boolean { return this._isUnderline; }
+    set isUnderline (value: boolean) {
+        this._isUnderline = value;
+        this._native?.setIsUnderline(value);
     }
 
     set fontSize (value: number) {

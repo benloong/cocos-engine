@@ -67,6 +67,13 @@ public:
 
     void setFont(const std::string &font);
     void setFontSize(float size);
+    void setIsBold(bool bold) { if (_isBold != bold) { _isBold = bold; updateFont(); _dirty = true; } }
+    void setIsItalic(bool italic) { if (_isItalic != italic) { _isItalic = italic; updateFont(); _dirty = true; } }
+    void setIsUnderline(bool underline) { if (_isUnderline != underline) { _isUnderline = underline; _dirty = true; } }
+    bool isBold() const { return _isBold; }
+    bool isItalic() const { return _isItalic; }
+    bool isUnderline() const { return _isUnderline; }
+    void updateFont();
     void setLineHeight(float height);
     void setEnableWrapText(bool wrap);
     void setOverflow(int32_t overflow);
@@ -121,6 +128,9 @@ private:
     std::string _string;
     std::string _font{"32px Arial"};
     std::string _fontFamily{"Arial"};
+    bool _isBold{false};
+    bool _isItalic{false};
+    bool _isUnderline{false};
     float _fontSize{32.0F};
     float _lineHeight{0.0F};
     float _spacingX{0.0F};

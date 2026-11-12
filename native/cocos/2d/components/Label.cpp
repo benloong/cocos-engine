@@ -139,11 +139,20 @@ void Label::setFont(const std::string &font) {
     _dirty = true;
 }
 
+void Label::updateFont() {
+    std::string font;
+    if (_isBold) { font += "bold "; }
+    if (_isItalic) { font += "italic "; }
+    font += std::to_string(static_cast<int>(_fontSize)) + "px " + _fontFamily;
+    _font = font;
+}
+
 void Label::setFontSize(float size) {
     if (std::fabs(_fontSize - size) < 0.01F) {
         return;
     }
     _fontSize = size;
+    updateFont();
     _dirty = true;
 }
 
@@ -746,6 +755,9 @@ void Label::rebuildTexture() {
                       static_cast<double>(_color.a) / 255.0);
         context.setFillStyle(fillColor);
         context.fillText(line, x, lineY, 0.0F);
+        if (_isUnderline) {
+            context.fillRect(x, lineY + _fontSize + 1.0F, lineWidth, 1.0F);
+        }
     }
     cc::Data pixels;
     context.setCanvasBufferUpdatedCallback([&pixels](const cc::Data &data) {
