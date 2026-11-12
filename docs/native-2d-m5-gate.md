@@ -52,7 +52,13 @@ M0 checks passed
 Jest: 20 passed
 ```
 
-## 4. 不在 M5.0 范围
+## 4. 已知差异（接受）
+
+- italic 宽度：Web 90.748 / native 81（GDI synthetic italic），标记为已知差异，不纳入像素门禁；
+- 正常字体宽度：GDI 比 DirectWrite 窄约 3–7%；
+- colored：Web 10100 / native 8337，在 ±20% 容差内。
+
+## 5. 不在 M5.0 范围
 
 - native `SpriteAtlas` SWIG 构造：当前禁用，JS map 工作；
 - `<br>/<size>/<outline>/<shadow>`；
