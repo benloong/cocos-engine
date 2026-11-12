@@ -1,7 +1,7 @@
 # Native 2D M5 RichText Gate
 
 > 结论：**M5.0 RichText（Windows）收口通过**。
-> M5 还包含 `UIMeshRenderer`、`UIMesh`、Canvas/RenderRoot2D 桥、`UISkew`；因此 **M5 整体仍未关闭**。
+> `UIMeshRenderer`、`UIMesh`、`UISkew` 明确不下沉；M5 仅剩 Canvas/RenderRoot2D 桥接决策。
 
 ## 1. 通过项
 
@@ -55,10 +55,8 @@ Jest: 20 passed
 
 ## 5. 不在 M5.0 范围
 
-- `UIMeshRenderer`；
-- `UIMesh`；
-- Canvas/RenderRoot2D/SpriteRenderer 桥；
-- `UISkew`；
+- `UIMeshRenderer`、`UIMesh`、`UISkew`：**不下沉**；
+- Canvas/RenderRoot2D/SpriteRenderer 桥：待决策；
 - 弃用的 `UIStaticBatch` 不实现。
 
 ## 6. 结论

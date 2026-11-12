@@ -57,13 +57,10 @@ M2 / M3 / M0 / Jest 20 全部通过
 
 ## 5. M5 剩余
 
-- UIMeshRenderer；
-- UIMesh；
-- Canvas/RenderRoot2D 桥；
-- UISkew。
+- UIMeshRenderer/UIMesh/UISkew：不下沉，保持 JS；
+- Canvas/RenderRoot2D 桥：待决策。
 
 ## 6. 下一步
 
-1. 进入 UIMeshRenderer/UIMesh；
-2. Canvas/RenderRoot2D 桥接评估；
-3. UISkew。
+1. Canvas/RenderRoot2D 桥接决策；
+2. 若保持 JS 壳，M5 收口。

@@ -1,6 +1,6 @@
 # Cocos 4.0 Native 2D 模块 JS 组件下沉方案
 
-> 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、UIMeshRenderer、UIMesh、Canvas/RenderRoot2D 及配套 assembler/assets/event）。已弃用的 `UIStaticBatch` 不纳入范围。
+> 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、Canvas/RenderRoot2D 及配套 assembler/assets/event）。已弃用的 `UIStaticBatch` 不纳入范围。`UIMeshRenderer`、`UIMesh`、`UISkew` 明确不下沉，保持 JS。
 > 不包含：`cocos/ui` 控件（Button/ScrollView/EditBox/Widget/Layout 等）以及动画、粒子、骨骼、物理、3D UI 桥接、编辑器逻辑、用户脚本。范围已冻结，`cocos/ui` 不进入本次任何阶段。
 > 目标读者：引擎 2D/JSB/构建方向的同学。
 
@@ -34,7 +34,7 @@
 | 子目录 | 行数 | 主要内容 | 当前实现 |
 |---|---:|---|---|
 | `framework/` | 2,577 | `UITransform`、`UIRenderer`、`UIComponent`、`Canvas`、`RenderRoot2D`、`SpriteRenderer`、`UIRendererManager`、`UISkew` | TS |
-| `components/` | 5,721 | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText`、`UIOpacity`、`UIMeshRenderer`、`UIMesh` | TS |
+| `components/` | 5,721 | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText`、`UIOpacity` | TS |
 | `renderer/` | 4,299 | `Batcher2D`、`RenderData`、`MeshRenderData`、`MeshBuffer`、`RenderEntity`、`RenderDrawInfo`、`StencilManager`、`StaticVBAccessor` | TS 编排 + C++ 核心 |
 | `assembler/` | 6,060 | Sprite 五种模式（simple/sliced/tiled/bar/radial）、Label（TTF/BmFont/Letter/排版）、Graphics（路径/earcut） | TS |
 | `assets/` | 1,871 | `SpriteFrame`、`SpriteAtlas`、`TTFFont`、`LabelAtlas`、`BitmapFont` | TS |
@@ -272,7 +272,7 @@
   - 材质解析下沉：`getSharedMaterial/setSharedMaterial`、material instance 选择、内置 ui-sprite 系列/custom material/alpha-separated/gray 的选择都在 native，JS 只转发句柄；
   - `Sprite` 全部模式：simple/sliced/tiled/bar-filled/radial-filled；
   - `SpriteFrame` native 化（或至少 native 缓存 rect/offset/rotated/insets）；
-  - `UIMeshRenderer` 视情况一起。
+  - `UIMeshRenderer` 不下沉（见 M5）。
 - 退出标准：五种 Sprite 模式与 Web 像素对照（容差内）；属性动态切换序列通过；2D 密集场景 CPU 下降达到 KPI（建议 ≥30%）；`sprite.jsb.ts` 壳 ≤ 300 行，无几何/材质选择逻辑，稳态每帧 0 次 JSB 调用。
 
 ### M3：Label + 文本栈（8~10 周，风险最高）
@@ -297,16 +297,16 @@
   - 填充/描边/端点/连接/贝塞尔/圆弧。
 - 退出标准：遮罩裁剪像素对照；Graphics 常用路径与 Web 对照；给出“路径 API 逐调用 vs 批量提交”的性能结论。
 
-### M5：RichText 与剩余组件（5~7 周）
+### M5：RichText（5~7 周）
 
-> 进度：**M5.0 RichText 收口通过（Windows）**。文本/图片/样式矩阵/hit test/Web 对照完成；italic 宽度为已知差异。`UIMeshRenderer`/`UIMesh`/Canvas 桥/`UISkew` 未开始，**M5 整体未关闭**。见 [native-2d-m5-gate.md](./native-2d-m5-gate.md) 与 [native-2d-m5-report.md](./native-2d-m5-report.md)。
+> 进度：**M5.0 RichText 收口通过（Windows）**。文本/图片/样式矩阵/hit test/Web 对照完成；italic 宽度为已知差异。`UIMeshRenderer`/`UIMesh`/`UISkew` 明确不下沉；M5 仅剩 Canvas/RenderRoot2D 桥接决策。见 [native-2d-m5-gate.md](./native-2d-m5-gate.md) 与 [native-2d-m5-report.md](./native-2d-m5-report.md)。
 
 - 内容：
   - `RichText`（HTML 解析、嵌套 Label/Sprite、图片混排、布局/换行/对齐）；
-  - `UIMeshRenderer`、`UIMesh`（v4 新增组件，需单独实现）；
+  - `UIMeshRenderer`、`UIMesh`、`UISkew` **不下沉，保持 JS**；
   - `UIStaticBatch` **已弃用，不实现、不纳入 native 范围**；
   - `Canvas`/`RenderRoot2D`/`SpriteRenderer`/`UIRendererManager` 的 native 桥；注意 `Canvas` 依赖 `cocos/misc` 的 Camera 与 `cocos/ui` 的 Widget/view（这些不迁移），若桥接成本高于收益则保持 JS 壳，只把渲染入口下沉；
-  - `UISkew`（`ui-skew` feature）。
+
 - 退出标准：UI 场景级对照（节点几何、文本段、图片段、事件）。
 
 ### M6：资产、事件与硬化（4~5 周）
@@ -339,7 +339,7 @@
 | TS 侧 | native 落点 | 说明 |
 |---|---|---|
 | `2d/framework/` | `native/cocos/2d/framework/` | `UITransform`、`UIRenderer`、`Canvas`、`RenderRoot2D`、`UIOpacity` |
-| `2d/components/` | `native/cocos/2d/components/` | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText`、`UIMeshRenderer`、`UIMesh` |
+| `2d/components/` | `native/cocos/2d/components/` | `Sprite`、`Label`、`LabelOutline`、`LabelShadow`、`Mask`、`Graphics`、`RichText` |
 | `2d/renderer/` | `native/cocos/2d/renderer/` | Sprite 几何、文本布局、Graphics 路径、材质选择、命中测试辅助 |
 | `2d/assets/` | `native/cocos/2d/assets/` | `SpriteFrame` 先行；`SpriteAtlas`/`TTFFont`/`LabelAtlas` 按阶段 |
 | `2d/event/` | `native/cocos/2d/event/` | `UITransform.contains/hitTest` 的 native 版本 |
@@ -347,7 +347,7 @@
 
 ### 7.3 依赖顺序
 
-`UITransform` → `UIRenderer`/`Sprite` → `Label`（复用 7.1 的第 3 条文本后端）→ `Mask` → `Graphics` → `RichText` → `UIMeshRenderer`/`UIMesh`/`Canvas`/`UISkew`。
+`UITransform` → `UIRenderer`/`Sprite` → `Label`（复用 7.1 的第 3 条文本后端）→ `Mask` → `Graphics` → `RichText` → `Canvas`（桥接决策）。
 
 ### 7.4 明确不做
 
