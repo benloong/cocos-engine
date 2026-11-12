@@ -101,10 +101,11 @@ public:
     void setShadowBlur(float blur);
     void setShadowOffset(float x, float y);
     float getTextureWidth() const { return _lastTextureWidth; }
-    float getTextureHeight() const { return _lastTextureHeight; }
-    int32_t getLineCount() const { return _lastLineCount; }
+    void updateRenderData();
     float getContentWidth() const { return _lastContentWidth; }
     float getContentHeight() const { return _lastContentHeight; }
+    float getTextureHeight() const { return _lastTextureHeight; }
+    int32_t getLineCount() const { return _lastLineCount; }
     uint32_t getPixelChecksum() const { return _lastPixelChecksum; }
     uint32_t getOpaquePixels() const { return _lastOpaquePixels; }
 

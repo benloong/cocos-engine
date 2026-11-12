@@ -23,20 +23,20 @@
 | children | 10 | 10 |
 | labels | 9 | 9 |
 | sprites | 1 | 1 |
-| contentSize | 300×104.32 | 300×136.32 |
-| colored | 10100 | 7513 |
+| contentSize | 300×104.32 | 300×104.32（已修） |
+| colored | 10100 | 8135 |
 | hit / miss | true / false | true / false |
 | outlineWidth | 只有 outline 段为 2（已修） | 只有 outline 段为 2 |
 
 ## 3. 差异
 
-### 高度差 32
+### 高度差 32（已修）
 
 ```text
-native 136.32 - web 104.32 = 32
+修复前：native 136.32 - web 104.32 = 32
 ```
 
-正好一个 `lineHeight`。说明 `<br/>` 在 native 端多算了一行，或 Web RichText 忽略了该换行段。
+native Label 的 UITransform 没有回写测量尺寸，RichText 把每段都当成 100×100。`updateRenderData()` 现在先清零尺寸、强制 native rebuild、再回写 `(contentWidth, (lines+0.26)*lineHeight)`；高度已对齐 104.32。
 
 ### outline 样式泄漏（已修）
 
@@ -58,7 +58,7 @@ native：
 
 ```text
 Web 10100
-native 7513
+native 8135
 ```
 
 主要由 outline 泄漏和高度差导致，不能直接作为像素通过。

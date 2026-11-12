@@ -136,8 +136,20 @@ export class Label extends UIRenderer {
     }
 
     public updateRenderData (_force = false): void {
-        // Native Label rebuilds on its text/transform setters; RichText still
-        // calls this after laying out a segment. Keep the JS API compatible.
+        if (!this._native) {
+            return;
+        }
+        const transform = this.node.getComponent(UITransform);
+        if (!transform) {
+            return;
+        }
+        transform.setContentSize(0, 0);
+        this._native.updateRenderData?.();
+        const width = this._native.getContentWidth?.() ?? 0;
+        const height = this._native.getContentHeight?.() ?? 0;
+        if (width > 0 && height > 0) {
+            transform.setContentSize(width, height);
+        }
     }
 
     public lateUpdate (): void {

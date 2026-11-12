@@ -590,6 +590,12 @@ void Label::applyBitmapAtlas() {
     _lastAtlasHeight = region.height;
     _renderer.setFrame(_frame);
 }
+void Label::updateRenderData() {
+    if (_dirty) {
+        rebuildTexture();
+    }
+}
+
 void Label::rebuildTexture() {
     _dirty = false;
     if (_cacheMode == 2) {
