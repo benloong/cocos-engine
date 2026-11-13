@@ -311,6 +311,8 @@
 
 ### M6：资产、事件与硬化（4~5 周）
 
+> Component 基类下沉评估：**不建议现在做**；native Component 55 行、JS Component 728 行，保持 JS 身份。见 [native-2d-m6-component-eval.md](./native-2d-m6-component-eval.md)。
+
 - 内容：
   - `SpriteAtlas`、`TTFFont`、`LabelAtlas`、动态合图按需 native 化；
   - 指针事件 hit test native（或保留 JS 但调用 native `UITransform.contains`）；
