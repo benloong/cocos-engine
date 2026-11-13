@@ -55,10 +55,10 @@ M2 / M3 / M0 / Jest 20 全部通过
 - 未覆盖事件、复杂对齐；
 - 已做 Web/native 场景级对照；italic 宽度为已知差异，colored 只做 ±20% sanity；不做逐像素 golden。
 
-## 5. M5 剩余
+## 5. 明确不下沉
 
 - UIMeshRenderer/UIMesh/UISkew：不下沉，保持 JS；
-- Canvas/RenderRoot2D 桥：待决策。
+- Canvas/Camera/Widget/View：不下沉，保持 JS。
 
 ## 6. 下一步
 
