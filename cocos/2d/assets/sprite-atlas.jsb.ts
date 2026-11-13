@@ -36,7 +36,7 @@ export class SpriteAtlas extends Asset {
             return this._nativeAtlas;
         }
         try {
-            this._nativeAtlas = new n2d.SpriteAtlas();
+            this._nativeAtlas = new jsb.SpriteAtlas();
         } catch (error) {
             console.log(`SpriteAtlas native unavailable: ${String(error)}`);
         }

@@ -82,7 +82,7 @@ export class SpriteFrame extends Asset {
 
     public get native (): any {
         if (!this._nativeFrame) {
-            this._nativeFrame = new n2d.SpriteFrame();
+            this._nativeFrame = new jsb.SpriteFrame();
             this._syncNative();
         }
         return this._nativeFrame;
