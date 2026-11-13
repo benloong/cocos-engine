@@ -5,91 +5,84 @@
 */
 
 import { ccclass, editable, serializable } from 'cc.decorator';
-import { Asset } from '../../asset/assets';
-import { SpriteFrame } from './sprite-frame';
+import { cclegacy } from '../../core';
+import '../../asset/assets/asset';
+import type { SpriteFrame } from './sprite-frame';
+import type { SpriteAtlas as JsbSpriteAtlas } from './sprite-atlas';
 import type { TextureBase } from '../../asset/assets/texture-base';
 
-declare const n2d: any;
+declare const jsb: any;
 
 interface ISpriteFrameList {
     [key: string]: SpriteFrame | null;
 }
 
-/**
- * Native SpriteAtlas thin shell. The serialized map stays in JS; named frames
- * are also registered with the native asset for ownership/texture access.
- */
-@ccclass('cc.SpriteAtlas')
-export class SpriteAtlas extends Asset {
-    @serializable
-    @editable
-    public spriteFrames: ISpriteFrameList = {};
+export type SpriteAtlas = JsbSpriteAtlas;
+export const SpriteAtlas: typeof JsbSpriteAtlas = jsb.SpriteAtlas;
 
-    private _nativeAtlas: any = null;
+cclegacy.SpriteAtlas = SpriteAtlas;
 
-    constructor (name?: string) {
-        super(name);
+const spriteAtlasProto: any = SpriteAtlas.prototype;
+// Preserve native methods before installing the JS asset API on the same prototype.
+const nativeAddSpriteFrame = spriteAtlasProto.addSpriteFrame;
+const nativeRemoveSpriteFrame = spriteAtlasProto.removeSpriteFrame;
+const nativeClear = spriteAtlasProto.clear;
+
+spriteAtlasProto._ctor = function () {
+    jsb.Asset.prototype._ctor.apply(this, arguments);
+    this.spriteFrames = {};
+};
+
+spriteAtlasProto.addSpriteFrame = function (name: string, frame: SpriteFrame | null): void {
+    this.spriteFrames[name] = frame;
+    const nativeFrame = (frame as any)?.native ?? null;
+    if (nativeFrame) {
+        nativeAddSpriteFrame.call(this, String(name ?? ''), nativeFrame);
     }
+};
 
-    private ensureNative (): any {
-        if (this._nativeAtlas) {
-            return this._nativeAtlas;
-        }
-        try {
-            this._nativeAtlas = new jsb.SpriteAtlas();
-        } catch (error) {
-            console.log(`SpriteAtlas native unavailable: ${String(error)}`);
-        }
-        return this._nativeAtlas;
+spriteAtlasProto.getSpriteFrame = function (key: string): SpriteFrame | null {
+    const frame = this.spriteFrames[key] ?? null;
+    if (frame && !frame.name) {
+        frame.name = key;
     }
+    return frame;
+};
 
-    public addSpriteFrame (name: string, frame: SpriteFrame | null): void {
-        this.spriteFrames[name] = frame;
-        const nativeFrame = (frame as any)?.native ?? null;
-        if (this.ensureNative() && nativeFrame) {
-            this._nativeAtlas.addSpriteFrame(String(name ?? ''), nativeFrame);
-        }
-    }
+spriteAtlasProto.getSpriteFrames = function (): (SpriteFrame | null)[] {
+    return Object.values(this.spriteFrames);
+};
 
-    public getSpriteFrame (key: string): SpriteFrame | null {
-        const frame = this.spriteFrames[key] ?? null;
-        if (frame && !frame.name) {
-            frame.name = key;
-        }
-        return frame;
-    }
-
-    public getSpriteFrames (): (SpriteFrame | null)[] {
-        return Object.values(this.spriteFrames);
-    }
-
-    public getTexture (): TextureBase | null {
-        for (const key of Object.keys(this.spriteFrames)) {
-            const frame = this.spriteFrames[key];
-            if (frame) {
-                return frame.texture;
-            }
-        }
-        return null;
-    }
-
-    public removeSpriteFrame (name: string): void {
-        delete this.spriteFrames[name];
-        this.ensureNative()?.removeSpriteFrame(name);
-    }
-
-    public clear (): void {
-        this.spriteFrames = {};
-        this.ensureNative()?.clear();
-    }
-
-    public _deserialize (serializeData: any, handle: any): void {
-        const data = serializeData as { name?: string; spriteFrames?: string[] };
-        this._name = data.name ?? '';
-        this.spriteFrames = {};
-        const frames = data.spriteFrames ?? [];
-        for (let i = 0; i < frames.length; i += 2) {
-            handle.result.push(this.spriteFrames, frames[i], frames[i + 1], 'cc.SpriteFrame');
+spriteAtlasProto.getTexture = function (): TextureBase | null {
+    for (const key of Object.keys(this.spriteFrames)) {
+        const frame = this.spriteFrames[key];
+        if (frame) {
+            return frame.texture;
         }
     }
-}
+    return null;
+};
+
+spriteAtlasProto.removeSpriteFrame = function (name: string): void {
+    delete this.spriteFrames[name];
+    nativeRemoveSpriteFrame.call(this, name);
+};
+
+spriteAtlasProto.clear = function (): void {
+    this.spriteFrames = {};
+    nativeClear.call(this);
+};
+
+spriteAtlasProto._deserialize = function (serializeData: any, handle: any): void {
+    const data = serializeData as { name?: string; spriteFrames?: string[] };
+    this._name = data.name ?? '';
+    this.spriteFrames = {};
+    const frames = data.spriteFrames ?? [];
+    for (let i = 0; i < frames.length; i += 2) {
+        handle.result.push(this.spriteFrames, frames[i], frames[i + 1], 'cc.SpriteFrame');
+    }
+};
+
+serializable(spriteAtlasProto, 'spriteFrames', (): ISpriteFrameList => ({}));
+editable(spriteAtlasProto, 'spriteFrames', (): ISpriteFrameList => ({}));
+ccclass('cc.SpriteAtlas')(SpriteAtlas);
