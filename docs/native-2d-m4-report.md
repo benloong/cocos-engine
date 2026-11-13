@@ -3,6 +3,8 @@
 > 范围：`cocos/2d` Mask、Graphics。  
 > 结论：Windows native M4 功能收口通过；跨平台与 native 三角化后置。
 
+> 2026-11-13 同步：以下为既有 Windows 验证记录，未重跑。M4 功能通过不等于终态通过；Graphics 三角化/描边/性能与 Web 对照承接到 [M6.3](./native-2d-m6-plan.md)，平台与稳定性归 M6.4。
+
 ## 1. 架构
 
 ```text

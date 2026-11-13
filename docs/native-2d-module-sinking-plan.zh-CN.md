@@ -3,6 +3,7 @@
 > 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、Canvas/RenderRoot2D 及配套 assembler/assets/event）。已弃用的 `UIStaticBatch` 不纳入范围。`UIMeshRenderer`、`UIMesh`、`UISkew`、`Canvas`、`Camera`、`Widget`、`View` 明确不下沉，保持 JS。
 > 不包含：`cocos/ui` 控件（Button/ScrollView/EditBox/Widget/Layout 等）以及动画、粒子、骨骼、物理、3D UI 桥接、编辑器逻辑、用户脚本。范围已冻结，`cocos/ui` 不进入本次任何阶段。
 > 目标读者：引擎 2D/JSB/构建方向的同学。
+> 更新：2026-11-13。M6 未收口：M2 阶段完成，M3/M4/M5 有 Windows 功能验收记录；RichText 解析/布局、Graphics 三角化与资产一致性等终态欠项仍需完成。统一任务及终态门禁见 [M6 计划](./native-2d-m6-plan.md)。本次仅核对代码与既有报告，未新增原生/跨平台通过结论。
 
 ---
 
@@ -12,12 +13,14 @@
 2. **路线已定：原生实现 + JSB 薄壳（方案 A），这就是终态**。C++ 负责数据与算法，TS 只保留 `Component` 壳、序列化、编辑器元数据和公开 API 转发，通过 `.jsb.ts` 替换接入。薄壳里不允许再出现几何装配、文本排版、材质选择、逐帧遍历等逻辑。
 3. **分七个阶段（M0~M6）**：M0 PoC → M1 基础设施 + UITransform → M2 UIRenderer + Sprite → M3 Label/文本 → M4 Mask/Graphics → M5 RichText 与剩余组件 → M6 硬化。按 2~3 名熟悉 JSB/2D 的工程师估算约 **8~11 个月**（不含 15~20% 风险缓冲）；只做 P0 组件（UITransform/Sprite/Label/Graphics 基础）约 **6~7 个月**。
 4. **“纯原生 Component 运行时”（方案 B）不作为终态，也不纳入本计划**。它需要原生场景加载/序列化、组件注册表、编辑器工具链和用户脚本兼容，属于另一条产品路线。
-5. **先做两个 PoC 再全量投入**：UITransform（验证组件挂载、序列化、编辑器兼容）和 Sprite simple 模式（验证逐帧几何/合批收益与 JSB 边界成本）。用数据决定是否进入 M1。
+5. **立项时先做两个 PoC 再全量投入（现已有阶段记录）**：UITransform（验证组件挂载、序列化、编辑器兼容）和 Sprite simple 模式（验证逐帧几何/合批收益与 JSB 边界成本）。用数据决定是否进入 M1。
 6. **实现只基于当前 v4 worktree**：不引用其他分支的代码、夹具或设计文档；所有 C++ 落点、绑定、测试都在 v4 内新建或扩展。
 
 ---
 
 ## 1. 现状盘点
+
+> 本节原始行数和缺口用于说明立项基线，不代表当前进度；当前状态以第 6 节、各阶段 Gate 和 M6 清单为准。
 
 ### 1.1 两套 runtime 与构建选择
 
@@ -165,10 +168,13 @@
 ### 4.4 材质与资产
 
 - `Material` 在 v4 已经是 native 资产（`material.jsb.ts`），native 组件可以直接持有 `Material*`。
-- `SpriteFrame` 建议**先做 native 移植**（字段少：texture/rect/offset/originalSize/insets/rotated），否则每帧跨 JSB 读 rect 会吃掉收益。
-- `SpriteAtlas`/`TTFFont`/`LabelAtlas` 可以后置；TTFFont 的字体字节需要 native 侧持有。
+- SpriteFrame 已有 native 数据缓存和 Sprite 消费路径；M6 继续统一 UV/字段权威状态与 API，避免恢复逐帧跨 JSB 读取。
+- 当前 SpriteFrame、SpriteAtlas 已直接导出 jsb.SpriteFrame/jsb.SpriteAtlas 并修改 prototype，实例字段在 _ctor 中初始化，调用 Asset 初始化；覆盖同名 API 前保存原生方法，避免递归。不再派生 JS 资产子类或另建 _nativeAtlas 包装对象。
+- 组件继续保留 JS Component 身份；资产 prototype 模式不直接套用到组件继承链。
+- SpriteFrame 仍有 JS UV 计算及字段镜像，SpriteAtlas 的 JS map 与 native frame 表同步仍需审计；prototype 统一不等于终态完成。
+- TTFFont/LabelAtlas/BitmapFont、动态合图按需 native 化；逐类确认数据、所有权和生命周期，见 M6.1。
 - `Renderer` 的材质实例/共享材质解析属于“逻辑”，终态要在 native：M2 就把 UI 需要的 `getSharedMaterial/setSharedMaterial`、material instance 选择做成 native 接口，JS 壳只转发；不要把它留成永久 JS 逻辑。
-- `UIRenderer` 的薄壳继承链要单独决策：建议保留 `class UIRenderer extends Renderer`（保持 `instanceof Renderer`、编辑器与第三方依赖），但在壳内把 `sharedMaterials`/`material`/`getSharedMaterial`/`setSharedMaterial` 等全部 override 到 native，确保 `Renderer` 的 JS 逻辑不会在 UI 路径上执行；若接受 `instanceof` 语义变化，也可让 `UIRenderer` 直接 `extends Component`，壳更薄。该决策放进 M0 评审。
+- 当前 UIRenderer 保留 extends Renderer；M6 复核 sharedMaterials/material/getSharedMaterial/setSharedMaterial 等 API、继承身份和间接执行路径，确保迁移组件不再执行 JS 材质选择逻辑。组件不直接改为原生资产式 prototype 导出。
 
 ### 4.5 绑定与构建集成
 
@@ -182,7 +188,7 @@
    - `%ignore` 掉不需要暴露的内部方法、`IntrusivePtr` 细节、回调类型。
 3. 生成绑定：CMake 会自动跑 `genbindings`；新增/删除 `.i` 后需要重新生成工程（仓库脚本有提示）。
 4. `cocos/2d/**/x.jsb.ts`：
-   - 组件用 `export class X extends Component` 保持 JS Component 身份；非组件辅助对象可用 `export const X = n2d.X`；
+   - 组件用 `export class X extends Component` 保持 JS Component 身份；非组件辅助对象直接导出原生类；2D 组件辅助类使用 n2d.X，SpriteFrame/SpriteAtlas 资产使用 jsb.X（绑定在 assets.i）；
    - `patch_cc_X` 补 `@ccclass('cc.X')`、`@serializable`、`@type`、`@menu`、`@executeInEditMode` 等；
    - 公开 API 的 getter/setter 转发；不复制算法。
 5. `cc.config.json` 的 `NATIVE` override 增加 `"cocos/2d/.../x.ts": "cocos/2d/.../x.jsb.ts"`。
@@ -206,6 +212,8 @@
 - 逐帧 `update` 中的业务逻辑，或每帧遍历子节点/组件；
 - 材质选择/材质实例解析（终态在 native，JS 只传 `Material` 句柄）；
 - 与 native 重复的可变状态缓存（允许序列化字段的镜像 accessor，但不得在 JS 侧维护第二份权威数据）。
+
+完整终态门禁以 [M6 计划第 3 节](./native-2d-m6-plan.md#3-终态验收标准) 为准。M3/M4/M5 Windows 阶段功能通过不能替代终态验收；RichText 的 JS HTML/布局和 Graphics 兼容光栅化欠项必须关闭。
 
 每个组件的量化验收（写进 PR checklist）：
 
@@ -239,7 +247,7 @@
 
 ## 6. 阶段计划
 
-> 估算按 2~3 名熟悉 JSB/2D 的工程师，含联调、测试、评审；不含 `cocos/ui` 控件。按“在 v4 内自研、不复用外部实现”估算。
+> 以下工期为立项估算，不能作为当前剩余工期。M6 接收了 M4/M5 的终态欠项，须在 M6.0 盘点后重新排期。阶段进度依据已有 Gate，不代表本次重新验证。
 
 ### M0：PoC 与决策（2~3 周）
 
@@ -253,6 +261,8 @@
 - 退出标准：两个 PoC 在 Windows Debug/Release 跑通；对照 harness 能产出第一组 Web/native 像素/事件差异报告；薄壳契约（4.6）初版通过——UITransform/Sprite 的 `.jsb.ts` 壳 ≤ 200 行、稳态每帧 0 次 JSB 调用、壳内无几何代码；给出 CPU/JS 调用/堆的对比数据；Go/No-Go 评审。
 
 ### M1：基础设施 + UITransform（5~6 周）
+
+> 进度：UITransform/UIOpacity override 已启用，场景/prefab、命中测试等已有验证；见 [M1 Gate](./native-2d-m1-gate.md)。平台和稳态调用数等终态检查归入 M6。
 
 - 内容：
   - native `Component` 轻量基类（仅数据/生命周期，不启用 registry/serializer）与 Node 组件槽位；
@@ -299,7 +309,7 @@
 
 ### M5：RichText（5~7 周）
 
-> 进度：**M5.0 RichText + M5.1 RenderRoot2D 已完成，M5 收口**。Canvas/Camera/Widget/View 明确不下沉，保持 JS；UIMeshRenderer/UIMesh/UISkew 不下沉。见 [native-2d-m5.1-renderroot.md](./native-2d-m5.1-renderroot.md)。
+> 进度：**M5 Windows 场景功能收口**（RichText 文本/图片段与 RenderRoot2D），不是终态下沉完成。RichText HTML 解析、样式和布局仍在 JS，列入 M6.2 阻断项。Canvas/Camera/Widget/View、UIMeshRenderer/UIMesh/UISkew 保持 JS。见 [M5 Gate](./native-2d-m5-gate.md) 与 [RenderRoot2D 报告](./native-2d-m5.1-renderroot.md)。
 
 - 内容：
   - `RichText`（HTML 解析、嵌套 Label/Sprite、图片混排、布局/换行/对齐）；
@@ -309,18 +319,20 @@
 
 - 退出标准：UI 场景级对照（节点几何、文本段、图片段、事件）。
 
-### M6：资产、事件与硬化（4~5 周）
+### M6：终态欠项、资产、事件与硬化（原估 4~5 周，待重估）
 
-> Component 基类下沉评估：**不建议现在做**；native Component 55 行、JS Component 728 行，保持 JS 身份。见 [native-2d-m6-component-eval.md](./native-2d-m6-component-eval.md)。
+> 状态：**未收口**。以 [M6 剩余任务与终态验收](./native-2d-m6-plan.md) 为统一执行清单。
 
-- 内容：
-  - `SpriteAtlas`、`TTFFont`、`LabelAtlas`、动态合图按需 native 化；
-  - 指针事件 hit test native（或保留 JS 但调用 native `UITransform.contains`）；
-  - 内存/泄漏/GC、线程安全、平台矩阵（Win/mac/iOS/Android/OHOS）；
-  - 删除 JS 热路径、文档、示例、回退开关演练。
-- 退出标准：全平台 Debug/Release 构建通过；关键场景无回归；性能 KPI 达标；回退开关可用。
+- M6.0：API/parity、薄壳残留、历史遗留和工具链基线；
+- M6.1：SpriteFrame UV/状态一致性，SpriteAtlas 依赖解析与 native 表同步，字体/图集资产、克隆/释放；
+- M6.2：RichText HTML 解析、样式、分段和布局 native 化，保留 JS 事件桥接；
+- M6.3：承接 M4.3，Graphics native 三角化/GPU buffer、描边语义、批量提交性能和 Mask 回归；
+- M6.4：事件、RenderRoot2D 多 root/Camera、生命周期/线程、1000 次加载卸载与全平台 Debug/Release；
+- M6.5：CPU ≥50%、JSB ≥70%、JS 堆 ≥30% 改善目标，薄壳自动检查、CI/裁剪组合、回退演练和最终 Gate。
 
-**总计：约 35~45 周（8~11 个月，不含 15~20% 风险缓冲）；只做 P0 组件（UITransform、Sprite、Label、Graphics 基础）约 6~7 个月。**
+退出标准：所有终态阻断项及平台矩阵有候选版本证据，不能以阶段通过、mock 测试或 colored sanity 替代。Component 基类继续保留 JS 身份，完整迁移不进入 M6；见 [评估结论](./native-2d-m6-component-eval.md)。
+
+**立项总估算（非剩余工期）：约 35~45 周（8~11 个月，不含 15~20% 风险缓冲）；只做 P0 组件（UITransform、Sprite、Label、Graphics 基础）约 6~7 个月。**
 
 ---
 
@@ -409,26 +421,27 @@
 
 ---
 
-## 10. 剩余开放决策点
+## 10. 验收与维护决策
 
-> 范围已冻结：仅 `cocos/2d`；以下不再讨论是否纳入 `cocos/ui`。
+> 范围已冻结：仅 `cocos/2d`；以下事项须在 M6.0 复核现有结论、补证据和维护入口，不重新扩大范围。Windows 已接受的字体差异沿用 M5 Gate。
 
 1. **文字验收口径**：是否接受平台字体差异？是否需要逐平台 golden 图？
-2. **平台优先级**：Windows 先行，还是 Android/iOS 同步？
+2. **平台矩阵**：既有 Windows 先行记录保留；其余平台与 Debug/Release 的具体执行顺序在 M6.0 排期，终态仍要求完整矩阵。
 3. **decorator 生成器**：由谁维护、是否进本仓库 CI。
 4. **薄壳边界细则**：哪些内部 API 允许继续通过壳暴露、哪些可以合并/删除；建议在每个组件的 parity 矩阵里定稿，避免壳越写越厚。
-5. **`UIRenderer` 继承链**：保留 `extends Renderer`（兼容 `instanceof`）还是直接 `extends Component`（更薄）？建议 M0 评审时定。
+5. **组件继承与身份兼容**：按当前实现补齐 UIRenderer/Renderer/Component 的 instanceof 与用户脚本兼容证据；不把资产 prototype 模式直接套用到组件，不迁移完整 JS Component 运行时。
 
 ---
 
-## 11. 建议的接下来两周
+## 11. 当前执行顺序
 
-1. 建 2D 组件 parity 矩阵（属性/序列化字段/生命周期/依赖/测试），标出 P0/P1/P2。
-2. 做 `UITransform` PoC：native 类 + `.jsb.ts` + 场景反序列化 + `getComponent` + hit test，Windows Debug/Release 跑通；同时记录壳体积与稳态 JSB 调用数。
-3. 做 `Sprite` simple PoC：native 几何 + RenderEntity + native Batcher2d prepare，与 Web 截图对照；壳内不得出现几何代码。
-4. 确认 `cocos/native-binding/decorators.ts` 的生成器与扩展方式。
-5. 建性能基线场景与采集脚本，记录 CPU/JS 堆/JSB 调用数；同时搭最小 Web/native 对照 harness，并加一条“薄壳契约”自动检查（行数、import、每帧调用）。
-6. 输出 PoC 报告（含薄壳体积/调用数/收益数据），开 Go/No-Go 评审，决定是否进入 M1。
+1. M6.0：以当前 v4 代码完成逐类 API/parity、薄壳与历史遗留审计，固定测试/性能基线。
+2. M6.1：优先闭环 SpriteFrame/SpriteAtlas prototype 资产的真实原生加载、依赖解析、状态同步、克隆和销毁。
+3. M6.2/M6.3：补 RichText 解析/布局和 Graphics 三角化等终态功能；开发时同步补 Web/native 对照。
+4. M6.4：完成事件、混合场景、生命周期/线程/泄漏和平台矩阵。
+5. M6.5：在同一候选版本上采集完整性能、执行回退并形成 M6 Gate；未验证项保持待验证。
+
+不再从 M0 PoC 重新起步；既有验证作为历史证据保留，新的 prototype 改造及终态实现仍需对应原生回归。详细验收与产物要求见 [M6 计划](./native-2d-m6-plan.md)。
 
 ---
 

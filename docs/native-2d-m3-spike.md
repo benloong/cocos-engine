@@ -1,6 +1,6 @@
 # Native 2D M3.0 Label/文本栈 Spike
 
-> 状态：进行中（M2 已收口：Sprite override、五模式像素 golden、性能 KPI、SpriteFrame 薄壳通过）。
+> 更新：2026-11-13。本文为 M3 Spike 到实现阶段的历史记录；Windows Label 已按 [M3 Gate](./native-2d-m3-gate.md) 收口，生产 override 已启用。文中基线矩阵与初期约束仅表示当时状态，跨平台/终态遗留见 [M6 计划](./native-2d-m6-plan.md)，本次未重跑。
 > 范围：`cocos/2d` 的 Label 文本栈；不包含 `cocos/ui` 控件、编辑器 UI。
 
 ## 1. 目标
@@ -65,7 +65,7 @@ native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.*
 优点：系统字体质量最好。  
 风险：平台实现和测试矩阵翻倍；与 Web 结果差异更大。
 
-**Spike 结论待定：先验证 A 是否满足布局 parity；只有 A 在换行/字形/性能上不可行时才评估 B/C。**
+**后续结论：Windows 已复用 A 平台 Canvas delegate 并完成 Label 阶段验收；其他平台字体矩阵留 M6，不重新开启已关闭的 Spike。**
 
 ## 4. 必须保持的薄壳边界
 
@@ -193,7 +193,7 @@ native Label 增加 bitmap 分支：JS 壳把 `BitmapFont.spriteFrame.native` �
 
 Letter/cacheMode：`CacheMode.CHAR` 已接入 native `LetterAtlas`（1024×1024 CPU RGBA 字符图集，按 font 共享）；CJK/ASCII CHAR 用例通过。
 
-## 11. M3.1 当前进度
+## 11. M3 Windows 汇总（同步阶段结论）
 
 已完成：
 
@@ -203,12 +203,13 @@ Letter/cacheMode：`CacheMode.CHAR` 已接入 native `LetterAtlas`（1024×1024 
 - native 文本纹理与不透明像素统计；
 - Outline/Shadow 多偏移 fillText 与 LabelOutline/LabelShadow 组件路径。
 
-未完成：
+后续完成与遗留：
 
-- BmFont/Letter/cacheMode 未下沉；
+- BMFont/kerning/真实资产、LetterAtlas、CHAR/BITMAP cacheMode 已有 Windows 验证，见第 10 节和 M3 Gate。
 - GPU 文本像素探针已覆盖 English/wrap/CJK/CHAR ASCII；CHAR CJK 由纹理/opaque 断言覆盖。
+- 跨平台字体、复杂文本与字体资产生命周期的完整矩阵仍归 M6。
 
-## 10. M3.1 入口
+## 12. M3.1 入口（历史设计）
 
 已新增 native 文本测量入口：
 
@@ -221,7 +222,7 @@ n2d.TextMetrics
 
 它只封装平台 `CanvasRenderingContext2D::measureText`，不包含布局/换行；布局在 M3.1 内继续实现。
 
-## 9. 后续拆分
+## 13. M3 拆分（历史实施顺序，Windows 阶段已收口）
 
 - M3.1：TTF Label 单行/多行 + native 测量；
 - M3.2：wrap/align/overflow；

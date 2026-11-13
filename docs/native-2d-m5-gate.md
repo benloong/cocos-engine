@@ -1,7 +1,8 @@
 # Native 2D M5 RichText Gate
 
 > 结论：**M5.0 RichText（Windows）收口通过**。
-> `Canvas`、`Camera`、`Widget`、`View`、`UIMeshRenderer`、`UIMesh`、`UISkew` 明确不下沉；M5 关闭。
+> `Canvas`、`Camera`、`Widget`、`View`、`UIMeshRenderer`、`UIMesh`、`UISkew` 明确不下沉；M5 阶段功能关闭。
+> 2026-11-13 口径同步：下列为历史 Windows 功能证据，未重跑。RichText 解析/布局仍在 JS，终态未通过；迁入 [M6.2](./native-2d-m6-plan.md)，不能以本 Gate 替代终态验收。
 
 ## 1. 通过项
 
@@ -62,4 +63,4 @@ Jest: 20 passed
 
 ## 6. 结论
 
-M5.0 RichText + M5.1 RenderRoot2D 完成；M5 关闭。
+M5.0 RichText 场景功能与 M5.1 RenderRoot2D 的 Windows 阶段完成；M6 继续完成 RichText 解析/布局 native 化、资产一致性、多 root/Camera 及平台硬化。

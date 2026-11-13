@@ -1,23 +1,11 @@
 # Native 2D M4 Mask + Graphics 收口计划
 
 > 状态：**M4.0 RECT + M4.1 ELLIPSE/SPRITE_STENCIL + M4.2 Graphics 基础 + GRAPHICS_STENCIL + 嵌套 Mask 已通过**。native 三角化按兼容栅格化方案暂缓。
-> 结论：现在不能把 M4 标记为收口；本文给出可执行的收口路径和门禁。
+> 更新：2026-11-13。M4 Windows 功能阶段已收口，见 [M4 Gate](./native-2d-m4-gate.md)。终态尚未完成：三角化/GPU buffer、完整描边语义、Web 对照和性能并入 [M6.3](./native-2d-m6-plan.md)，平台硬化并入 M6.4。下文保留阶段设计，未新增运行通过结论。
 
 ## 1. 现状核对
 
-v4 native 2D 组件目前只有：
-
-```text
-native/cocos/2d/components/Sprite.*
-native/cocos/2d/components/Label.*
-```
-
-不存在：
-
-- native `Mask`；
-- native `Graphics`；
-- Mask/Graphics 的 JSB 薄壳；
-- M4 专用像素/GUP 回归。
+当前已存在 native Mask/Graphics、对应 JSB override，以及 M4 Mask/extra 探针。Graphics 当前是 256×256 CPU RGBA 光栅化、path flatten 与内部 Sprite 提交；JS 路径 API 逐调用转发，还没有批量提交性能结论。
 
 已有可复用基础：
 
@@ -46,7 +34,7 @@ native/cocos/2d/components/Label.*
 
 - `M4_MASK_PIXEL` normal red=6400（80×80）；
 - inverted red=44800；
-- 嵌套两层 Mask 尚未测。
+- 嵌套两层 Mask 已通过历史探针：red=3600。
 
 退出：
 
@@ -65,9 +53,9 @@ native/cocos/2d/components/Label.*
 
 先明确边界：
 
-- 路径 API 保留 JS 批量提交（避免逐 `lineTo` JSB）；
-- native 负责 path flatten、三角化、mesh 提交；
-- 或者 M4 作为兼容阶段，用 Canvas 路径栅格化为纹理，后续再替换为 native 三角化。
+- 当前路径 API 在 JS 逐调用转发；批量命令提交是待测方案，不是已落地事实；
+- 当前 native 做 path flatten、CPU RGBA 光栅化与内部 Sprite 提交，没有 Canvas path 依赖；
+- M6.3 用 native 三角化/GPU buffer 替换兼容实现，并以 benchmark 决定提交粒度。
 
 已落地：
 
@@ -77,12 +65,11 @@ native/cocos/2d/components/Label.*
 - fill/stroke/lineWidth/颜色；
 - M4 Graphics 探针 opaque=6400。
 
-尚未覆盖：
+仍待实现或独立验收：
 
 - `roundRect` 圆角、ellipse、arc 角度；
 - lineJoin/lineCap/miterLimit；
 - native 三角化与 GPU buffer；
-- GRAPHICS_STENCIL。
 
 必做路径：
 
@@ -90,7 +77,7 @@ native/cocos/2d/components/Label.*
 - fill / stroke；
 - lineWidth、lineJoin、lineCap、miterLimit；
 - fillColor/strokeColor；
-- earcut 三角化或兼容栅格化。
+- M4 使用兼容栅格化；终态必须完成 native 三角化/GPU buffer。
 
 ### M4.3 回归
 
@@ -101,7 +88,7 @@ native/cocos/2d/components/Label.*
 
 ## 3. 门槛
 
-M4 收口必须同时满足：
+原始设计目标如下；Windows 阶段按 M4 Gate 收口，未满足的 Web 对照/完整语义/性能在 M6 继续阻断终态：
 
 1. native Mask 与 JS Mask 行为一致；
 2. native Graphics 至少覆盖常用路径；
@@ -112,10 +99,10 @@ M4 收口必须同时满足：
 ## 4. 风险
 
 - Mask 依赖 `Batcher2d` 的子树遍历与 stencil 生命周期，不能只做一个 quad；
-- Graphics 逐 API JSB 会变慢，路径必须在 JS 批量收集；
+- Graphics 逐 API JSB 存在边界成本风险；以 benchmark 决定批量收集/提交粒度；
 - `SPRITE_STENCIL` 需要 alpha 采样/材质变体；
-- 当前没有 M4 测试夹具，需要先补 Web 基线。
+- 已有 native M4 探针；仍需补固定 Web 基线和自动对照。
 
-## 5. 建议下一步
+## 5. 当前下一步
 
-先做 **M4.0 RECT Mask**，不要同时开 Graphics。RECT Mask 跑通 stencil 生命周期后，Graphics 才有可靠的裁剪回归。
+不重做已通过的 RECT/ELLIPSE/SPRITE/GRAPHICS 与嵌套基础探针。按 [M6.3](./native-2d-m6-plan.md) 完成 Graphics 三角化/GPU 提交、描边语义、曲线独立像素用例、提交粒度性能与 Mask 混合回归；按 M6.4 完成跨平台和生命周期验证。
