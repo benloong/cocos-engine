@@ -1,20 +1,17 @@
 import { Rect, Size, Vec2 } from '../../cocos/core';
 
-const nativeFrame = {
-    setTexture: jest.fn(),
-    setRect: jest.fn(),
-    setOriginalSize: jest.fn(),
-    setOffset: jest.fn(),
-    setRotated: jest.fn(),
-    setInsets: jest.fn(),
-};
+class NativeFrame {}
+for (const method of ['setTexture', 'setRect', 'setOriginalSize', 'setOffset', 'setRotated', 'setInsets']) {
+    (NativeFrame.prototype as any)[method] = jest.fn();
+}
+const nativeFrame = new NativeFrame();
 
 beforeAll(() => {
-    (global as any).n2d = {
-        SpriteFrame: jest.fn(() => nativeFrame),
+    (global as any).jsb = {
+        Asset: class {},
+        SpriteFrame: NativeFrame,
     };
 });
-
 test('SpriteFrame thin shell forwards frame data to native', () => {
     const { SpriteFrame } = require('../../cocos/2d/assets/sprite-frame.jsb') as typeof import('../../cocos/2d/assets/sprite-frame.jsb');
     const frame = new SpriteFrame();
@@ -31,7 +28,7 @@ test('SpriteFrame thin shell forwards frame data to native', () => {
     frame.insetBottom = 40;
 
     const native = frame.native;
-    expect(native).toBe(nativeFrame);
+    expect(native).toBe(frame);
     expect(nativeFrame.setTexture).toHaveBeenLastCalledWith(texture);
     expect(nativeFrame.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
     expect(nativeFrame.setOriginalSize).toHaveBeenLastCalledWith(5, 6);

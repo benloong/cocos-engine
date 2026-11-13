@@ -28,7 +28,7 @@ import { Asset } from '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
 import { Texture2D } from '../../asset/assets/texture-2d';
 
-declare const n2d: any;
+declare const jsb: any;
 
 const INSET_LEFT = 0;
 const INSET_TOP = 1;
@@ -43,7 +43,7 @@ const INSET_BOTTOM = 3;
  * assembler; setters only forward to it.
  */
 @ccclass('cc.SpriteFrame')
-export class SpriteFrame extends Asset {
+export class SpriteFrame extends (jsb.SpriteFrame as any) {
     protected _texture: TextureBase | null = null;
     protected _rect = new Rect();
     protected _originalSize = new Size();
@@ -59,7 +59,6 @@ export class SpriteFrame extends Asset {
     protected _meshType = 0;
 
     public uv: number[] = [];
-    private _nativeFrame: any = null;
 
     constructor (name?: string) {
         super(name);
@@ -81,11 +80,7 @@ export class SpriteFrame extends Asset {
     }
 
     public get native (): any {
-        if (!this._nativeFrame) {
-            this._nativeFrame = new jsb.SpriteFrame();
-            this._syncNative();
-        }
-        return this._nativeFrame;
+        return this;
     }
 
     get texture (): TextureBase | null {
@@ -294,21 +289,17 @@ export class SpriteFrame extends Asset {
     }
 
     private _syncTexture (): void {
-        if (this._nativeFrame) {
-            this._nativeFrame.setTexture(this._texture);
-        }
+        jsb.SpriteFrame.prototype.setTexture.call(this, this._texture);
     }
 
     private _syncFrameData (): void {
-        if (!this._nativeFrame) {
-            return;
-        }
-        const frame = this._nativeFrame;
-        frame.setRect(this._rect.x, this._rect.y, this._rect.width, this._rect.height);
-        frame.setOriginalSize(this._originalSize.width, this._originalSize.height);
-        frame.setOffset(this._offset.x, this._offset.y);
-        frame.setRotated(this._rotated);
-        frame.setInsets(
+        const frame = jsb.SpriteFrame.prototype;
+        frame.setRect.call(this, this._rect.x, this._rect.y, this._rect.width, this._rect.height);
+        frame.setOriginalSize.call(this, this._originalSize.width, this._originalSize.height);
+        frame.setOffset.call(this, this._offset.x, this._offset.y);
+        frame.setRotated.call(this, this._rotated);
+        frame.setInsets.call(
+            this,
             this._capInsets[INSET_LEFT],
             this._capInsets[INSET_RIGHT],
             this._capInsets[INSET_TOP],
@@ -317,9 +308,6 @@ export class SpriteFrame extends Asset {
     }
 
     private _syncNative (): void {
-        if (!this._nativeFrame) {
-            return;
-        }
         this._syncTexture();
         this._syncFrameData();
     }
