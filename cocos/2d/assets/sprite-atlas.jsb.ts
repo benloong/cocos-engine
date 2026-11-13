@@ -5,7 +5,6 @@
 */
 
 import { cclegacy } from '../../core';
-import './asset';
 import type { SpriteAtlas as JsbSpriteAtlas } from './sprite-atlas';
 import type { SpriteFrame } from './sprite-frame';
 import type { TextureBase } from '../../asset/assets/texture-base';
