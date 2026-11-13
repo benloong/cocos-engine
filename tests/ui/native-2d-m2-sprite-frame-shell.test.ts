@@ -1,14 +1,21 @@
-import { Rect, Size, Vec2 } from '../../cocos/core';
+import { cclegacy, Rect, Size, Vec2 } from '../../cocos/core';
 
-class NativeFrame {}
-for (const method of ['setTexture', 'setRect', 'setOriginalSize', 'setOffset', 'setRotated', 'setInsets']) {
-    (NativeFrame.prototype as any)[method] = jest.fn();
+class NativeFrame {
+    constructor () {
+        (this as any)._ctor();
+    }
 }
-const nativeFrame = new NativeFrame();
+const nativeMethods: Record<string, jest.Mock> = {};
+for (const method of ['setTexture', 'setRect', 'setOriginalSize', 'setOffset', 'setRotated', 'setInsets']) {
+    nativeMethods[method] = jest.fn();
+    (NativeFrame.prototype as any)[method] = nativeMethods[method];
+}
+
+const assetCtor = jest.fn();
 
 beforeAll(() => {
     (global as any).jsb = {
-        Asset: class {},
+        Asset: { prototype: { _ctor: assetCtor } },
         SpriteFrame: NativeFrame,
     };
 });
@@ -29,12 +36,41 @@ test('SpriteFrame thin shell forwards frame data to native', () => {
 
     const native = frame.native;
     expect(native).toBe(frame);
-    expect(nativeFrame.setTexture).toHaveBeenLastCalledWith(texture);
-    expect(nativeFrame.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
-    expect(nativeFrame.setOriginalSize).toHaveBeenLastCalledWith(5, 6);
-    expect(nativeFrame.setOffset).toHaveBeenLastCalledWith(7, 8);
-    expect(nativeFrame.setRotated).toHaveBeenLastCalledWith(true);
-    expect(nativeFrame.setInsets).toHaveBeenLastCalledWith(10, 20, 30, 40);
+    expect(nativeMethods.setTexture).toHaveBeenLastCalledWith(texture);
+    expect(nativeMethods.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
+    expect(nativeMethods.setOriginalSize).toHaveBeenLastCalledWith(5, 6);
+    expect(nativeMethods.setOffset).toHaveBeenLastCalledWith(7, 8);
+    expect(nativeMethods.setRotated).toHaveBeenLastCalledWith(true);
+    expect(nativeMethods.setInsets).toHaveBeenLastCalledWith(10, 20, 30, 40);
+});
+
+test('SpriteFrame patches the native constructor and initializes independent instance state', () => {
+    const { SpriteFrame } = require('../../cocos/2d/assets/sprite-frame.jsb') as typeof import('../../cocos/2d/assets/sprite-frame.jsb');
+    const frame = new SpriteFrame();
+    const other = new SpriteFrame();
+
+    expect(SpriteFrame).toBe(NativeFrame);
+    expect(cclegacy.SpriteFrame).toBe(NativeFrame);
+    expect(Object.getPrototypeOf(frame)).toBe(NativeFrame.prototype);
+    expect(assetCtor).toHaveBeenCalled();
+    expect(assetCtor.mock.instances).toContain(frame);
+    frame.setRect(new Rect(1, 2, 3, 4));
+    frame.setOriginalSize(new Size(5, 6));
+    frame.setOffset(new Vec2(7, 8));
+    frame.setRotated(true);
+    frame.insetLeft = 9;
+    frame.pivot = new Vec2(0, 1);
+    frame.uv.push(1);
+
+    expect(other.rect).toEqual(new Rect());
+    expect(other.originalSize).toEqual(new Size());
+    expect(other.offset).toEqual(new Vec2());
+    expect(other.rotated).toBe(false);
+    expect(other.insetLeft).toBe(0);
+    expect(other.pivot).toEqual(new Vec2(0.5, 0.5));
+    expect(other.uv).toEqual([]);
+    expect(nativeMethods.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
+    expect(nativeMethods.setRotated).toHaveBeenLastCalledWith(true);
 });
 
 test('SpriteFrame thin shell keeps serialized fields', () => {

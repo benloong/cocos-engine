@@ -22,293 +22,379 @@
  THE SOFTWARE.
 */
 
-import { ccclass } from 'cc.decorator';
-import { js, Rect, Size, Vec2 } from '../../core';
-import { Asset } from '../../asset/assets/asset';
+import { cclegacy, js, Rect, Size, Vec2 } from '../../core';
+import '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
 import { Texture2D } from '../../asset/assets/texture-2d';
+import { patch_cc_SpriteFrame } from '../../native-binding/decorators';
+import type { SpriteFrame as JsbSpriteFrame } from './sprite-frame';
 
 declare const jsb: any;
+
+export type SpriteFrame = JsbSpriteFrame;
+export const SpriteFrame: typeof JsbSpriteFrame = jsb.SpriteFrame;
+
+cclegacy.SpriteFrame = SpriteFrame;
 
 const INSET_LEFT = 0;
 const INSET_TOP = 1;
 const INSET_RIGHT = 2;
 const INSET_BOTTOM = 3;
 
-/**
- * Native M2 shell for SpriteFrame.
- *
- * Serialization and the public asset API stay in JS. The native SpriteFrame
- * owns the texture reference and the frame data consumed by the native Sprite
- * assembler; setters only forward to it.
- */
-@ccclass('cc.SpriteFrame')
-export class SpriteFrame extends (jsb.SpriteFrame as any) {
-    protected _texture: TextureBase | null = null;
-    protected _rect = new Rect();
-    protected _originalSize = new Size();
-    protected _offset = new Vec2();
-    protected _rotated = false;
-    protected _capInsets = [0, 0, 0, 0];
-    protected _atlasUuid = '';
-    protected _isFlipUVX = false;
-    protected _isFlipUVY = false;
-    protected _packable = true;
-    protected _pixelsToUnit = 100;
-    protected _pivot = new Vec2(0.5, 0.5);
-    protected _meshType = 0;
+const spriteFrameProto: any = SpriteFrame.prototype;
+// Preserve native setters before installing the JS asset API on the same prototype.
+const nativeSetTexture = spriteFrameProto.setTexture;
+const nativeSetRect = spriteFrameProto.setRect;
+const nativeSetOriginalSize = spriteFrameProto.setOriginalSize;
+const nativeSetOffset = spriteFrameProto.setOffset;
+const nativeSetRotated = spriteFrameProto.setRotated;
+const nativeSetInsets = spriteFrameProto.setInsets;
 
-    public uv: number[] = [];
+spriteFrameProto._ctor = function () {
+    jsb.Asset.prototype._ctor.apply(this, arguments);
+    this._texture = null;
+    this._rect = new Rect();
+    this._originalSize = new Size();
+    this._offset = new Vec2();
+    this._rotated = false;
+    this._capInsets = [0, 0, 0, 0];
+    this._atlasUuid = '';
+    this._isFlipUVX = false;
+    this._isFlipUVY = false;
+    this._packable = true;
+    this._pixelsToUnit = 100;
+    this._pivot = new Vec2(0.5, 0.5);
+    this._meshType = 0;
+    this.uv = [];
+};
 
-    constructor (name?: string) {
-        super(name);
-    }
-
-    public _calculateUV (): void {
-        const texture = this._texture;
-        if (!texture) {
-            return;
-        }
-        const rect = this._rect;
-        const tw = texture.width || 1;
-        const th = texture.height || 1;
-        const l = rect.x / tw;
-        const r = (rect.x + (this._rotated ? rect.height : rect.width)) / tw;
-        const t = rect.y / th;
-        const b = (rect.y + (this._rotated ? rect.width : rect.height)) / th;
-        this.uv = [l, t, l, b, r, t, r, b];
-    }
-
-    public get native (): any {
+Object.defineProperty(spriteFrameProto, 'native', {
+    enumerable: true,
+    configurable: true,
+    get (): any {
         return this;
-    }
+    },
+});
 
-    get texture (): TextureBase | null {
+Object.defineProperty(spriteFrameProto, 'texture', {
+    enumerable: true,
+    configurable: true,
+    get (): TextureBase | null {
         return this._texture;
-    }
-
-    set _textureSource (value: TextureBase | null) {
-        this.texture = value;
-    }
-
-    set texture (value: TextureBase | null) {
+    },
+    set (value: TextureBase | null) {
         this._texture = value;
         this._syncTexture();
-    }
+    },
+});
 
-    get rect (): Rect {
+Object.defineProperty(spriteFrameProto, '_textureSource', {
+    enumerable: true,
+    configurable: true,
+    set (value: TextureBase | null) {
+        this.texture = value;
+    },
+});
+
+Object.defineProperty(spriteFrameProto, 'rect', {
+    enumerable: true,
+    configurable: true,
+    get (): Rect {
         return this._rect;
-    }
-
-    set rect (value: Rect) {
+    },
+    set (value: Rect) {
         this._rect.set(value);
         this._syncFrameData();
-    }
+    },
+});
 
-    get originalSize (): Size {
+Object.defineProperty(spriteFrameProto, 'originalSize', {
+    enumerable: true,
+    configurable: true,
+    get (): Size {
         return this._originalSize;
-    }
-
-    set originalSize (value: Size) {
+    },
+    set (value: Size) {
         this._originalSize.set(value);
         this._syncFrameData();
-    }
+    },
+});
 
-    get offset (): Vec2 {
+Object.defineProperty(spriteFrameProto, 'offset', {
+    enumerable: true,
+    configurable: true,
+    get (): Vec2 {
         return this._offset;
-    }
-
-    set offset (value: Vec2) {
+    },
+    set (value: Vec2) {
         this._offset.set(value);
         this._syncFrameData();
-    }
+    },
+});
 
-    get rotated (): boolean {
+Object.defineProperty(spriteFrameProto, 'rotated', {
+    enumerable: true,
+    configurable: true,
+    get (): boolean {
         return this._rotated;
-    }
-
-    set rotated (value: boolean) {
+    },
+    set (value: boolean) {
         this._rotated = value;
         this._syncFrameData();
+    },
+});
+
+Object.defineProperty(spriteFrameProto, 'insetLeft', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._capInsets[INSET_LEFT]; },
+    set (value: number) { this._capInsets[INSET_LEFT] = value; this._syncFrameData(); },
+});
+
+Object.defineProperty(spriteFrameProto, 'insetTop', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._capInsets[INSET_TOP]; },
+    set (value: number) { this._capInsets[INSET_TOP] = value; this._syncFrameData(); },
+});
+
+Object.defineProperty(spriteFrameProto, 'insetRight', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._capInsets[INSET_RIGHT]; },
+    set (value: number) { this._capInsets[INSET_RIGHT] = value; this._syncFrameData(); },
+});
+
+Object.defineProperty(spriteFrameProto, 'insetBottom', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._capInsets[INSET_BOTTOM]; },
+    set (value: number) { this._capInsets[INSET_BOTTOM] = value; this._syncFrameData(); },
+});
+
+Object.defineProperty(spriteFrameProto, 'width', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._rect.width; },
+});
+
+Object.defineProperty(spriteFrameProto, 'height', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._rect.height; },
+});
+
+Object.defineProperty(spriteFrameProto, 'atlasUuid', {
+    enumerable: true,
+    configurable: true,
+    get (): string { return this._atlasUuid; },
+    set (value: string) { this._atlasUuid = value; },
+});
+
+Object.defineProperty(spriteFrameProto, 'flipUVX', {
+    enumerable: true,
+    configurable: true,
+    get (): boolean { return this._isFlipUVX; },
+    set (value: boolean) { this._isFlipUVX = value; },
+});
+
+Object.defineProperty(spriteFrameProto, 'flipUVY', {
+    enumerable: true,
+    configurable: true,
+    get (): boolean { return this._isFlipUVY; },
+    set (value: boolean) { this._isFlipUVY = value; },
+});
+
+Object.defineProperty(spriteFrameProto, 'packable', {
+    enumerable: true,
+    configurable: true,
+    get (): boolean { return this._packable; },
+    set (value: boolean) { this._packable = value; },
+});
+
+Object.defineProperty(spriteFrameProto, 'pixelsToUnit', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._pixelsToUnit; },
+    set (value: number) { this._pixelsToUnit = value; },
+});
+
+Object.defineProperty(spriteFrameProto, 'pivot', {
+    enumerable: true,
+    configurable: true,
+    get (): Vec2 { return this._pivot; },
+    set (value: Vec2) { this._pivot.set(value); },
+});
+
+Object.defineProperty(spriteFrameProto, 'meshType', {
+    enumerable: true,
+    configurable: true,
+    get (): number { return this._meshType; },
+    set (value: number) { this._meshType = value; },
+});
+
+spriteFrameProto._calculateUV = function (): void {
+    const texture = this._texture;
+    if (!texture) {
+        return;
     }
+    const rect = this._rect;
+    const tw = texture.width || 1;
+    const th = texture.height || 1;
+    const l = rect.x / tw;
+    const r = (rect.x + (this._rotated ? rect.height : rect.width)) / tw;
+    const t = rect.y / th;
+    const b = (rect.y + (this._rotated ? rect.width : rect.height)) / th;
+    this.uv = [l, t, l, b, r, t, r, b];
+};
 
-    get insetLeft (): number { return this._capInsets[INSET_LEFT]; }
-    set insetLeft (value: number) { this._capInsets[INSET_LEFT] = value; this._syncFrameData(); }
-    get insetTop (): number { return this._capInsets[INSET_TOP]; }
-    set insetTop (value: number) { this._capInsets[INSET_TOP] = value; this._syncFrameData(); }
-    get insetRight (): number { return this._capInsets[INSET_RIGHT]; }
-    set insetRight (value: number) { this._capInsets[INSET_RIGHT] = value; this._syncFrameData(); }
-    get insetBottom (): number { return this._capInsets[INSET_BOTTOM]; }
-    set insetBottom (value: number) { this._capInsets[INSET_BOTTOM] = value; this._syncFrameData(); }
+spriteFrameProto.textureLoaded = function (): boolean {
+    return this._texture !== null;
+};
 
-    get width (): number { return this._rect.width; }
-    get height (): number { return this._rect.height; }
+spriteFrameProto.isRotated = function (): boolean {
+    return this._rotated;
+};
 
-    get atlasUuid (): string { return this._atlasUuid; }
-    set atlasUuid (value: string) { this._atlasUuid = value; }
+spriteFrameProto.setRotated = function (rotated: boolean): void {
+    this.rotated = rotated;
+};
 
-    get flipUVX (): boolean { return this._isFlipUVX; }
-    set flipUVX (value: boolean) { this._isFlipUVX = value; }
-    get flipUVY (): boolean { return this._isFlipUVY; }
-    set flipUVY (value: boolean) { this._isFlipUVY = value; }
+spriteFrameProto.getRect = function (out?: Rect): Rect {
+    if (out) { out.set(this._rect); return out; }
+    return this._rect.clone();
+};
 
-    get packable (): boolean { return this._packable; }
-    set packable (value: boolean) { this._packable = value; }
+spriteFrameProto.setRect = function (rect: Rect): void {
+    this.rect = rect;
+};
 
-    get pixelsToUnit (): number { return this._pixelsToUnit; }
-    set pixelsToUnit (value: number) { this._pixelsToUnit = value; }
+spriteFrameProto.getOriginalSize = function (out?: Size): Size {
+    if (out) { out.set(this._originalSize); return out; }
+    return this._originalSize.clone();
+};
 
-    get pivot (): Vec2 { return this._pivot; }
-    set pivot (value: Vec2) { this._pivot.set(value); }
+spriteFrameProto.setOriginalSize = function (size: Size): void {
+    this.originalSize = size;
+};
 
-    get meshType (): number { return this._meshType; }
-    set meshType (value: number) { this._meshType = value; }
+spriteFrameProto.getOffset = function (out?: Vec2): Vec2 {
+    if (out) { out.set(this._offset); return out; }
+    return this._offset.clone();
+};
 
-    public textureLoaded (): boolean {
-        return this._texture !== null;
+spriteFrameProto.setOffset = function (offset: Vec2): void {
+    this.offset = offset;
+};
+
+spriteFrameProto._calculateSlicedUV = function (): void {
+    this._calculateUV();
+};
+
+spriteFrameProto.getGFXTexture = function (): any {
+    return this._texture ? this._texture.getGFXTexture() : null;
+};
+
+spriteFrameProto.getGFXSampler = function (): any {
+    return this._texture ? this._texture.getGFXSampler() : null;
+};
+
+spriteFrameProto.getHash = function (): number {
+    return this._texture ? this._texture.getHash() : 0;
+};
+
+spriteFrameProto.getSamplerInfo = function (): any {
+    return this._texture ? this._texture.getSamplerInfo() : null;
+};
+
+spriteFrameProto.reset = function (info?: any, clearData = false): void {
+    if (clearData || !info) {
+        this._rect.set(0, 0, 0, 0);
+        this._originalSize.set(0, 0);
+        this._offset.set(0, 0);
+        this._rotated = false;
+        this._capInsets = [0, 0, 0, 0];
     }
-
-    public isRotated (): boolean {
-        return this._rotated;
-    }
-
-    public setRotated (rotated: boolean): void {
-        this.rotated = rotated;
-    }
-
-    public getRect (out?: Rect): Rect {
-        if (out) { out.set(this._rect); return out; }
-        return this._rect.clone();
-    }
-
-    public setRect (rect: Rect): void {
-        this.rect = rect;
-    }
-
-    public getOriginalSize (out?: Size): Size {
-        if (out) { out.set(this._originalSize); return out; }
-        return this._originalSize.clone();
-    }
-
-    public setOriginalSize (size: Size): void {
-        this.originalSize = size;
-    }
-
-    public getOffset (out?: Vec2): Vec2 {
-        if (out) { out.set(this._offset); return out; }
-        return this._offset.clone();
-    }
-
-    public setOffset (offset: Vec2): void {
-        this.offset = offset;
-    }
-
-    public _calculateSlicedUV (): void {
-        this._calculateUV();
-    }
-    public getGFXTexture (): any {
-        return this._texture ? this._texture.getGFXTexture() : null;
-    }
-
-    public getGFXSampler (): any {
-        return this._texture ? this._texture.getGFXSampler() : null;
-    }
-
-    public getHash (): number {
-        return this._texture ? this._texture.getHash() : 0;
-    }
-
-    public getSamplerInfo (): any {
-        return this._texture ? this._texture.getSamplerInfo() : null;
-    }
-
-    public reset (info?: any, clearData = false): void {
-        if (clearData || !info) {
-            this._rect.set(0, 0, 0, 0);
-            this._originalSize.set(0, 0);
-            this._offset.set(0, 0);
-            this._rotated = false;
-            this._capInsets = [0, 0, 0, 0];
+    if (info) {
+        if (info.texture) {
+            this.texture = info.texture;
+            this._rect.set(0, 0, info.texture.width, info.texture.height);
         }
-        if (info) {
-            if (info.texture) {
-                this.texture = info.texture;
-                this._rect.set(0, 0, info.texture.width, info.texture.height);
-            }
-            if (info.originalSize) { this._originalSize.set(info.originalSize); }
-            if (info.rect) { this._rect.set(info.rect); }
-            if (info.offset) { this._offset.set(info.offset); }
-            if (info.borderTop !== undefined) { this._capInsets[INSET_TOP] = info.borderTop; }
-            if (info.borderBottom !== undefined) { this._capInsets[INSET_BOTTOM] = info.borderBottom; }
-            if (info.borderLeft !== undefined) { this._capInsets[INSET_LEFT] = info.borderLeft; }
-            if (info.borderRight !== undefined) { this._capInsets[INSET_RIGHT] = info.borderRight; }
-            if (info.isRotate !== undefined) { this._rotated = !!info.isRotate; }
-            if (info.isFlipUv !== undefined) { this._isFlipUVY = !!info.isFlipUv; }
-        }
-        this._syncNative();
+        if (info.originalSize) { this._originalSize.set(info.originalSize); }
+        if (info.rect) { this._rect.set(info.rect); }
+        if (info.offset) { this._offset.set(info.offset); }
+        if (info.borderTop !== undefined) { this._capInsets[INSET_TOP] = info.borderTop; }
+        if (info.borderBottom !== undefined) { this._capInsets[INSET_BOTTOM] = info.borderBottom; }
+        if (info.borderLeft !== undefined) { this._capInsets[INSET_LEFT] = info.borderLeft; }
+        if (info.borderRight !== undefined) { this._capInsets[INSET_RIGHT] = info.borderRight; }
+        if (info.isRotate !== undefined) { this._rotated = !!info.isRotate; }
+        if (info.isFlipUv !== undefined) { this._isFlipUVY = !!info.isFlipUv; }
     }
+    this._syncNative();
+};
 
-    public _serialize (): any {
-        return {
-            name: this._name,
-            rect: { x: this._rect.x, y: this._rect.y, width: this._rect.width, height: this._rect.height },
-            offset: { x: this._offset.x, y: this._offset.y },
-            originalSize: { width: this._originalSize.width, height: this._originalSize.height },
-            rotated: this._rotated,
-            capInsets: this._capInsets,
-            texture: this._texture ? this._texture._uuid : undefined,
-            packable: this._packable,
-            pixelsToUnit: this._pixelsToUnit,
-            pivot: { x: this._pivot.x, y: this._pivot.y },
-            meshType: this._meshType,
-        };
-    }
+spriteFrameProto._serialize = function (): any {
+    return {
+        name: this._name,
+        rect: { x: this._rect.x, y: this._rect.y, width: this._rect.width, height: this._rect.height },
+        offset: { x: this._offset.x, y: this._offset.y },
+        originalSize: { width: this._originalSize.width, height: this._originalSize.height },
+        rotated: this._rotated,
+        capInsets: this._capInsets,
+        texture: this._texture ? this._texture._uuid : undefined,
+        packable: this._packable,
+        pixelsToUnit: this._pixelsToUnit,
+        pivot: { x: this._pivot.x, y: this._pivot.y },
+        meshType: this._meshType,
+    };
+};
 
-    public _deserialize (data: any, handle: any): void {
-        if (data.rect) { this._rect = new Rect(data.rect.x, data.rect.y, data.rect.width, data.rect.height); }
-        if (data.offset) { this._offset = new Vec2(data.offset.x, data.offset.y); }
-        if (data.originalSize) { this._originalSize = new Size(data.originalSize.width, data.originalSize.height); }
-        this._rotated = !!data.rotated;
-        this._name = data.name;
-        this._packable = !!data.packable;
-        this._pixelsToUnit = data.pixelsToUnit;
-        if (data.pivot) { this._pivot = new Vec2(data.pivot.x, data.pivot.y); }
-        this._meshType = data.meshType;
-        if (data.capInsets) {
-            this._capInsets = [
-                data.capInsets[INSET_LEFT],
-                data.capInsets[INSET_TOP],
-                data.capInsets[INSET_RIGHT],
-                data.capInsets[INSET_BOTTOM],
-            ];
-        }
-        if (data.texture && handle?.result) {
-            handle.result.push(this, '_textureSource', data.texture, js.getClassId(Texture2D));
-        }
-        this._syncNative();
+spriteFrameProto._deserialize = function (data: any, handle: any): void {
+    if (data.rect) { this._rect = new Rect(data.rect.x, data.rect.y, data.rect.width, data.rect.height); }
+    if (data.offset) { this._offset = new Vec2(data.offset.x, data.offset.y); }
+    if (data.originalSize) { this._originalSize = new Size(data.originalSize.width, data.originalSize.height); }
+    this._rotated = !!data.rotated;
+    this._name = data.name;
+    this._packable = !!data.packable;
+    this._pixelsToUnit = data.pixelsToUnit;
+    if (data.pivot) { this._pivot = new Vec2(data.pivot.x, data.pivot.y); }
+    this._meshType = data.meshType;
+    if (data.capInsets) {
+        this._capInsets = [
+            data.capInsets[INSET_LEFT],
+            data.capInsets[INSET_TOP],
+            data.capInsets[INSET_RIGHT],
+            data.capInsets[INSET_BOTTOM],
+        ];
     }
+    if (data.texture && handle?.result) {
+        handle.result.push(this, '_textureSource', data.texture, js.getClassId(Texture2D));
+    }
+    this._syncNative();
+};
 
-    private _syncTexture (): void {
-        jsb.SpriteFrame.prototype.setTexture.call(this, this._texture);
-    }
+spriteFrameProto._syncTexture = function (): void {
+    nativeSetTexture.call(this, this._texture);
+};
 
-    private _syncFrameData (): void {
-        const frame = jsb.SpriteFrame.prototype;
-        frame.setRect.call(this, this._rect.x, this._rect.y, this._rect.width, this._rect.height);
-        frame.setOriginalSize.call(this, this._originalSize.width, this._originalSize.height);
-        frame.setOffset.call(this, this._offset.x, this._offset.y);
-        frame.setRotated.call(this, this._rotated);
-        frame.setInsets.call(
-            this,
-            this._capInsets[INSET_LEFT],
-            this._capInsets[INSET_RIGHT],
-            this._capInsets[INSET_TOP],
-            this._capInsets[INSET_BOTTOM],
-        );
-    }
+spriteFrameProto._syncFrameData = function (): void {
+    nativeSetRect.call(this, this._rect.x, this._rect.y, this._rect.width, this._rect.height);
+    nativeSetOriginalSize.call(this, this._originalSize.width, this._originalSize.height);
+    nativeSetOffset.call(this, this._offset.x, this._offset.y);
+    nativeSetRotated.call(this, this._rotated);
+    nativeSetInsets.call(
+        this,
+        this._capInsets[INSET_LEFT],
+        this._capInsets[INSET_RIGHT],
+        this._capInsets[INSET_TOP],
+        this._capInsets[INSET_BOTTOM],
+    );
+};
 
-    private _syncNative (): void {
-        this._syncTexture();
-        this._syncFrameData();
-    }
-}
+spriteFrameProto._syncNative = function (): void {
+    this._syncTexture();
+    this._syncFrameData();
+};
+
+// handle meta data, it is generated automatically
+patch_cc_SpriteFrame({ SpriteFrame });
