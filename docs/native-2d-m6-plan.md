@@ -26,7 +26,7 @@
 - [ ] 逐项复核 M0–M5 遗留项；已关闭项链接实际报告，未关闭项归入下列任务，不能靠阶段标题自动关闭。
 - [ ] 审计 `.jsb.ts`、native override 和间接 import，记录算法残留、材质选择、状态镜像、稳态 JSB 调用及壳体积。
 - [x] 已观察到的壳残留：移除 Label lateUpdate 高度轮询；原生统一管理布局尺寸并由 UITransform 在变化时推送缓存/事件；Label/Graphics 内置材质由原生解析。Windows Debug/Release 实际 JSB、1000 次静止 prepare 与定向测试通过，见 [报告](./native-2d-m6.0-layout-material.md)。全模块稳态调用门禁继续归 M6.5。
-- [ ] 明确 decorator 生成器的维护入口；补齐新类元数据生成/校验和 CI。生成器未确认前保留可复现的显式注册，不手工改生成文件冒充生成流程。
+- [x] 新增 2D 元数据维护入口：仓库内脚本从六个 Web 资产声明生成补丁，由 native-binding/decorators 重导出；补齐产物检查、生成器/元数据测试与 native-ts-build CI。组件壳使用源码装饰器；历史外部生成器归属未推断，见 [维护说明](./native-2d-m6.0-metadata.md)。
 
 交付：组件矩阵、残留清单、基线版本/环境/命令和原始数据。
 

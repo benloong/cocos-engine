@@ -30,7 +30,7 @@
   - `cocos/2d/renderer/native-2d.ts` → `native-2d.jsb.ts`
   - `cocos/asset/assets/texture-2d.ts` → `texture-2d.jsb.ts`
 - JSB 绑定由 `native/tools/swig-config/*.i` 描述，CMake 构建时自动生成 `native/cocos/bindings/auto/*`；2D 当前对应 `native/tools/swig-config/2d.i`，导出到 JS 的命名空间是 `n2d`。
-- 原生类的 `ccclass`/`serializable` 元数据通过 `cocos/native-binding/decorators.ts` 里的 `patch_cc_*` 函数补挂；该文件是生成产物，**生成器不在本仓库**，是后续必须落实的工具链依赖。
+- 原生类的 `ccclass`/`serializable` 元数据通过 `cocos/native-binding/decorators.ts` 里的 `patch_cc_*` 函数补挂；历史补丁的外部生成器未找到；2026-11-16 已为六个 2D 资产补仓库内 AST 生成器和 CI，产物由该模块重导出，见 [元数据维护入口](./native-2d-m6.0-metadata.md)。
 
 ### 1.2 2D 模块构成（TS 侧，约 2.25 万行）
 
@@ -192,7 +192,7 @@
    - `patch_cc_X` 补 `@ccclass('cc.X')`、`@serializable`、`@type`、`@menu`、`@executeInEditMode` 等；
    - 公开 API 的 getter/setter 转发；不复制算法。
 5. `cc.config.json` 的 `NATIVE` override 增加 `"cocos/2d/.../x.ts": "cocos/2d/.../x.jsb.ts"`。
-6. `cocos/native-binding/decorators.ts` 增加/生成 `patch_cc_X`（**生成器归属需先确认**）。
+6. 通过 `scripts/generate-native-2d-decorators.cjs` 生成 2D 资产 `patch_cc_X`，由 `cocos/native-binding/decorators.ts` 重导出；组件壳保留源码装饰器。
 7. 类型声明：`@types/jsb.auto.d.ts` 由 SWIG JSON 生成；`n2d` 在 `.jsb.ts` 里可先 `declare const n2d: any`，但建议补正式声明以便类型检查。
 
 ### 4.6 薄壳契约（终态验收标准）
@@ -376,7 +376,7 @@
 
 | # | 风险 | 影响 | 对策 |
 |---|---|---|---|
-| 1 | `native-binding/decorators.ts` 生成器不在本仓库 | 新类无法获得 ccclass/序列化元数据，阻塞所有组件 | M0 首要任务：找到生成器归属；找不到就做仓库内生成脚本并纳入 CI |
+| 1 | `native-binding/decorators.ts` 生成器不在本仓库 | 新类无法获得 ccclass/序列化元数据，阻塞所有组件 | 已为六个 2D 资产补仓库内生成脚本和 CI，见 M6.0 元数据报告；历史外部模块保持原状 |
 | 2 | 组件生命周期/引用计数/GC | 崩溃、泄漏、销毁后回调 | native 组件用 `IntrusivePtr` 明确所有权；JS 壳在 `onDestroy` 显式 detach；ASan/LeakSanitizer 回归 |
 | 3 | 序列化/预制体/编辑器兼容 | 旧场景打不开、字段丢失 | 字段名/默认值/类型逐一对照；加载旧场景与 prefab 的回归用例；编辑器仍走 Web |
 | 4 | 资产跨 JSB（SpriteFrame 等） | 每帧跨语言读字段，收益被吃掉 | 先 native 化 SpriteFrame；其余资产按需缓存 native 句柄 |

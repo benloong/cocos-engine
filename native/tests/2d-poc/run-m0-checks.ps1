@@ -3,6 +3,12 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
 $nodeModules = Join-Path $repoRoot 'node_modules'
 
+Write-Host '== Generated native 2D metadata =='
+& node (Join-Path $repoRoot 'scripts/generate-native-2d-decorators.cjs') --check
+if ($LASTEXITCODE -ne 0) { throw 'Native 2D metadata is stale' }
+& node --test (Join-Path $repoRoot 'tests/scripts/native-2d-decorators.test.cjs')
+if ($LASTEXITCODE -ne 0) { throw 'Native 2D metadata generator tests failed' }
+
 Write-Host '== C++ pure logic =='
 & (Join-Path $PSScriptRoot 'run-poc-tests.ps1')
 if ($LASTEXITCODE -ne 0) {
