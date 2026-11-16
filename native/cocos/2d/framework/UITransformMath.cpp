@@ -83,7 +83,10 @@ bool UITransformMath::containsWorldPoint(const Vec2 &worldPoint,
         return false;
     }
 
-    const Vec3 localPoint = convertToNodeSpaceAR(Vec3(worldPoint.x, worldPoint.y, 0.F), worldMatrix);
+    Mat4 inverse = worldMatrix;
+    if (!inverse.inverse()) return false;
+    Vec3 localPoint;
+    Vec3::transformMat4(Vec3(worldPoint.x, worldPoint.y, 0.F), inverse, &localPoint);
     const Rect box = getSelfBoundingBox(contentSize, anchorPoint);
     return box.containsPoint(Vec2(localPoint.x, localPoint.y));
 }

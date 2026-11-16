@@ -30,7 +30,7 @@ import { Component } from '../../scene-graph/component';
 import { Node } from '../../scene-graph/node';
 import { UITransform } from '../framework/ui-transform';
 import { Graphics } from './graphics';
-import { CCObject } from '../../core';
+import { CCObject, clamp, Vec2 } from '../../core';
 
 declare const n2d: any;
 
@@ -85,6 +85,7 @@ export class Mask extends Component {
         }
         this._native.setType(this._type);
         this._native.setSegments(this._segments);
+        this._native.setRadius(this._radius);
         if (this._type === MaskType.GRAPHICS_STENCIL) {
             this._getGraphics();
         }
@@ -141,8 +142,8 @@ export class Mask extends Component {
     }
 
     set segments (value: number) {
-        this._segments = value;
-        this._native?.setSegments(value);
+        this._segments = clamp(value, 3, 10000);
+        this._native?.setSegments(this._segments);
     }
 
     get graphics (): Graphics | null {
@@ -184,7 +185,12 @@ export class Mask extends Component {
     }
 
     set radius (value: number) {
-        this._radius = value;
+        this._radius = Math.max(0, value);
+        this._native?.setRadius(this._radius);
+    }
+
+    public isHit (worldPt: Vec2): boolean {
+        return this._native?.isHitWorldPointXY(worldPt.x, worldPt.y) ?? false;
     }
 
     get alphaThreshold (): number {

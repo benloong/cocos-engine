@@ -22,6 +22,8 @@ public:
     void setSpriteFrame(SpriteFrame *frame);
     void setGraphics(Graphics *graphics);
     void setSegments(uint32_t segments);
+    void setRadius(float radius);
+    bool isHitWorldPointXY(float x, float y) const;
     void setAlphaThreshold(float threshold);
     void setInverted(bool inverted);
     void setEnabled(bool enabled);
@@ -41,6 +43,7 @@ private:
     int32_t _priority{0};
     uint32_t _segments{64};
     float _alphaThreshold{0.1F};
+    float _radius{0.F};
     bool _inverted{false};
     bool _shapeDirty{true};
     float _width{0};

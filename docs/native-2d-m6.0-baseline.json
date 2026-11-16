@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "749c23c709209f7cd4e3c6fd0ed4799fc5fe5fb4fcfa4f23b4641e3c237493c5"
+      "sha256": "1dfea5fcb581dd6cb801d9e06b69fb905968641c93f2e004d2a31ed77350d155"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "80badab1ae0a7b8d909bc1db33c4bc3bba2d69158752fd98d4e70bf83a5bb5c4"
+      "sha256": "6fa23afb2a903b13910d4f3e59325e452e3beb84a9fc93846248d51c0fa11e43"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
@@ -127,15 +127,15 @@
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
-      "sha256": "ceca2c850c2c6d23db3b2e2d1481504ea9fec5153eed6455fe4c7fb8831138f4"
+      "sha256": "33fad257892495326029f68e8c21b096950f49444afd24ec9830f7db8f6264e2"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.h",
-      "sha256": "f99c161dd2614b58aed00da5130f1f4a83971b60c9c0a40b3ca079418a38349a"
+      "sha256": "c718c31855f2ae56ce449e763002ce9baf3348cde658fb2b778700c790a88470"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.cpp",
-      "sha256": "b53046359094beea5eb3cf74be0084e3f6d0c84cfd07b39545c341568921af02"
+      "sha256": "0aba4f21271e852043f7c9d0779cf7d14efaaaf1cfd9ad118949bed2a1f10741"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.h",
@@ -415,7 +415,8 @@
       "runtime": "cocos/2d/framework/ui-transform.jsb.ts",
       "testEntrypoints": [
         "tests/ui/native-2d-m1-shell.test.ts",
-        "native/tests/2d-poc/run-m6-layout-tests.ps1"
+        "native/tests/2d-poc/run-m6-layout-tests.ps1",
+        "native/tests/2d-poc/compare-graphics-gpu.cjs"
       ],
       "overridden": true,
       "web": {
@@ -8361,6 +8362,18 @@
             "decorators": []
           },
           {
+            "name": "isHit",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "boolean",
+            "parameters": [
+              "worldPt: Vec2"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "alphaThreshold",
             "kind": "GetAccessor",
             "visibility": "public",
@@ -8454,7 +8467,6 @@
           "getMaterial",
           "getMaterialInstance",
           "getRenderMaterial",
-          "isHit",
           "markForUpdateRenderData",
           "material",
           "materials",
@@ -15127,8 +15139,8 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "0384bc0813d4fcc3abdf76912e1dfcbb371e06c08c72863379b7cc8cb7b62941",
-      "printedCodeLines": 144,
+      "sha256": "2744be4f9e29520f3679e7f2d701a982a060c46409a619a33f8260ad0ae8c297",
+      "printedCodeLines": 149,
       "runtimeImports": [
         "cc.decorator",
         "../../asset/asset-manager/builtin-res-mgr",
@@ -15163,60 +15175,72 @@
           "line": 87
         },
         {
-          "expression": "this._native.setInverted",
-          "line": 91
+          "expression": "this._native.setRadius",
+          "line": 88
         },
         {
-          "expression": "this._native.setAlphaThreshold",
+          "expression": "this._native.setInverted",
           "line": 92
         },
         {
+          "expression": "this._native.setAlphaThreshold",
+          "line": 93
+        },
+        {
           "expression": "this._native.setSpriteFrame",
-          "line": 94
+          "line": 95
         },
         {
           "expression": "this._native.setPriority",
-          "line": 96
-        },
-        {
-          "expression": "this._native.setEnabled",
           "line": 97
         },
         {
-          "expression": "this._native?.setEnabled",
-          "line": 101
+          "expression": "this._native.setEnabled",
+          "line": 98
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 105
+          "line": 102
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 106
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 111
-        },
-        {
-          "expression": "this._native.setNode",
           "line": 112
         },
         {
+          "expression": "this._native.setNode",
+          "line": 113
+        },
+        {
           "expression": "this._native?.setType",
-          "line": 126
+          "line": 127
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 136
+          "line": 137
         },
         {
           "expression": "this._native?.setSegments",
-          "line": 145
+          "line": 146
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 179
+          "line": 180
+        },
+        {
+          "expression": "this._native?.setRadius",
+          "line": 189
+        },
+        {
+          "expression": "this._native?.isHitWorldPointXY",
+          "line": 193
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 196
+          "line": 202
         }
       ],
       "allocations": [],
@@ -16082,8 +16106,8 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "69f516c913635cf3cae2ab9969ba271cb2fb8e7c45b9cfb39d55a860c84d2a6f",
-      "printedCodeLines": 216,
+      "sha256": "dd5473941be8270dfdabfe5a75abf9fca273ee1c5148a51530e1a10e6a9e27c3",
+      "printedCodeLines": 215,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16132,71 +16156,71 @@
         },
         {
           "expression": "this._native.hitTestXY",
-          "line": 215
+          "line": 214
         },
         {
           "expression": "this._native.convertToNodeSpaceARX",
-          "line": 222
+          "line": 221
         },
         {
           "expression": "this._native.convertToNodeSpaceARY",
-          "line": 223
+          "line": 222
         },
         {
           "expression": "this._native.convertToWorldSpaceARX",
-          "line": 236
+          "line": 235
         },
         {
           "expression": "this._native.convertToWorldSpaceARY",
-          "line": 237
+          "line": 236
         },
         {
           "expression": "this._native.getBoundingBoxX",
-          "line": 249
+          "line": 248
         },
         {
           "expression": "this._native.getBoundingBoxY",
-          "line": 250
+          "line": 249
         },
         {
           "expression": "this._native.getBoundingBoxWidth",
-          "line": 251
+          "line": 250
         },
         {
           "expression": "this._native.getBoundingBoxHeight",
-          "line": 252
+          "line": 251
         },
         {
           "expression": "this._native.getBoundingBoxToWorldX",
-          "line": 261
+          "line": 260
         },
         {
           "expression": "this._native.getBoundingBoxToWorldY",
-          "line": 262
+          "line": 261
         },
         {
           "expression": "this._native.getBoundingBoxToWorldWidth",
-          "line": 263
+          "line": 262
         },
         {
           "expression": "this._native.getBoundingBoxToWorldHeight",
-          "line": 264
+          "line": 263
         },
         {
           "expression": "this._native.getBoundingBoxToX",
-          "line": 275
+          "line": 274
         },
         {
           "expression": "this._native.getBoundingBoxToY",
-          "line": 276
+          "line": 275
         },
         {
           "expression": "this._native.getBoundingBoxToWidth",
-          "line": 277
+          "line": 276
         },
         {
           "expression": "this._native.getBoundingBoxToHeight",
-          "line": 278
+          "line": 277
         }
       ],
       "allocations": [],

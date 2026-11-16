@@ -11,7 +11,7 @@ const nativeMask = {
     setSpriteFrame: jest.fn(),
     setPriority: jest.fn(),
     setEnabled: jest.fn(),
-    setSegments: jest.fn(), setGraphics: jest.fn(),
+    setSegments: jest.fn(), setGraphics: jest.fn(), setRadius: jest.fn(), isHitWorldPointXY: jest.fn(() => true),
 };
 
 beforeAll(() => {
@@ -67,4 +67,24 @@ test('Mask forwards SpriteFrame directly during load, replacement and clearing',
     mask.spriteFrame = null;
     expect(nativeMask.setSpriteFrame).toHaveBeenLastCalledWith(null);
     mask.onDestroy();
+});
+
+test('Mask clamps geometric state and forwards world-space hit testing to native', () => {
+    const { Mask } = require('../../cocos/2d/components/mask.jsb');
+    const node = new Node('rounded-mask'); node.addComponent(UITransform);
+    const mask: any = node.addComponent(Mask);
+    mask.radius = 18;
+    mask.onLoad();
+    expect(nativeMask.setRadius).toHaveBeenLastCalledWith(18);
+    mask.radius = -10;
+    expect(mask.radius).toBe(0);
+    expect(nativeMask.setRadius).toHaveBeenLastCalledWith(0);
+    mask.segments = 1;
+    expect(mask.segments).toBe(3);
+    mask.segments = 20000;
+    expect(mask.segments).toBe(10000);
+    expect(mask.isHit({ x: 11, y: 22 })).toBe(true);
+    expect(nativeMask.isHitWorldPointXY).toHaveBeenLastCalledWith(11, 22);
+    mask.onDestroy();
+    expect(mask.isHit({ x: 11, y: 22 })).toBe(false);
 });

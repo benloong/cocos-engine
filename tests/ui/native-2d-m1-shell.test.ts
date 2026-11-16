@@ -66,7 +66,9 @@ test('UITransform shell attaches and forwards to native', () => {
     expect(bounds.center).toEqual(new Vec3(8.5, 10, 0));
     expect(bounds.halfExtents).toEqual(new Vec3(3.5, 4, 0));
     expect(ui.hitTest(new Vec2(10, 20))).toBe(true);
-    expect(nativeUITransform.hitTestXY).toHaveBeenCalledWith(10, 20);
+    expect(nativeUITransform.hitTestXY).toHaveBeenCalledWith(10, 20, 0);
+    expect(ui.hitTest(new Vec2(10, 20), 3)).toBe(true);
+    expect(nativeUITransform.hitTestXY).toHaveBeenLastCalledWith(10, 20, 3);
     expect(ui.getBoundingBoxTo(new Mat4()).x).toBe(9);
     expect(ui.convertToWorldSpaceAR(new Vec3(1, 2, 0)).x).toBe(4);
 

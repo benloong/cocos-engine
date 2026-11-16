@@ -25,12 +25,14 @@
 #include "2d/framework/UITransform.h"
 
 #include "2d/framework/UITransformMath.h"
+#include "2d/components/Mask.h"
 #include "core/scene-graph/Node.h"
 #include "core/scene-graph/Scene.h"
 #include "math/Mat4.h"
 #include "math/Vec3.h"
 #include "scene/Camera.h"
 #include "scene/RenderScene.h"
+#include "scene/RenderWindow.h"
 
 namespace cc {
 
@@ -160,7 +162,18 @@ bool UITransform::containsWorldPoint(const Vec2 &worldPoint) const {
     return UITransformMath::containsWorldPoint(worldPoint, _contentSize, _anchorPoint, _node->getWorldMatrix());
 }
 
-bool UITransform::hitTestXY(float screenX, float screenY) const {
+bool UITransform::hitTestWorldXY(float worldX, float worldY) const {
+    if (!containsWorldPoint(Vec2(worldX, worldY))) return false;
+    // Query live Component slots instead of retaining ancestor/component
+    // pointers across reparenting, detach, or destruction.
+    for (auto *node = _node; node; node = node->getParent()) {
+        auto *mask = static_cast<Mask *>(node->getUIComponent(Mask::TYPE_ID));
+        if (mask && mask->isEnabled() && !mask->isHitWorldPointXY(worldX, worldY)) return false;
+    }
+    return true;
+}
+
+bool UITransform::hitTestXY(float screenX, float screenY, uint32_t windowId) const {
     if (_node == nullptr || _contentSize.x <= 0.F || _contentSize.y <= 0.F) {
         return false;
     }
@@ -174,14 +187,13 @@ bool UITransform::hitTestXY(float screenX, float screenY) const {
     }
 
     for (const auto &camera : renderScene->getCameras()) {
-        if (camera == nullptr || (camera->getVisibility() & _node->getLayer()) == 0) {
+        if (camera == nullptr || (camera->getVisibility() & _node->getLayer()) == 0
+            || camera->getSystemWindowId() != windowId
+            || (camera->getWindow() && !camera->getWindow()->getSwapchain())) {
             continue;
         }
         const Vec3 world = camera->screenToWorld(Vec3(screenX, screenY, 0.F));
-        const Vec2 local = convertToNodeSpaceAR(Vec2(world.x, world.y));
-        const float x = local.x + _anchorPoint.x * _contentSize.x;
-        const float y = local.y + _anchorPoint.y * _contentSize.y;
-        if (x >= 0.F && y >= 0.F && x <= _contentSize.x && y <= _contentSize.y) {
+        if (hitTestWorldXY(world.x, world.y)) {
             return true;
         }
     }

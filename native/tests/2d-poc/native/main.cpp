@@ -649,6 +649,58 @@ void testSpriteApiAndMaterials() {
     std::printf("sprite API/materials: PASS\n");
 }
 
+void testMaskHitLifecycle() {
+    cc::IntrusivePtr<cc::Node> outer(new cc::Node("hit-outer")), inner(new cc::Node("hit-inner")), child(new cc::Node("hit-child"));
+    outer->addChild(inner); inner->addChild(child);
+    cc::UITransform outerUI(outer), innerUI(inner), childUI(child);
+    outerUI.setContentSize(100, 80); innerUI.setContentSize(200, 200); childUI.setContentSize(400, 400);
+    cc::Mask mask; mask.setNode(outer); mask.setRadius(20);
+    check(mask.isHitWorldPointXY(0,0), "rounded mask accepts center");
+    check(!mask.isHitWorldPointXY(49,39), "rounded mask rejects cut corner");
+    check(mask.isHitWorldPointXY(50,0), "rounded rect includes straight boundary");
+    check(childUI.containsWorldPoint(cc::Vec2(49,39)) && !childUI.hitTestWorldXY(49,39), "UITransform applies ancestor rounded mask");
+    mask.setEnabled(false);
+    check(childUI.hitTestWorldXY(49,39), "disabled mask does not clip input");
+    mask.setEnabled(true); mask.setInverted(true);
+    check(!childUI.hitTestWorldXY(0,0) && childUI.hitTestWorldXY(49,39), "inverted mask complements input shape");
+    mask.setInverted(false); mask.setType(1);
+    check(!mask.isHitWorldPointXY(50,0), "ellipse excludes its exact boundary like Web");
+    check(mask.isHitWorldPointXY(0,0), "ellipse accepts center");
+    mask.setType(2);
+    check(mask.isHitWorldPointXY(49,39), "custom stencil input uses UI bounds like Web");
+    mask.setType(3);
+    check(mask.isHitWorldPointXY(49,39), "sprite stencil input uses UI bounds like Web");
+    mask.setType(0); mask.setRadius(1000); mask.prepareRenderEntity(1);
+    check(mask.getRenderEntity()->getRenderDrawInfoAt(0)->getVbCount()>4, "radius generates actual curved mask geometry");
+    check(!mask.isHitWorldPointXY(49,39), "radius clamps to half the shortest dimension");
+    outerUI.setContentSize(200,160); outerUI.setAnchorPoint(0,0);
+    check(mask.isHitWorldPointXY(100,80) && !mask.isHitWorldPointXY(0,0), "hit uses current size and anchor before render prepare");
+    outerUI.setContentSize(100,80); outerUI.setAnchorPoint(.5F,.5F); mask.setRadius(20);
+    outer->setPosition(10,20,0); outer->setScale(2,.5F,1); outer->setRotationFromEuler(0,0,90);
+    const auto worldCenter=outerUI.convertToWorldSpaceAR(cc::Vec2(0,0));
+    const auto worldCorner=outerUI.convertToWorldSpaceAR(cc::Vec2(49,39));
+    check(mask.isHitWorldPointXY(worldCenter.x,worldCenter.y) && !mask.isHitWorldPointXY(worldCorner.x,worldCorner.y), "mask inverse handles translation nonuniform scale rotation");
+    cc::Mask nested; nested.setNode(inner); nested.setType(1);
+    innerUI.setContentSize(20,20);
+    const auto outsideInner=outerUI.convertToWorldSpaceAR(cc::Vec2(15,0));
+    check(!childUI.hitTestWorldXY(outsideInner.x,outsideInner.y), "nested mask clips input through live ancestor slots");
+    nested.setEnabled(false);
+    check(childUI.hitTestWorldXY(outsideInner.x,outsideInner.y), "disabled nested mask preserves enclosing mask");
+    child->setParent(nullptr);
+    check(childUI.hitTestWorldXY(worldCorner.x,worldCorner.y), "reparenting immediately drops old masks without stale cache");
+    outer->setScale(0,1,1);
+    check(!outerUI.containsWorldPoint(worldCenter) && !mask.isHitWorldPointXY(worldCenter.x,worldCenter.y), "singular transforms cannot produce phantom hits");
+    mask.setNode(nullptr);
+    check(!mask.isHitWorldPointXY(0,0), "detached mask hit test is safe");
+    nested.setNode(nullptr);
+    {
+        auto owner=std::make_unique<cc::Node>("destroy-before-hit");
+        cc::UITransform transform(owner.get()); mask.setNode(owner.get()); owner.reset();
+        check(!mask.isHitWorldPointXY(0,0) && !transform.hitTestWorldXY(0,0), "Node destruction invalidates all hit-test borrows");
+    }
+    std::printf("mask hit lifecycle: PASS\n");
+}
+
 void testUITransform() {
     cc::Node node("native-2d-poc");
     node.setPosition(10.F, 20.F, 0.F);
@@ -1443,6 +1495,7 @@ int main(int argc, char **argv) {
         testRichTextLayout();
         testLayoutAndMaterials();
         testGraphicsMeshes();
+        testMaskHitLifecycle();
         testRichTextRuntime();
         testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");

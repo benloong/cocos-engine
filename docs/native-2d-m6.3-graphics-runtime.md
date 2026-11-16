@@ -8,7 +8,7 @@
 - 几何索引保留 uint32；生产 Graphics 按三角形重映射成最多 65535 顶点的 uint16 mesh chunks。使用动态 DrawInfo 列表，不受静态四 draw 容量限制。核心点坐标不受旧画布边界限制。
 - 网格顶点为 local 坐标，RenderEntity.useLocal/renderTransform 将完整世界矩阵交给既有 local UBO。prepare 仅在几何 revision 变化时重建 chunks。与 Web VERTEX 模式一致，样式 alpha 保存在顶点，不乘级联 opacity；entity 保存级联 opacity 供后代使用。不生成中间纹理。
 - 默认材质由 native 获取 ui-graphics-material，JS 使用既有 native material-slot 桥接。lineJoin/lineCap/miterLimit 的序列化字段、枚举与 setter 以及 fillRect 单次桥接已补齐。完整组件 API 仍按审计欠项验收。
-- Mask rect/ellipse 使用原生几何，跟踪 UITransform 大小/anchor；ellipse 跟随 segments。GRAPHICS_STENCIL 直接借用 Graphics 几何；SPRITE_STENCIL 保留 SpriteFrame。alphaThreshold 写入每个 Mask 的材质实例，避免修改共享父材质。
+- Mask rect/ellipse 使用原生几何，跟踪 UITransform 大小/anchor；ellipse 跟随 segments，rect 跟随 radius 生成圆角。radius/动态大小/anchor/类型和原生命中已补后续 GPU/场景验证，见 [状态与命中报告](./native-2d-m6.4-mask-state-hit.md)。GRAPHICS_STENCIL 直接借用 Graphics 几何；SPRITE_STENCIL 保留 SpriteFrame。alphaThreshold 写入每个 Mask 的材质实例，避免修改共享父材质。
 - Batcher 将非空 mask stencil 的 push/clear/enable 移到整个 renderer 范围；不再为每个 chunk 重复进入 stencil level。空几何不进入/退出 stencil；已通过嵌套、inverted、多 chunk 和空嵌套后兄弟裁剪的 GPU 对照。Web 也修复了空嵌套 renderer 误弹父层。
 - JS Mask 移除 lateUpdate/getFrame 轮询。其 Graphics helper 隐藏且不保存、保持 disabled；native 后端就绪时绑定，销毁时解绑 helper 和 native mask。Graphics 不再导出旧纹理 getFrame/getTextureWidth/getOpaquePixels 探针接口。
 

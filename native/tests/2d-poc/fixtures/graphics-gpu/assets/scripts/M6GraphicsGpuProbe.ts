@@ -1,4 +1,4 @@
-import { _decorator, Camera, Canvas, Color, Component, director, Graphics, Mask, native, Node, Rect, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform } from 'cc';
+import { _decorator, Camera, Canvas, Color, Component, director, Graphics, Mask, native, Node, Rect, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 
 const { ccclass } = _decorator;
 // Replaced by prepare-graphics-gpu-project.cjs in the generated project only.
@@ -64,6 +64,11 @@ export class M6GraphicsGpuProbe extends Component {
             { name: 'clear-and-replace', draw: root => { const g = graphics(root); g.fillRect(-100, -100, 200, 200); g.clear(); g.fillRect(-20, -30, 40, 60); } },
             { name: 'large-mesh-chunks', draw: root => { const g = graphics(root); for (let i = 0; i < 20000; ++i) { g.rect(-100 + i % 200, -50 + Math.floor(i / 200), .6, .6); if (i % 4000 === 3999) g.fill(); } } },
             { name: 'mask-rect', draw: root => { const { n } = mask(root, 80, 80); red(n); } },
+            { name: 'mask-rounded', draw: root => { const { n, m } = mask(root, 120, 80); m.radius = 20; red(n); } },
+            { name: 'mask-radius-update', draw: root => { const { n, m } = mask(root, 120, 80); red(n); return () => { m.radius = 30; }; } },
+            { name: 'mask-radius-clamp', draw: root => { const { n, m } = mask(root, 120, 80); m.radius = 1000; red(n); } },
+            { name: 'mask-size-anchor-update', draw: root => { const { n, m } = mask(root, 120, 80); m.radius = 20; red(n); return () => { n.getComponent(UITransform)!.setContentSize(60, 100); n.getComponent(UITransform)!.setAnchorPoint(.25, .75); }; } },
+            { name: 'mask-type-update', draw: root => { const { n, m } = mask(root, 120, 80); m.radius = 20; red(n); return () => { m.type = Mask.Type.GRAPHICS_ELLIPSE; m.segments = 24; }; } },
             { name: 'mask-inverted', draw: root => { const { n } = mask(root, 80, 80, 0, true); red(n); } },
             { name: 'mask-ellipse', draw: root => { const { n, m } = mask(root, 140, 100, 1); m.segments = 32; red(n); } },
             { name: 'mask-nested', draw: root => { const outer = mask(root, 140, 120); const inner = mask(outer.n, 80, 60); inner.n.setPosition(20, 10, 0); red(inner.n); } },
@@ -106,9 +111,58 @@ export class M6GraphicsGpuProbe extends Component {
             if (update) { update(); await capture(`${item.name}-updated`); }
             root.destroy(); await wait(40);
         }
+        const hits: { name: string; actual: boolean; expected: boolean }[] = [];
+        const hit = (name: string, actual: boolean, expected: boolean): void => {
+            hits.push({ name, actual, expected });
+            if (actual !== expected) throw new Error(`Hit test ${name}: ${actual}, expected ${expected}`);
+        };
+        const hitRoot = node(canvas.node, 'hit-root');
+        const outer = mask(hitRoot, 100, 80); outer.m.radius = 20;
+        const target = node(outer.n, 'hit-target'); target.getComponent(UITransform)!.setContentSize(400, 400);
+        target.on(Node.EventType.TOUCH_START, () => {});
+        const outerUI = outer.n.getComponent(UITransform)!;
+        const targetUI = target.getComponent(UITransform)!;
+        const worldPoint = (x: number, y: number): Vec3 => outerUI.convertToWorldSpaceAR(new Vec3(x, y, 0));
+        const maskHit = (name: string, x: number, y: number, expected: boolean): void => {
+            const p = worldPoint(x, y); hit(name, outer.m.isHit(new Vec2(p.x, p.y)), expected);
+        };
+        maskHit('rounded-center', 0, 0, true); maskHit('rounded-corner', 49, 39, false);
+        maskHit('rounded-edge', 50, 0, true);
+        outer.n.setPosition(10, 20); outer.n.setScale(1.5, .5, 1); outer.n.setRotationFromEuler(0, 0, 35);
+        maskHit('transformed-center', 0, 0, true); maskHit('transformed-corner', 49, 39, false);
+        outer.n.setPosition(0, 0); outer.n.setScale(1, 1, 1); outer.n.setRotationFromEuler(0, 0, 0);
+        outer.m.type = Mask.Type.GRAPHICS_ELLIPSE;
+        maskHit('ellipse-center', 0, 0, true); maskHit('ellipse-edge', 50, 0, false);
+        outer.m.type = Mask.Type.GRAPHICS_RECT;
+        const screenHit = (name: string, x: number, y: number, expected: boolean, wrongWindow = false): void => {
+            const screen = camera.worldToScreen(worldPoint(x, y));
+            const windowId = camera.camera.systemWindowId;
+            hit(name, targetUI.hitTest(new Vec2(screen.x, screen.y), windowId + (wrongWindow ? 1 : 0)), expected);
+        };
+        await wait();
+        screenHit('offscreen-camera-excluded', 0, 0, false);
+        camera.targetTexture = null; await wait();
+        screenHit('screen-center', 0, 0, true); screenHit('screen-rounded-corner', 49, 39, false);
+        screenHit('wrong-window-excluded', 0, 0, false, true);
+        const visibility = camera.visibility; camera.visibility = 0; await wait();
+        screenHit('camera-layer-excluded', 0, 0, false);
+        camera.visibility = visibility; await wait();
+        outer.m.enabled = false; screenHit('disabled-mask', 49, 39, true);
+        outer.m.enabled = true; outer.m.inverted = true;
+        screenHit('inverted-center', 0, 0, false); screenHit('inverted-corner', 49, 39, true);
+        outer.m.inverted = false;
+        const inner = mask(outer.n, 20, 20, 1); target.parent = inner.n; await wait();
+        screenHit('nested-mask-outside', 15, 0, false);
+        inner.m.enabled = false; screenHit('nested-mask-disabled', 15, 0, true);
+        target.parent = hitRoot; inner.n.destroy(); await wait();
+        screenHit('reparent-drops-ancestors', 49, 39, true);
+        target.parent = outer.n; await wait();
+        outer.m.destroy(); await wait();
+        screenHit('destroyed-mask-detached', 49, 39, true);
+        hitRoot.destroy(); await wait(40);
         const device = director.root!.device;
         const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures,
-            width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            hits, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
         console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);

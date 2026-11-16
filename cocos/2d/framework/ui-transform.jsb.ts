@@ -211,8 +211,7 @@ export class UITransform extends Component {
     }
 
     public hitTest (screenPoint: Vec2, windowId = 0): boolean {
-        void windowId;
-        return this._native ? this._native.hitTestXY(screenPoint.x, screenPoint.y) : false;
+        return this._native ? this._native.hitTestXY(screenPoint.x, screenPoint.y, windowId) : false;
     }
 
     public convertToNodeSpaceAR (worldPoint: Vec3, out?: Vec3): Vec3 {

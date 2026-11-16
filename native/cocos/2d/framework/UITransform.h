@@ -107,7 +107,8 @@ public:
     float convertToWorldSpaceARX(float x, float y) const { return convertToWorldSpaceAR(Vec2(x, y)).x; }
     float convertToWorldSpaceARY(float x, float y) const { return convertToWorldSpaceAR(Vec2(x, y)).y; }
     bool containsWorldPointXY(float x, float y) const { return containsWorldPoint(Vec2(x, y)); }
-    bool hitTestXY(float screenX, float screenY) const;
+    bool hitTestWorldXY(float worldX, float worldY) const;
+    bool hitTestXY(float screenX, float screenY, uint32_t windowId = 0) const;
 
     float getBoundingBoxToX(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).x; }
     float getBoundingBoxToY(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).y; }
