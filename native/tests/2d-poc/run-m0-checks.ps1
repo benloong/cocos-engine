@@ -45,6 +45,11 @@ if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
     if ($LASTEXITCODE -ne 0) {
         throw "Sprite quad parity failed with exit code $LASTEXITCODE"
     }
+    Write-Host '== M6.1 SpriteAtlas JSB/native table consistency =='
+    & (Join-Path $PSScriptRoot 'run-m6-sprite-atlas-tests.ps1')
+    if ($LASTEXITCODE -ne 0) {
+        throw "SpriteAtlas consistency tests failed with exit code $LASTEXITCODE"
+    }
 }
 
 if ($env:CC_M2_APP_EXE) {

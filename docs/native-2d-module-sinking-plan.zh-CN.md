@@ -171,7 +171,7 @@
 - SpriteFrame 已有 native 数据缓存和 Sprite 消费路径；M6 继续统一 UV/字段权威状态与 API，避免恢复逐帧跨 JSB 读取。
 - 当前 SpriteFrame、SpriteAtlas 已直接导出 jsb.SpriteFrame/jsb.SpriteAtlas 并修改 prototype，实例字段在 _ctor 中初始化，调用 Asset 初始化；覆盖同名 API 前保存原生方法，避免递归。不再派生 JS 资产子类或另建 _nativeAtlas 包装对象。
 - 组件继续保留 JS Component 身份；资产 prototype 模式不直接套用到组件继承链。
-- 2026-11-16：SpriteFrame 基础数据、quad/sliced UV、reset/clone 已迁入 native，JS 数学对象改为可写视图，Windows 定向验证通过，见 [M6.1 报告](./native-2d-m6.1-sprite-frame.md)。动态合图/mesh 与真实场景验收仍待补齐；SpriteAtlas 的 JS map 与 native frame 表同步仍需处理。
+- 2026-11-16：SpriteFrame 基础数据、quad/sliced UV、reset/clone 已迁入 native，JS 数学对象改为可写视图，见 [SpriteFrame 报告](./native-2d-m6.1-sprite-frame.md)。SpriteAtlas 已补 map/依赖回填/native 表同步及 Windows 实际 JSB 壳验证，见 [SpriteAtlas 报告](./native-2d-m6.1-sprite-atlas.md)。动态合图/mesh 与真实资源场景验收仍待补齐。
 - TTFFont/LabelAtlas/BitmapFont、动态合图按需 native 化；逐类确认数据、所有权和生命周期，见 M6.1。
 - `Renderer` 的材质实例/共享材质解析属于“逻辑”，终态要在 native：M2 就把 UI 需要的 `getSharedMaterial/setSharedMaterial`、material instance 选择做成 native 接口，JS 壳只转发；不要把它留成永久 JS 逻辑。
 - 当前 UIRenderer 保留 extends Renderer；M6 复核 sharedMaterials/material/getSharedMaterial/setSharedMaterial 等 API、继承身份和间接执行路径，确保迁移组件不再执行 JS 材质选择逻辑。组件不直接改为原生资产式 prototype 导出。

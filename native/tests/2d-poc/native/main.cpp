@@ -103,6 +103,25 @@ void testSpriteAtlas() {
     atlas->addSpriteFrame("icon", frame);
     atlas->clear();
     check(atlas->getSpriteFrameCount() == 0, "SpriteAtlas count after clear");
+    const auto retained = frame->getRefCount();
+    cc::IntrusivePtr<cc::Texture2D> firstTexture(new cc::Texture2D());
+    firstTexture->create(2, 2);
+    frame->setTexture(firstTexture);
+    atlas->setSpriteFrames({"hero", "empty"}, {frame.get(), nullptr});
+    check(atlas->getSpriteFrameCount() == 2, "SpriteAtlas retains null named slots");
+    check(atlas->getTexture() == firstTexture, "SpriteAtlas first named slot chooses texture");
+    check(frame->getRefCount() == retained + 1, "SpriteAtlas owns loaded frame");
+    atlas->setSpriteFrameOrder({"empty", "hero"});
+    check(atlas->getTexture() == nullptr, "SpriteAtlas null first slot matches Web");
+    atlas->setSpriteFrames({"renamed", "alias"}, {frame.get(), frame.get()});
+    check(frame->getRefCount() == retained + 2, "SpriteAtlas replace retains aliases before release");
+    check(atlas->getSpriteFrame("hero") == nullptr && atlas->getSpriteFrame("renamed") == frame,
+          "SpriteAtlas replace removes old keys");
+    for (int i = 0; i < 1000; ++i) {
+        atlas->setSpriteFrames({"frame", "empty"}, {frame.get(), nullptr});
+        atlas->clear();
+    }
+    check(frame->getRefCount() == retained, "SpriteAtlas replace/clear releases all frame references");
 }
 void testSpriteFrameData() {
     cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D());
@@ -507,6 +526,13 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    atlas.addSpriteFrame('icon', sf);"
         "    if (atlas.getSpriteFrameCount() !== 1) return 'unexpected atlas count';"
         "    if (!atlas.getSpriteFrame('icon')) return 'unexpected atlas lookup';"
+        "    atlas.setSpriteFrames(['hero', 'empty'], [sf, null]);"
+        "    if (atlas.getSpriteFrameCount() !== 2) return 'atlas null slot count';"
+        "    if (atlas.getSpriteFrameNames().join(',') !== 'hero,empty') return 'atlas names conversion';"
+        "    if (atlas.getSpriteFrame('hero') !== sf) return 'atlas frame vector conversion';"
+        "    if (atlas.getTexture() !== texture) return 'atlas first texture';"
+        "    atlas.setSpriteFrameOrder(['empty', 'hero']);"
+        "    if (atlas.getTexture() !== null) return 'atlas first null slot texture';"
         "    atlas.clear();"
         "    var s = new n2d.Sprite();"
         "    s.setColorRGBA(255, 128, 0, 255);"
@@ -957,7 +983,7 @@ void testSpriteSceneBenchmark() {
 
 } // namespace
 
-int main() {
+int main(int argc, char **argv) {
     // Node's shared-memory bridge needs a running script engine; Root/Device
     // are required by the surrounding engine singletons.
     cc::Root *root = new cc::Root(cc::gfx::DeviceManager::create());
@@ -981,6 +1007,14 @@ int main() {
         std::printf("uitransform done\n");
         std::fflush(stdout);
         testJsBindings(scriptEngine);
+        if (argc > 1) {
+            std::ifstream stream(argv[1]);
+            const std::string script((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
+            se::Value result;
+            const bool ok = !script.empty() && scriptEngine->evalString(script.c_str(), static_cast<uint32_t>(script.size()), &result);
+            check(ok && result.isString() && result.toString() == "OK", "JSB shell integration probe");
+            std::printf("jsb shell integration: %s\n", result.isString() ? result.toString().c_str() : "FAIL");
+        }
         testJsSceneRecord(scriptEngine);
         std::printf("jsb bindings done\n");
         std::fflush(stdout);
