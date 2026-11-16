@@ -2103,6 +2103,10 @@ cocos_source_files(
     cocos/2d/renderer/RichTextParser.cpp
     cocos/2d/renderer/RichTextLayout.h
     cocos/2d/renderer/RichTextLayout.cpp
+    cocos/2d/geometry/GraphicsGeometry.h
+    cocos/2d/geometry/GraphicsGeometry.cpp
+    cocos/2d/geometry/GraphicsEarcut.h
+    cocos/2d/geometry/GraphicsEarcut.cpp
     cocos/2d/renderer/TextMetrics.h
     cocos/2d/renderer/TextMetrics.cpp
     cocos/2d/renderer/LetterAtlas.h

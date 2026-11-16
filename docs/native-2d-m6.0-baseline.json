@@ -23,7 +23,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "cd145ae1f9182250418400b13e46808c0edc220b5aa5e9ae9ce5220f916ab91a"
+      "sha256": "6af2f6a902c688254fd5f8c10b3437c437e3a2ea47b4f8f47ceb6fe43db738e9"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -140,6 +140,22 @@
     {
       "file": "native/cocos/2d/framework/UITransformMath.h",
       "sha256": "d0693bbd067c5a26f7ad00fac90974b191a403c3c9ee38afde7b3a33a7a91598"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsEarcut.cpp",
+      "sha256": "0bf8d8d793a36a0a32b64e54bb883f1e2add115439ae1db39e934ed775bfa2fd"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsEarcut.h",
+      "sha256": "c9dd3b8b15c47e33d6b19e6a092778e21783ead752a720e244449b484df948ac"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsGeometry.cpp",
+      "sha256": "90a6af47dbda4865f731e6645a391060f9820b3c12730e2faceedf3ae787faa0"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsGeometry.h",
+      "sha256": "6f3f4dcb8919bb2f7f9986a085577b8bdd254ed7c787f7e7f49906b5ccae26f4"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
@@ -8565,7 +8581,9 @@
       "runtime": "cocos/2d/components/graphics.jsb.ts",
       "testEntrypoints": [
         "tests/ui/native-2d-m6-layout-shell.test.ts",
-        "native/tests/2d-poc/run-m4-extra-probe.ps1"
+        "native/tests/2d-poc/run-m4-extra-probe.ps1",
+        "native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1",
+        "tests/ui/native-graphics-geometry-parity.test.ts"
       ],
       "overridden": true,
       "web": {

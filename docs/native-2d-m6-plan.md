@@ -65,6 +65,7 @@
 
 ### M6.3 Graphics/Mask 完整性（承接 M4.3）
 
+- [x] 原生几何核心准备：多子路径/增量 fill-stroke、曲线细分、单环 Earcut（含 Z-order、局部交点修复与拆分）、lineJoin/lineCap/miterLimit 网格生成；786 组实际 Web helper/assembler 对照在 g++ 与 Windows MSVC Debug/Release 通过，含 5000 点复杂填充，另验证 80000 顶点的 32-bit 索引。见 [报告](./native-2d-m6.3-graphics-geometry.md)。该核心尚未替换运行时 Graphics/Mask 的纹理路径，下面 GPU 接入与终态门禁保持待办。
 - [ ] 用 native 路径三角化、顶点/索引及 GPU buffer 提交替换固定 256×256 CPU RGBA + 内部 Sprite 的兼容路径；覆盖缩放、大尺寸、复杂/多子路径。
 - [ ] 补 lineJoin/lineCap/miterLimit；为 roundRect、ellipse、arc、曲线、填充/描边、clear 建立独立 Web/native 用例。
 - [ ] 对比逐 API JSB 与命令批量提交的 CPU、调用次数、分配和绘制成本；用数据选择接口。JS 允许纯命令收集，不允许路径算法/三角化。
