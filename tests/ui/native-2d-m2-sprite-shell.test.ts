@@ -7,19 +7,34 @@ import { instantiate } from '../../exports/base';
 import { SpriteAtlas } from '../../cocos/2d/assets/sprite-atlas';
 import { Vec2 } from '../../cocos/core/math/vec2';
 import { Color } from '../../cocos/core/math/color';
+import { Material } from '../../cocos/asset/assets/material';
 
-const nativeMaterial = { parent: null } as any;
+const builtinMaterial = {} as any;
+const nativeMaterial = { parent: builtinMaterial } as any;
+let nativeShared: any[] = [], nativeInstances: any[] = [];
 
 const nativeSprite = {
     setNode: jest.fn(),
     setUITransform: jest.fn(),
     setColorRGBA: jest.fn(),
-    setMaterial: jest.fn(),
-    setSharedMaterial: jest.fn(),
-    getSharedMaterial: jest.fn(() => ({})),
-    getMaterialInstance: jest.fn(() => nativeMaterial),
-    getRenderMaterial: jest.fn(() => nativeMaterial),
-    setMaterialInstance: jest.fn(),
+    setMaterial: jest.fn((material) => { nativeShared[0] = material ?? builtinMaterial; nativeInstances[0] = null; }),
+    setSharedMaterial: jest.fn((material, index, force) => {
+        if (force || nativeShared[index] !== material) nativeInstances[index] = null;
+        nativeShared[index] = material;
+    }),
+    getSharedMaterial: jest.fn((index) => nativeShared[index] ?? null),
+    getSharedMaterialCount: jest.fn(() => nativeShared.length),
+    resizeMaterials: jest.fn((size) => { nativeShared.length = nativeInstances.length = size; }),
+    getMaterialInstance: jest.fn((index) => {
+        if (nativeInstances[index]) return nativeInstances[index];
+        if (!nativeShared[index]) return null;
+        return nativeInstances[index] = index === 0 ? nativeMaterial : { parent: nativeShared[index] };
+    }),
+    getRenderMaterial: jest.fn((index) => nativeInstances[index] ?? nativeShared[index] ?? null),
+    setMaterialInstance: jest.fn((material, index) => {
+        if (material?.parent) nativeInstances[index] = material;
+        else { nativeShared[index] = material; nativeInstances[index] = null; }
+    }),
     setType: jest.fn(),
     setTrim: jest.fn(),
     setGrayscale: jest.fn(),
@@ -46,7 +61,7 @@ beforeAll(() => {
     };
 });
 
-beforeEach(() => { jest.clearAllMocks(); });
+beforeEach(() => { jest.clearAllMocks(); nativeShared = []; nativeInstances = []; });
 
 test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     const { Sprite } = require('../../cocos/2d/components/sprite.jsb') as typeof import('../../cocos/2d/components/sprite.jsb');
@@ -91,7 +106,7 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     expect(nativeSprite.setMaterial).toHaveBeenLastCalledWith(material);
     const material2 = {} as any;
     sprite.setSharedMaterial(material2, 1);
-    expect(nativeSprite.setSharedMaterial).toHaveBeenLastCalledWith(material2, 1);
+    expect(nativeSprite.setSharedMaterial).toHaveBeenLastCalledWith(material2, 1, false);
     const instance = sprite.getMaterialInstance(0);
     expect(instance).toBe(nativeMaterial);
     const shared = sprite.getSharedMaterial(0);
@@ -189,4 +204,56 @@ test('fillCenter is a native writable view, with independent clone and detached 
     clone.onDestroy();
     expect(Object.getOwnPropertyDescriptor(cloneCenter, 'x')!.get).toBeUndefined();
     expect(cloneCenter.x).toBe(0);
+});
+
+test('material arrays retain staged slots, replace instances and release truncated owners', () => {
+    const { Sprite } = require('../../cocos/2d/components/sprite.jsb');
+    const node = new Node('material-slots'); node.addComponent(UITransform);
+    const sprite: any = node.addComponent(Sprite);
+    const first = new Material(), second = new Material();
+    sprite.sharedMaterials = [first, second];
+    sprite.onLoad();
+    expect(sprite.sharedMaterials).toEqual([first, second]);
+    expect(sprite.materials).toHaveLength(2);
+    const old = sprite.materials[1];
+    expect(old._owner).toBe(sprite);
+    expect(old._subModelIdx).toBe(1);
+    const replacement: any = { parent: first, destroy: jest.fn() };
+    sprite.materials = [replacement];
+    expect(sprite.material).toBe(replacement);
+    expect(old._owner).toBeNull();
+    expect(nativeSprite.getSharedMaterialCount()).toBe(1);
+    sprite.sharedMaterials = [];
+    expect(sprite.sharedMaterials).toEqual([]);
+    expect(sprite.materials).toEqual([]);
+    expect(sprite.getRenderMaterial(0)).toBeNull();
+    expect(replacement._owner).toBeNull();
+    expect(replacement.destroy).not.toHaveBeenCalled();
+    sprite.onDestroy();
+});
+
+test('shared array replacement, forced update and explicit null follow Web slots', () => {
+    const { Sprite } = require('../../cocos/2d/components/sprite.jsb');
+    const node = new Node('material-parity'); node.addComponent(UITransform);
+    const sprite: any = node.addComponent(Sprite), web: any = new WebSprite();
+    sprite.onLoad();
+    const first = new Material(), second = new Material();
+    for (const values of [[first, second], [first], [null], [], [null, second]]) {
+        sprite.sharedMaterials = values;
+        web.sharedMaterials = values;
+        expect(sprite.sharedMaterials).toEqual(web.sharedMaterials);
+        for (let i = 0; i < 3; i++) expect(sprite.getSharedMaterial(i)).toBe(web.getSharedMaterial(i));
+    }
+    sprite.sharedMaterials = [first];
+    const instance = sprite.material;
+    sprite.setSharedMaterial(first, 0);
+    expect(sprite.material).toBe(instance);
+    sprite.setSharedMaterial(first, 0, true);
+    expect(instance._owner).toBeNull();
+    expect(sprite.getRenderMaterial(0)).toBe(first);
+    sprite.setSharedMaterial(null, 0);
+    expect(sprite.getRenderMaterial(0)).toBeNull();
+    sprite.customMaterial = null;
+    expect(sprite.getSharedMaterial(0)).toBe(builtinMaterial);
+    sprite.onDestroy();
 });

@@ -14,7 +14,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 
 --write 更新源代码快照；--check 只验证快照是否过时，不把已知缺口豁免为通过。修复 API/字段/native 实现后需同步快照及本矩阵，不能只更新快照而不处理欠项。AST 测试覆盖字段与访问器区分、type-only import 排除、语法热点提取及运行时模块选择。native-ts-build CI 执行检查。
 
-审计包含 17 类、60 个可达 2D 源文件及 52 个 native/绑定/配置文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
+审计包含 17 类、61 个可达 2D 源文件及 52 个 native/绑定/配置文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
 
 原生资产声明把 Web 类型作为 TS 接口，无法用该类型证明原生方法真的绑定。六个资产的记录明确标记为 native prototype/binding review required，不能把“缺失 0”当成完整 API 验收。对象可变语义与资产依赖沿字段/类型和相关 M6.1 报告核对，必须由实际运行测试证明。
 
@@ -27,8 +27,8 @@ node --test tests/scripts/native-2d-audit.test.cjs
 | UITransform | override | 216 | 0 | 2 | M1 / M6.4 |
 | UIRenderer | 保留 Web 实现 | 414 | 0 | 0 | M6.0 / M6.5 |
 | RenderRoot2D | override | 31 | 0 | 0 | M5.1 / M6.4 |
-| Sprite | override | 295 | 0 | 0 | M6.1 |
-| Label | override | 339 | 0 | 14 | M6.1 |
+| Sprite | override | 261 | 0 | 0 | M6.1 |
+| Label | override | 346 | 0 | 14 | M6.1 |
 | Mask | override | 137 | 0 | 22 | M6.3 / M6.4 |
 | Graphics | override | 105 | 3 | 13 | M6.3 |
 | RichText | 保留 Web 实现 | 1035 | 0 | 0 | M6.2 |
@@ -44,10 +44,12 @@ node --test tests/scripts/native-2d-audit.test.cjs
 
 ¹ AST 打印行数排除注释但没有实现最终“纯类型/deprecated 转发”扣除，仅作体积线索。M6.5 须独立执行正式行数/算法门禁，不能靠压缩排版解决超限。
 
+Sprite/Label 共用的 `native-ui-materials.ts` 为 134 行 AST，已纳入文件/导入审计；它安装显式材质 API 桥接，须与叶子壳一起复核，不能只用叶子行数认定最终薄壳门禁通过。
+
 ## 当前残留与修复顺序
 
 1. 初版发现 Label 缺少 14 个序列化字段声明与默认文字/对齐差异，现已修复并补 deserialize/Details/instantiate、native 样式与下划线/实际字号回归，见 [报告](./native-2d-m6.1-label-serialization.md)。完整 API、资源/场景和效果矩阵仍归 M6.1。
-2. Sprite 的 _fillRange 初值、六个壳接口、native 材质与状态更新已修复，见 [报告](./native-2d-m6.1-sprite-api.md)。剩余三个数字/命名枚举初值文本差异已由真实默认值测试确认等价；radial CPU 几何与可变 fillCenter 已补 [对照与生命周期验证](./native-2d-m6.1-radial.md)，继承 API 和完整视觉行为仍待验收。
+2. Sprite 的 _fillRange 初值、六个壳接口、native 材质与状态更新已修复，见 [报告](./native-2d-m6.1-sprite-api.md)。剩余三个数字/命名枚举初值文本差异已由真实默认值测试确认等价；radial CPU 几何与可变 fillCenter 已补 [对照与生命周期验证](./native-2d-m6.1-radial.md)，Sprite/Label 材质槽整体 API 和实际提交已有 [定向验证](./native-2d-m6.1-material-slots.md)。数组原地修改、回调、资源与完整视觉行为仍待验收。
 3. Graphics 缺少 _lineJoin、_lineCap、_miterLimit；固定 CPU 栅格路径和描边语义仍按 M6.3 替换。Mask 的 lateUpdate 在 JS 获取 Graphics frame；材质选择仍由壳进行，归 M6.3/M6.5。
 4. UIRenderer 没有独立 override，组件壳仍继承 Web 基类。基类可达 RenderData、材质和 assembler 管理；Batcher 的 JSB 分支是否消除了执行成本必须通过实际调用计数确认，不能只看叶子壳。
 5. RichText 没有独立 override，HTML/布局仍走 JS，归 M6.2。LabelOutline/LabelShadow 为已弃用的 Label 公共属性转发，不另行下沉算法；它们依赖的 Label API 仍须回归。

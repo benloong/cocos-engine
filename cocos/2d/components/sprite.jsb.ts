@@ -27,13 +27,13 @@ import { EDITOR } from 'internal:constants';
 import { ccenum, cclegacy, warnID } from '../../core';
 import { SpriteAtlas } from '../assets/sprite-atlas';
 import { Material } from '../../asset/assets';
-import type { MaterialInstance } from '../../render-scene/core/material-instance';
 import { BlendFactor } from '../../gfx';
 import { Color } from '../../core/math/color';
 import { Vec2 } from '../../core/math/vec2';
 import { SpriteFrame } from '../assets/sprite-frame';
 import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
+import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterialSlots, syncNativeMaterialSlots } from '../framework/native-ui-materials';
 
 declare const n2d: any;
 
@@ -208,39 +208,6 @@ export class Sprite extends UIRenderer {
         this._syncMaterial();
     }
 
-    public getSharedMaterial (idx = 0): Material | null {
-        if (this._native) {
-            return this._native.getSharedMaterial(idx);
-        }
-        return super.getSharedMaterial(idx);
-    }
-
-    public setSharedMaterial (material: Material | null, index: number, forceUpdate = false): void {
-        super.setSharedMaterial(material, index, forceUpdate);
-        this._native?.setSharedMaterial(material, index);
-    }
-
-    public getMaterialInstance (idx = 0): MaterialInstance | null {
-        if (this._native) {
-            const instance = this._native.getMaterialInstance(idx) as MaterialInstance | null;
-            const previous = this._materialInstances[idx];
-            if (previous && previous !== instance && (previous as any)._owner === this) (previous as any)._owner = null;
-            this._materialInstances[idx] = instance;
-            if (instance) { (instance as any)._owner = this; (instance as any)._subModelIdx = idx; }
-            return instance;
-        }
-        return super.getMaterialInstance(idx);
-    }
-
-    public setMaterialInstance (material: Material | MaterialInstance | null, index = 0): void {
-        if (this._native) this._native.setMaterialInstance(material, index);
-        else super.setMaterialInstance(material, index);
-    }
-
-    public getRenderMaterial (index = 0): Material | null {
-        return this._native ? this._native.getRenderMaterial(index) : super.getRenderMaterial(index);
-    }
-
     public __preload (): void {
         // Native lifecycle owns the render entity; avoid the JS assembler path.
     }
@@ -254,7 +221,7 @@ export class Sprite extends UIRenderer {
             this._native.setUITransform(transform._native);
         }
         this._syncColor();
-        this._syncMaterial();
+        bindNativeMaterialSlots(this);
         this._native.setTrim(this._isTrimmedMode);
         this._native.setGrayscale(this._useGrayscale);
         this._native.setType(this._type);
@@ -280,10 +247,7 @@ export class Sprite extends UIRenderer {
     }
 
     public onDestroy (): void {
-        for (const instance of this._materialInstances) {
-            if (instance && (instance as any)._owner === this) (instance as any)._owner = null;
-        }
-        this._materialInstances.length = 0;
+        releaseNativeMaterialSlots(this);
         const center = this._fillCenter, x = center.x, y = center.y;
         if (this._native) {
             this._native.setEnabled(false);
@@ -320,7 +284,10 @@ export class Sprite extends UIRenderer {
     }
 
     private _syncMaterial (): void {
-        this._native?.setMaterial(this._customMaterial);
+        if (this._native) {
+            this._native.setMaterial(this._customMaterial);
+            syncNativeMaterialSlots(this);
+        }
     }
 
     private _syncFrame (): void {
@@ -336,4 +303,5 @@ export class Sprite extends UIRenderer {
     }
 }
 
+patchNativeMaterialAPIs(Sprite);
 cclegacy.Sprite = Sprite;

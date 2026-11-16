@@ -83,7 +83,7 @@ public:
     void setColorRGBA(float red, float green, float blue, float alpha);
     void setMaterial(Material *material);
     void setPriority(int32_t priority);
-    void setSharedMaterial(Material *material, uint32_t index) override;
+    void setSharedMaterial(Material *material, uint32_t index, bool forceUpdate = false) override;
     void setMaterialInstance(Material *material, uint32_t index = 0) override;
     void setGrayscale(bool enabled);
     bool isGrayscale() const { return _grayscale; }

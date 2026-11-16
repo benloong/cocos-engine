@@ -352,7 +352,10 @@ void Label::setColorRGBA(float r, float g, float b, float a) {
 
 void Label::setMaterial(Material *material) {
     UIRenderer::setMaterial(material);
-    _renderer.setMaterial(material);
+}
+
+void Label::onMaterialChanged() {
+    _renderer.setSharedMaterial(getRenderMaterial(), 0);
 }
 
 void Label::setPriority(int32_t priority) {

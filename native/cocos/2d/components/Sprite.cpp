@@ -202,8 +202,8 @@ void Sprite::setMaterial(Material *material) {
     _dirty = true;
 }
 
-void Sprite::setSharedMaterial(Material *material, uint32_t index) {
-    UIRenderer::setSharedMaterial(material, index);
+void Sprite::setSharedMaterial(Material *material, uint32_t index, bool forceUpdate) {
+    UIRenderer::setSharedMaterial(material, index, forceUpdate);
     _dirty = true;
 }
 void Sprite::setMaterialInstance(Material *material, uint32_t index) {

@@ -59,11 +59,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "a971981dfdcf545f4b0b6aabf9f3f80a47564417d8a97c7fd9c4e91aa9c8db89"
+      "sha256": "a25768d4ad75229f7aa37213bebfb5e68dfc46fa16fb71249a522d7eb2abb385"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "5e5f56b22e0e63eb851642e26cc32de58e92ec2e7acc5282cb5e596841ef0f2f"
+      "sha256": "8f96816e5a872c55fe10e7bcf44dd1897a21af29e4e756b79d37e3c877c8991d"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -75,11 +75,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "224b76cc7bd6708cd4de9b9ee4494a28056b6c745f9336e20d1e4303de8b1b91"
+      "sha256": "5548bfddbcf67f4e05357b5cc836873baa3842e664f520c6024010140eafa21a"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "120a405ebb3f89c1e0f43de48d029eb6f63474ea51002f88e0d24ee49f53c6e8"
+      "sha256": "b53007dcc3647babedd5fe08fd9f72c6aef3523aec2e8f260d57213d07dec22b"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -99,11 +99,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.cpp",
-      "sha256": "277a1b5398c52ab1f982c979ff843e2e14991a6b9961c20bcf8458d62ad57d14"
+      "sha256": "d53ba80ae8d51326b100f763db0eaa768eec4243360a227f353caeb02325bd5b"
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "81139a6d0b29e7df9305a18f3a9f6359078da71221a5864f448091d38a379e20"
+      "sha256": "22272438ae297652d2c342669bc06179a5bb048a321230cbbf71b63a4ab14cc6"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
@@ -2273,6 +2273,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -3773,69 +3774,6 @@
             "decorators": []
           },
           {
-            "name": "getSharedMaterial",
-            "kind": "MethodDeclaration",
-            "visibility": "public",
-            "static": false,
-            "type": "Material | null",
-            "parameters": [
-              "idx = 0"
-            ],
-            "default": null,
-            "decorators": []
-          },
-          {
-            "name": "setSharedMaterial",
-            "kind": "MethodDeclaration",
-            "visibility": "public",
-            "static": false,
-            "type": "void",
-            "parameters": [
-              "material: Material | null",
-              "index: number",
-              "forceUpdate = false"
-            ],
-            "default": null,
-            "decorators": []
-          },
-          {
-            "name": "getMaterialInstance",
-            "kind": "MethodDeclaration",
-            "visibility": "public",
-            "static": false,
-            "type": "MaterialInstance | null",
-            "parameters": [
-              "idx = 0"
-            ],
-            "default": null,
-            "decorators": []
-          },
-          {
-            "name": "setMaterialInstance",
-            "kind": "MethodDeclaration",
-            "visibility": "public",
-            "static": false,
-            "type": "void",
-            "parameters": [
-              "material: Material | MaterialInstance | null",
-              "index = 0"
-            ],
-            "default": null,
-            "decorators": []
-          },
-          {
-            "name": "getRenderMaterial",
-            "kind": "MethodDeclaration",
-            "visibility": "public",
-            "static": false,
-            "type": "Material | null",
-            "parameters": [
-              "index = 0"
-            ],
-            "default": null,
-            "decorators": []
-          },
-          {
             "name": "__preload",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -4115,6 +4053,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -7119,6 +7058,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -8402,6 +8342,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -9644,6 +9585,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -10877,6 +10819,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -11327,6 +11270,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -11564,6 +11508,7 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
+          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
@@ -13752,240 +13697,241 @@
     },
     {
       "file": "cocos/2d/components/label.jsb.ts",
-      "sha256": "10f4b5846073e215fc3e0c7c28458d3b0be0e3fbf8c6b5be5f06a05eb350af32",
-      "printedCodeLines": 339,
+      "sha256": "4727c1ee039df12278ea5e10dfe0809a9229cc826577bd6e66dc9f5433bc3051",
+      "printedCodeLines": 346,
       "runtimeImports": [
         "cc.decorator",
         "../../core",
         "../framework/ui-transform",
         "../framework/ui-renderer",
+        "../framework/native-ui-materials",
         "../assets/font"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native.setNode",
-          "line": 142
+          "line": 143
         },
         {
           "expression": "this._native.setUITransform",
-          "line": 145
+          "line": 146
         },
         {
           "expression": "this._native.setPriority",
-          "line": 147
+          "line": 148
         },
         {
           "expression": "this._native?.measureContent",
-          "line": 152
+          "line": 154
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 156
+          "line": 158
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 160
+          "line": 162
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 165
+          "line": 168
         },
         {
           "expression": "this._native.setNode",
-          "line": 166
+          "line": 169
         },
         {
           "expression": "this._native.setFontAsset",
-          "line": 167
+          "line": 170
         },
         {
           "expression": "this._native?.setString",
-          "line": 182
+          "line": 185
         },
         {
           "expression": "this._native?.getActualFontSize",
-          "line": 199
+          "line": 202
         },
         {
           "expression": "this._native?.setActualFontSize",
-          "line": 200
-        },
-        {
-          "expression": "this._native?.setUnderlineHeight",
           "line": 203
         },
         {
+          "expression": "this._native?.setUnderlineHeight",
+          "line": 206
+        },
+        {
           "expression": "this._native?.setIsBold",
-          "line": 208
+          "line": 211
         },
         {
           "expression": "this._native?.setIsItalic",
-          "line": 214
+          "line": 217
         },
         {
           "expression": "this._native?.setIsUnderline",
-          "line": 220
+          "line": 223
         },
         {
           "expression": "this._native?.setLineHeight",
-          "line": 240
+          "line": 243
         },
         {
           "expression": "this._native?.setOverflow",
-          "line": 286
+          "line": 289
         },
         {
           "expression": "this._native?.setEnableWrapText",
-          "line": 298
+          "line": 301
         },
         {
           "expression": "this._native?.setHorizontalAlign",
-          "line": 311
+          "line": 314
         },
         {
           "expression": "this._native?.setVerticalAlign",
-          "line": 324
+          "line": 327
         },
         {
           "expression": "this._native?.setSpacingX",
-          "line": 333
+          "line": 336
         },
         {
           "expression": "this._native?.setCacheMode",
-          "line": 343
+          "line": 346
         },
         {
           "expression": "this._native?.setColorRGBA",
-          "line": 355
+          "line": 358
         },
         {
-          "expression": "this._native?.setMaterial",
-          "line": 364
+          "expression": "this._native.setMaterial",
+          "line": 368
         },
         {
           "expression": "this._native?.setEnableOutline",
-          "line": 370
-        },
-        {
-          "expression": "this._native?.setOutlineColor",
           "line": 376
         },
         {
-          "expression": "this._native?.setOutlineWidth",
+          "expression": "this._native?.setOutlineColor",
           "line": 382
         },
         {
-          "expression": "this._native?.setEnableShadow",
+          "expression": "this._native?.setOutlineWidth",
           "line": 388
         },
         {
-          "expression": "this._native?.setShadowColor",
+          "expression": "this._native?.setEnableShadow",
           "line": 394
         },
         {
-          "expression": "this._native?.setShadowBlur",
+          "expression": "this._native?.setShadowColor",
           "line": 400
         },
         {
-          "expression": "this._native?.setShadowOffset",
+          "expression": "this._native?.setShadowBlur",
           "line": 406
         },
         {
-          "expression": "this._native?.setFontAsset",
-          "line": 410
-        },
-        {
-          "expression": "this._native?.setFont",
-          "line": 411
-        },
-        {
-          "expression": "this._native?.setFontSize",
+          "expression": "this._native?.setShadowOffset",
           "line": 412
         },
         {
-          "expression": "this._native?.setString",
+          "expression": "this._native?.setFontAsset",
           "line": 416
         },
         {
-          "expression": "this._native?.setActualFontSize",
+          "expression": "this._native?.setFont",
+          "line": 417
+        },
+        {
+          "expression": "this._native?.setFontSize",
           "line": 418
         },
         {
-          "expression": "this._native?.setIsBold",
-          "line": 419
-        },
-        {
-          "expression": "this._native?.setIsItalic",
-          "line": 420
-        },
-        {
-          "expression": "this._native?.setIsUnderline",
-          "line": 421
-        },
-        {
-          "expression": "this._native?.setUnderlineHeight",
+          "expression": "this._native?.setString",
           "line": 422
         },
         {
-          "expression": "this._native?.setLineHeight",
-          "line": 423
-        },
-        {
-          "expression": "this._native?.setEnableWrapText",
+          "expression": "this._native?.setActualFontSize",
           "line": 424
         },
         {
-          "expression": "this._native?.setOverflow",
+          "expression": "this._native?.setIsBold",
           "line": 425
         },
         {
-          "expression": "this._native?.setHorizontalAlign",
+          "expression": "this._native?.setIsItalic",
           "line": 426
         },
         {
-          "expression": "this._native?.setVerticalAlign",
+          "expression": "this._native?.setIsUnderline",
           "line": 427
         },
         {
-          "expression": "this._native?.setSpacingX",
+          "expression": "this._native?.setUnderlineHeight",
           "line": 428
         },
         {
-          "expression": "this._native?.setColorRGBA",
+          "expression": "this._native?.setLineHeight",
           "line": 429
         },
         {
-          "expression": "this._native?.setEnableOutline",
+          "expression": "this._native?.setEnableWrapText",
           "line": 430
         },
         {
-          "expression": "this._native?.setOutlineColor",
+          "expression": "this._native?.setOverflow",
           "line": 431
         },
         {
-          "expression": "this._native?.setOutlineWidth",
+          "expression": "this._native?.setHorizontalAlign",
           "line": 432
         },
         {
-          "expression": "this._native?.setEnableShadow",
+          "expression": "this._native?.setVerticalAlign",
           "line": 433
         },
         {
-          "expression": "this._native?.setShadowColor",
+          "expression": "this._native?.setSpacingX",
           "line": 434
         },
         {
-          "expression": "this._native?.setShadowBlur",
+          "expression": "this._native?.setColorRGBA",
           "line": 435
         },
         {
-          "expression": "this._native?.setShadowOffset",
+          "expression": "this._native?.setEnableOutline",
           "line": 436
         },
         {
-          "expression": "this._native?.setCacheMode",
+          "expression": "this._native?.setOutlineColor",
           "line": 437
+        },
+        {
+          "expression": "this._native?.setOutlineWidth",
+          "line": 438
+        },
+        {
+          "expression": "this._native?.setEnableShadow",
+          "line": 439
+        },
+        {
+          "expression": "this._native?.setShadowColor",
+          "line": 440
+        },
+        {
+          "expression": "this._native?.setShadowBlur",
+          "line": 441
+        },
+        {
+          "expression": "this._native?.setShadowOffset",
+          "line": 442
+        },
+        {
+          "expression": "this._native?.setCacheMode",
+          "line": 443
         }
       ],
       "allocations": [],
@@ -14208,8 +14154,8 @@
     },
     {
       "file": "cocos/2d/components/sprite.jsb.ts",
-      "sha256": "ce9257232fa38988d1d2ea68206badac0f92c51366b7699957800dac44e52c3d",
-      "printedCodeLines": 295,
+      "sha256": "43233ec37b5c13e42a6af1c2ecdc1a81ea2026b2ab44d4f4939ed74a1d4b6d6d",
+      "printedCodeLines": 261,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -14221,7 +14167,8 @@
         "../../core/math/vec2",
         "../assets/sprite-frame",
         "../framework/ui-transform",
-        "../framework/ui-renderer"
+        "../framework/ui-renderer",
+        "../framework/native-ui-materials"
       ],
       "frameMethods": [],
       "nativeCalls": [
@@ -14270,134 +14217,112 @@
           "line": 186
         },
         {
-          "expression": "this._native.getSharedMaterial",
-          "line": 213
-        },
-        {
-          "expression": "this._native?.setSharedMaterial",
-          "line": 220
-        },
-        {
-          "expression": "this._native.getMaterialInstance",
-          "line": 225
-        },
-        {
-          "expression": "this._native.setMaterialInstance",
-          "line": 236
-        },
-        {
-          "expression": "this._native.getRenderMaterial",
-          "line": 241
-        },
-        {
           "expression": "this._native.setNode",
-          "line": 251
+          "line": 218
         },
         {
           "expression": "this._native.setUITransform",
-          "line": 254
+          "line": 221
         },
         {
           "expression": "this._native.setTrim",
-          "line": 258
+          "line": 225
         },
         {
           "expression": "this._native.setGrayscale",
-          "line": 259
+          "line": 226
         },
         {
           "expression": "this._native.setType",
-          "line": 260
+          "line": 227
         },
         {
           "expression": "this._native.setFillType",
-          "line": 261
+          "line": 228
         },
         {
           "expression": "this._native.setFillStart",
-          "line": 262
+          "line": 229
         },
         {
           "expression": "this._native.setFillRange",
-          "line": 263
+          "line": 230
         },
         {
           "expression": "this._native.setFillCenter",
-          "line": 264
+          "line": 231
         },
         {
           "expression": "this._native.setSizeMode",
-          "line": 266
+          "line": 233
         },
         {
           "expression": "this._native.setSrcBlendFactor",
-          "line": 267
+          "line": 234
         },
         {
           "expression": "this._native.setDstBlendFactor",
-          "line": 268
+          "line": 235
         },
         {
           "expression": "this._native.setPriority",
-          "line": 269
+          "line": 236
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 271
+          "line": 238
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 275
+          "line": 242
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 279
+          "line": 246
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 289
+          "line": 253
         },
         {
           "expression": "this._native.setNode",
-          "line": 290
+          "line": 254
         },
         {
           "expression": "this._native.getFillCenterX",
-          "line": 305
+          "line": 269
         },
         {
           "expression": "this._native?.setFillCenter",
-          "line": 306
+          "line": 270
         },
         {
           "expression": "this._native.getFillCenterY",
-          "line": 308
+          "line": 272
         },
         {
           "expression": "this._native?.setFillCenter",
-          "line": 309
+          "line": 273
         },
         {
           "expression": "this._native.setColorRGBA",
-          "line": 318
+          "line": 282
         },
         {
-          "expression": "this._native?.setMaterial",
-          "line": 323
+          "expression": "this._native.setMaterial",
+          "line": 288
         },
         {
           "expression": "this._native.clearFrame",
-          "line": 332
+          "line": 299
         },
         {
           "expression": "this._native.setFrame",
-          "line": 335
+          "line": 302
         }
       ],
       "allocations": [],
-      "loops": [
-        283
-      ]
+      "loops": []
     },
     {
       "file": "cocos/2d/components/sprite.ts",
@@ -14643,6 +14568,86 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": []
+    },
+    {
+      "file": "cocos/2d/framework/native-ui-materials.ts",
+      "sha256": "001ee1a7b63e1203e90033e36229f35dea2620606c8f2070c79893058c56098e",
+      "printedCodeLines": 134,
+      "runtimeImports": [
+        "internal:constants",
+        "../../core"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [
+        {
+          "expression": "owner._native?.resizeMaterials",
+          "line": 52
+        },
+        {
+          "expression": "owner._native.getSharedMaterialCount",
+          "line": 58
+        },
+        {
+          "expression": "owner._native.getRenderMaterial",
+          "line": 60
+        },
+        {
+          "expression": "owner._native.getSharedMaterial",
+          "line": 64
+        },
+        {
+          "expression": "owner._native.setMaterial",
+          "line": 70
+        },
+        {
+          "expression": "owner._native.setSharedMaterial",
+          "line": 73
+        },
+        {
+          "expression": "owner._native.setMaterialInstance",
+          "line": 74
+        },
+        {
+          "expression": "this._native.getSharedMaterial",
+          "line": 85
+        },
+        {
+          "expression": "this._native.setSharedMaterial",
+          "line": 89
+        },
+        {
+          "expression": "this._native.getMaterialInstance",
+          "line": 94
+        },
+        {
+          "expression": "this._native.setMaterialInstance",
+          "line": 105
+        },
+        {
+          "expression": "this._native.getRenderMaterial",
+          "line": 109
+        },
+        {
+          "expression": "this._native?.resizeMaterials",
+          "line": 124
+        },
+        {
+          "expression": "this._native?.resizeMaterials",
+          "line": 140
+        }
+      ],
+      "allocations": [],
+      "loops": [
+        51,
+        59,
+        64,
+        71,
+        122,
+        123,
+        132,
+        138,
+        139
+      ]
     },
     {
       "file": "cocos/2d/framework/render-root-2d.jsb.ts",

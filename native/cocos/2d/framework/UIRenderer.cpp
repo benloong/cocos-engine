@@ -46,13 +46,17 @@ void UIRenderer::setColorRGBA(float red, float green, float blue, float alpha) {
 
 void UIRenderer::setMaterial(Material *material) {
     setSharedMaterial(material, 0);
+    _useBuiltinMaterial = !material;
+    onMaterialChanged();
 }
 
-void UIRenderer::setSharedMaterial(Material *material, uint32_t index) {
+void UIRenderer::setSharedMaterial(Material *material, uint32_t index, bool forceUpdate) {
     if (_materials.size() <= index) {
         _materials.resize(index + 1, nullptr);
     }
-    if (_materials[index] == material) return;
+    const bool wasBuiltin = index == 0 && _useBuiltinMaterial;
+    if (index == 0) _useBuiltinMaterial = false;
+    if (!forceUpdate && !wasBuiltin && _materials[index] == material) return;
     IntrusivePtr<Material> retained(material);
     if (index == 0) _materialInstance = nullptr;
     else if (index < _extraMaterialInstances.size()) _extraMaterialInstances[index] = nullptr;
@@ -60,11 +64,23 @@ void UIRenderer::setSharedMaterial(Material *material, uint32_t index) {
     if (index == 0) {
         _material = retained;
     }
+    onMaterialChanged();
 }
 
 Material *UIRenderer::getSharedMaterial(uint32_t index) const {
-    if (index == 0 && (index >= _materials.size() || !_materials[index])) return getBuiltinMaterial();
+    if (index == 0 && _useBuiltinMaterial) return getBuiltinMaterial();
     return index < _materials.size() ? _materials[index].get() : nullptr;
+}
+
+void UIRenderer::resizeMaterials(uint32_t size) {
+    _materials.resize(size);
+    _extraMaterialInstances.resize(size);
+    if (size == 0) {
+        _materialInstance = nullptr;
+        _material = nullptr;
+        _useBuiltinMaterial = false;
+    }
+    onMaterialChanged();
 }
 
 void UIRenderer::setPriority(int32_t priority) {
@@ -80,18 +96,21 @@ Material *UIRenderer::getMaterialInstance(uint32_t index) const {
     auto &instance = index == 0 ? _materialInstance : _extraMaterialInstances[index];
     IMaterialInstanceInfo info; info.parent = parent; info.subModelIdx = index;
     instance = new MaterialInstance(info);
+    const_cast<UIRenderer *>(this)->onMaterialChanged();
     return instance.get();
 }
 void UIRenderer::setMaterialInstance(Material *material, uint32_t index) {
     if (index >= _extraMaterialInstances.size()) _extraMaterialInstances.resize(index + 1);
     auto &instance = index == 0 ? _materialInstance : _extraMaterialInstances[index];
     if (material && material->getParent()) {
+        if (_materials.size() <= index) _materials.resize(index + 1);
         instance = material;
     } else {
         IntrusivePtr<Material> retained(material);
         instance = nullptr;
         setSharedMaterial(retained, index);
     }
+    onMaterialChanged();
 }
 
 Material *UIRenderer::getBuiltinMaterial() const {

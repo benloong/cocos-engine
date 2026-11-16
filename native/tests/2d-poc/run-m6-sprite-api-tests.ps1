@@ -23,6 +23,7 @@ foreach ($item in $NativeExecutables) {
 }
 & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
     (Join-Path $repoRoot 'tests/ui/native-2d-m2-sprite-shell.test.ts') `
+    (Join-Path $repoRoot 'tests/ui/native-2d-m3-label-shell.test.ts') `
     (Join-Path $repoRoot 'tests/ui/native-2d-m2-sprite-frame-shell.test.ts') `
     (Join-Path $repoRoot 'tests/assets/native-material-instance.test.ts')
-if ($LASTEXITCODE -ne 0) { throw 'Sprite API API/serialization tests failed' }
+if ($LASTEXITCODE -ne 0) { throw 'Sprite/Label material API/serialization tests failed' }

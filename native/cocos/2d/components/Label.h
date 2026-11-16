@@ -125,6 +125,7 @@ public:
     void prepareRenderEntity(float opacity) override;
 
 private:
+    void onMaterialChanged() override;
     void rebuildTexture();
     void syncFontAsset();
     void syncContentSize();

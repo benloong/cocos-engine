@@ -27,6 +27,7 @@ import type { Material } from '../../asset/assets';
 import { Color, Vec2 } from '../../core';
 import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
+import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterialSlots, syncNativeMaterialSlots } from '../framework/native-ui-materials';
 import { Font } from '../assets/font';
 
 declare const n2d: any;
@@ -145,6 +146,7 @@ export class Label extends UIRenderer {
             this._native.setUITransform((transform as any)._native);
         }
         this._native.setPriority(this.priority);
+        bindNativeMaterialSlots(this);
         this._syncAll();
     }
 
@@ -161,6 +163,7 @@ export class Label extends UIRenderer {
     }
 
     public onDestroy (): void {
+        releaseNativeMaterialSlots(this);
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
@@ -361,7 +364,10 @@ export class Label extends UIRenderer {
 
     set customMaterial (value: Material | null) {
         this._customMaterial = value;
-        this._native?.setMaterial(value);
+        if (this._native) {
+            this._native.setMaterial(value);
+            syncNativeMaterialSlots(this);
+        }
     }
 
     get enableOutline (): boolean { return this._enableOutline; }
@@ -437,3 +443,5 @@ export class Label extends UIRenderer {
         this._native?.setCacheMode(this._cacheMode);
     }
 }
+
+patchNativeMaterialAPIs(Label);

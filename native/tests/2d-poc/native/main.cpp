@@ -292,6 +292,30 @@ void testLayoutAndMaterials() {
     check(label.getRenderMaterial() == builtin, "Label resolves builtin material in native");
     cc::IntrusivePtr<cc::Material> custom(new cc::Material()); label.setMaterial(custom);
     check(label.getRenderMaterial() == custom, "Label custom material overrides default");
+    cc::Node labelNode("label-material-slots"); cc::UITransform labelUI(&labelNode);
+    label.setNode(&labelNode); label.setUITransform(&labelUI);
+    label.setFontSize(16); label.setLineHeight(20); label.setString("material");
+    auto *labelEntity = static_cast<cc::RenderEntity *>(labelNode.getUserData());
+    label.prepareRenderEntity(1.F);
+    check(labelEntity && labelEntity->getStaticDrawInfoSize() == 1
+          && labelEntity->getStaticRenderDrawInfo(0)->getMaterial() == custom, "Label submits custom slot material");
+    cc::IntrusivePtr<cc::Material> labelInstance(label.getMaterialInstance(0));
+    label.prepareRenderEntity(1.F);
+    check(labelEntity && labelEntity->getStaticDrawInfoSize() == 1
+          && labelEntity->getStaticRenderDrawInfo(0)->getMaterial() == labelInstance, "Label submits actual native instance");
+    label.setSharedMaterial(nullptr, 0); label.prepareRenderEntity(1.F);
+    check(labelEntity && labelEntity->getStaticDrawInfoSize() == 0, "explicit empty Label slot clears old draw info");
+    label.setMaterial(nullptr); label.prepareRenderEntity(1.F);
+    check(labelEntity && labelEntity->getStaticDrawInfoSize() == 1
+          && labelEntity->getStaticRenderDrawInfo(0)->getMaterial() == builtin, "Label custom clear restores builtin submission");
+    label.setSharedMaterial(custom, 2);
+    const auto retainedRefs = custom->getRefCount();
+    check(label.getSharedMaterialCount() == 3, "secondary Label slots have native array extent");
+    label.resizeMaterials(1);
+    check(label.getSharedMaterialCount() == 1 && custom->getRefCount() < retainedRefs, "shrinking Label slots releases shared references");
+    label.resizeMaterials(0); label.prepareRenderEntity(1.F);
+    check(labelEntity && labelEntity->getStaticDrawInfoSize() == 0, "empty Label array clears renderer");
+    label.setNode(nullptr); label.setUITransform(nullptr);
     cc::Node node("graphics-default-material"); cc::UITransform ui(&node);
     cc::Graphics graphics; graphics.setNode(&node); graphics.setUITransform(&ui);
     graphics.rect(0, 0, 4, 4); graphics.fill();
@@ -342,7 +366,7 @@ void testSpriteApiAndMaterials() {
     check(sprite.getRenderMaterial() == custom && custom->getRefCount() > materialRefs, "custom material wins and is retained");
     sprite.setMaterial(nullptr); check(sprite.getRenderMaterial() == gray && custom->getRefCount() == materialRefs, "clear custom returns to builtin and releases reference");
     sprite.setSharedMaterial(custom,0); check(sprite.getRenderMaterial() == custom, "shared material replacement affects renderer");
-    sprite.setSharedMaterial(nullptr,0); check(sprite.getRenderMaterial() == gray, "shared material clear restores variant");
+    sprite.setSharedMaterial(nullptr,0); check(sprite.getRenderMaterial() == nullptr, "shared material clear removes render slot");
     sprite.setSharedMaterial(custom,1); auto *secondInstance = sprite.getMaterialInstance(1);
     check(secondInstance != custom && secondInstance->getParent() == custom && sprite.getRenderMaterial(1) == secondInstance, "secondary material instance is independent");
     sprite.setMaterialInstance(nullptr,1); check(sprite.getRenderMaterial(1) == nullptr, "secondary instance clear releases slot");
@@ -351,6 +375,7 @@ void testSpriteApiAndMaterials() {
     check(sprite.getSharedMaterial(0) == promoted && promoted->getParent() == custom, "instance promotion retains before cache release");
     sprite.setSharedMaterial(nullptr,0);
     check(custom->getRefCount() == materialRefs, "all material slots release custom reference");
+    sprite.setMaterial(nullptr);
     cc::IntrusivePtr<cc::RenderTexture> rt(new cc::RenderTexture());
     sprite.setFrame(rt,0,0,4,4,4,4,0,0,4,4,false);
     check(frame->getRefCount() == frameRefs, "scalar frame replacement drops old asset");

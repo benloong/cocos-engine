@@ -5,11 +5,24 @@ import { Label as WebLabel } from '../../cocos/2d/components/label';
 import { deserialize, Details } from '../../cocos/serialization/deserialize';
 import { instantiate } from '../../exports/base';
 import { Color } from '../../cocos/core/math/color';
+import { Material } from '../../cocos/asset/assets/material';
+
+let shared: any[] = [], instances: any[] = [];
 
 const nativeLabel = {
     setNode: jest.fn(),
     setUITransform: jest.fn(),
-    setMaterial: jest.fn(),
+    setMaterial: jest.fn((value) => { shared[0] = value; instances[0] = null; }),
+    getSharedMaterialCount: jest.fn(() => shared.length),
+    getSharedMaterial: jest.fn((index) => shared[index] ?? null),
+    getRenderMaterial: jest.fn((index) => instances[index] ?? shared[index] ?? null),
+    setSharedMaterial: jest.fn((value, index) => { shared[index] = value; instances[index] = null; }),
+    getMaterialInstance: jest.fn((index) => instances[index] ?? (instances[index] = shared[index] ? { parent: shared[index] } : null)),
+    setMaterialInstance: jest.fn((value, index) => {
+        if (value?.parent) instances[index] = value;
+        else { shared[index] = value; instances[index] = null; }
+    }),
+    resizeMaterials: jest.fn((size) => { shared.length = instances.length = size; }),
     setPriority: jest.fn(),
     setEnabled: jest.fn(),
     setString: jest.fn(),
@@ -49,7 +62,29 @@ beforeAll(() => {
     };
 });
 
-beforeEach(() => { jest.clearAllMocks(); });
+beforeEach(() => { jest.clearAllMocks(); shared = []; instances = []; });
+
+test('Label binds serialized material slots and releases instance owners on destruction', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const node = new Node('label-materials'); node.addComponent(UITransform);
+    const label: any = node.addComponent(Label);
+    const material = new Material();
+    label.sharedMaterials = [material, material];
+    label.onLoad();
+    expect(label.sharedMaterials).toEqual([material, material]);
+    const instance = label.materials[1];
+    expect(instance._owner).toBe(label);
+    label.sharedMaterials = [null];
+    expect(instance._owner).toBeNull();
+    expect(label.getRenderMaterial(0)).toBeNull();
+    label.customMaterial = material;
+    const current = label.material;
+    expect(current.parent).toBe(material);
+    label.onDestroy();
+    expect(current._owner).toBeNull();
+    expect(shared).toEqual([]);
+    expect(label.sharedMaterials).toEqual([]);
+});
 
 test('Label M3 shell attaches and forwards text properties', () => {
     const { Label, Overflow, HorizontalTextAlignment } = require('../../cocos/2d/components/label.jsb') as typeof import('../../cocos/2d/components/label.jsb');
@@ -60,7 +95,7 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.onLoad();
     expect((global as any).n2d.Label).toHaveBeenCalled();
     expect(nativeLabel.setNode).toHaveBeenCalledWith(node);
-    expect(nativeLabel.setMaterial).not.toHaveBeenCalled();
+    expect(nativeLabel.setMaterial).toHaveBeenCalledWith(null);
 
     label.string = 'Hello';
     label.fontSize = 24;
