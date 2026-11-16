@@ -355,6 +355,7 @@
                 "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
                 "cocos/2d/components/sprite.ts": "cocos/2d/components/sprite.jsb.ts",
                 "cocos/2d/components/label.ts": "cocos/2d/components/label.jsb.ts",
+                "cocos/2d/assembler/index.ts": "cocos/2d/assembler/index.jsb.ts",
                 "cocos/2d/components/rich-text.ts": "cocos/2d/components/rich-text.jsb.ts",
                 "cocos/2d/components/mask.ts": "cocos/2d/components/mask.jsb.ts",
                 "cocos/2d/components/graphics.ts": "cocos/2d/components/graphics.jsb.ts",

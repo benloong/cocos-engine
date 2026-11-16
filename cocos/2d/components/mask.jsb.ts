@@ -24,7 +24,8 @@
 
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
 import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
-import { Material, SpriteFrame } from '../../asset/assets';
+import { Material } from '../../asset/assets';
+import { SpriteFrame } from '../assets/sprite-frame';
 import { Component } from '../../scene-graph/component';
 import { Node } from '../../scene-graph/node';
 import { UITransform } from '../framework/ui-transform';

@@ -16,6 +16,9 @@ const materialAPIs=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/f
 const labelShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/components/label.jsb.ts'),'utf8'),{
     compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS,experimentalDecorators:true},
 }).outputText;
+const assemblerShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/assembler/index.jsb.ts'),'utf8'),{
+    compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
+}).outputText;
 const script=`(function () { try {
 const cclegacy={};
 class Vec2 { constructor(x=0,y=0){this.x=x;this.y=y;} set(value){this.x=value.x;this.y=value.y;} }
@@ -35,6 +38,8 @@ function require(id){
  if(id==='../framework/ui-transform')return {UITransform:n2d.UITransform};
  if(id==='../framework/ui-renderer')return {UIRenderer};
  if(id==='../framework/native-ui-materials')return materialAPIExports;
+ if(id==='../components/sprite')return exports;
+ if(id==='../components/label')return labelExports;
  throw new Error(id);
 }
 jsb.Material.prototype._ctor=function(){};
@@ -44,7 +49,9 @@ const materialAPIExports={}; ((exports)=>{ ${materialAPIs} })(materialAPIExports
 const exports={};
 ${source}
 const labelExports={}; ((exports)=>{ ${labelShell} })(labelExports);
+const assemblerExports={}; ((exports)=>{ ${assemblerShell} })(assemblerExports);
 function check(value,message){if(!value)throw new Error(message);}
+check(exports.Sprite.Assembler===assemblerExports.spriteAssembler&&labelExports.Label.Assembler===assemblerExports.labelAssembler,'native assembler manager registration');
 const node=new jsb.Node('sprite-api-shell');
 const transform=new n2d.UITransform(node); let events=0;
 node.getComponent=()=>({_native:transform}); node.emit=()=>{events++;};
@@ -79,6 +86,11 @@ const frame=new jsb.SpriteFrame();
 sprite.spriteFrame=frame;check(events===1,'frame without texture retained with editor event');
 const texture=new jsb.Texture2D();texture.create(4,4);frame.resetWithTexture(texture);
 sprite._native.prepare(1);check(transform.getWidth()===4,'late texture/frame update');
+const spriteAssembler=assemblerExports.spriteAssembler.getAssembler(sprite);
+sprite._color.r=64;sprite._color.a=128;spriteAssembler.updateColor(sprite);
+check(Math.abs(sprite._native.getRenderEntity().getColorAlpha()-128/255)<0.00001,'native assembler color forwarding');
+spriteAssembler.updateUVs(sprite);spriteAssembler.updateRenderData(sprite);
+sprite._native.prepare(1);check(transform.getWidth()===4,'native Sprite geometry still prepares after assembler invalidation');
 const atlas=new jsb.SpriteAtlas();atlas.addSpriteFrame('hero',frame);sprite.spriteAtlas=atlas;
 sprite.changeSpriteFrameFromAtlas('hero');check(sprite.spriteFrame===frame&&events===1,'atlas switch same frame no duplicate event');
 const second=new jsb.SpriteFrame();second.resetWithTexture(texture);atlas.addSpriteFrame('second',second);
@@ -90,11 +102,18 @@ for(let i=0;i<1000;i++){
 }
 const lastInstance=sprite.getMaterialInstance(0);
 sprite.onDestroy();check(sprite._native===null&&lastInstance.owner===null,'Sprite destroy detaches instance owner');
+spriteAssembler.updateRenderData(sprite);spriteAssembler.updateUVs(sprite);spriteAssembler.updateColor(sprite);
 check(Object.getOwnPropertyDescriptor(center,'x').get===undefined&&center.x===0.5,'destroy detaches center view');
 const labelNode=new jsb.Node('label-material-shell');
 const labelTransform=new n2d.UITransform(labelNode);
 labelNode.getComponent=()=>({_native:labelTransform});
 const label=new labelExports.Label(); label.node=labelNode; label.onLoad();
+const labelAssembler=assemblerExports.labelAssembler.getAssembler(label);
+label.string='native adapter';labelAssembler.updateRenderData(label);
+check(label._native.getContentWidth()>0,'native Label assembler builds text');
+label._color.r=96;labelAssembler.updateColor(label);
+labelAssembler.updateRenderData(label);
+check(label._native.getOpaquePixels()>0,'native Label still renders after assembler color update');
 label.sharedMaterials=[custom,normal];
 const labelInstances=label.materials;
 check(labelInstances.length===2&&labelInstances[0].parent===custom&&labelInstances[1].owner===label,'Label actual shell native material slots');
@@ -104,6 +123,7 @@ check(labelOld.owner===null&&label.getRenderMaterial(0)===null,'Label truncation
 label.customMaterial=custom;
 const labelCurrent=label.getMaterialInstance(0);
 label.onDestroy();
+labelAssembler.updateRenderData(label);labelAssembler.updateColor(label);
 check(labelCurrent.owner===null&&label.sharedMaterials.length===0,'Label destroy clears native and JS material references');
 labelTransform.detach();
 transform.detach();return 'OK';

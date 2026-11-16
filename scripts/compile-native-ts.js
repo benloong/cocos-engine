@@ -118,7 +118,8 @@ async function compileTsEngine () {
         rootDir: buildOutput,
         // outDir: normalizePath(ps.join(buildOutput, '__out__')),
         noEmit: true,
-        target: 'ES2015',
+        target: ts.ScriptTarget.ES2015,
+        moduleResolution: ts.ModuleResolutionKind.NodeJs,
         downlevelIteration: true,
     };
     console.log('compiler options: ', compilerOptions);

@@ -146,7 +146,7 @@ export class UITransform extends Component {
     }
 
     public __preload (): void {
-        this.node._uiProps.uiTransformComp = this as unknown as import('./ui-transform').UITransform;
+        this.node._uiProps.uiTransformComp = this as unknown as typeof this.node._uiProps.uiTransformComp;
     }
 
     public onLoad (): void {

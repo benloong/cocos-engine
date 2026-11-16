@@ -51,4 +51,6 @@ test('current runtime gaps remain visible instead of being called a passing gate
     assert.ok(report.classes.some(c=>c.name==='UIRenderer'));
     assert.ok(report.classes.some(c=>c.name==='RichText'));
     for(const c of report.classes) assert.ok(c.imports.within2d.includes(c.runtime));
+    assert.ok(report.entrypointImports.within2d.includes('cocos/2d/assembler/index.jsb.ts'));
+    assert.deepEqual(report.entrypointImports.within2d.filter(file => /\/assembler\/(label|sprite)\//.test(file)), []);
 });

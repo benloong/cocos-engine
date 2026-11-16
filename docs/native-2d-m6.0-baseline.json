@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "3e12ad6307746bf4f127780fe83d2837cc55264a6f785bef7ceb054f99a6748e"
+      "sha256": "8bc6e5f164cad4fb2cf22771fc6a2926c2e1c40fbdb7b09bc659c33d3e1bdffa"
     },
     {
       "file": "cocos/native-binding/decorators-2d.generated.ts",
@@ -247,7 +247,7 @@
     },
     {
       "file": "scripts/compile-native-ts.js",
-      "sha256": "ae26daebb0b3e76f0362169c2c2e7278e3b9c4a4dcf6387b0db49cfe885cfc26"
+      "sha256": "0dfa1228ea3294eaa68313d85889787d938ca2d580de290187bbb7e7c271a360"
     }
   ],
   "limitations": [
@@ -258,6 +258,7 @@
     "Native call sites are not measured per-frame call counts."
   ],
   "native2dOverrides": {
+    "cocos/2d/assembler/index.ts": "cocos/2d/assembler/index.jsb.ts",
     "cocos/2d/assets/bitmap-font.ts": "cocos/2d/assets/bitmap-font.jsb.ts",
     "cocos/2d/assets/font.ts": "cocos/2d/assets/font.jsb.ts",
     "cocos/2d/assets/label-atlas.ts": "cocos/2d/assets/label-atlas.jsb.ts",
@@ -274,6 +275,121 @@
     "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
     "cocos/2d/poc/native-2d-poc.ts": "cocos/2d/poc/native-2d-poc.jsb.ts",
     "cocos/2d/renderer/native-2d.ts": "cocos/2d/renderer/native-2d.jsb.ts"
+  },
+  "entrypointImports": {
+    "within2d": [
+      "cocos/2d/assembler/index.jsb.ts",
+      "cocos/2d/assembler/utils.ts",
+      "cocos/2d/assets/bitmap-font.jsb.ts",
+      "cocos/2d/assets/font.jsb.ts",
+      "cocos/2d/assets/index.ts",
+      "cocos/2d/assets/label-atlas.jsb.ts",
+      "cocos/2d/assets/sprite-atlas.jsb.ts",
+      "cocos/2d/assets/sprite-frame.jsb.ts",
+      "cocos/2d/assets/ttf-font.jsb.ts",
+      "cocos/2d/components/deprecated.ts",
+      "cocos/2d/components/graphics.jsb.ts",
+      "cocos/2d/components/index.ts",
+      "cocos/2d/components/label-outline.ts",
+      "cocos/2d/components/label-shadow.ts",
+      "cocos/2d/components/label.jsb.ts",
+      "cocos/2d/components/mask.jsb.ts",
+      "cocos/2d/components/rich-text.jsb.ts",
+      "cocos/2d/components/sprite.jsb.ts",
+      "cocos/2d/components/ui-mesh-renderer.ts",
+      "cocos/2d/components/ui-opacity.jsb.ts",
+      "cocos/2d/components/ui-static-batch.ts",
+      "cocos/2d/event/index.ts",
+      "cocos/2d/event/pointer-event-dispatcher.ts",
+      "cocos/2d/framework/canvas.ts",
+      "cocos/2d/framework/deprecated-1.2.0.ts",
+      "cocos/2d/framework/deprecated-3.0.0.ts",
+      "cocos/2d/framework/deprecated-3.6.0.ts",
+      "cocos/2d/framework/deprecated.ts",
+      "cocos/2d/framework/index.ts",
+      "cocos/2d/framework/native-ui-materials.ts",
+      "cocos/2d/framework/render-root-2d.jsb.ts",
+      "cocos/2d/framework/sprite-renderer.ts",
+      "cocos/2d/framework/ui-component.ts",
+      "cocos/2d/framework/ui-renderer-manager.ts",
+      "cocos/2d/framework/ui-renderer.ts",
+      "cocos/2d/framework/ui-transform.jsb.ts",
+      "cocos/2d/index.ts",
+      "cocos/2d/renderer/base.ts",
+      "cocos/2d/renderer/batcher-2d.ts",
+      "cocos/2d/renderer/buffer-accessor.ts",
+      "cocos/2d/renderer/deprecated.ts",
+      "cocos/2d/renderer/draw-batch.ts",
+      "cocos/2d/renderer/i-batcher.ts",
+      "cocos/2d/renderer/mesh-buffer.ts",
+      "cocos/2d/renderer/native-2d.jsb.ts",
+      "cocos/2d/renderer/render-data.ts",
+      "cocos/2d/renderer/render-draw-info.ts",
+      "cocos/2d/renderer/render-entity.ts",
+      "cocos/2d/renderer/static-vb-accessor.ts",
+      "cocos/2d/renderer/stencil-manager.ts",
+      "cocos/2d/renderer/vertex-format.ts",
+      "cocos/2d/utils/dynamic-atlas/atlas-manager.ts",
+      "cocos/2d/utils/dynamic-atlas/atlas.ts",
+      "cocos/2d/utils/font-family.ts",
+      "cocos/2d/utils/font-loader.ts",
+      "cocos/2d/utils/html-text-parser.ts",
+      "cocos/2d/utils/index.ts",
+      "cocos/2d/utils/text-utils.ts"
+    ],
+    "boundaries": [
+      "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
+      "cocos/asset/asset-manager/downloader.ts",
+      "cocos/asset/asset-manager/factory.ts",
+      "cocos/asset/asset-manager/index.ts",
+      "cocos/asset/asset-manager/utilities.ts",
+      "cocos/asset/assets/asset-enum.ts",
+      "cocos/asset/assets/asset.jsb.ts",
+      "cocos/asset/assets/image-asset.jsb.ts",
+      "cocos/asset/assets/index.jsb.ts",
+      "cocos/asset/assets/material.jsb.ts",
+      "cocos/asset/assets/texture-2d.jsb.ts",
+      "cocos/asset/assets/texture-base.jsb.ts",
+      "cocos/core/global-exports.ts",
+      "cocos/core/index.ts",
+      "cocos/core/math/color.ts",
+      "cocos/core/math/vec2.ts",
+      "cocos/game/director.ts",
+      "cocos/game/index.ts",
+      "cocos/gfx/base/define.ts",
+      "cocos/gfx/index.jsb.ts",
+      "cocos/input/index.ts",
+      "cocos/input/input.ts",
+      "cocos/input/types/event-enum.ts",
+      "cocos/input/types/index.ts",
+      "cocos/misc/camera-component.ts",
+      "cocos/misc/index.ts",
+      "cocos/misc/model-renderer.ts",
+      "cocos/misc/renderer.ts",
+      "cocos/native-binding/decorators.ts",
+      "cocos/render-scene/core/pass.jsb.ts",
+      "cocos/render-scene/index.ts",
+      "cocos/render-scene/scene/camera.jsb.ts",
+      "cocos/render-scene/scene/index.jsb.ts",
+      "cocos/render-scene/scene/model.jsb.ts",
+      "cocos/rendering/define.ts",
+      "cocos/root.jsb.ts",
+      "cocos/scene-graph/component.ts",
+      "cocos/scene-graph/index.jsb.ts",
+      "cocos/scene-graph/layers.ts",
+      "cocos/scene-graph/node-enum.ts",
+      "cocos/scene-graph/node-event-processor.ts",
+      "cocos/scene-graph/node-event.ts",
+      "cocos/scene-graph/node.jsb.ts",
+      "cocos/sorting/sorting-layers.ts",
+      "cocos/ui/view.ts",
+      "cocos/ui/widget.ts"
+    ],
+    "unresolved": [
+      "cc.decorator",
+      "internal:constants",
+      "pal/minigame"
+    ]
   },
   "classes": [
     {
@@ -13889,6 +14005,40 @@
   ],
   "files": [
     {
+      "file": "cocos/2d/assembler/index.jsb.ts",
+      "sha256": "9a74194ee1e5e29c494db09d36857ebe3946dfa9ddfe178a27f0f005e5916dbf",
+      "printedCodeLines": 35,
+      "runtimeImports": [
+        "../components/label",
+        "../components/sprite"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [
+        {
+          "expression": "(comp as unknown as NativeRenderer)._native?.setDirty",
+          "line": 42
+        },
+        {
+          "expression": "(comp as unknown as NativeRenderer)._native?.setDirty",
+          "line": 43
+        },
+        {
+          "expression": "_native?.setColorRGBA",
+          "line": 46
+        },
+        {
+          "expression": "(comp as unknown as NativeRenderer)._native?.updateRenderData",
+          "line": 50
+        },
+        {
+          "expression": "_native?.setColorRGBA",
+          "line": 53
+        }
+      ],
+      "allocations": [],
+      "loops": []
+    },
+    {
       "file": "cocos/2d/assembler/utils.ts",
       "sha256": "637aab32c8fa928812322fbed80d2da5ed2200683b866a0caf5734b1456d0940",
       "printedCodeLines": 91,
@@ -14084,8 +14234,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "f32063eada87b4768802129a55ddf04ab23c6f014422eeead2d4c67db2b5d304",
-      "printedCodeLines": 210,
+      "sha256": "a0e521378ae4cd193ae25552d4aa68b6963b3471969b2f4633a0330664e9fb20",
+      "printedCodeLines": 211,
       "runtimeImports": [
         "../../core",
         "../../asset/assets/asset",
@@ -14098,12 +14248,12 @@
       "nativeCalls": [
         {
           "expression": "jsb.Asset.prototype._ctor.apply",
-          "line": 80
+          "line": 81
         }
       ],
       "allocations": [],
       "loops": [
-        67
+        68
       ]
     },
     {
@@ -14692,12 +14842,13 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "81e0e784a2ca405e655aaa52153fe697c97b3777b4ae3d51d9431a35fcdf1625",
-      "printedCodeLines": 137,
+      "sha256": "7171a2464a8f84cc8f13ac1e8735dff1f6b97a1fbfd0aeb3eb3498b536237336",
+      "printedCodeLines": 138,
       "runtimeImports": [
         "cc.decorator",
         "../../asset/asset-manager/builtin-res-mgr",
         "../../asset/assets",
+        "../assets/sprite-frame",
         "../../scene-graph/component",
         "../../scene-graph/node",
         "../framework/ui-transform",
@@ -14706,85 +14857,85 @@
       "frameMethods": [
         {
           "name": "lateUpdate",
-          "line": 156
+          "line": 157
         }
       ],
       "nativeCalls": [
         {
           "expression": "this._native.setNode",
-          "line": 77
+          "line": 78
         },
         {
           "expression": "this._native.setUITransform",
-          "line": 80
+          "line": 81
         },
         {
           "expression": "this._native.setMaterial",
-          "line": 84
+          "line": 85
         },
         {
           "expression": "this._native.setType",
-          "line": 86
+          "line": 87
         },
         {
           "expression": "this._native.setInverted",
-          "line": 90
-        },
-        {
-          "expression": "this._native.setAlphaThreshold",
           "line": 91
         },
         {
+          "expression": "this._native.setAlphaThreshold",
+          "line": 92
+        },
+        {
           "expression": "this._native.setSpriteFrame",
-          "line": 93
+          "line": 94
         },
         {
           "expression": "this._native.setPriority",
-          "line": 95
-        },
-        {
-          "expression": "this._native.setEnabled",
           "line": 96
         },
         {
-          "expression": "this._native?.setEnabled",
-          "line": 100
+          "expression": "this._native.setEnabled",
+          "line": 97
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 104
+          "line": 101
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 105
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 109
-        },
-        {
-          "expression": "this._native.setNode",
           "line": 110
         },
         {
+          "expression": "this._native.setNode",
+          "line": 111
+        },
+        {
           "expression": "this._native?.setType",
-          "line": 121
+          "line": 122
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 130
+          "line": 131
         },
         {
           "expression": "(this._graphics as any)._native?.getFrame",
-          "line": 160
+          "line": 161
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 163
+          "line": 164
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 173
+          "line": 174
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 190
+          "line": 191
         }
       ],
       "allocations": [],
@@ -15296,6 +15447,44 @@
       ]
     },
     {
+      "file": "cocos/2d/event/index.ts",
+      "sha256": "59d8e88b8aba6c7bb6a70a4fdd2550747b88fbaa2b5c67d221d4eef5c2e9f183",
+      "printedCodeLines": 1,
+      "runtimeImports": [
+        "./pointer-event-dispatcher"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
+      "file": "cocos/2d/event/pointer-event-dispatcher.ts",
+      "sha256": "6460922bc2a22af82d81e5fa6a803b21495f19e67b8bf24bfeb8007b5aaddbf4",
+      "printedCodeLines": 229,
+      "runtimeImports": [
+        "../../scene-graph/node",
+        "../../input",
+        "../../input/types",
+        "../../scene-graph/node-event-processor",
+        "../../core",
+        "../../input/types/event-enum",
+        "../../input/input"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        107,
+        132,
+        184,
+        196,
+        203,
+        215,
+        242
+      ]
+    },
+    {
       "file": "cocos/2d/framework/canvas.ts",
       "sha256": "2af98ed7ecade4188e04343d597f3ea983379f38434d97483a2305940d51f867",
       "printedCodeLines": 154,
@@ -15612,7 +15801,7 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "3987f391d8bb6c40010df13b2f6774c6a1c31456ea64fb57fc3f4682ec75b699",
+      "sha256": "69f516c913635cf3cae2ab9969ba271cb2fb8e7c45b9cfb39d55a860c84d2a6f",
       "printedCodeLines": 216,
       "runtimeImports": [
         "cc.decorator",
@@ -15759,6 +15948,31 @@
       ]
     },
     {
+      "file": "cocos/2d/index.ts",
+      "sha256": "4922d11e3f8b4da3eb5b23f0394bdf33a441fe3cce753b1b950b56be50ae0426",
+      "printedCodeLines": 22,
+      "runtimeImports": [
+        "./assembler",
+        "./renderer/render-data",
+        "./renderer/mesh-buffer",
+        "./renderer/stencil-manager",
+        "../core",
+        "./event",
+        "./renderer/batcher-2d",
+        "./assets",
+        "./framework",
+        "./components",
+        "./renderer/render-data",
+        "./renderer/base",
+        "./renderer/deprecated",
+        "./utils"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
       "file": "cocos/2d/renderer/base.ts",
       "sha256": "c14a26ea8afb635edfdbd2ee2bd23e5b12a7ee92506dbadb6ab86aa3d07fff70",
       "printedCodeLines": 16,
@@ -15861,6 +16075,24 @@
       "runtimeImports": [
         "../../gfx",
         "./vertex-format"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
+      "file": "cocos/2d/renderer/deprecated.ts",
+      "sha256": "b8ba1c9a55a9ca093eed65657a304aa735a9775d0e2903d81d7e5bd8ffe77b0b",
+      "printedCodeLines": 68,
+      "runtimeImports": [
+        "./vertex-format",
+        "./batcher-2d",
+        "./draw-batch",
+        "../../core",
+        "./mesh-buffer",
+        "./render-data",
+        "../../gfx/base/define"
       ],
       "frameMethods": [],
       "nativeCalls": [],
@@ -16160,6 +16392,139 @@
       "loops": [
         132,
         149
+      ]
+    },
+    {
+      "file": "cocos/2d/utils/dynamic-atlas/atlas-manager.ts",
+      "sha256": "bfa937306065e9f7eba06155397b6a06fd5498b22b537d841d4d93bf1e2abf3f",
+      "printedCodeLines": 148,
+      "runtimeImports": [
+        "internal:constants",
+        "../../../core",
+        "./atlas",
+        "../../../game",
+        "../../assets",
+        "../../../gfx/base/define",
+        "../../../asset/assets/texture-base",
+        "../../../asset/assets"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        223,
+        244,
+        264
+      ]
+    },
+    {
+      "file": "cocos/2d/utils/dynamic-atlas/atlas.ts",
+      "sha256": "fde6c2341873ce25de4c79970a7f4ec00097eb335a7113b1fb8aab449921fa95",
+      "printedCodeLines": 152,
+      "runtimeImports": [
+        "../../../asset/assets/asset-enum",
+        "../../../asset/assets/image-asset",
+        "../../../asset/assets/texture-2d",
+        "../../../gfx",
+        "../../../core",
+        "../../assets/sprite-frame"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        203
+      ]
+    },
+    {
+      "file": "cocos/2d/utils/font-family.ts",
+      "sha256": "fc8497c3683ba80d6b992d2d8664235b6dd3319c4ff56bddda61abbe803f600c",
+      "printedCodeLines": 39,
+      "runtimeImports": [],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        33
+      ]
+    },
+    {
+      "file": "cocos/2d/utils/font-loader.ts",
+      "sha256": "6452b0ed572e662eefb188229ff9d6866205401bfe95d47b0722562818606ff3",
+      "printedCodeLines": 195,
+      "runtimeImports": [
+        "../../core",
+        "./font-family",
+        "../../asset/asset-manager/downloader",
+        "../../asset/asset-manager/factory",
+        "../assets/ttf-font",
+        "../../core/global-exports"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        84
+      ]
+    },
+    {
+      "file": "cocos/2d/utils/html-text-parser.ts",
+      "sha256": "26d8e0032606ae6089dc6c477b36d0ca62c4fc844b8dd1f0fbd98283d13c961c",
+      "printedCodeLines": 370,
+      "runtimeImports": [
+        "internal:constants",
+        "../../core"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        91,
+        186,
+        263,
+        350,
+        403,
+        426
+      ]
+    },
+    {
+      "file": "cocos/2d/utils/index.ts",
+      "sha256": "f6326f86291fa22fbf88df0cdf0ef6ccb1306c3ddf305bed45131a7b2e710012",
+      "printedCodeLines": 5,
+      "runtimeImports": [
+        "./font-loader",
+        "./html-text-parser",
+        "./text-utils",
+        "./dynamic-atlas/atlas-manager",
+        "./dynamic-atlas/atlas"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
+      "file": "cocos/2d/utils/text-utils.ts",
+      "sha256": "004901c9146a73ca22f950d8fb5f5a29d144538d1d9bd2ab7a04fb5f9e9e8eb0",
+      "printedCodeLines": 423,
+      "runtimeImports": [
+        "internal:constants",
+        "pal/minigame",
+        "../../core",
+        "../../asset/asset-manager/utilities"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        227,
+        260,
+        299,
+        311,
+        342,
+        444,
+        455,
+        467
       ]
     }
   ]

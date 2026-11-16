@@ -28,18 +28,18 @@
 | Windows C++ Debug/Release | 原生 Label/Sprite 段、DrawInfo 和可见文本像素、父 Renderer 共存、DontSave、命中/未命中、禁用后更新、节点复用、字体/图像引用释放、frame/atlas revision；实际 Batcher walk 在遍历子节点前处理图像变化 |
 | 实际 V8/JSB 壳 | 真实 RichText JSB 源码、SWIG 构造与方法、原生段身份、点击参数和停止传播、Font/Atlas 变化、启停与销毁 |
 | Jest 3 套件 / 7 项 | Web 默认值/枚举/字段元数据、Details 回填与 instantiate、属性桥接、事件去重/解绑、Web 既有 RichText 回归、Node 构造共享内存保持 |
-| TypeScript | 常规项目显式加入 RichText JSB：0 诊断；完整 native TS：失败，见下方 |
+| TypeScript | 常规项目显式加入 RichText JSB：0 诊断；完整 native TS：已修复导入边界并通过，见下方 |
 
 1000 次静止 prepare 保持布局 revision、段身份和尺寸推送次数不变。这是重建/通知检查，不是完整运行时 JSB trace、1000 次场景加载卸载或泄漏证明。V8 探针隔离 JS 基类/装饰器，Jest 补真实 Component/元数据覆盖；尚未验证 Creator 完整 Node wrapper、场景加载与 GPU golden。
 
-## 未通过的构建与剩余门禁
+## 构建修复与剩余门禁
 
-`scripts/compile-native-ts.js` 已加入 rich-text feature，确保 CI 会检查新 override。执行 `node scripts/compile-native-ts.js --no-clean` 失败；对其生成产物按 Node 模块解析复核，共 30 项 2D 诊断，集中在：
+`scripts/compile-native-ts.js` 已加入 rich-text feature，确保 CI 会检查新 override。首次执行存在 30 项 2D 诊断，后续已修复并重新运行 `node scripts/compile-native-ts.js --no-clean` 通过（exit 0）。原因及修复为：
 
-- Web label assembler 引用当前 native Label 缺少的兼容属性（textStyle/textLayout/textLayoutData/textRenderData、spriteFrame/ttfSpriteFrame、assemblerData/contentWidth/_canvasPool）。
-- SpriteFrame JSB 未重导出 IUV；Mask 从 native asset barrel 导入 SpriteFrame。
-- 被类型别名带入的原始 UITransform 与 JSB UITransform 的类型身份、_native/_priority 和 Mask.isHit 边界。
+- 2d/index.ts 的 assembler barrel 带入 Web 文本/几何算法；新增 native assembler barrel，legacy manager 名称保留，更新请求直接转发 native。未补回 Web Label 的 Canvas/布局状态来消除诊断；这些兼容 API 的终态 parity 仍按 M6.1 验收。
+- SpriteFrame JSB 重导出 IUV 类型；Mask 改为直接从 2D 资产模块导入 SpriteFrame。
+- UITransform.__preload 以 Node UI 槽位自身的类型表达跨 override 赋值，不再显式 import 原始 Web UITransform。由此不再编译无关的 Web UITransform 实现及其 _native/_priority/Mask.isHit 类型冲突。
 
-这些错误没有被跳过或计为通过。需要修复原生类型/导入边界，同时防止为消除错误而重新引入 Web 渲染算法；完整构建与产物审计继续阻断 M6 收口。
+构建参数同时改用 TypeScript API 的 target/moduleResolution 枚举。完整生成与编译已通过，复现、实际 JSB 回归和审计边界见 [报告](./native-2d-m6-native-ts-boundary.md)。跨非 2D 边界的实际运行时/动态导入与裁剪组合审计仍待完成。
 
 还需完成真实字体/复杂文本与 italic 容差、shadow、完整布局/视觉和事件矩阵、旧场景/Prefab/资源生命周期、Node wrapper 的完整引擎联调，以及全平台/裁剪/线程、GPU、稳态调用与性能门禁。现有 parser/layout 的独立 Web 对照继续有效，不能替代上述运行时验收。

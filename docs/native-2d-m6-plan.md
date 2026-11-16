@@ -56,7 +56,8 @@
 - [x] 原生解析准备：新增 RichTextParser/span/style，3871 组输入在 g++、Windows MSVC Debug/Release 产物上与实际 Web parser 对照通过，见 [报告](./native-2d-m6.2-richtext-parser.md)。现已接入下述原生运行时，完整视觉/场景验收仍待完成。
 - [x] 原生布局规则准备：RichTextLayout 直接消费 native span，1440 组相同测量值的用例在 g++、MSVC Debug/Release 与实际 Web RichText 布局对照通过，见 [报告](./native-2d-m6.2-richtext-layout.md)。现已连接原生测量和段管理，不能据此认定场景/视觉 parity。
 - [x] 基础运行时接入：native RichText + JSB override 使用原生解析、测量与布局，原生创建/复用/布局/销毁 Label/Sprite 段；JS 保留 Component、元数据/序列化、生命周期和 API/点击分发。字体/图集 revision、父 Renderer 共存、基础启停/命中/销毁在 Windows Debug/Release 与实际 JSB 定向验证通过，见 [报告](./native-2d-m6.2-richtext-runtime.md)。
-- [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归，以及完整 native TS 构建。当前生成产物复核有 30 项 2D 类型/导入边界诊断，未豁免该门禁；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
+- [x] 完整 native TS 构建：修正 assembler 总入口与 UITransform 类型重入、Mask/SpriteFrame 导入边界，30 项诊断已消除；含 rich-text 的 OPEN_HARMONY preserveType 生成及完整 TypeScript 检查通过。保留 legacy assembler 名称并纯转发 native，定向源码闭包审计与 Windows Debug/Release 实际 JSB 回归通过，见 [构建边界报告](./native-2d-m6-native-ts-boundary.md)。该构建不等于 OHOS native 平台运行通过。
+- [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
 - [ ] 保留 Windows GDI italic 宽度的已接受差异；平台、字体、用例、布局容差分别记录。现有 colored ±20% 只作 sanity，不能替代布局、字形、事件验收。
 

@@ -29,6 +29,7 @@ import { Texture2D } from '../../asset/assets/texture-2d';
 import { ImageAsset, ImageSource } from '../../asset/assets/image-asset';
 import { patch_cc_SpriteFrame } from '../../native-binding/decorators';
 import type { SpriteFrame as JsbSpriteFrame, SpriteFrameEvent as JsbSpriteFrameEvent, ISpriteFrameInitInfo } from './sprite-frame';
+export type { IUV } from './sprite-frame';
 
 declare const jsb: any;
 
