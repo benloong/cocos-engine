@@ -43,6 +43,7 @@ async function buildTsEngine () {
             'animation',
             'skeletal-animation',
             '2d',
+            'rich-text',
             'ui',
             'particle',
             'particle-2d',

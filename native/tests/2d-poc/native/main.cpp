@@ -31,6 +31,7 @@
 
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
+#include "2d/components/RichText.h"
 #include "2d/components/Graphics.h"
 #include "core/builtin/BuiltinResMgr.h"
 #include "2d/assets/TTFFont.h"
@@ -42,6 +43,7 @@
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/RenderEntity.h"
+#include "2d/renderer/Batcher2d.h"
 #include "2d/renderer/SpriteGeometry.h"
 #include "2d/renderer/RichTextParser.h"
 #include "2d/renderer/RichTextLayout.h"
@@ -255,6 +257,19 @@ void testFontAssets() {
     const auto refs = font->getRefCount();
     label.setFontAsset(font); label.prepareRenderEntity(1.F);
     check(label.getOpaquePixels() == 4, "LabelAtlas native glyph renders even in CHAR mode");
+    const auto coverageChecksum = label.getPixelChecksum();
+    label.setColorRGBA(128,64,32,128); label.prepareRenderEntity(128.F / 255.F);
+    auto *labelDraw = static_cast<cc::RenderEntity *>(node.getUserData())->getStaticRenderDrawInfo(0);
+    const auto *labelVertices = labelDraw->getVDataBuffer();
+    check(labelVertices != nullptr, "Label has submitted vertex data");
+    if (labelVertices) {
+        checkNear(labelVertices[5], 1.F, "Label submitted RGB does not tint baked text twice");
+        checkNear(labelVertices[6], 1.F, "Label submitted green remains neutral");
+        checkNear(labelVertices[8], 128.F / 255.F, "Label submitted opacity is applied once");
+    }
+    check(label.getPixelChecksum() == coverageChecksum, "Label texture coverage does not bake component alpha");
+    label.setColorRGBA(255,255,255,255); label.prepareRenderEntity(1.F);
+    checkNear(label.measureUnwrappedText("A").width, label.getContentWidth(), "bitmap measurement uses native glyph table");
     check(font->getRefCount() == refs + 1, "Label retains font asset");
     { cc::Label second; second.setFontAsset(font); check(font->getRefCount() == refs + 2, "labels share font ownership"); }
     check(font->getRefCount() == refs + 1, "Label destructor releases font");
@@ -320,6 +335,73 @@ void testRichTextLayout() {
     }
     check(calls[{0, "ab"}] == 1, "RichText memoizes stable measurements within one layout");
     std::printf("rich text layout: PASS\n");
+}
+
+void testRichTextRuntime() {
+    cc::Node node("native-rich-text"); cc::UITransform ui(&node); ui.setAnchorPoint(0.F, 0.F);
+    cc::Sprite parentRenderer; parentRenderer.setNode(&node);
+    auto *parentEntity = node.getUserData();
+    cc::IntrusivePtr<cc::SpriteAtlas> atlas(new cc::SpriteAtlas());
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D()); texture->create(4,2);
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame()); frame->resetWithTexture(texture);
+    atlas->addSpriteFrame("icon", frame);
+    const auto frameRefs = frame->getRefCount();
+    cc::IntrusivePtr<cc::TTFFont> font(new cc::TTFFont()); font->setFontFamily("Arial");
+    const auto fontRefs = font->getRefCount();
+    cc::RichText rich;
+    rich.setFontSize(16); rich.setLineHeight(20); rich.setImageAtlas(atlas); rich.setFontAsset(font);
+    rich.setString("<b click=\"tap\" param=\"hello\">one</b><img src=\"icon\" width=12 height=10/><br/>two");
+    rich.setNode(&node); rich.setUITransform(&ui);
+    check(node.getUserData() == parentEntity, "RichText group preserves an existing parent renderer");
+    check(rich.getSegmentCount() == 3 && node.getChildren().size() == 3, "native RichText owns native segment children");
+    check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
+    check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
+    check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
+    const auto revision = rich.getLayoutRevision(); auto *first = rich.getSegmentNode(0);
+    for (int i = 0; i < 1000; ++i) rich.prepareRenderEntity(1.F);
+    check(rich.getLayoutRevision() == revision && rich.getSegmentNode(0) == first, "idle RichText performs no layout or segment churn");
+    for (uint32_t i = 0; i < rich.getSegmentCount(); ++i) {
+        auto *entity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(i)->getUserData());
+        check(entity != nullptr, "native RichText child has renderer");
+        if (entity) { entity->prepare(1.F); check(entity->getStaticDrawInfoSize() > 0, "native RichText submits segment draw info"); }
+    }
+    if (rich.getSegmentLabel(0)) {
+        const auto measured = rich.getSegmentLabel(0)->measureUnwrappedText("one");
+        checkNear(measured.width, rich.getSegmentLabel(0)->getContentWidth(), "RichText measurement agrees with Label output");
+        check(rich.getSegmentLabel(0)->getOpaquePixels() > 0, "RichText text raster is visible");
+    }
+    check(rich.getSegmentClickHandler(0) == "tap" && rich.getSegmentClickParam(0) == "hello", "native RichText stores click metadata");
+    const auto &placement = rich.getLayout().placements[0];
+    const auto hits = rich.getHitSegments(static_cast<float>(placement.x + placement.width / 2), static_cast<float>(placement.y + placement.height / 2));
+    check(hits.size() == 1 && hits[0] == 0 && rich.getHitSegments(-1000,-1000).empty(), "native RichText hit and miss use segment geometry");
+    rich.setEnabled(false); check(!first->isActive() && rich.getHitSegments(1,1).empty(), "disabled RichText hides children and ignores hits");
+    rich.setString("changed"); check(rich.getLayoutRevision() == revision, "disabled RichText defers layout");
+    rich.setEnabled(true);
+    check(rich.getSegmentCount() == 1 && rich.getSegmentNode(0) == first, "RichText reuses compatible native segments");
+    check(frame->getRefCount() == frameRefs, "recycled image releases frame and texture references");
+    rich.setFontAsset(nullptr); check(font->getRefCount() == fontRefs, "RichText clears font references including measurement cache");
+    rich.setString("<img src=\"icon\"/>");
+    const auto imageWidth = rich.getLayout().placements[0].width;
+    rich.getSegmentSprite(0)->setSharedMaterial(nullptr, 0);
+    node.setActiveInHierarchy(true);
+    cc::Batcher2d batcher;
+    frame->setRectWidth(2); batcher.walk(&node, 1.F, false);
+    check(rich.getLayout().placements[0].width < imageWidth, "RichText follows native frame revision");
+    atlas->removeSpriteFrame("icon"); batcher.walk(&node, 1.F, false);
+    check(rich.getSegmentCount() == 0, "RichText follows atlas table revision");
+    rich.setString("final"); rich.setNode(nullptr); rich.setImageAtlas(nullptr);
+    check(node.getChildren().empty() && rich.getSegmentCount() == 0, "RichText detach releases active and pooled native children");
+    cc::Node lateNode("rich-text-late-transform"); cc::RichText late;
+    late.setString("late"); late.setNode(&lateNode);
+    check(late.getSegmentCount() == 0, "RichText tolerates pending required transform");
+    {
+        cc::UITransform lateUI(&lateNode); late.prepareRenderEntity(1.F);
+        check(late.getSegmentCount() == 1, "RichText resolves transform added after component load");
+    }
+    late.prepareRenderEntity(1.F);
+    check(late.getSegmentCount() == 0, "RichText drops stale non-owning transform and old segments");
+    late.setNode(nullptr);
+    std::printf("rich text runtime: PASS\n");
 }
 
 void testLayoutAndMaterials() {
@@ -1261,6 +1343,7 @@ int main(int argc, char **argv) {
         testRichTextParser();
         testRichTextLayout();
         testLayoutAndMaterials();
+        testRichTextRuntime();
         testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");
         std::fflush(stdout);

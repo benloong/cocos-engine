@@ -79,6 +79,8 @@ if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
     if ($LASTEXITCODE -ne 0) { throw "Layout ownership tests failed" }
     & (Join-Path $PSScriptRoot 'run-m6-font-assets-tests.ps1')
     if ($LASTEXITCODE -ne 0) { throw "Font asset tests failed with exit code $LASTEXITCODE" }
+    & (Join-Path $PSScriptRoot 'run-m6-richtext-runtime-tests.ps1')
+    if ($LASTEXITCODE -ne 0) { throw 'RichText runtime tests failed' }
 }
 
 if ($env:CC_M2_APP_EXE) {

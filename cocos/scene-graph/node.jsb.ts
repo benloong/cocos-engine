@@ -1560,7 +1560,8 @@ nodeProto._ctor = function (name?: string) {
     // Float32Array with 4 elements: skewX, skewY, localOpacity, finalOpacity
     this._sharedFloat32Arr = new Float32Array(sharedArrayBuffer, 20, 4);
 
-    this._sharedUint32Arr[1] = Layers.Enum.DEFAULT; // this._sharedUint32Arr[1] is layer
+    // Native Node initializes its default layer. Preserve an existing layer
+    // when a native-created child gets its JS wrapper for the first time.
     this._scene = null;
     this._prefab = null;
     // record scene's id when set this node as persist node

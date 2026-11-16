@@ -2129,6 +2129,8 @@ cocos_source_files(
     cocos/2d/components/Sprite.cpp
     cocos/2d/components/Label.h
     cocos/2d/components/Label.cpp
+    cocos/2d/components/RichText.h
+    cocos/2d/components/RichText.cpp
     cocos/2d/components/Mask.h
     cocos/2d/components/Mask.cpp
     cocos/2d/components/Graphics.h

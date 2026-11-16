@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "2565f95ad901458e7c7cd189c6d1bd70809bb0247b3bc192712cbd9d1eddf826"
+      "sha256": "3e12ad6307746bf4f127780fe83d2837cc55264a6f785bef7ceb054f99a6748e"
     },
     {
       "file": "cocos/native-binding/decorators-2d.generated.ts",
@@ -12,6 +12,14 @@
     {
       "file": "cocos/render-scene/core/material-instance.jsb.ts",
       "sha256": "2f250424236c8805080a7a167ba0d739fc09eda49a5f07dc3bfc2d7b5998ba8a"
+    },
+    {
+      "file": "cocos/scene-graph/node.jsb.ts",
+      "sha256": "f9e218c797353570f86bcb7f5dd7f00450b07ff92947381e0f7ce71c50c1e62e"
+    },
+    {
+      "file": "native/CMakeLists.txt",
+      "sha256": "cd145ae1f9182250418400b13e46808c0edc220b5aa5e9ae9ce5220f916ab91a"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -31,11 +39,11 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteAtlas.cpp",
-      "sha256": "73c935a9bdc56ac604282a7c57f7faf63ce0c84e9692896e303afcf06dcf0978"
+      "sha256": "e927ba992a90f0330cfe91fa96baa13d65e785ae549e629df1600deef33a02fd"
     },
     {
       "file": "native/cocos/2d/assets/SpriteAtlas.h",
-      "sha256": "7650244c2d326d9f83ee10733ce481991be36ca8e9fefc24c7009a4a71e8dd86"
+      "sha256": "844af94c01f934b7858f758a683b41d190f127675b43a776d78955d30995e9d0"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
@@ -59,11 +67,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "a25768d4ad75229f7aa37213bebfb5e68dfc46fa16fb71249a522d7eb2abb385"
+      "sha256": "ed4101e2a55589fa966084f01caf09dbeed2e4ac10bf5ab8983b7c07908a1423"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "8f96816e5a872c55fe10e7bcf44dd1897a21af29e4e756b79d37e3c877c8991d"
+      "sha256": "42150d5f11d28c19bd647eb7cce035668cf2139b181093939871776910f44c03"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -72,6 +80,14 @@
     {
       "file": "native/cocos/2d/components/Mask.h",
       "sha256": "ecb6bb59c6b3e3247811ec00c0de7f344f37ba7bc8992713010831f4aa8faa67"
+    },
+    {
+      "file": "native/cocos/2d/components/RichText.cpp",
+      "sha256": "d0165d75e479f5e60fa152b998eb7051f13757e8c020035c18f4c6230963d655"
+    },
+    {
+      "file": "native/cocos/2d/components/RichText.h",
+      "sha256": "77db05899925e95ef56a034c7a85d3e74c86ea8124959100579694ba7c5fb4fd"
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
@@ -123,7 +139,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "75232595002c08a2f2b3e9fb11d3b7a85ee01cb48a992d545288c5b721805ca7"
+      "sha256": "c6ec3f80ba1d3afd5f9ec96674829f12947a764f0ee95233b8a9e6ac9b315243"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
@@ -219,11 +235,15 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "99293ce74e0cdb69d8293e173176bc96e2c0e3e2f717fc6758bf2a1b9bcdd0d0"
+      "sha256": "d64f2e32912a357dddf5c020995dc7df165e7370782c15506d60899f6fe8127c"
     },
     {
       "file": "native/tools/swig-config/assets.i",
       "sha256": "ad6643537a5a368615f8077861edb28047b58886d5e56fcea1125e6a32a0dd0c"
+    },
+    {
+      "file": "scripts/compile-native-ts.js",
+      "sha256": "ae26daebb0b3e76f0362169c2c2e7278e3b9c4a4dcf6387b0db49cfe885cfc26"
     }
   ],
   "limitations": [
@@ -243,6 +263,7 @@
     "cocos/2d/components/graphics.ts": "cocos/2d/components/graphics.jsb.ts",
     "cocos/2d/components/label.ts": "cocos/2d/components/label.jsb.ts",
     "cocos/2d/components/mask.ts": "cocos/2d/components/mask.jsb.ts",
+    "cocos/2d/components/rich-text.ts": "cocos/2d/components/rich-text.jsb.ts",
     "cocos/2d/components/sprite.ts": "cocos/2d/components/sprite.jsb.ts",
     "cocos/2d/components/ui-opacity.ts": "cocos/2d/components/ui-opacity.jsb.ts",
     "cocos/2d/framework/render-root-2d.ts": "cocos/2d/framework/render-root-2d.jsb.ts",
@@ -2278,7 +2299,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -2308,14 +2329,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -2328,7 +2346,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -2353,14 +2370,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -4058,7 +4073,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -4088,14 +4103,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -4108,7 +4120,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -4133,14 +4144,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -7063,7 +7072,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -7093,14 +7102,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -7113,7 +7119,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -7138,14 +7143,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -8347,7 +8350,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -8377,14 +8380,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -8397,7 +8397,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -8422,14 +8421,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -9590,7 +9587,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -9620,14 +9617,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -9640,7 +9634,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -9665,14 +9658,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -9688,15 +9679,18 @@
     {
       "name": "RichText",
       "source": "cocos/2d/components/rich-text.ts",
-      "runtime": "cocos/2d/components/rich-text.ts",
+      "runtime": "cocos/2d/components/rich-text.jsb.ts",
       "testEntrypoints": [
         "native/tests/2d-poc/run-m5-richtext-probe.ps1",
         "native/tests/2d-poc/run-m6-richtext-parser-parity.ps1",
         "tests/ui/native-richtext-parser-parity.test.ts",
         "native/tests/2d-poc/run-m6-richtext-layout-parity.ps1",
-        "tests/ui/native-richtext-layout-parity.test.ts"
+        "tests/ui/native-richtext-layout-parity.test.ts",
+        "native/tests/2d-poc/run-m6-richtext-runtime-tests.ps1",
+        "tests/ui/native-2d-m6-richtext-shell.test.ts",
+        "tests/scene-graph/native-node-constructor.test.ts"
       ],
-      "overridden": false,
+      "overridden": true,
       "web": {
         "kind": "class",
         "extends": [
@@ -10802,8 +10796,729 @@
         "enums": []
       },
       "native": {
-        "kind": "web-fallback",
-        "reference": "cocos/2d/components/rich-text.ts"
+        "kind": "class",
+        "extends": [
+          "extends Component"
+        ],
+        "decorators": [
+          "ccclass('cc.RichText')",
+          "requireComponent(UITransform)",
+          "help('i18n:cc.RichText')",
+          "executionOrder(110)",
+          "menu('2D/RichText')",
+          "executeInEditMode"
+        ],
+        "members": [
+          {
+            "name": "HorizontalAlign",
+            "kind": "PropertyDeclaration",
+            "visibility": "public",
+            "static": true,
+            "type": null,
+            "parameters": [],
+            "default": "HorizontalTextAlignment",
+            "decorators": []
+          },
+          {
+            "name": "VerticalAlign",
+            "kind": "PropertyDeclaration",
+            "visibility": "public",
+            "static": true,
+            "type": null,
+            "parameters": [],
+            "default": "VerticalTextAlignment",
+            "decorators": []
+          },
+          {
+            "name": "_lineHeight",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "40",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_string",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "'<color=#00ff00>Rich</color><color=#0fffff>Text</color>'",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_horizontalAlign",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "HorizontalTextAlignment.LEFT",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_verticalAlign",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "VerticalTextAlignment.TOP",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_fontSize",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "40",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_fontColor",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "Color.WHITE.clone()",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_maxWidth",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "0",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_fontFamily",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "'Arial'",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_font",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "TTFFont | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_isSystemFontUsed",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "true",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_userDefinedFont",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "TTFFont | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_cacheMode",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "CacheMode.NONE",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_imageAtlas",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "SpriteAtlas | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_handleTouchEvent",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "true",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_native",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "any",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
+            "name": "_listening",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "false",
+            "decorators": []
+          },
+          {
+            "name": "string",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "string",
+            "parameters": [],
+            "default": null,
+            "decorators": [
+              "multiline"
+            ]
+          },
+          {
+            "name": "string",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: string"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "horizontalAlign",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "HorizontalTextAlignment",
+            "parameters": [],
+            "default": null,
+            "decorators": [
+              "type(HorizontalTextAlignment)"
+            ]
+          },
+          {
+            "name": "horizontalAlign",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: HorizontalTextAlignment"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "verticalAlign",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "VerticalTextAlignment",
+            "parameters": [],
+            "default": null,
+            "decorators": [
+              "type(VerticalTextAlignment)"
+            ]
+          },
+          {
+            "name": "verticalAlign",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: VerticalTextAlignment"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "fontSize",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "number",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "fontSize",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: number"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "fontColor",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "Color",
+            "parameters": [],
+            "default": null,
+            "decorators": [
+              "type(Color)"
+            ]
+          },
+          {
+            "name": "fontColor",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: Color"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "fontFamily",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "string",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "fontFamily",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: string"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "font",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "TTFFont | null",
+            "parameters": [],
+            "default": null,
+            "decorators": [
+              "type(Font)"
+            ]
+          },
+          {
+            "name": "font",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: TTFFont | null"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "useSystemFont",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "boolean",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "useSystemFont",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: boolean"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "cacheMode",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "CacheMode",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "cacheMode",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: CacheMode"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "maxWidth",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "number",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "maxWidth",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: number"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "lineHeight",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "number",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "lineHeight",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: number"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "imageAtlas",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "SpriteAtlas | null",
+            "parameters": [],
+            "default": null,
+            "decorators": [
+              "type(SpriteAtlas)"
+            ]
+          },
+          {
+            "name": "imageAtlas",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: SpriteAtlas | null"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "handleTouchEvent",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "boolean",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "handleTouchEvent",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: boolean"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "onLoad",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "onEnable",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "onDisable",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "onRestore",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "onDestroy",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_syncFont",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_updateRichText",
+            "kind": "MethodDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_addEventListeners",
+            "kind": "MethodDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_removeEventListeners",
+            "kind": "MethodDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_onTouchEnded",
+            "kind": "MethodDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "event: EventTouch"
+            ],
+            "default": null,
+            "decorators": []
+          }
+        ],
+        "serialized": [
+          {
+            "name": "_lineHeight",
+            "default": "40",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_string",
+            "default": "'<color=#00ff00>Rich</color><color=#0fffff>Text</color>'",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_horizontalAlign",
+            "default": "HorizontalTextAlignment.LEFT",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_verticalAlign",
+            "default": "VerticalTextAlignment.TOP",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_fontSize",
+            "default": "40",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_fontColor",
+            "default": "Color.WHITE.clone()",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_maxWidth",
+            "default": "0",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_fontFamily",
+            "default": "'Arial'",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_font",
+            "default": "null",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_isSystemFontUsed",
+            "default": "true",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_userDefinedFont",
+            "default": "null",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_cacheMode",
+            "default": "CacheMode.NONE",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_imageAtlas",
+            "default": "null",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_handleTouchEvent",
+            "default": "true",
+            "decorators": [
+              "serializable"
+            ]
+          }
+        ],
+        "enums": []
       },
       "comparison": {
         "disposition": "declarations only; inherited APIs and behavior require review",
@@ -10828,7 +11543,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -10858,14 +11573,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -10878,7 +11590,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -10903,14 +11614,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -11279,7 +11988,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -11309,14 +12018,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -11329,7 +12035,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -11354,14 +12059,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -11517,7 +12220,7 @@
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.ts",
+          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-opacity.jsb.ts",
@@ -11547,14 +12250,11 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/html-text-parser.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/renderer/vertex-format.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -11567,7 +12267,6 @@
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
-          "cocos/input/types/index.ts",
           "cocos/misc/camera-component.ts",
           "cocos/misc/index.ts",
           "cocos/misc/model-renderer.ts",
@@ -11592,14 +12291,12 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/mask.jsb.ts",
-        "cocos/2d/components/rich-text.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -14128,6 +14825,102 @@
       ]
     },
     {
+      "file": "cocos/2d/components/rich-text.jsb.ts",
+      "sha256": "14ed32f06be4fabea478fccec1927f227025c3cc997317cbbca7322bcec0edf9",
+      "printedCodeLines": 191,
+      "runtimeImports": [
+        "cc.decorator",
+        "internal:constants",
+        "../../core",
+        "../../scene-graph/component",
+        "../../scene-graph/node-event",
+        "../framework/ui-transform",
+        "../assets/font",
+        "../assets/sprite-atlas",
+        "./label"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [
+        {
+          "expression": "this._native?.setString",
+          "line": 68
+        },
+        {
+          "expression": "this._native?.setHorizontalAlign",
+          "line": 71
+        },
+        {
+          "expression": "this._native?.setVerticalAlign",
+          "line": 74
+        },
+        {
+          "expression": "this._native?.setFontSize",
+          "line": 76
+        },
+        {
+          "expression": "this._native?.setFontColorRGBA",
+          "line": 81
+        },
+        {
+          "expression": "this._native?.setFontFamily",
+          "line": 84
+        },
+        {
+          "expression": "this._native?.setCacheMode",
+          "line": 104
+        },
+        {
+          "expression": "this._native?.setMaxWidth",
+          "line": 106
+        },
+        {
+          "expression": "this._native?.setLineHeight",
+          "line": 108
+        },
+        {
+          "expression": "this._native?.setImageAtlas",
+          "line": 111
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 134
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 138
+        },
+        {
+          "expression": "this._native.setEnabled",
+          "line": 146
+        },
+        {
+          "expression": "this._native.setNode",
+          "line": 146
+        },
+        {
+          "expression": "this._native.setFontAsset",
+          "line": 147
+        },
+        {
+          "expression": "this._native.setImageAtlas",
+          "line": 147
+        },
+        {
+          "expression": "this._native?.setFontAsset",
+          "line": 151
+        },
+        {
+          "expression": "this._native?.updateLayout",
+          "line": 152
+        }
+      ],
+      "allocations": [],
+      "loops": [
+        165,
+        168
+      ]
+    },
+    {
       "file": "cocos/2d/components/rich-text.ts",
       "sha256": "c09e9e7b28e02b39e0de6395f878e3126d6411ce4d5283cc4d0cfda29725cdb8",
       "printedCodeLines": 1035,
@@ -15363,50 +16156,6 @@
       "loops": [
         132,
         149
-      ]
-    },
-    {
-      "file": "cocos/2d/utils/html-text-parser.ts",
-      "sha256": "26d8e0032606ae6089dc6c477b36d0ca62c4fc844b8dd1f0fbd98283d13c961c",
-      "printedCodeLines": 370,
-      "runtimeImports": [
-        "internal:constants",
-        "../../core"
-      ],
-      "frameMethods": [],
-      "nativeCalls": [],
-      "allocations": [],
-      "loops": [
-        91,
-        186,
-        263,
-        350,
-        403,
-        426
-      ]
-    },
-    {
-      "file": "cocos/2d/utils/text-utils.ts",
-      "sha256": "004901c9146a73ca22f950d8fb5f5a29d144538d1d9bd2ab7a04fb5f9e9e8eb0",
-      "printedCodeLines": 423,
-      "runtimeImports": [
-        "internal:constants",
-        "pal/minigame",
-        "../../core",
-        "../../asset/asset-manager/utilities"
-      ],
-      "frameMethods": [],
-      "nativeCalls": [],
-      "allocations": [],
-      "loops": [
-        227,
-        260,
-        299,
-        311,
-        342,
-        444,
-        455,
-        467
       ]
     }
   ]

@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #include "2d/renderer/Batcher2d.h"
+#include "2d/components/RichText.h"
 
 #include <algorithm>
 #include "application/ApplicationManager.h"
@@ -241,6 +242,11 @@ void Batcher2d::flushRecordedUIRenderers() { // NOLINT(misc-no-recursion)
 void Batcher2d::walk(Node* node, float parentOpacity, bool parentColorDirty) { // NOLINT(misc-no-recursion)
     if (!node->isActiveInHierarchy()) {
         return;
+    }
+    // RichText owns a group of child renderers, not this Node's RenderEntity.
+    // Prepare before reading children so it can coexist with a parent Sprite.
+    if (auto *richText = static_cast<RichText *>(node->getUIComponent(RichText::TYPE_ID))) {
+        richText->prepareRenderEntity(parentOpacity);
     }
     bool breakWalk = false;
     auto* entity = static_cast<RenderEntity*>(node->getUserData());

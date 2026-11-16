@@ -1,6 +1,6 @@
 # M6.2 RichText 原生解析实现与对照
 
-更新：2026-11-16。本节点提供原生 HTML 解析和样式继承实现，已加入引擎构建。**尚未接入 RichText 运行时：当前 RichText 仍运行 Web 解析/布局，没有新增 RichText JSB override。** 本节点为后续原生布局与段管理提供输入，不认定 M6.2 薄壳或原生热路径完成。
+更新：2026-11-16。原生 HTML 解析与样式继承已加入引擎构建，现已由 [native RichText 运行时](./native-2d-m6.2-richtext-runtime.md)直接消费并接入 JSB override。原先“尚未接入”的准备阶段状态已更新；完整构建、视觉/场景与终态门禁仍待验收，不认定 M6.2 完成。
 
 ## 原生输入模型
 
@@ -33,4 +33,4 @@ cmake --build native/tests/2d-poc/native/out-release2 --target cc2d_native_poc c
 
 ## 接下来必须完成
 
-原生 RichText 组件与 JSB override、按 span 测量/换行/对齐、Label/Sprite 段创建和复用、图片资源变更、命中与 JS 用户事件桥接、销毁解绑及真实场景 Web/native 对照。shadow 的范围与实现仍随运行时迁移处理。本节点没有覆盖 GPU、字体平台矩阵、混合负载 KPI 或整个 M6.2 验收。
+组件/JSB、原生测量与段管理、图片变更、基础命中/事件与销毁已完成定向接入，见 [运行时报告与未通过项](./native-2d-m6.2-richtext-runtime.md)。继续完成 native TS 类型/导入边界、真实场景 Web/native 对照和 shadow。GPU、字体平台矩阵、混合负载 KPI 及整个 M6.2 验收仍待完成。

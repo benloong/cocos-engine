@@ -109,6 +109,7 @@ public:
     float getTextureWidth() const { return _lastTextureWidth; }
     void updateRenderData();
     void measureContent();
+    Size measureUnwrappedText(const std::string &text);
     float getContentWidth() const { return _lastContentWidth; }
     float getContentHeight() const { return _lastContentHeight; }
     float getTextureHeight() const { return _lastTextureHeight; }

@@ -1,6 +1,6 @@
 # M6.2 RichText 原生布局规则
 
-更新：2026-11-16。新增 `RichTextLayout`，直接消费 native parser 的 span，输出文本/图片段、行宽、内容尺寸、anchor 与位置。已加入引擎构建，**尚未由 RichText 运行时消费；原生组件、段对象管理和 JSB override 仍待接入**。本节点不关闭 M6.2 薄壳门禁。
+更新：2026-11-16。RichTextLayout 直接消费 native span，输出文本/图片段、行宽、内容尺寸、anchor 与位置。现已连接 [native RichText 运行时及 JSB](./native-2d-m6.2-richtext-runtime.md)。本节点不关闭完整构建、场景/视觉及 M6.2 终态门禁。
 
 ## 数据与规则
 
@@ -34,4 +34,4 @@ cmake --build native/tests/2d-poc/native/out-release2 --target cc2d_native_poc c
 
 ## 仍需完成
 
-相同测量值的规则对照不代表真实字体、GPU 或整个 Unicode 文本矩阵通过。长 emoji、超过循环上限的极端长文本、非有限/负尺寸及更多组合仍随运行时接入扩展。后续直接将此布局连接到 native Label/Sprite 段的创建/复用、字体/图集 revision、点击命中、启停与销毁；然后完成 JSB 薄壳、旧场景/Prefab、复杂文本和 Web/native 场景回归。当前 RichText 仍使用 Web 实现，M6 继续保持未收口。
+相同测量值的规则对照不代表真实字体、GPU 或整个 Unicode 文本矩阵通过。长 emoji、超过循环上限的极端长文本、非有限/负尺寸及更多组合仍需扩展。布局现已连接 native Label/Sprite 段、字体/图集 revision、基础点击、启停与销毁；继续按 [运行时报告](./native-2d-m6.2-richtext-runtime.md)处理完整构建、旧场景/Prefab、复杂文本和 Web/native 场景回归。M6 继续保持未收口。

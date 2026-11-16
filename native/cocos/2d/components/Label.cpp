@@ -341,7 +341,9 @@ void Label::setCacheMode(int32_t mode) {
 
 void Label::setColor(const Color &color) {
     UIRenderer::setColor(color);
-    _renderer.setColor(color);
+    // Textures contain the text RGB. Component opacity belongs to the render
+    // entity/vertices, so it also cascades to children without tinting twice.
+    _renderer.setColor(Color(255, 255, 255, color.a));
     _dirty = true;
 }
 
@@ -443,7 +445,7 @@ void Label::rebuildLetterTexture() {
                         if (dx < 0 || dx >= static_cast<int32_t>(outWidth) || glyph.x + x >= LetterAtlas::ATLAS_WIDTH) { continue; }
                         const size_t src = (static_cast<size_t>(glyph.y + y) * LetterAtlas::ATLAS_WIDTH + (glyph.x + x)) * 4U;
                         const size_t dst = (static_cast<size_t>(dy) * outWidth + static_cast<size_t>(dx)) * 4U;
-                        const uint32_t alpha = atlasPixels[src + 3U] * _color.a / 255U;
+                        const uint32_t alpha = atlasPixels[src + 3U];
                         pixels[dst] = static_cast<uint8_t>(255U * _color.r / 255U);
                         pixels[dst + 1U] = static_cast<uint8_t>(255U * _color.g / 255U);
                         pixels[dst + 2U] = static_cast<uint8_t>(255U * _color.b / 255U);
@@ -579,7 +581,7 @@ void Label::rebuildBitmapTexture() {
                     }
                     const size_t src = (static_cast<size_t>(sy) * atlasWidth + static_cast<size_t>(sx)) * 4U;
                     const size_t dst = (static_cast<size_t>(dy) * outWidth + static_cast<size_t>(dx)) * 4U;
-                    const uint32_t alpha = atlasData[src + 3U] * _color.a / 255U;
+                    const uint32_t alpha = atlasData[src + 3U];
                     pixels[dst] = static_cast<uint8_t>(atlasData[src] * _color.r / 255U);
                     pixels[dst + 1U] = static_cast<uint8_t>(atlasData[src + 1U] * _color.g / 255U);
                     pixels[dst + 2U] = static_cast<uint8_t>(atlasData[src + 2U] * _color.b / 255U);
@@ -673,6 +675,38 @@ void Label::measureContent() {
     _dirty = true;
     updateRenderData();
     _transform->setContentSize(_lastContentWidth, _lastContentHeight);
+}
+Size Label::measureUnwrappedText(const std::string &text) {
+    syncFontAsset();
+    if (text.empty() || (_fontAsset && _fontAsset->isReleased())) return Size(0.F, 0.F);
+    if (_bitmapFont) {
+        if (!_bitmapAtlas || _bitmapFont->getGlyphs().empty()) return Size(0.F, 0.F);
+        float width = 0.F, line = 0.F; uint32_t lines = 1; int32_t previous = -1;
+        for (const auto &symbol : splitUtf8(text)) {
+            if (symbol == "\n") { width = std::max(width, line); line = 0.F; previous = -1; ++lines; continue; }
+            const auto code = utf8CodePoint(symbol);
+            const auto found = _bitmapFont->getGlyphMap().find(code);
+            if (found == _bitmapFont->getGlyphMap().end()) continue;
+            line += _bitmapFont->getGlyphs()[found->second].xAdvance + (previous < 0 ? 0.F : _bitmapFont->getKerning(previous, code));
+            previous = code;
+        }
+        const float height = _bitmapLineHeight > 0.F ? _bitmapLineHeight : _fontSize;
+        return Size(std::max(width, line), std::max((lines + BASELINE_RATIO) * height, 1.F));
+    }
+    CanvasRenderingContext2D context(1.F, 1.F);
+    context.setFont(_font);
+    float width = 0.F, line = 0.F; uint32_t lines = 1;
+    std::string paragraph;
+    for (const auto &symbol : splitUtf8(text)) {
+        if (symbol == "\n") {
+            width = std::max(width, _cacheMode == 2 ? line : measureText(context, paragraph));
+            line = 0.F; paragraph.clear(); ++lines;
+        } else if (_cacheMode == 2) line += measureText(context, symbol);
+        else paragraph += symbol;
+    }
+    width = std::max(width, _cacheMode == 2 ? line : measureText(context, paragraph));
+    const float lineHeight = _lineHeight > 0.F ? _lineHeight : _fontSize * (_cacheMode == 2 ? 1.F : 1.2F);
+    return Size(std::max(width, _cacheMode == 2 ? 0.F : 1.F), std::max((lines + BASELINE_RATIO) * lineHeight, 1.F));
 }
 void Label::updateRenderData() {
     syncFontAsset();
@@ -776,7 +810,7 @@ void Label::rebuildTexture() {
                   static_cast<unsigned>(_color.r),
                   static_cast<unsigned>(_color.g),
                   static_cast<unsigned>(_color.b),
-                  static_cast<double>(_color.a) / 255.0);
+                  1.0);
     context.setFillStyle(fill);
     if (_enableShadow) {
         char shadow[64] = {0};
@@ -844,7 +878,7 @@ void Label::rebuildTexture() {
                       static_cast<unsigned>(_color.r),
                       static_cast<unsigned>(_color.g),
                       static_cast<unsigned>(_color.b),
-                      static_cast<double>(_color.a) / 255.0);
+                      1.0);
         context.setFillStyle(fillColor);
         context.fillText(line, x, lineY, 0.0F);
         if (_isUnderline) {

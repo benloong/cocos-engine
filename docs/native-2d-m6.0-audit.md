@@ -14,7 +14,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 
 --write 更新源代码快照；--check 只验证快照是否过时，不把已知缺口豁免为通过。修复 API/字段/native 实现后需同步快照及本矩阵，不能只更新快照而不处理欠项。AST 测试覆盖字段与访问器区分、type-only import 排除、语法热点提取及运行时模块选择。native-ts-build CI 执行检查。
 
-审计包含 17 类、61 个可达 2D 源文件及 56 个 native/绑定/配置文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
+审计包含 17 类、60 个可达 2D 源文件及 61 个 native/绑定/配置文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
 
 原生资产声明把 Web 类型作为 TS 接口，无法用该类型证明原生方法真的绑定。六个资产的记录明确标记为 native prototype/binding review required，不能把“缺失 0”当成完整 API 验收。对象可变语义与资产依赖沿字段/类型和相关 M6.1 报告核对，必须由实际运行测试证明。
 
@@ -31,7 +31,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 | Label | override | 346 | 0 | 14 | M6.1 |
 | Mask | override | 137 | 0 | 22 | M6.3 / M6.4 |
 | Graphics | override | 105 | 3 | 13 | M6.3 |
-| RichText | 保留 Web 实现 | 1035 | 0 | 0 | M6.2 |
+| RichText | override | 191 | 0 | 0 | M6.2 |
 | UIOpacity | override | 48 | 0 | 0 | M6.4 |
 | LabelOutline | 保留 Web 实现 | 45 | 0 | 0 | Label API 桥接 |
 | LabelShadow | 保留 Web 实现 | 55 | 0 | 0 | Label API 桥接 |
@@ -52,7 +52,7 @@ Sprite/Label 共用的 `native-ui-materials.ts` 为 134 行 AST，已纳入文�
 2. Sprite 的 _fillRange 初值、六个壳接口、native 材质与状态更新已修复，见 [报告](./native-2d-m6.1-sprite-api.md)。剩余三个数字/命名枚举初值文本差异已由真实默认值测试确认等价；radial CPU 几何与可变 fillCenter 已补 [对照与生命周期验证](./native-2d-m6.1-radial.md)，Sprite/Label 材质槽整体 API 和实际提交已有 [定向验证](./native-2d-m6.1-material-slots.md)。数组原地修改、回调、资源与完整视觉行为仍待验收。
 3. Graphics 缺少 _lineJoin、_lineCap、_miterLimit；固定 CPU 栅格路径和描边语义仍按 M6.3 替换。Mask 的 lateUpdate 在 JS 获取 Graphics frame；材质选择仍由壳进行，归 M6.3/M6.5。
 4. UIRenderer 没有独立 override，组件壳仍继承 Web 基类。基类可达 RenderData、材质和 assembler 管理；Batcher 的 JSB 分支是否消除了执行成本必须通过实际调用计数确认，不能只看叶子壳。
-5. RichText 没有独立 override，HTML/布局仍走 JS，归 M6.2。新增原生 RichTextParser 已编译并通过 3871 组实际 Web 对照，RichTextLayout 通过 1440 组相同测量值的规则对照；两者尚未接入 RichText 运行时，见 [解析报告](./native-2d-m6.2-richtext-parser.md)与[布局报告](./native-2d-m6.2-richtext-layout.md)。LabelOutline/LabelShadow 为已弃用的 Label 公共属性转发，不另行下沉算法；它们依赖的 Label API 仍须回归。
+5. RichText 已接入 native parser/layout/测量与原生段管理，JSB 壳 191 行 AST、无帧方法，见 [运行时报告](./native-2d-m6.2-richtext-runtime.md)。独立 parser/layout 对照和 Windows 基础运行时验证不替代完整构建、场景/字体/视觉门禁；完整 native TS 仍失败，当前生成产物复核有 30 项 2D 类型/导入诊断。LabelOutline/LabelShadow 的公共属性转发及 Label 其余 API 继续回归。
 6. UITransform 的 onEnable/onDisable 与命中/Mask 相关语义、RenderRoot2D 与 UIOpacity 的启停/销毁归 M6.4。JSON 的生命周期列表是源码入口，不是 attach/detach 验收结论。
 
 各壳保留的序列化/API 字段、循环位置、TypedArray/RenderData 分配、直接 native 调用点和可达帧方法均记录在 files 条目。直接调用点数不等于每帧调用数；可达也不等于已执行。现阶段不生成虚假的稳态 0 次或 CPU/堆改善结论。
@@ -69,7 +69,7 @@ JSON 的 testEntrypoints 按类列出当前可复现的 Jest/PowerShell 入口�
 | Sprite | native-2d-m2-sprite-shell、run-sprite-quad-parity、run-m6-radial-parity | 继承 API、完整资源与 GPU 像素 |
 | Label | native-2d-m3-label-shell、run-m6-layout-tests、run-m3-label-probe | 序列化样式/字体和全 API |
 | Graphics / Mask | m4-mask-shell、m6-layout-shell、run-m4-mask/extra-probe | 几何/GPU、描边、动态联动 |
-| RichText | run-m5-richtext-probe | 原生解析/布局及精确对照 |
+| RichText | run-m6-richtext-parser/layout-parity、run-m6-richtext-runtime-tests | 完整构建、真实场景/字体与 GPU 对照 |
 | LabelOutline / LabelShadow | 暂无独立 native 固定用例 | 依赖 Label 的启停/属性转发回归 |
 | 六个资产 | native-font-assets / native-sprite-atlas / m2-sprite-frame-shell 与各 run-m6-* 脚本 | 各 M6.1 报告列明的真实加载和扩展 API |
 
@@ -82,6 +82,6 @@ JSON 的 testEntrypoints 按类列出当前可复现的 Jest/PowerShell 入口�
 | [M2 gate](./native-2d-m2-gate.md) | Sprite 五模式、像素与阶段性能记录 | 完整 API/资产、动态合图、终态 ≥50%/70%/30% 指标归 M6.1/M6.5 |
 | [M3 gate](./native-2d-m3-gate.md) | Windows TTF/BMFont 与效果路径 | 字体资产基础已由 M6.1 补齐；真实加载释放、平台字体和复杂文本仍待验收 |
 | [M4 gate](./native-2d-m4-gate.md) | Mask 四形状、嵌套和 Graphics 基础路径 | 文档明确留下三角化/GPU、join/cap/miter、Web 对照、合批/性能，全部归 M6.3 |
-| [M5 gate](./native-2d-m5-gate.md) | RichText 场景闭环、GDI 已知差异及 RenderRoot2D | JS 解析/布局归 M6.2；多 root/Camera、交互及销毁归 M6.4；sanity 不替代精确布局/字形门禁 |
+| [M5 gate](./native-2d-m5-gate.md) | RichText 场景闭环、GDI 已知差异及 RenderRoot2D | M6.2 已补原生基础路径；完整 RichText 场景/视觉仍待验收；多 root/Camera、交互及销毁归 M6.4；sanity 不替代精确布局/字形门禁 |
 
 本轮只复核阶段记录的边界，没有重跑历史 Creator 工程来重新认定当前版本通过。剩余项已映射到统一 [M6 计划](./native-2d-m6-plan.md)，任何平台、运行时或性能项仍须当前候选版本的证据。

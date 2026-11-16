@@ -15,6 +15,7 @@ void SpriteAtlas::addSpriteFrame(const ccstd::string &name, SpriteFrame *frame) 
     if (_spriteFrames.find(name) == _spriteFrames.end()) _frameNames.emplace_back(name);
     // A null value is still a named slot, matching the serialized JS map.
     _spriteFrames[name] = frame;
+    ++_revision;
 }
 
 SpriteFrame *SpriteAtlas::getSpriteFrame(const ccstd::string &name) const {
@@ -25,11 +26,13 @@ SpriteFrame *SpriteAtlas::getSpriteFrame(const ccstd::string &name) const {
 void SpriteAtlas::removeSpriteFrame(const ccstd::string &name) {
     _spriteFrames.erase(name);
     _frameNames.erase(std::remove(_frameNames.begin(), _frameNames.end(), name), _frameNames.end());
+    ++_revision;
 }
 
 void SpriteAtlas::clear() {
     _spriteFrames.clear();
     _frameNames.clear();
+    ++_revision;
 }
 
 void SpriteAtlas::setSpriteFrames(const ccstd::vector<ccstd::string> &names, const ccstd::vector<SpriteFrame *> &frames) {
@@ -43,6 +46,7 @@ void SpriteAtlas::setSpriteFrames(const ccstd::vector<ccstd::string> &names, con
     // is merely renamed or several names share the same object.
     _spriteFrames.swap(replacement);
     _frameNames = names;
+    ++_revision;
 }
 
 TextureBase *SpriteAtlas::getTexture() const {

@@ -12,7 +12,7 @@
 | M2 | Sprite 五模式、材质实例、Web/native golden、阶段性能 KPI | 全量 API/资产行为、终态薄壳、跨平台和混合负载 |
 | M3 | Windows Label TTF/BMFont、缓存、布局、Outline/Shadow | 平台字体矩阵、复杂文本、真实字体资产加载释放与平台句柄生命周期 |
 | M4 | Windows Mask 与 Graphics 基础功能 | Graphics 三角化/GPU buffer、完整描边语义、Web 对照、性能 |
-| M5 | Windows RichText 场景对照、RenderRoot2D | RichText 解析/布局仍在 JS；多 root/Camera 兼容回归 |
+| M5 | Windows RichText 场景对照、RenderRoot2D | M6.2 已接入原生 RichText 基础路径；完整场景/字体/视觉及多 root/Camera 继续验收 |
 
 资产绑定已调整为：`SpriteFrame = jsb.SpriteFrame`、`SpriteAtlas = jsb.SpriteAtlas`，直接修改原生 prototype；`_ctor` 调用 Asset 初始化。SpriteAtlas 已移除 `ensureNative/_nativeAtlas` 包装，原生方法在覆盖前保存。2026-11-16 已补 SpriteFrame 数据/算法下沉、Windows native 定向测试与 UV 对照，见 [SpriteFrame 报告](./native-2d-m6.1-sprite-frame.md)；真实资产/场景加载与完整生命周期矩阵仍待验收。TTFFont/BitmapFont/LabelAtlas 基础数据与生命周期已完成本轮 Windows 定向验证，见 [字体资产报告](./native-2d-m6.1-font-assets.md)，平台句柄及真实场景验收仍单列待办。
 
@@ -53,10 +53,10 @@
 
 ### M6.2 RichText 达到终态薄壳
 
-- [x] 原生解析准备：新增 RichTextParser/span/style，3871 组输入在 g++、Windows MSVC Debug/Release 产物上与实际 Web parser 对照通过，生产引擎已编译该实现，见 [报告与接入边界](./native-2d-m6.2-richtext-parser.md)。当前 RichText 运行时仍使用 Web，不能以此关闭下面的原生组件/布局节点。
-- [x] 原生布局规则准备：RichTextLayout 直接消费 native span，1440 组相同测量值的用例在 g++、MSVC Debug/Release 与实际 Web RichText 布局对照通过，见 [报告](./native-2d-m6.2-richtext-layout.md)。字体测量、段管理和运行时接入仍待完成，不能据此认定场景/视觉 parity。
-- [ ] HTML 解析、样式继承、分段、测量、换行/对齐和布局迁入 native；新增 native RichText 实现及 `.jsb.ts` override，JS 只保留元数据、序列化、生命周期和 API/事件桥接。
-- [ ] 段对象创建、复用、布局与销毁由 native 编排，避免 JS 逐段/逐字驱动；保持 JS 用户事件回调与公开 API 行为。
+- [x] 原生解析准备：新增 RichTextParser/span/style，3871 组输入在 g++、Windows MSVC Debug/Release 产物上与实际 Web parser 对照通过，见 [报告](./native-2d-m6.2-richtext-parser.md)。现已接入下述原生运行时，完整视觉/场景验收仍待完成。
+- [x] 原生布局规则准备：RichTextLayout 直接消费 native span，1440 组相同测量值的用例在 g++、MSVC Debug/Release 与实际 Web RichText 布局对照通过，见 [报告](./native-2d-m6.2-richtext-layout.md)。现已连接原生测量和段管理，不能据此认定场景/视觉 parity。
+- [x] 基础运行时接入：native RichText + JSB override 使用原生解析、测量与布局，原生创建/复用/布局/销毁 Label/Sprite 段；JS 保留 Component、元数据/序列化、生命周期和 API/点击分发。字体/图集 revision、父 Renderer 共存、基础启停/命中/销毁在 Windows Debug/Release 与实际 JSB 定向验证通过，见 [报告](./native-2d-m6.2-richtext-runtime.md)。
+- [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归，以及完整 native TS 构建。当前生成产物复核有 30 项 2D 类型/导入边界诊断，未豁免该门禁；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
 - [ ] 保留 Windows GDI italic 宽度的已接受差异；平台、字体、用例、布局容差分别记录。现有 colored ±20% 只作 sanity，不能替代布局、字形、事件验收。
 
