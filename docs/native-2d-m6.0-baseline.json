@@ -15319,8 +15319,8 @@
     },
     {
       "file": "cocos/2d/components/rich-text.jsb.ts",
-      "sha256": "14ed32f06be4fabea478fccec1927f227025c3cc997317cbbca7322bcec0edf9",
-      "printedCodeLines": 191,
+      "sha256": "9156315f68fbb51b99ccf4595cc2462d7e05b61224f4bb579d931fefb45ab999",
+      "printedCodeLines": 193,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15409,8 +15409,8 @@
       ],
       "allocations": [],
       "loops": [
-        165,
-        168
+        170,
+        172
       ]
     },
     {

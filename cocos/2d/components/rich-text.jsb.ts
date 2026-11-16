@@ -158,18 +158,22 @@ export class RichText extends Component {
     }
     protected _onTouchEnded (event: EventTouch): void {
         const native = this._native;
-        if (!native || !this._handleTouchEvent) return;
+        if (!native || !this._handleTouchEvent || !this._listening) return;
         const point = event.touch!.getUILocation();
         const hits: number[] = native.getHitSegments(point.x, point.y);
+        // User code can replace the native segment graph during dispatch. Keep
+        // the metadata for this hit result, never read recycled indices later.
+        const events = hits.map(index => ({
+            name: native.getSegmentClickHandler(index), param: native.getSegmentClickParam(index),
+        }));
         const components = this.node.getComponents(Component);
-        for (const index of hits) {
-            if (this._native !== native) break;
-            const name = native.getSegmentClickHandler(index), param = native.getSegmentClickParam(index);
+        for (const { name, param } of events) {
+            event.propagationStopped = true;
             for (const component of components) {
+                if (this._native !== native || !this._listening || !this._handleTouchEvent) return;
                 const handler = (component as any)[name];
                 if (component.enabledInHierarchy && handler) handler.call(component, event, param);
             }
-            event.propagationStopped = true;
         }
     }
 }

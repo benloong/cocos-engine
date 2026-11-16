@@ -31,7 +31,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 | Label | override | 346 | 0 | 14 | M6.1 |
 | Mask | override | 149 | 0 | 20 | M6.3 / M6.4 |
 | Graphics | override | 173 | 0 | 6 | M6.3 |
-| RichText | override | 191 | 0 | 0 | M6.2 |
+| RichText | override | 193 | 0 | 0 | M6.2 |
 | UIOpacity | override | 48 | 0 | 0 | M6.4 |
 | LabelOutline | 保留 Web 实现 | 45 | 0 | 0 | Label API 桥接 |
 | LabelShadow | 保留 Web 实现 | 55 | 0 | 0 | Label API 桥接 |
@@ -71,7 +71,7 @@ JSON 的 testEntrypoints 按类列出当前可复现的 Jest/PowerShell 入口�
 | Sprite | native-2d-m2-sprite-shell、run-sprite-quad-parity、run-m6-radial-parity | 继承 API、完整资源与 GPU 像素 |
 | Label | native-2d-m3-label-shell、run-m6-layout-tests、run-m3-label-probe | 序列化样式/字体和全 API |
 | Graphics / Mask | m4-mask-shell、m6-layout-shell、graphics-geometry-parity、mask-stencil-lifecycle、compare-graphics-gpu | 完整 API/资产/材质联动、混合与平台/性能矩阵；旧 M4 getFrame 探针已过时 |
-| RichText | run-m6-richtext-parser/layout-parity、run-m6-richtext-runtime-tests | 完整构建、真实场景/字体与 GPU 对照 |
+| RichText | run-m6-richtext-parser/layout-parity、run-m6-richtext-runtime-tests | 真实场景/字体、完整事件与 GPU 对照 |
 | LabelOutline / LabelShadow | 暂无独立 native 固定用例 | 依赖 Label 的启停/属性转发回归 |
 | 六个资产 | native-font-assets / native-sprite-atlas / m2-sprite-frame-shell 与各 run-m6-* 脚本 | 各 M6.1 报告列明的真实加载和扩展 API |
 

@@ -60,7 +60,27 @@ rich.imageAtlas=atlas;rich.string='<img src="icon"/>tail';
 check(native.getSegmentCount()===2&&native.getSegmentSprite(0).getType()===1,'actual shell native image and label');
 atlas.removeSpriteFrame('icon');native.prepareRenderEntity(1);
 check(native.getSegmentCount()===1&&native.getSegmentLabel(0),'late atlas removal updates native segment graph');
-rich.onDestroy();check(!callback&&rich._native===null&&native.getSegmentCount()===0,'destroy releases listener and all native segments');
+atlas.addSpriteFrame('icon',frame);
+rich.string='<img src="icon" width=4 height=2 offset=0,-5 click="tap" param="first"/><img src="icon" width=4 height=2 offset=-4,-5 click="tap" param="second"/>';
+check(native.getHitSegments(1,1).length===2,'overlapping native clickable segments');
+const params=[];
+node.getComponents=()=>[{enabledInHierarchy:true,tap(event,param){
+ params.push(param);
+ if(param==='first')rich.string='<b click="replacement">changed graph</b>';
+},replacement(){throw Error('new segment handler dispatched for old hit');}}];
+callback(event);
+check(params.join(',')==='first,second','native hit metadata survives callback-driven relayout');
+for(const action of ['disable','touch-off','destroy']) {
+ rich.handleTouchEvent=true;rich.onEnable();rich.string='<b click="tap">stop</b>';
+ let first=0,second=0;
+ node.getComponents=()=>[
+  {enabledInHierarchy:true,tap(){first++;if(action==='disable')rich.onDisable();else if(action==='touch-off')rich.handleTouchEvent=false;else rich.onDestroy();}},
+  {enabledInHierarchy:true,tap(){second++;}}
+ ];
+ event.propagationStopped=false;callback(event);
+ check(first===1&&second===0&&event.propagationStopped&&!callback,'callback lifetime stops current and future dispatch: '+action);
+}
+check(rich._native===null&&native.getSegmentCount()===0,'destroy releases listener and all native segments');
 ui.detach();return 'OK';
 }catch(error){return String(error.stack||error);}})()`;
 fs.mkdirSync(path.dirname(output), { recursive: true }); fs.writeFileSync(output, script); console.log(output);

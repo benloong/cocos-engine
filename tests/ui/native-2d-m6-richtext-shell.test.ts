@@ -103,3 +103,48 @@ test('native hit results dispatch user handlers once and detach on disable/destr
     rich.onEnable(); rich.onDestroy(); node.emit(NodeEventType.TOUCH_END, event);
     expect(handler.clicked).toHaveBeenCalledTimes(1);
 });
+
+test.each(['destroy', 'disable', 'touch-off'])('RichText stops dispatch after a handler changes its lifetime: %s', (action) => {
+    const { RichText } = require('../../cocos/2d/components/rich-text.jsb');
+    const node = new Node('reentrant-click'); node.addComponent(UITransform);
+    const rich: any = node.addComponent(RichText); rich.onLoad(); rich.onEnable();
+    class First extends Component {
+        clicked = jest.fn(() => {
+            if (action === 'destroy') rich.onDestroy();
+            else if (action === 'disable') rich.onDisable();
+            else rich.handleTouchEvent = false;
+        });
+    }
+    class Second extends Component { clicked = jest.fn(); }
+    const first = node.addComponent(First), second = node.addComponent(Second);
+    for (const handler of [first, second]) Object.defineProperty(handler, 'enabledInHierarchy', { value: true });
+    const event = { touch: { getUILocation: () => ({ x: 2, y: 3 }) }, propagationStopped: false };
+    node.emit(NodeEventType.TOUCH_END, event);
+    expect(first.clicked).toHaveBeenCalledTimes(1);
+    expect(second.clicked).not.toHaveBeenCalled();
+    expect(event.propagationStopped).toBe(true);
+    node.emit(NodeEventType.TOUCH_END, event);
+    expect(first.clicked).toHaveBeenCalledTimes(1);
+});
+
+test('RichText snapshots native hit metadata before user callbacks can relayout the segments', () => {
+    const { RichText } = require('../../cocos/2d/components/rich-text.jsb');
+    const node = new Node('relayout-click'); node.addComponent(UITransform);
+    const rich: any = node.addComponent(RichText); rich.onLoad(); rich.onEnable();
+    const native = created[0];
+    let relaid = false;
+    native.getHitSegments.mockReturnValue([0, 1]);
+    native.getSegmentClickHandler.mockImplementation(index => relaid ? 'replacement' : 'clicked');
+    native.getSegmentClickParam.mockImplementation(index => `original-${index}`);
+    class Handler extends Component {
+        clicked = jest.fn(() => { rich.string = 'replacement'; relaid = true; });
+        replacement = jest.fn();
+    }
+    const handler = node.addComponent(Handler);
+    Object.defineProperty(handler, 'enabledInHierarchy', { value: true });
+    const event = { touch: { getUILocation: () => ({ x: 2, y: 3 }) }, propagationStopped: false };
+    node.emit(NodeEventType.TOUCH_END, event);
+    expect(handler.clicked.mock.calls.map(args => args[1])).toEqual(['original-0', 'original-1']);
+    expect(handler.replacement).not.toHaveBeenCalled();
+    rich.onDestroy();
+});
