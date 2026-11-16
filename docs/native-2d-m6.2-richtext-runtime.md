@@ -49,3 +49,9 @@
 命中几何继续由 native 计算。JS 在调用用户代码前读取本次命中段的 handler/param，作为一次事件的临时数据；回调改变 string、图集或触发布局后，不再用旧索引查询已经复用的原生片段。回调销毁、禁用组件或关闭 handleTouchEvent 时，立即停止剩余分发；已命中的事件先标记停止传播。该临时事件数据不是 JS 布局或第二份片段状态，没有新增每帧调用或 native 所有权。
 
 四项 Jest 回归先复现失败，修复后 8 项壳测试通过。实际 JSB 探针用两个 offset 重叠的原生图片段命中，首回调同步替换文本，验证原命中参数仍为 first/second；另验证 destroy、disable、touch-off 三种回调行为均停止当前及后续分发。Windows Debug/Release 两个 harness 和实际 JSB 通过，完整入口 3 个 suite、11 项测试通过；常规及完整 native TS 构建通过。原始本机日志在 native/tests/2d-poc/build/richtext-event-{before,after,jsb-final,types,native-types}.log。探针使用原生 Node/SWIG 和实际 RichText 壳，Component 调度及事件入口经过隔离；不替代完整应用中的触摸输入、Camera/Mask 分发、旧场景或字体 GPU 验收。
+
+## Label 准备入口硬化（2026-11-16）
+
+真实应用发现：TTF 赋值会调用 Label::clearRenderedData，而内部 Sprite::clearFrame 禁用了 RenderEntity。Batcher 跳过禁用实体，因此 Label 的 prepare listener 永远不会再生成字体纹理；直接调用 Label::prepareRenderEntity 的旧测试绕过了该缺口。修复后，Label 清空旧帧仍按其自身 enabled 状态保持准备入口；Label::setEnabled 同时更新 Component 和内部 Sprite 状态，字体失效不能重新启用被禁用的 Label。Sprite 自身 clearFrame 契约不变，没有新增持有关系。
+
+新增 RichText 带 TTF 段的 RenderEntity 启用/Batcher prepare 回归，修复前两个原生断言失败；修复后 Windows Debug/Release 原生与实际 JSB、3 个 Jest suite（11 项）通过。另覆盖 Label 禁用期间切换 TTF/BMFont 后仍禁用，再启用可重新准备。真实应用中同一段原先 capture 时 opaque=0、手工 prepare 后为 467；修复后 capture 前已为 467，文本已出现在 GPU 图像中。该像素计数只说明准备链路恢复。正在建设的同源 TTF 字体矩阵另检出 Windows GDI 对 tests/fixtures/Thonburi.ttf 选择回退字体，而 Web 使用该字体，完整字体/视觉门禁仍未通过。本机日志 richtext-label-before.log、richtext-label-fix-regression-final.log 和 richtext-gpu-native-label-fix.log 位于忽略的 build 目录。

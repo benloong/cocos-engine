@@ -161,7 +161,11 @@ void Label::applyFontAsset() {
     updateFont(); clearRenderedData(); _dirty = true;
 }
 void Label::clearRenderedData() {
-    _renderer.clearFrame(); _frame = nullptr; _texture = nullptr;
+    _renderer.clearFrame();
+    // The entity also drives Label's prepare callback. An empty frame must
+    // not disable that callback or later font/config changes cannot rebuild.
+    _renderer.setEnabled(isEnabled());
+    _frame = nullptr; _texture = nullptr;
     std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
     _lastContentWidth = _lastContentHeight = _lastTextureWidth = _lastTextureHeight = 0;
     _actualFontSize = 0.F;
@@ -372,6 +376,7 @@ void Label::setPriority(int32_t priority) {
 }
 
 void Label::setEnabled(bool enabled) {
+    Component::setEnabled(enabled);
     _renderer.setEnabled(enabled);
 }
 

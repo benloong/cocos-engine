@@ -271,6 +271,14 @@ void testFontAssets() {
     label.setFontSize(2); label.setLineHeight(2); label.setString("A"); label.setCacheMode(2);
     const auto refs = font->getRefCount();
     label.setFontAsset(font); label.prepareRenderEntity(1.F);
+    auto *fontEntity = static_cast<cc::RenderEntity *>(node.getUserData());
+    check(fontEntity->isEnabled(), "font invalidation preserves Label prepare eligibility");
+    label.setEnabled(false);
+    label.setFontAsset(ttf); label.setFontAsset(font);
+    check(!label.isEnabled() && !fontEntity->isEnabled(), "font invalidation does not reactivate disabled Label");
+    label.setEnabled(true);
+    check(label.isEnabled() && fontEntity->isEnabled(), "Label re-enable restores Batcher prepare eligibility");
+    fontEntity->prepare(1.F);
     check(label.getOpaquePixels() == 4, "LabelAtlas native glyph renders even in CHAR mode");
     const auto coverageChecksum = label.getPixelChecksum();
     label.setColorRGBA(128,64,32,128); label.prepareRenderEntity(128.F / 255.F);
@@ -409,6 +417,10 @@ void testRichTextRuntime() {
     rich.setNode(&node); rich.setUITransform(&ui);
     check(node.getUserData() == parentEntity, "RichText group preserves an existing parent renderer");
     check(rich.getSegmentCount() == 3 && node.getChildren().size() == 3, "native RichText owns native segment children");
+    auto *segmentEntity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(0)->getUserData());
+    check(segmentEntity->isEnabled(), "RichText font segment remains eligible for Batcher prepare");
+    if (segmentEntity->isEnabled()) segmentEntity->prepare(1.F);
+    check(rich.getSegmentLabel(0)->getOpaquePixels() > 0, "Batcher prepare renders native RichText font segment");
     check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
     check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
     check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
