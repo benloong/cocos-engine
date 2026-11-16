@@ -1266,6 +1266,17 @@ export function patch_cc_SpotLight(ctx: cc_SpotLight_Context_Args, apply = defau
   apply(() => { $.ccclass('cc.SpotLight')(SpotLight); }, 'ccclass', null);
 } // end of patch_cc_SpotLight
 
+//---- class cc_SpriteAtlas
+interface cc_SpriteAtlas_Context_Args {
+   SpriteAtlas: any;
+}
+export function patch_cc_SpriteAtlas(ctx: cc_SpriteAtlas_Context_Args, apply = defaultExec) {
+  const { SpriteAtlas } = { ...ctx };
+  apply(() => { $.serializable(SpriteAtlas.prototype, 'spriteFrames',  () => { return {}; }); }, 'serializable', 'spriteFrames');
+  apply(() => { $.editable(SpriteAtlas.prototype, 'spriteFrames',  () => { return {}; }); }, 'editable', 'spriteFrames');
+  apply(() => { $.ccclass('cc.SpriteAtlas')(SpriteAtlas); }, 'ccclass', null);
+} // end of patch_cc_SpriteAtlas
+
 //---- class cc_SpriteFrame
 interface cc_SpriteFrame_Context_Args {
    SpriteFrame: any;

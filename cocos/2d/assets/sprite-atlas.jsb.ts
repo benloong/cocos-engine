@@ -4,18 +4,14 @@
  http://www.cocos.com
 */
 
-import { ccclass, editable, serializable } from 'cc.decorator';
 import { cclegacy } from '../../core';
 import '../../asset/assets/asset';
+import { patch_cc_SpriteAtlas } from '../../native-binding/decorators';
 import type { SpriteFrame } from './sprite-frame';
 import type { SpriteAtlas as JsbSpriteAtlas } from './sprite-atlas';
 import type { TextureBase } from '../../asset/assets/texture-base';
 
 declare const jsb: any;
-
-interface ISpriteFrameList {
-    [key: string]: SpriteFrame | null;
-}
 
 export type SpriteAtlas = JsbSpriteAtlas;
 export const SpriteAtlas: typeof JsbSpriteAtlas = jsb.SpriteAtlas;
@@ -35,9 +31,8 @@ spriteAtlasProto._ctor = function () {
 
 spriteAtlasProto.addSpriteFrame = function (name: string, frame: SpriteFrame | null): void {
     this.spriteFrames[name] = frame;
-    const nativeFrame = (frame as any)?.native ?? null;
-    if (nativeFrame) {
-        nativeAddSpriteFrame.call(this, String(name ?? ''), nativeFrame);
+    if (frame) {
+        nativeAddSpriteFrame.call(this, String(name ?? ''), frame);
     }
 };
 
@@ -83,6 +78,5 @@ spriteAtlasProto._deserialize = function (serializeData: any, handle: any): void
     }
 };
 
-serializable(spriteAtlasProto, 'spriteFrames', (): ISpriteFrameList => ({}));
-editable(spriteAtlasProto, 'spriteFrames', (): ISpriteFrameList => ({}));
-ccclass('cc.SpriteAtlas')(SpriteAtlas);
+// handle meta data, it is generated automatically
+patch_cc_SpriteAtlas({ SpriteAtlas });

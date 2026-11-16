@@ -278,11 +278,6 @@ export class Sprite extends UIRenderer {
             this._native.clearFrame();
             return;
         }
-        const nativeFrame = (frame as any).native;
-        if (!nativeFrame) {
-            this._native.clearFrame();
-            return;
-        }
-        this._native.setFrame(nativeFrame);
+        this._native.setFrame(frame);
     }
 }

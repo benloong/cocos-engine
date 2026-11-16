@@ -26,6 +26,9 @@ const nativeLabel = {
     setShadowBlur: jest.fn(),
     setShadowOffset: jest.fn(),
     setCacheMode: jest.fn(),
+    setBitmapAtlas: jest.fn(),
+    clearGlyphs: jest.fn(),
+    clearKerning: jest.fn(),
     getContentHeight: jest.fn(() => 90),
 };
 
@@ -81,4 +84,8 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.shadowBlur = 2;
     expect(nativeLabel.setEnableShadow).toHaveBeenLastCalledWith(true);
     expect(nativeLabel.setShadowBlur).toHaveBeenLastCalledWith(2);
+
+    const frame = { texture: {} };
+    label.font = { spriteFrame: frame, fontSize: 24, fontDefDictionary: { letterDefinitions: {} } };
+    expect(nativeLabel.setBitmapAtlas).toHaveBeenLastCalledWith(frame, 24);
 });

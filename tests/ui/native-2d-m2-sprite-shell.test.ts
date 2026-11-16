@@ -2,17 +2,6 @@ import { Node } from '../../cocos/scene-graph/node';
 import { UITransform } from '../../cocos/2d/framework/ui-transform';
 import { Color } from '../../cocos/core/math/color';
 
-const nativeFrame = {
-    setTexture: jest.fn(),
-    setUuid: jest.fn(),
-    setName: jest.fn(),
-    setRect: jest.fn(),
-    setOriginalSize: jest.fn(),
-    setOffset: jest.fn(),
-    setRotated: jest.fn(),
-    setInsets: jest.fn(),
-};
-
 const nativeMaterial = { parent: null } as any;
 
 const nativeSprite = {
@@ -40,7 +29,6 @@ const nativeSprite = {
 beforeAll(() => {
     (global as any).n2d = {
         Sprite: jest.fn(() => nativeSprite),
-        SpriteFrame: jest.fn(() => nativeFrame),
     };
 });
 
@@ -64,7 +52,6 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
     const texture = { width: 128, height: 256 };
     sprite.spriteFrame = {
         texture,
-        native: nativeFrame,
         uuid: 'frame-uuid',
         name: 'frame-name',
         rect: { x: 1, y: 2, width: 3, height: 4 },
@@ -76,7 +63,10 @@ test('Sprite M2 shell attaches and forwards SIMPLE frame data', () => {
         insetTop: 3,
         insetBottom: 4,
     } as any;
-    expect(nativeSprite.setFrame).toHaveBeenLastCalledWith(nativeFrame);
+    expect(nativeSprite.setFrame).toHaveBeenLastCalledWith(sprite.spriteFrame);
+
+    sprite.spriteFrame = null;
+    expect(nativeSprite.clearFrame).toHaveBeenCalled();
 
     sprite.color = new Color(10, 20, 30, 255);
     expect(nativeSprite.setColorRGBA).toHaveBeenLastCalledWith(10, 20, 30, 255);

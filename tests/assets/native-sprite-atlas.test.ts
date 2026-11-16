@@ -42,7 +42,7 @@ test('SpriteAtlas forwards mutations to native methods on the same instance', ()
     const { SpriteAtlas } = require('../../cocos/2d/assets/sprite-atlas.jsb');
     const atlas = new SpriteAtlas();
     const texture = {};
-    const frame = { name: '', texture, get native () { return this; } };
+    const frame = { name: '', texture };
 
     atlas.addSpriteFrame('hero', frame);
     expect(nativeAddSpriteFrame).toHaveBeenLastCalledWith('hero', frame);

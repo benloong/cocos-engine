@@ -19,6 +19,11 @@ beforeAll(() => {
         SpriteFrame: NativeFrame,
     };
 });
+
+beforeEach(() => {
+    jest.clearAllMocks();
+});
+
 test('SpriteFrame thin shell forwards frame data to native', () => {
     const { SpriteFrame } = require('../../cocos/2d/assets/sprite-frame.jsb') as typeof import('../../cocos/2d/assets/sprite-frame.jsb');
     const frame = new SpriteFrame();
@@ -34,14 +39,74 @@ test('SpriteFrame thin shell forwards frame data to native', () => {
     frame.insetTop = 30;
     frame.insetBottom = 40;
 
-    const native = frame.native;
-    expect(native).toBe(frame);
+    expect(frame).toBeInstanceOf(NativeFrame);
+    expect('native' in frame).toBe(false);
     expect(nativeMethods.setTexture).toHaveBeenLastCalledWith(texture);
     expect(nativeMethods.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
     expect(nativeMethods.setOriginalSize).toHaveBeenLastCalledWith(5, 6);
     expect(nativeMethods.setOffset).toHaveBeenLastCalledWith(7, 8);
     expect(nativeMethods.setRotated).toHaveBeenLastCalledWith(true);
     expect(nativeMethods.setInsets).toHaveBeenLastCalledWith(10, 20, 30, 40);
+    expect(nativeMethods.setTexture).toHaveBeenCalledTimes(1);
+    expect(nativeMethods.setRect).toHaveBeenCalledTimes(1);
+    expect(nativeMethods.setOriginalSize).toHaveBeenCalledTimes(1);
+    expect(nativeMethods.setOffset).toHaveBeenCalledTimes(1);
+    expect(nativeMethods.setRotated).toHaveBeenCalledTimes(1);
+    expect(nativeMethods.setInsets).toHaveBeenCalledTimes(4);
+});
+
+test.each([
+    ['texture', null, 'setTexture', [null]],
+    ['rect', new Rect(1, 2, 3, 4), 'setRect', [1, 2, 3, 4]],
+    ['originalSize', new Size(5, 6), 'setOriginalSize', [5, 6]],
+    ['offset', new Vec2(7, 8), 'setOffset', [7, 8]],
+    ['rotated', true, 'setRotated', [true]],
+    ['insetLeft', 10, 'setInsets', [10, 0, 0, 0]],
+    ['insetRight', 20, 'setInsets', [0, 20, 0, 0]],
+    ['insetTop', 30, 'setInsets', [0, 0, 30, 0]],
+    ['insetBottom', 40, 'setInsets', [0, 0, 0, 40]],
+])('setting %s only synchronizes its native field', (property, value, method, args) => {
+    const { SpriteFrame } = require('../../cocos/2d/assets/sprite-frame.jsb');
+    const frame = new SpriteFrame();
+    frame[property] = value;
+
+    for (const name of Object.keys(nativeMethods)) {
+        expect(nativeMethods[name]).toHaveBeenCalledTimes(name === method ? 1 : 0);
+    }
+    expect(nativeMethods[method]).toHaveBeenCalledWith(...args);
+});
+
+test('reset batches native updates and keeps the existing value objects', () => {
+    const { SpriteFrame } = require('../../cocos/2d/assets/sprite-frame.jsb');
+    const frame = new SpriteFrame();
+    const rect = frame.rect;
+    const size = frame.originalSize;
+    const offset = frame.offset;
+    const texture = { width: 128, height: 256 };
+
+    frame.reset({ texture, rect: new Rect(1, 2, 3, 4), originalSize: new Size(5, 6),
+        offset: new Vec2(7, 8), isRotate: true, borderLeft: 10, borderRight: 20, borderTop: 30, borderBottom: 40 }, true);
+
+    expect(frame.rect).toBe(rect);
+    expect(frame.originalSize).toBe(size);
+    expect(frame.offset).toBe(offset);
+    expect(nativeMethods.setTexture).toHaveBeenLastCalledWith(texture);
+    expect(nativeMethods.setRect).toHaveBeenLastCalledWith(1, 2, 3, 4);
+    expect(nativeMethods.setOriginalSize).toHaveBeenLastCalledWith(5, 6);
+    expect(nativeMethods.setOffset).toHaveBeenLastCalledWith(7, 8);
+    expect(nativeMethods.setRotated).toHaveBeenLastCalledWith(true);
+    expect(nativeMethods.setInsets).toHaveBeenLastCalledWith(10, 20, 30, 40);
+    for (const method of Object.values(nativeMethods)) {
+        expect(method).toHaveBeenCalledTimes(1);
+    }
+
+    frame.reset();
+    expect(frame.texture).toBe(texture);
+    expect(frame.rect).toEqual(new Rect());
+    expect(frame.originalSize).toEqual(new Size());
+    expect(frame.offset).toEqual(new Vec2());
+    expect(frame.rotated).toBe(false);
+    expect(nativeMethods.setInsets).toHaveBeenLastCalledWith(0, 0, 0, 0);
 });
 
 test('SpriteFrame patches the native constructor and initializes independent instance state', () => {

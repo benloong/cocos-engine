@@ -68,169 +68,145 @@ spriteFrameProto._ctor = function () {
     this.uv = [];
 };
 
-Object.defineProperty(spriteFrameProto, 'native', {
-    enumerable: true,
-    configurable: true,
-    get (): any {
-        return this;
+Object.defineProperties(spriteFrameProto, {
+    texture: {
+        enumerable: true,
+        configurable: true,
+        get (): TextureBase | null {
+            return this._texture;
+        },
+        set (value: TextureBase | null) {
+            this._texture = value;
+            nativeSetTexture.call(this, value);
+        },
     },
-});
-
-Object.defineProperty(spriteFrameProto, 'texture', {
-    enumerable: true,
-    configurable: true,
-    get (): TextureBase | null {
-        return this._texture;
+    _textureSource: {
+        enumerable: true,
+        configurable: true,
+        set (value: TextureBase | null) {
+            this.texture = value;
+        },
     },
-    set (value: TextureBase | null) {
-        this._texture = value;
-        this._syncTexture();
+    rect: {
+        enumerable: true,
+        configurable: true,
+        get (): Rect {
+            return this._rect;
+        },
+        set (value: Rect) {
+            this._rect.set(value);
+            nativeSetRect.call(this, this._rect.x, this._rect.y, this._rect.width, this._rect.height);
+        },
     },
-});
-
-Object.defineProperty(spriteFrameProto, '_textureSource', {
-    enumerable: true,
-    configurable: true,
-    set (value: TextureBase | null) {
-        this.texture = value;
+    originalSize: {
+        enumerable: true,
+        configurable: true,
+        get (): Size {
+            return this._originalSize;
+        },
+        set (value: Size) {
+            this._originalSize.set(value);
+            nativeSetOriginalSize.call(this, this._originalSize.width, this._originalSize.height);
+        },
     },
-});
-
-Object.defineProperty(spriteFrameProto, 'rect', {
-    enumerable: true,
-    configurable: true,
-    get (): Rect {
-        return this._rect;
+    offset: {
+        enumerable: true,
+        configurable: true,
+        get (): Vec2 {
+            return this._offset;
+        },
+        set (value: Vec2) {
+            this._offset.set(value);
+            nativeSetOffset.call(this, this._offset.x, this._offset.y);
+        },
     },
-    set (value: Rect) {
-        this._rect.set(value);
-        this._syncFrameData();
+    rotated: {
+        enumerable: true,
+        configurable: true,
+        get (): boolean {
+            return this._rotated;
+        },
+        set (value: boolean) {
+            this._rotated = value;
+            nativeSetRotated.call(this, value);
+        },
     },
-});
-
-Object.defineProperty(spriteFrameProto, 'originalSize', {
-    enumerable: true,
-    configurable: true,
-    get (): Size {
-        return this._originalSize;
+    insetLeft: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._capInsets[INSET_LEFT]; },
+        set (value: number) { this._capInsets[INSET_LEFT] = value; this._syncInsets(); },
     },
-    set (value: Size) {
-        this._originalSize.set(value);
-        this._syncFrameData();
+    insetTop: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._capInsets[INSET_TOP]; },
+        set (value: number) { this._capInsets[INSET_TOP] = value; this._syncInsets(); },
     },
-});
-
-Object.defineProperty(spriteFrameProto, 'offset', {
-    enumerable: true,
-    configurable: true,
-    get (): Vec2 {
-        return this._offset;
+    insetRight: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._capInsets[INSET_RIGHT]; },
+        set (value: number) { this._capInsets[INSET_RIGHT] = value; this._syncInsets(); },
     },
-    set (value: Vec2) {
-        this._offset.set(value);
-        this._syncFrameData();
+    insetBottom: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._capInsets[INSET_BOTTOM]; },
+        set (value: number) { this._capInsets[INSET_BOTTOM] = value; this._syncInsets(); },
     },
-});
-
-Object.defineProperty(spriteFrameProto, 'rotated', {
-    enumerable: true,
-    configurable: true,
-    get (): boolean {
-        return this._rotated;
+    width: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._rect.width; },
     },
-    set (value: boolean) {
-        this._rotated = value;
-        this._syncFrameData();
+    height: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._rect.height; },
     },
-});
-
-Object.defineProperty(spriteFrameProto, 'insetLeft', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._capInsets[INSET_LEFT]; },
-    set (value: number) { this._capInsets[INSET_LEFT] = value; this._syncFrameData(); },
-});
-
-Object.defineProperty(spriteFrameProto, 'insetTop', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._capInsets[INSET_TOP]; },
-    set (value: number) { this._capInsets[INSET_TOP] = value; this._syncFrameData(); },
-});
-
-Object.defineProperty(spriteFrameProto, 'insetRight', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._capInsets[INSET_RIGHT]; },
-    set (value: number) { this._capInsets[INSET_RIGHT] = value; this._syncFrameData(); },
-});
-
-Object.defineProperty(spriteFrameProto, 'insetBottom', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._capInsets[INSET_BOTTOM]; },
-    set (value: number) { this._capInsets[INSET_BOTTOM] = value; this._syncFrameData(); },
-});
-
-Object.defineProperty(spriteFrameProto, 'width', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._rect.width; },
-});
-
-Object.defineProperty(spriteFrameProto, 'height', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._rect.height; },
-});
-
-Object.defineProperty(spriteFrameProto, 'atlasUuid', {
-    enumerable: true,
-    configurable: true,
-    get (): string { return this._atlasUuid; },
-    set (value: string) { this._atlasUuid = value; },
-});
-
-Object.defineProperty(spriteFrameProto, 'flipUVX', {
-    enumerable: true,
-    configurable: true,
-    get (): boolean { return this._isFlipUVX; },
-    set (value: boolean) { this._isFlipUVX = value; },
-});
-
-Object.defineProperty(spriteFrameProto, 'flipUVY', {
-    enumerable: true,
-    configurable: true,
-    get (): boolean { return this._isFlipUVY; },
-    set (value: boolean) { this._isFlipUVY = value; },
-});
-
-Object.defineProperty(spriteFrameProto, 'packable', {
-    enumerable: true,
-    configurable: true,
-    get (): boolean { return this._packable; },
-    set (value: boolean) { this._packable = value; },
-});
-
-Object.defineProperty(spriteFrameProto, 'pixelsToUnit', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._pixelsToUnit; },
-    set (value: number) { this._pixelsToUnit = value; },
-});
-
-Object.defineProperty(spriteFrameProto, 'pivot', {
-    enumerable: true,
-    configurable: true,
-    get (): Vec2 { return this._pivot; },
-    set (value: Vec2) { this._pivot.set(value); },
-});
-
-Object.defineProperty(spriteFrameProto, 'meshType', {
-    enumerable: true,
-    configurable: true,
-    get (): number { return this._meshType; },
-    set (value: number) { this._meshType = value; },
+    atlasUuid: {
+        enumerable: true,
+        configurable: true,
+        get (): string { return this._atlasUuid; },
+        set (value: string) { this._atlasUuid = value; },
+    },
+    flipUVX: {
+        enumerable: true,
+        configurable: true,
+        get (): boolean { return this._isFlipUVX; },
+        set (value: boolean) { this._isFlipUVX = value; },
+    },
+    flipUVY: {
+        enumerable: true,
+        configurable: true,
+        get (): boolean { return this._isFlipUVY; },
+        set (value: boolean) { this._isFlipUVY = value; },
+    },
+    packable: {
+        enumerable: true,
+        configurable: true,
+        get (): boolean { return this._packable; },
+        set (value: boolean) { this._packable = value; },
+    },
+    pixelsToUnit: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._pixelsToUnit; },
+        set (value: number) { this._pixelsToUnit = value; },
+    },
+    pivot: {
+        enumerable: true,
+        configurable: true,
+        get (): Vec2 { return this._pivot; },
+        set (value: Vec2) { this._pivot.set(value); },
+    },
+    meshType: {
+        enumerable: true,
+        configurable: true,
+        get (): number { return this._meshType; },
+        set (value: number) { this._meshType = value; },
+    },
 });
 
 spriteFrameProto._calculateUV = function (): void {
@@ -317,7 +293,7 @@ spriteFrameProto.reset = function (info?: any, clearData = false): void {
     }
     if (info) {
         if (info.texture) {
-            this.texture = info.texture;
+            this._texture = info.texture;
             this._rect.set(0, 0, info.texture.width, info.texture.height);
         }
         if (info.originalSize) { this._originalSize.set(info.originalSize); }
@@ -373,15 +349,7 @@ spriteFrameProto._deserialize = function (data: any, handle: any): void {
     this._syncNative();
 };
 
-spriteFrameProto._syncTexture = function (): void {
-    nativeSetTexture.call(this, this._texture);
-};
-
-spriteFrameProto._syncFrameData = function (): void {
-    nativeSetRect.call(this, this._rect.x, this._rect.y, this._rect.width, this._rect.height);
-    nativeSetOriginalSize.call(this, this._originalSize.width, this._originalSize.height);
-    nativeSetOffset.call(this, this._offset.x, this._offset.y);
-    nativeSetRotated.call(this, this._rotated);
+spriteFrameProto._syncInsets = function (): void {
     nativeSetInsets.call(
         this,
         this._capInsets[INSET_LEFT],
@@ -391,9 +359,14 @@ spriteFrameProto._syncFrameData = function (): void {
     );
 };
 
+// reset and deserialization update the cached fields in bulk.
 spriteFrameProto._syncNative = function (): void {
-    this._syncTexture();
-    this._syncFrameData();
+    nativeSetTexture.call(this, this._texture);
+    nativeSetRect.call(this, this._rect.x, this._rect.y, this._rect.width, this._rect.height);
+    nativeSetOriginalSize.call(this, this._originalSize.width, this._originalSize.height);
+    nativeSetOffset.call(this, this._offset.x, this._offset.y);
+    nativeSetRotated.call(this, this._rotated);
+    this._syncInsets();
 };
 
 // handle meta data, it is generated automatically

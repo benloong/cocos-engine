@@ -90,7 +90,7 @@ export class Mask extends Component {
         this._native.setInverted(this._inverted);
         this._native.setAlphaThreshold(this._alphaThreshold);
         if (this._spriteFrame) {
-            this._native.setSpriteFrame((this._spriteFrame as any).native);
+            this._native.setSpriteFrame(this._spriteFrame);
         }
         this._native.setPriority(0);
         this._native.setEnabled(this.enabledInHierarchy);
@@ -170,7 +170,7 @@ export class Mask extends Component {
 
     set spriteFrame (value: SpriteFrame | null) {
         this._spriteFrame = value;
-        this._native?.setSpriteFrame((value as any)?.native ?? null);
+        this._native?.setSpriteFrame(value);
     }
 
     get radius (): number {

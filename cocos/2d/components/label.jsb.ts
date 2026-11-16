@@ -417,7 +417,7 @@ export class Label extends UIRenderer {
         if (!this._native || !font.spriteFrame) {
             return;
         }
-        this._native.setBitmapAtlas(font.spriteFrame.native, font.fontSize > 0 ? font.fontSize : this._lineHeight);
+        this._native.setBitmapAtlas(font.spriteFrame, font.fontSize > 0 ? font.fontSize : this._lineHeight);
         this._native.clearGlyphs();
         this._native.clearKerning();
         const definitions = font.fontDefDictionary?.letterDefinitions ?? {};
