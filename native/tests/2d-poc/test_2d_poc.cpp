@@ -240,6 +240,27 @@ void testFilledMesh() {
     }
 }
 
+void testNegativeFilledMesh() {
+    cc::FilledSpriteGeometryParams params;
+    params.contentSize = cc::Vec2(100, 100); params.anchorPoint = cc::Vec2(0.5F, 0.5F);
+    params.frameRect = cc::Rect(0,0,100,100); params.textureSize = cc::Vec2(100,100);
+    params.fillStart = 0.75F; params.fillRange = -0.5F;
+    for (int mode = 0; mode < 2; ++mode) {
+        params.fillType = mode;
+        auto negative = cc::buildFilledSpriteMesh(params);
+        params.fillStart = 0.25F; params.fillRange = 0.5F;
+        auto positive = cc::buildFilledSpriteMesh(params);
+        check(negative.valid && positive.valid, "negative bar fill is valid");
+        for (size_t i = 0; i < negative.vertices.size(); ++i) {
+            checkNear(negative.vertices[i].position.x, positive.vertices[i].position.x, "negative bar x matches normalized positive interval");
+            checkNear(negative.vertices[i].position.y, positive.vertices[i].position.y, "negative bar y matches normalized positive interval");
+            checkNear(negative.vertices[i].uv.x, positive.vertices[i].uv.x, "negative bar U");
+            checkNear(negative.vertices[i].uv.y, positive.vertices[i].uv.y, "negative bar V");
+        }
+        params.fillStart = 0.75F; params.fillRange = -0.5F;
+    }
+}
+
 void testTiledMesh() {
     cc::TiledSpriteGeometryParams params;
     params.contentSize = cc::Vec2(200.F, 100.F);
@@ -389,6 +410,7 @@ int main() {
     testTransformQuad();
     testSlicedMesh();
     testFilledMesh();
+    testNegativeFilledMesh();
     testTiledMesh();
     testRadialMesh();
     testRotatedSlicedMesh();

@@ -340,8 +340,10 @@ SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params) {
         return mesh;
     }
 
-    const float start = std::clamp(params.fillStart, 0.F, 1.F);
-    const float end = std::clamp(params.fillStart + params.fillRange, 0.F, 1.F);
+    const float first = params.fillStart;
+    const float last = params.fillStart + params.fillRange;
+    const float start = std::clamp(std::min(first, last), 0.F, 1.F);
+    const float end = std::clamp(std::max(first, last), 0.F, 1.F);
     if (end <= start) {
         return mesh;
     }

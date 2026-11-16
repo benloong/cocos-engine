@@ -26,6 +26,7 @@
 
 #include "core/assets/Material.h"
 #include "core/builtin/BuiltinResMgr.h"
+#include "renderer/core/MaterialInstance.h"
 
 namespace cc {
 
@@ -44,7 +45,6 @@ void UIRenderer::setColorRGBA(float red, float green, float blue, float alpha) {
 }
 
 void UIRenderer::setMaterial(Material *material) {
-    _material = material;
     setSharedMaterial(material, 0);
 }
 
@@ -52,17 +52,19 @@ void UIRenderer::setSharedMaterial(Material *material, uint32_t index) {
     if (_materials.size() <= index) {
         _materials.resize(index + 1, nullptr);
     }
-    _materials[index] = material;
+    if (_materials[index] == material) return;
+    IntrusivePtr<Material> retained(material);
+    if (index == 0) _materialInstance = nullptr;
+    else if (index < _extraMaterialInstances.size()) _extraMaterialInstances[index] = nullptr;
+    _materials[index] = retained;
     if (index == 0) {
-        _material = material;
+        _material = retained;
     }
 }
 
 Material *UIRenderer::getSharedMaterial(uint32_t index) const {
-    if (index >= _materials.size()) {
-        return nullptr;
-    }
-    return _materials[index];
+    if (index == 0 && (index >= _materials.size() || !_materials[index])) return getBuiltinMaterial();
+    return index < _materials.size() ? _materials[index].get() : nullptr;
 }
 
 void UIRenderer::setPriority(int32_t priority) {
@@ -70,33 +72,37 @@ void UIRenderer::setPriority(int32_t priority) {
 }
 
 Material *UIRenderer::getMaterialInstance(uint32_t index) const {
-    if (index != 0) {
-        return getSharedMaterial(index);
+    if (index == 0 && _materialInstance) return _materialInstance.get();
+    if (index > 0 && index < _extraMaterialInstances.size() && _extraMaterialInstances[index]) return _extraMaterialInstances[index].get();
+    auto *parent = getSharedMaterial(index);
+    if (!parent) return nullptr;
+    if (index >= _extraMaterialInstances.size()) _extraMaterialInstances.resize(index + 1);
+    auto &instance = index == 0 ? _materialInstance : _extraMaterialInstances[index];
+    IMaterialInstanceInfo info; info.parent = parent; info.subModelIdx = index;
+    instance = new MaterialInstance(info);
+    return instance.get();
+}
+void UIRenderer::setMaterialInstance(Material *material, uint32_t index) {
+    if (index >= _extraMaterialInstances.size()) _extraMaterialInstances.resize(index + 1);
+    auto &instance = index == 0 ? _materialInstance : _extraMaterialInstances[index];
+    if (material && material->getParent()) {
+        instance = material;
+    } else {
+        IntrusivePtr<Material> retained(material);
+        instance = nullptr;
+        setSharedMaterial(retained, index);
     }
-    if (_materialInstance != nullptr) {
-        return _materialInstance.get();
-    }
-    Material *parent = getSharedMaterial(0);
-    if (parent == nullptr) {
-        parent = BuiltinResMgr::getInstance()->get<Material>("ui-sprite-material");
-    }
-    if (parent == nullptr || parent->getEffectAsset() == nullptr) {
-        return parent;
-    }
-    auto *instance = new Material();
-    instance->copy(parent);
-    _materialInstance = instance;
-    return instance;
 }
 
-Material *UIRenderer::getRenderMaterial() const {
-    if (_materialInstance != nullptr) {
-        return _materialInstance.get();
-    }
-    if (_material != nullptr) {
-        return _material;
-    }
-    return BuiltinResMgr::getInstance()->get<Material>("ui-sprite-material");
+Material *UIRenderer::getBuiltinMaterial() const {
+    auto *resources = BuiltinResMgr::getInstance();
+    return resources ? resources->get<Material>("ui-sprite-material") : nullptr;
+}
+
+Material *UIRenderer::getRenderMaterial(uint32_t index) const {
+    if (index == 0 && _materialInstance) return _materialInstance.get();
+    if (index > 0 && index < _extraMaterialInstances.size() && _extraMaterialInstances[index]) return _extraMaterialInstances[index].get();
+    return getSharedMaterial(index);
 }
 
 } // namespace cc

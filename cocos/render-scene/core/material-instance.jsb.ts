@@ -31,6 +31,7 @@ export const MaterialInstance: typeof JsbMaterialInstance = jsb.MaterialInstance
 export type MaterialInstance = JsbMaterialInstance;
 
 const materialInstanceProto: any = jsb.MaterialInstance.prototype;
+const nativeParent = Object.getOwnPropertyDescriptor(jsb.Material.prototype, 'parent')!.get!;
 
 export interface IMaterialInstanceInfo {
     parent: Material;
@@ -42,7 +43,7 @@ Object.defineProperty(materialInstanceProto, 'parent', {
     configurable: true,
     enumerable: true,
     get () {
-        return this._parent;
+        return nativeParent.call(this);
     },
 });
 
@@ -54,12 +55,12 @@ Object.defineProperty(materialInstanceProto, 'owner', {
     },
 });
 
-materialInstanceProto._ctor = function (info: IMaterialInstanceInfo) {
+materialInstanceProto._ctor = function (info?: IMaterialInstanceInfo) {
     jsb.Material.prototype._ctor.apply(this, arguments);
     this._registerListeners();
-    this._parent = info.parent;
-    this._owner = info.owner || null;
-    this._subModelIdx = info.subModelIdx || 0;
+    this._parent = info?.parent ?? nativeParent.call(this);
+    this._owner = info?.owner || null;
+    this._subModelIdx = info?.subModelIdx || 0;
     // CPP MaterialInstance invokes 'copy' method in constructor, 'copy' will invoke update method
     // which triggers passes being created, 'this._passes' property will lost data, so fetch the data here
     // by calling the method 'this.getPasses()'

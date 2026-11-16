@@ -1,6 +1,6 @@
 # M6.0 API、壳与间接依赖基线
 
-更新：2026-11-16。初版基于代码节点 43ec752990，已随 Label 序列化修复同步当前快照；完整文件指纹、字段默认值、API 声明、枚举、继承、装饰器、静态字段、生命周期入口及依赖记录在 [机器可读基线](./native-2d-m6.0-baseline.json)。本文建立剩余任务基线，不宣告任何类达到最终 parity。
+更新：2026-11-16。初版基于代码节点 43ec752990，已随 Label 序列化和 Sprite API/材质修复同步当前快照；完整文件指纹、字段默认值、API 声明、枚举、继承、装饰器、静态字段、生命周期入口及依赖记录在 [机器可读基线](./native-2d-m6.0-baseline.json)。本文建立剩余任务基线，不宣告任何类达到最终 parity。
 
 ## 复现与证据边界
 
@@ -14,7 +14,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 
 --write 更新源代码快照；--check 只验证快照是否过时，不把已知缺口豁免为通过。修复 API/字段/native 实现后需同步快照及本矩阵，不能只更新快照而不处理欠项。AST 测试覆盖字段与访问器区分、type-only import 排除、语法热点提取及运行时模块选择。native-ts-build CI 执行检查。
 
-审计包含 17 类、60 个可达 2D 源文件及 51 个 native/绑定/配置文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
+审计包含 17 类、60 个可达 2D 源文件及 52 个 native/绑定/配置文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
 
 原生资产声明把 Web 类型作为 TS 接口，无法用该类型证明原生方法真的绑定。六个资产的记录明确标记为 native prototype/binding review required，不能把“缺失 0”当成完整 API 验收。对象可变语义与资产依赖沿字段/类型和相关 M6.1 报告核对，必须由实际运行测试证明。
 
@@ -27,7 +27,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 | UITransform | override | 216 | 0 | 2 | M1 / M6.4 |
 | UIRenderer | 保留 Web 实现 | 414 | 0 | 0 | M6.0 / M6.5 |
 | RenderRoot2D | override | 31 | 0 | 0 | M5.1 / M6.4 |
-| Sprite | override | 212 | 0 | 6 | M6.1 |
+| Sprite | override | 269 | 0 | 0 | M6.1 |
 | Label | override | 339 | 0 | 14 | M6.1 |
 | Mask | override | 137 | 0 | 22 | M6.3 / M6.4 |
 | Graphics | override | 105 | 3 | 13 | M6.3 |
@@ -47,7 +47,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 ## 当前残留与修复顺序
 
 1. 初版发现 Label 缺少 14 个序列化字段声明与默认文字/对齐差异，现已修复并补 deserialize/Details/instantiate、native 样式与下划线/实际字号回归，见 [报告](./native-2d-m6.1-label-serialization.md)。完整 API、资源/场景和效果矩阵仍归 M6.1。
-2. Sprite 的 _fillRange 初值为 1，Web 为 0；grayscale、spriteAtlas、trim 等公开接口需要逐项对照。数字枚举/命名枚举的初值文本差异必须先解析语义，不自动报功能差异。
+2. Sprite 的 _fillRange 初值、六个壳接口、native 材质与状态更新已修复，见 [报告](./native-2d-m6.1-sprite-api.md)。剩余三个数字/命名枚举初值文本差异已由真实默认值测试确认等价；radial、可变 fillCenter、继承 API 和完整视觉行为仍待验收。
 3. Graphics 缺少 _lineJoin、_lineCap、_miterLimit；固定 CPU 栅格路径和描边语义仍按 M6.3 替换。Mask 的 lateUpdate 在 JS 获取 Graphics frame；材质选择仍由壳进行，归 M6.3/M6.5。
 4. UIRenderer 没有独立 override，组件壳仍继承 Web 基类。基类可达 RenderData、材质和 assembler 管理；Batcher 的 JSB 分支是否消除了执行成本必须通过实际调用计数确认，不能只看叶子壳。
 5. RichText 没有独立 override，HTML/布局仍走 JS，归 M6.2。LabelOutline/LabelShadow 为已弃用的 Label 公共属性转发，不另行下沉算法；它们依赖的 Label API 仍须回归。

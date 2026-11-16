@@ -57,11 +57,12 @@ public:
     const Color &getColor() const { return _color; }
 
     void setMaterial(Material *material);
-    Material *getMaterial() const { return _material; }
-    Material *getRenderMaterial() const;
+    Material *getMaterial() const { return _material.get(); }
+    Material *getRenderMaterial(uint32_t index = 0) const;
     Material *getMaterialInstance(uint32_t index = 0) const;
+    virtual void setMaterialInstance(Material *material, uint32_t index = 0);
 
-    void setSharedMaterial(Material *material, uint32_t index);
+    virtual void setSharedMaterial(Material *material, uint32_t index);
     Material *getSharedMaterial(uint32_t index = 0) const;
 
     void setPriority(int32_t priority);
@@ -73,10 +74,12 @@ public:
     uint32_t getDstBlendFactor() const { return _dstBlendFactor; }
 
 protected:
+    virtual Material *getBuiltinMaterial() const;
     Color _color{255, 255, 255, 255};
-    Material *_material{nullptr};
+    IntrusivePtr<Material> _material;
     mutable IntrusivePtr<Material> _materialInstance;
-    std::vector<Material *> _materials;
+    mutable std::vector<IntrusivePtr<Material>> _extraMaterialInstances;
+    std::vector<IntrusivePtr<Material>> _materials;
     int32_t _priority{0};
     uint32_t _srcBlendFactor{2}; // gfx::BlendFactor::SRC_ALPHA
     uint32_t _dstBlendFactor{4}; // gfx::BlendFactor::ONE_MINUS_SRC_ALPHA

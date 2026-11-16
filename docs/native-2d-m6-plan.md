@@ -34,7 +34,8 @@
 ### M6.1 资产与状态一致性
 
 - [x] Label 序列化基础兼容：恢复 Web 的字体/系统字体字段、样式/效果/24 个默认值，补旧格式 deserialize/Details 回填与 instantiate 回归；初始化样式传给 native，普通 TTF 下划线厚度与实际字号通过 Windows Debug/Release 联调，见 [报告](./native-2d-m6.1-label-serialization.md)。
-- [ ] 继续修复组件完整 API parity：Label 的其余公开/兼容接口、Sprite 的 fillRange/公开 API；真实场景/Prefab 和字体资源管线仍待固定回归。
+- [x] Sprite 壳声明与基础材质/状态兼容：六个缺口、fillRange 默认值/条形负范围、atlas/trim/grayscale/事件、native 材质变体与真正 MaterialInstance、帧/材质持有、尺寸/Node 变化和零填充清理已补，Windows Debug/Release 实际 JSB 与定向测试通过，见 [报告](./native-2d-m6.1-sprite-api.md)。
+- [ ] 完整组件 parity：Label 其余公开/兼容接口；Sprite radial 中心/方向/三角边界、fillCenter 可变值、继承材质数组行为，以及真实场景/Prefab 和资源管线继续验收。
 
 - [x] SpriteFrame 基础数据/算法：quad/sliced UV 迁入 native；rotated、flip、insets、pivot、meshType、packable、clone/reset 与基础静态 API 已补实现，UV 对照与 Windows 定向回归通过，见 [报告](./native-2d-m6.1-sprite-frame.md)。
 - [x] SpriteFrame 基础状态：rect/offset/originalSize/pivot 使用 native 可写视图；setter、分量修改、反序列化、克隆和 native 回读不再依赖 JS 权威镜像，Sprite/Mask/BMFont 有原生消费者联动测试。

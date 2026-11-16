@@ -32,6 +32,7 @@
 #include "base/Ptr.h"
 #include "math/Geometry.h"
 #include "math/Vec2.h"
+#include "math/Mat4.h"
 
 namespace cc {
 
@@ -42,7 +43,7 @@ class SpriteFrame;
 class UITransform;
 
 /**
- * M0/M2 vertical slice for a native Sprite in SIMPLE mode.
+ * Native Sprite backend for simple, sliced, tiled and filled geometry.
  *
  * The JS Sprite shell owns Component identity, serialization and lifecycle.
  * UIRenderer owns color/material/priority; this class owns frame data,
@@ -60,7 +61,7 @@ public:
     void setNode(Node *node);
     Node *getNode() const { return Component::getNode(); }
 
-    void setUITransform(UITransform *transform) { _transform = transform; }
+    void setUITransform(UITransform *transform) { _transform = transform; _hasTransformSnapshot = false; _dirty = true; applySizeMode(); }
     UITransform *getUITransform() const { return _transform; }
 
     void setFrame(TextureBase *texture,
@@ -82,6 +83,11 @@ public:
     void setColorRGBA(float red, float green, float blue, float alpha);
     void setMaterial(Material *material);
     void setPriority(int32_t priority);
+    void setSharedMaterial(Material *material, uint32_t index) override;
+    void setMaterialInstance(Material *material, uint32_t index = 0) override;
+    void setGrayscale(bool enabled);
+    bool isGrayscale() const { return _grayscale; }
+    void refreshMaterial();
 
     void setEnabled(bool enabled);
 
@@ -108,11 +114,13 @@ public:
     void prepareRenderEntity(float opacity) override { prepare(opacity); }
 
 private:
+    void invalidateBuiltinMaterial() { if (!_material) _materialInstance = nullptr; _dirty = true; }
+    Material *getBuiltinMaterial() const override;
     void updateVertexColors(float opacity);
     void applySizeMode();
 
     UITransform *_transform{nullptr};
-    TextureBase *_texture{nullptr};
+    IntrusivePtr<TextureBase> _texture;
 
     Rect _frameRect;
     Vec2 _originalSize;
@@ -120,11 +128,17 @@ private:
     Vec2 _textureSize;
     bool _rotated{false};
     bool _trim{true};
+    bool _grayscale{false};
+    uint32_t _builtinVariant{0};
     bool _dirty{true};
+    bool _hasTransformSnapshot{false};
+    Mat4 _lastWorldMatrix;
+    Vec2 _lastContentSize;
+    Vec2 _lastAnchorPoint;
     int32_t _type{0};
     int32_t _fillType{0};
     float _fillStart{0.F};
-    float _fillRange{1.F};
+    float _fillRange{0.F};
     Vec2 _fillCenter{0.F, 0.F};
     int32_t _sizeMode{1};
     float _insetLeft{0.F};
@@ -138,6 +152,7 @@ private:
     uint32_t _frameRevision{0};
     uint32_t _frameTextureWidth{0};
     uint32_t _frameTextureHeight{0};
+    int32_t _frameTextureFormat{-1};
     bool _flipUVX{false};
     bool _flipUVY{false};
     std::vector<float> _vertices;

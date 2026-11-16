@@ -10,6 +10,10 @@
       "sha256": "013757a5f62c4225f7626c06eb738846a5153f3ca400ca0eba713b6ff05f1c99"
     },
     {
+      "file": "cocos/render-scene/core/material-instance.jsb.ts",
+      "sha256": "2f250424236c8805080a7a167ba0d739fc09eda49a5f07dc3bfc2d7b5998ba8a"
+    },
+    {
       "file": "native/cocos/2d/assets/BitmapFont.h",
       "sha256": "93a30b3eb729da2362a904b8295c4b7d7bd6a3c985c50d9750d441ed05aebec8"
     },
@@ -71,11 +75,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "f8c7f6cbabe4e9091bfd63c5f07df06906522c5ec60f703a3dcc1b1f633091ca"
+      "sha256": "388d74e76fb0abdcda96b6ae85894dc58ec1ef87bfaa55ab3da7a5775c4f88d6"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "0145ee9d72d1ff8361b8ee94f2912f04d76a19028056e01c0b032a8baec46d14"
+      "sha256": "294f0230c7afc64bbb7505eeded424f8a1d661b708f775d173b6783e7db9e4a0"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -95,11 +99,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.cpp",
-      "sha256": "43905c11af9ca55413f6c2473e4489461cba8ee814a4e040745e6d863c3f71a9"
+      "sha256": "277a1b5398c52ab1f982c979ff843e2e14991a6b9961c20bcf8458d62ad57d14"
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "4bd1a504a84bc8531537d4c10e43608767f4de9b89e57be4e5a0e5b113c54e76"
+      "sha256": "81139a6d0b29e7df9305a18f3a9f6359078da71221a5864f448091d38a379e20"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
@@ -159,7 +163,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/SpriteGeometry.cpp",
-      "sha256": "c28fed24eb9292f1849aff4afef7adeb5f086c602f4aa0a87058bd552de5ded9"
+      "sha256": "c8712254d2d53371930f97b5b6af058b0196e997604369aa69d5021d83f57e8b"
     },
     {
       "file": "native/cocos/2d/renderer/SpriteGeometry.h",
@@ -2507,7 +2511,8 @@
       "runtime": "cocos/2d/components/sprite.jsb.ts",
       "testEntrypoints": [
         "tests/ui/native-2d-m2-sprite-shell.test.ts",
-        "native/tests/2d-poc/run-sprite-quad-parity.ps1"
+        "native/tests/2d-poc/run-sprite-quad-parity.ps1",
+        "native/tests/2d-poc/run-m6-sprite-api-tests.ps1"
       ],
       "overridden": true,
       "web": {
@@ -3250,7 +3255,7 @@
             "static": true,
             "type": null,
             "parameters": [],
-            "default": "{\n        HORIZONTAL: 0,\n        VERTICAL: 1,\n        RADIAL: 2,\n    }",
+            "default": "FillType",
             "decorators": []
           },
           {
@@ -3260,7 +3265,7 @@
             "static": true,
             "type": null,
             "parameters": [],
-            "default": "{\n        SIMPLE: 0,\n        SLICED: 1,\n        TILED: 2,\n        FILLED: 3,\n    }",
+            "default": "SpriteType",
             "decorators": []
           },
           {
@@ -3270,7 +3275,17 @@
             "static": true,
             "type": null,
             "parameters": [],
-            "default": "{\n        CUSTOM: 0,\n        TRIMMED: 1,\n        RAW: 2,\n    }",
+            "default": "SizeMode",
+            "decorators": []
+          },
+          {
+            "name": "EventType",
+            "kind": "PropertyDeclaration",
+            "visibility": "public",
+            "static": true,
+            "type": null,
+            "parameters": [],
+            "default": "SpriteEventType",
             "decorators": []
           },
           {
@@ -3352,7 +3367,7 @@
             "static": false,
             "type": null,
             "parameters": [],
-            "default": "1",
+            "default": "0",
             "decorators": [
               "serializable"
             ]
@@ -3386,7 +3401,7 @@
             "kind": "PropertyDeclaration",
             "visibility": "protected",
             "static": false,
-            "type": "any",
+            "type": "SpriteAtlas | null",
             "parameters": [],
             "default": "null",
             "decorators": [
@@ -3401,6 +3416,96 @@
             "type": "any",
             "parameters": [],
             "default": "null",
+            "decorators": []
+          },
+          {
+            "name": "spriteAtlas",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "SpriteAtlas | null",
+            "parameters": [],
+            "default": null,
+            "decorators": [
+              "type(SpriteAtlas)"
+            ]
+          },
+          {
+            "name": "spriteAtlas",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: SpriteAtlas | null"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "trim",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "boolean",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "trim",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: boolean"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "grayscale",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "boolean",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "grayscale",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: boolean"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "changeSpriteFrameFromAtlas",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "name: string"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "changeMaterialForDefine",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
             "decorators": []
           },
           {
@@ -3437,6 +3542,7 @@
             "parameters": [],
             "default": null,
             "decorators": [
+              "type(SpriteType)",
               "displayOrder(6)"
             ]
           },
@@ -3460,7 +3566,9 @@
             "type": "number",
             "parameters": [],
             "default": null,
-            "decorators": []
+            "decorators": [
+              "type(FillType)"
+            ]
           },
           {
             "name": "fillType",
@@ -3526,7 +3634,9 @@
             "type": "number",
             "parameters": [],
             "default": null,
-            "decorators": []
+            "decorators": [
+              "type(SizeMode)"
+            ]
           },
           {
             "name": "sizeMode",
@@ -3623,7 +3733,7 @@
             "static": false,
             "type": null,
             "parameters": [
-              "value: Color"
+              "value: Readonly<Color>"
             ],
             "default": null,
             "decorators": []
@@ -3684,6 +3794,31 @@
             "type": "MaterialInstance | null",
             "parameters": [
               "idx = 0"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "setMaterialInstance",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "material: Material | MaterialInstance | null",
+              "index = 0"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "getRenderMaterial",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "Material | null",
+            "parameters": [
+              "index = 0"
             ],
             "default": null,
             "decorators": []
@@ -3814,7 +3949,7 @@
           },
           {
             "name": "_fillRange",
-            "default": "1",
+            "default": "0",
             "decorators": [
               "serializable"
             ]
@@ -3841,18 +3976,76 @@
             ]
           }
         ],
-        "enums": []
+        "enums": [
+          {
+            "name": "SpriteType",
+            "members": [
+              {
+                "name": "SIMPLE",
+                "value": "0"
+              },
+              {
+                "name": "SLICED",
+                "value": "1"
+              },
+              {
+                "name": "TILED",
+                "value": "2"
+              },
+              {
+                "name": "FILLED",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "name": "FillType",
+            "members": [
+              {
+                "name": "HORIZONTAL",
+                "value": "0"
+              },
+              {
+                "name": "VERTICAL",
+                "value": "1"
+              },
+              {
+                "name": "RADIAL",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "name": "SizeMode",
+            "members": [
+              {
+                "name": "CUSTOM",
+                "value": "0"
+              },
+              {
+                "name": "TRIMMED",
+                "value": "1"
+              },
+              {
+                "name": "RAW",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "name": "SpriteEventType",
+            "members": [
+              {
+                "name": "SPRITE_FRAME_CHANGED",
+                "value": "'spriteframe-changed'"
+              }
+            ]
+          }
+        ]
       },
       "comparison": {
         "disposition": "declarations only; inherited APIs and behavior require review",
-        "notDeclaredInShell": [
-          "EventType",
-          "changeMaterialForDefine",
-          "changeSpriteFrameFromAtlas",
-          "grayscale",
-          "spriteAtlas",
-          "trim"
-        ],
+        "notDeclaredInShell": [],
         "missingSerializedDeclarations": [],
         "initializerTextDifferences": [
           {
@@ -3868,11 +4061,6 @@
           {
             "field": "_sizeMode",
             "web": "SizeMode.TRIMMED",
-            "native": "1"
-          },
-          {
-            "field": "_fillRange",
-            "web": "0",
             "native": "1"
           }
         ]
@@ -13998,10 +14186,13 @@
     },
     {
       "file": "cocos/2d/components/sprite.jsb.ts",
-      "sha256": "cca3f850d92c0670532a6afb95a1635ab1e6a71b9dc6591e79add78858b2ff74",
-      "printedCodeLines": 212,
+      "sha256": "8429afaace6551f32e226eb2e6849e605dd412579fb12127c02339d1842c88de",
+      "printedCodeLines": 269,
       "runtimeImports": [
         "cc.decorator",
+        "internal:constants",
+        "../../core",
+        "../assets/sprite-atlas",
         "../../asset/assets",
         "../../gfx",
         "../../core/math/color",
@@ -14013,132 +14204,162 @@
       "frameMethods": [],
       "nativeCalls": [
         {
-          "expression": "this._native?.setType",
-          "line": 112
+          "expression": "this._native?.setTrim",
+          "line": 85
         },
         {
-          "expression": "this._native?.setFillType",
+          "expression": "this._native?.setGrayscale",
+          "line": 88
+        },
+        {
+          "expression": "this._native?.refreshMaterial",
+          "line": 96
+        },
+        {
+          "expression": "this._native?.setType",
           "line": 121
         },
         {
+          "expression": "this._native?.setFillType",
+          "line": 131
+        },
+        {
           "expression": "this._native?.setFillStart",
-          "line": 130
+          "line": 140
         },
         {
           "expression": "this._native?.setFillRange",
-          "line": 139
+          "line": 149
         },
         {
           "expression": "this._native?.setSizeMode",
-          "line": 148
+          "line": 159
         },
         {
           "expression": "this._native?.setSrcBlendFactor",
-          "line": 157
+          "line": 168
         },
         {
           "expression": "this._native?.setDstBlendFactor",
-          "line": 166
+          "line": 177
         },
         {
           "expression": "this._native?.setFillCenter",
-          "line": 175
+          "line": 186
         },
         {
           "expression": "this._native.getSharedMaterial",
-          "line": 201
+          "line": 212
         },
         {
           "expression": "this._native?.setSharedMaterial",
-          "line": 208
+          "line": 219
         },
         {
           "expression": "this._native.getMaterialInstance",
-          "line": 213
-        },
-        {
-          "expression": "this._native.setNode",
           "line": 224
         },
         {
-          "expression": "this._native.setUITransform",
-          "line": 227
-        },
-        {
-          "expression": "this._native.setType",
-          "line": 231
-        },
-        {
-          "expression": "this._native.setFillType",
-          "line": 232
-        },
-        {
-          "expression": "this._native.setFillStart",
-          "line": 233
-        },
-        {
-          "expression": "this._native.setFillRange",
-          "line": 234
-        },
-        {
-          "expression": "this._native.setFillCenter",
+          "expression": "this._native.setMaterialInstance",
           "line": 235
         },
         {
-          "expression": "this._native.setSizeMode",
-          "line": 236
-        },
-        {
-          "expression": "this._native.setSrcBlendFactor",
-          "line": 237
-        },
-        {
-          "expression": "this._native.setDstBlendFactor",
-          "line": 238
-        },
-        {
-          "expression": "this._native.setPriority",
-          "line": 239
-        },
-        {
-          "expression": "this._native.setEnabled",
-          "line": 241
-        },
-        {
-          "expression": "this._native?.setEnabled",
-          "line": 245
-        },
-        {
-          "expression": "this._native?.setEnabled",
-          "line": 249
-        },
-        {
-          "expression": "this._native.setEnabled",
-          "line": 254
+          "expression": "this._native.getRenderMaterial",
+          "line": 240
         },
         {
           "expression": "this._native.setNode",
-          "line": 255
+          "line": 249
         },
         {
-          "expression": "this._native.setColorRGBA",
+          "expression": "this._native.setUITransform",
+          "line": 252
+        },
+        {
+          "expression": "this._native.setTrim",
+          "line": 256
+        },
+        {
+          "expression": "this._native.setGrayscale",
+          "line": 257
+        },
+        {
+          "expression": "this._native.setType",
+          "line": 258
+        },
+        {
+          "expression": "this._native.setFillType",
+          "line": 259
+        },
+        {
+          "expression": "this._native.setFillStart",
+          "line": 260
+        },
+        {
+          "expression": "this._native.setFillRange",
+          "line": 261
+        },
+        {
+          "expression": "this._native.setFillCenter",
           "line": 262
         },
         {
-          "expression": "this._native.setMaterial",
+          "expression": "this._native.setSizeMode",
+          "line": 263
+        },
+        {
+          "expression": "this._native.setSrcBlendFactor",
+          "line": 264
+        },
+        {
+          "expression": "this._native.setDstBlendFactor",
+          "line": 265
+        },
+        {
+          "expression": "this._native.setPriority",
+          "line": 266
+        },
+        {
+          "expression": "this._native.setEnabled",
           "line": 268
         },
         {
+          "expression": "this._native?.setEnabled",
+          "line": 272
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 276
+        },
+        {
+          "expression": "this._native.setEnabled",
+          "line": 285
+        },
+        {
+          "expression": "this._native.setNode",
+          "line": 286
+        },
+        {
+          "expression": "this._native.setColorRGBA",
+          "line": 293
+        },
+        {
+          "expression": "this._native?.setMaterial",
+          "line": 298
+        },
+        {
           "expression": "this._native.clearFrame",
-          "line": 278
+          "line": 307
         },
         {
           "expression": "this._native.setFrame",
-          "line": 281
+          "line": 310
         }
       ],
       "allocations": [],
-      "loops": []
+      "loops": [
+        280
+      ]
     },
     {
       "file": "cocos/2d/components/sprite.ts",

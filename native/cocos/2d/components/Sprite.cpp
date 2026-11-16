@@ -31,10 +31,13 @@
 #include "2d/renderer/SpriteGeometry.h"
 #include "core/assets/Material.h"
 #include "core/assets/TextureBase.h"
+#include "core/assets/RenderTexture.h"
+#include "core/builtin/BuiltinResMgr.h"
 #include "core/scene-graph/Node.h"
 #include "math/Mat4.h"
 
 #include <cmath>
+#include <cstring>
 
 namespace cc {
 
@@ -43,6 +46,12 @@ namespace {
 constexpr uint32_t VERTEX_STRIDE = 9; // position(3) + uv(2) + color(4)
 constexpr uint32_t VERTEX_COUNT = 4;
 constexpr uint32_t INDEX_COUNT = 6;
+uint32_t materialVariant(TextureBase *texture) {
+    if (!texture) return 0;
+    const auto format = texture->getPixelFormat();
+    const bool separate = format == PixelFormat::RGBA_ETC1 || format == PixelFormat::RGB_A_PVRTC_4BPPV1 || format == PixelFormat::RGB_A_PVRTC_2BPPV1;
+    return (separate ? 1U : 0U) | (dynamic_cast<RenderTexture *>(texture) ? 2U : 0U);
+}
 
 } // namespace
 
@@ -68,6 +77,7 @@ void Sprite::setNode(Node *node) {
     }
 
     Component::setNode(node);
+    _hasTransformSnapshot = false;
 
     if (getNode() != nullptr && _entity != nullptr) {
         _entity->setNode(getNode());
@@ -88,15 +98,20 @@ void Sprite::setFrame(TextureBase *texture,
                       float textureWidth,
                       float textureHeight,
                       bool rotated) {
+    const auto variant = materialVariant(texture);
+    if (_builtinVariant != variant) { _builtinVariant = variant; invalidateBuiltinMaterial(); }
     _texture = texture;
+    _spriteFrame = nullptr;
     _frameRect.setRect(rectX, rectY, rectWidth, rectHeight);
     _originalSize.set(originalWidth, originalHeight);
     _offset.set(offsetX, offsetY);
     _textureSize.set(textureWidth, textureHeight);
     _rotated = rotated;
+    _insetLeft = _insetRight = _insetTop = _insetBottom = 0.F;
+    _flipUVX = _flipUVY = false;
     _dirty = true;
     if (_entity != nullptr) {
-        _entity->setEnabled(true);
+        _entity->setEnabled(isEnabled());
     }
 }
 
@@ -105,7 +120,7 @@ void Sprite::setFrame(SpriteFrame *frame) {
         clearFrame();
         return;
     }
-    _spriteFrame = frame;
+    IntrusivePtr<SpriteFrame> retained(frame);
     TextureBase *texture = frame->getTexture();
     const float textureWidth = texture == nullptr ? 0.F : static_cast<float>(texture->getWidth());
     const float textureHeight = texture == nullptr ? 0.F : static_cast<float>(texture->getHeight());
@@ -115,6 +130,7 @@ void Sprite::setFrame(SpriteFrame *frame) {
              frame->getOffsetX(), frame->getOffsetY(),
              textureWidth, textureHeight,
              frame->isRotated());
+    _spriteFrame = retained;
     _insetLeft = frame->getInsetLeft();
     _insetRight = frame->getInsetRight();
     _insetTop = frame->getInsetTop();
@@ -122,6 +138,7 @@ void Sprite::setFrame(SpriteFrame *frame) {
     _frameRevision = frame->getRevision();
     _frameTextureWidth = texture == nullptr ? 0 : texture->getWidth();
     _frameTextureHeight = texture == nullptr ? 0 : texture->getHeight();
+    _frameTextureFormat = texture == nullptr ? -1 : static_cast<int32_t>(texture->getPixelFormat());
     _flipUVX = frame->getFlipUVX();
     _flipUVY = frame->getFlipUVY();
     applySizeMode();
@@ -148,7 +165,7 @@ void Sprite::setFillStart(float fillStart) {
     if (_fillStart == fillStart) {
         return;
     }
-    _fillStart = fillStart;
+    _fillStart = std::clamp(fillStart, 0.F, 1.F);
     _dirty = true;
 }
 
@@ -156,7 +173,7 @@ void Sprite::setFillRange(float fillRange) {
     if (_fillRange == fillRange) {
         return;
     }
-    _fillRange = fillRange;
+    _fillRange = std::clamp(fillRange, -1.F, 1.F);
     _dirty = true;
 }
 
@@ -176,12 +193,53 @@ void Sprite::clearFrame() {
         _entity->setStaticDrawInfoSize(0);
         _entity->setEnabled(false);
     }
+    if (_builtinVariant != 0) { _builtinVariant = 0; invalidateBuiltinMaterial(); }
     _dirty = true;
 }
 
 void Sprite::setMaterial(Material *material) {
     UIRenderer::setMaterial(material);
     _dirty = true;
+}
+
+void Sprite::setSharedMaterial(Material *material, uint32_t index) {
+    UIRenderer::setSharedMaterial(material, index);
+    _dirty = true;
+}
+void Sprite::setMaterialInstance(Material *material, uint32_t index) {
+    UIRenderer::setMaterialInstance(material, index); _dirty = true;
+}
+void Sprite::setGrayscale(bool enabled) {
+    if (_grayscale == enabled) return;
+    _grayscale = enabled; invalidateBuiltinMaterial();
+}
+void Sprite::refreshMaterial() {
+    const auto variant = materialVariant(_texture.get());
+    if (_builtinVariant != variant) { _builtinVariant = variant; invalidateBuiltinMaterial(); }
+    _dirty = true;
+}
+Material *Sprite::getBuiltinMaterial() const {
+    auto *resources = BuiltinResMgr::getInstance();
+    if (!resources) return nullptr;
+    bool separateAlpha = false;
+    if (_texture) {
+        const auto format = _texture->getPixelFormat();
+        separateAlpha = format == PixelFormat::RGBA_ETC1 || format == PixelFormat::RGB_A_PVRTC_4BPPV1 || format == PixelFormat::RGB_A_PVRTC_2BPPV1;
+    }
+    const std::string name = separateAlpha ? (_grayscale ? "ui-sprite-gray-alpha-sep-material" : "ui-sprite-alpha-sep-material")
+                                          : (_grayscale ? "ui-sprite-gray-material" : "ui-sprite-material");
+    auto *parent = resources->get<Material>(name);
+    if (!parent || !dynamic_cast<RenderTexture *>(_texture.get())) return parent;
+    const std::string rtName = "rt-" + name;
+    auto *material = resources->get<Material>(rtName);
+    const bool created = material == nullptr;
+    if (created || material->getPasses()->empty()) {
+        if (created) material = new Material();
+        IMaterialInfo info; info.defines = IMaterialInfo::DefinesType(MacroRecord{{"SAMPLE_FROM_RT", true}});
+        material->copy(parent, info);
+        if (created) resources->addAsset(rtName, material);
+    }
+    return material;
 }
 
 void Sprite::setColor(const Color &color) {
@@ -262,8 +320,20 @@ void Sprite::prepare(float opacity) {
         const auto *texture = _spriteFrame->getTexture();
         const uint32_t width = texture == nullptr ? 0 : texture->getWidth();
         const uint32_t height = texture == nullptr ? 0 : texture->getHeight();
-        if (_frameRevision != _spriteFrame->getRevision() || width != _frameTextureWidth || height != _frameTextureHeight) {
+        if (_frameRevision != _spriteFrame->getRevision() || width != _frameTextureWidth || height != _frameTextureHeight
+            || (texture ? static_cast<int32_t>(texture->getPixelFormat()) : -1) != _frameTextureFormat) {
             setFrame(_spriteFrame.get());
+        }
+    }
+    if (_node && _transform) {
+        const auto &world = _node->getWorldMatrix();
+        const auto &size = _transform->getContentSize();
+        const auto &anchor = _transform->getAnchorPoint();
+        if (!_hasTransformSnapshot || std::memcmp(world.m, _lastWorldMatrix.m, sizeof(world.m)) != 0
+            || size.x != _lastContentSize.x || size.y != _lastContentSize.y
+            || anchor.x != _lastAnchorPoint.x || anchor.y != _lastAnchorPoint.y) {
+            _lastWorldMatrix = world; _lastContentSize = size; _lastAnchorPoint = anchor;
+            _hasTransformSnapshot = true; _dirty = true;
         }
     }
     if (!_dirty && _lastOpacity >= 0.F && std::fabs(opacity - _lastOpacity) <= 1e-6F) {
@@ -280,14 +350,19 @@ void Sprite::prepare(float opacity) {
 
     Material *material = getRenderMaterial();
     if (material == nullptr) {
+        _entity->setStaticDrawInfoSize(0);
         return;
     }
 
     gfx::Texture *texture = _texture->getGFXTexture();
     if (texture == nullptr) {
+        _entity->setStaticDrawInfoSize(0);
         return;
     }
 
+    auto clearGeometry = [&]() {
+        _entity->setStaticDrawInfoSize(0); _dirty = false; _lastOpacity = opacity;
+    };
     if (_dirty) {
         uint32_t vertexCount = 0;
         uint32_t indexCount = 0;
@@ -306,6 +381,7 @@ void Sprite::prepare(float opacity) {
 
             SpriteMesh mesh = buildSlicedSpriteMesh(params);
             if (!mesh.valid) {
+                clearGeometry();
                 return;
             }
             transformSpriteMesh(mesh, _node->getWorldMatrix());
@@ -331,6 +407,7 @@ void Sprite::prepare(float opacity) {
 
             SpriteMesh mesh = buildTiledSpriteMesh(params);
             if (!mesh.valid) {
+                clearGeometry();
                 return;
             }
             transformSpriteMesh(mesh, _node->getWorldMatrix());
@@ -360,6 +437,7 @@ void Sprite::prepare(float opacity) {
 
             SpriteMesh mesh = buildFilledSpriteMesh(params);
             if (!mesh.valid) {
+                clearGeometry();
                 return;
             }
             transformSpriteMesh(mesh, _node->getWorldMatrix());
@@ -388,6 +466,7 @@ void Sprite::prepare(float opacity) {
 
             SpriteQuad quad = buildSimpleSpriteQuad(params);
             if (!quad.valid) {
+                clearGeometry();
                 return;
             }
             transformSpriteQuad(quad, _node->getWorldMatrix());
@@ -435,7 +514,7 @@ void Sprite::prepare(float opacity) {
 
         _entity->setPriority(static_cast<uint32_t>(_priority));
         _entity->setColor(_color);
-        _entity->setEnabled(true);
+        _entity->setEnabled(isEnabled());
         _entity->setFillColorType(FillColorType::VERTEX);
 
         _dirty = false;

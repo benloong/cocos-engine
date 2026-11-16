@@ -9,7 +9,7 @@ const OUTPUT = 'docs/native-2d-m6.0-baseline.json';
 const TESTS = {
     UITransform:['tests/ui/native-2d-m1-shell.test.ts','native/tests/2d-poc/run-m6-layout-tests.ps1'],
     UIOpacity:['tests/ui/native-2d-m1-shell.test.ts'],
-    Sprite:['tests/ui/native-2d-m2-sprite-shell.test.ts','native/tests/2d-poc/run-sprite-quad-parity.ps1'],
+    Sprite:['tests/ui/native-2d-m2-sprite-shell.test.ts','native/tests/2d-poc/run-sprite-quad-parity.ps1','native/tests/2d-poc/run-m6-sprite-api-tests.ps1'],
     Label:['tests/ui/native-2d-m3-label-shell.test.ts','native/tests/2d-poc/run-m6-layout-tests.ps1','native/tests/2d-poc/run-m3-label-probe.ps1'],
     Mask:['tests/ui/native-2d-m4-mask-shell.test.ts','native/tests/2d-poc/run-m4-mask-probe.ps1'],
     Graphics:['tests/ui/native-2d-m6-layout-shell.test.ts','native/tests/2d-poc/run-m4-extra-probe.ps1'],
@@ -140,7 +140,7 @@ function build(root = ROOT) {
         }
     }
     nativeWalk('native/cocos/2d');
-    nativeFiles.push('native/tools/swig-config/2d.i','native/tools/swig-config/assets.i','cc.config.json','cocos/native-binding/decorators-2d.generated.ts');
+    nativeFiles.push('native/tools/swig-config/2d.i','native/tools/swig-config/assets.i','cc.config.json','cocos/native-binding/decorators-2d.generated.ts','cocos/render-scene/core/material-instance.jsb.ts');
     const nativeSourceHashes = nativeFiles.sort().map(file=>({file,sha256:crypto.createHash('sha256').update(read(file)).digest('hex')}));
     return {schema:1, nativeSourceHashes, limitations:['Static declarations do not prove runtime/API/visual parity.','Native aliases use Web types; these types are not evidence of bound native methods.','Import traversal stops at non-2d boundaries; dynamic imports and boundary re-entry need separate review.','Printed AST line counts are informational; they do not implement the final deprecated/type exclusions.','Native call sites are not measured per-frame call counts.'],
         native2dOverrides:Object.fromEntries(Object.entries(overrides).filter(([key])=>key.startsWith('cocos/2d/')).sort()), classes, files};

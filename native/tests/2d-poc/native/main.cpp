@@ -48,6 +48,7 @@
 #include "core/assets/Material.h"
 
 #include "core/assets/Texture2D.h"
+#include "core/assets/RenderTexture.h"
 #include "core/assets/ImageAsset.h"
 #include "core/scene-graph/Node.h"
 #include "math/Mat4.h"
@@ -300,6 +301,83 @@ void testLayoutAndMaterials() {
         check(entity->getStaticDrawInfoSize() == 1 && entity->getStaticRenderDrawInfo(0)->getMaterial() == builtin, "Graphics native draw uses builtin material");
     } else check(false, "Graphics has render entity");
     std::printf("layout/material ownership: PASS\n");
+}
+
+void testSpriteApiAndMaterials() {
+    auto *resources = cc::BuiltinResMgr::getInstance();
+    cc::IntrusivePtr<cc::Material> normal(new cc::Material()), gray(new cc::Material()), alpha(new cc::Material()), grayAlpha(new cc::Material());
+    resources->addAsset("ui-sprite-material", normal);
+    normal = resources->get<cc::Material>("ui-sprite-material");
+    resources->addAsset("ui-sprite-gray-material", gray);
+    resources->addAsset("ui-sprite-alpha-sep-material", alpha);
+    resources->addAsset("ui-sprite-gray-alpha-sep-material", grayAlpha);
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D()); texture->create(4,4);
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame()); frame->resetWithTexture(texture);
+    const auto textureRefs = texture->getRefCount(), frameRefs = frame->getRefCount();
+    cc::Sprite sprite; sprite.setFrame(frame);
+    check(texture->getRefCount() == textureRefs + 1 && frame->getRefCount() == frameRefs + 1, "Sprite retains frame and texture");
+    checkNear(sprite.getFillRange(), 0, "Sprite default fillRange matches Web");
+    sprite.setFillStart(2); sprite.setFillRange(-2);
+    checkNear(sprite.getFillStart(), 1, "native fillStart clamp"); checkNear(sprite.getFillRange(), -1, "native fillRange clamp");
+    check(sprite.getRenderMaterial() == normal && sprite.getSharedMaterial(0) == normal, "native normal/shared builtin selection");
+    sprite.setGrayscale(true); check(sprite.getRenderMaterial() == gray, "native grayscale variant");
+    // These exercise format-driven selection, not compressed texture decoding.
+    texture->_format = cc::PixelFormat::RGBA_ETC1;
+    check(sprite.getRenderMaterial() == grayAlpha, "native grayscale/alpha-separated variant");
+    sprite.setGrayscale(false); check(sprite.getRenderMaterial() == alpha, "native alpha-separated variant");
+    texture->_format = cc::PixelFormat::RGB_A_PVRTC_4BPPV1;
+    check(sprite.getRenderMaterial() == alpha, "native PVRTC4 alpha variant");
+    texture->_format = cc::PixelFormat::RGB_A_PVRTC_2BPPV1;
+    check(sprite.getRenderMaterial() == alpha, "native PVRTC2 alpha variant");
+    texture->_format = cc::PixelFormat::RGBA8888;
+    sprite.setGrayscale(true);
+    cc::IntrusivePtr<cc::Material> instance(sprite.getMaterialInstance(0));
+    check(instance != gray && instance->getParent() == gray, "material instance keeps native parent");
+    sprite.refreshMaterial(); frame->setRectWidth(3); sprite.setFrame(frame);
+    check(sprite.getMaterialInstance(0) == instance, "geometry and unchanged variant preserve instance");
+    sprite.setGrayscale(false); check(sprite.getRenderMaterial() == normal, "variant change invalidates old instance");
+    sprite.setGrayscale(true);
+    cc::IntrusivePtr<cc::Material> custom(new cc::Material()); const auto materialRefs = custom->getRefCount();
+    sprite.setMaterial(custom); sprite.setGrayscale(true); sprite.refreshMaterial();
+    check(sprite.getRenderMaterial() == custom && custom->getRefCount() > materialRefs, "custom material wins and is retained");
+    sprite.setMaterial(nullptr); check(sprite.getRenderMaterial() == gray && custom->getRefCount() == materialRefs, "clear custom returns to builtin and releases reference");
+    sprite.setSharedMaterial(custom,0); check(sprite.getRenderMaterial() == custom, "shared material replacement affects renderer");
+    sprite.setSharedMaterial(nullptr,0); check(sprite.getRenderMaterial() == gray, "shared material clear restores variant");
+    sprite.setSharedMaterial(custom,1); auto *secondInstance = sprite.getMaterialInstance(1);
+    check(secondInstance != custom && secondInstance->getParent() == custom && sprite.getRenderMaterial(1) == secondInstance, "secondary material instance is independent");
+    sprite.setMaterialInstance(nullptr,1); check(sprite.getRenderMaterial(1) == nullptr, "secondary instance clear releases slot");
+    sprite.setSharedMaterial(custom,0); auto *promoted = sprite.getMaterialInstance(0);
+    sprite.setSharedMaterial(promoted,0);
+    check(sprite.getSharedMaterial(0) == promoted && promoted->getParent() == custom, "instance promotion retains before cache release");
+    sprite.setSharedMaterial(nullptr,0);
+    check(custom->getRefCount() == materialRefs, "all material slots release custom reference");
+    cc::IntrusivePtr<cc::RenderTexture> rt(new cc::RenderTexture());
+    sprite.setFrame(rt,0,0,4,4,4,4,0,0,4,4,false);
+    check(frame->getRefCount() == frameRefs, "scalar frame replacement drops old asset");
+    auto *rtMaterial = sprite.getRenderMaterial();
+    check(rtMaterial && rtMaterial != gray && !rtMaterial->_defines.empty()
+          && cc::macroRecordAsBool(rtMaterial->_defines[0].at("SAMPLE_FROM_RT")), "native RenderTexture variant includes macro");
+    sprite.setEnabled(false); sprite.setFrame(frame);
+    check(!sprite.getRenderEntity()->isEnabled(), "frame assignment preserves disabled Sprite state");
+    sprite.clearFrame();
+    check(frame->getRefCount() == frameRefs && texture->getRefCount() == textureRefs, "clearFrame releases frame and texture");
+    cc::Node node("sprite-shape-updates"); cc::UITransform ui(&node); ui.setContentSize(100,100);
+    cc::Sprite dynamic; dynamic.setNode(&node); dynamic.setUITransform(&ui); dynamic.setSizeMode(0); dynamic.setFrame(frame);
+    dynamic.setType(3); dynamic.setFillStart(0); dynamic.setFillRange(0.5F); dynamic.prepare(1.F);
+    auto *entity = dynamic.getRenderEntity();
+    checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[0], -50, "initial bar origin");
+    ui.setContentSize(200,100); dynamic.prepare(1.F);
+    checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[0], -100, "native size change refreshes vertices");
+    node.setPosition(20,0,0); dynamic.prepare(1.F);
+    checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[0], -80, "native Node movement refreshes vertices");
+    ui.setAnchorPoint(0,0); dynamic.prepare(1.F);
+    checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[0], 20, "native anchor change refreshes vertices");
+    dynamic.setFillRange(0); dynamic.prepare(1.F);
+    check(entity->getStaticDrawInfoSize() == 0, "zero fill clears previous draw data");
+    dynamic.setFillRange(0.5F); dynamic.prepare(1.F);
+    check(entity->getStaticDrawInfoSize() == 1, "nonzero fill restores draw data");
+    dynamic.setEnabled(false); dynamic.prepare(1.F); check(!entity->isEnabled(), "manual prepare preserves disabled entity");
+    std::printf("sprite API/materials: PASS\n");
 }
 
 void testUITransform() {
@@ -558,8 +636,9 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
     se::Object *globalObject = scriptEngine->getGlobalObject();
     check(globalObject != nullptr, "global object");
     check(register_all_engine(globalObject), "register_all_engine");
-    check(register_all_scene(globalObject), "register_all_scene");
+    // Match production: scene MaterialInstance derives from assets Material.
     check(register_all_assets(globalObject), "register_all_assets");
+    check(register_all_scene(globalObject), "register_all_scene");
     check(register_all_native2d(globalObject), "register_all_native2d");
 
     const char *script =
@@ -760,7 +839,7 @@ void testSpritePrepare() {
     sprite.setSharedMaterial(material2, 1);
     check(sprite.getSharedMaterial(1) == material2, "ui renderer shared material");
     check(sprite.getSharedMaterial(0) == material, "ui renderer shared material zero");
-    check(sprite.getMaterialInstance(0) == material, "ui renderer material instance fallback");
+    check(sprite.getMaterialInstance(0)->getParent() == material, "ui renderer creates a native material instance");
     check(sprite.getTypeId() == cc::Sprite::TYPE_ID, "sprite type id");
     sprite.setColorRGBA(10.F, 20.F, 30.F, 255.F);
     check(sprite.getColor().r == 10 && sprite.getColor().g == 20 && sprite.getColor().b == 30, "ui renderer color");
@@ -803,7 +882,7 @@ void testSpritePrepare() {
     if (drawInfo != nullptr) {
         check(drawInfo->getVbCount() == 4, "sprite vertex count");
         check(drawInfo->getIbCount() == 6, "sprite index count");
-        check(drawInfo->getMaterial() == material, "sprite material");
+        check(drawInfo->getMaterial() == sprite.getRenderMaterial(), "sprite uses active material instance");
         check(drawInfo->getTexture() == texture->getGFXTexture(), "sprite texture");
     }
 
@@ -824,6 +903,7 @@ void testSpritePrepare() {
     sprite.setSizeMode(0);
     sprite.setFrame(mutableFrame);
     otherSprite.setFrame(mutableFrame);
+    sprite.setFillRange(1.F); // Filled tests must request a nonempty interval.
     for (int mode = 0; mode < 5; ++mode) {
         sprite.setType(mode < 3 ? mode : 3);
         sprite.setFillType(mode == 4 ? 2 : 0);
@@ -1071,6 +1151,10 @@ void testSpriteSceneBenchmark() {
 } // namespace
 
 int main(int argc, char **argv) {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    _set_error_mode(_OUT_TO_STDERR);
+    _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+#endif
     // Node's shared-memory bridge needs a running script engine; Root/Device
     // are required by the surrounding engine singletons.
     cc::Root *root = new cc::Root(cc::gfx::DeviceManager::create());
@@ -1085,6 +1169,7 @@ int main(int argc, char **argv) {
         testFrameConsumers();
         testFontAssets();
         testLayoutAndMaterials();
+        testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");
         std::fflush(stdout);
         testUITransform();

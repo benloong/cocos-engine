@@ -23,6 +23,9 @@
 */
 
 import { ccclass, displayOrder, executionOrder, help, menu, serializable, type } from 'cc.decorator';
+import { EDITOR } from 'internal:constants';
+import { ccenum, cclegacy, warnID } from '../../core';
+import { SpriteAtlas } from '../assets/sprite-atlas';
 import { Material } from '../../asset/assets';
 import type { MaterialInstance } from '../../render-scene/core/material-instance';
 import { BlendFactor } from '../../gfx';
@@ -34,36 +37,22 @@ import { UIRenderer } from '../framework/ui-renderer';
 
 declare const n2d: any;
 
-/**
- * Native M2 SIMPLE Sprite shell.
- *
- * Serialization and editor metadata stay in JS. The native Sprite owns the
- * frame, geometry and RenderEntity. This shell is intentionally limited to
- * SIMPLE mode until the native material/mode work is complete.
- */
+export enum SpriteType { SIMPLE = 0, SLICED = 1, TILED = 2, FILLED = 3 }
+enum FillType { HORIZONTAL = 0, VERTICAL = 1, RADIAL = 2 }
+enum SizeMode { CUSTOM = 0, TRIMMED = 1, RAW = 2 }
+ccenum(SpriteType); ccenum(FillType); ccenum(SizeMode);
+export enum SpriteEventType { SPRITE_FRAME_CHANGED = 'spriteframe-changed' }
+
+/** Serialization and public API bridges; native owns geometry and materials. */
 @ccclass('cc.Sprite')
 @help('i18n:cc.Sprite')
 @executionOrder(110)
 @menu('2D/Sprite')
 export class Sprite extends UIRenderer {
-    public static FillType = {
-        HORIZONTAL: 0,
-        VERTICAL: 1,
-        RADIAL: 2,
-    };
-
-    public static Type = {
-        SIMPLE: 0,
-        SLICED: 1,
-        TILED: 2,
-        FILLED: 3,
-    };
-
-    public static SizeMode = {
-        CUSTOM: 0,
-        TRIMMED: 1,
-        RAW: 2,
-    };
+    public static FillType = FillType;
+    public static Type = SpriteType;
+    public static SizeMode = SizeMode;
+    public static EventType = SpriteEventType;
 
     @serializable
     protected _spriteFrame: SpriteFrame | null = null;
@@ -78,15 +67,33 @@ export class Sprite extends UIRenderer {
     @serializable
     protected _fillStart = 0;
     @serializable
-    protected _fillRange = 1;
+    protected _fillRange = 0;
     @serializable
     protected _isTrimmedMode = true;
     @serializable
     protected _useGrayscale = false;
     @serializable
-    protected _atlas: any = null;
+    protected _atlas: SpriteAtlas | null = null;
 
     private _native: any = null;
+
+    @type(SpriteAtlas)
+    get spriteAtlas (): SpriteAtlas | null { return this._atlas; }
+    set spriteAtlas (value: SpriteAtlas | null) { this._atlas = value; }
+
+    get trim (): boolean { return this._isTrimmedMode; }
+    set trim (value: boolean) { this._isTrimmedMode = value; this._native?.setTrim(value); }
+
+    get grayscale (): boolean { return this._useGrayscale; }
+    set grayscale (value: boolean) { this._useGrayscale = value; this._native?.setGrayscale(value); }
+
+    public changeSpriteFrameFromAtlas (name: string): void {
+        if (!this._atlas) { warnID(16377); return; }
+        this.spriteFrame = this._atlas.getSpriteFrame(name);
+    }
+
+    /** @deprecated since v3.7.0. Native chooses the texture-dependent variant. */
+    public changeMaterialForDefine (): void { this._native?.refreshMaterial(); }
 
     @type(SpriteFrame)
     @displayOrder(5)
@@ -100,8 +107,10 @@ export class Sprite extends UIRenderer {
         }
         this._spriteFrame = value;
         this._syncFrame();
+        if (EDITOR) this.node.emit(SpriteEventType.SPRITE_FRAME_CHANGED, this);
     }
 
+    @type(SpriteType)
     @displayOrder(6)
     get type (): number {
         return this._type;
@@ -112,6 +121,7 @@ export class Sprite extends UIRenderer {
         this._native?.setType(value);
     }
 
+    @type(FillType)
     get fillType (): number {
         return this._fillType;
     }
@@ -126,8 +136,8 @@ export class Sprite extends UIRenderer {
     }
 
     set fillStart (value: number) {
-        this._fillStart = value;
-        this._native?.setFillStart(value);
+        this._fillStart = Math.min(1, Math.max(0, value));
+        this._native?.setFillStart(this._fillStart);
     }
 
     get fillRange (): number {
@@ -135,10 +145,11 @@ export class Sprite extends UIRenderer {
     }
 
     set fillRange (value: number) {
-        this._fillRange = value;
-        this._native?.setFillRange(value);
+        this._fillRange = Math.min(1, Math.max(-1, value));
+        this._native?.setFillRange(this._fillRange);
     }
 
+    @type(SizeMode)
     get sizeMode (): number {
         return this._sizeMode;
     }
@@ -179,7 +190,7 @@ export class Sprite extends UIRenderer {
         return this._color;
     }
 
-    set color (value: Color) {
+    set color (value: Readonly<Color>) {
         if (this._color.equals(value)) {
             return;
         }
@@ -210,9 +221,23 @@ export class Sprite extends UIRenderer {
 
     public getMaterialInstance (idx = 0): MaterialInstance | null {
         if (this._native) {
-            return this._native.getMaterialInstance(idx) as MaterialInstance;
+            const instance = this._native.getMaterialInstance(idx) as MaterialInstance | null;
+            const previous = this._materialInstances[idx];
+            if (previous && previous !== instance && (previous as any)._owner === this) (previous as any)._owner = null;
+            this._materialInstances[idx] = instance;
+            if (instance) { (instance as any)._owner = this; (instance as any)._subModelIdx = idx; }
+            return instance;
         }
         return super.getMaterialInstance(idx);
+    }
+
+    public setMaterialInstance (material: Material | MaterialInstance | null, index = 0): void {
+        if (this._native) this._native.setMaterialInstance(material, index);
+        else super.setMaterialInstance(material, index);
+    }
+
+    public getRenderMaterial (index = 0): Material | null {
+        return this._native ? this._native.getRenderMaterial(index) : super.getRenderMaterial(index);
     }
 
     public __preload (): void {
@@ -228,6 +253,8 @@ export class Sprite extends UIRenderer {
         }
         this._syncColor();
         this._syncMaterial();
+        this._native.setTrim(this._isTrimmedMode);
+        this._native.setGrayscale(this._useGrayscale);
         this._native.setType(this._type);
         this._native.setFillType(this._fillType);
         this._native.setFillStart(this._fillStart);
@@ -250,6 +277,10 @@ export class Sprite extends UIRenderer {
     }
 
     public onDestroy (): void {
+        for (const instance of this._materialInstances) {
+            if (instance && (instance as any)._owner === this) (instance as any)._owner = null;
+        }
+        this._materialInstances.length = 0;
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
@@ -264,9 +295,7 @@ export class Sprite extends UIRenderer {
     }
 
     private _syncMaterial (): void {
-        if (this._native && this._customMaterial) {
-            this._native.setMaterial(this._customMaterial);
-        }
+        this._native?.setMaterial(this._customMaterial);
     }
 
     private _syncFrame (): void {
@@ -274,10 +303,12 @@ export class Sprite extends UIRenderer {
             return;
         }
         const frame = this._spriteFrame;
-        if (!frame || !frame.texture) {
+        if (!frame) {
             this._native.clearFrame();
             return;
         }
         this._native.setFrame(frame);
     }
 }
+
+cclegacy.Sprite = Sprite;
