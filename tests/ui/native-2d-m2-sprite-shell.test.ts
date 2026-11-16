@@ -5,6 +5,7 @@ import { Sprite as WebSprite } from '../../cocos/2d/components/sprite';
 import { deserialize, Details } from '../../cocos/serialization/deserialize';
 import { instantiate } from '../../exports/base';
 import { SpriteAtlas } from '../../cocos/2d/assets/sprite-atlas';
+import { Vec2 } from '../../cocos/core/math/vec2';
 import { Color } from '../../cocos/core/math/color';
 
 const nativeMaterial = { parent: null } as any;
@@ -26,7 +27,10 @@ const nativeSprite = {
     setFillType: jest.fn(),
     setFillStart: jest.fn(),
     setFillRange: jest.fn(),
-    setFillCenter: jest.fn(),
+    fillX: 0, fillY: 0,
+    setFillCenter: jest.fn(function (x, y) { this.fillX=x; this.fillY=y; }),
+    getFillCenterX: jest.fn(function () { return this.fillX; }),
+    getFillCenterY: jest.fn(function () { return this.fillY; }),
     setSizeMode: jest.fn(),
     setSrcBlendFactor: jest.fn(),
     setDstBlendFactor: jest.fn(),
@@ -153,4 +157,36 @@ test('legacy Sprite atlas/style fields deserialize and clone independently of na
     expect(clone.spriteAtlas).toBe(atlas);
     expect(clone.trim).toBe(false); expect(clone.grayscale).toBe(true); expect(clone._native).toBeNull();
     sprite.onDestroy();
+});
+
+
+test('fillCenter is a native writable view, with independent clone and detached lifetime', () => {
+    const {Sprite}=require('../../cocos/2d/components/sprite.jsb');
+    const node=new Node('fill-center-view'); node.addComponent(UITransform);
+    const sprite: any=node.addComponent(Sprite);
+    const center=sprite.fillCenter;
+    center.x=0.25; center.y=0.75;
+    sprite.onLoad();
+    expect(nativeSprite.setFillCenter).toHaveBeenCalledWith(0.25,0.75);
+    expect(sprite.fillCenter).toBe(center);
+    center.x=0.125; expect(nativeSprite.setFillCenter).toHaveBeenLastCalledWith(0.125,0.75);
+    nativeSprite.setFillCenter(0.5,0.25);
+    expect(center.equals(new Vec2(0.5,0.25))).toBe(true);
+    sprite.fillCenter=new Vec2(0.75,0.5);
+    expect(center.equals(new Vec2(0.75,0.5))).toBe(true);
+    const clone: any=instantiate(sprite);
+    expect(clone.fillCenter).not.toBe(center);
+    expect(clone.fillCenter.equals(center)).toBe(true);
+    clone.fillCenter.x=0;
+    expect(center.x).toBe(0.75);
+    sprite.onDestroy();
+    expect(Object.getOwnPropertyDescriptor(center,'x')!.get).toBeUndefined();
+    const calls=nativeSprite.setFillCenter.mock.calls.length;
+    center.x=1.25;
+    expect(nativeSprite.setFillCenter).toHaveBeenCalledTimes(calls);
+    expect(center.y).toBe(0.5);
+    const cloneCenter = clone.fillCenter;
+    clone.onDestroy();
+    expect(Object.getOwnPropertyDescriptor(cloneCenter, 'x')!.get).toBeUndefined();
+    expect(cloneCenter.x).toBe(0);
 });

@@ -47,6 +47,10 @@ const instance=sprite.getMaterialInstance(0);
 check(instance && instance.parent===gray && instance.owner===sprite && instance!==gray,'native MaterialInstance parent and owner');
 check(sprite.getRenderMaterial(0)===instance,'native instance is rendered');
 sprite.changeMaterialForDefine();check(sprite.getMaterialInstance(0)===instance,'unchanged variant keeps instance');
+sprite.fillCenter=new Vec2(0.25,0.75);
+const center=sprite.fillCenter;center.x=0.125;
+check(sprite._native.getFillCenterX()===0.125&&sprite._native.getFillCenterY()===0.75,'fillCenter component write');
+sprite._native.setFillCenter(0.5,0.25);check(center.x===0.5&&center.y===0.25,'native fillCenter readback');
 sprite.trim=false;check(!sprite._native.isTrim(),'trim binding');
 const custom=new jsb.Material();sprite.customMaterial=custom;
 check(sprite.getSharedMaterial(0)===custom,'custom material binding');
@@ -66,6 +70,7 @@ for(let i=0;i<1000;i++){
 }
 const lastInstance=sprite.getMaterialInstance(0);
 sprite.onDestroy();check(sprite._native===null&&lastInstance.owner===null,'Sprite destroy detaches instance owner');
+check(Object.getOwnPropertyDescriptor(center,'x').get===undefined&&center.x===0.5,'destroy detaches center view');
 transform.detach();return 'OK';
 }catch(error){return String(error.stack||error);}})()`;
 fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,script);console.log(output);

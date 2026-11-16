@@ -104,6 +104,8 @@ public:
     void setFillRange(float fillRange);
     float getFillRange() const { return _fillRange; }
     void setFillCenter(float x, float y);
+    float getFillCenterX() const { return _fillCenter.x; }
+    float getFillCenterY() const { return _fillCenter.y; }
 
     void setSizeMode(int32_t sizeMode);
     int32_t getSizeMode() const { return _sizeMode; }

@@ -377,6 +377,22 @@ void testSpriteApiAndMaterials() {
     dynamic.setFillRange(0.5F); dynamic.prepare(1.F);
     check(entity->getStaticDrawInfoSize() == 1, "nonzero fill restores draw data");
     dynamic.setEnabled(false); dynamic.prepare(1.F); check(!entity->isEnabled(), "manual prepare preserves disabled entity");
+    cc::Node radialNode("radial-state"); cc::UITransform radialUI(&radialNode); radialUI.setContentSize(100,100);
+    cc::Sprite radial; radial.setNode(&radialNode); radial.setUITransform(&radialUI); radial.setSizeMode(0);
+    radial.setType(3); radial.setFillType(2); radial.setFillRange(0.5F); radial.setFillCenter(0.5F,0.5F);
+    frame->setRect(0.5F,0.25F,2,1); radial.setFrame(frame);
+    for(int flags=0;flags<8;flags++) {
+        frame->setRotated((flags&1)!=0); frame->setFlipUVX((flags&2)!=0); frame->setFlipUVY((flags&4)!=0);
+        radial.prepare(1.F);
+        cc::FilledSpriteGeometryParams p; p.contentSize=cc::Vec2(100,100); p.frameRect=cc::Rect(0.5F,0.25F,2,1);
+        p.textureSize=cc::Vec2(4,4); p.fillCenter=cc::Vec2(0.5F,0.5F); p.fillRange=0.5F; p.rotated=(flags&1)!=0;
+        const auto expected=cc::buildRadialSpriteMesh(p); const auto *draw=radial.getRenderEntity()->getStaticRenderDrawInfo(0);
+        check(draw->getVbCount()==expected.vertices.size(), "radial component uses Web triangle layout");
+        for(size_t v=0;v<expected.vertices.size();v++) {
+            checkNear(draw->getVDataBuffer()[v*9+3], expected.vertices[v].uv.x, "radial follows Web rotation/flip U convention");
+            checkNear(draw->getVDataBuffer()[v*9+4], expected.vertices[v].uv.y, "radial follows Web rotation/flip V convention");
+        }
+    }
     std::printf("sprite API/materials: PASS\n");
 }
 
@@ -1035,6 +1051,7 @@ void testSpritePrepare() {
     radialSprite.setFillType(2);
     radialSprite.setFillStart(0.F);
     radialSprite.setFillRange(0.5F);
+    radialSprite.setFillCenter(0.5F,0.5F);
     radialSprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
     cc::RenderEntity *radialEntity = radialSprite.getRenderEntity();
     check(radialEntity != nullptr, "radial sprite render entity");
@@ -1043,8 +1060,8 @@ void testSpritePrepare() {
         cc::RenderDrawInfo *radialDrawInfo = radialEntity->getStaticRenderDrawInfo(0);
         check(radialDrawInfo != nullptr, "radial sprite draw info");
         if (radialDrawInfo != nullptr) {
-            check(radialDrawInfo->getVbCount() == 26, "radial sprite vertex count");
-            check(radialDrawInfo->getIbCount() == 72, "radial sprite index count");
+            check(radialDrawInfo->getVbCount() == 9, "radial sprite vertex count");
+            check(radialDrawInfo->getIbCount() == 9, "radial sprite index count");
         }
     }
 

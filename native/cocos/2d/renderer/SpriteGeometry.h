@@ -102,8 +102,7 @@ struct FilledSpriteGeometryParams final {
 };
 
 /**
- * Build the FILLED geometry for horizontal/vertical fill. Radial fill is not
- * implemented yet and returns an invalid mesh.
+ * Build FILLED geometry for horizontal/vertical bars or a radial interval.
  */
 SpriteMesh buildFilledSpriteMesh(const FilledSpriteGeometryParams &params);
 
@@ -121,8 +120,8 @@ struct TiledSpriteGeometryParams final {
 SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params);
 
 /**
- * Build a radial filled fan. The fan is centered at fillCenter (local node
- * space) and spans fillRange turns from fillStart.
+ * Build radial rectangle-edge triangles with a normalized [0,1] fillCenter.
+ * Positive ranges sweep counterclockwise from the +X axis, matching Web.
  */
 SpriteMesh buildRadialSpriteMesh(const FilledSpriteGeometryParams &params);
 

@@ -282,24 +282,22 @@ void testTiledMesh() {
 
 void testRadialMesh() {
     cc::FilledSpriteGeometryParams params;
-    params.contentSize = cc::Vec2(100.F, 100.F);
-    params.anchorPoint = cc::Vec2(0.5F, 0.5F);
-    params.frameRect = cc::Rect(0.F, 0.F, 100.F, 100.F);
-    params.textureSize = cc::Vec2(100.F, 100.F);
-    params.fillType = 2;
-    params.fillStart = 0.F;
-    params.fillRange = 0.5F;
-
-    const cc::SpriteMesh mesh = cc::buildRadialSpriteMesh(params);
-    check(mesh.valid, "radial mesh is valid");
-    check(mesh.vertices.size() == 26, "radial mesh has center + 25 fan vertices");
-    check(mesh.indices.size() == 72, "radial mesh has 24 fan triangles");
-    if (mesh.vertices.size() == 26) {
+    params.contentSize = cc::Vec2(100,100); params.anchorPoint = cc::Vec2(0.5F,0.5F);
+    params.frameRect = cc::Rect(0,0,100,100); params.textureSize = cc::Vec2(100,100);
+    params.fillCenter = cc::Vec2(0.5F,0.5F); params.fillType = 2; params.fillRange = 0.5F;
+    const auto mesh = cc::buildRadialSpriteMesh(params);
+    check(mesh.valid && mesh.vertices.size() == 9 && mesh.indices.size() == 9, "Web radial top half has three edge triangles");
+    if (mesh.vertices.size() == 9) {
+        checkNear(mesh.vertices[0].position.x, 0, "normalized radial center x");
         checkNear(mesh.vertices[0].uv.x, 0.5F, "radial center u");
-        checkNear(mesh.vertices[0].uv.y, 0.5F, "radial center v");
-        checkNear(mesh.vertices[1].position.x, 0.F, "radial first edge x");
-        checkNear(mesh.vertices[1].position.y, 50.F, "radial first edge clips to content top");
+        checkNear(mesh.vertices[1].position.x, -50, "radial contains exact rectangle corner x");
+        checkNear(mesh.vertices[1].position.y, 50, "radial contains exact rectangle corner y");
+        for (const auto &v:mesh.vertices) check(v.position.y >= -1e-5F, "positive radial range covers upper half");
     }
+    params.fillRange = -0.5F;
+    const auto negative = cc::buildRadialSpriteMesh(params);
+    check(negative.valid, "negative radial range remains visible");
+    for (const auto &v:negative.vertices) check(v.position.y <= 1e-5F, "negative radial range covers lower half");
 }
 
 void testRotatedSlicedMesh() {
@@ -376,14 +374,15 @@ void testRotatedRadialMesh() {
     params.fillType = 2;
     params.fillRange = 0.5F;
     params.rotated = true;
+    params.fillCenter = cc::Vec2(0.5F,0.5F);
 
     const cc::SpriteMesh mesh = cc::buildRadialSpriteMesh(params);
-    check(mesh.valid && mesh.vertices.size() == 26, "rotated radial mesh valid");
-    if (mesh.vertices.size() == 26) {
+    check(mesh.valid && mesh.vertices.size() == 9, "rotated radial mesh valid");
+    if (mesh.vertices.size() == 9) {
         checkNear(mesh.vertices[0].uv.x, 0.5F, "rotated radial center u");
         checkNear(mesh.vertices[0].uv.y, 0.5F, "rotated radial center v");
         checkNear(mesh.vertices[1].uv.x, 1.F, "rotated radial top u");
-        checkNear(mesh.vertices[1].uv.y, 0.5F, "rotated radial top v");
+        checkNear(mesh.vertices[1].uv.y, 0.F, "rotated radial top-left v");
     }
 }
 

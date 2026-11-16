@@ -27,7 +27,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 | UITransform | override | 216 | 0 | 2 | M1 / M6.4 |
 | UIRenderer | 保留 Web 实现 | 414 | 0 | 0 | M6.0 / M6.5 |
 | RenderRoot2D | override | 31 | 0 | 0 | M5.1 / M6.4 |
-| Sprite | override | 269 | 0 | 0 | M6.1 |
+| Sprite | override | 295 | 0 | 0 | M6.1 |
 | Label | override | 339 | 0 | 14 | M6.1 |
 | Mask | override | 137 | 0 | 22 | M6.3 / M6.4 |
 | Graphics | override | 105 | 3 | 13 | M6.3 |
@@ -47,7 +47,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 ## 当前残留与修复顺序
 
 1. 初版发现 Label 缺少 14 个序列化字段声明与默认文字/对齐差异，现已修复并补 deserialize/Details/instantiate、native 样式与下划线/实际字号回归，见 [报告](./native-2d-m6.1-label-serialization.md)。完整 API、资源/场景和效果矩阵仍归 M6.1。
-2. Sprite 的 _fillRange 初值、六个壳接口、native 材质与状态更新已修复，见 [报告](./native-2d-m6.1-sprite-api.md)。剩余三个数字/命名枚举初值文本差异已由真实默认值测试确认等价；radial、可变 fillCenter、继承 API 和完整视觉行为仍待验收。
+2. Sprite 的 _fillRange 初值、六个壳接口、native 材质与状态更新已修复，见 [报告](./native-2d-m6.1-sprite-api.md)。剩余三个数字/命名枚举初值文本差异已由真实默认值测试确认等价；radial CPU 几何与可变 fillCenter 已补 [对照与生命周期验证](./native-2d-m6.1-radial.md)，继承 API 和完整视觉行为仍待验收。
 3. Graphics 缺少 _lineJoin、_lineCap、_miterLimit；固定 CPU 栅格路径和描边语义仍按 M6.3 替换。Mask 的 lateUpdate 在 JS 获取 Graphics frame；材质选择仍由壳进行，归 M6.3/M6.5。
 4. UIRenderer 没有独立 override，组件壳仍继承 Web 基类。基类可达 RenderData、材质和 assembler 管理；Batcher 的 JSB 分支是否消除了执行成本必须通过实际调用计数确认，不能只看叶子壳。
 5. RichText 没有独立 override，HTML/布局仍走 JS，归 M6.2。LabelOutline/LabelShadow 为已弃用的 Label 公共属性转发，不另行下沉算法；它们依赖的 Label API 仍须回归。
@@ -64,7 +64,7 @@ JSON 的 testEntrypoints 按类列出当前可复现的 Jest/PowerShell 入口�
 | UITransform / UIOpacity | native-2d-m1-shell、run-m6-layout-tests | 完整相机/Mask/启停矩阵 |
 | UIRenderer | 无独立 native parity 套件 | 基类 API/材质/继承热路径 |
 | RenderRoot2D | 历史 M5.1 报告，当前无独立固定入口 | 固定多 root/Camera 回归 |
-| Sprite | native-2d-m2-sprite-shell、run-sprite-quad-parity | 新发现的 API/初值、完整资源 |
+| Sprite | native-2d-m2-sprite-shell、run-sprite-quad-parity、run-m6-radial-parity | 继承 API、完整资源与 GPU 像素 |
 | Label | native-2d-m3-label-shell、run-m6-layout-tests、run-m3-label-probe | 序列化样式/字体和全 API |
 | Graphics / Mask | m4-mask-shell、m6-layout-shell、run-m4-mask/extra-probe | 几何/GPU、描边、动态联动 |
 | RichText | run-m5-richtext-probe | 原生解析/布局及精确对照 |

@@ -76,6 +76,7 @@ export class Sprite extends UIRenderer {
     protected _atlas: SpriteAtlas | null = null;
 
     private _native: any = null;
+    private _fillCenterView: Vec2 | null = null;
 
     @type(SpriteAtlas)
     get spriteAtlas (): SpriteAtlas | null { return this._atlas; }
@@ -178,12 +179,12 @@ export class Sprite extends UIRenderer {
     }
 
     get fillCenter (): Vec2 {
-        return this._fillCenter;
+        return this._bindFillCenter();
     }
 
     set fillCenter (value: Vec2) {
-        this._fillCenter.set(value);
-        this._native?.setFillCenter(value.x, value.y);
+        if (this._native) this._native.setFillCenter(value.x, value.y);
+        else this._fillCenter.set(value);
     }
 
     get color (): Readonly<Color> {
@@ -245,6 +246,7 @@ export class Sprite extends UIRenderer {
     }
 
     public onLoad (): void {
+        const centerX = this._fillCenter.x, centerY = this._fillCenter.y;
         this._native = new n2d.Sprite();
         this._native.setNode(this.node);
         const transform = this.node.getComponent(UITransform) as any;
@@ -259,7 +261,8 @@ export class Sprite extends UIRenderer {
         this._native.setFillType(this._fillType);
         this._native.setFillStart(this._fillStart);
         this._native.setFillRange(this._fillRange);
-        this._native.setFillCenter(this._fillCenter.x, this._fillCenter.y);
+        this._native.setFillCenter(centerX, centerY);
+        this._bindFillCenter();
         this._native.setSizeMode(this._sizeMode);
         this._native.setSrcBlendFactor(this._srcBlendFactor);
         this._native.setDstBlendFactor(this._dstBlendFactor);
@@ -281,11 +284,33 @@ export class Sprite extends UIRenderer {
             if (instance && (instance as any)._owner === this) (instance as any)._owner = null;
         }
         this._materialInstances.length = 0;
+        const center = this._fillCenter, x = center.x, y = center.y;
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
             this._native = null;
         }
+        if (this._fillCenterView) {
+            Object.defineProperties(center, { x: { value: x, writable: true }, y: { value: y, writable: true } });
+            this._fillCenterView = null;
+        }
+    }
+
+    private _bindFillCenter (): Vec2 {
+        const center = this._fillCenter;
+        if (this._fillCenterView !== center) {
+            let x = center.x, y = center.y;
+            Object.defineProperties(center, {
+                x: { configurable: true, enumerable: true,
+                    get: () => this._native ? this._native.getFillCenterX() : x,
+                    set: (value: number) => { x = value; this._native?.setFillCenter(value, center.y); } },
+                y: { configurable: true, enumerable: true,
+                    get: () => this._native ? this._native.getFillCenterY() : y,
+                    set: (value: number) => { y = value; this._native?.setFillCenter(center.x, value); } },
+            });
+            this._fillCenterView = center;
+        }
+        return center;
     }
 
     private _syncColor (): void {

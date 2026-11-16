@@ -484,9 +484,9 @@ void Sprite::prepare(float opacity) {
             _indices.assign(quad.indices, quad.indices + INDEX_COUNT);
         }
 
-        // Web sliced UV does not apply quad flip flags. Other modes mirror
+        // Web sliced/radial UV paths do not apply quad flip flags. Other modes mirror
         // texture coordinates inside the complete (possibly rotated) frame.
-        if (_type != 1 && (_flipUVX || _flipUVY) && _textureSize.x > 0 && _textureSize.y > 0) {
+        if (_type != 1 && !(_type == 3 && _fillType == 2) && (_flipUVX || _flipUVY) && _textureSize.x > 0 && _textureSize.y > 0) {
             const float sumU = (2 * _frameRect.x + (_rotated ? _frameRect.height : _frameRect.width)) / _textureSize.x;
             const float sumV = (2 * _frameRect.y + (_rotated ? _frameRect.width : _frameRect.height)) / _textureSize.y;
             for (uint32_t i = 0; i < vertexCount; ++i) {

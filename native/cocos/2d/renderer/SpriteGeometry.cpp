@@ -251,77 +251,84 @@ SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params) {
 
 SpriteMesh buildRadialSpriteMesh(const FilledSpriteGeometryParams &params) {
     SpriteMesh mesh;
-    const float width = params.contentSize.x;
-    const float height = params.contentSize.y;
-    const float textureWidth = params.textureSize.x;
-    const float textureHeight = params.textureSize.y;
-    const Rect &rect = params.frameRect;
-    if (width <= 0.F || height <= 0.F || textureWidth <= 0.F || textureHeight <= 0.F ||
-        rect.width <= 0.F || rect.height <= 0.F) {
-        return mesh;
-    }
+    const double width = params.contentSize.x, height = params.contentSize.y;
+    if (width <= 0 || height <= 0 || params.textureSize.x <= 0 || params.textureSize.y <= 0
+        || params.frameRect.width <= 0 || params.frameRect.height <= 0
+        || !std::isfinite(params.fillStart) || !std::isfinite(params.fillRange)) return mesh;
 
-    const float range = std::clamp(params.fillRange, 0.F, 1.F);
-    if (range <= 0.F) {
-        return mesh;
-    }
+    // Match radial-filled.ts: normalized center, positive CCW interval, and
+    // one triangle for each intersected rectangle edge rather than arc samples.
+    constexpr double PI = 3.14159265358979323846;
+    constexpr double TURN = PI * 2;
+    constexpr double EPSILON = 1e-6;
+    struct Point { double x{0}; double y{0}; };
+    const double left = -params.anchorPoint.x * width, bottom = -params.anchorPoint.y * height;
+    const double right = left + width, top = bottom + height;
+    const Point center{left + std::clamp(static_cast<double>(params.fillCenter.x), 0.0, 1.0) * width,
+                       bottom + std::clamp(static_cast<double>(params.fillCenter.y), 0.0, 1.0) * height};
+    const Point corners[4] = {{left, bottom}, {right, bottom}, {right, top}, {left, top}};
+    size_t edges[4][2] = {};
+    if (center.x != left) { edges[0][0] = 3; edges[0][1] = 0; }
+    if (center.y != bottom) { edges[1][0] = 0; edges[1][1] = 1; }
+    if (center.x != right) { edges[2][0] = 1; edges[2][1] = 2; }
+    if (center.y != top) { edges[3][0] = 2; edges[3][1] = 3; }
 
-    const float appX = params.anchorPoint.x * width;
-    const float appY = params.anchorPoint.y * height;
-    const float left = -appX;
-    const float bottom = -appY;
-    const float right = width - appX;
-    const float top = height - appY;
-    const float cx = params.fillCenter.x;
-    const float cy = params.fillCenter.y;
-
-    constexpr float PI = 3.14159265358979323846F;
-    const float startAngle = PI * 0.5F - 2.F * PI * params.fillStart;
-    const uint32_t segments = std::max(3U, static_cast<uint32_t>(std::ceil(48.F * range)));
-
-    auto radiusToEdge = [&](float dx, float dy) {
-        float distance = 1e30F;
-        constexpr float EPSILON = 1e-6F;
-        if (dx > EPSILON) {
-            distance = std::min(distance, (right - cx) / dx);
-        } else if (dx < -EPSILON) {
-            distance = std::min(distance, (left - cx) / dx);
+    double start = params.fillStart, range = params.fillRange;
+    if (range < 0) { start += range; range = -range; }
+    start = (start - std::floor(start)) * TURN;
+    range *= TURN;
+    const double end = start + range;
+    auto intersect = [&](double angle, Point (&points)[4]) {
+        double sine = std::sin(angle), cosine = std::cos(angle);
+        if (std::abs(sine) <= EPSILON) sine = 0;
+        if (std::abs(cosine) <= EPSILON) cosine = 0;
+        if (cosine != 0) {
+            const double tangent = sine / cosine;
+            if ((left - center.x) * cosine > 0) points[0] = {left, center.y + tangent * (left - center.x)};
+            if ((right - center.x) * cosine > 0) points[2] = {right, center.y + tangent * (right - center.x)};
         }
-        if (dy > EPSILON) {
-            distance = std::min(distance, (top - cy) / dy);
-        } else if (dy < -EPSILON) {
-            distance = std::min(distance, (bottom - cy) / dy);
+        if (sine != 0) {
+            const double cotangent = cosine / sine;
+            if ((bottom - center.y) * sine > 0) points[1] = {center.x + cotangent * (bottom - center.y), bottom};
+            if ((top - center.y) * sine > 0) points[3] = {center.x + cotangent * (top - center.y), top};
         }
-        return std::max(0.F, distance);
     };
-
-    auto makeVertex = [&](float x, float y) {
-        SpriteVertex vertex;
-        vertex.position.set(x, y, 0.F);
-        vertex.uv = frameUV((x - left) / width, (y - bottom) / height, rect, params.textureSize, params.rotated);
-        return vertex;
+    Point first[4], last[4];
+    intersect(start, first); intersect(end, last);
+    auto angleOf = [&](const Point &point) {
+        const double x = point.x - center.x, y = point.y - center.y;
+        if (x == 0) return y == 0 ? 0.0 : (y > 0 ? PI * 0.5 : PI * 1.5);
+        return std::atan(y / x) + (x < 0 ? PI : 0);
     };
-
-    mesh.vertices.reserve(segments + 2);
-    mesh.vertices.push_back(makeVertex(cx, cy));
-
-    for (uint32_t i = 0; i <= segments; ++i) {
-        const float t = static_cast<float>(i) / static_cast<float>(segments);
-        const float angle = startAngle - 2.F * PI * range * t;
-        const float dx = std::cos(angle);
-        const float dy = std::sin(angle);
-        const float distance = radiusToEdge(dx, dy);
-        mesh.vertices.push_back(makeVertex(cx + dx * distance, cy + dy * distance));
+    auto emit = [&](const Point &a, const Point &b, const Point &c) {
+        for (const auto &point : {a, b, c}) {
+            SpriteVertex vertex;
+            vertex.position.set(static_cast<float>(point.x), static_cast<float>(point.y), 0.F);
+            vertex.uv = frameUV(static_cast<float>((point.x - left) / width), static_cast<float>((point.y - bottom) / height),
+                                params.frameRect, params.textureSize, params.rotated);
+            mesh.indices.push_back(static_cast<uint16_t>(mesh.vertices.size()));
+            mesh.vertices.push_back(vertex);
+        }
+    };
+    mesh.vertices.reserve(36); mesh.indices.reserve(36);
+    for (size_t edge = 0; edge < 4; ++edge) {
+        const auto &a = corners[edges[edge][0]], &b = corners[edges[edge][1]];
+        if (range >= TURN) { emit(center, a, b); continue; }
+        double edgeStart = angleOf(a), edgeEnd = angleOf(b);
+        if (edgeEnd < edgeStart) edgeEnd += TURN;
+        edgeStart -= TURN; edgeEnd -= TURN;
+        for (int turn = 0; turn < 3; ++turn) {
+            if (edgeStart >= end) {
+                // No overlap with this turn.
+            } else if (edgeStart >= start) {
+                emit(center, a, edgeEnd >= end ? last[edge] : b);
+            } else if (edgeEnd > start) {
+                emit(center, first[edge], edgeEnd <= end ? b : last[edge]);
+            }
+            edgeStart += TURN; edgeEnd += TURN;
+        }
     }
-
-    mesh.indices.reserve(segments * 3);
-    for (uint32_t i = 1; i <= segments; ++i) {
-        mesh.indices.push_back(0);
-        mesh.indices.push_back(static_cast<uint16_t>(i));
-        mesh.indices.push_back(static_cast<uint16_t>(i + 1));
-    }
-
-    mesh.valid = true;
+    mesh.valid = !mesh.vertices.empty();
     return mesh;
 }
 

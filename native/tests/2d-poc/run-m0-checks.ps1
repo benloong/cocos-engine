@@ -21,6 +21,10 @@ if ($LASTEXITCODE -ne 0) {
     throw "C++ PoC tests failed with exit code $LASTEXITCODE"
 }
 
+Write-Host '== M6.1 radial Web/native triangle parity =='
+& (Join-Path $PSScriptRoot 'run-m6-radial-parity.ps1')
+if ($LASTEXITCODE -ne 0) { throw 'Radial parity failed' }
+
 Write-Host '== M6.1 SpriteFrame Web/native UV parity =='
 & (Join-Path $PSScriptRoot 'run-m6-sprite-frame-tests.ps1')
 if ($LASTEXITCODE -ne 0) {
