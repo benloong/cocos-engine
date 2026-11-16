@@ -37,7 +37,7 @@ const server=http.createServer(async(req,res)=>{
     await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
     const address=`http://127.0.0.1:${server.address().port}`;
     const profile=path.join(__dirname,`build/gpu-browser-${process.pid}`);
-    const browser=spawn(chrome,['--headless=new','--no-first-run','--no-default-browser-check','--ignore-gpu-blocklist','--remote-debugging-port=0','--user-data-dir='+profile,address],{windowsHide:true,stdio:['ignore','ignore','pipe']});
+    const browser=spawn(chrome,['--headless=new','--no-first-run','--no-default-browser-check','--ignore-gpu-blocklist','--js-flags=--expose-gc','--remote-debugging-port=0','--user-data-dir='+profile,address],{windowsHide:true,stdio:['ignore','ignore','pipe']});
     browser.on('error',doneReject);
     browser.on('exit',(code,signal)=>doneReject(new Error(`Browser exited: ${code}/${signal}`)));
     let socket;
@@ -54,14 +54,14 @@ const server=http.createServer(async(req,res)=>{
                 const msg=JSON.parse(event.data);
                 if(msg.method==='Runtime.consoleAPICalled') {
                     const text=msg.params.args.map(x=>x.value??x.description??'').join(' ');logs.push(text);
-                    if(text.includes('M6_GPU_CAPTURE')) console.log(text);
+                    if(text.includes('M6_GPU_CAPTURE')||text.includes('M6_SCENE_PROGRESS')) console.log(text);
                     if(text.includes('M6_GPU_FAIL')) doneReject(new Error(text));
                 }
                 if(msg.method==='Runtime.exceptionThrown') logs.push(JSON.stringify(msg.params.exceptionDetails));
             };
         } catch(error) { logs.push(String(error)); }
     });
-    const timeout=setTimeout(()=>doneReject(new Error('Web capture timeout')),120000);
+    const timeout=setTimeout(()=>doneReject(new Error('Web capture timeout')),180000);
     try { const result=await done;console.log(`M6_GPU_WEB_READY ${result.captures.length}`); }
     finally { clearTimeout(timeout);socket?.close();browser.kill();server.close();fs.writeFileSync(path.join(output,'console.log'),logs.join('\n')); }
 })().catch(error=>{console.error(error);process.exitCode=1;});

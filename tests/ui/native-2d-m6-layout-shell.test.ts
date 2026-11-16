@@ -9,6 +9,7 @@ const nativeGraphics = {
     setLineJoin: jest.fn(), setLineCap: jest.fn(), setMiterLimit: jest.fn(), setColorRGBA: jest.fn(),
     getSharedMaterialCount: () => 0, getSharedMaterial: () => null, getRenderMaterial: () => null,
     setSharedMaterial: jest.fn(), setMaterialInstance: jest.fn(), resizeMaterials: jest.fn(),
+    fillRect: jest.fn(), moveTo: jest.fn(), lineTo: jest.fn(), stroke: jest.fn(),
 };
 
 test('Graphics leaves builtin material selection to the native renderer', () => {
@@ -26,6 +27,41 @@ test('Graphics leaves builtin material selection to the native renderer', () => 
     graphics.onDestroy();
     expect(nativeGraphics.setNode).toHaveBeenLastCalledWith(null);
     getBuiltin.mockRestore();
+});
+
+test('Graphics retains native drawing before onLoad and never recreates a destroyed backend', () => {
+    const { Graphics } = require('../../cocos/2d/components/graphics.jsb');
+    const node = new Node('inactive-graphics'); node.active = false;
+    const graphics: any = node.addComponent(Graphics);
+    const create = (global as any).n2d.Graphics;
+    create.mockClear(); nativeGraphics.fillRect.mockClear();
+    nativeGraphics.setNode.mockClear();
+    graphics.lineWidth = 7;
+    graphics.fillRect(1, 2, 3, 4);
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(nativeGraphics.fillRect).toHaveBeenCalledWith(1, 2, 3, 4);
+    expect(nativeGraphics.setLineWidth).toHaveBeenLastCalledWith(7);
+    expect(nativeGraphics.setNode).not.toHaveBeenCalled();
+    graphics.onLoad();
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(nativeGraphics.setNode).toHaveBeenLastCalledWith(node);
+    graphics.onDestroy(); graphics.fillRect(5, 6, 7, 8);
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(nativeGraphics.fillRect).toHaveBeenCalledTimes(1);
+});
+
+test('Graphics destroys a pre-load backend and unbinds Mask when the inactive component is destroyed', () => {
+    const { Graphics } = require('../../cocos/2d/components/graphics.jsb');
+    const node = new Node('never-loaded-graphics'); node.active = false;
+    const graphics: any = node.addComponent(Graphics);
+    const mask = { setGraphics: jest.fn() };
+    graphics._setMask(mask); graphics.moveTo(0, 0); graphics.lineTo(5, 5); graphics.stroke();
+    expect(mask.setGraphics).toHaveBeenLastCalledWith(nativeGraphics);
+    const onDestroy = jest.spyOn(graphics, 'onDestroy');
+    graphics._destroyImmediate();
+    expect(onDestroy).not.toHaveBeenCalled();
+    expect(mask.setGraphics).toHaveBeenLastCalledWith(null);
+    expect(graphics._native).toBeNull();
 });
 
 test('Graphics restores stroke metadata and binds Mask geometry across load/destroy without polling', () => {

@@ -56,6 +56,28 @@ export class Graphics extends UIRenderer {
 
     private _native: any = null;
     private _mask: any = null;
+    private _nativeDestroyed = false;
+
+    private _ensureNative (): any {
+        if (this._nativeDestroyed || !this.isValid) return null;
+        if (!this._native) {
+            this._native = new n2d.Graphics();
+            this._native.setEnabled(false);
+            this._syncNativeStyles();
+            this._mask?.setGraphics(this._native);
+        }
+        return this._native;
+    }
+
+    private _syncNativeStyles (): void {
+        this._native.setLineWidth(this._lineWidth);
+        this._native.setFillColor(this._fillColor);
+        this._native.setStrokeColor(this._strokeColor);
+        this._native.setLineJoin(this._lineJoin);
+        this._native.setLineCap(this._lineCap);
+        this._native.setMiterLimit(this._miterLimit);
+        this._native.setColorRGBA(this.color.r, this.color.g, this.color.b, this.color.a);
+    }
 
     public _setMask (mask: any): void {
         if (this._mask === mask) return;
@@ -65,17 +87,11 @@ export class Graphics extends UIRenderer {
     }
 
     public onLoad (): void {
-        this._native = new n2d.Graphics();
+        if (!this._ensureNative()) return;
         this._native.setNode(this.node);
         this._native.setPriority(this.priority);
         this._native.setEnabled(this.enabledInHierarchy);
-        this._native.setLineWidth(this._lineWidth);
-        this._native.setFillColor(this._fillColor);
-        this._native.setStrokeColor(this._strokeColor);
-        this._native.setLineJoin(this._lineJoin);
-        this._native.setLineCap(this._lineCap);
-        this._native.setMiterLimit(this._miterLimit);
-        this._native.setColorRGBA(this.color.r, this.color.g, this.color.b, this.color.a);
+        this._syncNativeStyles();
         bindNativeMaterialSlots(this);
         this._mask?.setGraphics(this._native);
     }
@@ -89,6 +105,21 @@ export class Graphics extends UIRenderer {
     }
 
     public onDestroy (): void {
+        this._destroyNative();
+    }
+
+    public _onPreDestroy (): void {
+        try {
+            super._onPreDestroy();
+        } finally {
+            // Component does not dispatch onDestroy if onLoad never ran.
+            this._destroyNative();
+        }
+    }
+
+    private _destroyNative (): void {
+        if (this._nativeDestroyed) return;
+        this._nativeDestroyed = true;
         this._setMask(null);
         releaseNativeMaterialSlots(this);
         if (this._native) {
@@ -144,54 +175,54 @@ export class Graphics extends UIRenderer {
     }
 
     public moveTo (x: number, y: number): void {
-        this._native?.moveTo(x, y);
+        this._ensureNative()?.moveTo(x, y);
     }
 
     public lineTo (x: number, y: number): void {
-        this._native?.lineTo(x, y);
+        this._ensureNative()?.lineTo(x, y);
     }
 
     public close (): void {
-        this._native?.close();
+        this._ensureNative()?.close();
     }
 
     public rect (x: number, y: number, w: number, h: number): void {
-        this._native?.rect(x, y, w, h);
+        this._ensureNative()?.rect(x, y, w, h);
     }
     public fillRect (x: number, y: number, w: number, h: number): void {
-        this._native?.fillRect(x, y, w, h);
+        this._ensureNative()?.fillRect(x, y, w, h);
     }
 
     public roundRect (x: number, y: number, w: number, h: number, radius: number): void {
-        this._native?.roundRect(x, y, w, h, radius);
+        this._ensureNative()?.roundRect(x, y, w, h, radius);
     }
 
     public circle (x: number, y: number, radius: number): void {
-        this._native?.circle(x, y, radius);
+        this._ensureNative()?.circle(x, y, radius);
     }
 
     public ellipse (x: number, y: number, radiusX: number, radiusY: number): void {
-        this._native?.ellipse(x, y, radiusX, radiusY);
+        this._ensureNative()?.ellipse(x, y, radiusX, radiusY);
     }
 
     public arc (cx: number, cy: number, r: number, startAngle = 0, endAngle = 6.283185307, counterclockwise = false): void {
-        this._native?.arc(cx, cy, r, startAngle, endAngle, counterclockwise);
+        this._ensureNative()?.arc(cx, cy, r, startAngle, endAngle, counterclockwise);
     }
 
     public bezierCurveTo (c1x: number, c1y: number, c2x: number, c2y: number, x: number, y: number): void {
-        this._native?.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+        this._ensureNative()?.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
     }
 
     public quadraticCurveTo (cx: number, cy: number, x: number, y: number): void {
-        this._native?.quadraticCurveTo(cx, cy, x, y);
+        this._ensureNative()?.quadraticCurveTo(cx, cy, x, y);
     }
 
     public fill (): void {
-        this._native?.fill();
+        this._ensureNative()?.fill();
     }
 
     public stroke (): void {
-        this._native?.stroke();
+        this._ensureNative()?.stroke();
     }
 }
 patchNativeMaterialAPIs(Graphics);

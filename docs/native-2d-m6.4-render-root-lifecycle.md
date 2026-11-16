@@ -30,7 +30,7 @@
 
 复用 MSVC/Ninja 缓存前，应核对 CMakeFiles/rules.ninja 的 msvc_deps_prefix 和真实编译输出，并用 ninja -t deps 检查 Component.cpp.obj 包含 Component.h 等依赖；0 依赖不构成有效增量构建证据。本机安装的编译器仍输出中文，单设 VSLANG=1033 未改变输出，不应据此假定英文前缀有效。独立 /Zi probe 还重现了本机 PDB 管理器 C1902，生产夹具继续使用已记录的 /Z7 配置。
 
-当前图像/注册/命中夹具沿用 [GPU 复现步骤](./native-2d-m6.3-graphics-gpu.md#复现)，比较器现在要求 58 图像、11 注册结果和 19 命中结果。原始数据和本机构建日志位于 native/tests/2d-poc/build 忽略目录。
+本节点历史图像/注册/命中夹具沿用 [GPU 复现步骤](./native-2d-m6.3-graphics-gpu.md#复现)，当时要求 58 图像、11 注册结果和 19 命中结果。当前比较器已扩展到 74 图像和 1000 次真实 Scene 切换，见 [后续报告](./native-2d-m6.4-scene-matrix.md)。原始数据和本机构建日志位于 native/tests/2d-poc/build 忽略目录。
 
 ## 保持待验收
 
@@ -38,8 +38,8 @@
 
 先前实现错误地给 RenderRoot2D 分配了 8，与 RichText 冲突。ASAN 在真实 Scene 切换夹具中检出 Batcher 将 RenderRoot2D 当作 RichText 后越界写入；此前像素对照通过不能证明该版本内存安全。现将已有 UITransform 至 RichText 的 1–8 保持稳定，RenderRoot2D 改为 9，统一声明在 UIComponentType.h。Batcher 编译时检查九个实际组件 TYPE_ID 非零且互不重复；native 回归同一 Node 上同时绑定 UITransform、RichText、RenderRoot2D，验证查找互不覆盖。
 
-Windows Debug/Release harness 已通过（包括字体入口驱动的完整 native 回归）。修正编号后的 Windows Debug ASAN 应用完成 1000 次真实 Scene/动态纹理切换，日志 `native/tests/2d-poc/build/scene-matrix-asan-final.log` 包含 `M6_SCENE_ASAN_READY 1000`，错误日志为空。这仅是该夹具的 ASAN 证据；新多 Camera 视觉用例仍发现 Graphics 在 onLoad 前丢命令，尚未通过整个 Scene 矩阵或全 M6 Gate。
+Windows Debug/Release harness 已通过（包括字体入口驱动的完整 native 回归）。修正编号后的 Windows Debug ASAN 应用完成 1000 次真实 Scene/动态纹理切换，日志 `native/tests/2d-poc/build/scene-matrix-asan-final.log` 包含 `M6_SCENE_ASAN_READY 1000`，错误日志为空。这仅是该夹具的 ASAN 证据；该次运行的多 Camera 图像另发现 Graphics 在 onLoad 前丢命令；后续已修复并完成 Windows Debug 普通/ASAN 与 Web 的 74 图像对照，见 Scene 矩阵报告。全 M6 Gate 仍未关闭。
 
-本节点证明单 Camera 下多个 root/Canvas 的基础顺序与生命周期，以及 C++ 层跨 Scene 重挂。真实 director 场景切换、多个 Camera 的可见性/顺序/目标窗口组合、嵌套 root、全部回调/渲染线程同步边界、完整资源加载释放和平台矩阵仍待验证。1000 次 plain Node 注册/释放不是 1000 次完整资产/场景加载卸载，也不替代泄漏检测器。
+本节点原始证据覆盖单 Camera 下多个 root/Canvas 的基础顺序与生命周期，以及 C++ 层跨 Scene 重挂。后续已补 Windows Debug 真实 director 切换和多 Camera 的可见性/顺序/目标 RenderTexture 组合，见 Scene 矩阵报告；嵌套 root、全部回调/渲染线程同步边界、完整资源加载释放和平台矩阵仍待验证。1000 次 plain Node 注册/释放不是 1000 次完整资产加载卸载，也不替代泄漏检测器。
 
 快照仍含工作区已有未提交的 SpriteFrame.native getter；该文件未纳入本节点，已知无 native 属性的旧测试失败仍独立保留。最终 M6 同一候选版本 Gate 未关闭。

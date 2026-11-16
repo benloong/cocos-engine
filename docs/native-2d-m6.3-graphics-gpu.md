@@ -53,7 +53,7 @@ try {
 node native/tests/2d-poc/prepare-graphics-gpu-project.cjs
 Push-Location $cli
 try {
-    node dist/cli.js --no-interactive build --project $project --platform web-mobile
+    node dist/cli.js --no-interactive build --project $project --platform web-mobile --build-config "$project/build-config-web.json"
 } finally { Pop-Location }
 # 显式重编译当前 native JS 引擎，避免复用 CLI 引擎缓存。
 node native/tests/2d-poc/build-graphics-gpu-engine.cjs

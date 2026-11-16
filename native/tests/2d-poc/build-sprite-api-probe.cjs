@@ -28,7 +28,7 @@ class Vec2 { constructor(x=0,y=0){this.x=x;this.y=y;} set(value){this.x=value.x;
 class Color {constructor(r=255,g=255,b=255,a=255){this.r=r;this.g=g;this.b=b;this.a=a;} equals(v){return this.r===v.r&&this.g===v.g&&this.b===v.b&&this.a===v.a;} set(v){Object.assign(this,v);} }
 Color.BLACK=new Color(0,0,0,255);Color.WHITE=new Color();Color.prototype.clone=function(){return new Color(this.r,this.g,this.b,this.a);};
 class UIRenderer {
- constructor(){this._materials=[];this._materialInstances=[];this._color=new Color();this._customMaterial=null;this._srcBlendFactor=2;this._dstBlendFactor=4;this.priority=0;this.enabledInHierarchy=true;}
+ constructor(){this.isValid=true;this._materials=[];this._materialInstances=[];this._color=new Color();this._customMaterial=null;this._srcBlendFactor=2;this._dstBlendFactor=4;this.priority=0;this.enabledInHierarchy=true;}
 }
 function require(id){
  if(id==='internal:constants')return {EDITOR:true};
@@ -133,7 +133,13 @@ labelAssembler.updateRenderData(label);labelAssembler.updateColor(label);
 check(labelCurrent.owner===null&&label.sharedMaterials.length===0,'Label destroy clears native and JS material references');
 labelTransform.detach();
 const graphicsNode=new jsb.Node('graphics-runtime-shell');
-const graphics=new graphicsExports.Graphics();graphics.node=graphicsNode;graphics.onLoad();
+const graphics=new graphicsExports.Graphics();graphics.node=graphicsNode;
+graphics.fillRect(0,0,20,10);
+const preLoadGraphics=graphics._native;
+check(preLoadGraphics.getVertexCount()===4,'Graphics before onLoad creates native geometry');
+graphics.onLoad();
+check(graphics._native===preLoadGraphics && graphics._native.getVertexCount()===4,'onLoad retains prebuilt native geometry');
+graphics.clear();
 check(graphics._native.getSharedMaterial(0),'Graphics builtin material resolves in native');
 graphics.lineCap=2;graphics.lineJoin=1;graphics.miterLimit=3;graphics.lineWidth=6;
 graphics.moveTo(-400,-100);graphics.lineTo(400,-100);graphics.lineTo(400,200);graphics.stroke();

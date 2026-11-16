@@ -11,11 +11,11 @@ $manifest=Join-Path $PSScriptRoot 'build/graphics-gpu-native/manifest.json'
 $started=[DateTime]::UtcNow
 $process=Start-Process -FilePath $exePath -WorkingDirectory (Split-Path -Parent $exePath) -WindowStyle Hidden -RedirectStandardOutput $log -RedirectStandardError $err -PassThru
 try {
-    $deadline=$started.AddSeconds(45)
+    $deadline=$started.AddSeconds(180)
     while([DateTime]::UtcNow -lt $deadline) {
         if((Test-Path -LiteralPath $manifest) -and (Get-Item -LiteralPath $manifest).LastWriteTimeUtc -gt $started) {
             $result=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
-            if($result.backend -ne 'native' -or $result.captures.Count -ne 58 -or $result.hits.Count -ne 19 -or $result.roots.Count -ne 11) { throw 'Invalid native capture manifest' }
+            if($result.backend -ne 'native' -or $result.captures.Count -ne 74 -or $result.hits.Count -ne 19 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000) { throw 'Invalid native capture manifest' }
             Write-Output "M6_GPU_NATIVE_READY $($result.captures.Count)"
             exit 0
         }

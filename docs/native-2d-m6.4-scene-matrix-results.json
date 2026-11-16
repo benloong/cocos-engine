@@ -1,0 +1,1010 @@
+{
+  "snapshot": "a81b23d626f58590e94174f73d814bbb888ba8e21c4211e1403113a83a0abe56",
+  "width": 256,
+  "height": 256,
+  "environment": {
+    "native": {
+      "os": "Windows",
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "vendor": "Imagination Technologies (Host: NVIDIA Corporation)"
+    },
+    "web": {
+      "os": "Windows",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (NVIDIA)"
+    }
+  },
+  "scenes": {
+    "cycles": 1000,
+    "texturesCreated": 1000,
+    "texturesDestroyed": 1000,
+    "assertions": 4998,
+    "collections": 10,
+    "samples": [
+      {
+        "cycle": 1,
+        "roots": 2,
+        "persistent": true
+      },
+      {
+        "cycle": 250,
+        "roots": 2,
+        "persistent": true
+      },
+      {
+        "cycle": 500,
+        "roots": 2,
+        "persistent": true
+      },
+      {
+        "cycle": 750,
+        "roots": 2,
+        "persistent": true
+      },
+      {
+        "cycle": 1000,
+        "roots": 2,
+        "persistent": true
+      }
+    ],
+    "checks": [
+      {
+        "name": "initial-scene-destroyed",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "camera-scene-roots",
+        "actual": 2,
+        "expected": 2
+      },
+      {
+        "name": "second-camera-disabled",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "camera-target-replaced",
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "persistent-root-registered",
+        "actual": 3,
+        "expected": 3
+      },
+      {
+        "name": "final-root-registry-empty",
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "persistent-root-destroyed",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "final-previous-scene-destroyed",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "final-frame-destroyed",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "final-texture-destroyed",
+        "actual": false,
+        "expected": false
+      }
+    ]
+  },
+  "roots": [
+    {
+      "name": "base-canvas",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "two-roots-added",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "name": "two-roots-reordered",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "name": "root-disabled",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "root-duplicate-enable",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "name": "root-destroyed",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "both-roots-disabled",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "name": "two-canvases-added",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "name": "canvas-disabled",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "name": "canvas-reenabled",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "name": "canvases-destroyed",
+      "actual": 1,
+      "expected": 1
+    }
+  ],
+  "hits": [
+    {
+      "name": "rounded-center",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "rounded-corner",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "rounded-edge",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "transformed-center",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "transformed-corner",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "ellipse-center",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "ellipse-edge",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "offscreen-camera-excluded",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "screen-center",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "screen-rounded-corner",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "wrong-window-excluded",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "camera-layer-excluded",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "disabled-mask",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "inverted-center",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "inverted-corner",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "nested-mask-outside",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "nested-mask-disabled",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "reparent-drops-ancestors",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "destroyed-mask-detached",
+      "actual": true,
+      "expected": true
+    }
+  ],
+  "tolerance": 1,
+  "pass": true,
+  "results": [
+    {
+      "name": "fill-rect",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+      "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+    },
+    {
+      "name": "large-local-coordinates",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+      "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+    },
+    {
+      "name": "world-scale-rotation",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 14400,
+      "pass": true,
+      "nativeSha256": "afa658cddbe3c4403592a4aed4755bbe75a0c6040fbb21949ba5d9ad296df45a",
+      "webSha256": "afa658cddbe3c4403592a4aed4755bbe75a0c6040fbb21949ba5d9ad296df45a"
+    },
+    {
+      "name": "world-z-rotation",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 11994,
+      "pass": true,
+      "nativeSha256": "9be163f14ffdde89ecebc2a448a15ffb83efc04ff15a7bf09b3e671f9e686828",
+      "webSha256": "9be163f14ffdde89ecebc2a448a15ffb83efc04ff15a7bf09b3e671f9e686828"
+    },
+    {
+      "name": "concave",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 13300,
+      "pass": true,
+      "nativeSha256": "180419430b7915e20530fb74d52911de0d6e7aa2e9cb5c22af1ac1aeee43d8a3",
+      "webSha256": "180419430b7915e20530fb74d52911de0d6e7aa2e9cb5c22af1ac1aeee43d8a3"
+    },
+    {
+      "name": "subpaths",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 12000,
+      "pass": true,
+      "nativeSha256": "690659d2c600f5ac24e37b4e10dfb5301089a7ab92ce287b67a54b0c59f09e53",
+      "webSha256": "690659d2c600f5ac24e37b4e10dfb5301089a7ab92ce287b67a54b0c59f09e53"
+    },
+    {
+      "name": "alpha-and-overlap",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 12000,
+      "pass": true,
+      "nativeSha256": "ecffce83426966ed6d16b41ed32d4f6198927b14b9b78e9fb879093e21e20911",
+      "webSha256": "ecffce83426966ed6d16b41ed32d4f6198927b14b9b78e9fb879093e21e20911"
+    },
+    {
+      "name": "inherited-opacity",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "eb44bd68d810672a70f978d70540919f874b3694df07f5184ae9abe06cc3f125",
+      "webSha256": "eb44bd68d810672a70f978d70540919f874b3694df07f5184ae9abe06cc3f125"
+    },
+    {
+      "name": "curves",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 7169,
+      "pass": true,
+      "nativeSha256": "9102972756f56bbe64c8b15b6348da733278e9e10d17c5da8396a83bb6fb7d5f",
+      "webSha256": "9102972756f56bbe64c8b15b6348da733278e9e10d17c5da8396a83bb6fb7d5f"
+    },
+    {
+      "name": "ellipse",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 11296,
+      "pass": true,
+      "nativeSha256": "292e4b2656ecea59db12f734531daffa44c9377b83addfc8baafd7232de71478",
+      "webSha256": "292e4b2656ecea59db12f734531daffa44c9377b83addfc8baafd7232de71478"
+    },
+    {
+      "name": "round-rect",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 15648,
+      "pass": true,
+      "nativeSha256": "d8148257e6c458106cfc5ab4fe5eeb0d5237db8a79f4c2a1dfc056eb08fb399d",
+      "webSha256": "d8148257e6c458106cfc5ab4fe5eeb0d5237db8a79f4c2a1dfc056eb08fb399d"
+    },
+    {
+      "name": "arc",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 822,
+      "pass": true,
+      "nativeSha256": "42fdcee17bdee6af896ef7b4856e2dfe65bd7371da1ec7bd9317e4fd8b4b23b0",
+      "webSha256": "42fdcee17bdee6af896ef7b4856e2dfe65bd7371da1ec7bd9317e4fd8b4b23b0"
+    },
+    {
+      "name": "clear-and-replace",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 2400,
+      "pass": true,
+      "nativeSha256": "315245aca62819456a5f0684962cd66c83d92f22664d0a4f4305d6c2208b7900",
+      "webSha256": "315245aca62819456a5f0684962cd66c83d92f22664d0a4f4305d6c2208b7900"
+    },
+    {
+      "name": "large-mesh-chunks",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 20000,
+      "pass": true,
+      "nativeSha256": "3cd523e5aeab5b8b24cec4ede181338ec0462e1290fac7d92d32031cd39a3de6",
+      "webSha256": "3cd523e5aeab5b8b24cec4ede181338ec0462e1290fac7d92d32031cd39a3de6"
+    },
+    {
+      "name": "mask-rect",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+      "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+    },
+    {
+      "name": "mask-rounded",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 9248,
+      "pass": true,
+      "nativeSha256": "e05aee3dce9acf0ec0489dfc1a4ea84d8028d8efa9758e23928842a493b5dbca",
+      "webSha256": "e05aee3dce9acf0ec0489dfc1a4ea84d8028d8efa9758e23928842a493b5dbca"
+    },
+    {
+      "name": "mask-radius-update",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 9600,
+      "pass": true,
+      "nativeSha256": "28a16dbbee55ae373655fdb6d51dabfbc936c723190557fb1e4ae6515afef279",
+      "webSha256": "28a16dbbee55ae373655fdb6d51dabfbc936c723190557fb1e4ae6515afef279"
+    },
+    {
+      "name": "mask-radius-update-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 8820,
+      "pass": true,
+      "nativeSha256": "5060b63c4348ff7a4b9997ca2e8e48711877b7b63b18727560c0907ce9d9ba21",
+      "webSha256": "5060b63c4348ff7a4b9997ca2e8e48711877b7b63b18727560c0907ce9d9ba21"
+    },
+    {
+      "name": "mask-radius-clamp",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 8216,
+      "pass": true,
+      "nativeSha256": "959c8eb05f2ab0950ad7202cae66e759ee3d580f19e3a633da9ac41a341624df",
+      "webSha256": "959c8eb05f2ab0950ad7202cae66e759ee3d580f19e3a633da9ac41a341624df"
+    },
+    {
+      "name": "mask-size-anchor-update",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 9248,
+      "pass": true,
+      "nativeSha256": "e05aee3dce9acf0ec0489dfc1a4ea84d8028d8efa9758e23928842a493b5dbca",
+      "webSha256": "e05aee3dce9acf0ec0489dfc1a4ea84d8028d8efa9758e23928842a493b5dbca"
+    },
+    {
+      "name": "mask-size-anchor-update-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5648,
+      "pass": true,
+      "nativeSha256": "322620666b2461ea54e703d413e721305c4349b98e4da2821a71c20fd40d08e0",
+      "webSha256": "322620666b2461ea54e703d413e721305c4349b98e4da2821a71c20fd40d08e0"
+    },
+    {
+      "name": "mask-type-update",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 9248,
+      "pass": true,
+      "nativeSha256": "e05aee3dce9acf0ec0489dfc1a4ea84d8028d8efa9758e23928842a493b5dbca",
+      "webSha256": "e05aee3dce9acf0ec0489dfc1a4ea84d8028d8efa9758e23928842a493b5dbca"
+    },
+    {
+      "name": "mask-type-update-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 7456,
+      "pass": true,
+      "nativeSha256": "634e915a55c6cfb19ddbbde045ff30defbb197e16dd498eeba625f05616d2236",
+      "webSha256": "634e915a55c6cfb19ddbbde045ff30defbb197e16dd498eeba625f05616d2236"
+    },
+    {
+      "name": "mask-inverted",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 46400,
+      "pass": true,
+      "nativeSha256": "343a8223ffa0000623543e2153b93daaf7f7cb4f0beb5773789b26a659251f71",
+      "webSha256": "343a8223ffa0000623543e2153b93daaf7f7cb4f0beb5773789b26a659251f71"
+    },
+    {
+      "name": "mask-ellipse",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 10920,
+      "pass": true,
+      "nativeSha256": "8bc244e42e867fc431e08c3828f596f4d2a24aba6a9f939f5f4aba3d627c14c5",
+      "webSha256": "8bc244e42e867fc431e08c3828f596f4d2a24aba6a9f939f5f4aba3d627c14c5"
+    },
+    {
+      "name": "mask-nested",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 4800,
+      "pass": true,
+      "nativeSha256": "f31ee366645df3680ca05d459afd6240246e394c0ad53f6ed62541938e256968",
+      "webSha256": "f31ee366645df3680ca05d459afd6240246e394c0ad53f6ed62541938e256968"
+    },
+    {
+      "name": "mask-nested-inverted",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 13200,
+      "pass": true,
+      "nativeSha256": "b198a341960550d7ee9cc00b2f256a2def426da9219e8ec88ccd0bbf9f6c2b6e",
+      "webSha256": "b198a341960550d7ee9cc00b2f256a2def426da9219e8ec88ccd0bbf9f6c2b6e"
+    },
+    {
+      "name": "mask-custom",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 3500,
+      "pass": true,
+      "nativeSha256": "b96c0200e1063188746f89d523625c1256e998e80236783a3a090a7d65a3cf8d",
+      "webSha256": "b96c0200e1063188746f89d523625c1256e998e80236783a3a090a7d65a3cf8d"
+    },
+    {
+      "name": "mask-empty",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 52800,
+      "pass": true,
+      "nativeSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b",
+      "webSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b"
+    },
+    {
+      "name": "mask-source-update",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 900,
+      "pass": true,
+      "nativeSha256": "4768caf545bc3e41412ee3054052379cdf4832493ff17d9a91536e0a26ee57e9",
+      "webSha256": "4768caf545bc3e41412ee3054052379cdf4832493ff17d9a91536e0a26ee57e9"
+    },
+    {
+      "name": "mask-source-update-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 4000,
+      "pass": true,
+      "nativeSha256": "69f1cbfbe25cbc4cca09c08d2444ec97aec2ffc83ffd1a7170a6a6282d642082",
+      "webSha256": "69f1cbfbe25cbc4cca09c08d2444ec97aec2ffc83ffd1a7170a6a6282d642082"
+    },
+    {
+      "name": "mask-empty-inverted",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 52800,
+      "pass": true,
+      "nativeSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b",
+      "webSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b"
+    },
+    {
+      "name": "mask-nested-empty",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 16800,
+      "pass": true,
+      "nativeSha256": "ce99f666390622548acdfcd01dbe0e10302acf9bcfa81b78c11a33f6daace343",
+      "webSha256": "ce99f666390622548acdfcd01dbe0e10302acf9bcfa81b78c11a33f6daace343"
+    },
+    {
+      "name": "mask-multichunk",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 20000,
+      "pass": true,
+      "nativeSha256": "3cd523e5aeab5b8b24cec4ede181338ec0462e1290fac7d92d32031cd39a3de6",
+      "webSha256": "3cd523e5aeab5b8b24cec4ede181338ec0462e1290fac7d92d32031cd39a3de6"
+    },
+    {
+      "name": "mask-disable",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+      "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+    },
+    {
+      "name": "mask-disable-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 52800,
+      "pass": true,
+      "nativeSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b",
+      "webSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b"
+    },
+    {
+      "name": "mask-alpha-0.2",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 12000,
+      "pass": true,
+      "nativeSha256": "dce9f05c15d64088420fb6ce94278f55110190a794518cd055648ee89f322672",
+      "webSha256": "dce9f05c15d64088420fb6ce94278f55110190a794518cd055648ee89f322672"
+    },
+    {
+      "name": "mask-alpha-0.5",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6000,
+      "pass": true,
+      "nativeSha256": "ed09c3e640ec44e0833fb8561f06f04772c6a231a54ea97c6af645c6cd6cf0c3",
+      "webSha256": "ed09c3e640ec44e0833fb8561f06f04772c6a231a54ea97c6af645c6cd6cf0c3"
+    },
+    {
+      "name": "mask-alpha-0.8",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 0,
+      "pass": true,
+      "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+      "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    },
+    {
+      "name": "stroke-0-0",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 4918,
+      "pass": true,
+      "nativeSha256": "5d6260ed6c564f6d23b80dbf742fc9766d66d708e1579628cff156d3d953b90c",
+      "webSha256": "5d6260ed6c564f6d23b80dbf742fc9766d66d708e1579628cff156d3d953b90c"
+    },
+    {
+      "name": "stroke-0-1",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5011,
+      "pass": true,
+      "nativeSha256": "89a2ae30545d2ef4b2e900e5680e4553473a2814d2c74beda323ea2b29de7853",
+      "webSha256": "89a2ae30545d2ef4b2e900e5680e4553473a2814d2c74beda323ea2b29de7853"
+    },
+    {
+      "name": "stroke-0-2",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5110,
+      "pass": true,
+      "nativeSha256": "2abba542218229ccfb05364efdad0b46de994b07d303348da450d364ee6e620b",
+      "webSha256": "2abba542218229ccfb05364efdad0b46de994b07d303348da450d364ee6e620b"
+    },
+    {
+      "name": "stroke-1-0",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5158,
+      "pass": true,
+      "nativeSha256": "57a89348384c1814bff79333c015c8bac7a23cb766846f249ef6dd440af2698d",
+      "webSha256": "57a89348384c1814bff79333c015c8bac7a23cb766846f249ef6dd440af2698d"
+    },
+    {
+      "name": "stroke-1-1",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5251,
+      "pass": true,
+      "nativeSha256": "beb633abd31f1f302403f2a4a5748e767912dcb5e5fd651a9d8a3b4ef1d05ea5",
+      "webSha256": "beb633abd31f1f302403f2a4a5748e767912dcb5e5fd651a9d8a3b4ef1d05ea5"
+    },
+    {
+      "name": "stroke-1-2",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5350,
+      "pass": true,
+      "nativeSha256": "1dc8724901ec8f7f7a410e29f7751788cee34aacdbec40fff8f7c00250ad8661",
+      "webSha256": "1dc8724901ec8f7f7a410e29f7751788cee34aacdbec40fff8f7c00250ad8661"
+    },
+    {
+      "name": "stroke-2-0",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5239,
+      "pass": true,
+      "nativeSha256": "57ebef38bea4e92d2f2619b6e1bf185098d48f17ca33c7840c9b84d1c381a1b6",
+      "webSha256": "57ebef38bea4e92d2f2619b6e1bf185098d48f17ca33c7840c9b84d1c381a1b6"
+    },
+    {
+      "name": "stroke-2-1",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5332,
+      "pass": true,
+      "nativeSha256": "f5dd882b4750ba585422b12940230abb868e19e6f7e0a805c7296b208b1a81e2",
+      "webSha256": "f5dd882b4750ba585422b12940230abb868e19e6f7e0a805c7296b208b1a81e2"
+    },
+    {
+      "name": "stroke-2-2",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 5431,
+      "pass": true,
+      "nativeSha256": "f5e14fd044a24fbd71057c0cc8110a52e65170de2bb81d6f2b2a83646b460f1c",
+      "webSha256": "f5e14fd044a24fbd71057c0cc8110a52e65170de2bb81d6f2b2a83646b460f1c"
+    },
+    {
+      "name": "root-order-registration",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "37f366fe0907b1f9c0fa70171223658e3aab0287c6d3ecd4015a9c8834e62bfd",
+      "webSha256": "37f366fe0907b1f9c0fa70171223658e3aab0287c6d3ecd4015a9c8834e62bfd"
+    },
+    {
+      "name": "root-order-reordered",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "9f434217e1430e4d01f9b9fbc86288931ebcd7cb649cb2ab781c81a7a0799ef7",
+      "webSha256": "9f434217e1430e4d01f9b9fbc86288931ebcd7cb649cb2ab781c81a7a0799ef7"
+    },
+    {
+      "name": "root-first-disabled",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28",
+      "webSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28"
+    },
+    {
+      "name": "root-first-enabled",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "9f434217e1430e4d01f9b9fbc86288931ebcd7cb649cb2ab781c81a7a0799ef7",
+      "webSha256": "9f434217e1430e4d01f9b9fbc86288931ebcd7cb649cb2ab781c81a7a0799ef7"
+    },
+    {
+      "name": "root-first-destroyed",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28",
+      "webSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28"
+    },
+    {
+      "name": "root-both-disabled",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 0,
+      "pass": true,
+      "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+      "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    },
+    {
+      "name": "root-canvas-pair",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "a7b73d6f0abb0c1c05afdb4c975a9fe221a3b83f2679574a4638e152dbc0b08e",
+      "webSha256": "a7b73d6f0abb0c1c05afdb4c975a9fe221a3b83f2679574a4638e152dbc0b08e"
+    },
+    {
+      "name": "root-canvas-disabled",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2",
+      "webSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2"
+    },
+    {
+      "name": "root-canvas-reenabled",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "a7b73d6f0abb0c1c05afdb4c975a9fe221a3b83f2679574a4638e152dbc0b08e",
+      "webSha256": "a7b73d6f0abb0c1c05afdb4c975a9fe221a3b83f2679574a4638e152dbc0b08e"
+    },
+    {
+      "name": "root-canvas-destroyed",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 0,
+      "pass": true,
+      "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+      "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    },
+    {
+      "name": "scene-camera-overlay",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "37f366fe0907b1f9c0fa70171223658e3aab0287c6d3ecd4015a9c8834e62bfd",
+      "webSha256": "37f366fe0907b1f9c0fa70171223658e3aab0287c6d3ecd4015a9c8834e62bfd"
+    },
+    {
+      "name": "scene-camera-priority",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2",
+      "webSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2"
+    },
+    {
+      "name": "scene-camera-layer",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2",
+      "webSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2"
+    },
+    {
+      "name": "scene-camera-disabled",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2",
+      "webSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2"
+    },
+    {
+      "name": "scene-camera-clear",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28",
+      "webSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28"
+    },
+    {
+      "name": "scene-camera-swapped",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "9f434217e1430e4d01f9b9fbc86288931ebcd7cb649cb2ab781c81a7a0799ef7",
+      "webSha256": "9f434217e1430e4d01f9b9fbc86288931ebcd7cb649cb2ab781c81a7a0799ef7"
+    },
+    {
+      "name": "scene-camera-moved",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 10400,
+      "pass": true,
+      "nativeSha256": "24ac571de745f76c8fd7761b149774d2791c2b67610cb671ca66f28f24ea4347",
+      "webSha256": "24ac571de745f76c8fd7761b149774d2791c2b67610cb671ca66f28f24ea4347"
+    },
+    {
+      "name": "scene-camera-target-main",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28",
+      "webSha256": "2a6ce5aa74976a02565301b834977f47cd20ba71991f9bb792ac28fe88033a28"
+    },
+    {
+      "name": "scene-camera-target-secondary",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2",
+      "webSha256": "c6d2af1c4ca9c738f533ffd1586bf7b421c9330fc165b0ce49206d6f76be04a2"
+    },
+    {
+      "name": "scene-camera-restored",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "37f366fe0907b1f9c0fa70171223658e3aab0287c6d3ecd4015a9c8834e62bfd",
+      "webSha256": "37f366fe0907b1f9c0fa70171223658e3aab0287c6d3ecd4015a9c8834e62bfd"
+    },
+    {
+      "name": "scene-cycle-1",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6800,
+      "pass": true,
+      "nativeSha256": "853fc584b3ec0fa36382350c5da085e37990aa7570b766eef7c27bcf56f0baca",
+      "webSha256": "853fc584b3ec0fa36382350c5da085e37990aa7570b766eef7c27bcf56f0baca"
+    },
+    {
+      "name": "scene-cycle-250",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6800,
+      "pass": true,
+      "nativeSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278",
+      "webSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278"
+    },
+    {
+      "name": "scene-cycle-500",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6800,
+      "pass": true,
+      "nativeSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278",
+      "webSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278"
+    },
+    {
+      "name": "scene-cycle-750",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6800,
+      "pass": true,
+      "nativeSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278",
+      "webSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278"
+    },
+    {
+      "name": "scene-cycle-1000",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6800,
+      "pass": true,
+      "nativeSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278",
+      "webSha256": "cd8e17cef56048b968d34ee22d6355e9a0ea73e2cd42c4ea9928886b42931278"
+    },
+    {
+      "name": "scene-final-empty",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 0,
+      "pass": true,
+      "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+      "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    }
+  ],
+  "asan": {
+    "platform": "Windows x64 Debug",
+    "compilerFlags": "/Z7 /Ob0 /Od /fsanitize=address",
+    "linkerFlags": "/DEBUG /INCREMENTAL:NO",
+    "errorLogBytes": 0,
+    "cycles": 1000,
+    "limitations": "AddressSanitizer only; no LeakSanitizer or full asset-manager loading evidence.",
+    "matchesNormalCaptures": true
+  }
+}

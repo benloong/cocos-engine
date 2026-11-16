@@ -1,4 +1,5 @@
 import { _decorator, Camera, Canvas, Color, Component, director, Graphics, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
+import { runSceneMatrix } from './M6SceneMatrix';
 
 const { ccclass } = _decorator;
 // Replaced by prepare-graphics-gpu-project.cjs in the generated project only.
@@ -91,9 +92,9 @@ export class M6GraphicsGpuProbe extends Component {
             name: `stroke-${cap}-${join}`, draw: root => { const g = graphics(root); g.lineWidth = 18; g.lineCap = cap; g.lineJoin = join; g.miterLimit = 2; g.strokeColor = new Color(220, 30, 40, 160); g.moveTo(-80, -35); g.lineTo(-15, 45); g.lineTo(20, -35); g.lineTo(80, 40); g.stroke(); },
         });
         const captures: string[] = [];
-        const capture = async (name: string): Promise<void> => {
+        const capture = async (name: string, source = rt): Promise<void> => {
             await wait();
-            const pixels = rt.readPixels();
+            const pixels = source.readPixels();
             if (!pixels || pixels.length !== 256 * 256 * 4) throw new Error(`Bad capture ${name}`);
             if (sys.isNative) {
                 if (!native.fileUtils.writeDataToFile(new Uint8Array(pixels).buffer, `${outputRoot}/${name}.rgba`)) throw new Error('Could not write capture');
@@ -198,9 +199,10 @@ export class M6GraphicsGpuProbe extends Component {
         outer.m.destroy(); await wait();
         screenHit('destroyed-mask-detached', 49, 39, true);
         hitRoot.destroy(); await wait(40);
+        const scenes = await runSceneMatrix(rt, capture);
         const device = director.root!.device;
         const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures,
-            roots, hits, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            scenes, roots, hits, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
         console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);

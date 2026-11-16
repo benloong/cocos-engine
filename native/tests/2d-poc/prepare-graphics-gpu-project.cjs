@@ -10,6 +10,11 @@ fs.mkdirSync(path.join(project,'build/windows/data'),{recursive:true});
 const assetsLink=path.join(project,'build/windows/assets');
 if(!fs.existsSync(assetsLink)) fs.symlinkSync(path.join(project,'build/windows/data'),assetsLink,'junction');
 fs.cpSync(fixture,project,{recursive:true});
+// CLI keeps outputName from the supplied config even when --platform differs.
+// Use a separate Web config so building Web cannot replace Windows resources.
+const webConfig=JSON.parse(fs.readFileSync(path.join(project,'build-config.json'),'utf8'));
+webConfig.platform='web-mobile'; webConfig.outputName='web-mobile';
+fs.writeFileSync(path.join(project,'build-config-web.json'),JSON.stringify(webConfig,null,2)+'\n');
 const packageFile=path.join(project,'package.json');
 const manifest=JSON.parse(fs.readFileSync(packageFile,'utf8'));
 manifest.name+='-generated';

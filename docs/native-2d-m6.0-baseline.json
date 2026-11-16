@@ -67,7 +67,7 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "adc7d07a29c756288de5562102d00e7df82c0903477b424562b8245863760332"
+      "sha256": "a1642cc6333044ad85f37578cabf74509294da3d3a4c7219d36bdb98e0363be8"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
@@ -75,7 +75,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "affb23a6f72c2e99523c0fc631eaec4aa5aea62a9f9c331390a71526661b9a82"
+      "sha256": "4816367b5beb5fdd062d9710a76fe9fac15d4468826b17e100e6c4ad7410b892"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -83,7 +83,7 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "22e0d1090484d415e147ec87e34aedf3a5bcb88b57d60dd4be4a4e49912fa761"
+      "sha256": "128709b191cba6cee842a54af8cffef38d78d95bb5f95bb56268d614a5f659de"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
@@ -91,7 +91,7 @@
     },
     {
       "file": "native/cocos/2d/components/RichText.h",
-      "sha256": "77db05899925e95ef56a034c7a85d3e74c86ea8124959100579694ba7c5fb4fd"
+      "sha256": "d70fa52c9b92d10ba8f27112aa82e8729716779885888a3350199710059727c9"
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
@@ -99,7 +99,7 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "2754d969ac7608c28e9c8cc9b52f5fdc673553adc27d14fb5cb6450f150f84ae"
+      "sha256": "73494c5eaf5db3fc24d817a4dd2b11864dc04c3bc8d374b2961b4ec4ec1cf8d5"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -107,7 +107,11 @@
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.h",
-      "sha256": "c84dccb2846b466c9de5ec29a5e657de9f10c512bb672ce71610ea9092037ccd"
+      "sha256": "e2d32203498caa4c156f87fcc3826c3f6fe0b16f2ddfd675fd221d0525c77835"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIComponentType.h",
+      "sha256": "39700d2257f4bb399a7a7137a2e97ac7573f7d1d5c9cdc95edbf5d7b6f6435b5"
     },
     {
       "file": "native/cocos/2d/framework/UIOpacity.cpp",
@@ -115,7 +119,7 @@
     },
     {
       "file": "native/cocos/2d/framework/UIOpacity.h",
-      "sha256": "e747fb3365225440cfbd2511da46fefca9ee85a974a2db8383ea7b48bab51175"
+      "sha256": "1a1eb09a11f64131c6544a89590597e837d3014e761b75ca28753748251f7d1d"
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.cpp",
@@ -123,7 +127,7 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "22272438ae297652d2c342669bc06179a5bb048a321230cbbf71b63a4ab14cc6"
+      "sha256": "a64a2b0e1a76545b45f3514844227baa9f805ebd501d6ce653f848f2d5743c76"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
@@ -131,7 +135,7 @@
     },
     {
       "file": "native/cocos/2d/framework/UITransform.h",
-      "sha256": "c718c31855f2ae56ce449e763002ce9baf3348cde658fb2b778700c790a88470"
+      "sha256": "f92e819f7a3bce345d9bcf62cea2bbbd9d3df60a6dbdd148a104ac064d989035"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.cpp",
@@ -159,7 +163,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "a52b73a14d79702d9744bbadfb2976e095223436b688b1b3bd042b08f08d48ba"
+      "sha256": "4ac6eddd71cba63082fc26c87b3eb74d020117c30342abd06428ab1ca71e5b49"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
@@ -279,7 +283,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "d0a048c2f15ef9d5150fac0dfb18e7c40bd86dfbc3f26c7dd9a8f6d6611311d2"
+      "sha256": "d157dadca3af764351aad426d01e25cafaede87cbf11728f6f5420a1ca60c2a9"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -9488,6 +9492,36 @@
             "decorators": []
           },
           {
+            "name": "_nativeDestroyed",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "false",
+            "decorators": []
+          },
+          {
+            "name": "_ensureNative",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "any",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_syncNativeStyles",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "_setMask",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -9533,6 +9567,26 @@
             "name": "onDestroy",
             "kind": "MethodDeclaration",
             "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_onPreDestroy",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_destroyNative",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
             "static": false,
             "type": "void",
             "parameters": [],
@@ -14354,8 +14408,8 @@
     },
     {
       "file": "cocos/2d/assets/bitmap-font.jsb.ts",
-      "sha256": "f964a0ea90e0c631dc62a69f7634023d5f899b2a479f5c9ecba5a2125f92bddb",
-      "printedCodeLines": 104,
+      "sha256": "ed6d28c0af1ab36d188efe04b85d4768ea44729ecdcfa61d71f97f4b9c49b5ca",
+      "printedCodeLines": 106,
       "runtimeImports": [
         "../../core",
         "./font",
@@ -14372,8 +14426,8 @@
       "allocations": [],
       "loops": [
         55,
-        91,
-        112
+        92,
+        113
       ]
     },
     {
@@ -14576,8 +14630,8 @@
     },
     {
       "file": "cocos/2d/assets/ttf-font.jsb.ts",
-      "sha256": "6d01b903ebda6e3e33cbe1c89fd3baec26c5c21a02cfd861a19f1592b8ad5fe0",
-      "printedCodeLines": 28,
+      "sha256": "d40a8059fd581ca8deb58f8160ead2131dbc92932f237ba95c1375c051a1b2f0",
+      "printedCodeLines": 33,
       "runtimeImports": [
         "../../core",
         "./font",
@@ -14631,8 +14685,8 @@
     },
     {
       "file": "cocos/2d/components/graphics.jsb.ts",
-      "sha256": "8df9febb9e5c0b86ee1f5ebea01b8b46845f5dd02fc4c99a25fa3b66611986ec",
-      "printedCodeLines": 143,
+      "sha256": "32a2844a3429e5b1372dad65d006ebdbd88b941d3bccbd0dcb8982768bc2e6aa",
+      "printedCodeLines": 173,
       "runtimeImports": [
         "cc.decorator",
         "../../core",
@@ -14643,148 +14697,100 @@
       "frameMethods": [],
       "nativeCalls": [
         {
-          "expression": "this._native.setNode",
-          "line": 69
-        },
-        {
-          "expression": "this._native.setPriority",
-          "line": 70
-        },
-        {
           "expression": "this._native.setEnabled",
-          "line": 71
+          "line": 65
         },
         {
           "expression": "this._native.setLineWidth",
-          "line": 72
-        },
-        {
-          "expression": "this._native.setFillColor",
           "line": 73
         },
         {
-          "expression": "this._native.setStrokeColor",
+          "expression": "this._native.setFillColor",
           "line": 74
         },
         {
-          "expression": "this._native.setLineJoin",
+          "expression": "this._native.setStrokeColor",
           "line": 75
         },
         {
-          "expression": "this._native.setLineCap",
+          "expression": "this._native.setLineJoin",
           "line": 76
         },
         {
-          "expression": "this._native.setMiterLimit",
+          "expression": "this._native.setLineCap",
           "line": 77
         },
         {
-          "expression": "this._native.setColorRGBA",
+          "expression": "this._native.setMiterLimit",
           "line": 78
         },
         {
-          "expression": "this._native?.setEnabled",
-          "line": 84
-        },
-        {
-          "expression": "this._native?.setEnabled",
-          "line": 88
-        },
-        {
-          "expression": "this._native.setEnabled",
-          "line": 95
+          "expression": "this._native.setColorRGBA",
+          "line": 79
         },
         {
           "expression": "this._native.setNode",
-          "line": 96
+          "line": 91
         },
         {
-          "expression": "this._native?.setLineJoin",
-          "line": 102
+          "expression": "this._native.setPriority",
+          "line": 92
         },
         {
-          "expression": "this._native?.setLineCap",
+          "expression": "this._native.setEnabled",
+          "line": 93
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 100
+        },
+        {
+          "expression": "this._native?.setEnabled",
           "line": 104
         },
         {
+          "expression": "this._native.setEnabled",
+          "line": 126
+        },
+        {
+          "expression": "this._native.setNode",
+          "line": 127
+        },
+        {
+          "expression": "this._native?.setLineJoin",
+          "line": 133
+        },
+        {
+          "expression": "this._native?.setLineCap",
+          "line": 135
+        },
+        {
           "expression": "this._native?.setMiterLimit",
-          "line": 106
+          "line": 137
         },
         {
           "expression": "this._native?.setMaterial",
-          "line": 108
-        },
-        {
-          "expression": "this._native?.setColorRGBA",
-          "line": 112
-        },
-        {
-          "expression": "this._native?.setLineWidth",
-          "line": 121
-        },
-        {
-          "expression": "this._native?.setFillColor",
-          "line": 130
-        },
-        {
-          "expression": "this._native?.setStrokeColor",
           "line": 139
         },
         {
-          "expression": "this._native?.clear",
+          "expression": "this._native?.setColorRGBA",
           "line": 143
         },
         {
-          "expression": "this._native?.moveTo",
-          "line": 147
+          "expression": "this._native?.setLineWidth",
+          "line": 152
         },
         {
-          "expression": "this._native?.lineTo",
-          "line": 151
+          "expression": "this._native?.setFillColor",
+          "line": 161
         },
         {
-          "expression": "this._native?.close",
-          "line": 155
-        },
-        {
-          "expression": "this._native?.rect",
-          "line": 159
-        },
-        {
-          "expression": "this._native?.fillRect",
-          "line": 162
-        },
-        {
-          "expression": "this._native?.roundRect",
-          "line": 166
-        },
-        {
-          "expression": "this._native?.circle",
+          "expression": "this._native?.setStrokeColor",
           "line": 170
         },
         {
-          "expression": "this._native?.ellipse",
+          "expression": "this._native?.clear",
           "line": 174
-        },
-        {
-          "expression": "this._native?.arc",
-          "line": 178
-        },
-        {
-          "expression": "this._native?.bezierCurveTo",
-          "line": 182
-        },
-        {
-          "expression": "this._native?.quadraticCurveTo",
-          "line": 186
-        },
-        {
-          "expression": "this._native?.fill",
-          "line": 190
-        },
-        {
-          "expression": "this._native?.stroke",
-          "line": 194
         }
       ],
       "allocations": [],
