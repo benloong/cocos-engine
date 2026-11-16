@@ -301,6 +301,46 @@ void testFontAssets() {
     check(font->isReleased() && !font->getSpriteFrame() && !font->getGlyphCount(), "destroy releases bitmap data immediately");
     check(label.getOpaquePixels() == 0, "destroyed font clears attached Label");
     label.setFontAsset(nullptr);
+    const auto frameRefs = frame->getRefCount();
+    for (int kind = 0; kind < 2; ++kind) {
+        for (int i = 0; i < 1000; ++i) {
+            cc::IntrusivePtr<cc::BitmapFontAsset> cycle(kind == 0 ? new cc::BitmapFontAsset() : new cc::LabelAtlas());
+            cycle->setConfigJson(config); cycle->setFontSize(2); cycle->setSpriteFrame(frame);
+            check(frame->getRefCount() == frameRefs + 1, "bitmap font owns one atlas reference");
+            label.setFontAsset(cycle); label.prepareRenderEntity(1.F);
+            check(label.getOpaquePixels() == 4, "new font cycle renders shared atlas");
+            cycle->clearNativeData(); label.prepareRenderEntity(1.F);
+            check(label.getOpaquePixels() == 0 && frame->getRefCount() == frameRefs, "clear releases atlas and stale pixels");
+            cycle->setConfigJson(config); cycle->setFontSize(2); cycle->setSpriteFrame(frame);
+            label.prepareRenderEntity(1.F);
+            check(label.getOpaquePixels() == 4, "cleared font can reload native data");
+            cycle->destroy(); cc::CCObject::deferredDestroy();
+            const auto releasedRevision = cycle->getRevision();
+            cycle->setSpriteFrame(frame); cycle->setFontSize(20); cycle->setFntDataStr("late");
+            check(!cycle->setConfigJson(config), "destroyed font rejects late config");
+            label.prepareRenderEntity(1.F);
+            check(cycle->getRevision() == releasedRevision && cycle->getFntDataStr().empty(), "late writes do not mutate released font");
+            check(label.getOpaquePixels() == 0 && frame->getRefCount() == frameRefs, "destroyed cycle releases shared atlas");
+            label.setFontAsset(nullptr);
+            check(cycle->getRefCount() == 1, "Label unbind releases final consumer reference");
+        }
+    }
+    for (int i = 0; i < 1000; ++i) {
+        cc::IntrusivePtr<cc::TTFFont> cycle(new cc::TTFFont());
+        cycle->setFontData(bytes); cycle->setFontFamily("Cycle Family");
+        label.setFontAsset(cycle);
+        check(cycle->getRefCount() == 2, "Label retains TTF during cycle");
+        cycle->clearNativeData();
+        check(cycle->getFontDataSize() == 0 && cycle->getFontFamily().empty(), "TTF clear releases bytes and alias");
+        cycle->setFontData(bytes); cycle->setFontFamily("Reloaded Family");
+        cycle->destroy(); cc::CCObject::deferredDestroy();
+        const auto releasedRevision = cycle->getRevision();
+        cycle->setFontData(bytes); cycle->setFontFamily("Late Family");
+        check(!cycle->loadFontData("missing-font.ttf") && cycle->getRevision() == releasedRevision, "released TTF rejects reload");
+        check(cycle->getFontDataSize() == 0 && cycle->getFontFamily().empty(), "late TTF writes cannot resurrect data");
+        label.setFontAsset(nullptr);
+        check(cycle->getRefCount() == 1, "Label unbind releases TTF reference");
+    }
     ttf->destroy(); check(ttf->getFontDataSize() == 0 && ttf->getFontFamily().empty(), "TTF destroy releases data and alias");
     cc::CCObject::deferredDestroy();
     std::printf("font assets: PASS\n");

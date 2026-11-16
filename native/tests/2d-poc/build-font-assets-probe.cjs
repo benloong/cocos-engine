@@ -62,10 +62,31 @@ for (const FontClass of [BitmapFont, LabelAtlas]) {
     reloaded.onLoaded();
     check(reloaded.getGlyphData()[7] === 3, 'dependency and size writes preserve pending config edits');
     reloaded.destroy();
+    const releasedRevision = reloaded.getRevision();
+    reloaded.fntConfig = config;
+    reloaded.fntConfig = null;
+    reloaded.onLoaded();
+    check(reloaded.getRevision() === releasedRevision && reloaded.fntConfig === null, 'late JS configuration assignments ignore released font');
 }
 const label = new n2d.Label(); label.setFontAsset(font);
 check(label.getFontAsset() === font, 'Label native asset binding');
 for (let i = 0; i < 1000; i++) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(null); }
+for (const FontClass of [BitmapFont, LabelAtlas]) {
+    for (let i = 0; i < 1000; i++) {
+        const cycle = new FontClass();
+        cycle.spriteFrame = frame; cycle.fntConfig = config;
+        const view = cycle.fontDefDictionary;
+        label.setFontAsset(cycle);
+        cycle.clearNativeData();
+        check(!cycle._atlasView && !cycle.spriteFrame && cycle.getGlyphCount() === 0, 'clear drops all font owned data');
+        check(view.texture === texture, 'old compatibility view does not destroy shared texture');
+        cycle.spriteFrame = frame; cycle.fntConfig = config;
+        cycle.destroy();
+        cycle.fntConfig = config; cycle.spriteFrame = frame; cycle.onLoaded();
+        check(cycle.isReleased() && cycle.fntConfig === null && !cycle.spriteFrame && !cycle._atlasView, 'destroyed font cycle cannot resurrect data');
+        label.setFontAsset(null);
+    }
+}
 font.clearNativeData();
 check(font.spriteFrame === null && font.fntConfig === null && font.getGlyphCount() === 0, 'bitmap release');
 font.spriteFrame = frame; font.fntConfig = config; font.fontDefDictionary;

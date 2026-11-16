@@ -78,6 +78,7 @@ Object.defineProperties(proto, {
             return this._configView;
         },
         set (value: IConfig | null) {
+            if (this.isReleased()) return;
             if (!this.setConfigJson(JSON.stringify(value ?? null))) throw new TypeError('Invalid BitmapFont configuration');
             this._configRevision = undefined;
         } },

@@ -38,7 +38,10 @@ Object.defineProperties(proto, {
         set (value: string | null) { this.setFontFamily(value ?? ''); } },
     _nativeAsset: { configurable: true,
         get (): string | null { return this._fontFamily; },
-        set (value: string | null) { this.setFontFamily(value || 'Arial'); this.onLoaded(); } },
+        set (value: string | null) {
+            if (this.isReleased()) return;
+            this.setFontFamily(value || 'Arial'); this.onLoaded();
+        } },
     _nativeDep: { configurable: true,
         get () { return { uuid: this._uuid, __nativeName__: this._native, ext: path.extname(this._native ?? ''), __isNative__: true }; } },
 });

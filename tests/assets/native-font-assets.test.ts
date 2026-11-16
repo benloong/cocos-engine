@@ -169,6 +169,32 @@ test.each([NativeBitmap, NativeLabelAtlas])('released bitmap ignores late onLoad
     expect(font.getRevision()).toBe(revision);
 });
 
+test.each([NativeBitmap, NativeLabelAtlas])('released bitmap ignores late configuration assignments without serializing them: %p', (FontClass) => {
+    const font: any = new FontClass();
+    font.fntConfig = { fontSize: 12 };
+    font._destroy();
+    const write = jest.spyOn(font, 'setConfigJson');
+    const revision = font.getRevision();
+    // A delayed dependency callback can still hold the asset wrapper. It must
+    // neither refill native storage nor throw from the serialization bridge.
+    const late: any = { toJSON: jest.fn(() => { throw new Error('released asset serialized'); }) };
+    expect(() => { font.fntConfig = late; font.onLoaded(); }).not.toThrow();
+    expect(late.toJSON).not.toHaveBeenCalled();
+    expect(write).not.toHaveBeenCalled();
+    expect(font.getRevision()).toBe(revision);
+    expect(font.fntConfig).toBeNull();
+});
+
+test('released TTF ignores the entire late native asset setter', () => {
+    const font: any = new NativeTTF();
+    font._destroy();
+    const write = jest.spyOn(font, 'setFontFamily');
+    font._nativeAsset = 'Late_LABEL';
+    expect(write).not.toHaveBeenCalled();
+    expect(font.loadFontData).not.toHaveBeenCalled();
+    expect(font._nativeAsset).toBeNull();
+});
+
 test.each(['BitmapFont', 'LabelAtlas'])('%s deserializes native data and records its atlas dependency', (name) => {
     const details = new Details();
     const config = { fontDefDictionary: { 65: { rect: { x: 0, y: 0, width: 2, height: 3 }, xAdvance: 4 } } };
