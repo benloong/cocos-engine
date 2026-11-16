@@ -1,6 +1,6 @@
 # M6.3 Graphics 原生几何核心
 
-更新：2026-11-16。完成可独立验证的 native 路径、填充三角化和描边网格核心。786 组实际 Web 实现对照在 g++、Windows MSVC Debug/Release 通过。运行时 Graphics 仍使用旧 CPU 纹理路径；GPU 提交和 Mask 改造是接下来的必做工作，本节点不关闭 M6.3。
+更新：2026-11-16。本报告记录可独立验证的 native 路径、填充三角化和描边网格核心：786 组实际 Web 实现对照在 g++、Windows MSVC Debug/Release 通过。后续已接入原生 Graphics/Mask 网格运行时，见 [接入报告](./native-2d-m6.3-graphics-runtime.md)。GPU 像素与性能等门禁仍未关闭 M6.3。
 
 ## 实现与语义
 
@@ -8,7 +8,7 @@
 - rect/circle/ellipse/roundRect/arc、cubic/quadratic 直接在 native 构建路径。曲线沿用 Web 的 KAPPA、递归细分容差和深度边界；路径计算使用 double，输出时转 float，匹配 Web Float32Array。
 - 复杂路径使用单环 Earcut：重复/共线过滤、Z-order 索引、局部交点修复和拆分回退。Z-order 使用稳定排序建立链；Web 使用链表归并，两者在测试中输出相同索引。Web Graphics 按每条子路径分别填充，不向 Earcut 传 holeIndices；本核心保留这一语义，没有增加跨路径挖洞规则。
 - 描边沿用 Web flatten/joins/caps/三角带展开，支持 BEVEL/ROUND/MITER、BUTT/ROUND/SQUARE 和 miterLimit。闭合点比较采用 Web Vec2 相对容差；不能用精确坐标相等代替。
-- 输出为 Web Graphics 的八浮点顶点布局（position.xyz/color.rgba/distance），索引为 uint32。核心不依赖 Canvas、Texture、Sprite、JSB、GPU 或引擎单例，已进入 production CMake 源列表；目前尚无生产组件消费它。
+- 输出为 Web Graphics 的八浮点顶点布局（position.xyz/color.rgba/distance），索引为 uint32。核心不依赖 Canvas、Texture、Sprite、JSB、GPU 或引擎单例，已进入 production CMake 源列表；后续生产 Graphics/Mask 运行时已消费它。
 
 ## 对照与复现
 
@@ -29,6 +29,6 @@ Windows x64 / Node 24.18.1 / TypeScript 4.9.5 / MSVC 14.51；Debug 使用 /Z7 /O
 
 ## 必须继续的运行时工作
 
-下一节点将核心接入原生 Graphics：使用匹配 graphics shader 的顶点布局和 GPU buffer/IA，按硬件索引边界分块，原生处理世界变换、opacity、材质、Node/RenderEntity 生命周期和稳定帧缓存。移除旧 pixels/texture/internal Sprite，并改造当前通过 Graphics.getFrame 取纹理的 Mask 调用方。
+原生 Graphics 接入、距离顶点布局、GPU buffer/IA 上传、索引分块，以及旧 pixels/texture/internal Sprite 和 Mask.getFrame 依赖移除，现已有 [运行时基础记录](./native-2d-m6.3-graphics-runtime.md)。不能将这些上传/联调证据解释为最终渲染链路和像素验收通过。
 
 随后补实际 JSB 壳中的 lineJoin/lineCap/miterLimit 与序列化/API，验证 Graphics/Mask 混合与嵌套 stencil、缩放和大尺寸的 GPU 像素对照、半透明描边、线程/极限输入、资源释放，以及逐 API 和批量命令的性能比较。几何相同不证明 shader、上传、裁剪、像素或性能门禁已通过。

@@ -17,7 +17,7 @@
 - Label 通过 IntrusivePtr 持有 FontAsset；BitmapFontAsset 持有 SpriteFrame，后者持有 Texture。切换字体、切回系统字体和 Label onDestroy 解除绑定。
 - 原生 revision 标识数据变更，Label 在 prepare/updateRenderData 时检测后重建。配置清空、图集解绑和字体销毁会清除旧 draw frame、像素与尺寸，空字体不会回退显示旧系统字体。
 - clearNativeData 释放原生表/字节/图集，可重新填充。destroy/destruct 标记 released 并释放数据；销毁后不接受重新填充。C++ 析构自然释放成员。JS _destroy/clearNativeData 同时丢弃缓存的兼容视图。
-- CHAR 字形缓存由 Label 的 shared_ptr 持有，全局索引改为 weak_ptr；最后一个使用者释放后回收图集。键包含字体实例身份、revision、CSS font 和 lineHeight，避免同名字体重新加载或不同布局条件复用旧字形。离开 CHAR、切换字体或修改布局时释放旧缓存引用。
+- CHAR 字形缓存现由 native 注册表条目中的 unique_ptr 独占。Label 保存非 owning 指针、键和一份计数租用；所有获取/切换/销毁路径对称增减租用数，最后一个租用释放时注册表删除条目和图集。已移除此前的 shared_ptr/weak_ptr 方案。键包含字体实例身份、revision、CSS font 和 lineHeight，避免同名字体重新加载或不同布局条件复用旧字形。两 Label 共用、释放其中之一和最后租用的 1000 次释放/重建通过 Windows Debug/Release 原生回归，见 [所有权记录](./native-2d-m6.3-graphics-runtime.md)。
 - TTF 字节归资产所有，但现有 Canvas 平台后端仍通过加载器注册的 alias/path 渲染；本轮没有新增“直接从这些字节渲染”的接口，也没有改变平台字体别名注册表。OS 字体资源的创建/释放仍由现有 Canvas delegate 管理，不能在单个资产销毁时全局注销共享字体。平台注册表清理和真实跨平台字体句柄验收保持待办。
 
 ## 验证与复现

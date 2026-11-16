@@ -66,6 +66,9 @@ Sprite::~Sprite() {
     _entity->setPrepareListener(nullptr);
     setNode(nullptr);
 }
+void Sprite::onDetach() {
+    _entity->setNode(nullptr);
+}
 
 void Sprite::setNode(Node *node) {
     if (getNode() == node) {

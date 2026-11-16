@@ -63,27 +63,27 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
-      "sha256": "b15920a133c17c7664d55aac868b5b773a0710781bbfbff12fe4ab0dafd52307"
+      "sha256": "3cba405ea74c75fde8ec22940848f5156b37f8465210d66dbe38a1ae56b4bf30"
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "edafaf6224b4d4aa1c79136781404aa52d8a482c73b00108ea7d9bbe6b435ccf"
+      "sha256": "b059fd5012a5b0e15332a01fa765dbd719b6ecf7ef4c19c5205465f2bfce5d87"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "ed4101e2a55589fa966084f01caf09dbeed2e4ac10bf5ab8983b7c07908a1423"
+      "sha256": "ec8071be5928c015699c466dc759cd1e9ab723e520dcabe596bd06b8af7843c4"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "42150d5f11d28c19bd647eb7cce035668cf2139b181093939871776910f44c03"
+      "sha256": "ae950d3efe308646700de732015643f8d4889366989b5daf077b4838bd8a8eee"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "8bdccf24d4db176e348ca4a50c1672fab147dbcec47bb0332e42576fdd301921"
+      "sha256": "749c23c709209f7cd4e3c6fd0ed4799fc5fe5fb4fcfa4f23b4641e3c237493c5"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "ecb6bb59c6b3e3247811ec00c0de7f344f37ba7bc8992713010831f4aa8faa67"
+      "sha256": "80badab1ae0a7b8d909bc1db33c4bc3bba2d69158752fd98d4e70bf83a5bb5c4"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
@@ -95,11 +95,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "5548bfddbcf67f4e05357b5cc836873baa3842e664f520c6024010140eafa21a"
+      "sha256": "490b0510970935fad5a012687b7d8f8111d29de395f1a459f446f93eb97e0bb5"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "b53007dcc3647babedd5fe08fd9f72c6aef3523aec2e8f260d57213d07dec22b"
+      "sha256": "1a69fa8d020498c23dc49c792fdb05b199ada38a733ea1cde338d526d1533d26"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -159,7 +159,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "c6ec3f80ba1d3afd5f9ec96674829f12947a764f0ee95233b8a9e6ac9b315243"
+      "sha256": "78ca79bc4f71afb7478b9e41318aaf412473964e67bce0ccdbb6ac079725f302"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
@@ -183,7 +183,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.cpp",
-      "sha256": "e34c27590524a277817c48f2ab76c6c778ac738e2bcdbf39c88e2821b80bc51a"
+      "sha256": "7c077a92158a897255a0e676079fd7d1d491b12c074111c9c7fe23f9b6f813e1"
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.h",
@@ -255,7 +255,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "d64f2e32912a357dddf5c020995dc7df165e7370782c15506d60899f6fe8127c"
+      "sha256": "d0a048c2f15ef9d5150fac0dfb18e7c40bd86dfbc3f26c7dd9a8f6d6611311d2"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -294,6 +294,7 @@
   },
   "entrypointImports": {
     "within2d": [
+      "cocos/2d/assembler/graphics/types.ts",
       "cocos/2d/assembler/index.jsb.ts",
       "cocos/2d/assembler/utils.ts",
       "cocos/2d/assets/bitmap-font.jsb.ts",
@@ -2420,6 +2421,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -2511,7 +2513,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -4194,6 +4195,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -4285,7 +4287,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -7193,6 +7194,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -7284,7 +7286,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -7303,7 +7304,8 @@
       "runtime": "cocos/2d/components/mask.jsb.ts",
       "testEntrypoints": [
         "tests/ui/native-2d-m4-mask-shell.test.ts",
-        "native/tests/2d-poc/run-m4-mask-probe.ps1"
+        "native/tests/2d-poc/run-m4-mask-probe.ps1",
+        "native/tests/2d-poc/run-m6-sprite-api-tests.ps1"
       ],
       "overridden": true,
       "web": {
@@ -8177,16 +8179,6 @@
             "decorators": []
           },
           {
-            "name": "_lastGraphicsFrame",
-            "kind": "PropertyDeclaration",
-            "visibility": "private",
-            "static": false,
-            "type": "any",
-            "parameters": [],
-            "default": "null",
-            "decorators": []
-          },
-          {
             "name": "onLoad",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -8298,16 +8290,6 @@
             "visibility": "public",
             "static": false,
             "type": "Graphics | null",
-            "parameters": [],
-            "default": null,
-            "decorators": []
-          },
-          {
-            "name": "lateUpdate",
-            "kind": "MethodDeclaration",
-            "visibility": "public",
-            "static": false,
-            "type": "void",
             "parameters": [],
             "default": null,
             "decorators": []
@@ -8471,6 +8453,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -8562,7 +8545,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -8583,7 +8565,8 @@
         "tests/ui/native-2d-m6-layout-shell.test.ts",
         "native/tests/2d-poc/run-m4-extra-probe.ps1",
         "native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1",
-        "tests/ui/native-graphics-geometry-parity.test.ts"
+        "tests/ui/native-graphics-geometry-parity.test.ts",
+        "native/tests/2d-poc/run-m6-sprite-api-tests.ps1"
       ],
       "overridden": true,
       "web": {
@@ -9332,6 +9315,62 @@
         ],
         "members": [
           {
+            "name": "LineCap",
+            "kind": "PropertyDeclaration",
+            "visibility": "public",
+            "static": true,
+            "type": null,
+            "parameters": [],
+            "default": "LineCap",
+            "decorators": []
+          },
+          {
+            "name": "LineJoin",
+            "kind": "PropertyDeclaration",
+            "visibility": "public",
+            "static": true,
+            "type": null,
+            "parameters": [],
+            "default": "LineJoin",
+            "decorators": []
+          },
+          {
+            "name": "_lineCap",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "LineCap.BUTT",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_lineJoin",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "LineJoin.MITER",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_miterLimit",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "10",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
             "name": "_lineWidth",
             "kind": "PropertyDeclaration",
             "visibility": "protected",
@@ -9378,6 +9417,28 @@
             "decorators": []
           },
           {
+            "name": "_mask",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "any",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
+            "name": "_setMask",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "mask: any"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "onLoad",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -9414,6 +9475,116 @@
             "static": false,
             "type": "void",
             "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "lineJoin",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "LineJoin",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "lineJoin",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: LineJoin"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "lineCap",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "LineCap",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "lineCap",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: LineCap"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "miterLimit",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "number",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "miterLimit",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: number"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "customMaterial",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "any",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "customMaterial",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: any"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "color",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "Readonly<Color>",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "color",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: Readonly<Color>"
+            ],
             "default": null,
             "decorators": []
           },
@@ -9545,6 +9716,21 @@
             "decorators": []
           },
           {
+            "name": "fillRect",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "x: number",
+              "y: number",
+              "w: number",
+              "h: number"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "roundRect",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -9661,6 +9847,27 @@
         ],
         "serialized": [
           {
+            "name": "_lineCap",
+            "default": "LineCap.BUTT",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_lineJoin",
+            "default": "LineJoin.MITER",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_miterLimit",
+            "default": "10",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
             "name": "_lineWidth",
             "default": "1",
             "decorators": [
@@ -9687,29 +9894,19 @@
       "comparison": {
         "disposition": "declarations only; inherited APIs and behavior require review",
         "notDeclaredInShell": [
-          "LineCap",
-          "LineJoin",
           "activeSubModel",
-          "color",
-          "fillRect",
           "graphicsNativeProxy",
           "impl",
-          "lineCap",
-          "lineJoin",
-          "miterLimit",
           "model",
           "onRestore",
           "updateRenderer"
         ],
-        "missingSerializedDeclarations": [
-          "_lineJoin",
-          "_lineCap",
-          "_miterLimit"
-        ],
+        "missingSerializedDeclarations": [],
         "initializerTextDifferences": []
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -9801,7 +9998,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -11666,6 +11862,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -11757,7 +11954,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -12111,6 +12307,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -12202,7 +12399,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -12343,6 +12539,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -12434,7 +12631,6 @@
       },
       "runtimeFindings": [
         "cocos/2d/assembler/utils.ts",
-        "cocos/2d/components/mask.jsb.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
         "cocos/2d/framework/ui-component.ts",
@@ -14023,6 +14219,18 @@
   ],
   "files": [
     {
+      "file": "cocos/2d/assembler/graphics/types.ts",
+      "sha256": "b7d0db7b3cbeddc5d5cd4ce5a6f92c2714120e6ad86b66f843b0102533aa3d8c",
+      "printedCodeLines": 20,
+      "runtimeImports": [
+        "../../../core"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
       "file": "cocos/2d/assembler/index.jsb.ts",
       "sha256": "9a74194ee1e5e29c494db09d36857ebe3946dfa9ddfe178a27f0f005e5916dbf",
       "printedCodeLines": 35,
@@ -14362,123 +14570,160 @@
     },
     {
       "file": "cocos/2d/components/graphics.jsb.ts",
-      "sha256": "2aa395883ed1358cdc292a13f40dddaebc3482d1c17c51ecd09a12ececc3d8e9",
-      "printedCodeLines": 105,
+      "sha256": "8df9febb9e5c0b86ee1f5ebea01b8b46845f5dd02fc4c99a25fa3b66611986ec",
+      "printedCodeLines": 143,
       "runtimeImports": [
         "cc.decorator",
         "../../core",
-        "../framework/ui-transform",
-        "../framework/ui-renderer"
+        "../framework/ui-renderer",
+        "../assembler/graphics/types",
+        "../framework/native-ui-materials"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native.setNode",
-          "line": 55
-        },
-        {
-          "expression": "this._native.setUITransform",
-          "line": 58
+          "line": 69
         },
         {
           "expression": "this._native.setPriority",
-          "line": 60
+          "line": 70
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 61
+          "line": 71
         },
         {
           "expression": "this._native.setLineWidth",
-          "line": 62
-        },
-        {
-          "expression": "this._native.setFillColor",
-          "line": 63
-        },
-        {
-          "expression": "this._native.setStrokeColor",
-          "line": 64
-        },
-        {
-          "expression": "this._native?.setEnabled",
-          "line": 68
-        },
-        {
-          "expression": "this._native?.setEnabled",
           "line": 72
         },
         {
-          "expression": "this._native.setEnabled",
+          "expression": "this._native.setFillColor",
+          "line": 73
+        },
+        {
+          "expression": "this._native.setStrokeColor",
+          "line": 74
+        },
+        {
+          "expression": "this._native.setLineJoin",
+          "line": 75
+        },
+        {
+          "expression": "this._native.setLineCap",
+          "line": 76
+        },
+        {
+          "expression": "this._native.setMiterLimit",
           "line": 77
         },
         {
-          "expression": "this._native.setNode",
+          "expression": "this._native.setColorRGBA",
           "line": 78
         },
         {
+          "expression": "this._native?.setEnabled",
+          "line": 84
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 88
+        },
+        {
+          "expression": "this._native.setEnabled",
+          "line": 95
+        },
+        {
+          "expression": "this._native.setNode",
+          "line": 96
+        },
+        {
+          "expression": "this._native?.setLineJoin",
+          "line": 102
+        },
+        {
+          "expression": "this._native?.setLineCap",
+          "line": 104
+        },
+        {
+          "expression": "this._native?.setMiterLimit",
+          "line": 106
+        },
+        {
+          "expression": "this._native?.setMaterial",
+          "line": 108
+        },
+        {
+          "expression": "this._native?.setColorRGBA",
+          "line": 112
+        },
+        {
           "expression": "this._native?.setLineWidth",
-          "line": 89
+          "line": 121
         },
         {
           "expression": "this._native?.setFillColor",
-          "line": 98
+          "line": 130
         },
         {
           "expression": "this._native?.setStrokeColor",
-          "line": 107
-        },
-        {
-          "expression": "this._native?.clear",
-          "line": 111
-        },
-        {
-          "expression": "this._native?.moveTo",
-          "line": 115
-        },
-        {
-          "expression": "this._native?.lineTo",
-          "line": 119
-        },
-        {
-          "expression": "this._native?.close",
-          "line": 123
-        },
-        {
-          "expression": "this._native?.rect",
-          "line": 127
-        },
-        {
-          "expression": "this._native?.roundRect",
-          "line": 131
-        },
-        {
-          "expression": "this._native?.circle",
-          "line": 135
-        },
-        {
-          "expression": "this._native?.ellipse",
           "line": 139
         },
         {
-          "expression": "this._native?.arc",
+          "expression": "this._native?.clear",
           "line": 143
         },
         {
-          "expression": "this._native?.bezierCurveTo",
+          "expression": "this._native?.moveTo",
           "line": 147
         },
         {
-          "expression": "this._native?.quadraticCurveTo",
+          "expression": "this._native?.lineTo",
           "line": 151
         },
         {
-          "expression": "this._native?.fill",
+          "expression": "this._native?.close",
           "line": 155
         },
         {
-          "expression": "this._native?.stroke",
+          "expression": "this._native?.rect",
           "line": 159
+        },
+        {
+          "expression": "this._native?.fillRect",
+          "line": 162
+        },
+        {
+          "expression": "this._native?.roundRect",
+          "line": 166
+        },
+        {
+          "expression": "this._native?.circle",
+          "line": 170
+        },
+        {
+          "expression": "this._native?.ellipse",
+          "line": 174
+        },
+        {
+          "expression": "this._native?.arc",
+          "line": 178
+        },
+        {
+          "expression": "this._native?.bezierCurveTo",
+          "line": 182
+        },
+        {
+          "expression": "this._native?.quadraticCurveTo",
+          "line": 186
+        },
+        {
+          "expression": "this._native?.fill",
+          "line": 190
+        },
+        {
+          "expression": "this._native?.stroke",
+          "line": 194
         }
       ],
       "allocations": [],
@@ -14860,7 +15105,7 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "7171a2464a8f84cc8f13ac1e8735dff1f6b97a1fbfd0aeb3eb3498b536237336",
+      "sha256": "42d76fe8a3fc2350b4436df9fa0181bad3e53b96d4efbd4c6168def8af5fdf94",
       "printedCodeLines": 138,
       "runtimeImports": [
         "cc.decorator",
@@ -14870,29 +15115,29 @@
         "../../scene-graph/component",
         "../../scene-graph/node",
         "../framework/ui-transform",
-        "./graphics"
+        "./graphics",
+        "../../core"
       ],
-      "frameMethods": [
-        {
-          "name": "lateUpdate",
-          "line": 157
-        }
-      ],
+      "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native.setNode",
-          "line": 78
+          "line": 77
         },
         {
           "expression": "this._native.setUITransform",
-          "line": 81
+          "line": 80
         },
         {
           "expression": "this._native.setMaterial",
-          "line": 85
+          "line": 84
         },
         {
           "expression": "this._native.setType",
+          "line": 86
+        },
+        {
+          "expression": "this._native.setSegments",
           "line": 87
         },
         {
@@ -14925,35 +15170,31 @@
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 110
-        },
-        {
-          "expression": "this._native.setNode",
           "line": 111
         },
         {
+          "expression": "this._native.setNode",
+          "line": 112
+        },
+        {
           "expression": "this._native?.setType",
-          "line": 122
+          "line": 126
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 131
+          "line": 136
         },
         {
-          "expression": "(this._graphics as any)._native?.getFrame",
-          "line": 161
-        },
-        {
-          "expression": "this._native?.setSpriteFrame",
-          "line": 164
+          "expression": "this._native?.setSegments",
+          "line": 145
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 174
+          "line": 171
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 191
+          "line": 188
         }
       ],
       "allocations": [],

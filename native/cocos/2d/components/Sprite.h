@@ -59,6 +59,7 @@ public:
     uint32_t getTypeId() const override { return TYPE_ID; }
 
     void setNode(Node *node);
+    void onDetach() override;
     Node *getNode() const { return Component::getNode(); }
 
     void setUITransform(UITransform *transform) { _transform = transform; _hasTransformSnapshot = false; _dirty = true; applySizeMode(); }

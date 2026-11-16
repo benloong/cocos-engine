@@ -1,81 +1,85 @@
 /****************************************************************************
  Copyright (c) 2026 Xiamen Yaji Software Co., Ltd.
-
  http://www.cocos.com
 ****************************************************************************/
-
 #pragma once
-
-#include <cstdint>
-#include <vector>
-
-#include "2d/components/Sprite.h"
-#include "base/Ptr.h"
-#include "math/Color.h"
-#include "math/Vec2.h"
+#include <memory>
+#include "2d/framework/UIRenderer.h"
+#include "2d/geometry/GraphicsGeometry.h"
+#include "2d/renderer/RenderEntity.h"
 
 namespace cc {
-
-class Texture2D;
-class SpriteFrame;
 class UITransform;
-class Material;
 
-/**
- * M4.2 Graphics compatibility slice.
- *
- * The path API rasterizes directly into a 256x256 CPU texture (no Canvas path
- * dependency); the internal Sprite submits it. Native triangulation can replace
- * the rasterizer later.
- */
-class Graphics final : public UIRenderer {
+// Native path/mesh owner. Local vertices use the graphics shader and Node UBO.
+class Graphics final : public UIRenderer, public RenderEntity::IPrepareListener {
 public:
+    static constexpr uint32_t TYPE_ID = 6;
     Graphics();
     ~Graphics() override;
-
+    uint32_t getTypeId() const override { return TYPE_ID; }
     void setNode(Node *node);
-    void setUITransform(UITransform *transform);
-    void setMaterial(Material *material);
+    void onDetach() override;
     void setPriority(int32_t priority);
     void setEnabled(bool enabled);
-
+    void setColor(const Color &color);
+    void setColorRGBA(float r, float g, float b, float a);
     void clear();
-    void moveTo(float x, float y);
-    void lineTo(float x, float y);
-    void close();
-    void rect(float x, float y, float w, float h);
-    void circle(float x, float y, float radius);
-    void ellipse(float x, float y, float radiusX, float radiusY);
-    void arc(float x, float y, float radius, float startAngle, float endAngle, bool counterclockwise);
-    void roundRect(float x, float y, float w, float h, float radius);
-    void bezierCurveTo(float c1x, float c1y, float c2x, float c2y, float x, float y);
-    void quadraticCurveTo(float cx, float cy, float x, float y);
-    void fill();
-    void stroke();
-
-    void setLineWidth(float width);
+    void moveTo(double x, double y) { _geometry.moveTo(x, y); }
+    void lineTo(double x, double y) { _geometry.lineTo(x, y); }
+    void close() { _geometry.close(); }
+    void rect(double x, double y, double w, double h) { _geometry.rect(x, y, w, h); }
+    void fillRect(double x, double y, double w, double h) { rect(x,y,w,h);fill(); }
+    void circle(double x, double y, double r) { _geometry.circle(x, y, r); }
+    void ellipse(double x, double y, double rx, double ry) { _geometry.ellipse(x, y, rx, ry); }
+    void arc(double x, double y, double r, double start, double end, bool ccw) { _geometry.arc(x, y, r, start, end, ccw); }
+    void roundRect(double x, double y, double w, double h, double r) { _geometry.roundRect(x, y, w, h, r); }
+    void bezierCurveTo(double a, double b, double c, double d, double x, double y) { _geometry.bezierCurveTo(a, b, c, d, x, y); }
+    void quadraticCurveTo(double a, double b, double x, double y) { _geometry.quadraticCurveTo(a, b, x, y); }
+    void fill() {
+        _geometry.fill();
+        ++_revision;
+    }
+    void stroke() {
+        _geometry.stroke();
+        ++_revision;
+    }
+    void setLineWidth(double width) { _geometry.lineWidth = width; }
+    void setLineJoin(int value) { _geometry.lineJoin = static_cast<GraphicsGeometry::LineJoin>(value); }
+    void setLineCap(int value) { _geometry.lineCap = static_cast<GraphicsGeometry::LineCap>(value); }
+    void setMiterLimit(double value) { _geometry.miterLimit = value; }
     void setFillColor(const Color &color);
     void setStrokeColor(const Color &color);
+    void prepareRenderEntity(float opacity) override;
+    RenderEntity *getRenderEntity() const { return _entity.get(); }
+    uint64_t getRevision() const { return _revision; }
+    uint32_t getVertexCount() const { return static_cast<uint32_t>(_geometry.getVertices().size()); }
+    uint32_t getIndexCount() const { return static_cast<uint32_t>(_geometry.getIndices().size()); }
+    // Source owns its geometry. Consumers borrow it, register with that owner,
+    // and are invalidated synchronously before the owner is destroyed.
+    void setGeometrySource(Graphics *source);
+    void setUseGeometrySource(bool useSource);
+    const GraphicsGeometry &getGeometry() const;
 
-    float getTextureWidth() const { return _lastWidth; }
-    float getTextureHeight() const { return _lastHeight; }
-    uint32_t getOpaquePixels() const { return _lastOpaque; }
-    SpriteFrame *getFrame() const { return _frame.get(); }
+protected:
+    Material *getBuiltinMaterial() const override;
 
 private:
-    void flush();
-
-    Sprite _renderer;
-    IntrusivePtr<Texture2D> _texture;
-    IntrusivePtr<SpriteFrame> _frame;
-    std::vector<uint8_t> _pixels;
-    std::vector<Vec2> _path;
-    float _lineWidth{1.0F};
-    Color _fillColor{255, 255, 255, 255};
-    Color _strokeColor{0, 0, 0, 255};
-    float _lastWidth{0.0F};
-    float _lastHeight{0.0F};
-    uint32_t _lastOpaque{0};
+    struct Chunk {
+        std::vector<float> vertices;
+        std::vector<float> alpha;
+        std::vector<uint16_t> indices;
+        RenderDrawInfo draw;
+    };
+    void rebuildChunks();
+    GraphicsGeometry _geometry;
+    Graphics *_source{nullptr};         // borrowed; registered in source->_consumers
+    std::vector<Graphics *> _consumers; // borrowed observers; never deleted here
+    bool _useSource{false};
+    IntrusivePtr<RenderEntity> _entity; // owning reference; Node::UserData also retains it while attached
+    std::vector<std::unique_ptr<Chunk>> _chunks;
+    uint64_t _preparedRevision{UINT64_MAX};
+    uint64_t _revision{0};
+    float _lastOpacity{-1};
 };
-
 } // namespace cc

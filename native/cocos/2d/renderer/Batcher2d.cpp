@@ -205,12 +205,16 @@ void Batcher2d::fillBuffersAndMergeBatches() {
 }
 
 void Batcher2d::handleUIRenderer(RenderEntity* entity) { // NOLINT(misc-no-recursion)
+    // A mask can contain multiple mesh chunks (or no triangles). Enter and
+    // clear its stencil level once for the complete renderer, not per chunk.
+    if (entity->getIsMask()) insertMaskBatch(entity);
     uint32_t size = entity->getRenderDrawInfosSize();
     for (uint32_t i = 0; i < size; i++) {
         auto* drawInfo = entity->getRenderDrawInfoAt(i);
         handleDrawInfo(entity, drawInfo, entity->getNode());
     }
     entity->setVBColorDirty(false);
+    if (entity->getIsMask()) _stencilManager->enableMask();
 }
 
 int32_t Batcher2d::recordUIRenderer(RenderEntity* entity) {
@@ -335,10 +339,7 @@ CC_FORCE_INLINE void Batcher2d::handleComponentDraw(RenderEntity* entity, Render
 
     // may slow
     bool isMask = entity->getIsMask();
-    if (isMask) {
-        // Mask subComp
-        insertMaskBatch(entity);
-    } else {
+    if (!isMask) {
         entity->setEnumStencilStage(_stencilManager->getStencilStage());
     }
     auto tempStage = static_cast<StencilStage>(entity->getStencilStage());
@@ -396,9 +397,6 @@ CC_FORCE_INLINE void Batcher2d::handleComponentDraw(RenderEntity* entity, Render
         fillIndexBuffers(drawInfo);
     }
 
-    if (isMask) {
-        _stencilManager->enableMask();
-    }
 }
 
 CC_FORCE_INLINE void Batcher2d::handleModelDraw(RenderEntity* entity, RenderDrawInfo* drawInfo) {
@@ -411,10 +409,7 @@ CC_FORCE_INLINE void Batcher2d::handleModelDraw(RenderEntity* entity, RenderDraw
     Material* renderMat = drawInfo->getMaterial();
 
     bool isMask = entity->getIsMask();
-    if (isMask) {
-        // Mask Comp
-        insertMaskBatch(entity);
-    } else {
+    if (!isMask) {
         entity->setEnumStencilStage(_stencilManager->getStencilStage());
     }
 
@@ -441,9 +436,6 @@ CC_FORCE_INLINE void Batcher2d::handleModelDraw(RenderEntity* entity, RenderDraw
         _batches.push_back(curdrawBatch);
     }
 
-    if (isMask) {
-        _stencilManager->enableMask();
-    }
 }
 
 CC_FORCE_INLINE void Batcher2d::handleMiddlewareDraw(RenderEntity* entity, RenderDrawInfo* drawInfo) {

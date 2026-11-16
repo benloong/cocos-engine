@@ -45,12 +45,11 @@ namespace cc {
 
 namespace {
 
-std::unordered_map<std::string, std::weak_ptr<LetterAtlas>> gLetterAtlases;
-void pruneLetterAtlases() {
-    for (auto it = gLetterAtlases.begin(); it != gLetterAtlases.end();) {
-        if (it->second.expired()) it = gLetterAtlases.erase(it); else ++it;
-    }
-}
+struct LetterAtlasEntry {
+    std::unique_ptr<LetterAtlas> atlas; // registry owns each live cache
+    uint32_t users{0}; // active Label leases; last release erases the owner
+};
+std::unordered_map<std::string, LetterAtlasEntry> gLetterAtlases;
 
 constexpr float BASELINE_RATIO = 0.26F;
 
@@ -106,11 +105,18 @@ Label::Label() {
 }
 
 Label::~Label() {
-    _letterAtlas.reset();
-    pruneLetterAtlases();
+    releaseLetterAtlas();
     if (_renderer.getRenderEntity() != nullptr) {
         _renderer.getRenderEntity()->setPrepareListener(nullptr);
     }
+}
+void Label::releaseLetterAtlas() {
+    if (!_letterAtlas) return;
+    auto found=gLetterAtlases.find(_letterAtlasKey);
+    CC_ASSERT(found!=gLetterAtlases.end() && found->second.atlas.get()==_letterAtlas && found->second.users>0);
+    _letterAtlas=nullptr;
+    if(--found->second.users==0) gLetterAtlases.erase(found);
+    _letterAtlasKey.clear();
 }
 
 void Label::setNode(Node *node) {
@@ -189,7 +195,7 @@ void Label::updateFont() {
         for (char c : ttf->getFontFamily()) { if (c == '\\' || c == '\"') font += '\\'; font += c; }
         font += '\"';
     } else font += _fontFamily;
-    _letterAtlas.reset();
+    releaseLetterAtlas();
     _font = font;
 }
 
@@ -207,7 +213,7 @@ void Label::setLineHeight(float height) {
         return;
     }
     _lineHeight = height;
-    _letterAtlas.reset();
+    releaseLetterAtlas();
     if (_bitmapFont && _bitmapFont->getFontSize() <= 0) _bitmapLineHeight = height;
     _dirty = true;
 }
@@ -335,7 +341,7 @@ void Label::addGlyph(int32_t code, float u, float v, float w, float h, float off
 void Label::setCacheMode(int32_t mode) {
     if (_cacheMode == mode) { return; }
     _cacheMode = mode;
-    if (mode != 2) _letterAtlas.reset();
+    if (mode != 2) releaseLetterAtlas();
     _dirty = true;
 }
 
@@ -385,11 +391,12 @@ void Label::prepareRenderEntity(float opacity) {
 
 void Label::rebuildLetterTexture() {
     if (!_letterAtlas) {
-        pruneLetterAtlases();
         const std::string key = _font + ":" + std::to_string(_lineHeight) + (_fontAsset ? ":" + std::to_string(_fontAsset->getIdentity()) + ":" + std::to_string(_fontAssetRevision) : "");
         auto &cached = gLetterAtlases[key];
-        _letterAtlas = cached.lock();
-        if (!_letterAtlas) { _letterAtlas = std::make_shared<LetterAtlas>(); cached = _letterAtlas; }
+        if (!cached.atlas) cached.atlas=std::make_unique<LetterAtlas>();
+        ++cached.users;
+        _letterAtlas=cached.atlas.get();
+        _letterAtlasKey=key;
     }
     LetterAtlas &atlas = *_letterAtlas;
 

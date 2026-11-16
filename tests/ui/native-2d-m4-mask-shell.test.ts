@@ -11,10 +11,40 @@ const nativeMask = {
     setSpriteFrame: jest.fn(),
     setPriority: jest.fn(),
     setEnabled: jest.fn(),
+    setSegments: jest.fn(), setGraphics: jest.fn(),
 };
 
 beforeAll(() => {
     (global as any).n2d = { Mask: jest.fn(() => nativeMask) };
+});
+
+test('Mask binds a disabled Graphics helper when its native backend becomes ready and unbinds on destroy', () => {
+    const nativeGraphics={
+        setNode:jest.fn(),setPriority:jest.fn(),setEnabled:jest.fn(),setLineWidth:jest.fn(),
+        setFillColor:jest.fn(),setStrokeColor:jest.fn(),setLineJoin:jest.fn(),setLineCap:jest.fn(),
+        setMiterLimit:jest.fn(),setColorRGBA:jest.fn(),setMaterial:jest.fn(),setSharedMaterial:jest.fn(),
+        getSharedMaterialCount:()=>0,getSharedMaterial:()=>null,getRenderMaterial:()=>null,resizeMaterials:jest.fn(),
+    };
+    (global as any).n2d.Graphics=jest.fn(()=>nativeGraphics);
+    // Reproduce the ccbuild NATIVE override for this direct source test.
+    // The normal Jest module graph otherwise selects the Web Graphics class.
+    const graphicsModule=require('../../cocos/2d/components/graphics');
+    const originalGraphics=graphicsModule.Graphics;
+    graphicsModule.Graphics=require('../../cocos/2d/components/graphics.jsb').Graphics;
+    try {
+    const { Mask, MaskType }=require('../../cocos/2d/components/mask.jsb');
+    const node=new Node('graphics-mask');node.addComponent(UITransform);
+    const mask:any=node.addComponent(Mask);mask.type=MaskType.GRAPHICS_STENCIL;mask.onLoad();
+    const helper:any=mask.graphics;
+    expect(helper.enabled).toBe(false);
+    helper.onLoad();
+    expect(nativeMask.setGraphics).toHaveBeenLastCalledWith(nativeGraphics);
+    expect(nativeGraphics.setEnabled).toHaveBeenLastCalledWith(false);
+    expect(mask.lateUpdate).toBeUndefined();
+    mask.onDestroy();
+    expect(nativeMask.setGraphics).toHaveBeenLastCalledWith(null);
+    helper.onDestroy();
+    } finally { graphicsModule.Graphics=originalGraphics; }
 });
 
 test('Mask forwards SpriteFrame directly during load, replacement and clearing', () => {

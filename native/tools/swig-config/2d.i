@@ -111,6 +111,9 @@
 %ignore cc::RenderEntity::IPrepareListener;
 %ignore cc::RichText::getLayout;
 %ignore cc::Label::measureUnwrappedText;
+%ignore cc::Graphics::getGeometry;
+%ignore cc::Graphics::setGeometrySource;
+%ignore cc::Graphics::setUseGeometrySource;
 
 %ignore cc::UITransform::getBoundingBox;
 %ignore cc::UITransform::getBoundingBoxToWorld;
@@ -254,5 +257,5 @@
 %include "2d/components/Sprite.h"
 %include "2d/components/Label.h"
 %include "2d/components/RichText.h"
-%include "2d/components/Mask.h"
 %include "2d/components/Graphics.h"
+%include "2d/components/Mask.h"

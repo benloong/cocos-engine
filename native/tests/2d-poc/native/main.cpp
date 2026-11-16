@@ -407,17 +407,22 @@ void testRichTextRuntime() {
 void testLayoutAndMaterials() {
     cc::UITransform transform;
     int changes = 0;
-    auto owner = std::make_shared<int>(1);
-    std::weak_ptr<int> weak = owner;
-    transform.setSizeChangedCallback([&, owner](float width, float height) { ++changes; });
-    owner.reset();
+    struct Capture {
+        int *live;
+        explicit Capture(int *count) : live(count) { ++*live; }
+        Capture(const Capture &other) : live(other.live) { ++*live; }
+        ~Capture() { --*live; }
+    };
+    int live=0;
+    { Capture owner(&live);transform.setSizeChangedCallback([&,owner](float width,float height) { ++changes; }); }
     transform.setContentSize(80, 20); transform.setContentSize(80, 20);
-    check(changes == 1 && !weak.expired(), "size callback fires only on mutation and owns closure");
+    check(changes == 1 && live>0, "size callback fires only on mutation and owns closure");
     transform.detach();
-    check(weak.expired(), "detach releases size callback ownership");
+    check(live==0, "detach releases size callback ownership");
     transform.setContentSize(90, 30); check(changes == 1, "no callback after detach");
     cc::IntrusivePtr<cc::Material> builtin(new cc::Material());
     cc::BuiltinResMgr::getInstance()->addAsset("ui-sprite-material", builtin);
+    cc::BuiltinResMgr::getInstance()->addAsset("ui-graphics-material", builtin);
     cc::Label label;
     check(label.getRenderMaterial() == builtin, "Label resolves builtin material in native");
     cc::IntrusivePtr<cc::Material> custom(new cc::Material()); label.setMaterial(custom);
@@ -447,14 +452,94 @@ void testLayoutAndMaterials() {
     check(labelEntity && labelEntity->getStaticDrawInfoSize() == 0, "empty Label array clears renderer");
     label.setNode(nullptr); label.setUITransform(nullptr);
     cc::Node node("graphics-default-material"); cc::UITransform ui(&node);
-    cc::Graphics graphics; graphics.setNode(&node); graphics.setUITransform(&ui);
+    cc::Graphics graphics; graphics.setNode(&node);
     graphics.rect(0, 0, 4, 4); graphics.fill();
     auto *entity = static_cast<cc::RenderEntity *>(node.getUserData());
     if (entity) {
         entity->prepare(1.F);
-        check(entity->getStaticDrawInfoSize() == 1 && entity->getStaticRenderDrawInfo(0)->getMaterial() == builtin, "Graphics native draw uses builtin material");
+        check(entity->getRenderDrawInfosSize() == 1 && entity->getRenderDrawInfoAt(0)->getMaterial() == builtin, "Graphics native draw uses builtin material");
     } else check(false, "Graphics has render entity");
     std::printf("layout/material ownership: PASS\n");
+}
+
+void testGraphicsMeshes() {
+    cc::Node node("graphics-gpu");
+    cc::Graphics graphics; graphics.setNode(&node);
+    graphics.setFillColor(cc::Color(200,40,20,128));
+    graphics.rect(-700,-300,1400,600);graphics.fill();graphics.prepareRenderEntity(.5F);
+    auto *entity=graphics.getRenderEntity();
+    check(entity->getUseLocal() && entity->getRenderTransform()==&node,"Graphics uses Node local UBO rather than baking world positions");
+    check(entity->getRenderDrawInfosSize()==1,"Graphics exposes one native mesh chunk");
+    if(entity->getRenderDrawInfosSize()) {
+        auto *draw=entity->getRenderDrawInfoAt(0);
+        check(draw->getTexture()==nullptr && draw->getStride()==8,"Graphics has distance layout and no texture");
+        check(draw->getVbCount()==4 && draw->getIbCount()==6,"Graphics rectangle triangulates");
+        checkNear(draw->getVDataBuffer()[0],-700,"Graphics is not clipped to 256 canvas");
+        checkNear(draw->getVDataBuffer()[6],128.F/255*.5F,"Graphics multiplies fill alpha and inherited opacity once");
+        auto *ia=draw->requestIA(cc::Root::getInstance()->getDevice());draw->uploadBuffers();
+        check(ia->getVertexBuffers()[0]->getSize()==128 && ia->getVertexBuffers()[0]->getStride()==32,"Graphics uploads actual 8-float GPU vertices");
+        check(ia->getIndexBuffer()->getSize()==12 && ia->getAttributes().back().name=="a_dist","Graphics GPU index data and distance attribute");
+        auto *vertices=draw->getVDataBuffer();auto revision=graphics.getRevision();
+        for(int i=0;i<1000;++i) graphics.prepareRenderEntity(.5F);
+        check(entity->getRenderDrawInfoAt(0)==draw && draw->getVDataBuffer()==vertices && graphics.getRevision()==revision,"Graphics idle prepare retains mesh/IA storage");
+    }
+    graphics.clear();
+    check(entity->getRenderDrawInfosSize()==0,"Graphics clear drops draws and old GPU chunks");
+    for(int i=0;i<20000;++i) graphics.rect(i*2,0,1,1);
+    graphics.fill();graphics.prepareRenderEntity(1);
+    check(entity->getRenderDrawInfosSize()==2,"Graphics splits meshes above 65535 vertices");
+    uint32_t indices=0;
+    for(uint32_t k=0;k<entity->getRenderDrawInfosSize();++k) {
+        auto *draw=entity->getRenderDrawInfoAt(k);indices+=draw->getIbCount();
+        check(draw->getVbCount()<=65535,"Graphics chunk fits uint16 indices");
+        bool valid=true;for(uint32_t i=0;i<draw->getIbCount();++i) if(draw->getIDataBuffer()[i]>=draw->getVbCount()) valid=false;
+        check(valid,"Graphics remapped indices stay within chunk");
+        auto *ia=draw->requestIA(cc::Root::getInstance()->getDevice());draw->uploadBuffers();
+        check(ia->getVertexBuffers()[0]->getSize()==draw->getVbCount()*32,"Graphics large mesh GPU upload has correct size");
+    }
+    check(indices==120000,"Graphics chunking preserves all triangles");
+    graphics.setNode(nullptr);
+
+    cc::Node maskNode("mask-geometry");cc::UITransform ui(&maskNode);ui.setContentSize(500,200);ui.setAnchorPoint(.25F,.75F);
+    cc::Mask mask;mask.setNode(&maskNode);mask.prepareRenderEntity(1);
+    check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask rectangle uses native graphics mesh");
+    if(mask.getRenderEntity()->getRenderDrawInfosSize()) checkNear(mask.getRenderEntity()->getRenderDrawInfoAt(0)->getVDataBuffer()[0],-125,"Mask rectangle follows native anchor");
+    mask.setType(1);mask.setSegments(16);mask.prepareRenderEntity(1);
+    check(mask.getRenderEntity()->getRenderDrawInfoAt(0)->getVbCount()==16,"Mask ellipse follows segments");
+    mask.setType(2);
+    {
+        cc::Graphics source;source.rect(0,0,20,40);source.fill();mask.setGraphics(&source);mask.prepareRenderEntity(1);
+        check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask consumes Graphics directly without frame texture");
+        source.clear();mask.prepareRenderEntity(1);check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Mask observes source clear in native");
+        source.circle(0,0,10);source.fill();mask.prepareRenderEntity(1);
+        check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask observes new source geometry");
+    }
+    mask.prepareRenderEntity(1);check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Graphics destruction invalidates non-owning consumers before geometry release");
+    mask.setGraphics(nullptr);mask.setNode(nullptr);
+    {
+        auto orphan=std::make_unique<cc::Node>("orphan-mask");
+        mask.setNode(orphan.get());orphan.reset();
+        mask.setType(1);mask.prepareRenderEntity(1);
+        check(mask.getNode()==nullptr && mask.getRenderEntity()->getNode()==nullptr,"Node destruction clears Mask borrowed Node before later setters");
+    }
+    {
+        cc::Node firstNode("letter-cache-first"),secondNode("letter-cache-second");
+        cc::UITransform firstUI(&firstNode),secondUI(&secondNode);
+        auto first=std::make_unique<cc::Label>();cc::Label second;
+        first->setNode(&firstNode);first->setUITransform(&firstUI);second.setNode(&secondNode);second.setUITransform(&secondUI);
+        for(auto *label:{first.get(),&second}) { label->setCacheMode(2);label->setFont("14px Arial");label->setFontSize(14);label->setLineHeight(18);label->setString("AB");label->prepareRenderEntity(1); }
+        check(first->getOpaquePixels()>0 && second.getOpaquePixels()>0,"Two CHAR Labels acquire registry-owned atlas leases");
+        first.reset();second.setString("BA");second.prepareRenderEntity(1);
+        check(second.getOpaquePixels()>0,"Releasing one CHAR Label preserves the other lease");
+        for(int i=0;i<1000;++i) { second.setCacheMode(0);second.setCacheMode(2);second.prepareRenderEntity(1); }
+        check(second.getOpaquePixels()>0,"CHAR cache releases and reacquires the last lease across 1000 switches");
+    }
+    {
+        auto orphan=std::make_unique<cc::Node>("orphan-graphics");
+        graphics.setNode(orphan.get());orphan.reset();
+        check(graphics.getNode()==nullptr && graphics.getRenderEntity()->getNode()==nullptr,"Node destruction detaches Graphics entity before owner release");
+    }
+    std::printf("graphics native meshes: PASS\n");
 }
 
 void testSpriteApiAndMaterials() {
@@ -1323,6 +1408,7 @@ void testSpriteSceneBenchmark() {
 } // namespace
 
 int main(int argc, char **argv) {
+    setvbuf(stdout, nullptr, _IONBF, 0);
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     _set_error_mode(_OUT_TO_STDERR);
     _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
@@ -1343,6 +1429,7 @@ int main(int argc, char **argv) {
         testRichTextParser();
         testRichTextLayout();
         testLayoutAndMaterials();
+        testGraphicsMeshes();
         testRichTextRuntime();
         testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");

@@ -2,7 +2,16 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const ts = require('typescript');
+const fs = require('node:fs');
+const path = require('node:path');
 const { declaration, runtimeImports, inspect, build } = require('../../native/tests/2d-poc/audit-m6.cjs');
+
+test('native 2D owners do not use shared_ptr or weak_ptr', () => {
+    const root=path.resolve(__dirname,'../..');
+    for(const {file} of build().nativeSourceHashes.filter(x=>x.file.startsWith('native/cocos/2d/'))) {
+        assert.doesNotMatch(fs.readFileSync(path.join(root,file),'utf8'), /\b(?:shared_ptr|weak_ptr|make_shared)\s*[<(]/, file);
+    }
+});
 
 test('declaration baseline separates serialized fields from decorated accessor APIs', () => {
     const parsed = declaration('fixture.ts', `class Example extends Base {

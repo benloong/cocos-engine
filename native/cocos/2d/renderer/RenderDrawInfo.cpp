@@ -60,7 +60,7 @@ gfx::InputAssembler* RenderDrawInfo::requestIA(gfx::Device* device) {
 void RenderDrawInfo::uploadBuffers() {
     CC_ASSERT(_drawInfoAttrs._isMeshBuffer && _drawInfoAttrs._drawInfoType == RenderDrawInfoType::COMP);
     if (_drawInfoAttrs._vbCount == 0 || _drawInfoAttrs._ibCount == 0) return;
-    uint32_t size = _drawInfoAttrs._vbCount * 9 * sizeof(float); // magic Number
+    uint32_t size = _drawInfoAttrs._vbCount * (_drawInfoAttrs._stride ? _drawInfoAttrs._stride : 9U) * sizeof(float);
     gfx::Buffer* vBuffer = _ia->getVertexBuffers()[0];
     vBuffer->resize(size);
     vBuffer->update(_vDataBuffer);
@@ -88,7 +88,7 @@ void RenderDrawInfo::destroy() {
 gfx::InputAssembler* RenderDrawInfo::initIAInfo(gfx::Device* device) {
     if (!_ia) {
         gfx::InputAssemblerInfo iaInfo = {};
-        uint32_t vbStride = 9 * sizeof(float); // magic Number
+        uint32_t vbStride = (_drawInfoAttrs._stride ? _drawInfoAttrs._stride : 9U) * sizeof(float);
         uint32_t ibStride = sizeof(uint16_t);
         _vb = device->createBuffer({
             gfx::BufferUsageBit::VERTEX | gfx::BufferUsageBit::TRANSFER_DST,
@@ -103,7 +103,15 @@ gfx::InputAssembler* RenderDrawInfo::initIAInfo(gfx::Device* device) {
             ibStride,
         });
 
-        iaInfo.attributes = *(Root::getInstance()->getBatcher2D()->getDefaultAttribute());
+        if (_drawInfoAttrs._stride == 8) {
+            iaInfo.attributes = {
+                gfx::Attribute{gfx::ATTR_NAME_POSITION, gfx::Format::RGB32F},
+                gfx::Attribute{gfx::ATTR_NAME_COLOR, gfx::Format::RGBA32F},
+                gfx::Attribute{"a_dist", gfx::Format::R32F},
+            };
+        } else {
+            iaInfo.attributes = *(Root::getInstance()->getBatcher2D()->getDefaultAttribute());
+        }
         iaInfo.vertexBuffers.emplace_back(_vb);
         iaInfo.indexBuffer = _ib;
 

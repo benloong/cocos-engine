@@ -19,10 +19,14 @@ const labelShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/com
 const assemblerShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/assembler/index.jsb.ts'),'utf8'),{
     compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
 }).outputText;
+const graphicsShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/components/graphics.jsb.ts'),'utf8'),{
+    compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS,experimentalDecorators:true},
+}).outputText;
 const script=`(function () { try {
 const cclegacy={};
 class Vec2 { constructor(x=0,y=0){this.x=x;this.y=y;} set(value){this.x=value.x;this.y=value.y;} }
 class Color {constructor(r=255,g=255,b=255,a=255){this.r=r;this.g=g;this.b=b;this.a=a;} equals(v){return this.r===v.r&&this.g===v.g&&this.b===v.b&&this.a===v.a;} set(v){Object.assign(this,v);} }
+Color.BLACK=new Color(0,0,0,255);Color.WHITE=new Color();Color.prototype.clone=function(){return new Color(this.r,this.g,this.b,this.a);};
 class UIRenderer {
  constructor(){this._materials=[];this._materialInstances=[];this._color=new Color();this._customMaterial=null;this._srcBlendFactor=2;this._dstBlendFactor=4;this.priority=0;this.enabledInHierarchy=true;}
 }
@@ -40,6 +44,7 @@ function require(id){
  if(id==='../framework/native-ui-materials')return materialAPIExports;
  if(id==='../components/sprite')return exports;
  if(id==='../components/label')return labelExports;
+ if(id==='../assembler/graphics/types')return {LineCap:{BUTT:0,ROUND:1,SQUARE:2},LineJoin:{BEVEL:0,ROUND:1,MITER:2}};
  throw new Error(id);
 }
 jsb.Material.prototype._ctor=function(){};
@@ -50,6 +55,7 @@ const exports={};
 ${source}
 const labelExports={}; ((exports)=>{ ${labelShell} })(labelExports);
 const assemblerExports={}; ((exports)=>{ ${assemblerShell} })(assemblerExports);
+const graphicsExports={}; ((exports)=>{ ${graphicsShell} })(graphicsExports);
 function check(value,message){if(!value)throw new Error(message);}
 check(exports.Sprite.Assembler===assemblerExports.spriteAssembler&&labelExports.Label.Assembler===assemblerExports.labelAssembler,'native assembler manager registration');
 const node=new jsb.Node('sprite-api-shell');
@@ -126,6 +132,23 @@ label.onDestroy();
 labelAssembler.updateRenderData(label);labelAssembler.updateColor(label);
 check(labelCurrent.owner===null&&label.sharedMaterials.length===0,'Label destroy clears native and JS material references');
 labelTransform.detach();
+const graphicsNode=new jsb.Node('graphics-runtime-shell');
+const graphics=new graphicsExports.Graphics();graphics.node=graphicsNode;graphics.onLoad();
+check(graphics._native.getSharedMaterial(0),'Graphics builtin material resolves in native');
+graphics.lineCap=2;graphics.lineJoin=1;graphics.miterLimit=3;graphics.lineWidth=6;
+graphics.moveTo(-400,-100);graphics.lineTo(400,-100);graphics.lineTo(400,200);graphics.stroke();
+check(graphics._native.getVertexCount()>4&&graphics._native.getIndexCount()>6,'actual Graphics shell builds native stroke mesh');
+const maskNode=new jsb.Node('graphics-stencil-shell');const maskUI=new n2d.UITransform(maskNode);
+const mask=new n2d.Mask();mask.setNode(maskNode);mask.setType(2);graphics._setMask(mask);
+graphics._native.prepareRenderEntity(1);mask.prepareRenderEntity(1);
+check(mask.getRenderEntity().getRenderDrawInfosSize()===1,'native Mask reads shell geometry without texture');
+graphics.clear();mask.prepareRenderEntity(1);
+check(mask.getRenderEntity().getRenderDrawInfosSize()===0,'native Mask follows clear without JS polling');
+graphics.fillRect(-700,-400,1400,800);mask.prepareRenderEntity(1);
+check(mask.getRenderEntity().getRenderDrawInfosSize()===1,'native Mask follows geometry replacement');
+graphics.onDestroy();mask.prepareRenderEntity(1);
+check(mask.getRenderEntity().getRenderDrawInfosSize()===0,'Graphics shell destroy unbinds source');
+mask.setNode(null);maskUI.detach();
 transform.detach();return 'OK';
 }catch(error){return String(error.stack||error);}})()`;
 fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,script);console.log(output);

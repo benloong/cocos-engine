@@ -1,73 +1,51 @@
 /****************************************************************************
  Copyright (c) 2026 Xiamen Yaji Software Co., Ltd.
-
  http://www.cocos.com
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
 ****************************************************************************/
-
 #pragma once
-
+#include "2d/components/Graphics.h"
 #include "2d/components/Sprite.h"
-#include "base/Ptr.h"
-
 namespace cc {
-
-class Texture2D;
-class SpriteFrame;
 class UITransform;
-class Material;
+class SpriteFrame;
 
-/**
- * Native M4.0 Mask, RECT path.
- *
- * A transparent white Sprite supplies the rectangle geometry; RenderEntity's
- * MaskMode drives the existing Batcher2d/StencilManager path.
- */
-class Mask final {
+class Mask final : public Component, public RenderEntity::IPrepareListener {
 public:
+    static constexpr uint32_t TYPE_ID=7;
     Mask();
-    ~Mask();
-
+    ~Mask() override;
     void setNode(Node *node);
+    uint32_t getTypeId() const override { return TYPE_ID; }
+    void onDetach() override;
     void setUITransform(UITransform *transform);
     void setType(int32_t type);
     void setSpriteFrame(SpriteFrame *frame);
-    void setAlphaThreshold(float alphaThreshold);
+    void setGraphics(Graphics *graphics);
+    void setSegments(uint32_t segments);
+    void setAlphaThreshold(float threshold);
     void setInverted(bool inverted);
     void setEnabled(bool enabled);
     void setMaterial(Material *material);
     void setPriority(int32_t priority);
+    void prepareRenderEntity(float opacity) override;
+    RenderEntity *getRenderEntity() const;
 
 private:
-    Sprite _renderer;
-    void applyFrame();
-
-    IntrusivePtr<Texture2D> _texture;
-    IntrusivePtr<Texture2D> _ellipseTexture;
-    IntrusivePtr<SpriteFrame> _ellipseFrame;
-    IntrusivePtr<SpriteFrame> _spriteFrame;
-    Material *_material{nullptr};
-    int32_t _type{0};
-    float _alphaThreshold{0.1F};
+    void attach();
+    Sprite _sprite;
+    Graphics _graphics;
+    UITransform *_transform{nullptr};
     IntrusivePtr<SpriteFrame> _frame;
+    IntrusivePtr<Material> _material;
+    int32_t _type{0};
+    int32_t _priority{0};
+    uint32_t _segments{64};
+    float _alphaThreshold{0.1F};
     bool _inverted{false};
+    bool _shapeDirty{true};
+    float _width{0};
+    float _height{0};
+    float _anchorX{0};
+    float _anchorY{0};
 };
-
 } // namespace cc

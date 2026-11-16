@@ -1,148 +1,128 @@
 /****************************************************************************
  Copyright (c) 2026 Xiamen Yaji Software Co., Ltd.
-
  http://www.cocos.com
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
 ****************************************************************************/
-
 #include "2d/components/Mask.h"
-
+#include <algorithm>
 #include <cmath>
-
 #include "2d/assets/SpriteFrame.h"
-#include "core/assets/AssetEnum.h"
-#include "core/assets/Texture2D.h"
+#include "2d/framework/UITransform.h"
+#include "core/assets/Material.h"
 
 namespace cc {
-
-Mask::Mask() {
-    _renderer.setSizeMode(0);
-    _texture = new Texture2D();
-    ITexture2DCreateInfo info;
-    info.width = 2;
-    info.height = 2;
-    info.format = PixelFormat::RGBA8888;
-    info.mipmapLevel = 1U;
-    _texture->reset(info);
-    const uint8_t white[16] = {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
-    _texture->uploadData(white);
-    _frame = new SpriteFrame();
-    _frame->setTexture(_texture);
-    _frame->setRect(0.0F, 0.0F, 2.0F, 2.0F);
-    _frame->setOriginalSize(2.0F, 2.0F);
-    _frame->setOffset(0.0F, 0.0F);
-    _frame->setRotated(false);
-    applyFrame();
-    _renderer.setColorRGBA(255.0F, 255.0F, 255.0F, 255.0F);
-    _renderer.getRenderEntity()->setMaskMode(MaskMode::MASK);
+Mask::Mask() { _sprite.setSizeMode(0); }
+Mask::~Mask() { setNode(nullptr); }
+RenderEntity *Mask::getRenderEntity() const { return _type == 3 ? _sprite.getRenderEntity() : _graphics.getRenderEntity(); }
+void Mask::attach() {
+    _sprite.setNode(nullptr);
+    _graphics.setNode(nullptr);
+    if (_type == 3)
+        _sprite.setNode(_node);
+    else
+        _graphics.setNode(_node);
+    auto *entity = getRenderEntity();
+    entity->setPrepareListener(this);
+    entity->setMaskMode(_inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK);
+    entity->setPriority(_priority);
+    entity->setEnabled(_enabled);
 }
-
-Mask::~Mask() = default;
-
 void Mask::setNode(Node *node) {
-    _renderer.setNode(node);
+    Component::setNode(node);
+    _shapeDirty = true;
+    attach();
 }
-
+void Mask::onDetach() {
+    _sprite.setNode(nullptr);
+    _graphics.setNode(nullptr);
+    _transform=nullptr;
+    _sprite.setUITransform(nullptr);
+    _shapeDirty=true;
+}
 void Mask::setUITransform(UITransform *transform) {
-    _renderer.setUITransform(transform);
-}
-
-void Mask::applyFrame() {
-    SpriteFrame *frame = _frame.get();
-    if (_type == 1) {
-        if (_ellipseTexture == nullptr) {
-            _ellipseTexture = new Texture2D();
-            ITexture2DCreateInfo info;
-            info.width = 64;
-            info.height = 64;
-            info.format = PixelFormat::RGBA8888;
-            info.mipmapLevel = 1U;
-            _ellipseTexture->reset(info);
-            std::vector<uint8_t> pixels(64U * 64U * 4U, 0U);
-            for (int32_t y = 0; y < 64; ++y) {
-                for (int32_t x = 0; x < 64; ++x) {
-                    const float nx = (static_cast<float>(x) + 0.5F) / 32.0F - 1.0F;
-                    const float ny = (static_cast<float>(y) + 0.5F) / 32.0F - 1.0F;
-                    if (nx * nx + ny * ny <= 1.0F) {
-                        const size_t i = (static_cast<size_t>(y) * 64U + x) * 4U;
-                        pixels[i] = 255U;
-                        pixels[i + 1U] = 255U;
-                        pixels[i + 2U] = 255U;
-                        pixels[i + 3U] = 255U;
-                    }
-                }
-            }
-            _ellipseTexture->uploadData(pixels.data());
-            _ellipseFrame = new SpriteFrame();
-            _ellipseFrame->setTexture(_ellipseTexture);
-            _ellipseFrame->setRect(0.0F, 0.0F, 64.0F, 64.0F);
-            _ellipseFrame->setOriginalSize(64.0F, 64.0F);
-            _ellipseFrame->setOffset(0.0F, 0.0F);
-            _ellipseFrame->setRotated(false);
-        }
-        frame = _ellipseFrame.get();
-    } else if ((_type == 2 || _type == 3) && _spriteFrame != nullptr) {
-        frame = _spriteFrame.get();
-    }
-    if (frame != nullptr) {
-        _renderer.setFrame(frame);
-    }
+    _transform = transform;
+    _sprite.setUITransform(transform);
+    _shapeDirty = true;
+    if(!transform && _type!=2) _graphics.clear();
 }
 void Mask::setType(int32_t type) {
+    if (_type == type) return;
     _type = type;
-    applyFrame();
+    _shapeDirty = true;
+    _graphics.clear();
+    _graphics.setUseGeometrySource(_type == 2);
+    attach();
 }
-
 void Mask::setSpriteFrame(SpriteFrame *frame) {
-    _spriteFrame = frame;
-    if (_type == 2 || _type == 3) {
-        applyFrame();
-    }
+    _frame = frame;
+    _sprite.setFrame(frame);
+    _sprite.setEnabled(_enabled);
 }
-
-void Mask::setAlphaThreshold(float alphaThreshold) {
-    _alphaThreshold = alphaThreshold;
-    if (_material != nullptr) {
-        _material->setPropertyFloat32("alphaThreshold", alphaThreshold);
-    }
+void Mask::setGraphics(Graphics *graphics) {
+    _graphics.setGeometrySource(graphics);
 }
-
-void Mask::setInverted(bool inverted) {
-    _inverted = inverted;
-    _renderer.getRenderEntity()->setMaskMode(inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK);
+void Mask::setSegments(uint32_t segments) {
+    _segments = std::clamp(segments, 3U, 10000U);
+    _shapeDirty = true;
 }
-
-void Mask::setEnabled(bool enabled) {
-    _renderer.setEnabled(enabled);
+void Mask::setAlphaThreshold(float value) {
+    _alphaThreshold = value;
+    if (_material) _material->setPropertyFloat32("alphaThreshold", value);
 }
-
+void Mask::setInverted(bool value) {
+    _inverted = value;
+    getRenderEntity()->setMaskMode(value ? MaskMode::MASK_INVERTED : MaskMode::MASK);
+}
+void Mask::setEnabled(bool value) {
+    Component::setEnabled(value);
+    _sprite.setEnabled(value);
+    _graphics.setEnabled(value);
+}
 void Mask::setMaterial(Material *material) {
-    _material = material;
-    if (_material != nullptr) {
-        _material->setPropertyFloat32("alphaThreshold", _alphaThreshold);
+    _sprite.setMaterial(material);
+    _material = _sprite.getMaterialInstance(); // per-Mask threshold must not mutate the shared parent
+    setAlphaThreshold(_alphaThreshold);
+}
+void Mask::setPriority(int32_t value) {
+    _priority = value;
+    _sprite.setPriority(value);
+    _graphics.setPriority(value);
+}
+void Mask::prepareRenderEntity(float opacity) {
+    _node = getRenderEntity()->getNode();
+    // Reacquire the non-owning slot before dereferencing, including after a
+    // UITransform is replaced/destroyed or added later.
+    auto *transform = _node ? static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)) : nullptr;
+    if (transform != _transform) setUITransform(transform);
+    if (_type == 3) {
+        _sprite.prepare(opacity);
+        return;
     }
-    _renderer.setMaterial(material);
+    if (_type != 2 && transform) {
+        const auto size = transform->getContentSize();
+        const auto anchor = transform->getAnchorPoint();
+        if (_shapeDirty || size.x != _width || size.y != _height || anchor.x != _anchorX || anchor.y != _anchorY) {
+            _width = size.x;
+            _height = size.y;
+            _anchorX = anchor.x;
+            _anchorY = anchor.y;
+            _graphics.clear();
+            const float x = -_width * _anchorX, y = -_height * _anchorY;
+            if (_type == 1) {
+                for (uint32_t i = 0; i < _segments; ++i) {
+                    const double a = i * 6.283185307179586 / _segments;
+                    const double px = x + _width * .5 + std::cos(a) * _width * .5, py = y + _height * .5 + std::sin(a) * _height * .5;
+                    if (i == 0)
+                        _graphics.moveTo(px, py);
+                    else
+                        _graphics.lineTo(px, py);
+                }
+                _graphics.close();
+            } else
+                _graphics.rect(x, y, _width, _height);
+            _graphics.fill();
+            _shapeDirty = false;
+        }
+    }
+    _graphics.prepareRenderEntity(opacity);
 }
-
-void Mask::setPriority(int32_t priority) {
-    _renderer.setPriority(priority);
-}
-
 } // namespace cc

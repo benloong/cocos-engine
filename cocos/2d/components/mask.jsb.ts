@@ -30,6 +30,7 @@ import { Component } from '../../scene-graph/component';
 import { Node } from '../../scene-graph/node';
 import { UITransform } from '../framework/ui-transform';
 import { Graphics } from './graphics';
+import { CCObject } from '../../core';
 
 declare const n2d: any;
 
@@ -41,8 +42,7 @@ export enum MaskType {
 }
 
 /**
- * Native M4.0 Mask shell. Only RECT is routed to native; other types currently
- * keep the RECT stencil geometry until their native paths land.
+ * Native stencil lifecycle and state bridge.
  */
 @ccclass('cc.Mask')
 @help('i18n:cc.Mask')
@@ -71,7 +71,6 @@ export class Mask extends Component {
     private _spriteFrame: SpriteFrame | null = null;
     private _graphics: Graphics | null = null;
     private _graphicsNode: Node | null = null;
-    private _lastGraphicsFrame: any = null;
 
     public onLoad (): void {
         this._native = new n2d.Mask();
@@ -85,6 +84,7 @@ export class Mask extends Component {
             this._native.setMaterial(material);
         }
         this._native.setType(this._type);
+        this._native.setSegments(this._segments);
         if (this._type === MaskType.GRAPHICS_STENCIL) {
             this.graphics;
         }
@@ -106,11 +106,15 @@ export class Mask extends Component {
     }
 
     public onDestroy (): void {
+        this._graphics?._setMask(null);
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
             this._native = null;
         }
+        this._graphicsNode?.destroy();
+        this._graphicsNode = null;
+        this._graphics = null;
     }
 
     get type (): MaskType {
@@ -120,6 +124,7 @@ export class Mask extends Component {
     set type (value: MaskType) {
         this._type = value;
         this._native?.setType(value);
+        if (value === MaskType.GRAPHICS_STENCIL) this.graphics;
     }
 
     get inverted (): boolean {
@@ -137,32 +142,24 @@ export class Mask extends Component {
 
     set segments (value: number) {
         this._segments = value;
+        this._native?.setSegments(value);
     }
 
     get graphics (): Graphics | null {
         if (!this._graphicsNode) {
             this._graphicsNode = new Node('MaskGraphics');
+            this._graphicsNode._objFlags |= CCObject.Flags.DontSave | CCObject.Flags.HideInHierarchy;
             this._graphicsNode.parent = this.node;
             this._graphicsNode.setPosition(0, 0, 0);
-            const transform = this._graphicsNode.addComponent(UITransform);
-            transform.setContentSize(256, 256);
+            this._graphicsNode.addComponent(UITransform);
         }
         if (!this._graphics) {
             this._graphics = this._graphicsNode.getComponent(Graphics)
                 ?? this._graphicsNode.addComponent(Graphics);
+            this._graphics.enabled = false;
         }
+        this._graphics._setMask(this._native);
         return this._graphics;
-    }
-
-    public lateUpdate (): void {
-        if (this._type !== MaskType.GRAPHICS_STENCIL || !this._graphics) {
-            return;
-        }
-        const frame = (this._graphics as any)._native?.getFrame?.();
-        if (frame && frame !== this._lastGraphicsFrame) {
-            this._lastGraphicsFrame = frame;
-            this._native?.setSpriteFrame(frame);
-        }
     }
 
     get spriteFrame (): SpriteFrame | null {

@@ -185,7 +185,9 @@ private:
     IntrusivePtr<FontAsset> _fontAsset;
     BitmapFontAsset *_bitmapFont{nullptr}; // owned by _fontAsset
     uint32_t _fontAssetRevision{0};
-    std::shared_ptr<LetterAtlas> _letterAtlas;
+    void releaseLetterAtlas();
+    LetterAtlas *_letterAtlas{nullptr}; // borrowed from registry while this Label holds a lease
+    std::string _letterAtlasKey;
 
     IntrusivePtr<SpriteFrame> _bitmapAtlas;
     uint32_t _bitmapAtlasRevision{0};
