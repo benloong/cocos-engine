@@ -44,6 +44,11 @@ check(font.getGlyphCount() === 1 && font.getKerning(65, 65) === -1, 'native pars
 check(font.fontDefDictionary.texture === texture && font.fontDefDictionary.getLetter('65').w === 2, 'deprecated view reads native');
 font.fntConfig.fontDefDictionary[65].xAdvance = 3; font.onLoaded();
 check(font.getGlyphData()[7] === 3, 'onLoaded commits edited serialization view');
+const stale = font.fntConfig;
+stale.fontDefDictionary[65].xAdvance = 99;
+check(font.setConfigJson(JSON.stringify(config)), 'native config update');
+font.onLoaded();
+check(font.getGlyphData()[7] === 2 && font.fntConfig !== stale, 'stale JS view cannot overwrite native config');
 const label = new n2d.Label(); label.setFontAsset(font);
 check(label.getFontAsset() === font, 'Label native asset binding');
 for (let i = 0; i < 1000; i++) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(null); }
@@ -52,8 +57,12 @@ check(font.spriteFrame === null && font.fntConfig === null && font.getGlyphCount
 font.spriteFrame = frame; font.fntConfig = config; font.fontDefDictionary;
 font.destroy();
 check(font.isReleased() && !font._atlasView && !font.spriteFrame, 'destroy drops native and JS compatibility refs');
+font.spriteFrame = frame;
+check(!font.spriteFrame && !font.setConfigJson(JSON.stringify(config)), 'released bitmap rejects late dependency and config writes');
 ttf.initDefault(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === 'Arial', 'TTF default resets data');
 ttf.destroy(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === null, 'TTF destroy releases bytes');
+ttf._nativeAsset = 'Late_FONT';
+check(ttf._nativeAsset === null && ttf.getFontDataSize() === 0, 'released TTF rejects late loader writes');
 return 'OK';
 } catch (error) { return String(error.stack || error); } })()
 `;

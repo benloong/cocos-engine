@@ -108,3 +108,26 @@ test('bitmap serialized data and dependency writes reach native and compatibilit
     expect(texture.destroy).not.toHaveBeenCalled();
     expect(new NativeBitmap().getSpriteFrame()).toBeNull();
 });
+
+test.each([NativeBitmap, NativeLabelAtlas])('font views are independent and stale edits cannot overwrite native updates: %p', (FontClass) => {
+    const first: any = new FontClass(), second: any = new FontClass();
+    first.fntConfig = { fontSize: 12, fontDefDictionary: {} };
+    second.fntConfig = { fontSize: 12, fontDefDictionary: {} };
+    const stale = first.fntConfig;
+    stale.fontSize = 18;
+    expect(second.fntConfig.fontSize).toBe(12);
+    expect(first.fontDefDictionary).not.toBe(second.fontDefDictionary);
+
+    first.setConfigJson(JSON.stringify({ fontSize: 24, fontDefDictionary: {} }));
+    first.onLoaded();
+    expect(first.fntConfig.fontSize).toBe(24);
+    expect(first.fntConfig).not.toBe(stale);
+    stale.fontSize = 36;
+    first.onLoaded();
+    expect(first.fntConfig.fontSize).toBe(24);
+
+    first.clearNativeData();
+    expect(first.fntConfig).toBeNull();
+    expect(second.fntConfig.fontSize).toBe(12);
+    expect(second.fontDefDictionary.getLetter('65').xAdvance).toBe(4);
+});
