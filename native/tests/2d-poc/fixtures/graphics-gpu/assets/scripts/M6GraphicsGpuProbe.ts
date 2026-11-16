@@ -1,4 +1,4 @@
-import { _decorator, Camera, Canvas, Color, Component, director, Graphics, Mask, native, Node, Rect, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, Camera, Canvas, Color, Component, director, Graphics, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 
 const { ccclass } = _decorator;
 // Replaced by prepare-graphics-gpu-project.cjs in the generated project only.
@@ -111,6 +111,44 @@ export class M6GraphicsGpuProbe extends Component {
             if (update) { update(); await capture(`${item.name}-updated`); }
             root.destroy(); await wait(40);
         }
+        const roots: { name: string; actual: number; expected: number }[] = [];
+        const rootCount = (name: string, expected: number): void => {
+            const batcher: any = director.root!.batcher2D;
+            const actual = sys.isNative ? batcher._nativeObj.getRootNodeCount() : batcher._screens.length;
+            roots.push({ name, actual, expected });
+            if (actual !== expected) throw new Error(`Root count ${name}: ${actual}, expected ${expected}`);
+        };
+        const makeRoot = (name: string, color: Color, useCanvas = false): { n: Node; comp: RenderRoot2D } => {
+            const n = node(director.getScene()!, name); n.setWorldPosition(canvas.node.worldPosition);
+            const comp = useCanvas ? n.addComponent(Canvas) : n.addComponent(RenderRoot2D);
+            const g = graphics(n); g.fillColor = color; g.fillRect(-40, -40, 80, 80);
+            return { n, comp };
+        };
+        rootCount('base-canvas', 1);
+        const rootB = makeRoot('root-blue', new Color(0, 0, 255, 128));
+        const rootA = makeRoot('root-red', new Color(255, 0, 0, 128));
+        rootA.n.setSiblingIndex(1); director.root!.batcher2D.sortScreens();
+        await capture('root-order-registration'); rootCount('two-roots-added', 3);
+        rootA.n.setSiblingIndex(2); director.root!.batcher2D.sortScreens();
+        await capture('root-order-reordered'); rootCount('two-roots-reordered', 3);
+        rootA.comp.enabled = false;
+        await capture('root-first-disabled'); rootCount('root-disabled', 2);
+        rootA.comp.enabled = true; rootA.comp.onEnable();
+        await capture('root-first-enabled'); rootCount('root-duplicate-enable', 3);
+        rootA.n.destroy();
+        await capture('root-first-destroyed'); rootCount('root-destroyed', 2);
+        rootB.comp.enabled = false;
+        await capture('root-both-disabled'); rootCount('both-roots-disabled', 1);
+        rootB.n.destroy(); await wait(40);
+        const canvasA = makeRoot('canvas-green', new Color(0, 255, 0, 128), true);
+        const canvasB = makeRoot('canvas-red', new Color(255, 0, 0, 128), true);
+        await capture('root-canvas-pair'); rootCount('two-canvases-added', 3);
+        canvasA.comp.enabled = false;
+        await capture('root-canvas-disabled'); rootCount('canvas-disabled', 2);
+        canvasA.comp.enabled = true;
+        await capture('root-canvas-reenabled'); rootCount('canvas-reenabled', 3);
+        canvasA.n.destroy(); canvasB.n.destroy();
+        await capture('root-canvas-destroyed'); rootCount('canvases-destroyed', 1);
         const hits: { name: string; actual: boolean; expected: boolean }[] = [];
         const hit = (name: string, actual: boolean, expected: boolean): void => {
             hits.push({ name, actual, expected });
@@ -162,7 +200,7 @@ export class M6GraphicsGpuProbe extends Component {
         hitRoot.destroy(); await wait(40);
         const device = director.root!.device;
         const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures,
-            hits, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            roots, hits, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
         console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);

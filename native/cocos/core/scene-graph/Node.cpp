@@ -89,6 +89,9 @@ Node::~Node() {
         // Reset children's _parent to nullptr to avoid dangerous pointer
         for (const auto &child : _children) {
             child->_parent = nullptr;
+            // A child may outlive its parent through JS or a traversal
+            // snapshot. Never leave its subtree borrowing a destroyed Scene.
+            child->walk([](Node *node) { node->_scene = nullptr; });
         }
     }
 }
@@ -341,10 +344,7 @@ void Node::setScene(Node *node) {
 }
 
 void Node::updateScene() {
-    if (_parent == nullptr) {
-        return;
-    }
-    _scene = _parent->_scene;
+    _scene = _parent ? _parent->_scene : nullptr;
     emit<SceneUpdated>(_scene);
 }
 
@@ -859,11 +859,8 @@ bool Node::findSkewAndGetOriginalWorldMatrix(Node *node, Mat4 *out) {
 }
 
 void Node::onSetParent(Node *oldParent, bool keepWorldTransform) {
-    if (_parent) {
-        if ((oldParent == nullptr || oldParent->_scene != _parent->_scene) && _parent->_scene != nullptr) {
-            walk(setScene);
-        }
-    }
+    auto *newScene = _parent ? _parent->_scene : nullptr;
+    if (_scene != newScene) walk(setScene);
 
     if (keepWorldTransform) {
         if (_parent) {

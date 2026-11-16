@@ -15,7 +15,7 @@ try {
     while([DateTime]::UtcNow -lt $deadline) {
         if((Test-Path -LiteralPath $manifest) -and (Get-Item -LiteralPath $manifest).LastWriteTimeUtc -gt $started) {
             $result=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
-            if($result.backend -ne 'native' -or $result.captures.Count -ne 48 -or $result.hits.Count -ne 19) { throw 'Invalid native capture manifest' }
+            if($result.backend -ne 'native' -or $result.captures.Count -ne 58 -or $result.hits.Count -ne 19 -or $result.roots.Count -ne 11) { throw 'Invalid native capture manifest' }
             Write-Output "M6_GPU_NATIVE_READY $($result.captures.Count)"
             exit 0
         }

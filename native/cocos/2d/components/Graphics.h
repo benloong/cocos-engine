@@ -18,7 +18,7 @@ public:
     Graphics();
     ~Graphics() override;
     uint32_t getTypeId() const override { return TYPE_ID; }
-    void setNode(Node *node);
+    void setNode(Node *node) override;
     void onDetach() override;
     void setPriority(int32_t priority);
     void setEnabled(bool enabled);

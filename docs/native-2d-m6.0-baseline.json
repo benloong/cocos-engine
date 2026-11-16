@@ -67,7 +67,7 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "47088ac00304ffca1e05d47838ba132dca80c7874b0eeae554f331b5def95cd6"
+      "sha256": "adc7d07a29c756288de5562102d00e7df82c0903477b424562b8245863760332"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
@@ -75,7 +75,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "ae950d3efe308646700de732015643f8d4889366989b5daf077b4838bd8a8eee"
+      "sha256": "affb23a6f72c2e99523c0fc631eaec4aa5aea62a9f9c331390a71526661b9a82"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -83,7 +83,7 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "6fa23afb2a903b13910d4f3e59325e452e3beb84a9fc93846248d51c0fa11e43"
+      "sha256": "22e0d1090484d415e147ec87e34aedf3a5bcb88b57d60dd4be4a4e49912fa761"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
@@ -99,15 +99,15 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "1a69fa8d020498c23dc49c792fdb05b199ada38a733ea1cde338d526d1533d26"
+      "sha256": "2754d969ac7608c28e9c8cc9b52f5fdc673553adc27d14fb5cb6450f150f84ae"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
-      "sha256": "b8b1083da6f33fa4a8eaf9a0f350971c476ee844adf6b4dbf8c161760f9d4ac0"
+      "sha256": "b55bec3e8ccdac1bc8f8bee9b386a104a8621754bd29dcaec150b88b938d19f1"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.h",
-      "sha256": "35b9a097b4a31887ec8a7ed2fe1250fd9793199ca2708a4a0972607ad2e72ddf"
+      "sha256": "c84dccb2846b466c9de5ec29a5e657de9f10c512bb672ce71610ea9092037ccd"
     },
     {
       "file": "native/cocos/2d/framework/UIOpacity.cpp",
@@ -159,11 +159,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "04db7d71e4f1b60e86de8e7ae8dd520e8c9442b92445727b949f56107330a04e"
+      "sha256": "a52b73a14d79702d9744bbadfb2976e095223436b688b1b3bd042b08f08d48ba"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
-      "sha256": "2ab9d90e3985ab3eb17dbffe265ac6dafc00707dd31266b72f7448c30777965f"
+      "sha256": "f425ca31193106ccbf822bf048a5b7de17b6f4d1c3acbaa1d631826a6469664a"
     },
     {
       "file": "native/cocos/2d/renderer/DynamicAtlas.cpp",
@@ -252,6 +252,30 @@
     {
       "file": "native/cocos/2d/renderer/UIModelProxy.h",
       "sha256": "941459d321eb6f0b1d21b8c838a867af0e72e99b2b1bb6c26651fe125c99dd8e"
+    },
+    {
+      "file": "native/cocos/core/Root.cpp",
+      "sha256": "2be8c42597e0f5f2b0422dd95e6abf7135168c1e6c3e5f3233b9d2a792a85f62"
+    },
+    {
+      "file": "native/cocos/core/Root.h",
+      "sha256": "5d6b63e1961e095f3358f0e302c51853f04c692324edbe2994ebcb9979eb7db5"
+    },
+    {
+      "file": "native/cocos/core/component/Component.cpp",
+      "sha256": "ecc0278476e9953dd905d18fc5c8339bc4c7ba510cd1a3ab07332d4cb76a119f"
+    },
+    {
+      "file": "native/cocos/core/component/Component.h",
+      "sha256": "b03a05301437af2ff24ed1f56a614ffe8ef2f42a5577c3f6424fbe9e28d7d0b2"
+    },
+    {
+      "file": "native/cocos/core/scene-graph/Node.cpp",
+      "sha256": "ce4005f1aef3a55cb856be698bea99f47e73d24042671d41a0a730ad46fb59cd"
+    },
+    {
+      "file": "native/cocos/core/scene-graph/Node.h",
+      "sha256": "14708be8569731f3ca28f4068c1a065076d625ee447a5020c01d3431617c548c"
     },
     {
       "file": "native/tools/swig-config/2d.i",
@@ -2530,7 +2554,10 @@
       "name": "RenderRoot2D",
       "source": "cocos/2d/framework/render-root-2d.ts",
       "runtime": "cocos/2d/framework/render-root-2d.jsb.ts",
-      "testEntrypoints": [],
+      "testEntrypoints": [
+        "tests/ui/native-render-root-lifecycle.test.ts",
+        "native/tests/2d-poc/compare-graphics-gpu.cjs"
+      ],
       "overridden": true,
       "web": {
         "kind": "class",
@@ -15962,8 +15989,8 @@
     },
     {
       "file": "cocos/2d/framework/render-root-2d.jsb.ts",
-      "sha256": "b3315be303382900d2b5b7f5f5b9cb705a7a84fbf854fe76f8ec61c36e680886",
-      "printedCodeLines": 31,
+      "sha256": "992836f1f5070427d50b973212249d53aaba92900a8e599d8b97fdb018b0c5e0",
+      "printedCodeLines": 33,
       "runtimeImports": [
         "cc.decorator",
         "../../scene-graph/component",
@@ -16289,8 +16316,8 @@
     },
     {
       "file": "cocos/2d/renderer/batcher-2d.ts",
-      "sha256": "ab578fe2d6dbac2d4ee926ece8ecf20198dc9338def329b2f6624fb985abb09e",
-      "printedCodeLines": 947,
+      "sha256": "d68a6129a39ae4abb64416fb1ca874eee3c00123b01e915ff6fd6d200e3ca7e3",
+      "printedCodeLines": 949,
       "runtimeImports": [
         "internal:constants",
         "../../render-scene/scene",
@@ -16322,11 +16349,11 @@
       "frameMethods": [
         {
           "name": "update",
-          "line": 273
+          "line": 274
         },
         {
           "name": "update",
-          "line": 1240
+          "line": 1241
         }
       ],
       "nativeCalls": [
@@ -16338,39 +16365,39 @@
       "allocations": [
         {
           "type": "Float32Array",
-          "line": 1021
+          "line": 1022
         },
         {
           "type": "Uint16Array",
-          "line": 1030
+          "line": 1031
         },
         {
           "type": "Float32Array",
-          "line": 1110
+          "line": 1111
         }
       ],
       "loops": [
         178,
         185,
         210,
-        263,
-        280,
-        301,
-        306,
-        327,
-        331,
-        344,
-        354,
-        358,
-        625,
-        889,
-        947,
-        1063,
-        1210,
-        1245,
-        1255,
-        1266,
-        1283
+        264,
+        281,
+        302,
+        307,
+        328,
+        332,
+        345,
+        355,
+        359,
+        626,
+        890,
+        948,
+        1064,
+        1211,
+        1246,
+        1256,
+        1267,
+        1284
       ]
     },
     {

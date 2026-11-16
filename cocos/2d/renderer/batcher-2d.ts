@@ -225,6 +225,7 @@ export class Batcher2D implements IBatcher {
      *             @zh 2d 渲染入口组件。
      */
     public addScreen (comp: RenderRoot2D): void {
+        if (this._screens.includes(comp)) return;
         this._screens.push(comp);
         this._screens.sort(this._screenSort);
         if (JSB) {
@@ -253,7 +254,7 @@ export class Batcher2D implements IBatcher {
     public sortScreens (): void {
         this._screens.sort(this._screenSort);
         if (JSB) {
-            this.syncRootNodesToNative();
+            this._nativeObj.sortRootNodes();
         }
     }
 

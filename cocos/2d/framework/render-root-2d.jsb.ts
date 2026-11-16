@@ -25,6 +25,7 @@ export class RenderRoot2D extends Component {
     private _nativeRoot: any = null;
 
     public onLoad (): void {
+        if (this._nativeRoot) return;
         this._nativeRoot = new n2d.RenderRoot2D();
         this._nativeRoot.setNode(this.node);
     }

@@ -14,7 +14,7 @@ public:
     static constexpr uint32_t TYPE_ID=7;
     Mask();
     ~Mask() override;
-    void setNode(Node *node);
+    void setNode(Node *node) override;
     uint32_t getTypeId() const override { return TYPE_ID; }
     void onDetach() override;
     void setUITransform(UITransform *transform);

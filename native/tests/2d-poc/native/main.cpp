@@ -26,6 +26,7 @@
 #include <cmath>
 #include <cstdio>
 #include <fstream>
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -41,6 +42,7 @@
 #include "2d/assets/SpriteAtlas.h"
 #include "2d/framework/UIOpacity.h"
 #include "2d/framework/UITransform.h"
+#include "2d/framework/RenderRoot2D.h"
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/RenderEntity.h"
 #include "2d/renderer/Batcher2d.h"
@@ -55,6 +57,7 @@
 #include "core/assets/RenderTexture.h"
 #include "core/assets/ImageAsset.h"
 #include "core/scene-graph/Node.h"
+#include "core/scene-graph/Scene.h"
 #include "math/Mat4.h"
 #include "platform/FileUtils.h"
 #include "renderer/GFXDeviceManager.h"
@@ -699,6 +702,83 @@ void testMaskHitLifecycle() {
         check(!mask.isHitWorldPointXY(0,0) && !transform.hitTestWorldXY(0,0), "Node destruction invalidates all hit-test borrows");
     }
     std::printf("mask hit lifecycle: PASS\n");
+}
+
+void testRootRegistrationLifecycle() {
+    cc::Batcher2d batcher(cc::Root::getInstance());
+    cc::IntrusivePtr<cc::Node> parent(new cc::Node("root-parent")), first(new cc::Node("root-first")), second(new cc::Node("root-second"));
+    parent->addChild(first); parent->addChild(second);
+    const auto refs=first->getRefCount();
+    batcher.addRootNode(second);batcher.addRootNode(first);batcher.addRootNode(first);batcher.addRootNode(nullptr);
+    check(batcher.getRootNodeCount()==2 && batcher.getRootNodeAt(0)==first,"root registration deduplicates and orders by sibling index");
+    check(first->getRefCount()==refs,"root registration links do not retain Nodes");
+    second->setSiblingIndex(0);
+    check(batcher.getRootNodeAt(0)==second && batcher.getRootNodeAt(2)==nullptr,"live root ordering follows sibling changes and checks bounds");
+    batcher.removeRootNode(second);batcher.removeRootNode(second);
+    check(batcher.getRootNodeCount()==1,"repeated root removal is safe");
+    batcher.syncRootNodesToNative({second,nullptr,first,second});
+    check(batcher.getRootNodeCount()==2,"legacy root synchronization uses the same observed deduplicated registry");
+    batcher.fillBuffersAndMergeBatches();
+    check(batcher.getRootNodeCount()==2,"detached roots without a Scene are skipped safely");
+    batcher.syncRootNodesToNative({});
+    cc::RenderRoot2D component;
+    {
+        auto node=std::make_unique<cc::Node>("root-destroy-first");
+        component.setNode(node.get());component.setEnabled(true);
+        batcher.addRootNode(node.get());
+        check(node->getUIComponent(cc::RenderRoot2D::TYPE_ID)==&component,"RenderRoot2D participates in Node destruction notifications");
+        node.reset();
+        check(component.getNode()==nullptr && batcher.getRootNodeCount()==0,"Node destruction invalidates both root component and batcher registration");
+    }
+    component.setEnabled(false);component.setNode(first);
+    cc::Component *base=&component;base->setNode(second);
+    check(first->getUIComponent(cc::RenderRoot2D::TYPE_ID)==nullptr && second->getUIComponent(cc::RenderRoot2D::TYPE_ID)==&component,"generic Component node changes dispatch to renderer-specific lifecycle");
+    component.setNode(nullptr);
+    for(int i=0;i<1000;++i) {
+        auto node=std::make_unique<cc::Node>("root-repeat");batcher.addRootNode(node.get());node.reset();
+        check(batcher.getRootNodeCount()==0,"1000 root registration/destruction cycles prune invalid links");
+    }
+    {
+        cc::Batcher2d temporary(cc::Root::getInstance());temporary.addRootNode(first);
+        check(first->getUIComponent(0)!=nullptr,"batcher owns a non-owning Node registration link");
+    }
+    check(first->getUIComponent(0)==nullptr,"batcher destruction detaches registration links from surviving Nodes");
+
+    cc::IntrusivePtr<cc::Scene> scene(new cc::Scene("root-callback-scene"));
+    cc::IntrusivePtr<cc::Node> a(new cc::Node("root-callback-a")), b(new cc::Node("root-callback-b")), c(new cc::Node("root-callback-c"));
+    scene->addChild(a);scene->addChild(b);scene->addChild(c);scene->load();
+    for(auto *node:{a.get(),b.get(),c.get()}) node->setActiveInHierarchy(true);
+    struct Listener final : cc::RenderEntity::IPrepareListener {
+        int calls{0};std::function<void()> callback;
+        void prepareRenderEntity(float) override {++calls;if(callback)callback();}
+    } la,lb,lc;
+    cc::IntrusivePtr<cc::RenderEntity> ea(new cc::RenderEntity(cc::RenderEntityType::DYNAMIC)),eb(new cc::RenderEntity(cc::RenderEntityType::DYNAMIC)),ec(new cc::RenderEntity(cc::RenderEntityType::DYNAMIC));
+    ea->setNode(a);eb->setNode(b);ec->setNode(c);
+    ea->setEnabled(true);eb->setEnabled(true);ec->setEnabled(true);
+    ea->setPrepareListener(&la);eb->setPrepareListener(&lb);ec->setPrepareListener(&lc);
+    batcher.addRootNode(a);batcher.addRootNode(b);
+    la.callback=[&](){batcher.removeRootNode(b);batcher.addRootNode(c);};
+    batcher.fillBuffersAndMergeBatches();
+    check(la.calls==1 && lb.calls==0 && lc.calls==0,"root traversal tolerates callback removal and defers new registrations until next traversal");
+    la.callback=nullptr;
+    batcher.fillBuffersAndMergeBatches();
+    check(la.calls==2 && lc.calls==1,"new root starts on the next traversal without duplicate callbacks");
+    cc::IntrusivePtr<cc::Scene> nextScene(new cc::Scene("root-next-scene"));nextScene->load();
+    c->setParent(nextScene);c->setActiveInHierarchy(true);
+    check(c->getScene()==nextScene.get(),"root reparenting updates the current Scene");
+    batcher.fillBuffersAndMergeBatches();
+    check(lc.calls==2,"root follows a Scene change on the next traversal");
+    c->setParent(nullptr);
+    check(c->getScene()==nullptr,"detached root drops its previous Scene pointer");
+    {
+        auto owner=std::make_unique<cc::Scene>("destroy-scene-before-root");
+        owner->addChild(c);owner->load();owner.reset();
+        check(c->getParent()==nullptr && c->getScene()==nullptr,"surviving root drops a destroyed Scene owner");
+    }
+    batcher.syncRootNodesToNative({});
+    ea->setNode(nullptr);eb->setNode(nullptr);ec->setNode(nullptr);
+    ea->setPrepareListener(nullptr);eb->setPrepareListener(nullptr);ec->setPrepareListener(nullptr);
+    std::printf("root registration lifecycle: PASS\n");
 }
 
 void testUITransform() {
@@ -1496,6 +1576,7 @@ int main(int argc, char **argv) {
         testLayoutAndMaterials();
         testGraphicsMeshes();
         testMaskHitLifecycle();
+        testRootRegistrationLifecycle();
         testRichTextRuntime();
         testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");

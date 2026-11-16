@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "base/Macros.h"
+#include "core/component/Component.h"
 
 namespace cc {
 
@@ -16,21 +16,22 @@ class Node;
  * Native RenderRoot2D registration. Owns the node -> Batcher2d root list
  * membership; Canvas extends the same JS component hierarchy.
  */
-class RenderRoot2D final {
+class RenderRoot2D final : public Component {
 public:
-    RenderRoot2D() = default;
-    ~RenderRoot2D();
+    static constexpr uint32_t TYPE_ID = 8;
+    RenderRoot2D() { _enabled = false; }
+    ~RenderRoot2D() override;
 
-    void setNode(Node *node);
+    uint32_t getTypeId() const override { return TYPE_ID; }
+    void setNode(Node *node) override;
     void setEnabled(bool enabled);
+    void onEnable() override { registerNode(); }
+    void onDisable() override { unregisterNode(); }
 
 private:
     void registerNode();
     void unregisterNode();
 
-    Node *_node{nullptr};
-    bool _enabled{false};
-    bool _registered{false};
 };
 
 } // namespace cc

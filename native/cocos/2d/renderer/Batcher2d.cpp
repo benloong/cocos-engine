@@ -29,12 +29,17 @@
 #include "application/ApplicationManager.h"
 #include "base/TypeDef.h"
 #include "core/Root.h"
+#include "core/component/Component.h"
 #include "core/scene-graph/Scene.h"
 #include "editor-support/MiddlewareManager.h"
 #include "renderer/pipeline/Define.h"
 #include "scene/Pass.h"
 
 namespace cc {
+
+struct Batcher2d::RootNodeEntry final : Component {
+    uint64_t order{0};
+};
 
 namespace {
 
@@ -165,27 +170,58 @@ void Batcher2d::updateDescriptorSet() {
 }
 
 void Batcher2d::syncRootNodesToNative(ccstd::vector<Node*>&& rootNodes) {
-    _rootNodeArr = std::move(rootNodes);
+    _rootNodes.clear();
+    for (auto *node : rootNodes) addRootNode(node);
 }
 
 void Batcher2d::addRootNode(Node* node) {
-    if (node == nullptr) { return; }
-    const auto it = std::find(_rootNodeArr.begin(), _rootNodeArr.end(), node);
-    if (it == _rootNodeArr.end()) {
-        _rootNodeArr.push_back(node);
-    }
+    if (node == nullptr || hasRootNode(node)) return;
+    auto entry = std::make_unique<RootNodeEntry>();
+    entry->order = _nextRootOrder++;
+    entry->setNode(node);
+    _rootNodes.emplace_back(std::move(entry));
 }
 
 void Batcher2d::removeRootNode(Node* node) {
-    const auto it = std::find(_rootNodeArr.begin(), _rootNodeArr.end(), node);
-    if (it != _rootNodeArr.end()) {
-        _rootNodeArr.erase(it);
-    }
+    _rootNodes.erase(std::remove_if(_rootNodes.begin(), _rootNodes.end(),
+        [node](const auto &entry) { return !entry->getNode() || entry->getNode() == node; }), _rootNodes.end());
 }
 
+bool Batcher2d::hasRootNode(Node* node) const {
+    return std::any_of(_rootNodes.begin(), _rootNodes.end(), [node](const auto &entry) { return entry->getNode() == node; });
+}
+
+void Batcher2d::pruneAndSortRootNodes() {
+    removeRootNode(nullptr);
+    std::sort(_rootNodes.begin(), _rootNodes.end(), [](const auto &a, const auto &b) {
+        const auto first = a->getNode()->getSiblingIndex(), second = b->getNode()->getSiblingIndex();
+        return first == second ? a->order < b->order : first < second;
+    });
+}
+
+uint32_t Batcher2d::getRootNodeCount() {
+    pruneAndSortRootNodes();
+    return static_cast<uint32_t>(_rootNodes.size());
+}
+
+Node* Batcher2d::getRootNodeAt(uint32_t index) {
+    pruneAndSortRootNodes();
+    return index < _rootNodes.size() ? _rootNodes[index]->getNode() : nullptr;
+}
+
+void Batcher2d::sortRootNodes() { pruneAndSortRootNodes(); }
+
 void Batcher2d::fillBuffersAndMergeBatches() {
+    pruneAndSortRootNodes();
+    _rootTraversalNodes.clear();
+    for (const auto &entry : _rootNodes) _rootTraversalNodes.emplace_back(entry->getNode());
     size_t index = 0;
-    for (auto* rootNode : _rootNodeArr) {
+    for (const auto &root : _rootTraversalNodes) {
+        auto *rootNode = root.get();
+        if (!hasRootNode(rootNode)) continue;
+        auto *nodeScene = rootNode->getScene();
+        if (!nodeScene || !nodeScene->getRenderScene()) continue;
+        IntrusivePtr<scene::RenderScene> scene(nodeScene->getRenderScene());
         // _batches will add by generateBatch
         walk(rootNode, 1, false);
 
@@ -194,14 +230,17 @@ void Batcher2d::fillBuffersAndMergeBatches() {
         }
 
         generateBatch(_currEntity, _currDrawInfo);
+        resetRenderStates();
+        _stencilManager->setMaskStackSize(0);
+        _stencilManager->setStencilStage(static_cast<uint32_t>(StencilStage::DISABLED));
 
-        auto* scene = rootNode->getScene()->getRenderScene();
         size_t const count = _batches.size();
         for (size_t i = index; i < count; i++) {
             scene->addBatch(_batches.at(i));
         }
         index = count;
     }
+    _rootTraversalNodes.clear();
 }
 
 void Batcher2d::handleUIRenderer(RenderEntity* entity) { // NOLINT(misc-no-recursion)

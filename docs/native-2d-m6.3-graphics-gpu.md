@@ -4,6 +4,8 @@
 
 后续夹具已扩展到 48 个捕获和 19 个命中检查，并补齐 radius/尺寸/anchor/类型切换与原生命中，见 [状态与命中报告](./native-2d-m6.4-mask-state-hit.md)。下述 40 例与对应 JSON 保留为本节点历史证据；复现命令运行当前扩展夹具。
 
+再后续的 [RenderRoot2D 注册报告](./native-2d-m6.4-render-root-lifecycle.md)将当前夹具扩展为 58 个捕获、11 项 root 注册结果和 19 项命中检查。历史阶段 JSON 保留原始快照，当前比较器核对最新用例集合。
+
 ## 本轮修复
 
 - 完整引擎的 deprecated 模块会将 `Mask.graphics` 替换为 `subComp` 别名。native Mask 增加 Graphics 类型的 `subComp` 入口，内部初始化直接调用私有 helper，避免依赖被替换的废弃属性。Jest 使用真实 replaceProperty 重现启动后的接口状态。

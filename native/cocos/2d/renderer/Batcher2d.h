@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include <memory>
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/RenderEntity.h"
 #include "2d/renderer/UIMeshBuffer.h"
@@ -62,6 +63,9 @@ public:
     void syncRootNodesToNative(ccstd::vector<Node*>&& rootNodes);
     void addRootNode(Node* node);
     void removeRootNode(Node* node);
+    uint32_t getRootNodeCount();
+    Node* getRootNodeAt(uint32_t index);
+    void sortRootNodes();
     void releaseDescriptorSetCache(gfx::Texture* texture, gfx::Sampler* sampler);
 
     UIMeshBuffer* getMeshBuffer(uint16_t accId, uint16_t bufferId);
@@ -83,6 +87,9 @@ public:
     void resetRenderStates();
 
 private:
+    struct RootNodeEntry;
+    void pruneAndSortRootNodes();
+    bool hasRootNode(Node* node) const;
     bool _isInit = false;
 
     void insertMaskBatch(RenderEntity* entity);
@@ -99,8 +106,13 @@ private:
 
     // weak reference
     Root* _root{nullptr};
-    // weak reference
-    ccstd::vector<Node*> _rootNodeArr;
+    // Own registration links; each link borrows its Node through Component's
+    // destruction notification. Node never owns or deletes these links.
+    ccstd::vector<std::unique_ptr<RootNodeEntry>> _rootNodes;
+    uint64_t _nextRootOrder{0};
+    // Strong references only for the current traversal, preventing callback
+    // mutations from invalidating root iteration or destroying a root in use.
+    ccstd::vector<IntrusivePtr<Node>> _rootTraversalNodes;
 
     // manage memory manually
     ccstd::vector<scene::DrawBatch2D*> _batches;

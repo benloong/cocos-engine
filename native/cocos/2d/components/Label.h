@@ -59,7 +59,7 @@ public:
 
     uint32_t getTypeId() const override { return TYPE_ID; }
 
-    void setNode(Node *node);
+    void setNode(Node *node) override;
     void setUITransform(UITransform *transform);
 
     void setString(const std::string &text);

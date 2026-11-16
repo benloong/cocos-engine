@@ -84,6 +84,7 @@
 - [x] 原生命中基础链路：Mask.isHit 仅传世界坐标；原生计算圆角/椭圆/反向边界，UITransform 筛选 Camera windowId/layer/离屏并查询当前祖先 Mask。Windows Debug/Release 绑定及生命周期回归、真实场景 19/19 命中检查通过，含 disable/reparent/destroy；见状态与命中报告。完整事件/多 root/Camera/平台矩阵仍由下一项验收。
 - [ ] hit test：覆盖 Camera/坐标转换、旋转缩放、层级、多个 root、嵌套 Mask、启停与销毁；JS 可分发事件，几何命中使用 native。
 - [ ] RenderRoot2D：补多 root/多 Canvas/多 Camera、顺序、启停、重复注册、销毁/场景切换回归；Canvas/Camera/Widget/View 继续保留 JS，不迁移其功能。
+- [x] RenderRoot2D 注册基础硬化：Node 销毁通知、Batcher 独占观察 link、遍历范围强引用快照、重复注册/排序/回调期间变更、跨 root batch/stencil 清理；Windows Debug/Release 与 1000 次 plain Node 注册/释放通过。单 Camera 下两个 root/Canvas 的启停/重排/销毁 GPU 对照通过，扩展夹具 58 图像差值 0、11 注册和 19 命中检查通过；见 [报告与剩余矩阵](./native-2d-m6.4-render-root-lifecycle.md)。不关闭上一项的真实场景/多 Camera/平台门禁。
 - [ ] 所有 native 组件/资产核对 attach/detach、Node 非 owning 槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。
 - [ ] 主线程修改与渲染线程读取的快照/同步边界明确；覆盖场景切换、异步资源完成、禁用后销毁。
 - [ ] 连续加载/卸载 1000 次，无新增泄漏/崩溃；采集 native/JS 堆、引用数和 GC，支持的平台执行 ASan/LeakSanitizer 或等价工具并记录覆盖限制。

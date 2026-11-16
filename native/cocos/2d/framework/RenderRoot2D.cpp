@@ -19,32 +19,32 @@ RenderRoot2D::~RenderRoot2D() {
 void RenderRoot2D::setNode(Node *node) {
     if (_node == node) { return; }
     unregisterNode();
-    _node = node;
-    if (_enabled) { registerNode(); }
+    Component::setNode(node);
 }
 
 void RenderRoot2D::setEnabled(bool enabled) {
-    if (_enabled == enabled) { return; }
-    _enabled = enabled;
+    Component::setEnabled(enabled);
+    // Repeated enable is harmless and retries registration if the engine's
+    // batcher was initialized after this component's first enable.
     if (_enabled) { registerNode(); } else { unregisterNode(); }
 }
 
 void RenderRoot2D::registerNode() {
-    if (_registered || _node == nullptr) { return; }
-    Batcher2d *batcher = Root::getInstance()->getBatcher2D();
+    if (_node == nullptr) { return; }
+    auto *root = Root::getInstance();
+    Batcher2d *batcher = root ? root->getBatcher2D() : nullptr;
     if (batcher != nullptr) {
         batcher->addRootNode(_node);
-        _registered = true;
     }
 }
 
 void RenderRoot2D::unregisterNode() {
-    if (!_registered) { return; }
-    Batcher2d *batcher = Root::getInstance()->getBatcher2D();
+    if (_node == nullptr) { return; }
+    auto *root = Root::getInstance();
+    Batcher2d *batcher = root ? root->getBatcher2D() : nullptr;
     if (batcher != nullptr) {
         batcher->removeRootNode(_node);
     }
-    _registered = false;
 }
 
 } // namespace cc

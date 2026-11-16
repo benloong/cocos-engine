@@ -3,12 +3,20 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==48) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==58) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==48) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==58) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==19||new Set(a.hits.map(x=>x.name)).size!==19||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
+if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
+const centers={
+    'root-order-registration':[64,0,128,255],'root-order-reordered':[128,0,64,255],
+    'root-first-disabled':[0,0,128,255],'root-first-enabled':[128,0,64,255],
+    'root-first-destroyed':[0,0,128,255],'root-both-disabled':[0,0,0,255],
+    'root-canvas-pair':[128,64,0,255],'root-canvas-disabled':[128,0,0,255],
+    'root-canvas-reenabled':[128,64,0,255],'root-canvas-destroyed':[0,0,0,255],
+};
 const sanity={
     'fill-rect':6400,'large-local-coordinates':6400,'clear-and-replace':2400,
     'large-mesh-chunks':20000,'mask-rect':6400,'mask-inverted':46400,
@@ -20,6 +28,7 @@ const results=[];
 for(const name of a.captures) {
     const actual=fs.readFileSync(path.join(native,name+'.rgba')),expected=fs.readFileSync(path.join(web,name+'.rgba'));
     if(actual.length!==262144||expected.length!==262144) throw new Error('Invalid capture size: '+name);
+    if(name in centers && centers[name].some((channel,i)=>Math.abs(expected[(128*256+128)*4+i]-channel)>1)) throw new Error('Root blend/order sanity failed: '+name);
     let max=0,channels=0,pixels=0,colored=0;
     for(let i=0;i<actual.length;i+=4) {
         let different=false;
@@ -32,7 +41,7 @@ for(const name of a.captures) {
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
 }
-const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},hits:a.hits,tolerance:1,pass:results.every(x=>x.pass),results};
+const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},roots:a.roots,hits:a.hits,tolerance:1,pass:results.every(x=>x.pass),results};
 fs.writeFileSync(path.join(__dirname,'build/graphics-gpu-comparison.json'),JSON.stringify(result,null,2));
 for(const row of results) console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: max=${row.max}, pixels=${row.pixels}, Web colored=${row.colored}`);
 if(!result.pass) process.exitCode=1;

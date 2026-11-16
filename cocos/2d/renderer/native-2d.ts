@@ -111,6 +111,7 @@ export declare class NativeBatcher2d {
     setSorting2DCount(count: number);
     reset();
     syncRootNodesToNative(nodes: Node[]);
+    sortRootNodes(): void;
     releaseDescriptorSetCache(texture: Texture, sampler: Sampler);
 }
 

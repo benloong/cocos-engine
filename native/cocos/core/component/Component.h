@@ -46,7 +46,7 @@ public:
     Component &operator=(const Component &) = delete;
 
     Node *getNode() const { return _node; }
-    void setNode(Node *node);
+    virtual void setNode(Node *node);
 
     bool isEnabled() const { return _enabled; }
     void setEnabled(bool enabled);
