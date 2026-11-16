@@ -205,16 +205,16 @@ void Batcher2d::fillBuffersAndMergeBatches() {
 }
 
 void Batcher2d::handleUIRenderer(RenderEntity* entity) { // NOLINT(misc-no-recursion)
-    // A mask can contain multiple mesh chunks (or no triangles). Enter and
-    // clear its stencil level once for the complete renderer, not per chunk.
-    if (entity->getIsMask()) insertMaskBatch(entity);
     uint32_t size = entity->getRenderDrawInfosSize();
+    // Web skips an empty mask renderer. Enter once for all non-empty chunks;
+    // an empty nested renderer must neither push nor pop its parent's level.
+    if (entity->getIsMask() && size > 0) insertMaskBatch(entity);
     for (uint32_t i = 0; i < size; i++) {
         auto* drawInfo = entity->getRenderDrawInfoAt(i);
         handleDrawInfo(entity, drawInfo, entity->getNode());
     }
     entity->setVBColorDirty(false);
-    if (entity->getIsMask()) _stencilManager->enableMask();
+    if (entity->getIsMask() && size > 0) _stencilManager->enableMask();
 }
 
 int32_t Batcher2d::recordUIRenderer(RenderEntity* entity) {
@@ -324,7 +324,7 @@ void Batcher2d::walk(Node* node, float parentOpacity, bool parentColorDirty) { /
 
 void Batcher2d::handlePostRender(RenderEntity* entity) {
     bool isMask = entity->getIsMask();
-    if (isMask) {
+    if (isMask && entity->getRenderDrawInfosSize() > 0) {
         generateBatch(_currEntity, _currDrawInfo);
         resetRenderStates();
         _stencilManager->exitMask();

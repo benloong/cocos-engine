@@ -910,6 +910,8 @@ export class Batcher2D implements IBatcher {
         const children = node.children;
         const uiProps = node._uiProps;
         const render = uiProps.uiComp as UIRenderer | null;
+        const isMask = render && (render.stencilStage === Stage.ENTER_LEVEL || render.stencilStage === Stage.ENTER_LEVEL_INVERTED);
+        let maskStackSize = isMask ? StencilManager.sharedManager!.getMaskStackSize() : 0;
 
         // Save opacity
         const parentOpacity = this._pOpacity;
@@ -928,8 +930,9 @@ export class Batcher2D implements IBatcher {
             }
             if (render) {
                 if (USE_SORTING_2D && sorting2DCount > 0) {
-                    if (render.stencilStage === Stage.ENTER_LEVEL || render.stencilStage === Stage.ENTER_LEVEL_INVERTED) {
+                    if (isMask) {
                         this._flushRecordedUIRenderers();
+                        maskStackSize = StencilManager.sharedManager!.getMaskStackSize();
 
                         this.autoMergeBatches(this._currComponent!);
                         this.resetRenderStates();
@@ -963,12 +966,14 @@ export class Batcher2D implements IBatcher {
             if (!USE_SORTING_2D) {
                 render.postUpdateAssembler(this);
             }
-            if (visable && (render.stencilStage === Stage.ENTER_LEVEL || render.stencilStage === Stage.ENTER_LEVEL_INVERTED)) {
+            if (visable && isMask) {
                 if (USE_SORTING_2D && sorting2DCount > 0) {
                     this._flushRecordedUIRenderers();
                 }
 
-                if (StencilManager.sharedManager!.getMaskStackSize() > 0) {
+                // Empty renderers never enter a level. Only pop a level that
+                // this renderer added, preserving an enclosing mask.
+                if (StencilManager.sharedManager!.getMaskStackSize() > maskStackSize) {
                     this.autoMergeBatches(this._currComponent!);
                     this.resetRenderStates();
                     StencilManager.sharedManager!.exitMask();

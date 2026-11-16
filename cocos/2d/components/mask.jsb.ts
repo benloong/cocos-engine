@@ -86,7 +86,7 @@ export class Mask extends Component {
         this._native.setType(this._type);
         this._native.setSegments(this._segments);
         if (this._type === MaskType.GRAPHICS_STENCIL) {
-            this.graphics;
+            this._getGraphics();
         }
         this._native.setInverted(this._inverted);
         this._native.setAlphaThreshold(this._alphaThreshold);
@@ -124,7 +124,7 @@ export class Mask extends Component {
     set type (value: MaskType) {
         this._type = value;
         this._native?.setType(value);
-        if (value === MaskType.GRAPHICS_STENCIL) this.graphics;
+        if (value === MaskType.GRAPHICS_STENCIL) this._getGraphics();
     }
 
     get inverted (): boolean {
@@ -146,6 +146,14 @@ export class Mask extends Component {
     }
 
     get graphics (): Graphics | null {
+        return this.subComp;
+    }
+
+    get subComp (): Graphics | null {
+        return this._type === MaskType.SPRITE_STENCIL ? null : this._getGraphics();
+    }
+
+    private _getGraphics (): Graphics {
         if (!this._graphicsNode) {
             this._graphicsNode = new Node('MaskGraphics');
             this._graphicsNode._objFlags |= CCObject.Flags.DontSave | CCObject.Flags.HideInHierarchy;

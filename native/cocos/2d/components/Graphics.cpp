@@ -95,25 +95,22 @@ void Graphics::rebuildChunks() {
         chunk = _chunks[used++].get();
         chunk->vertices.clear();
         chunk->indices.clear();
-        chunk->alpha.clear();
         ++stamp;
     };
     for (size_t i = 0; i + 2 < indices.size(); i += 3) {
-        if (!chunk || chunk->alpha.size() + 3 > 65535) next();
+        if (!chunk || chunk->vertices.size() / 8 + 3 > 65535) next();
         for (size_t j = i; j < i + 3; ++j) {
             const auto index = indices[j];
             if (generation[index] != stamp) {
                 generation[index] = stamp;
-                slots[index] = static_cast<uint32_t>(chunk->alpha.size());
+                slots[index] = static_cast<uint32_t>(chunk->vertices.size() / 8);
                 const auto &v = vertices[index];
                 chunk->vertices.insert(chunk->vertices.end(), v.begin(), v.end());
-                chunk->alpha.push_back(v[6]);
             }
             chunk->indices.push_back(static_cast<uint16_t>(slots[index]));
         }
     }
     _chunks.resize(used);
-    _lastOpacity = -1;
 }
 void Graphics::prepareRenderEntity(float opacity) {
     const auto revision = _useSource ? (_source ? _source->_revision : 0) : _revision;
@@ -125,13 +122,13 @@ void Graphics::prepareRenderEntity(float opacity) {
     auto *material = getRenderMaterial();
     for (auto &item : _chunks) {
         auto &c = *item;
-        if (_lastOpacity != opacity)
-            for (size_t i = 0; i < c.alpha.size(); ++i) c.vertices[i * 8 + 6] = c.alpha[i] * opacity;
+        // Match Web's VERTEX fill-color mode: geometry owns its alpha.
+        // Cascaded opacity still propagates through the entity to children.
         auto &draw = c.draw;
         draw.setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
         draw.setIsMeshBuffer(true);
         draw.setStride(8);
-        draw.setVbCount(static_cast<uint32_t>(c.alpha.size()));
+        draw.setVbCount(static_cast<uint32_t>(c.vertices.size() / 8));
         draw.setIbCount(static_cast<uint32_t>(c.indices.size()));
         draw.setVDataBuffer(c.vertices.data());
         draw.setIDataBuffer(c.indices.data());
@@ -139,7 +136,6 @@ void Graphics::prepareRenderEntity(float opacity) {
         draw.setDataHash(0);
         if (material) _entity->addDynamicRenderDrawInfo(&draw);
     }
-    _lastOpacity = opacity;
     _entity->setOpacity(opacity);
 }
 } // namespace cc

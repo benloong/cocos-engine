@@ -33,9 +33,12 @@ test('Mask binds a disabled Graphics helper when its native backend becomes read
     graphicsModule.Graphics=require('../../cocos/2d/components/graphics.jsb').Graphics;
     try {
     const { Mask, MaskType }=require('../../cocos/2d/components/mask.jsb');
+    const { replaceProperty }=require('../../cocos/core/utils/x-deprecated');
+    replaceProperty(Mask.prototype, 'Mask', [{name:'graphics',newName:'subComp',target:Mask.prototype,targetName:'Mask'}]);
     const node=new Node('graphics-mask');node.addComponent(UITransform);
     const mask:any=node.addComponent(Mask);mask.type=MaskType.GRAPHICS_STENCIL;mask.onLoad();
     const helper:any=mask.graphics;
+    expect(mask.subComp).toBe(helper);
     expect(helper.enabled).toBe(false);
     helper.onLoad();
     expect(nativeMask.setGraphics).toHaveBeenLastCalledWith(nativeGraphics);

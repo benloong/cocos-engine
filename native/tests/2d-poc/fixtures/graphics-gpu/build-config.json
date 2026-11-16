@@ -1,0 +1,11 @@
+{
+  "platform": "windows",
+  "buildPath": "project://build",
+  "outputName": "windows",
+  "name": "native-2d-m6-gpu",
+  "startScene": "db://assets/scenes/graphics-gpu.scene",
+  "debug": true,
+  "sourceMaps": false,
+  "md5Cache": false,
+  "mainBundleCompressionType": "merge_dep"
+}

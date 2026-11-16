@@ -1,0 +1,13 @@
+{
+  "name": "native-2d-m6-gpu",
+  "type": "3d",
+  "version": "unknow",
+  "uuid": "94898c46-e9e4-42b6-9ac5-8b76746fedf5",
+  "creator": {
+    "version": "3.8.8",
+    "registry": {
+      "remote": {}
+    },
+    "dependencies": {}
+  }
+}

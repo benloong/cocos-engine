@@ -50,6 +50,6 @@ jobs:
     - name: Verify font assets and nullable deserialization in both implementations
       run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/assets/native-font-assets.test.ts tests/assets/native-font-assets-jit.test.ts tests/core/deserialize.test.ts tests/core/deserialize-jit.test.ts
     - name: Verify native Graphics and Mask lifecycle bridges
-      run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/ui/native-2d-m6-layout-shell.test.ts tests/ui/native-2d-m4-mask-shell.test.ts
+      run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/ui/native-2d-m6-layout-shell.test.ts tests/ui/native-2d-m4-mask-shell.test.ts tests/ui/mask-stencil-lifecycle.test.ts tests/ui/graphics.test.ts
     - run: node ./scripts/compile-native-ts.js 
     #- run: echo "::remove-matcher owner=circular-reference-check::"

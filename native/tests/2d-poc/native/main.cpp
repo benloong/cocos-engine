@@ -487,7 +487,8 @@ void testGraphicsMeshes() {
         check(draw->getTexture()==nullptr && draw->getStride()==8,"Graphics has distance layout and no texture");
         check(draw->getVbCount()==4 && draw->getIbCount()==6,"Graphics rectangle triangulates");
         checkNear(draw->getVDataBuffer()[0],-700,"Graphics is not clipped to 256 canvas");
-        checkNear(draw->getVDataBuffer()[6],128.F/255*.5F,"Graphics multiplies fill alpha and inherited opacity once");
+        checkNear(draw->getVDataBuffer()[6],128.F/255,"Graphics preserves vertex alpha like Web VERTEX fill-color mode");
+        checkNear(entity->getOpacity(),.5F,"Graphics preserves cascaded opacity for descendants");
         auto *ia=draw->requestIA(cc::Root::getInstance()->getDevice());draw->uploadBuffers();
         check(ia->getVertexBuffers()[0]->getSize()==128 && ia->getVertexBuffers()[0]->getStride()==32,"Graphics uploads actual 8-float GPU vertices");
         check(ia->getIndexBuffer()->getSize()==12 && ia->getAttributes().back().name=="a_dist","Graphics GPU index data and distance attribute");

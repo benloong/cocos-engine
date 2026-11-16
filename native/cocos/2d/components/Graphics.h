@@ -67,7 +67,6 @@ protected:
 private:
     struct Chunk {
         std::vector<float> vertices;
-        std::vector<float> alpha;
         std::vector<uint16_t> indices;
         RenderDrawInfo draw;
     };
@@ -80,6 +79,5 @@ private:
     std::vector<std::unique_ptr<Chunk>> _chunks;
     uint64_t _preparedRevision{UINT64_MAX};
     uint64_t _revision{0};
-    float _lastOpacity{-1};
 };
 } // namespace cc

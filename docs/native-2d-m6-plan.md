@@ -69,6 +69,7 @@
 
 - [x] 原生几何核心准备：多子路径/增量 fill-stroke、曲线细分、单环 Earcut（含 Z-order、局部交点修复与拆分）、lineJoin/lineCap/miterLimit 网格生成；786 组实际 Web helper/assembler 对照在 g++ 与 Windows MSVC Debug/Release 通过，含 5000 点复杂填充，另验证 80000 顶点的 32-bit 索引。见 [报告](./native-2d-m6.3-graphics-geometry.md)。现已接入下述运行时基础路径，不能替代 GPU 像素/性能验收。
 - [x] 原生 Graphics 网格提交基础接入：移除 CPU pixels/Texture/Sprite 兼容路径，使用独立 mesh chunks、graphics 距离顶点布局与 local UBO；80000 顶点分块并实际上传 GPU buffer。Mask rect/ellipse/custom 改用几何，Sprite stencil 保留资产纹理；JS 移除 getFrame/lateUpdate 轮询。显式拥有者/借用通知、CHAR 缓存注册表租用、Windows Debug/Release 实际 JSB 和定向回归通过，见 [运行时报告](./native-2d-m6.3-graphics-runtime.md)。
+- [x] Windows Debug 应用 GPU 定向对照：独立相同场景/脚本经真实 Batcher、shader/local UBO、Camera、stencil 和 readPixels 捕获 40 例，Web/native 全通道差值 0；含大尺寸/缩放/3D 旋转、曲线/多路径、9 类描边、80000 顶点 Graphics/Mask、嵌套/inverted/空 Mask 与 alphaThreshold。修复 deprecated graphics→subComp、VERTEX alpha 和两端空嵌套 stencil 配对，见 [报告、结果与待办](./native-2d-m6.3-graphics-gpu.md)。本快照含未提交的已有 SpriteFrame native getter 改动，未作为 M6 最终候选验收。
 - [ ] 完成替换后的真实 GPU 绘制与缩放、大尺寸、复杂/多子路径像素回归；实际 Batcher/graphics shader/Camera/UBO 链路和混合场景须验证，buffer 上传通过不替代此门禁。
 - [ ] 完成 lineJoin/lineCap/miterLimit、roundRect、ellipse、arc、曲线、填充/描边、clear 的场景/GPU 验收。几何对照和 JSB 参数桥接已补，实际像素仍待验收。
 - [ ] 对比逐 API JSB 与命令批量提交的 CPU、调用次数、分配和绘制成本；用数据选择接口。JS 允许纯命令收集，不允许路径算法/三角化。

@@ -63,11 +63,11 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
-      "sha256": "3cba405ea74c75fde8ec22940848f5156b37f8465210d66dbe38a1ae56b4bf30"
+      "sha256": "c467f886f6ba0f0b7286bdd6056506150da9f995e7bcef8d16d9f0351cfcec77"
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "b059fd5012a5b0e15332a01fa765dbd719b6ecf7ef4c19c5205465f2bfce5d87"
+      "sha256": "47088ac00304ffca1e05d47838ba132dca80c7874b0eeae554f331b5def95cd6"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
@@ -159,7 +159,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "78ca79bc4f71afb7478b9e41318aaf412473964e67bce0ccdbb6ac079725f302"
+      "sha256": "04db7d71e4f1b60e86de8e7ae8dd520e8c9442b92445727b949f56107330a04e"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
@@ -7305,7 +7305,9 @@
       "testEntrypoints": [
         "tests/ui/native-2d-m4-mask-shell.test.ts",
         "native/tests/2d-poc/run-m4-mask-probe.ps1",
-        "native/tests/2d-poc/run-m6-sprite-api-tests.ps1"
+        "native/tests/2d-poc/run-m6-sprite-api-tests.ps1",
+        "tests/ui/mask-stencil-lifecycle.test.ts",
+        "native/tests/2d-poc/compare-graphics-gpu.cjs"
       ],
       "overridden": true,
       "web": {
@@ -8295,6 +8297,26 @@
             "decorators": []
           },
           {
+            "name": "subComp",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "Graphics | null",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_getGraphics",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "Graphics",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "spriteFrame",
             "kind": "GetAccessor",
             "visibility": "public",
@@ -8445,7 +8467,6 @@
           "setTextureDirty",
           "sharedMaterial",
           "sharedMaterials",
-          "subComp",
           "updateRenderer"
         ],
         "missingSerializedDeclarations": [],
@@ -8566,7 +8587,8 @@
         "native/tests/2d-poc/run-m4-extra-probe.ps1",
         "native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1",
         "tests/ui/native-graphics-geometry-parity.test.ts",
-        "native/tests/2d-poc/run-m6-sprite-api-tests.ps1"
+        "native/tests/2d-poc/run-m6-sprite-api-tests.ps1",
+        "native/tests/2d-poc/compare-graphics-gpu.cjs"
       ],
       "overridden": true,
       "web": {
@@ -15105,8 +15127,8 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "42d76fe8a3fc2350b4436df9fa0181bad3e53b96d4efbd4c6168def8af5fdf94",
-      "printedCodeLines": 138,
+      "sha256": "0384bc0813d4fcc3abdf76912e1dfcbb371e06c08c72863379b7cc8cb7b62941",
+      "printedCodeLines": 144,
       "runtimeImports": [
         "cc.decorator",
         "../../asset/asset-manager/builtin-res-mgr",
@@ -15190,11 +15212,11 @@
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 171
+          "line": 179
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 188
+          "line": 196
         }
       ],
       "allocations": [],
@@ -16243,8 +16265,8 @@
     },
     {
       "file": "cocos/2d/renderer/batcher-2d.ts",
-      "sha256": "89aedef342cef906aedc739d1c8f1a366e334ac7d0af59ffc7ac1e903505746a",
-      "printedCodeLines": 944,
+      "sha256": "ab578fe2d6dbac2d4ee926ece8ecf20198dc9338def329b2f6624fb985abb09e",
+      "printedCodeLines": 947,
       "runtimeImports": [
         "internal:constants",
         "../../render-scene/scene",
@@ -16280,7 +16302,7 @@
         },
         {
           "name": "update",
-          "line": 1235
+          "line": 1240
         }
       ],
       "nativeCalls": [
@@ -16292,15 +16314,15 @@
       "allocations": [
         {
           "type": "Float32Array",
-          "line": 1016
+          "line": 1021
         },
         {
           "type": "Uint16Array",
-          "line": 1025
+          "line": 1030
         },
         {
           "type": "Float32Array",
-          "line": 1105
+          "line": 1110
         }
       ],
       "loops": [
@@ -16318,13 +16340,13 @@
         358,
         625,
         889,
-        944,
-        1058,
-        1205,
-        1240,
-        1250,
-        1261,
-        1278
+        947,
+        1063,
+        1210,
+        1245,
+        1255,
+        1266,
+        1283
       ]
     },
     {
