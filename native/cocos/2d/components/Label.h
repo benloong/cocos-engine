@@ -175,6 +175,7 @@ private:
     };
 
     IntrusivePtr<SpriteFrame> _bitmapAtlas;
+    uint32_t _bitmapAtlasRevision{0};
     float _bitmapLineHeight{0.0F};
     std::vector<Glyph> _glyphs;
     std::unordered_map<int32_t, size_t> _glyphMap;

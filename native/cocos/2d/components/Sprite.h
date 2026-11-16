@@ -135,6 +135,11 @@ private:
 
     IntrusivePtr<RenderEntity> _entity;
     IntrusivePtr<SpriteFrame> _spriteFrame;
+    uint32_t _frameRevision{0};
+    uint32_t _frameTextureWidth{0};
+    uint32_t _frameTextureHeight{0};
+    bool _flipUVX{false};
+    bool _flipUVY{false};
     std::vector<float> _vertices;
     std::vector<uint16_t> _indices;
 };

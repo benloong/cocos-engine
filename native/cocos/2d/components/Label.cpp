@@ -313,6 +313,10 @@ void Label::setEnabled(bool enabled) {
 }
 
 void Label::prepareRenderEntity(float opacity) {
+    if (_bitmapAtlas && _bitmapAtlasRevision != _bitmapAtlas->getRevision()) {
+        _bitmapAtlasRevision = _bitmapAtlas->getRevision();
+        _dirty = true;
+    }
     if (_dirty) {
         rebuildTexture();
     }

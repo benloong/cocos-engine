@@ -30,6 +30,8 @@
 #include <vector>
 
 #include "2d/components/Sprite.h"
+#include "2d/components/Label.h"
+#include "2d/components/Mask.h"
 #include "2d/assets/SpriteFrame.h"
 #include "2d/assets/SpriteAtlas.h"
 #include "2d/framework/UIOpacity.h"
@@ -42,6 +44,7 @@
 #include "core/assets/Material.h"
 
 #include "core/assets/Texture2D.h"
+#include "core/assets/ImageAsset.h"
 #include "core/scene-graph/Node.h"
 #include "math/Mat4.h"
 #include "platform/FileUtils.h"
@@ -60,6 +63,7 @@ int cocos_main(int /*argc*/, const char ** /*argv*/) {
 
 bool register_all_native2d(se::Object *globalObject);
 bool register_all_engine(se::Object *globalObject);
+bool register_all_assets(se::Object *globalObject);
 bool register_all_scene(se::Object *globalObject);
 
 namespace {
@@ -88,8 +92,8 @@ void checkClose(float actual, float expected, float epsilon, const char *message
 }
 
 void testSpriteAtlas() {
-    auto *atlas = new cc::SpriteAtlas();
-    auto *frame = new cc::SpriteFrame();
+    cc::IntrusivePtr<cc::SpriteAtlas> atlas(new cc::SpriteAtlas());
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame());
     check(atlas != nullptr && frame != nullptr, "SpriteAtlas/frame allocated");
     atlas->addSpriteFrame("icon", frame);
     check(atlas->getSpriteFrameCount() == 1, "SpriteAtlas count after add");
@@ -100,6 +104,98 @@ void testSpriteAtlas() {
     atlas->clear();
     check(atlas->getSpriteFrameCount() == 0, "SpriteAtlas count after clear");
 }
+void testSpriteFrameData() {
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D());
+    texture->create(128, 256);
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame());
+    frame->setRect(7, 11, 40, 28);
+    frame->setOriginalSize(60, 50);
+    frame->setOffset(3, -2);
+    frame->setInsets(5, 9, 6, 8);
+    frame->setRotated(true);
+    frame->loadTexture(texture);
+    checkNear(frame->getRectWidth(), 40, "dependency texture preserves serialized rect");
+    checkNear(frame->getOriginalWidth(), 60, "dependency texture preserves original size");
+    auto uv = frame->getUV();
+    check(uv.size() == 8 && frame->getSlicedUV().size() == 32, "native frame UV sizes");
+    checkNear(uv[0], 7.F / 128.F, "native frame rotated UV");
+    auto border = frame->getTrimmedBorder();
+    checkNear(border[0], 13, "native trimmed left border");
+    checkNear(border[3], -13, "native trimmed top border");
+    cc::IntrusivePtr<cc::SpriteFrame> copy(new cc::SpriteFrame());
+    frame->setFlipUVX(true);
+    frame->setPivotX(0.25F);
+    frame->setPackable(false);
+    frame->setAtlasUuid("atlas");
+    copy->copyFrom(frame);
+    copy->setRectWidth(10);
+    checkNear(frame->getRectWidth(), 40, "native clone has independent geometry");
+    check(copy->getTexture() == texture && copy->getFlipUVX() && !copy->getPackable(), "native clone copies texture and flags");
+    check(copy->getAtlasUuid() == "atlas" && copy->getPivotX() == 0.25F, "native clone copies metadata");
+    copy->resetFrame(false);
+    checkNear(copy->getRectWidth(), 10, "reset without clear preserves geometry");
+    copy->resetFrame(true);
+    checkNear(copy->getRectWidth(), 0, "reset clear removes geometry");
+    copy->resetWithTexture(texture);
+    checkNear(copy->getRectWidth(), 128, "public texture reset uses texture size");
+    checkNear(copy->getOriginalHeight(), 256, "public texture reset initializes original size");
+    for (int i = 0; i < 1000; ++i) {
+        cc::IntrusivePtr<cc::SpriteFrame> temporary(new cc::SpriteFrame());
+        temporary->copyFrom(frame);
+        temporary->setTexture(nullptr);
+    }
+    check(frame->getTexture() == texture, "clone/release keeps original texture alive");
+}
+
+void testFrameConsumers() {
+    std::vector<uint8_t> pixels(16, 255);
+    cc::IntrusivePtr<cc::ImageAsset> image(new cc::ImageAsset());
+    image->setWidth(2); image->setHeight(2); image->setData(pixels.data());
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D());
+    texture->setImage(image);
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame());
+    frame->resetWithTexture(texture);
+    cc::IntrusivePtr<cc::Material> material(new cc::Material());
+    cc::Node labelNode("frame-bmfont");
+    cc::UITransform labelTransform(&labelNode);
+    cc::Label label;
+    label.setNode(&labelNode);
+    label.setUITransform(&labelTransform);
+    label.setMaterial(material);
+    label.setBitmapAtlas(frame, 2);
+    label.addGlyph(65, 0, 0, 2, 2, 0, 0, 2);
+    label.setString("A");
+    label.prepareRenderEntity(1.F);
+    check(label.getOpaquePixels() == 4, "BMFont consumes native SpriteFrame texture");
+
+    cc::Node maskNode("frame-mask");
+    cc::UITransform maskTransform(&maskNode);
+    cc::Mask mask;
+    mask.setNode(&maskNode);
+    mask.setUITransform(&maskTransform);
+    mask.setMaterial(material);
+    mask.setType(3);
+    mask.setSpriteFrame(frame);
+    auto *entity = static_cast<cc::RenderEntity *>(maskNode.getUserData());
+    check(entity != nullptr, "sprite stencil has native entity");
+    if (entity) {
+        entity->prepare(1.F);
+        check(entity->getStaticDrawInfoSize() == 1, "Mask consumes native SpriteFrame");
+        frame->setRectWidth(1);
+        entity->prepare(1.F);
+        checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[12], 0.5F, "Mask sees in-place frame rect mutation");
+    }
+
+    std::vector<uint8_t> transparentPixels(16, 0);
+    cc::IntrusivePtr<cc::ImageAsset> transparentImage(new cc::ImageAsset());
+    transparentImage->setWidth(2); transparentImage->setHeight(2); transparentImage->setData(transparentPixels.data());
+    cc::IntrusivePtr<cc::Texture2D> transparentTexture(new cc::Texture2D());
+    transparentTexture->setImage(transparentImage);
+    frame->setTexture(transparentTexture);
+    label.prepareRenderEntity(1.F);
+    check(label.getOpaquePixels() == 0, "BMFont sees shared frame texture replacement");
+}
+
 void testUITransform() {
     cc::Node node("native-2d-poc");
     node.setPosition(10.F, 20.F, 0.F);
@@ -357,6 +453,7 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
     check(globalObject != nullptr, "global object");
     check(register_all_engine(globalObject), "register_all_engine");
     check(register_all_scene(globalObject), "register_all_scene");
+    check(register_all_assets(globalObject), "register_all_assets");
     check(register_all_native2d(globalObject), "register_all_native2d");
 
     const char *script =
@@ -380,13 +477,33 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    var ur = new n2d.UIRenderer();"
         "    ur.setColorRGBA(1, 2, 3, 255);"
         "    ur.setPriority(5);"
-        "    var sf = new n2d.SpriteFrame();"
+        "    var sf = new jsb.SpriteFrame();"
         "    sf.setRect(0, 0, 1, 1);"
         "    sf.setOriginalSize(1, 1);"
         "    sf.setOffset(0, 0);"
         "    sf.setRotated(false);"
         "    sf.setInsets(1, 2, 3, 4);"
-        "    var atlas = new n2d.SpriteAtlas();"
+        "    var clone = new jsb.SpriteFrame();"
+        "    clone.copyFrom(sf);"
+        "    clone.setRectWidth(7);"
+        "    if (sf.getRectWidth() !== 1 || clone.getRectWidth() !== 7) return 'frame copy shares data';"
+        "    if (sf.getInsetTop() !== 3) return 'frame inset order';"
+        "    if (sf.getPixelsToUnit() !== 100 || sf.getPivotX() !== 0.5) return 'frame defaults';"
+        "    var revision = sf.getRevision();"
+        "    sf.setFlipUVX(true);"
+        "    if (!sf.getFlipUVX() || sf.getRevision() === revision) return 'frame flip revision';"
+        "    if (sf.getUV().length !== 0) return 'missing texture UV';"
+        "    var texture = new jsb.Texture2D();"
+        "    texture.create(128, 256);"
+        "    sf.setTexture(texture);"
+        "    sf.setRect(7, 11, 40, 28);"
+        "    sf.setRotated(true);"
+        "    sf.setFlipUVX(false);"
+        "    if (sf.getUV().length !== 8 || sf.getSlicedUV().length !== 32) return 'frame UV binding conversion';"
+        "    if (Math.abs(sf.getUV()[0] - 7 / 128) > 0.000001) return 'frame UV binding values';"
+        "    sf.resetFrame(true);"
+        "    if (sf.getRectWidth() !== 0 || sf.getInsetLeft() !== 0) return 'frame reset';"
+        "    var atlas = new jsb.SpriteAtlas();"
         "    atlas.addSpriteFrame('icon', sf);"
         "    if (atlas.getSpriteFrameCount() !== 1) return 'unexpected atlas count';"
         "    if (!atlas.getSpriteFrame('icon')) return 'unexpected atlas lookup';"
@@ -575,6 +692,72 @@ void testSpritePrepare() {
         check(drawInfo->getIbCount() == 6, "sprite index count");
         check(drawInfo->getMaterial() == material, "sprite material");
         check(drawInfo->getTexture() == texture->getGFXTexture(), "sprite texture");
+    }
+
+    // Mutating a shared native frame must invalidate idle sprites without
+    // JS reassigning spriteFrame. Check real render buffers in all five modes.
+    cc::IntrusivePtr<cc::SpriteFrame> mutableFrame(new cc::SpriteFrame());
+    mutableFrame->setTexture(texture);
+    mutableFrame->setOriginalSize(1.F, 1.F);
+    mutableFrame->setRect(0.F, 0.F, 1.F, 1.F);
+    cc::Sprite otherSprite;
+    cc::Node otherNode("shared-frame");
+    cc::UITransform otherTransform(&otherNode);
+    otherTransform.setContentSize(100.F, 100.F);
+    otherSprite.setNode(&otherNode);
+    otherSprite.setUITransform(&otherTransform);
+    otherSprite.setMaterial(material);
+    otherSprite.setSizeMode(0);
+    sprite.setSizeMode(0);
+    sprite.setFrame(mutableFrame);
+    otherSprite.setFrame(mutableFrame);
+    for (int mode = 0; mode < 5; ++mode) {
+        sprite.setType(mode < 3 ? mode : 3);
+        sprite.setFillType(mode == 4 ? 2 : 0);
+        mutableFrame->setFlipUVX(false);
+        mutableFrame->setRectWidth(1.F);
+        entity->prepare(1.F);
+        mutableFrame->setRectWidth(0.5F);
+        entity->prepare(1.F);
+        otherSprite.prepare(1.F);
+        auto *info = entity->getStaticRenderDrawInfo(0);
+        check(info && info->getVbCount() > 0, "frame revision rebuilds all sprite modes");
+        if (info) {
+            const float *vertices = info->getVDataBuffer();
+            for (uint32_t i = 0; i < info->getVbCount(); ++i) {
+                check(vertices[i * 9 + 3] <= 0.50001F, "in-place rect mutation updates native UV");
+            }
+        }
+    }
+    sprite.setType(0);
+    mutableFrame->setFlipUVX(true);
+    sprite.prepare(1.F);
+    checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[3], 0.5F, "flip mutation rebuilds idle sprite");
+    checkNear(otherSprite.getRenderEntity()->getStaticRenderDrawInfo(0)->getVDataBuffer()[12], 0.5F,
+              "shared frame mutation reaches second sprite");
+    mutableFrame->setTexture(nullptr);
+    sprite.prepare(1.F);
+    check(entity->getStaticDrawInfoSize() == 0, "cleared texture removes stale draw info");
+    mutableFrame->setTexture(texture);
+    sprite.prepare(1.F);
+    check(entity->getStaticDrawInfoSize() == 1, "resolved texture restores draw info");
+    mutableFrame->setRect(0.25F, 0.125F, 0.5F, 0.25F);
+    for (int flags = 0; flags < 8; ++flags) {
+        mutableFrame->setRotated((flags & 1) != 0);
+        mutableFrame->setFlipUVX((flags & 2) != 0);
+        mutableFrame->setFlipUVY((flags & 4) != 0);
+        for (int type = 0; type < 2; ++type) {
+            sprite.setType(type);
+            sprite.prepare(1.F);
+            const auto expected = type == 0 ? mutableFrame->getUV() : mutableFrame->getSlicedUV();
+            const auto *info = entity->getStaticRenderDrawInfo(0);
+            const float *vertices = info->getVDataBuffer();
+            check(info->getVbCount() * 2 == expected.size(), "Sprite and asset UV layouts agree");
+            for (uint32_t i = 0; i < info->getVbCount(); ++i) {
+                checkNear(vertices[i * 9 + 3], expected[i * 2], "Sprite consumes frame rotation/flip U convention");
+                checkNear(vertices[i * 9 + 4], expected[i * 2 + 1], "Sprite consumes frame rotation/flip V convention");
+            }
+        }
     }
 
     cc::Node slicedNode("native-sprite-sliced");
@@ -784,6 +967,8 @@ int main() {
     {
         se::AutoHandleScope scope;
         testSpriteAtlas();
+        testSpriteFrameData();
+        testFrameConsumers();
         std::printf("sprite atlas done\n");
         std::fflush(stdout);
         testUITransform();

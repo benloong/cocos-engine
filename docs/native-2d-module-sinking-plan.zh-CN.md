@@ -3,7 +3,7 @@
 > 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、Canvas/RenderRoot2D 及配套 assembler/assets/event）。已弃用的 `UIStaticBatch` 不纳入范围。`UIMeshRenderer`、`UIMesh`、`UISkew`、`Canvas`、`Camera`、`Widget`、`View` 明确不下沉，保持 JS。
 > 不包含：`cocos/ui` 控件（Button/ScrollView/EditBox/Widget/Layout 等）以及动画、粒子、骨骼、物理、3D UI 桥接、编辑器逻辑、用户脚本。范围已冻结，`cocos/ui` 不进入本次任何阶段。
 > 目标读者：引擎 2D/JSB/构建方向的同学。
-> 更新：2026-11-13。M6 未收口：M2 阶段完成，M3/M4/M5 有 Windows 功能验收记录；RichText 解析/布局、Graphics 三角化与资产一致性等终态欠项仍需完成。统一任务及终态门禁见 [M6 计划](./native-2d-m6-plan.md)。本次仅核对代码与既有报告，未新增原生/跨平台通过结论。
+> 更新：2026-11-16。M6 未收口：M2 阶段完成，M3/M4/M5 有 Windows 功能验收记录；SpriteFrame 基础数据/UV 已新增 Windows 定向验证，见 [M6.1 报告](./native-2d-m6.1-sprite-frame.md)。RichText、Graphics、其余资产及场景/平台验收仍有欠项；统一任务和终态门禁见 [M6 计划](./native-2d-m6-plan.md)。
 
 ---
 
@@ -171,7 +171,7 @@
 - SpriteFrame 已有 native 数据缓存和 Sprite 消费路径；M6 继续统一 UV/字段权威状态与 API，避免恢复逐帧跨 JSB 读取。
 - 当前 SpriteFrame、SpriteAtlas 已直接导出 jsb.SpriteFrame/jsb.SpriteAtlas 并修改 prototype，实例字段在 _ctor 中初始化，调用 Asset 初始化；覆盖同名 API 前保存原生方法，避免递归。不再派生 JS 资产子类或另建 _nativeAtlas 包装对象。
 - 组件继续保留 JS Component 身份；资产 prototype 模式不直接套用到组件继承链。
-- SpriteFrame 仍有 JS UV 计算及字段镜像，SpriteAtlas 的 JS map 与 native frame 表同步仍需审计；prototype 统一不等于终态完成。
+- 2026-11-16：SpriteFrame 基础数据、quad/sliced UV、reset/clone 已迁入 native，JS 数学对象改为可写视图，Windows 定向验证通过，见 [M6.1 报告](./native-2d-m6.1-sprite-frame.md)。动态合图/mesh 与真实场景验收仍待补齐；SpriteAtlas 的 JS map 与 native frame 表同步仍需处理。
 - TTFFont/LabelAtlas/BitmapFont、动态合图按需 native 化；逐类确认数据、所有权和生命周期，见 M6.1。
 - `Renderer` 的材质实例/共享材质解析属于“逻辑”，终态要在 native：M2 就把 UI 需要的 `getSharedMaterial/setSharedMaterial`、material instance 选择做成 native 接口，JS 壳只转发；不要把它留成永久 JS 逻辑。
 - 当前 UIRenderer 保留 extends Renderer；M6 复核 sharedMaterials/material/getSharedMaterial/setSharedMaterial 等 API、继承身份和间接执行路径，确保迁移组件不再执行 JS 材质选择逻辑。组件不直接改为原生资产式 prototype 导出。

@@ -9,6 +9,12 @@ if ($LASTEXITCODE -ne 0) {
     throw "C++ PoC tests failed with exit code $LASTEXITCODE"
 }
 
+Write-Host '== M6.1 SpriteFrame Web/native UV parity =='
+& (Join-Path $PSScriptRoot 'run-m6-sprite-frame-tests.ps1')
+if ($LASTEXITCODE -ne 0) {
+    throw "SpriteFrame parity tests failed with exit code $LASTEXITCODE"
+}
+
 Write-Host '== PNG comparison helper =='
 node (Join-Path $PSScriptRoot 'test-compare-png.js')
 if ($LASTEXITCODE -ne 0) {

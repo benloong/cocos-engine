@@ -119,6 +119,11 @@ void Sprite::setFrame(SpriteFrame *frame) {
     _insetRight = frame->getInsetRight();
     _insetTop = frame->getInsetTop();
     _insetBottom = frame->getInsetBottom();
+    _frameRevision = frame->getRevision();
+    _frameTextureWidth = texture == nullptr ? 0 : texture->getWidth();
+    _frameTextureHeight = texture == nullptr ? 0 : texture->getHeight();
+    _flipUVX = frame->getFlipUVX();
+    _flipUVY = frame->getFlipUVY();
     applySizeMode();
     _dirty = true;
 }
@@ -251,13 +256,25 @@ void Sprite::setTrim(bool trim) {
 }
 
 void Sprite::prepare(float opacity) {
+    // Read native asset revisions before the idle early return. No JSB polling
+    // or second JS copy is needed when a shared frame changes in place.
+    if (_spriteFrame) {
+        const auto *texture = _spriteFrame->getTexture();
+        const uint32_t width = texture == nullptr ? 0 : texture->getWidth();
+        const uint32_t height = texture == nullptr ? 0 : texture->getHeight();
+        if (_frameRevision != _spriteFrame->getRevision() || width != _frameTextureWidth || height != _frameTextureHeight) {
+            setFrame(_spriteFrame.get());
+        }
+    }
     if (!_dirty && _lastOpacity >= 0.F && std::fabs(opacity - _lastOpacity) <= 1e-6F) {
         return;
     }
     if (_node == nullptr || _transform == nullptr || _texture == nullptr || _entity == nullptr) {
+        if (_entity != nullptr) _entity->setStaticDrawInfoSize(0);
         return;
     }
     if (_frameRect.width <= 0.F || _frameRect.height <= 0.F) {
+        _entity->setStaticDrawInfoSize(0);
         return;
     }
 
@@ -388,6 +405,16 @@ void Sprite::prepare(float opacity) {
             _indices.assign(quad.indices, quad.indices + INDEX_COUNT);
         }
 
+        // Web sliced UV does not apply quad flip flags. Other modes mirror
+        // texture coordinates inside the complete (possibly rotated) frame.
+        if (_type != 1 && (_flipUVX || _flipUVY) && _textureSize.x > 0 && _textureSize.y > 0) {
+            const float sumU = (2 * _frameRect.x + (_rotated ? _frameRect.height : _frameRect.width)) / _textureSize.x;
+            const float sumV = (2 * _frameRect.y + (_rotated ? _frameRect.width : _frameRect.height)) / _textureSize.y;
+            for (uint32_t i = 0; i < vertexCount; ++i) {
+                if (_flipUVX) _vertices[i * VERTEX_STRIDE + 3] = sumU - _vertices[i * VERTEX_STRIDE + 3];
+                if (_flipUVY) _vertices[i * VERTEX_STRIDE + 4] = sumV - _vertices[i * VERTEX_STRIDE + 4];
+            }
+        }
         _entity->setStaticDrawInfoSize(1);
         RenderDrawInfo *drawInfo = _entity->getStaticRenderDrawInfo(0);
         if (drawInfo == nullptr) {
