@@ -321,7 +321,7 @@
 
 ### M6：终态欠项、资产、事件与硬化（原估 4~5 周，待重估）
 
-> 状态：**未收口**。以 [M6 剩余任务与终态验收](./native-2d-m6-plan.md) 为统一执行清单。
+> 状态：**未收口**。以 [M6 剩余任务与终态验收](./native-2d-m6-plan.md) 为统一执行清单。构建/运行/验收命令见 [Cocos CLI 与 native 验收流程](./native-2d-build-and-acceptance.zh-CN.md)。
 
 - M6.0：API/parity、薄壳残留、历史遗留和工具链基线；
 - M6.1：SpriteFrame UV/状态一致性，SpriteAtlas 依赖解析与 native 表同步，字体/图集资产、克隆/释放；
