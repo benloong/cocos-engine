@@ -2,9 +2,10 @@
 const fs=require('fs'),path=require('path');
 const graphicsGpuSnapshot=require('./graphics-gpu-snapshot.cjs');
 const root=path.resolve(__dirname,'../../..');
-const project=path.join(__dirname,'build/graphics-gpu-project');
+const mode=process.argv.includes('--richtext')?'richtext':'graphics';
+const project=path.join(__dirname,`build/${mode}-gpu-project`);
 const fixture=path.join(__dirname,'fixtures/graphics-gpu');
-const nativeOutput=path.join(__dirname,'build/graphics-gpu-native').replaceAll('\\','/');
+const nativeOutput=path.join(__dirname,`build/${mode}-gpu-native`).replaceAll('\\','/');
 fs.mkdirSync(project,{recursive:true});
 fs.mkdirSync(path.join(project,'build/windows/data'),{recursive:true});
 const assetsLink=path.join(project,'build/windows/assets');
@@ -19,10 +20,12 @@ const packageFile=path.join(project,'package.json');
 const manifest=JSON.parse(fs.readFileSync(packageFile,'utf8'));
 manifest.name+='-generated';
 fs.writeFileSync(packageFile,JSON.stringify(manifest,null,2)+'\n');
-const {snapshot,fixtureHashes}=graphicsGpuSnapshot();
+const {snapshot,fixtureHashes}=graphicsGpuSnapshot(mode);
 fs.writeFileSync(path.join(project,'m6-gpu-snapshot.json'),JSON.stringify({snapshot,fixtureHashes},null,2)+'\n');
 const file=path.join(project,'assets/scripts/M6GraphicsGpuProbe.ts');
-fs.writeFileSync(file,fs.readFileSync(file,'utf8').replace('__M6_GPU_OUTPUT__',nativeOutput).replace('__M6_GPU_SNAPSHOT__',snapshot));
+fs.writeFileSync(file,fs.readFileSync(file,'utf8').replace('__M6_GPU_OUTPUT__',nativeOutput).replace('__M6_GPU_SNAPSHOT__',snapshot).replace('__M6_GPU_MODE__',mode));
+const rich=path.join(project,'assets/scripts/M6RichTextMatrix.ts');
+fs.writeFileSync(rich,fs.readFileSync(rich,'utf8').replace('__M6_GPU_FONT__',path.join(root,'tests/fixtures/Thonburi.ttf').replaceAll('\\','/')));
 const common=path.join(project,'native/engine/common');
 if(fs.existsSync(common)) {
     fs.writeFileSync(path.join(common,'localCfg.cmake'),`set(COCOS_X_PATH "${root.replaceAll('\\','/')}/native")\n`);

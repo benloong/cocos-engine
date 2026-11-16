@@ -1,10 +1,12 @@
 import { _decorator, Camera, Canvas, Color, Component, director, Graphics, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { runSceneMatrix } from './M6SceneMatrix';
+import { runRichTextMatrix } from './M6RichTextMatrix';
 
 const { ccclass } = _decorator;
 // Replaced by prepare-graphics-gpu-project.cjs in the generated project only.
 const outputRoot = '__M6_GPU_OUTPUT__';
 const snapshot = '__M6_GPU_SNAPSHOT__';
+const probeMode: string = '__M6_GPU_MODE__';
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 @ccclass('M6GraphicsGpuProbe')
@@ -105,6 +107,16 @@ export class M6GraphicsGpuProbe extends Component {
             captures.push(name);
             console.log(`M6_GPU_CAPTURE ${JSON.stringify({ name, backend: sys.isNative ? 'native' : 'web' })}`);
         };
+        if (probeMode === 'richtext') {
+            const text = await runRichTextMatrix(canvas.node, capture);
+            const device = director.root!.device;
+            const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures, text,
+                width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
+            else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
+            console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);
+            return;
+        }
         for (const item of cases) {
             const root = node(canvas.node, item.name);
             const update = item.draw(root);

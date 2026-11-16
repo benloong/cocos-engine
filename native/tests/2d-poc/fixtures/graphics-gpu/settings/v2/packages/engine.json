@@ -36,7 +36,7 @@
             "_value": false
           },
           "rich-text": {
-            "_value": false
+            "_value": true
           },
           "mask": {
             "_value": true
@@ -207,6 +207,7 @@
           "base",
           "gfx-webgl",
           "2d",
+          "rich-text",
           "graphics",
           "mask",
           "ui",

@@ -1,8 +1,9 @@
 'use strict';
 const fs=require('fs'),path=require('path'),http=require('http');
 const { spawn }=require('child_process');
-const root=path.join(__dirname,'build/graphics-gpu-project/build/web-mobile');
-const output=path.join(__dirname,'build/graphics-gpu-web');
+const mode=process.argv.includes('--richtext')?'richtext':'graphics';
+const root=path.join(__dirname,`build/${mode}-gpu-project/build/web-mobile`);
+const output=path.join(__dirname,`build/${mode}-gpu-web`);
 const chrome=process.env.CC_GPU_CHROME||'C:/Program Files/Google/Chrome/Application/chrome.exe';
 if(!fs.existsSync(path.join(root,'index.html'))) throw new Error('Build the Web fixture first');
 fs.mkdirSync(output,{recursive:true});
@@ -24,6 +25,10 @@ const server=http.createServer(async(req,res)=>{
                 fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify(value,null,2));doneResolve(value);
             } else throw new Error('Unknown POST');
             res.writeHead(200);res.end('OK');return;
+        }
+        if(url.pathname==='/m6-font.ttf') {
+            res.writeHead(200,{'Content-Type':'font/ttf'});
+            fs.createReadStream(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf')).pipe(res);return;
         }
         const relative=decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname);
         const file=path.resolve(root,'.'+relative);

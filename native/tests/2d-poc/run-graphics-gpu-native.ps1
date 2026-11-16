@@ -1,13 +1,13 @@
-param([string]$Exe = (Join-Path $PSScriptRoot 'build/gpu-win/native-2d-m6-gpu.exe'))
+param([string]$Exe = (Join-Path $PSScriptRoot 'build/gpu-win/native-2d-m6-gpu.exe'), [ValidateSet('graphics','richtext')][string]$Mode = 'graphics')
 $ErrorActionPreference = 'Stop'
 $exePath=(Resolve-Path -LiteralPath $Exe).Path
-$data=(Resolve-Path (Join-Path $PSScriptRoot 'build/graphics-gpu-project/build/windows/data')).Path
+$data=(Resolve-Path (Join-Path $PSScriptRoot "build/$Mode-gpu-project/build/windows/data")).Path
 $resources=Join-Path (Split-Path -Parent $exePath) 'Resources'
 & robocopy $data $resources /E /NFL /NDL /NJH /NJS /NP | Out-Null
 if($LASTEXITCODE -gt 7) { throw 'Resource copy failed' }
-$log=Join-Path $PSScriptRoot 'build/graphics-gpu-native.log'
-$err=Join-Path $PSScriptRoot 'build/graphics-gpu-native.err.log'
-$manifest=Join-Path $PSScriptRoot 'build/graphics-gpu-native/manifest.json'
+$log=Join-Path $PSScriptRoot "build/$Mode-gpu-native.log"
+$err=Join-Path $PSScriptRoot "build/$Mode-gpu-native.err.log"
+$manifest=Join-Path $PSScriptRoot "build/$Mode-gpu-native/manifest.json"
 $started=[DateTime]::UtcNow
 $process=Start-Process -FilePath $exePath -WorkingDirectory (Split-Path -Parent $exePath) -WindowStyle Hidden -RedirectStandardOutput $log -RedirectStandardError $err -PassThru
 try {
@@ -15,7 +15,9 @@ try {
     while([DateTime]::UtcNow -lt $deadline) {
         if((Test-Path -LiteralPath $manifest) -and (Get-Item -LiteralPath $manifest).LastWriteTimeUtc -gt $started) {
             $result=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
-            if($result.backend -ne 'native' -or $result.captures.Count -ne 74 -or $result.hits.Count -ne 19 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000) { throw 'Invalid native capture manifest' }
+            if($result.backend -ne 'native') { throw 'Invalid native backend' }
+            if($Mode -eq 'graphics' -and ($result.captures.Count -ne 74 -or $result.hits.Count -ne 19 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000)) { throw 'Invalid native capture manifest' }
+            if($Mode -eq 'richtext' -and ($result.captures.Count -ne 12 -or $result.text.loaded -ne $true -or $result.text.released -ne $true)) { throw 'Invalid native RichText manifest' }
             Write-Output "M6_GPU_NATIVE_READY $($result.captures.Count)"
             exit 0
         }

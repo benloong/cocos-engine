@@ -1,0 +1,505 @@
+{
+  "snapshot": "6ffee460c14d84c33d3e624961bf1f8bff1d2412cc3459284b77214404ba4805",
+  "font": {
+    "source": "tests/fixtures/Thonburi.ttf",
+    "sha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+    "bytes": 223404,
+    "loaded": true,
+    "released": true
+  },
+  "environment": {
+    "native": {
+      "os": "Windows",
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "vendor": "Imagination Technologies (Host: NVIDIA Corporation)"
+    },
+    "web": {
+      "os": "Windows",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (NVIDIA)"
+    }
+  },
+  "pass": false,
+  "results": [
+    {
+      "name": "text-basic",
+      "max": 254,
+      "pixels": 1228,
+      "webColored": 3648,
+      "nativeColored": 658,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-basic",
+        "width": 108,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -54,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-basic",
+        "width": 95.9765625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "302f61cc6327d8471eae9e72beef3e0422106fc4ae07b00219fd051e9c9ec642",
+      "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87"
+    },
+    {
+      "name": "text-bold",
+      "max": 255,
+      "pixels": 1528,
+      "webColored": 3648,
+      "nativeColored": 802,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-bold",
+        "width": 117,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -58.5,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-bold",
+        "width": 95.9765625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "db68071477687124a7fb5a22cab1eafbe7867591cbb165d4c1b1a64c9bc5579c",
+      "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9"
+    },
+    {
+      "name": "text-italic",
+      "max": 254,
+      "pixels": 1253,
+      "webColored": 3876,
+      "nativeColored": 718,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-italic",
+        "width": 108,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -54,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-italic",
+        "width": 101.07791997407736,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53895998703868,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "cebe2fafd53948877f27712ccea5fac8114fe1c3e69ca2faabcbc7b0d2fd524e",
+      "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475"
+    },
+    {
+      "name": "text-underline",
+      "max": 255,
+      "pixels": 1642,
+      "webColored": 3648,
+      "nativeColored": 976,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-underline",
+        "width": 108,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -54,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-underline",
+        "width": 95.9765625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "3d674ec2d41f9fc7b30517f36378409da9163c25af7916afef1f79f7e8dd6a57",
+      "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a"
+    },
+    {
+      "name": "text-outline",
+      "max": 255,
+      "pixels": 1087,
+      "webColored": 2268,
+      "nativeColored": 867,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-outline",
+        "width": 60,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -30,
+            "y": -20.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-outline",
+        "width": 53.3515625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -26.67578125,
+            "y": -20.9
+          }
+        ]
+      },
+      "nativeSha256": "561d4fa170f538e0a6b9d2953d42eece8008512bb02cb4685c065fcbf86a19fa",
+      "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c"
+    },
+    {
+      "name": "text-nested",
+      "max": 255,
+      "pixels": 1516,
+      "webColored": 3876,
+      "nativeColored": 796,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-nested",
+        "width": 117,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -58.5,
+            "y": -18.899999618530273
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": 19.5,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-nested",
+        "width": 101.07791997407736,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53895998703868,
+            "y": -18.9
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": 5.45322751296132,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "14768a530f0a770dce81097f2541ad32ecbf75bdf81f07e89224f41ac75fbf38",
+      "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3"
+    },
+    {
+      "name": "text-colors",
+      "max": 254,
+      "pixels": 1177,
+      "webColored": 3496,
+      "nativeColored": 719,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-colors",
+        "width": 96,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -48,
+            "y": -18.899999618530273
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -12,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-colors",
+        "width": 91.5859375,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -45.79296875,
+            "y": -18.9
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -10.12109375,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "d11eedb9027460473f56f28f8497c5312b46aea516f5dc1590d58c091fde4aa4",
+      "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22"
+    },
+    {
+      "name": "text-wrap-left",
+      "max": 255,
+      "pixels": 3158,
+      "webColored": 6794,
+      "nativeColored": 1364,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-wrap-left",
+        "width": 120,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-wrap-left",
+        "width": 120,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "4bc71d228618440003cb157a9ad076e0abe50a385523505299c68f2b28c273f3",
+      "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f"
+    },
+    {
+      "name": "text-wrap-center",
+      "max": 255,
+      "pixels": 3125,
+      "webColored": 6756,
+      "nativeColored": 1364,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-wrap-center",
+        "width": 120,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -54,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-wrap-center",
+        "width": 120,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -51.30859375,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "b231734e89e31df523fb84a0fcb222ddfc03241cd1aece3cec86442004d41ece",
+      "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca"
+    },
+    {
+      "name": "text-wrap-right",
+      "max": 254,
+      "pixels": 3163,
+      "webColored": 6794,
+      "nativeColored": 1364,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-wrap-right",
+        "width": 120,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -48,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-wrap-right",
+        "width": 120,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -42.6171875,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -35.9765625,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "5e9234368559f2f7457c362832077a96439f4490cbba477faf9007a28a43526f",
+      "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da"
+    },
+    {
+      "name": "text-multiline",
+      "max": 255,
+      "pixels": 1171,
+      "webColored": 2800,
+      "nativeColored": 556,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-multiline",
+        "width": 60,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -30,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -30,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-multiline",
+        "width": 49.3515625,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -24.67578125,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -24.67578125,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "7197ba4cc305810fa103904059f4e2f56d2692578d726883a52dfbb41501be26",
+      "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220"
+    },
+    {
+      "name": "text-unicode",
+      "max": 254,
+      "pixels": 1146,
+      "webColored": 3876,
+      "nativeColored": 545,
+      "layoutEqual": false,
+      "pass": false,
+      "native": {
+        "name": "text-unicode",
+        "width": 92,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -46,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-unicode",
+        "width": 101.0703125,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53515625,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "09a2f39bab48aeec542b1ed2d8bda1d376bf83fa935127dee3cca746befe801c",
+      "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9"
+    }
+  ]
+}

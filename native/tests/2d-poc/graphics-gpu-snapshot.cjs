@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const {build}=require('./audit-m6.cjs');
-module.exports=function graphicsGpuSnapshot() {
+module.exports=function graphicsGpuSnapshot(mode='graphics') {
     const root=path.resolve(__dirname,'../../..');
     const fixture=path.join(__dirname,'fixtures/graphics-gpu');
     const report=build(root),fixtureHashes=[];
@@ -13,6 +13,7 @@ module.exports=function graphicsGpuSnapshot() {
         }
     }
     walk(fixture);
-    const snapshot=crypto.createHash('sha256').update(JSON.stringify({files:report.files.map(x=>[x.file,x.sha256]),native:report.nativeSourceHashes,fixture:fixtureHashes})).digest('hex');
+    fixtureHashes.push(['tests/fixtures/Thonburi.ttf',crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'tests/fixtures/Thonburi.ttf'))).digest('hex')]);
+    const snapshot=crypto.createHash('sha256').update(JSON.stringify({mode,files:report.files.map(x=>[x.file,x.sha256]),native:report.nativeSourceHashes,fixture:fixtureHashes})).digest('hex');
     return {snapshot,fixtureHashes};
 };
