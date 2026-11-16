@@ -5,6 +5,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "2d/framework/UIComponentType.h"
 
 #include "core/component/Component.h"
 
@@ -18,7 +19,7 @@ class Node;
  */
 class RenderRoot2D final : public Component {
 public:
-    static constexpr uint32_t TYPE_ID = 8;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::RenderRoot2D);
     RenderRoot2D() { _enabled = false; }
     ~RenderRoot2D() override;
 

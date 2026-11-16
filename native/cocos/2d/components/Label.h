@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "2d/framework/UIComponentType.h"
 
 #include <string>
 #include <memory>
@@ -52,7 +53,7 @@ class UITransform;
  */
 class Label final : public UIRenderer, public RenderEntity::IPrepareListener {
 public:
-    static constexpr uint32_t TYPE_ID = UIRenderer::TYPE_ID + 2;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Label);
 
     Label();
     ~Label() override;

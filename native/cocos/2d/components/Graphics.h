@@ -3,6 +3,7 @@
  http://www.cocos.com
 ****************************************************************************/
 #pragma once
+#include "2d/framework/UIComponentType.h"
 #include <memory>
 #include "2d/framework/UIRenderer.h"
 #include "2d/geometry/GraphicsGeometry.h"
@@ -14,7 +15,7 @@ class UITransform;
 // Native path/mesh owner. Local vertices use the graphics shader and Node UBO.
 class Graphics final : public UIRenderer, public RenderEntity::IPrepareListener {
 public:
-    static constexpr uint32_t TYPE_ID = 6;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Graphics);
     Graphics();
     ~Graphics() override;
     uint32_t getTypeId() const override { return TYPE_ID; }

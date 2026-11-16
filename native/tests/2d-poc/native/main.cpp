@@ -746,6 +746,13 @@ void testMaskHitLifecycle() {
 
 void testRootRegistrationLifecycle() {
     cc::Batcher2d batcher(cc::Root::getInstance());
+    {
+        cc::Node node("root-and-richtext");cc::UITransform transform(&node);
+        cc::RenderRoot2D root;cc::RichText text;root.setNode(&node);text.setNode(&node);
+        check(node.getUIComponent(cc::RenderRoot2D::TYPE_ID)==&root && node.getUIComponent(cc::RichText::TYPE_ID)==&text,"RenderRoot2D and RichText occupy distinct live Node slots");
+        check(cc::RichText::TYPE_ID==8 && cc::RenderRoot2D::TYPE_ID==9,"existing UI type IDs remain stable while Root gets a new slot");
+        root.setNode(nullptr);text.setNode(nullptr);
+    }
     cc::IntrusivePtr<cc::Node> parent(new cc::Node("root-parent")), first(new cc::Node("root-first")), second(new cc::Node("root-second"));
     parent->addChild(first); parent->addChild(second);
     const auto refs=first->getRefCount();

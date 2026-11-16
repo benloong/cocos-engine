@@ -4,7 +4,7 @@
 
 ## 实现与所有权
 
-- RenderRoot2D 继承 native Component，使用 TYPE_ID=8 接入 Node 销毁通知，不再维护独立的 Node 裸指针和可能过期的 registered 标志。启停/换 Node 通过当前 Root/Batcher 注册或移除；Root 不存在时安全跳过，重复 enable 可以重试注册。
+- RenderRoot2D 继承 native Component，使用集中维护的 UIComponentTypeId::RenderRoot2D（9）接入 Node 销毁通知，不再维护独立的 Node 裸指针和可能过期的 registered 标志。启停/换 Node 通过当前 Root/Batcher 注册或移除；Root 不存在时安全跳过，重复 enable 可以重试注册。
 - Component.setNode 改为 virtual，RenderRoot2D、Sprite、Label、Graphics、Mask 明确 override，避免通过 Component 指针换 Node 时绕过 renderer 的解绑/附加逻辑。此修改影响 C++ vtable，应用和 native 库必须一致重建。
 - Batcher 以 unique_ptr 独占每个注册 link。link 是轻量 Component，通过 Node 的非 owning 槽位得到销毁通知；Node 销毁后 link 的 Node 自动变为 null。Node 不拥有 link，注册也不增加 Node 引用。Batcher 销毁时 link 析构从仍存活的 Node 移除自身。
 - 重复注册去重、重复移除安全，legacy syncRootNodesToNative 也使用同一带销毁通知的注册表。每次遍历前删除失效 link，并按当前 siblingIndex 排序，平局按注册序稳定决定顺序。std::sort 不使用额外堆缓冲。
@@ -33,6 +33,12 @@
 当前图像/注册/命中夹具沿用 [GPU 复现步骤](./native-2d-m6.3-graphics-gpu.md#复现)，比较器现在要求 58 图像、11 注册结果和 19 命中结果。原始数据和本机构建日志位于 native/tests/2d-poc/build 忽略目录。
 
 ## 保持待验收
+
+### UI 槽位编号冲突修正（2026-11-16）
+
+先前实现错误地给 RenderRoot2D 分配了 8，与 RichText 冲突。ASAN 在真实 Scene 切换夹具中检出 Batcher 将 RenderRoot2D 当作 RichText 后越界写入；此前像素对照通过不能证明该版本内存安全。现将已有 UITransform 至 RichText 的 1–8 保持稳定，RenderRoot2D 改为 9，统一声明在 UIComponentType.h。Batcher 编译时检查九个实际组件 TYPE_ID 非零且互不重复；native 回归同一 Node 上同时绑定 UITransform、RichText、RenderRoot2D，验证查找互不覆盖。
+
+Windows Debug/Release harness 已通过（包括字体入口驱动的完整 native 回归）。修正编号后的 Windows Debug ASAN 应用完成 1000 次真实 Scene/动态纹理切换，日志 `native/tests/2d-poc/build/scene-matrix-asan-final.log` 包含 `M6_SCENE_ASAN_READY 1000`，错误日志为空。这仅是该夹具的 ASAN 证据；新多 Camera 视觉用例仍发现 Graphics 在 onLoad 前丢命令，尚未通过整个 Scene 矩阵或全 M6 Gate。
 
 本节点证明单 Camera 下多个 root/Canvas 的基础顺序与生命周期，以及 C++ 层跨 Scene 重挂。真实 director 场景切换、多个 Camera 的可见性/顺序/目标窗口组合、嵌套 root、全部回调/渲染线程同步边界、完整资源加载释放和平台矩阵仍待验证。1000 次 plain Node 注册/释放不是 1000 次完整资产/场景加载卸载，也不替代泄漏检测器。
 

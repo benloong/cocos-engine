@@ -24,8 +24,16 @@
 
 #include "2d/renderer/Batcher2d.h"
 #include "2d/components/RichText.h"
+#include "2d/components/Graphics.h"
+#include "2d/components/Label.h"
+#include "2d/components/Mask.h"
+#include "2d/components/Sprite.h"
+#include "2d/framework/RenderRoot2D.h"
+#include "2d/framework/UIOpacity.h"
+#include "2d/framework/UITransform.h"
 
 #include <algorithm>
+#include <array>
 #include "application/ApplicationManager.h"
 #include "base/TypeDef.h"
 #include "core/Root.h"
@@ -42,6 +50,16 @@ struct Batcher2d::RootNodeEntry final : Component {
 };
 
 namespace {
+
+constexpr bool uniqueUIComponentIds() {
+    constexpr std::array<uint32_t, 9> ids{UITransform::TYPE_ID, UIOpacity::TYPE_ID, UIRenderer::TYPE_ID,
+        Sprite::TYPE_ID, Label::TYPE_ID, Graphics::TYPE_ID, Mask::TYPE_ID, RichText::TYPE_ID, RenderRoot2D::TYPE_ID};
+    for (size_t i = 0; i < ids.size(); ++i)
+        for (size_t j = i + 1; j < ids.size(); ++j)
+            if (ids[i] == ids[j]) return false;
+    return true;
+}
+static_assert(uniqueUIComponentIds(), "native UI component slot IDs must be unique");
 
 const bool ENABLE_SORTING_2D = true;
 int32_t sorting2DCount{0};

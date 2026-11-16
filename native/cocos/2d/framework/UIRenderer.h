@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "2d/framework/UIComponentType.h"
 
 #include <cstdint>
 #include <vector>
@@ -45,7 +46,7 @@ class Material;
  */
 class UIRenderer : public Component {
 public:
-    static constexpr uint32_t TYPE_ID = 3;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::UIRenderer);
 
     UIRenderer();
     ~UIRenderer() override;

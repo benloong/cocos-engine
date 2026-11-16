@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "2d/framework/UIComponentType.h"
 
 #include <cstdint>
 #include <functional>
@@ -46,7 +47,7 @@ namespace cc {
  */
 class UITransform final : public Component {
 public:
-    static constexpr uint32_t TYPE_ID = 1;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::UITransform);
 
     UITransform() = default;
     explicit UITransform(Node *node);

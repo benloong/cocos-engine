@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "2d/framework/UIComponentType.h"
 #include "core/component/Component.h"
 #include "2d/renderer/RichTextLayout.h"
 #include "2d/assets/Font.h"
@@ -38,7 +39,7 @@ class UITransform;
 /** Native parser, layout and Label/Sprite segment ownership for RichText. */
 class RichText final : public Component {
 public:
-    static constexpr uint32_t TYPE_ID = 8;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::RichText);
     RichText();
     ~RichText() override;
     uint32_t getTypeId() const override { return TYPE_ID; }

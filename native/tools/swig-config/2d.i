@@ -236,6 +236,7 @@
 %include "2d/renderer/UIModelProxy.h"
 %include "2d/renderer/Batcher2d.h"
 %include "core/component/Component.h"
+%include "2d/framework/UIComponentType.h"
 // Keep the JS callback alive exactly as long as the native mutation hook.
 %typemap(in) const std::function<void(float, float)> & (std::function<void(float, float)> callback) {
     se::Value rooted = $input;

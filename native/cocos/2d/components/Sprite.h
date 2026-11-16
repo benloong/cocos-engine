@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "2d/framework/UIComponentType.h"
 
 #include <cstdint>
 #include <vector>
@@ -51,7 +52,7 @@ class UITransform;
  */
 class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener {
 public:
-    static constexpr uint32_t TYPE_ID = UIRenderer::TYPE_ID + 1;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Sprite);
 
     Sprite();
     ~Sprite() override;

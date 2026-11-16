@@ -3,6 +3,7 @@
  http://www.cocos.com
 ****************************************************************************/
 #pragma once
+#include "2d/framework/UIComponentType.h"
 #include "2d/components/Graphics.h"
 #include "2d/components/Sprite.h"
 namespace cc {
@@ -11,7 +12,7 @@ class SpriteFrame;
 
 class Mask final : public Component, public RenderEntity::IPrepareListener {
 public:
-    static constexpr uint32_t TYPE_ID=7;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Mask);
     Mask();
     ~Mask() override;
     void setNode(Node *node) override;

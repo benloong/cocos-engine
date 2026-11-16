@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "2d/framework/UIComponentType.h"
 
 #include "core/component/Component.h"
 
@@ -34,7 +35,7 @@ namespace cc {
  */
 class UIOpacity final : public Component {
 public:
-    static constexpr uint32_t TYPE_ID = 2;
+    static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::UIOpacity);
 
     UIOpacity() = default;
     explicit UIOpacity(Node *node);
