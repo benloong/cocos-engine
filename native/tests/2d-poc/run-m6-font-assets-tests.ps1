@@ -23,6 +23,9 @@ foreach ($item in $NativeExecutables) {
 }
 & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
     (Join-Path $repoRoot 'tests/assets/native-font-assets.test.ts') `
+    (Join-Path $repoRoot 'tests/assets/native-font-assets-jit.test.ts') `
+    (Join-Path $repoRoot 'tests/core/deserialize.test.ts') `
+    (Join-Path $repoRoot 'tests/core/deserialize-jit.test.ts') `
     (Join-Path $repoRoot 'tests/ui/native-2d-m3-label-shell.test.ts') `
     (Join-Path $repoRoot 'tests/ui/font-loader.test.ts') `
     (Join-Path $repoRoot 'tests/ui/font-family.test.ts')

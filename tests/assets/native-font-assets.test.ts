@@ -1,4 +1,4 @@
-import { Details } from '../../cocos/serialization/deserialize';
+import { deserialize, Details } from '../../cocos/serialization/deserialize';
 import { js } from '../../cocos/core';
 
 const assetCtor = jest.fn();
@@ -130,4 +130,39 @@ test.each([NativeBitmap, NativeLabelAtlas])('font views are independent and stal
     expect(first.fntConfig).toBeNull();
     expect(second.fntConfig.fontSize).toBe(12);
     expect(second.fontDefDictionary.getLetter('65').xAdvance).toBe(4);
+});
+
+test.each(['BitmapFont', 'LabelAtlas'])('%s deserializes native data and records its atlas dependency', (name) => {
+    const details = new Details();
+    const config = { fontDefDictionary: { 65: { rect: { x: 0, y: 0, width: 2, height: 3 }, xAdvance: 4 } } };
+    const font: any = deserialize({
+        __type__: `cc.${name}`,
+        fontSize: 18,
+        fntDataStr: 'serialized-font',
+        fntConfig: config,
+        spriteFrame: { __uuid__: 'font-frame' },
+    }, details);
+    expect(font).toBeInstanceOf(name === 'LabelAtlas' ? NativeLabelAtlas : NativeBitmap);
+    expect(font.getFontSize()).toBe(18);
+    expect(font.getFntDataStr()).toBe('serialized-font');
+    expect(JSON.parse(font.getConfigJson())).toEqual(config);
+    expect(details.uuidList).toEqual(['font-frame']);
+    expect(details.uuidObjList).toEqual([font]);
+    expect(details.uuidPropList).toEqual(['spriteFrame']);
+    const frame = { texture: {} };
+    details.uuidObjList![0][details.uuidPropList![0]] = frame;
+    font.onLoaded();
+    expect(font.getSpriteFrame()).toBe(frame);
+    expect(font.fontDefDictionary.texture).toBe(frame.texture);
+});
+
+test('TTFFont deserializes its family without loading bytes until its native dependency arrives', () => {
+    const font: any = deserialize({ __type__: 'cc.TTFFont', _fontFamily: 'Serialized_FONT' });
+    expect(font).toBeInstanceOf(NativeTTF);
+    expect(font.getFontFamily()).toBe('Serialized_FONT');
+    expect(font.loadFontData).not.toHaveBeenCalled();
+    font.nativeUrl = '/fonts/serialized.ttf';
+    font._nativeAsset = 'Loaded_FONT';
+    expect(font.loadFontData).toHaveBeenCalledTimes(1);
+    expect(font.getFontFamily()).toBe('Loaded_FONT');
 });

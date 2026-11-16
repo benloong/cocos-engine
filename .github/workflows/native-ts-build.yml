@@ -46,5 +46,7 @@ jobs:
         ./native/tests/2d-poc/run-m6-richtext-layout-parity.ps1
     - name: Verify RichText shell and native Node initialization
       run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/ui/native-2d-m6-richtext-shell.test.ts tests/scene-graph/native-node-constructor.test.ts tests/ui/richtext.test.ts
+    - name: Verify font assets and nullable deserialization in both implementations
+      run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/assets/native-font-assets.test.ts tests/assets/native-font-assets-jit.test.ts tests/core/deserialize.test.ts tests/core/deserialize-jit.test.ts
     - run: node ./scripts/compile-native-ts.js 
     #- run: echo "::remove-matcher owner=circular-reference-check::"

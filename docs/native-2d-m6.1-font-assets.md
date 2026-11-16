@@ -42,6 +42,8 @@ V8 探针隔离 core/metadata 与 Asset 初始化，元数据由 Jest 验证；�
 
 补充回归覆盖 BitmapFont/LabelAtlas 实例间配置和兼容视图隔离、native 配置更新后旧 JS 视图不覆盖新数据，以及释放一个资产不影响另一个资产。实际 JSB 探针同时验证 destroy 后迟到的图集依赖、配置和 TTF 加载器写入不能恢复已释放的数据。
 
+补充实际 `deserialize` 入口验证：BitmapFont/LabelAtlas 恢复原生配置、字号、源文本，记录 SpriteFrame UUID 并经 Details 回填；TTFFont 恢复 family 时不会提前读取 native 依赖。该测试发现并修复内置类快速反序列化把 null 默认值的字符串当作对象的问题，JIT 和非 JIT 实现都改为按序列化值区分 primitive/object。两种实现分别覆盖 nullable 字符串、数字、布尔、对象、null 和缺省字段；四个定向 Jest suite 共 24 项通过，已接入字体测试脚本与 native TS CI。CI 配置已更新，远端运行仍待验证。本轮重新运行 Windows Debug/Release 字体 JSB 探针通过；这不替代完整 asset-manager 异步加载与真实场景验收。
+
 ## 后续验收
 
 按 [M6 计划](./native-2d-m6-plan.md) 继续真实字体资源/旧场景/Prefab、完整异步依赖加载、重复加载释放、平台字体注册表/句柄矩阵、复杂文本和 GPU 对照。基础数据下沉通过不关闭这些终态 Gate。

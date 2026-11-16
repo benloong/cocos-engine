@@ -18,6 +18,10 @@
       "sha256": "f9e218c797353570f86bcb7f5dd7f00450b07ff92947381e0f7ce71c50c1e62e"
     },
     {
+      "file": "cocos/serialization/deserialize-dynamic.ts",
+      "sha256": "94eb999ae9e8d2a6c5d394d02afe5f5d678a90f17294013254b53568edd70f2f"
+    },
+    {
       "file": "native/CMakeLists.txt",
       "sha256": "cd145ae1f9182250418400b13e46808c0edc220b5aa5e9ae9ce5220f916ab91a"
     },

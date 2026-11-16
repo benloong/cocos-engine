@@ -14,7 +14,7 @@ node --test tests/scripts/native-2d-audit.test.cjs
 
 --write 更新源代码快照；--check 只验证快照是否过时，不把已知缺口豁免为通过。修复 API/字段/native 实现后需同步快照及本矩阵，不能只更新快照而不处理欠项。AST 测试覆盖字段与访问器区分、type-only import 排除、语法热点提取及运行时模块选择。native-ts-build CI 执行检查。
 
-审计包含 17 类、60 个可达 2D 源文件及 61 个 native/绑定/配置文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
+审计包含 17 类、60 个可达 2D 源文件及 62 个 native/绑定/配置与反序列化边界文件指纹。导入图按 NATIVE override 解析相对 import/reexport；到非 2D 文件处记录边界并停止。边界的重新进入、动态导入及实际 tree-shaking/模块执行仍需构建产物审计。方法未在壳直接声明不等于不存在：可能来自基类；这些名字逐项留给 API 行为验收。
 
 原生资产声明把 Web 类型作为 TS 接口，无法用该类型证明原生方法真的绑定。六个资产的记录明确标记为 native prototype/binding review required，不能把“缺失 0”当成完整 API 验收。对象可变语义与资产依赖沿字段/类型和相关 M6.1 报告核对，必须由实际运行测试证明。
 

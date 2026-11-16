@@ -135,7 +135,9 @@ function compileDeserializeJIT (self: _Deserializer, klass: CCClassConstructor<u
         // function undefined object(null) string boolean number
         const defaultValue = CCClass.getDefault(attrs[propName + POSTFIX_DEFAULT]);
         const userType = attrs[propName + POSTFIX_TYPE] as AnyFunction | string | undefined;
-        if (fastMode && (defaultValue !== undefined || userType)) {
+        // A null default can also represent a nullable primitive (for example
+        // TTFFont._fontFamily); inspect the serialized value in that case.
+        if (fastMode && defaultValue !== null && (defaultValue !== undefined || userType)) {
             const isPrimitiveTypeInFastMode = isPrimitivePropertyByDefaultOrType(defaultValue, userType);
             if (isPrimitiveTypeInFastMode) {
                 sources.push(`o${accessorToSet}=prop;`);
@@ -181,6 +183,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
     const advancedProps: string[] = [];
     let advancedPropsToRead = advancedProps;
     const advancedPropsValueType: any = [];
+    const advancedPropsNullable: boolean[] = [];
 
     ((): void => {
         const props: string[] = klass.__values__;
@@ -218,6 +221,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
                     advancedPropsToRead.push(propNameToRead);
                 }
                 advancedPropsValueType.push((defaultValue instanceof cclegacy.ValueType) && defaultValue.constructor);
+                advancedPropsNullable.push(defaultValue === null);
             }
         }
     })();
@@ -235,7 +239,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
             if (prop === undefined) {
                 continue;
             }
-            if (!fastMode && typeof prop !== 'object') {
+            if ((!fastMode || advancedPropsNullable[i]) && typeof prop !== 'object') {
                 o[propName] = prop;
             } else {
                 // fastMode (so will not simpleProp) or object

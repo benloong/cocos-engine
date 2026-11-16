@@ -5,6 +5,24 @@ import { deserialize } from '../../cocos/serialization/deserialize';
 import { BitMask } from '../../cocos/core/value-types/bitmask';
 
 describe('Deserialize', () => {
+    test('Builtin nullable defaults preserve primitives and objects', () => {
+        @ccclass('cc.NullableDeserializeRegression')
+        class Nullable {
+            @property text: string | null = null;
+            @property count: number | null = null;
+            @property enabled: boolean | null = null;
+            @property data: object | null = null;
+        }
+        for (const values of [
+            { text: 'Font_LABEL', count: 18, enabled: true, data: { nested: [1, 'A'] } },
+            { text: '', count: 0, enabled: false, data: null },
+            { text: null, count: null, enabled: null, data: null },
+        ]) {
+            expect(deserialize({ __type__: 'cc.NullableDeserializeRegression', ...values })).toEqual(values);
+        }
+        expect(deserialize({ __type__: 'cc.NullableDeserializeRegression' })).toEqual(new Nullable());
+    });
+
     test('Object array element', () => {
         @ccclass('Foo') class Foo {  @property name: string = ''; }
 
