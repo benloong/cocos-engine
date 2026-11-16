@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.18)
+project(cocos-native)
 if(NOT USE_XR AND NOT USE_AR_MODULE)
     include(${CMAKE_CURRENT_LIST_DIR}/cmake/predefine.cmake)
 endif()

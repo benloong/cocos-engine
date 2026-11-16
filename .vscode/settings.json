@@ -34,4 +34,6 @@
         "istream": "c"
     },
     "cmake.configureOnOpen": false,
+    "cmake.sourceDirectory": "${workspaceFolder}/native/tools/simulator/frameworks/runtime-src",
+    "cmake.buildDirectory": "${workspaceFolder}/native/build"
 }
