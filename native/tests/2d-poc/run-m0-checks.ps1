@@ -9,6 +9,12 @@ if ($LASTEXITCODE -ne 0) { throw 'Native 2D metadata is stale' }
 & node --test (Join-Path $repoRoot 'tests/scripts/native-2d-decorators.test.cjs')
 if ($LASTEXITCODE -ne 0) { throw 'Native 2D metadata generator tests failed' }
 
+Write-Host '== M6 API and dependency baseline =='
+& node (Join-Path $PSScriptRoot 'audit-m6.cjs') --check
+if ($LASTEXITCODE -ne 0) { throw 'M6 API baseline is stale' }
+& node --test (Join-Path $repoRoot 'tests/scripts/native-2d-audit.test.cjs')
+if ($LASTEXITCODE -ne 0) { throw 'M6 audit tool tests failed' }
+
 Write-Host '== C++ pure logic =='
 & (Join-Path $PSScriptRoot 'run-poc-tests.ps1')
 if ($LASTEXITCODE -ne 0) {

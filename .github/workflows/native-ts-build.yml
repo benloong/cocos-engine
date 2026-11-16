@@ -31,7 +31,8 @@ jobs:
     - name: Verify generated native 2D metadata
       run: |
         node scripts/generate-native-2d-decorators.cjs --check
-        node --test tests/scripts/native-2d-decorators.test.cjs
+        node --test tests/scripts/native-2d-decorators.test.cjs tests/scripts/native-2d-audit.test.cjs
+        node native/tests/2d-poc/audit-m6.cjs --check
     - run: node scripts/spread-pal.cjs
     - run: npm run build:debug-infos
     - name: Download external
