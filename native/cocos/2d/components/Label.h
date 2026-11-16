@@ -25,10 +25,12 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
 #include "2d/components/Sprite.h"
+#include "2d/assets/BitmapFont.h"
 #include "2d/framework/UIRenderer.h"
 #include "2d/renderer/RenderEntity.h"
 #include "base/Ptr.h"
@@ -39,8 +41,6 @@ namespace cc {
 class Texture2D;
 class LetterAtlas;
 class SpriteFrame;
-class Texture2D;
-class LetterAtlas;
 class UITransform;
 
 /**
@@ -66,6 +66,8 @@ public:
     const std::string &getString() const { return _string; }
 
     void setFont(const std::string &font);
+    void setFontAsset(FontAsset *font);
+    FontAsset *getFontAsset() const { return _fontAsset.get(); }
     void setFontSize(float size);
     void setIsBold(bool bold) { if (_isBold != bold) { _isBold = bold; updateFont(); _dirty = true; } }
     void setIsItalic(bool italic) { if (_isItalic != italic) { _isItalic = italic; updateFont(); _dirty = true; } }
@@ -119,6 +121,9 @@ public:
 
 private:
     void rebuildTexture();
+    void syncFontAsset();
+    void applyFontAsset();
+    void clearRenderedData();
     void rebuildBitmapTexture();
     void rebuildLetterTexture();
     void applyBitmapAtlas();
@@ -163,16 +168,11 @@ private:
     float _lastAtlasWidth{0.0F};
     float _lastAtlasHeight{0.0F};
 
-    struct Glyph {
-        int32_t code{0};
-        float u{0.0F};
-        float v{0.0F};
-        float w{0.0F};
-        float h{0.0F};
-        float offsetX{0.0F};
-        float offsetY{0.0F};
-        float xAdvance{0.0F};
-    };
+    using Glyph = BitmapFontGlyph;
+    IntrusivePtr<FontAsset> _fontAsset;
+    BitmapFontAsset *_bitmapFont{nullptr}; // owned by _fontAsset
+    uint32_t _fontAssetRevision{0};
+    std::shared_ptr<LetterAtlas> _letterAtlas;
 
     IntrusivePtr<SpriteFrame> _bitmapAtlas;
     uint32_t _bitmapAtlasRevision{0};

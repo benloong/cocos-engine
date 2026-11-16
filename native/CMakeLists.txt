@@ -2116,6 +2116,11 @@ cocos_source_files(
     cocos/2d/assets/SpriteFrame.h
     cocos/2d/assets/SpriteAtlas.h
     cocos/2d/assets/SpriteAtlas.cpp
+    cocos/2d/assets/Font.h
+    cocos/2d/assets/Font.cpp
+    cocos/2d/assets/TTFFont.h
+    cocos/2d/assets/BitmapFont.h
+    cocos/2d/assets/LabelAtlas.h
     cocos/2d/components/Sprite.h
     cocos/2d/components/Sprite.cpp
     cocos/2d/components/Label.h

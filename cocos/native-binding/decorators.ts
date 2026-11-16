@@ -1619,3 +1619,27 @@ export function patch_ShadowStage(ctx: ShadowStage_Context_Args, apply = default
   const { ShadowStage } = { ...ctx };
   apply(() => { $.ccclass('ShadowStage')(ShadowStage); }, 'ccclass', null);
 } // end of patch_ShadowStage
+
+// Native font assets preserve the serialized Web API.
+export function patch_cc_Font ({ Font }: { Font: any }, apply = defaultExec) {
+  apply(() => { $.ccclass('cc.Font')(Font); }, 'ccclass', null);
+}
+export function patch_cc_TTFFont ({ TTFFont }: { TTFFont: any }, apply = defaultExec) {
+  apply(() => { $.serializable(TTFFont.prototype, '_fontFamily', () => null); }, 'serializable', '_fontFamily');
+  apply(() => { $.string(TTFFont.prototype, '_nativeAsset', Object.getOwnPropertyDescriptor(TTFFont.prototype, '_nativeAsset')); }, 'string', '_nativeAsset');
+  apply(() => { $.override(TTFFont.prototype, '_nativeAsset', Object.getOwnPropertyDescriptor(TTFFont.prototype, '_nativeAsset')); }, 'override', '_nativeAsset');
+  apply(() => { $.override(TTFFont.prototype, '_nativeDep', Object.getOwnPropertyDescriptor(TTFFont.prototype, '_nativeDep')); }, 'override', '_nativeDep');
+  apply(() => { $.ccclass('cc.TTFFont')(TTFFont); }, 'ccclass', null);
+}
+export function patch_cc_BitmapFont ({ BitmapFont, SpriteFrame }: { BitmapFont: any; SpriteFrame: any }, apply = defaultExec) {
+  for (const [name, initial] of [['fntDataStr', ''], ['fontSize', -1], ['fntConfig', null]] as const) {
+    apply(() => { $.serializable(BitmapFont.prototype, name, () => initial); }, 'serializable', name);
+    apply(() => { $.editable(BitmapFont.prototype, name, () => initial); }, 'editable', name);
+  }
+  apply(() => { $.serializable(BitmapFont.prototype, 'spriteFrame', () => null); }, 'serializable', 'spriteFrame');
+  apply(() => { $.type(SpriteFrame)(BitmapFont.prototype, 'spriteFrame', () => null); }, 'type', 'spriteFrame');
+  apply(() => { $.ccclass('cc.BitmapFont')(BitmapFont); }, 'ccclass', null);
+}
+export function patch_cc_LabelAtlas ({ LabelAtlas }: { LabelAtlas: any }, apply = defaultExec) {
+  apply(() => { $.ccclass('cc.LabelAtlas')(LabelAtlas); }, 'ccclass', null);
+}

@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "2d/assets/SpriteFrame.h"
+#include "2d/assets/TTFFont.h"
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/DynamicAtlas.h"
 #include "2d/renderer/LetterAtlas.h"
@@ -44,7 +45,12 @@ namespace cc {
 
 namespace {
 
-std::unordered_map<std::string, std::shared_ptr<LetterAtlas>> gLetterAtlases;
+std::unordered_map<std::string, std::weak_ptr<LetterAtlas>> gLetterAtlases;
+void pruneLetterAtlases() {
+    for (auto it = gLetterAtlases.begin(); it != gLetterAtlases.end();) {
+        if (it->second.expired()) it = gLetterAtlases.erase(it); else ++it;
+    }
+}
 
 constexpr float BASELINE_RATIO = 0.26F;
 
@@ -99,6 +105,8 @@ Label::Label() {
 }
 
 Label::~Label() {
+    _letterAtlas.reset();
+    pruneLetterAtlases();
     if (_renderer.getRenderEntity() != nullptr) {
         _renderer.getRenderEntity()->setPrepareListener(nullptr);
     }
@@ -127,6 +135,33 @@ void Label::setString(const std::string &text) {
     _dirty = true;
 }
 
+void Label::setFontAsset(FontAsset *font) {
+    if (_fontAsset == font) return;
+    _fontAsset = font;
+    _fontAssetRevision = font ? font->getRevision() : 0;
+    _glyphs.clear(); _glyphMap.clear(); _kerning.clear();
+    applyFontAsset();
+}
+void Label::syncFontAsset() {
+    if (_fontAsset && _fontAssetRevision != _fontAsset->getRevision()) {
+        _fontAssetRevision = _fontAsset->getRevision(); applyFontAsset();
+    }
+}
+void Label::applyFontAsset() {
+    _bitmapFont = _fontAsset && !_fontAsset->isReleased() ? dynamic_cast<BitmapFontAsset *>(_fontAsset.get()) : nullptr;
+    _bitmapAtlas = _bitmapFont ? _bitmapFont->getSpriteFrame() : nullptr;
+    _bitmapLineHeight = _bitmapFont && _bitmapFont->getFontSize() > 0 ? _bitmapFont->getFontSize() : _lineHeight;
+    updateFont(); clearRenderedData(); _dirty = true;
+}
+void Label::clearRenderedData() {
+    _renderer.clearFrame(); _frame = nullptr; _texture = nullptr;
+    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
+    _lastContentWidth = _lastContentHeight = _lastTextureWidth = _lastTextureHeight = 0;
+    _lastLineCount = 0;
+    _lastAtlasTextureId = 0;
+    _lastAtlasX = _lastAtlasY = _lastAtlasWidth = _lastAtlasHeight = 0;
+}
+
 void Label::setFont(const std::string &font) {
     if (_font == font) {
         return;
@@ -145,7 +180,14 @@ void Label::updateFont() {
     std::string font;
     if (_isBold) { font += "bold "; }
     if (_isItalic) { font += "italic "; }
-    font += std::to_string(static_cast<int>(_fontSize)) + "px " + _fontFamily;
+    font += std::to_string(static_cast<int>(_fontSize)) + "px ";
+    auto *ttf = dynamic_cast<TTFFont *>(_fontAsset.get());
+    if (ttf && !ttf->isReleased() && !ttf->getFontFamily().empty()) {
+        font += '\"';
+        for (char c : ttf->getFontFamily()) { if (c == '\\' || c == '\"') font += '\\'; font += c; }
+        font += '\"';
+    } else font += _fontFamily;
+    _letterAtlas.reset();
     _font = font;
 }
 
@@ -163,6 +205,8 @@ void Label::setLineHeight(float height) {
         return;
     }
     _lineHeight = height;
+    _letterAtlas.reset();
+    if (_bitmapFont && _bitmapFont->getFontSize() <= 0) _bitmapLineHeight = height;
     _dirty = true;
 }
 
@@ -246,14 +290,19 @@ void Label::setShadowOffset(float x, float y) {
     _dirty = true;
 }
 void Label::setBitmapAtlas(SpriteFrame *atlas, float lineHeight) {
+    if (_fontAsset) setFontAsset(nullptr);
     _bitmapAtlas = atlas;
     _bitmapLineHeight = lineHeight;
     _dirty = true;
 }
 
 void Label::clearBitmapFont() {
+    if (_bitmapFont) { _fontAsset = nullptr; _bitmapFont = nullptr; }
     _bitmapAtlas = nullptr;
     _bitmapLineHeight = 0.0F;
+    _kerning.clear();
+    updateFont();
+    clearRenderedData();
     _glyphs.clear();
     _glyphMap.clear();
     _dirty = true;
@@ -284,6 +333,7 @@ void Label::addGlyph(int32_t code, float u, float v, float w, float h, float off
 void Label::setCacheMode(int32_t mode) {
     if (_cacheMode == mode) { return; }
     _cacheMode = mode;
+    if (mode != 2) _letterAtlas.reset();
     _dirty = true;
 }
 
@@ -313,6 +363,7 @@ void Label::setEnabled(bool enabled) {
 }
 
 void Label::prepareRenderEntity(float opacity) {
+    syncFontAsset();
     if (_bitmapAtlas && _bitmapAtlasRevision != _bitmapAtlas->getRevision()) {
         _bitmapAtlasRevision = _bitmapAtlas->getRevision();
         _dirty = true;
@@ -324,9 +375,14 @@ void Label::prepareRenderEntity(float opacity) {
 }
 
 void Label::rebuildLetterTexture() {
-    auto &atlasPtr = gLetterAtlases[_font];
-    if (!atlasPtr) { atlasPtr = std::make_shared<LetterAtlas>(); }
-    LetterAtlas &atlas = *atlasPtr;
+    if (!_letterAtlas) {
+        pruneLetterAtlases();
+        const std::string key = _font + ":" + std::to_string(_lineHeight) + (_fontAsset ? ":" + std::to_string(_fontAsset->getIdentity()) + ":" + std::to_string(_fontAssetRevision) : "");
+        auto &cached = gLetterAtlases[key];
+        _letterAtlas = cached.lock();
+        if (!_letterAtlas) { _letterAtlas = std::make_shared<LetterAtlas>(); cached = _letterAtlas; }
+    }
+    LetterAtlas &atlas = *_letterAtlas;
 
     const float lineHeight = _lineHeight > 0.0F ? _lineHeight : _fontSize;
     const float maxWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
@@ -431,10 +487,13 @@ void Label::rebuildLetterTexture() {
     applyBitmapAtlas();
 }
 void Label::rebuildBitmapTexture() {
+    const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
+    const auto &glyphMap = _bitmapFont ? _bitmapFont->getGlyphMap() : _glyphMap;
+    const auto &kerningMap = _bitmapFont ? _bitmapFont->getKerningMap() : _kerning;
     auto *atlasTexture = dynamic_cast<Texture2D *>(_bitmapAtlas->getTexture());
     ImageAsset *image = atlasTexture != nullptr ? atlasTexture->getImage() : nullptr;
     if (image == nullptr || image->getData() == nullptr || image->getWidth() == 0U || image->getHeight() == 0U) {
-        _renderer.clearFrame();
+        clearRenderedData();
         return;
     }
 
@@ -459,15 +518,15 @@ void Label::rebuildBitmapTexture() {
             continue;
         }
         const int32_t code = utf8CodePoint(codepoint);
-        const auto found = _glyphMap.find(code);
-        if (found == _glyphMap.end()) {
+        const auto found = glyphMap.find(code);
+        if (found == glyphMap.end()) {
             continue;
         }
-        const Glyph &glyph = _glyphs[found->second];
+        const Glyph &glyph = glyphs[found->second];
         float kerning = 0.0F;
         if (previousCode >= 0) {
-            const auto kern = _kerning.find((static_cast<uint64_t>(static_cast<uint32_t>(previousCode)) << 32U) | static_cast<uint32_t>(code));
-            if (kern != _kerning.end()) { kerning = kern->second; }
+            const auto kern = kerningMap.find((static_cast<uint64_t>(static_cast<uint32_t>(previousCode)) << 32U) | static_cast<uint32_t>(code));
+            if (kern != kerningMap.end()) { kerning = kern->second; }
         }
         if (_wrap && lineWidth + kerning + glyph.xAdvance > maxWidth && !lines.back().empty()) {
             contentWidth = std::max(contentWidth, lineWidth);
@@ -494,10 +553,10 @@ void Label::rebuildBitmapTexture() {
         int32_t drawPreviousCode = -1;
         const float lineTop = 1.0F + static_cast<float>(lineIndex) * lineHeight;
         for (const size_t glyphIndex : lines[lineIndex]) {
-            const Glyph &glyph = _glyphs[glyphIndex];
+            const Glyph &glyph = glyphs[glyphIndex];
             if (drawPreviousCode >= 0) {
-                const auto kern = _kerning.find((static_cast<uint64_t>(static_cast<uint32_t>(drawPreviousCode)) << 32U) | static_cast<uint32_t>(glyph.code));
-                if (kern != _kerning.end()) { cursorX += kern->second; }
+                const auto kern = kerningMap.find((static_cast<uint64_t>(static_cast<uint32_t>(drawPreviousCode)) << 32U) | static_cast<uint32_t>(glyph.code));
+                if (kern != kerningMap.end()) { cursorX += kern->second; }
             }
             const int32_t destX = static_cast<int32_t>(std::round(cursorX + glyph.offsetX));
             const int32_t destY = static_cast<int32_t>(std::round(lineTop + glyph.offsetY));
@@ -597,6 +656,7 @@ void Label::applyBitmapAtlas() {
     _renderer.setFrame(_frame);
 }
 void Label::updateRenderData() {
+    syncFontAsset();
     if (_dirty) {
         rebuildTexture();
     }
@@ -604,17 +664,16 @@ void Label::updateRenderData() {
 
 void Label::rebuildTexture() {
     _dirty = false;
-    if (_cacheMode == 2) {
-        rebuildLetterTexture();
+    if (_bitmapFont || (_bitmapAtlas != nullptr && !_glyphs.empty())) {
+        const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
+        if (_bitmapAtlas && !glyphs.empty()) rebuildBitmapTexture(); else clearRenderedData();
         return;
     }
-    if (_bitmapAtlas != nullptr && !_glyphs.empty()) {
-        rebuildBitmapTexture();
-        return;
-    }
+    if (_fontAsset && _fontAsset->isReleased()) { clearRenderedData(); return; }
+    if (_cacheMode == 2) { rebuildLetterTexture(); return; }
 
     if (_string.empty() || _transform == nullptr) {
-        _renderer.clearFrame();
+        clearRenderedData();
         return;
     }
 
@@ -658,7 +717,7 @@ void Label::rebuildTexture() {
     }
 
     if (lines.empty()) {
-        _renderer.clearFrame();
+        clearRenderedData();
         return;
     }
 
@@ -675,7 +734,7 @@ void Label::rebuildTexture() {
     if (_overflow == 2 && _transform->getContentSize().y > 0.0F
         && contentHeight > _transform->getContentSize().y + 0.5F && _fontSize > 4.0F) {
         _fontSize *= 0.9F;
-        _font = std::to_string(static_cast<int>(_fontSize)) + "px " + _fontFamily;
+        updateFont();
         _dirty = true;
         rebuildTexture();
         return;

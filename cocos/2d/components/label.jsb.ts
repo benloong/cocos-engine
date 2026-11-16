@@ -175,6 +175,7 @@ export class Label extends UIRenderer {
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
+            this._native.setFontAsset(null);
             this._native = null;
         }
     }
@@ -263,12 +264,7 @@ export class Label extends UIRenderer {
     set font (value: any) {
         this._font = value;
         this._useSystemFont = !value;
-        if (value && value.spriteFrame && value.fontDefDictionary) {
-            this._applyBitmapFont(value);
-        } else {
-            this._native?.clearBitmapFont();
-            this._syncFont();
-        }
+        this._syncFont();
     }
 
     get useSystemFont (): boolean {
@@ -354,7 +350,7 @@ export class Label extends UIRenderer {
         return this._color;
     }
 
-    set color (value: Color) {
+    set color (value: Readonly<Color>) {
         if (this._color.equals(value)) {
             return;
         }
@@ -378,7 +374,7 @@ export class Label extends UIRenderer {
     }
 
     get outlineColor (): Readonly<Color> { return this._outlineColor; }
-    set outlineColor (value: Color) {
+    set outlineColor (value: Readonly<Color>) {
         this._outlineColor.set(value);
         this._native?.setOutlineColor(value);
     }
@@ -396,7 +392,7 @@ export class Label extends UIRenderer {
     }
 
     get shadowColor (): Readonly<Color> { return this._shadowColor; }
-    set shadowColor (value: Color) {
+    set shadowColor (value: Readonly<Color>) {
         this._shadowColor.set(value);
         this._native?.setShadowColor(value);
     }
@@ -413,44 +409,15 @@ export class Label extends UIRenderer {
         this._native?.setShadowOffset(value.x, value.y);
     }
 
-    private _applyBitmapFont (font: any): void {
-        if (!this._native || !font.spriteFrame) {
-            return;
-        }
-        this._native.setBitmapAtlas(font.spriteFrame, font.fontSize > 0 ? font.fontSize : this._lineHeight);
-        this._native.clearGlyphs();
-        this._native.clearKerning();
-        const definitions = font.fontDefDictionary?.letterDefinitions ?? {};
-        const kerning = font.fntConfig?.kerningDict ?? {};
-        for (const left of Object.keys(kerning)) {
-            for (const right of Object.keys(kerning[left])) {
-                this._native.addKerning(Number(left), Number(right), kerning[left][right]);
-            }
-        }
-        for (const key of Object.keys(definitions)) {
-            const glyph = definitions[key];
-            this._native.addGlyph(
-                Number(key),
-                glyph.u,
-                glyph.v,
-                glyph.w,
-                glyph.h,
-                glyph.offsetX,
-                glyph.offsetY,
-                glyph.xAdvance,
-            );
-        }
-    }
-
     private _syncFont (): void {
+        this._native?.setFontAsset(this._useSystemFont ? null : this._font);
         this._native?.setFont(`${this._fontSize}px ${this._fontFamily}`);
         this._native?.setFontSize(this._fontSize);
     }
 
     private _syncAll (): void {
         this._native?.setString(this._string);
-        this._native?.setFont(`${this._fontSize}px ${this._fontFamily}`);
-        this._native?.setFontSize(this._fontSize);
+        this._syncFont();
         this._native?.setLineHeight(this._lineHeight);
         this._native?.setEnableWrapText(this._enableWrapText);
         this._native?.setOverflow(this._overflow);
@@ -458,9 +425,6 @@ export class Label extends UIRenderer {
         this._native?.setVerticalAlign(this._verticalAlign);
         this._native?.setSpacingX(this._spacingX);
         this._native?.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
-        if (this._font && this._font.spriteFrame && this._font.fontDefDictionary) {
-            this._applyBitmapFont(this._font);
-        }
         this._native?.setEnableOutline(this._enableOutline);
         this._native?.setOutlineColor(this._outlineColor);
         this._native?.setOutlineWidth(this._outlineWidth);

@@ -10,6 +10,7 @@ const nativeLabel = {
     setEnabled: jest.fn(),
     setString: jest.fn(),
     setFont: jest.fn(),
+    setFontAsset: jest.fn(),
     setFontSize: jest.fn(),
     setLineHeight: jest.fn(),
     setEnableWrapText: jest.fn(),
@@ -85,7 +86,14 @@ test('Label M3 shell attaches and forwards text properties', () => {
     expect(nativeLabel.setEnableShadow).toHaveBeenLastCalledWith(true);
     expect(nativeLabel.setShadowBlur).toHaveBeenLastCalledWith(2);
 
-    const frame = { texture: {} };
-    label.font = { spriteFrame: frame, fontSize: 24, fontDefDictionary: { letterDefinitions: {} } };
-    expect(nativeLabel.setBitmapAtlas).toHaveBeenLastCalledWith(frame, 24);
+    const font = { get fontDefDictionary () { throw new Error('Label must not walk JS glyphs'); } };
+    label.font = font;
+    expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(font);
+    label.useSystemFont = true;
+    expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(null);
+    label.useSystemFont = false;
+    expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(font);
+    label.onDestroy();
+    expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(null);
+    expect(nativeLabel.setBitmapAtlas).not.toHaveBeenCalled();
 });

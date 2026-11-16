@@ -18,6 +18,10 @@
 #include "core/assets/ImageAsset.h"
 #include "2d/assets/SpriteFrame.h"
 #include "2d/assets/SpriteAtlas.h"
+#include "2d/assets/Font.h"
+#include "2d/assets/TTFFont.h"
+#include "2d/assets/BitmapFont.h"
+#include "2d/assets/LabelAtlas.h"
 #include "core/assets/Material.h"
 #include "core/builtin/BuiltinResMgr.h"
 #include "3d/assets/Morph.h"
@@ -64,6 +68,10 @@
 // %ignore cc::Mesh::copyIndices;
 %ignore cc::Material::setProperty;
 %ignore cc::ImageAsset::setData;
+%ignore cc::BitmapFontGlyph;
+%ignore cc::BitmapFontAsset::getGlyphs;
+%ignore cc::BitmapFontAsset::getGlyphMap;
+%ignore cc::BitmapFontAsset::getKerningMap;
 %ignore cc::EffectAsset::_techniques;
 %ignore cc::EffectAsset::_shaders;
 %ignore cc::EffectAsset::_combinations;
@@ -84,6 +92,9 @@
 // Note:
 //  1. 'Rename Section' should be placed before attribute definition and %import/%include
 //  2. namespace is needed
+
+%rename(Font) cc::FontAsset;
+%rename(BitmapFont) cc::BitmapFontAsset;
 
 %rename(cpp_keyword_struct) cc::Mesh::ICreateInfo::structInfo;
 %rename(cpp_keyword_switch) cc::IPassInfoFull::switch_;
@@ -243,6 +254,10 @@
 %include "core/assets/TextAsset.h"
 %include "2d/assets/SpriteFrame.h"
 %include "2d/assets/SpriteAtlas.h"
+%include "2d/assets/Font.h"
+%include "2d/assets/TTFFont.h"
+%include "2d/assets/BitmapFont.h"
+%include "2d/assets/LabelAtlas.h"
 %include "core/assets/Material.h"
 %include "core/assets/RenderingSubMesh.h"
 %include "core/builtin/BuiltinResMgr.h"

@@ -31,6 +31,8 @@
 
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
+#include "2d/assets/TTFFont.h"
+#include "2d/assets/LabelAtlas.h"
 #include "2d/components/Mask.h"
 #include "2d/assets/SpriteFrame.h"
 #include "2d/assets/SpriteAtlas.h"
@@ -213,6 +215,60 @@ void testFrameConsumers() {
     frame->setTexture(transparentTexture);
     label.prepareRenderEntity(1.F);
     check(label.getOpaquePixels() == 0, "BMFont sees shared frame texture replacement");
+}
+
+void testFontAssets() {
+    cc::IntrusivePtr<cc::TTFFont> ttf(new cc::TTFFont());
+    std::vector<uint8_t> bytes{1, 2, 3};
+    ttf->setFontData(bytes); bytes[0] = 9;
+    check(ttf->getFontData()[0] == 1, "TTF owns copied bytes");
+    check(!ttf->loadFontData("missing-font.ttf") && ttf->getFontDataSize() == 3, "TTF failed load preserves data");
+    ttf->setFontFamily("Test Family");
+    cc::IntrusivePtr<cc::LabelAtlas> font(new cc::LabelAtlas());
+    const std::string config = R"({"fontDefDictionary":{"65":{"rect":{"x":0,"y":0,"width":2,"height":2},"xAdvance":2}},"kerningDict":{"4259905":-1}})";
+    check(font->setConfigJson(config), "native bitmap config accepted");
+    checkNear(font->getKerning(65, 65), -1, "packed kerning decoded");
+    check(font->setConfigJson(R"({"kerningDict":{"-65471":-3}})"), "signed packed kerning");
+    checkNear(font->getKerning(65535, 65), -3, "signed kerning key decoded");
+    font->setConfigJson(config);
+    const auto revision = font->getRevision();
+    check(!font->setConfigJson("{bad") && font->getRevision() == revision && font->getGlyphCount() == 1, "invalid config atomic");
+    check(font->setConfigJson(R"({"kerningDict":{"65":{"128512":-2}}})"), "nested Unicode kerning");
+    checkNear(font->getKerning(65, 128512), -2, "Unicode kerning retained");
+    font->setConfigJson(config); font->setFontSize(2);
+    std::vector<uint8_t> pixels(16, 255);
+    cc::IntrusivePtr<cc::ImageAsset> image(new cc::ImageAsset());
+    image->setWidth(2); image->setHeight(2); image->setData(pixels.data());
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D()); texture->setImage(image);
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame()); frame->resetWithTexture(texture);
+    font->setSpriteFrame(frame);
+    cc::Node node("font-asset"); cc::UITransform transform(&node);
+    cc::IntrusivePtr<cc::Material> material(new cc::Material());
+    cc::Label label;
+    label.setNode(&node); label.setUITransform(&transform); label.setMaterial(material);
+    label.setFontSize(2); label.setLineHeight(2); label.setString("A"); label.setCacheMode(2);
+    const auto refs = font->getRefCount();
+    label.setFontAsset(font); label.prepareRenderEntity(1.F);
+    check(label.getOpaquePixels() == 4, "LabelAtlas native glyph renders even in CHAR mode");
+    check(font->getRefCount() == refs + 1, "Label retains font asset");
+    { cc::Label second; second.setFontAsset(font); check(font->getRefCount() == refs + 2, "labels share font ownership"); }
+    check(font->getRefCount() == refs + 1, "Label destructor releases font");
+    font->setConfigJson("null"); label.prepareRenderEntity(1.F);
+    check(label.getOpaquePixels() == 0 && label.getContentWidth() == 0, "config revision clears stale render data");
+    font->setConfigJson(config); label.prepareRenderEntity(1.F);
+    check(label.getOpaquePixels() == 4, "config replacement refreshes existing Label");
+    font->setSpriteFrame(nullptr); label.prepareRenderEntity(1.F);
+    check(label.getOpaquePixels() == 0, "frame detach clears Label");
+    font->setSpriteFrame(frame);
+    for (int i = 0; i < 1000; ++i) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(nullptr); }
+    check(font->getRefCount() == refs, "repeated switching releases font ownership");
+    label.setFontAsset(font); font->destroy(); label.prepareRenderEntity(1.F);
+    check(font->isReleased() && !font->getSpriteFrame() && !font->getGlyphCount(), "destroy releases bitmap data immediately");
+    check(label.getOpaquePixels() == 0, "destroyed font clears attached Label");
+    label.setFontAsset(nullptr);
+    ttf->destroy(); check(ttf->getFontDataSize() == 0 && ttf->getFontFamily().empty(), "TTF destroy releases data and alias");
+    cc::CCObject::deferredDestroy();
+    std::printf("font assets: PASS\n");
 }
 
 void testUITransform() {
@@ -988,13 +1044,14 @@ int main(int argc, char **argv) {
     // are required by the surrounding engine singletons.
     cc::Root *root = new cc::Root(cc::gfx::DeviceManager::create());
     auto *scriptEngine = new se::ScriptEngine();
-    cc::FileUtils::getInstance();
+    auto *files = cc::createFileUtils();
     scriptEngine->start();
     {
         se::AutoHandleScope scope;
         testSpriteAtlas();
         testSpriteFrameData();
         testFrameConsumers();
+        testFontAssets();
         std::printf("sprite atlas done\n");
         std::fflush(stdout);
         testUITransform();
@@ -1032,6 +1089,7 @@ int main(int argc, char **argv) {
     scriptEngine->cleanup();
     delete scriptEngine;
     delete root;
+    delete files;
 
     std::printf("native 2D PoC: %s\n", gFailures == 0 ? "PASS" : "FAIL");
     return gFailures == 0 ? 0 : 1;
