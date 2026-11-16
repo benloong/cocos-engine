@@ -27,11 +27,11 @@
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
-      "sha256": "93a30b3eb729da2362a904b8295c4b7d7bd6a3c985c50d9750d441ed05aebec8"
+      "sha256": "ece5aaf5bbfe2fe306e6cf435a5ef868e48764e3e59626022187275d3487b3cb"
     },
     {
       "file": "native/cocos/2d/assets/Font.cpp",
-      "sha256": "2a550406dd0190e1fb14eb42a9a016cdeba96ee5cbf34427c098c30312caf320"
+      "sha256": "128aa52b4bd403cecdf70a8de2332a0fe97f40b3946396ad1ed28500d547e18b"
     },
     {
       "file": "native/cocos/2d/assets/Font.h",
@@ -14293,8 +14293,8 @@
     },
     {
       "file": "cocos/2d/assets/bitmap-font.jsb.ts",
-      "sha256": "daaca79cac40d0e2a8be044a3530c7ec7218ff6b7ea11a29942716afc02ae9c8",
-      "printedCodeLines": 102,
+      "sha256": "f964a0ea90e0c631dc62a69f7634023d5f899b2a479f5c9ecba5a2125f92bddb",
+      "printedCodeLines": 104,
       "runtimeImports": [
         "../../core",
         "./font",
@@ -14311,8 +14311,8 @@
       "allocations": [],
       "loops": [
         55,
-        89,
-        109
+        91,
+        112
       ]
     },
     {
@@ -14515,8 +14515,8 @@
     },
     {
       "file": "cocos/2d/assets/ttf-font.jsb.ts",
-      "sha256": "d552a6692fb87e9e6cb7fb2441e03472dfb3622b9a99c2853cd47d56a716260a",
-      "printedCodeLines": 26,
+      "sha256": "6d01b903ebda6e3e33cbe1c89fd3baec26c5c21a02cfd861a19f1592b8ad5fe0",
+      "printedCodeLines": 28,
       "runtimeImports": [
         "../../core",
         "./font",

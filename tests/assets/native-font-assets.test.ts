@@ -27,6 +27,7 @@ class NativeBitmap extends NativeFont {
     size = -1;
     text = '';
     json = 'null';
+    configRevision = 0;
     getSpriteFrame () { return this.frame; }
     setSpriteFrame (frame) { this.frame = frame; this.revision++; }
     getFontSize () { return this.size; }
@@ -34,9 +35,10 @@ class NativeBitmap extends NativeFont {
     getFntDataStr () { return this.text; }
     setFntDataStr (text) { this.text = text; }
     getConfigJson () { return this.json; }
-    setConfigJson (json) { this.json = json; this.revision++; return true; }
+    getConfigRevision () { return this.configRevision; }
+    setConfigJson (json) { this.json = json; this.configRevision++; this.revision++; return true; }
     getGlyphData () { return this.json === 'null' ? [] : [65, 0, 0, 2, 3, 1, 2, 4]; }
-    clearNativeData () { this.frame = null; this.json = 'null'; super.clearNativeData(); }
+    clearNativeData () { this.frame = null; this.json = 'null'; this.configRevision++; super.clearNativeData(); }
 }
 class NativeLabelAtlas extends NativeBitmap {}
 
@@ -130,6 +132,41 @@ test.each([NativeBitmap, NativeLabelAtlas])('font views are independent and stal
     expect(first.fntConfig).toBeNull();
     expect(second.fntConfig.fontSize).toBe(12);
     expect(second.fontDefDictionary.getLetter('65').xAdvance).toBe(4);
+});
+
+test.each([NativeBitmap, NativeLabelAtlas])('native reload of identical config invalidates edited views: %p', (FontClass) => {
+    const font: any = new FontClass();
+    const json = JSON.stringify({ fontSize: 12, fontDefDictionary: {} });
+    font.setConfigJson(json);
+    const stale = font.fntConfig;
+    stale.fontSize = 99;
+    font.setConfigJson(json);
+    font.onLoaded();
+    expect(font.fntConfig.fontSize).toBe(12);
+    expect(font.fntConfig).not.toBe(stale);
+
+    font.fntConfig.fontSize = 24;
+    font.spriteFrame = { texture: {} };
+    font.fontSize = 18;
+    font.onLoaded();
+    expect(font.fntConfig.fontSize).toBe(24);
+});
+
+test('released TTF ignores late onLoaded callbacks without file access', () => {
+    const font: any = new NativeTTF();
+    font.nativeUrl = '/fonts/late.ttf';
+    font._destroy();
+    font.onLoaded();
+    expect(font.loadFontData).not.toHaveBeenCalled();
+});
+
+test.each([NativeBitmap, NativeLabelAtlas])('released bitmap ignores late onLoaded after reading its config: %p', (FontClass) => {
+    const font: any = new FontClass();
+    font._destroy();
+    expect(font.fntConfig).toBeNull();
+    const revision = font.getRevision();
+    font.onLoaded();
+    expect(font.getRevision()).toBe(revision);
 });
 
 test.each(['BitmapFont', 'LabelAtlas'])('%s deserializes native data and records its atlas dependency', (name) => {

@@ -43,6 +43,7 @@ Object.defineProperties(proto, {
         get () { return { uuid: this._uuid, __nativeName__: this._native, ext: path.extname(this._native ?? ''), __isNative__: true }; } },
 });
 proto.onLoaded = function () {
+    if (this.isReleased()) return;
     const source = this.nativeUrl;
     if (source && (this.getSourcePath() !== source || !this.getFontDataSize()) && !this.loadFontData(source)) warnID(4933, source);
 };

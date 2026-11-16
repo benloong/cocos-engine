@@ -71,13 +71,15 @@ Object.defineProperties(proto, {
         get (): string { return this.getFntDataStr(); }, set (value: string) { this.setFntDataStr(value); } },
     fntConfig: { configurable: true, enumerable: true,
         get (): IConfig | null {
-            const json = this.getConfigJson();
-            if (json !== this._configText) { this._configText = json; this._configView = JSON.parse(json); }
+            const revision = this.getConfigRevision();
+            if (revision !== this._configRevision) {
+                this._configView = JSON.parse(this.getConfigJson()); this._configRevision = revision;
+            }
             return this._configView;
         },
         set (value: IConfig | null) {
             if (!this.setConfigJson(JSON.stringify(value ?? null))) throw new TypeError('Invalid BitmapFont configuration');
-            this._configText = undefined;
+            this._configRevision = undefined;
         } },
     fontDefDictionary: { configurable: true,
         get (): FontAtlas {
@@ -98,9 +100,10 @@ Object.defineProperties(proto, {
         } },
 });
 proto.onLoaded = function () {
+    if (this.isReleased()) return;
     // Web callers may edit fntConfig then explicitly reload it. Commit that
     // serialization view once, never once per Label or once per glyph.
-    if (this._configText === this.getConfigJson()) this.fntConfig = this._configView;
+    if (this._configRevision === this.getConfigRevision()) this.fntConfig = this._configView;
     this._atlasView = undefined;
 };
 patch_cc_BitmapFont({ BitmapFont, SpriteFrame });
@@ -111,7 +114,7 @@ for (const name of ['_destroy', 'clearNativeData']) {
     proto[name] = function (...args: any[]) {
         const result = nativeMethod.apply(this, args);
         this._atlasView = undefined;
-        this._configText = undefined;
+        this._configRevision = undefined;
         this._configView = undefined;
         return result;
     };

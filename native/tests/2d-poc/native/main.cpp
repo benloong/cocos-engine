@@ -239,7 +239,16 @@ void testFontAssets() {
     checkNear(font->getKerning(65535, 65), -3, "signed kerning key decoded");
     font->setConfigJson(config);
     const auto revision = font->getRevision();
+    const auto configRevision = font->getConfigRevision();
     check(!font->setConfigJson("{bad") && font->getRevision() == revision && font->getGlyphCount() == 1, "invalid config atomic");
+    check(font->getConfigRevision() == configRevision, "failed parse preserves config revision");
+    font->setConfigJson(config);
+    check(font->getConfigRevision() == configRevision + 1, "identical config reload advances config revision");
+    const auto reloadRevision = font->getConfigRevision();
+    font->setFontSize(4);
+    check(font->getConfigRevision() == reloadRevision, "font size does not invalidate pending config edits");
+    font->clearNativeData();
+    check(font->getConfigRevision() == reloadRevision + 1, "clear invalidates config views");
     check(font->setConfigJson(R"({"kerningDict":{"65":{"128512":-2}}})"), "nested Unicode kerning");
     checkNear(font->getKerning(65, 128512), -2, "Unicode kerning retained");
     font->setConfigJson(config); font->setFontSize(2);
@@ -249,6 +258,9 @@ void testFontAssets() {
     cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D()); texture->setImage(image);
     cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame()); frame->resetWithTexture(texture);
     font->setSpriteFrame(frame);
+    const auto frameConfigRevision = font->getConfigRevision();
+    font->setSpriteFrame(frame);
+    check(font->getConfigRevision() == frameConfigRevision, "atlas dependency does not invalidate config views");
     cc::Node node("font-asset"); cc::UITransform transform(&node);
     cc::IntrusivePtr<cc::Material> material(new cc::Material());
     cc::Label label;

@@ -49,6 +49,20 @@ stale.fontDefDictionary[65].xAdvance = 99;
 check(font.setConfigJson(JSON.stringify(config)), 'native config update');
 font.onLoaded();
 check(font.getGlyphData()[7] === 2 && font.fntConfig !== stale, 'stale JS view cannot overwrite native config');
+for (const FontClass of [BitmapFont, LabelAtlas]) {
+    const reloaded = new FontClass();
+    reloaded.fntConfig = config;
+    const edited = reloaded.fntConfig;
+    edited.fontDefDictionary[65].xAdvance = 99;
+    reloaded.setConfigJson(JSON.stringify(config));
+    reloaded.onLoaded();
+    check(reloaded.getGlyphData()[7] === 2 && reloaded.fntConfig !== edited, 'identical native reload invalidates old view');
+    reloaded.fntConfig.fontDefDictionary[65].xAdvance = 3;
+    reloaded.spriteFrame = frame; reloaded.fontSize = 4;
+    reloaded.onLoaded();
+    check(reloaded.getGlyphData()[7] === 3, 'dependency and size writes preserve pending config edits');
+    reloaded.destroy();
+}
 const label = new n2d.Label(); label.setFontAsset(font);
 check(label.getFontAsset() === font, 'Label native asset binding');
 for (let i = 0; i < 1000; i++) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(null); }
@@ -59,6 +73,9 @@ font.destroy();
 check(font.isReleased() && !font._atlasView && !font.spriteFrame, 'destroy drops native and JS compatibility refs');
 font.spriteFrame = frame;
 check(!font.spriteFrame && !font.setConfigJson(JSON.stringify(config)), 'released bitmap rejects late dependency and config writes');
+check(font.fntConfig === null, 'released bitmap config view stays empty');
+font.onLoaded();
+check(font.getGlyphCount() === 0, 'late bitmap onLoaded does not recommit a released config view');
 ttf.initDefault(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === 'Arial', 'TTF default resets data');
 ttf.destroy(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === null, 'TTF destroy releases bytes');
 ttf._nativeAsset = 'Late_FONT';

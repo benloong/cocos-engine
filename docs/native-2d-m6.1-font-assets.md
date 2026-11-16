@@ -46,4 +46,11 @@ V8 探针隔离 core/metadata 与 Asset 初始化，元数据由 Jest 验证；�
 
 ## 后续验收
 
+### 配置重载与迟到回调补充（2026-11-16）
+
+- BitmapFontAsset 增加独立 config revision，配置成功赋值（即使 JSON 文本相同）和 clearNativeData 都推进版本；解析失败不改变版本。字号和 SpriteFrame 依赖更新仅推进资产 revision，保留待提交的配置编辑。
+- BitmapFont/LabelAtlas 的 JS 配置视图按 config revision 缓存，onLoaded 仅提交当前版本的视图，避免原生重载相同配置后被旧 JS 编辑覆盖。未变更时读取配置也无需再次跨 JSB 传输 JSON。
+- TTFFont、BitmapFont/LabelAtlas 的 onLoaded 在 released 后直接返回，避免迟到回调继续读文件，或将销毁后读取到的空配置视图再次提交。原生所有权不变：TTF 值持有字节，BitmapFont 通过 IntrusivePtr 持有 SpriteFrame，Label 通过 IntrusivePtr 持有字体。
+- 补充 C++ 配置版本、实际 JSB 同内容重载、依赖回填不丢编辑，以及 Jest 销毁后回调测试。终态资源/平台验收仍按下述边界推进。
+
 按 [M6 计划](./native-2d-m6-plan.md) 继续真实字体资源/旧场景/Prefab、完整异步依赖加载、重复加载释放、平台字体注册表/句柄矩阵、复杂文本和 GPU 对照。基础数据下沉通过不关闭这些终态 Gate。

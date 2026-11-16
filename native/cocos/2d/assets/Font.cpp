@@ -110,7 +110,7 @@ bool BitmapFontAsset::setConfigJson(const std::string &json) {
         }
     }
     _glyphs.swap(glyphs); _glyphMap.swap(indices); _kerning.swap(kerning);
-    _configJson = json; ++_revision;
+    _configJson = json; ++_configRevision; ++_revision;
     return true;
 }
 std::vector<float> BitmapFontAsset::getGlyphData() const {
@@ -124,6 +124,7 @@ float BitmapFontAsset::getKerning(int32_t left, int32_t right) const {
     return found == _kerning.end() ? 0.F : found->second;
 }
 void BitmapFontAsset::clearNativeData() {
+    ++_configRevision;
     _spriteFrame = nullptr; _fontSize = -1;
     std::string().swap(_fntDataStr); std::string("null").swap(_configJson);
     std::vector<BitmapFontGlyph>().swap(_glyphs);
