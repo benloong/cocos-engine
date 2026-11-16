@@ -51,6 +51,8 @@ if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
         throw "SpriteAtlas consistency tests failed with exit code $LASTEXITCODE"
     }
     Write-Host '== M6.1 font asset data and lifecycle =='
+    & (Join-Path $PSScriptRoot 'run-m6-layout-tests.ps1')
+    if ($LASTEXITCODE -ne 0) { throw "Layout ownership tests failed" }
     & (Join-Path $PSScriptRoot 'run-m6-font-assets-tests.ps1')
     if ($LASTEXITCODE -ne 0) { throw "Font asset tests failed with exit code $LASTEXITCODE" }
 }

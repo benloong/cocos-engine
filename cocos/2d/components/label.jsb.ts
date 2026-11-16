@@ -23,8 +23,7 @@
 */
 
 import { ccclass, displayOrder, executionOrder, help, menu, multiline, requireComponent, serializable, type } from 'cc.decorator';
-import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
-import { Material } from '../../asset/assets';
+import type { Material } from '../../asset/assets';
 import { Color, Vec2 } from '../../core';
 import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
@@ -127,40 +126,12 @@ export class Label extends UIRenderer {
         if (transform && (transform as any)._native) {
             this._native.setUITransform((transform as any)._native);
         }
-        const material = builtinResMgr.get<Material>('ui-sprite-material');
-        if (material) {
-            this._native.setMaterial(material);
-        }
         this._native.setPriority(this.priority);
         this._syncAll();
     }
 
     public updateRenderData (_force = false): void {
-        if (!this._native) {
-            return;
-        }
-        const transform = this.node.getComponent(UITransform);
-        if (!transform) {
-            return;
-        }
-        transform.setContentSize(0, 0);
-        this._native.updateRenderData?.();
-        const width = this._native.getContentWidth?.() ?? 0;
-        const height = this._native.getContentHeight?.() ?? 0;
-        if (width > 0 && height > 0) {
-            transform.setContentSize(width, height);
-        }
-    }
-
-    public lateUpdate (): void {
-        if (!this._native || this._overflow !== Overflow.RESIZE_HEIGHT) {
-            return;
-        }
-        const height = this._native.getContentHeight();
-        const transform = this.node.getComponent(UITransform);
-        if (height > 0 && transform && Math.abs(transform.contentSize.height - height) > 0.5) {
-            transform.setContentSize(transform.contentSize.width, height);
-        }
+        this._native?.measureContent();
     }
 
     public onEnable (): void {

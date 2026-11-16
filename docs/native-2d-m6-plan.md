@@ -25,7 +25,7 @@
 - [ ] 为每个迁移类建立 Web/native parity 矩阵：公开/兼容 API、枚举与静态字段、序列化字段/默认值、生命周期、可变值对象、资产依赖、测试入口。
 - [ ] 逐项复核 M0–M5 遗留项；已关闭项链接实际报告，未关闭项归入下列任务，不能靠阶段标题自动关闭。
 - [ ] 审计 `.jsb.ts`、native override 和间接 import，记录算法残留、材质选择、状态镜像、稳态 JSB 调用及壳体积。
-- [ ] 关闭已观察到的壳残留：Label `lateUpdate` 在 RESIZE_HEIGHT 模式逐帧读取 native 高度并更新 UITransform；Label/Graphics 的 JS 壳仍获取内置材质。将尺寸联动与材质解析迁入 native，或以实测和契约逐项证明仅为允许的低频桥接。
+- [x] 已观察到的壳残留：移除 Label lateUpdate 高度轮询；原生统一管理布局尺寸并由 UITransform 在变化时推送缓存/事件；Label/Graphics 内置材质由原生解析。Windows Debug/Release 实际 JSB、1000 次静止 prepare 与定向测试通过，见 [报告](./native-2d-m6.0-layout-material.md)。全模块稳态调用门禁继续归 M6.5。
 - [ ] 明确 decorator 生成器的维护入口；补齐新类元数据生成/校验和 CI。生成器未确认前保留可复现的显式注册，不手工改生成文件冒充生成流程。
 
 交付：组件矩阵、残留清单、基线版本/环境/命令和原始数据。

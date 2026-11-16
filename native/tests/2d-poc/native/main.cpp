@@ -31,6 +31,8 @@
 
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
+#include "2d/components/Graphics.h"
+#include "core/builtin/BuiltinResMgr.h"
 #include "2d/assets/TTFFont.h"
 #include "2d/assets/LabelAtlas.h"
 #include "2d/components/Mask.h"
@@ -269,6 +271,35 @@ void testFontAssets() {
     ttf->destroy(); check(ttf->getFontDataSize() == 0 && ttf->getFontFamily().empty(), "TTF destroy releases data and alias");
     cc::CCObject::deferredDestroy();
     std::printf("font assets: PASS\n");
+}
+
+void testLayoutAndMaterials() {
+    cc::UITransform transform;
+    int changes = 0;
+    auto owner = std::make_shared<int>(1);
+    std::weak_ptr<int> weak = owner;
+    transform.setSizeChangedCallback([&, owner](float width, float height) { ++changes; });
+    owner.reset();
+    transform.setContentSize(80, 20); transform.setContentSize(80, 20);
+    check(changes == 1 && !weak.expired(), "size callback fires only on mutation and owns closure");
+    transform.detach();
+    check(weak.expired(), "detach releases size callback ownership");
+    transform.setContentSize(90, 30); check(changes == 1, "no callback after detach");
+    cc::IntrusivePtr<cc::Material> builtin(new cc::Material());
+    cc::BuiltinResMgr::getInstance()->addAsset("ui-sprite-material", builtin);
+    cc::Label label;
+    check(label.getRenderMaterial() == builtin, "Label resolves builtin material in native");
+    cc::IntrusivePtr<cc::Material> custom(new cc::Material()); label.setMaterial(custom);
+    check(label.getRenderMaterial() == custom, "Label custom material overrides default");
+    cc::Node node("graphics-default-material"); cc::UITransform ui(&node);
+    cc::Graphics graphics; graphics.setNode(&node); graphics.setUITransform(&ui);
+    graphics.rect(0, 0, 4, 4); graphics.fill();
+    auto *entity = static_cast<cc::RenderEntity *>(node.getUserData());
+    if (entity) {
+        entity->prepare(1.F);
+        check(entity->getStaticDrawInfoSize() == 1 && entity->getStaticRenderDrawInfo(0)->getMaterial() == builtin, "Graphics native draw uses builtin material");
+    } else check(false, "Graphics has render entity");
+    std::printf("layout/material ownership: PASS\n");
 }
 
 void testUITransform() {
@@ -1043,6 +1074,7 @@ int main(int argc, char **argv) {
     // Node's shared-memory bridge needs a running script engine; Root/Device
     // are required by the surrounding engine singletons.
     cc::Root *root = new cc::Root(cc::gfx::DeviceManager::create());
+    cc::BuiltinResMgr builtins;
     auto *scriptEngine = new se::ScriptEngine();
     auto *files = cc::createFileUtils();
     scriptEngine->start();
@@ -1052,6 +1084,7 @@ int main(int argc, char **argv) {
         testSpriteFrameData();
         testFrameConsumers();
         testFontAssets();
+        testLayoutAndMaterials();
         std::printf("sprite atlas done\n");
         std::fflush(stdout);
         testUITransform();

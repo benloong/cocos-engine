@@ -23,6 +23,7 @@
 */
 
 import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displayOrder, serializable, disallowMultiple } from 'cc.decorator';
+import { EDITOR } from 'internal:constants';
 import { Component } from '../../scene-graph';
 import { Rect, Size, Vec2, Vec3, geometry, Mat4, visibleRect } from '../../core';
 import { director } from '../../game/director';
@@ -69,8 +70,13 @@ export class UITransform extends Component {
         if (this._contentSize.equals(value)) {
             return;
         }
-        this._contentSize.set(value);
-        this._native?.setContentSizeXY(this._contentSize.width, this._contentSize.height);
+        if (this._native) {
+            this._native.setContentSizeXY(value.width, value.height);
+        } else {
+            const previous = EDITOR ? this._contentSize.clone() : undefined;
+            this._contentSize.set(value);
+            this.node.emit(NodeEventType.SIZE_CHANGED, previous);
+        }
     }
 
     get width (): number {
@@ -140,7 +146,7 @@ export class UITransform extends Component {
     }
 
     public __preload (): void {
-        this.node._uiProps.uiTransformComp = this;
+        this.node._uiProps.uiTransformComp = this as unknown as import('./ui-transform').UITransform;
     }
 
     public onLoad (): void {
@@ -148,6 +154,11 @@ export class UITransform extends Component {
         this._native.setContentSizeXY(this._contentSize.width, this._contentSize.height);
         this._native.setAnchorPointXY(this._anchorPoint.x, this._anchorPoint.y);
         this._native.setPriority(this._priority);
+        this._native.setSizeChangedCallback((width: number, height: number) => {
+            const previous = EDITOR ? this._contentSize.clone() : undefined;
+            this._contentSize.set(width, height);
+            this.node.emit(NodeEventType.SIZE_CHANGED, previous);
+        });
     }
 
     public onDestroy (): void {
@@ -271,12 +282,7 @@ export class UITransform extends Component {
     public getComputeAABB (out?: geometry.AABB): geometry.AABB {
         const box = this.getBoundingBoxToWorld();
         out = out || new geometry.AABB();
-        out.set(
-            new Vec3(box.x, box.y, 0),
-            new Vec3(box.x + box.width, box.y, 0),
-            new Vec3(box.x, box.y + box.height, 0),
-            new Vec3(box.x + box.width, box.y + box.height, 0),
-        );
+        geometry.AABB.set(out, box.x + box.width / 2, box.y + box.height / 2, 0, box.width / 2, box.height / 2, 0);
         return out;
     }
 

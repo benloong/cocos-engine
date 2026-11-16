@@ -11,6 +11,7 @@ const nativeLabel = {
     setString: jest.fn(),
     setFont: jest.fn(),
     setFontAsset: jest.fn(),
+    measureContent: jest.fn(),
     setFontSize: jest.fn(),
     setLineHeight: jest.fn(),
     setEnableWrapText: jest.fn(),
@@ -48,7 +49,7 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.onLoad();
     expect((global as any).n2d.Label).toHaveBeenCalled();
     expect(nativeLabel.setNode).toHaveBeenCalledWith(node);
-    expect(nativeLabel.setMaterial).toHaveBeenCalled();
+    expect(nativeLabel.setMaterial).not.toHaveBeenCalled();
 
     label.string = 'Hello';
     label.fontSize = 24;
@@ -73,8 +74,10 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.color = new Color(10, 20, 30, 255);
     expect(nativeLabel.setColorRGBA).toHaveBeenLastCalledWith(10, 20, 30, 255);
 
-    label.lateUpdate();
-    expect(node.getComponent(UITransform)?.contentSize.height).toBe(90);
+    expect(Object.prototype.hasOwnProperty.call(Label.prototype, 'lateUpdate')).toBe(false);
+    label.updateRenderData();
+    expect(nativeLabel.measureContent).toHaveBeenCalledTimes(1);
+    expect(nativeLabel.getContentHeight).not.toHaveBeenCalled();
 
     label.enableOutline = true;
     label.outlineWidth = 2;

@@ -25,6 +25,7 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 
 #include "core/component/Component.h"
 #include "math/Geometry.h"
@@ -113,9 +114,11 @@ public:
     float getBoundingBoxToWidth(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).width; }
     float getBoundingBoxToHeight(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).height; }
 
-    void detach() { setNode(nullptr); }
+    void setSizeChangedCallback(const std::function<void(float, float)> &callback) { _sizeChangedCallback = callback; }
+    void detach() { _sizeChangedCallback = nullptr; setNode(nullptr); }
 
 private:
+    std::function<void(float, float)> _sizeChangedCallback;
     Vec2 _contentSize{100.F, 100.F};
     Vec2 _anchorPoint{0.5F, 0.5F};
     int32_t _priority{0};

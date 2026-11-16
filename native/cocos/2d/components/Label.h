@@ -104,6 +104,7 @@ public:
     void setShadowOffset(float x, float y);
     float getTextureWidth() const { return _lastTextureWidth; }
     void updateRenderData();
+    void measureContent();
     float getContentWidth() const { return _lastContentWidth; }
     float getContentHeight() const { return _lastContentHeight; }
     float getTextureHeight() const { return _lastTextureHeight; }
@@ -122,6 +123,8 @@ public:
 private:
     void rebuildTexture();
     void syncFontAsset();
+    void syncContentSize();
+    void syncTransformSize();
     void applyFontAsset();
     void clearRenderedData();
     void rebuildBitmapTexture();
@@ -154,6 +157,8 @@ private:
     float _shadowOffsetX{0.0F};
     float _shadowOffsetY{0.0F};
     bool _dirty{true};
+    float _layoutWidth{-1.F};
+    float _layoutHeight{-1.F};
     float _lastTextureWidth{0.0F};
     float _lastTextureHeight{0.0F};
     int32_t _lastLineCount{0};

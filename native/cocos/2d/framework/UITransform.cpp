@@ -43,6 +43,9 @@ void UITransform::setContentSize(const Vec2 &size) {
         return;
     }
     _contentSize.set(size);
+    // Changes are published only on the main-thread mutation path, never polled.
+    const auto callback = _sizeChangedCallback;
+    if (callback) callback(size.x, size.y);
 }
 
 void UITransform::setContentSize(float width, float height) {

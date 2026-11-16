@@ -23,8 +23,6 @@
 */
 
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
-import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
-import { Material } from '../../asset/assets';
 import { Color } from '../../core';
 import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
@@ -58,10 +56,6 @@ export class Graphics extends UIRenderer {
         const transform = this.node.getComponent(UITransform);
         if (transform && (transform as any)._native) {
             this._native.setUITransform((transform as any)._native);
-        }
-        const material = builtinResMgr.get<Material>('ui-sprite-material');
-        if (material) {
-            this._native.setMaterial(material);
         }
         this._native.setPriority(this.priority);
         this._native.setEnabled(this.enabledInHierarchy);
@@ -99,7 +93,7 @@ export class Graphics extends UIRenderer {
         return this._fillColor;
     }
 
-    set fillColor (value: Color) {
+    set fillColor (value: Readonly<Color>) {
         this._fillColor.set(value);
         this._native?.setFillColor(value);
     }
@@ -108,7 +102,7 @@ export class Graphics extends UIRenderer {
         return this._strokeColor;
     }
 
-    set strokeColor (value: Color) {
+    set strokeColor (value: Readonly<Color>) {
         this._strokeColor.set(value);
         this._native?.setStrokeColor(value);
     }

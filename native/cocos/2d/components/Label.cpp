@@ -101,6 +101,7 @@ float measureText(CanvasRenderingContext2D &context, const std::string &text) {
 } // namespace
 
 Label::Label() {
+    _renderer.setSizeMode(0); // Label layout owns dimensions, not the padded texture.
     _renderer.getRenderEntity()->setPrepareListener(this);
 }
 
@@ -363,6 +364,7 @@ void Label::setEnabled(bool enabled) {
 }
 
 void Label::prepareRenderEntity(float opacity) {
+    syncTransformSize();
     syncFontAsset();
     if (_bitmapAtlas && _bitmapAtlasRevision != _bitmapAtlas->getRevision()) {
         _bitmapAtlasRevision = _bitmapAtlas->getRevision();
@@ -371,6 +373,7 @@ void Label::prepareRenderEntity(float opacity) {
     if (_dirty) {
         rebuildTexture();
     }
+    syncContentSize();
     _renderer.prepare(opacity);
 }
 
@@ -385,7 +388,7 @@ void Label::rebuildLetterTexture() {
     LetterAtlas &atlas = *_letterAtlas;
 
     const float lineHeight = _lineHeight > 0.0F ? _lineHeight : _fontSize;
-    const float maxWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
+    const float maxWidth = _overflow != 0 && _transform != nullptr && _transform->getContentSize().x > 0.0F
         ? _transform->getContentSize().x
         : 100000.0F;
 
@@ -477,12 +480,6 @@ void Label::rebuildLetterTexture() {
         if (pixels[i] > 0U) { ++_lastOpaquePixels; }
     }
 
-    const float finalWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
-        ? _transform->getContentSize().x
-        : contentWidth;
-    if (_overflow == 3 && _transform != nullptr) {
-        _transform->setContentSize(finalWidth, contentHeight);
-    }
     _renderer.setFrame(_frame);
     applyBitmapAtlas();
 }
@@ -623,12 +620,6 @@ void Label::rebuildBitmapTexture() {
         if (pixels[i] > 0U) { ++_lastOpaquePixels; }
     }
 
-    const float finalWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
-        ? _transform->getContentSize().x
-        : contentWidth;
-    if (_overflow == 3 && _transform != nullptr) {
-        _transform->setContentSize(finalWidth, contentHeight);
-    }
     _renderer.setFrame(_frame);
     applyBitmapAtlas();
 }
@@ -655,11 +646,36 @@ void Label::applyBitmapAtlas() {
     _lastAtlasHeight = region.height;
     _renderer.setFrame(_frame);
 }
+void Label::syncTransformSize() {
+    if (!_transform) return;
+    const auto size = _transform->getContentSize();
+    if (std::fabs(size.x - _layoutWidth) > 0.001F || std::fabs(size.y - _layoutHeight) > 0.001F) _dirty = true;
+}
+void Label::syncContentSize() {
+    if (_transform && _overflow == 0) {
+        _transform->setContentSize(_lastContentWidth, _lastContentHeight);
+    } else if (_transform && _overflow == 3) {
+        const auto size = _transform->getContentSize();
+        if (std::fabs(size.y - _lastContentHeight) > 0.001F) _transform->setContentSize(size.x, _lastContentHeight);
+    }
+    if (_transform) {
+        const auto size = _transform->getContentSize();
+        _layoutWidth = size.x; _layoutHeight = size.y;
+    }
+}
+void Label::measureContent() {
+    if (!_transform) return;
+    _transform->setContentSize(0.F, 0.F);
+    _dirty = true;
+    updateRenderData();
+    _transform->setContentSize(_lastContentWidth, _lastContentHeight);
+}
 void Label::updateRenderData() {
     syncFontAsset();
     if (_dirty) {
         rebuildTexture();
     }
+    syncContentSize();
 }
 
 void Label::rebuildTexture() {
@@ -871,10 +887,6 @@ void Label::rebuildTexture() {
     _frame->setOffset(0.0F, 0.0F);
     _frame->setRotated(false);
 
-    const float finalWidth = _transform->getContentSize().x > 0.0F ? _transform->getContentSize().x : contentWidth;
-    if (_overflow == 3) {
-        _transform->setContentSize(finalWidth, contentHeight);
-    }
     _renderer.setFrame(_frame);
     applyBitmapAtlas();
 }

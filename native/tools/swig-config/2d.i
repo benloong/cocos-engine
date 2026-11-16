@@ -230,7 +230,16 @@
 %include "2d/renderer/UIModelProxy.h"
 %include "2d/renderer/Batcher2d.h"
 %include "core/component/Component.h"
+// Keep the JS callback alive exactly as long as the native mutation hook.
+%typemap(in) const std::function<void(float, float)> & (std::function<void(float, float)> callback) {
+    se::Value rooted = $input;
+    if (rooted.isObject()) rooted.setObject(rooted.toObject(), true);
+    ok &= sevalue_to_native(rooted, &callback, s.thisObject());
+    SE_PRECONDITION2(ok, false, "Invalid size callback");
+    $1 = &callback$argnum;
+}
 %include "2d/framework/UITransform.h"
+%clear const std::function<void(float, float)> &;
 %include "2d/framework/UIOpacity.h"
 %include "2d/framework/UIRenderer.h"
 %include "2d/framework/RenderRoot2D.h"
