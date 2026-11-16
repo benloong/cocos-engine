@@ -43,6 +43,7 @@
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/RenderEntity.h"
 #include "2d/renderer/SpriteGeometry.h"
+#include "2d/renderer/RichTextParser.h"
 #include "bindings/jswrapper/SeApi.h"
 #include "core/Root.h"
 #include "core/assets/Material.h"
@@ -272,6 +273,30 @@ void testFontAssets() {
     ttf->destroy(); check(ttf->getFontDataSize() == 0 && ttf->getFontFamily().empty(), "TTF destroy releases data and alias");
     cc::CCObject::deferredDestroy();
     std::printf("font assets: PASS\n");
+}
+
+void testRichTextParser() {
+    const auto spans = cc::RichTextParser::parse("<color=red>A<size=0>B</size><b click=\"tap\" param=\"arg\">C</b><img src=\"icon\" width=16 height=20/>D</color>");
+    check(spans.size() == 5, "RichText emits text and image spans");
+    if (spans.size() == 5) {
+        check(spans[0].style && spans[0].style->color == "red", "RichText native color");
+        check(spans[1].style && spans[1].style->size == 0 && spans[1].style->color == "red", "RichText zero property survives absent parent property");
+        check(spans[2].style && spans[2].style->bold && spans[2].style->event
+              && spans[2].style->event->at("click") == "tap" && spans[2].style->event->at("param") == "arg", "RichText native click metadata");
+        check(spans[3].style && spans[3].style->isImage && spans[3].style->src == "icon"
+              && spans[3].style->imageWidth == 16 && !spans[3].style->color, "RichText image attributes have Web inheritance boundary");
+    }
+    const auto inherited = cc::RichTextParser::parse("<size=24><size=0>x</size></size>");
+    check(inherited.size() == 1 && inherited[0].style && inherited[0].style->size == 24, "RichText falsy child inherits present parent property");
+    const auto tail = cc::RichTextParser::parse("<b>tail");
+    check(tail.size() == 1 && !tail[0].style, "RichText preserves Web unclosed-tail behavior");
+    const auto entities = cc::RichTextParser::parse("&amp;lt;&lt;&quot;&apos;");
+    check(entities.size() == 1 && entities[0].text == "&lt;<\"'", "RichText entity replacement order");
+    for (int i = 0; i < 1000; ++i) {
+        const auto text = cc::RichTextParser::parse(i % 2 ? "<b>x</b>" : "");
+        check(text.size() == (i % 2 ? 1U : 0U), "RichText parser calls retain no previous spans");
+    }
+    std::printf("rich text parser: PASS\n");
 }
 
 void testLayoutAndMaterials() {
@@ -1210,6 +1235,7 @@ int main(int argc, char **argv) {
         testSpriteFrameData();
         testFrameConsumers();
         testFontAssets();
+        testRichTextParser();
         testLayoutAndMaterials();
         testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");

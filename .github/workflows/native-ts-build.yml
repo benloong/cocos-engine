@@ -39,5 +39,8 @@ jobs:
       run: |
         EXT_VERSION=`node ./.github/workflows/get-native-external-version.js`
         git clone --branch $EXT_VERSION --depth 1 https://github.com/cocos/cocos-engine-external native/external
+    - name: Compare native RichText parser with Web
+      shell: pwsh
+      run: ./native/tests/2d-poc/run-m6-richtext-parser-parity.ps1
     - run: node ./scripts/compile-native-ts.js 
     #- run: echo "::remove-matcher owner=circular-reference-check::"

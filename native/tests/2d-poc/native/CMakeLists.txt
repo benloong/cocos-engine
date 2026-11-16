@@ -14,6 +14,10 @@ include(${CMAKE_CURRENT_LIST_DIR}/../../../CMakeLists.txt)
 add_executable(cc2d_native_poc main.cpp)
 target_link_libraries(cc2d_native_poc PRIVATE cocos_engine)
 
+# Use the production compiler/library for the complete Web parser parity corpus.
+add_executable(cc2d_richtext_parser ../test_richtext_parser.cpp)
+target_link_libraries(cc2d_richtext_parser PRIVATE cocos_engine)
+
 if(MSVC)
     foreach(item ${WINDOWS_DLLS})
         get_filename_component(filename ${item} NAME)

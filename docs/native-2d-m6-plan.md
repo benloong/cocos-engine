@@ -53,6 +53,7 @@
 
 ### M6.2 RichText 达到终态薄壳
 
+- [x] 原生解析准备：新增 RichTextParser/span/style，3871 组输入在 g++、Windows MSVC Debug/Release 产物上与实际 Web parser 对照通过，生产引擎已编译该实现，见 [报告与接入边界](./native-2d-m6.2-richtext-parser.md)。当前 RichText 运行时仍使用 Web，不能以此关闭下面的原生组件/布局节点。
 - [ ] HTML 解析、样式继承、分段、测量、换行/对齐和布局迁入 native；新增 native RichText 实现及 `.jsb.ts` override，JS 只保留元数据、序列化、生命周期和 API/事件桥接。
 - [ ] 段对象创建、复用、布局与销毁由 native 编排，避免 JS 逐段/逐字驱动；保持 JS 用户事件回调与公开 API 行为。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
