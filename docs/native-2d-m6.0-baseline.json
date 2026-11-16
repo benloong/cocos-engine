@@ -162,6 +162,14 @@
       "sha256": "24bbcb9ea9ca32c584eee234e8789ef3c9c74bd7cc2ee33b543da5b9abd270b1"
     },
     {
+      "file": "native/cocos/2d/renderer/RichTextLayout.cpp",
+      "sha256": "234f5f8fb671d7a13168c2dd497bc6f27fd4cf075ea36546eae732eba28ed8d0"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RichTextLayout.h",
+      "sha256": "a31a0aa2157c630900ec7999c24f36f72e182bace7a085a9b82335ca341104d8"
+    },
+    {
       "file": "native/cocos/2d/renderer/RichTextParser.cpp",
       "sha256": "42c0efc241215808b21682cc057661e6b3c854af773d122e17df4b7fbda6235a"
     },
@@ -9684,7 +9692,9 @@
       "testEntrypoints": [
         "native/tests/2d-poc/run-m5-richtext-probe.ps1",
         "native/tests/2d-poc/run-m6-richtext-parser-parity.ps1",
-        "tests/ui/native-richtext-parser-parity.test.ts"
+        "tests/ui/native-richtext-parser-parity.test.ts",
+        "native/tests/2d-poc/run-m6-richtext-layout-parity.ps1",
+        "tests/ui/native-richtext-layout-parity.test.ts"
       ],
       "overridden": false,
       "web": {

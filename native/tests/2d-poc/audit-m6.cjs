@@ -13,7 +13,7 @@ const TESTS = {
     Label:['tests/ui/native-2d-m3-label-shell.test.ts','native/tests/2d-poc/run-m6-layout-tests.ps1','native/tests/2d-poc/run-m3-label-probe.ps1'],
     Mask:['tests/ui/native-2d-m4-mask-shell.test.ts','native/tests/2d-poc/run-m4-mask-probe.ps1'],
     Graphics:['tests/ui/native-2d-m6-layout-shell.test.ts','native/tests/2d-poc/run-m4-extra-probe.ps1'],
-    RichText:['native/tests/2d-poc/run-m5-richtext-probe.ps1','native/tests/2d-poc/run-m6-richtext-parser-parity.ps1','tests/ui/native-richtext-parser-parity.test.ts'],
+    RichText:['native/tests/2d-poc/run-m5-richtext-probe.ps1','native/tests/2d-poc/run-m6-richtext-parser-parity.ps1','tests/ui/native-richtext-parser-parity.test.ts','native/tests/2d-poc/run-m6-richtext-layout-parity.ps1','tests/ui/native-richtext-layout-parity.test.ts'],
     Font:['tests/assets/native-font-assets.test.ts','native/tests/2d-poc/run-m6-font-assets-tests.ps1'],
     TTFFont:['tests/assets/native-font-assets.test.ts','native/tests/2d-poc/run-m6-font-assets-tests.ps1'],
     BitmapFont:['tests/assets/native-font-assets.test.ts','native/tests/2d-poc/run-m6-font-assets-tests.ps1'],

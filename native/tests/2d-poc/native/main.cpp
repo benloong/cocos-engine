@@ -44,6 +44,7 @@
 #include "2d/renderer/RenderEntity.h"
 #include "2d/renderer/SpriteGeometry.h"
 #include "2d/renderer/RichTextParser.h"
+#include "2d/renderer/RichTextLayout.h"
 #include "bindings/jswrapper/SeApi.h"
 #include "core/Root.h"
 #include "core/assets/Material.h"
@@ -297,6 +298,28 @@ void testRichTextParser() {
         check(text.size() == (i % 2 ? 1U : 0U), "RichText parser calls retain no previous spans");
     }
     std::printf("rich text parser: PASS\n");
+}
+
+void testRichTextLayout() {
+    const auto spans = cc::RichTextParser::parse("<b>ab</b><img src=\"icon\"/><br/>end");
+    cc::RichTextLayoutOptions options;
+    options.fontSize = 20; options.lineHeight = 24; options.maxWidth = 80;
+    options.anchorX = 0; options.anchorY = 0;
+    std::map<std::pair<size_t, std::string>, int> calls;
+    const auto result = cc::RichTextLayout::build(spans, options, [&](size_t index, const std::string &text) {
+        ++calls[{index, text}]; return cc::RichTextExtent{static_cast<double>(text.size()) * 10, 30.24};
+    }, [](const std::string &name) -> std::optional<cc::RichTextExtent> {
+        return name == "icon" ? std::make_optional(cc::RichTextExtent{20, 10}) : std::nullopt;
+    });
+    check(result.placements.size() == 3 && result.lineCount == 2, "RichText native layout creates line placements");
+    checkNear(result.width, 80, "RichText max width"); checkNear(result.height, 54.24F, "RichText baseline content height");
+    if (result.placements.size() == 3) {
+        checkNear(result.placements[1].x, 20, "RichText inline image offset");
+        checkNear(result.placements[1].y, 27.12F, "RichText image baseline");
+        check(result.placements[2].text == "end" && result.placements[2].line == 2, "RichText explicit line break");
+    }
+    check(calls[{0, "ab"}] == 1, "RichText memoizes stable measurements within one layout");
+    std::printf("rich text layout: PASS\n");
 }
 
 void testLayoutAndMaterials() {
@@ -1236,6 +1259,7 @@ int main(int argc, char **argv) {
         testFrameConsumers();
         testFontAssets();
         testRichTextParser();
+        testRichTextLayout();
         testLayoutAndMaterials();
         testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");
