@@ -49,6 +49,11 @@ label.setEnableWrapText(true); label.setString('several words to wrap'); label.p
 const lines=label.getLineCount(); ui.setContentSize(25, ui.height); label.prepareRenderEntity(1);
 check(ui.width===25 && label.getLineCount()>lines,'native layout follows width change');
 label.measureContent(); check(ui.width===label.getContentWidth(),'explicit native measurement');
+check(label.getActualFontSize()===16,'native resolved font size');
+label.setOverflow(0); label.setString('underline'); label.setIsUnderline(true); label.setUnderlineHeight(1); label.prepareRenderEntity(1);
+const thin=label.getOpaquePixels(); label.setUnderlineHeight(3); label.prepareRenderEntity(1);
+check(label.getOpaquePixels()>thin,'native underline height changes raster output');
+label.setString(''); label.prepareRenderEntity(1); check(label.getActualFontSize()===0,'empty text clears actual font size');
 const native = ui._native;
 label.setNode(null); label.setUITransform(null); ui.onDestroy();
 previous=changes; native.setContentSizeXY(50,50);

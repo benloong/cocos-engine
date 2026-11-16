@@ -27,6 +27,7 @@ import type { Material } from '../../asset/assets';
 import { Color, Vec2 } from '../../core';
 import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
+import { Font } from '../assets/font';
 
 declare const n2d: any;
 
@@ -73,12 +74,15 @@ export class Label extends UIRenderer {
     public static CacheMode = CacheMode;
 
     @serializable
-    protected _string = '';
+    protected _string = 'label';
 
     @serializable
     protected _fontSize = 40;
+    @serializable
     protected _isBold = false;
+    @serializable
     protected _isItalic = false;
+    @serializable
     protected _isUnderline = false;
 
     @serializable
@@ -94,10 +98,10 @@ export class Label extends UIRenderer {
     protected _enableWrapText = true;
 
     @serializable
-    protected _horizontalAlign = HorizontalTextAlignment.LEFT;
+    protected _horizontalAlign = HorizontalTextAlignment.CENTER;
 
     @serializable
-    protected _verticalAlign = VerticalTextAlignment.TOP;
+    protected _verticalAlign = VerticalTextAlignment.CENTER;
 
     @serializable
     protected _spacingX = 0;
@@ -106,16 +110,30 @@ export class Label extends UIRenderer {
     protected _cacheMode = CacheMode.NONE;
 
     @serializable
-    protected _useSystemFont = true;
+    protected _isSystemFontUsed = true;
 
+    @serializable
     protected _font: any = null;
+    @serializable
     protected _enableOutline = false;
+    @serializable
     protected _outlineColor = new Color(0, 0, 0, 255);
-    protected _outlineWidth = 0;
+    @serializable
+    protected _outlineWidth = 2;
+    @serializable
     protected _enableShadow = false;
+    @serializable
     protected _shadowColor = new Color(0, 0, 0, 255);
-    protected _shadowBlur = 0;
-    protected _shadowOffset = new Vec2(0, 0);
+    @serializable
+    protected _shadowBlur = 2;
+    @serializable
+    protected _shadowOffset = new Vec2(2, 2);
+
+    @serializable
+    protected _actualFontSize = 0;
+
+    @serializable
+    protected _underlineHeight = 2;
 
     private _native: any = null;
 
@@ -178,6 +196,12 @@ export class Label extends UIRenderer {
         return this._fontSize;
     }
 
+    get actualFontSize (): number { return this._native?.getActualFontSize() ?? this._actualFontSize; }
+    set actualFontSize (value: number) { this._actualFontSize = value; this._native?.setActualFontSize(value); }
+
+    get underlineHeight (): number { return this._underlineHeight; }
+    set underlineHeight (value: number) { this._underlineHeight = value; this._native?.setUnderlineHeight(value); }
+
     get isBold (): boolean { return this._isBold; }
     set isBold (value: boolean) {
         this._isBold = value;
@@ -228,22 +252,23 @@ export class Label extends UIRenderer {
         this._syncFont();
     }
 
+    @type(Font)
     get font (): any {
         return this._font;
     }
 
     set font (value: any) {
         this._font = value;
-        this._useSystemFont = !value;
+        this._isSystemFontUsed = !value;
         this._syncFont();
     }
 
     get useSystemFont (): boolean {
-        return this._useSystemFont;
+        return this._isSystemFontUsed;
     }
 
     set useSystemFont (value: boolean) {
-        this._useSystemFont = value;
+        this._isSystemFontUsed = value;
         this._syncFont();
     }
 
@@ -308,6 +333,7 @@ export class Label extends UIRenderer {
         this._native?.setSpacingX(value);
     }
 
+    @type(CacheMode)
     get cacheMode (): CacheMode {
         return this._cacheMode;
     }
@@ -381,7 +407,7 @@ export class Label extends UIRenderer {
     }
 
     private _syncFont (): void {
-        this._native?.setFontAsset(this._useSystemFont ? null : this._font);
+        this._native?.setFontAsset(this._isSystemFontUsed ? null : this._font);
         this._native?.setFont(`${this._fontSize}px ${this._fontFamily}`);
         this._native?.setFontSize(this._fontSize);
     }
@@ -389,6 +415,11 @@ export class Label extends UIRenderer {
     private _syncAll (): void {
         this._native?.setString(this._string);
         this._syncFont();
+        this._native?.setActualFontSize(this._actualFontSize);
+        this._native?.setIsBold(this._isBold);
+        this._native?.setIsItalic(this._isItalic);
+        this._native?.setIsUnderline(this._isUnderline);
+        this._native?.setUnderlineHeight(this._underlineHeight);
         this._native?.setLineHeight(this._lineHeight);
         this._native?.setEnableWrapText(this._enableWrapText);
         this._native?.setOverflow(this._overflow);

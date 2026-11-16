@@ -1,5 +1,9 @@
 import { Node } from '../../cocos/scene-graph/node';
 import { UITransform } from '../../cocos/2d/framework/ui-transform';
+import { Font } from '../../cocos/2d/assets/font';
+import { Label as WebLabel } from '../../cocos/2d/components/label';
+import { deserialize, Details } from '../../cocos/serialization/deserialize';
+import { instantiate } from '../../exports/base';
 import { Color } from '../../cocos/core/math/color';
 
 const nativeLabel = {
@@ -13,6 +17,11 @@ const nativeLabel = {
     setFontAsset: jest.fn(),
     measureContent: jest.fn(),
     setFontSize: jest.fn(),
+    setActualFontSize: jest.fn(),
+    setIsBold: jest.fn(),
+    setIsItalic: jest.fn(),
+    setIsUnderline: jest.fn(),
+    setUnderlineHeight: jest.fn(),
     setLineHeight: jest.fn(),
     setEnableWrapText: jest.fn(),
     setOverflow: jest.fn(),
@@ -39,6 +48,8 @@ beforeAll(() => {
         Label: jest.fn(() => nativeLabel),
     };
 });
+
+beforeEach(() => { jest.clearAllMocks(); });
 
 test('Label M3 shell attaches and forwards text properties', () => {
     const { Label, Overflow, HorizontalTextAlignment } = require('../../cocos/2d/components/label.jsb') as typeof import('../../cocos/2d/components/label.jsb');
@@ -99,4 +110,52 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.onDestroy();
     expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(null);
     expect(nativeLabel.setBitmapAtlas).not.toHaveBeenCalled();
+});
+
+
+test('native Label retains Web serialized field names and defaults', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const web: any = new WebLabel(), label: any = new Label();
+    const fields = ['_string','_horizontalAlign','_verticalAlign','_actualFontSize','_fontSize','_fontFamily',
+        '_lineHeight','_overflow','_enableWrapText','_font','_isSystemFontUsed','_spacingX','_isItalic','_isBold',
+        '_isUnderline','_underlineHeight','_cacheMode','_enableOutline','_outlineColor','_outlineWidth',
+        '_enableShadow','_shadowColor','_shadowOffset','_shadowBlur'];
+    expect(Label.__values__).toEqual(expect.arrayContaining(fields));
+    for (const field of fields) expect(label[field]).toEqual(web[field]);
+});
+
+test('legacy records preserve font dependency and styles through load and instantiate', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const details = new Details(); details.init();
+    const label: any = deserialize([{__type__: 'cc.Label', _string: 'legacy font', _font: {__uuid__: 'font-id'},
+        _isSystemFontUsed: false, _isBold: true, _isItalic: true, _isUnderline: true, _underlineHeight: 4,
+        _enableOutline: true, _outlineWidth: 3, _enableShadow: true, _shadowBlur: 5,
+        _shadowOffset: {__type__: 'cc.Vec2', x: 3, y: -2}}], details, {
+        classFinder: (id: string) => id === 'cc.Label' ? Label : id === 'cc.Vec2' ? require('../../cocos/core').Vec2 : undefined,
+    });
+    expect(details.uuidList).toEqual(['font-id']);
+    expect(details.uuidObjList![0]).toBe(label);
+    expect(details.uuidPropList![0]).toBe('_font');
+    const font = new Font(); font._uuid = 'font-id';
+    details.uuidObjList![0][details.uuidPropList![0]] = font;
+    label.node = new Node('loaded-label'); label.node.addComponent(UITransform);
+    label.onLoad();
+    expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(font);
+    expect(nativeLabel.setIsBold).toHaveBeenLastCalledWith(true);
+    expect(nativeLabel.setIsItalic).toHaveBeenLastCalledWith(true);
+    expect(nativeLabel.setIsUnderline).toHaveBeenLastCalledWith(true);
+    expect(nativeLabel.setUnderlineHeight).toHaveBeenLastCalledWith(4);
+    expect(nativeLabel.setOutlineWidth).toHaveBeenLastCalledWith(3);
+    expect(nativeLabel.setShadowBlur).toHaveBeenLastCalledWith(5);
+    expect(nativeLabel.setShadowOffset).toHaveBeenLastCalledWith(3, -2);
+    const clone: any = instantiate(label);
+    expect(clone).toBeInstanceOf(Label);
+    expect(clone.string).toBe('legacy font');
+    expect(clone.font).toBe(font);
+    expect(clone._native).toBeNull();
+    expect(clone.shadowOffset).toEqual(label.shadowOffset);
+    expect(clone.shadowOffset).not.toBe(label.shadowOffset);
+    expect(clone.isBold).toBe(true);
+    expect(clone.underlineHeight).toBe(4);
+    label.onDestroy();
 });

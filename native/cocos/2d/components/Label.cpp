@@ -158,6 +158,7 @@ void Label::clearRenderedData() {
     _renderer.clearFrame(); _frame = nullptr; _texture = nullptr;
     std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
     _lastContentWidth = _lastContentHeight = _lastTextureWidth = _lastTextureHeight = 0;
+    _actualFontSize = 0.F;
     _lastLineCount = 0;
     _lastAtlasTextureId = 0;
     _lastAtlasX = _lastAtlasY = _lastAtlasWidth = _lastAtlasHeight = 0;
@@ -680,6 +681,7 @@ void Label::updateRenderData() {
 
 void Label::rebuildTexture() {
     _dirty = false;
+    _actualFontSize = _fontSize;
     if (_bitmapFont || (_bitmapAtlas != nullptr && !_glyphs.empty())) {
         const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
         if (_bitmapAtlas && !glyphs.empty()) rebuildBitmapTexture(); else clearRenderedData();
@@ -843,7 +845,7 @@ void Label::rebuildTexture() {
         context.setFillStyle(fillColor);
         context.fillText(line, x, lineY, 0.0F);
         if (_isUnderline) {
-            context.fillRect(x, lineY + _fontSize + 1.0F, lineWidth, 1.0F);
+            context.fillRect(x, lineY + _fontSize + 1.0F, lineWidth, std::max(_underlineHeight, 0.F));
         }
     }
     cc::Data pixels;

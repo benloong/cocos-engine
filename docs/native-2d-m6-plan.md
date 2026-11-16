@@ -33,7 +33,8 @@
 
 ### M6.1 资产与状态一致性
 
-- [ ] 修复 M6.0 矩阵已发现的组件兼容差异：Label 的序列化字体/系统字体标记、样式/效果/默认值，Sprite 的 fillRange/公开 API；为原生依赖回填与旧记录加载建立固定回归。
+- [x] Label 序列化基础兼容：恢复 Web 的字体/系统字体字段、样式/效果/24 个默认值，补旧格式 deserialize/Details 回填与 instantiate 回归；初始化样式传给 native，普通 TTF 下划线厚度与实际字号通过 Windows Debug/Release 联调，见 [报告](./native-2d-m6.1-label-serialization.md)。
+- [ ] 继续修复组件完整 API parity：Label 的其余公开/兼容接口、Sprite 的 fillRange/公开 API；真实场景/Prefab 和字体资源管线仍待固定回归。
 
 - [x] SpriteFrame 基础数据/算法：quad/sliced UV 迁入 native；rotated、flip、insets、pivot、meshType、packable、clone/reset 与基础静态 API 已补实现，UV 对照与 Windows 定向回归通过，见 [报告](./native-2d-m6.1-sprite-frame.md)。
 - [x] SpriteFrame 基础状态：rect/offset/originalSize/pivot 使用 native 可写视图；setter、分量修改、反序列化、克隆和 native 回读不再依赖 JS 权威镜像，Sprite/Mask/BMFont 有原生消费者联动测试。

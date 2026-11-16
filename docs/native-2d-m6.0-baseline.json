@@ -55,11 +55,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "ee71dabec63bc62c19925fb31471ff4225bf11288a9429c0cee77e30a04c8cd1"
+      "sha256": "a971981dfdcf545f4b0b6aabf9f3f80a47564417d8a97c7fd9c4e91aa9c8db89"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "e29f1d5c9321ba7d49024f2012cc3b7652328f10f511d660c1a4fbf145e22071"
+      "sha256": "5e5f56b22e0e63eb851642e26cc32de58e92ec2e7acc5282cb5e596841ef0f2f"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -5643,7 +5643,7 @@
             "static": false,
             "type": null,
             "parameters": [],
-            "default": "''",
+            "default": "'label'",
             "decorators": [
               "serializable"
             ]
@@ -5668,7 +5668,9 @@
             "type": null,
             "parameters": [],
             "default": "false",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_isItalic",
@@ -5678,7 +5680,9 @@
             "type": null,
             "parameters": [],
             "default": "false",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_isUnderline",
@@ -5688,7 +5692,9 @@
             "type": null,
             "parameters": [],
             "default": "false",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_lineHeight",
@@ -5745,7 +5751,7 @@
             "static": false,
             "type": null,
             "parameters": [],
-            "default": "HorizontalTextAlignment.LEFT",
+            "default": "HorizontalTextAlignment.CENTER",
             "decorators": [
               "serializable"
             ]
@@ -5757,7 +5763,7 @@
             "static": false,
             "type": null,
             "parameters": [],
-            "default": "VerticalTextAlignment.TOP",
+            "default": "VerticalTextAlignment.CENTER",
             "decorators": [
               "serializable"
             ]
@@ -5787,7 +5793,7 @@
             ]
           },
           {
-            "name": "_useSystemFont",
+            "name": "_isSystemFontUsed",
             "kind": "PropertyDeclaration",
             "visibility": "protected",
             "static": false,
@@ -5806,7 +5812,9 @@
             "type": "any",
             "parameters": [],
             "default": "null",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_enableOutline",
@@ -5816,7 +5824,9 @@
             "type": null,
             "parameters": [],
             "default": "false",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_outlineColor",
@@ -5826,7 +5836,9 @@
             "type": null,
             "parameters": [],
             "default": "new Color(0, 0, 0, 255)",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_outlineWidth",
@@ -5835,8 +5847,10 @@
             "static": false,
             "type": null,
             "parameters": [],
-            "default": "0",
-            "decorators": []
+            "default": "2",
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_enableShadow",
@@ -5846,7 +5860,9 @@
             "type": null,
             "parameters": [],
             "default": "false",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_shadowColor",
@@ -5856,7 +5872,9 @@
             "type": null,
             "parameters": [],
             "default": "new Color(0, 0, 0, 255)",
-            "decorators": []
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_shadowBlur",
@@ -5865,8 +5883,10 @@
             "static": false,
             "type": null,
             "parameters": [],
-            "default": "0",
-            "decorators": []
+            "default": "2",
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_shadowOffset",
@@ -5875,8 +5895,34 @@
             "static": false,
             "type": null,
             "parameters": [],
-            "default": "new Vec2(0, 0)",
-            "decorators": []
+            "default": "new Vec2(2, 2)",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_actualFontSize",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "0",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_underlineHeight",
+            "kind": "PropertyDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": null,
+            "parameters": [],
+            "default": "2",
+            "decorators": [
+              "serializable"
+            ]
           },
           {
             "name": "_native",
@@ -5994,6 +6040,50 @@
             "static": false,
             "type": "number",
             "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "actualFontSize",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "number",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "actualFontSize",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: number"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "underlineHeight",
+            "kind": "GetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": "number",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "underlineHeight",
+            "kind": "SetAccessor",
+            "visibility": "public",
+            "static": false,
+            "type": null,
+            "parameters": [
+              "value: number"
+            ],
             "default": null,
             "decorators": []
           },
@@ -6127,7 +6217,9 @@
             "type": "any",
             "parameters": [],
             "default": null,
-            "decorators": []
+            "decorators": [
+              "type(Font)"
+            ]
           },
           {
             "name": "font",
@@ -6288,7 +6380,9 @@
             "type": "CacheMode",
             "parameters": [],
             "default": null,
-            "decorators": []
+            "decorators": [
+              "type(CacheMode)"
+            ]
           },
           {
             "name": "cacheMode",
@@ -6524,7 +6618,7 @@
         "serialized": [
           {
             "name": "_string",
-            "default": "''",
+            "default": "'label'",
             "decorators": [
               "serializable"
             ]
@@ -6532,6 +6626,27 @@
           {
             "name": "_fontSize",
             "default": "40",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_isBold",
+            "default": "false",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_isItalic",
+            "default": "false",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_isUnderline",
+            "default": "false",
             "decorators": [
               "serializable"
             ]
@@ -6566,14 +6681,14 @@
           },
           {
             "name": "_horizontalAlign",
-            "default": "HorizontalTextAlignment.LEFT",
+            "default": "HorizontalTextAlignment.CENTER",
             "decorators": [
               "serializable"
             ]
           },
           {
             "name": "_verticalAlign",
-            "default": "VerticalTextAlignment.TOP",
+            "default": "VerticalTextAlignment.CENTER",
             "decorators": [
               "serializable"
             ]
@@ -6593,8 +6708,78 @@
             ]
           },
           {
-            "name": "_useSystemFont",
+            "name": "_isSystemFontUsed",
             "default": "true",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_font",
+            "default": "null",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_enableOutline",
+            "default": "false",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_outlineColor",
+            "default": "new Color(0, 0, 0, 255)",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_outlineWidth",
+            "default": "2",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_enableShadow",
+            "default": "false",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_shadowColor",
+            "default": "new Color(0, 0, 0, 255)",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_shadowBlur",
+            "default": "2",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_shadowOffset",
+            "default": "new Vec2(2, 2)",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_actualFontSize",
+            "default": "0",
+            "decorators": [
+              "serializable"
+            ]
+          },
+          {
+            "name": "_underlineHeight",
+            "default": "2",
             "decorators": [
               "serializable"
             ]
@@ -6682,7 +6867,6 @@
           "_canvasPool",
           "_onPreDestroy",
           "_updateBlendFunc",
-          "actualFontSize",
           "assemblerData",
           "contentWidth",
           "fontAtlas",
@@ -6692,42 +6876,10 @@
           "textLayoutData",
           "textRenderData",
           "textStyle",
-          "ttfSpriteFrame",
-          "underlineHeight"
+          "ttfSpriteFrame"
         ],
-        "missingSerializedDeclarations": [
-          "_actualFontSize",
-          "_font",
-          "_isSystemFontUsed",
-          "_isItalic",
-          "_isBold",
-          "_isUnderline",
-          "_underlineHeight",
-          "_enableOutline",
-          "_outlineColor",
-          "_outlineWidth",
-          "_enableShadow",
-          "_shadowColor",
-          "_shadowOffset",
-          "_shadowBlur"
-        ],
-        "initializerTextDifferences": [
-          {
-            "field": "_string",
-            "web": "'label'",
-            "native": "''"
-          },
-          {
-            "field": "_horizontalAlign",
-            "web": "HorizontalTextAlignment.CENTER",
-            "native": "HorizontalTextAlignment.LEFT"
-          },
-          {
-            "field": "_verticalAlign",
-            "web": "VerticalTextAlignment.CENTER",
-            "native": "VerticalTextAlignment.TOP"
-          }
-        ]
+        "missingSerializedDeclarations": [],
+        "initializerTextDifferences": []
       },
       "imports": {
         "within2d": [
@@ -13390,207 +13542,240 @@
     },
     {
       "file": "cocos/2d/components/label.jsb.ts",
-      "sha256": "cde535b65370b8a441a1dc96089e283a6ee015f12e894d2de4ec9ce24e2a73b7",
-      "printedCodeLines": 312,
+      "sha256": "10f4b5846073e215fc3e0c7c28458d3b0be0e3fbf8c6b5be5f06a05eb350af32",
+      "printedCodeLines": 339,
       "runtimeImports": [
         "cc.decorator",
         "../../core",
         "../framework/ui-transform",
-        "../framework/ui-renderer"
+        "../framework/ui-renderer",
+        "../assets/font"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native.setNode",
-          "line": 124
-        },
-        {
-          "expression": "this._native.setUITransform",
-          "line": 127
-        },
-        {
-          "expression": "this._native.setPriority",
-          "line": 129
-        },
-        {
-          "expression": "this._native?.measureContent",
-          "line": 134
-        },
-        {
-          "expression": "this._native?.setEnabled",
-          "line": 138
-        },
-        {
-          "expression": "this._native?.setEnabled",
           "line": 142
         },
         {
-          "expression": "this._native.setEnabled",
+          "expression": "this._native.setUITransform",
+          "line": 145
+        },
+        {
+          "expression": "this._native.setPriority",
           "line": 147
         },
         {
+          "expression": "this._native?.measureContent",
+          "line": 152
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 156
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 160
+        },
+        {
+          "expression": "this._native.setEnabled",
+          "line": 165
+        },
+        {
           "expression": "this._native.setNode",
-          "line": 148
+          "line": 166
         },
         {
           "expression": "this._native.setFontAsset",
-          "line": 149
+          "line": 167
         },
         {
           "expression": "this._native?.setString",
-          "line": 164
+          "line": 182
+        },
+        {
+          "expression": "this._native?.getActualFontSize",
+          "line": 199
+        },
+        {
+          "expression": "this._native?.setActualFontSize",
+          "line": 200
+        },
+        {
+          "expression": "this._native?.setUnderlineHeight",
+          "line": 203
         },
         {
           "expression": "this._native?.setIsBold",
-          "line": 184
+          "line": 208
         },
         {
           "expression": "this._native?.setIsItalic",
-          "line": 190
+          "line": 214
         },
         {
           "expression": "this._native?.setIsUnderline",
-          "line": 196
+          "line": 220
         },
         {
           "expression": "this._native?.setLineHeight",
-          "line": 216
+          "line": 240
         },
         {
           "expression": "this._native?.setOverflow",
-          "line": 261
-        },
-        {
-          "expression": "this._native?.setEnableWrapText",
-          "line": 273
-        },
-        {
-          "expression": "this._native?.setHorizontalAlign",
           "line": 286
         },
         {
-          "expression": "this._native?.setVerticalAlign",
-          "line": 299
-        },
-        {
-          "expression": "this._native?.setSpacingX",
-          "line": 308
-        },
-        {
-          "expression": "this._native?.setCacheMode",
-          "line": 317
-        },
-        {
-          "expression": "this._native?.setColorRGBA",
-          "line": 329
-        },
-        {
-          "expression": "this._native?.setMaterial",
-          "line": 338
-        },
-        {
-          "expression": "this._native?.setEnableOutline",
-          "line": 344
-        },
-        {
-          "expression": "this._native?.setOutlineColor",
-          "line": 350
-        },
-        {
-          "expression": "this._native?.setOutlineWidth",
-          "line": 356
-        },
-        {
-          "expression": "this._native?.setEnableShadow",
-          "line": 362
-        },
-        {
-          "expression": "this._native?.setShadowColor",
-          "line": 368
-        },
-        {
-          "expression": "this._native?.setShadowBlur",
-          "line": 374
-        },
-        {
-          "expression": "this._native?.setShadowOffset",
-          "line": 380
-        },
-        {
-          "expression": "this._native?.setFontAsset",
-          "line": 384
-        },
-        {
-          "expression": "this._native?.setFont",
-          "line": 385
-        },
-        {
-          "expression": "this._native?.setFontSize",
-          "line": 386
-        },
-        {
-          "expression": "this._native?.setString",
-          "line": 390
-        },
-        {
-          "expression": "this._native?.setLineHeight",
-          "line": 392
-        },
-        {
           "expression": "this._native?.setEnableWrapText",
-          "line": 393
-        },
-        {
-          "expression": "this._native?.setOverflow",
-          "line": 394
+          "line": 298
         },
         {
           "expression": "this._native?.setHorizontalAlign",
-          "line": 395
+          "line": 311
         },
         {
           "expression": "this._native?.setVerticalAlign",
-          "line": 396
+          "line": 324
         },
         {
           "expression": "this._native?.setSpacingX",
-          "line": 397
-        },
-        {
-          "expression": "this._native?.setColorRGBA",
-          "line": 398
-        },
-        {
-          "expression": "this._native?.setEnableOutline",
-          "line": 399
-        },
-        {
-          "expression": "this._native?.setOutlineColor",
-          "line": 400
-        },
-        {
-          "expression": "this._native?.setOutlineWidth",
-          "line": 401
-        },
-        {
-          "expression": "this._native?.setEnableShadow",
-          "line": 402
-        },
-        {
-          "expression": "this._native?.setShadowColor",
-          "line": 403
-        },
-        {
-          "expression": "this._native?.setShadowBlur",
-          "line": 404
-        },
-        {
-          "expression": "this._native?.setShadowOffset",
-          "line": 405
+          "line": 333
         },
         {
           "expression": "this._native?.setCacheMode",
+          "line": 343
+        },
+        {
+          "expression": "this._native?.setColorRGBA",
+          "line": 355
+        },
+        {
+          "expression": "this._native?.setMaterial",
+          "line": 364
+        },
+        {
+          "expression": "this._native?.setEnableOutline",
+          "line": 370
+        },
+        {
+          "expression": "this._native?.setOutlineColor",
+          "line": 376
+        },
+        {
+          "expression": "this._native?.setOutlineWidth",
+          "line": 382
+        },
+        {
+          "expression": "this._native?.setEnableShadow",
+          "line": 388
+        },
+        {
+          "expression": "this._native?.setShadowColor",
+          "line": 394
+        },
+        {
+          "expression": "this._native?.setShadowBlur",
+          "line": 400
+        },
+        {
+          "expression": "this._native?.setShadowOffset",
           "line": 406
+        },
+        {
+          "expression": "this._native?.setFontAsset",
+          "line": 410
+        },
+        {
+          "expression": "this._native?.setFont",
+          "line": 411
+        },
+        {
+          "expression": "this._native?.setFontSize",
+          "line": 412
+        },
+        {
+          "expression": "this._native?.setString",
+          "line": 416
+        },
+        {
+          "expression": "this._native?.setActualFontSize",
+          "line": 418
+        },
+        {
+          "expression": "this._native?.setIsBold",
+          "line": 419
+        },
+        {
+          "expression": "this._native?.setIsItalic",
+          "line": 420
+        },
+        {
+          "expression": "this._native?.setIsUnderline",
+          "line": 421
+        },
+        {
+          "expression": "this._native?.setUnderlineHeight",
+          "line": 422
+        },
+        {
+          "expression": "this._native?.setLineHeight",
+          "line": 423
+        },
+        {
+          "expression": "this._native?.setEnableWrapText",
+          "line": 424
+        },
+        {
+          "expression": "this._native?.setOverflow",
+          "line": 425
+        },
+        {
+          "expression": "this._native?.setHorizontalAlign",
+          "line": 426
+        },
+        {
+          "expression": "this._native?.setVerticalAlign",
+          "line": 427
+        },
+        {
+          "expression": "this._native?.setSpacingX",
+          "line": 428
+        },
+        {
+          "expression": "this._native?.setColorRGBA",
+          "line": 429
+        },
+        {
+          "expression": "this._native?.setEnableOutline",
+          "line": 430
+        },
+        {
+          "expression": "this._native?.setOutlineColor",
+          "line": 431
+        },
+        {
+          "expression": "this._native?.setOutlineWidth",
+          "line": 432
+        },
+        {
+          "expression": "this._native?.setEnableShadow",
+          "line": 433
+        },
+        {
+          "expression": "this._native?.setShadowColor",
+          "line": 434
+        },
+        {
+          "expression": "this._native?.setShadowBlur",
+          "line": 435
+        },
+        {
+          "expression": "this._native?.setShadowOffset",
+          "line": 436
+        },
+        {
+          "expression": "this._native?.setCacheMode",
+          "line": 437
         }
       ],
       "allocations": [],
