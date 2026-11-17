@@ -1,0 +1,478 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "diagnosticOnly": true,
+  "debugReleaseByteEqual": true,
+  "normal": {
+    "diagnosticOnly": true,
+    "width": 256,
+    "height": 128,
+    "text": "Atlas 123",
+    "browser": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "cases": [
+        {
+          "size": 12,
+          "style": 0,
+          "font": "12px M6Raw",
+          "width": 47.98828125
+        },
+        {
+          "size": 12,
+          "style": 1,
+          "font": "bold 12px M6Raw",
+          "width": 47.98828125
+        },
+        {
+          "size": 12,
+          "style": 2,
+          "font": "italic 12px M6Raw",
+          "width": 47.98828125
+        },
+        {
+          "size": 24,
+          "style": 0,
+          "font": "24px M6Raw",
+          "width": 95.9765625
+        },
+        {
+          "size": 24,
+          "style": 1,
+          "font": "bold 24px M6Raw",
+          "width": 95.9765625
+        },
+        {
+          "size": 24,
+          "style": 2,
+          "font": "italic 24px M6Raw",
+          "width": 95.9765625
+        },
+        {
+          "size": 36,
+          "style": 0,
+          "font": "36px M6Raw",
+          "width": 143.96484375
+        },
+        {
+          "size": 36,
+          "style": 1,
+          "font": "bold 36px M6Raw",
+          "width": 143.96484375
+        },
+        {
+          "size": 36,
+          "style": 2,
+          "font": "italic 36px M6Raw",
+          "width": 143.96484375
+        },
+        {
+          "size": 48,
+          "style": 0,
+          "font": "48px M6Raw",
+          "width": 191.953125
+        },
+        {
+          "size": 48,
+          "style": 1,
+          "font": "bold 48px M6Raw",
+          "width": 191.953125
+        },
+        {
+          "size": 48,
+          "style": 2,
+          "font": "italic 48px M6Raw",
+          "width": 191.953125
+        }
+      ]
+    },
+    "nativeDirectory": "ttf-raster-native",
+    "sourceSha256": "957d2d311c8befda163c024feded71d38823a7c621da3ea030d0ef8498c4cd7d",
+    "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+    "cases": [
+      {
+        "size": 12,
+        "style": "normal",
+        "maxChannelDifference": 206,
+        "differentPixels": 274,
+        "nativeCoverage": 24073,
+        "webCoverage": 36764,
+        "coverageRatio": 0.6547981721249048,
+        "nativeSha256": "d9ba3928813240b36f48ed3796b30f949410c60352cfceb771a04a0332a64f40",
+        "webSha256": "88d999f14437bcd14451b4e3ef123174f8c5b2c4e23afdac468f8eacd71c1606",
+        "passed": false
+      },
+      {
+        "size": 12,
+        "style": "bold",
+        "maxChannelDifference": 204,
+        "differentPixels": 335,
+        "nativeCoverage": 30896,
+        "webCoverage": 55456,
+        "coverageRatio": 0.5571263704558569,
+        "nativeSha256": "4bc10b0e4c12f4ea8a12ed8ed5cd5636e8031673297f07b35f133a4ad73d2b3b",
+        "webSha256": "e655b9dbb39025ee4c8d02f4660c0b86ded55c8c14f59b4f1c0b950afd8410b7",
+        "passed": false
+      },
+      {
+        "size": 12,
+        "style": "italic",
+        "maxChannelDifference": 212,
+        "differentPixels": 276,
+        "nativeCoverage": 23707,
+        "webCoverage": 36248,
+        "coverageRatio": 0.6540222908850143,
+        "nativeSha256": "ccbb288c560436be76e31a0e3d7306721f4c4780af7329420a07c40c97c517a9",
+        "webSha256": "9ab742cb9a028ef9647356117946636a4d82d36cbd526d878add930fcad36eaa",
+        "passed": false
+      },
+      {
+        "size": 24,
+        "style": "normal",
+        "maxChannelDifference": 129,
+        "differentPixels": 546,
+        "nativeCoverage": 95289,
+        "webCoverage": 121180,
+        "coverageRatio": 0.7863426307971613,
+        "nativeSha256": "bd60ce7e6b177e6e61882b66ab3a444b81b6c8e0e0eb3fe5616d13e5384d0654",
+        "webSha256": "b7b6bad522fb2f0bc3a2c95448ad97b24e7fc44a5b25cb36f1c91f11ec3adb93",
+        "passed": false
+      },
+      {
+        "size": 24,
+        "style": "bold",
+        "maxChannelDifference": 206,
+        "differentPixels": 792,
+        "nativeCoverage": 123045,
+        "webCoverage": 183673,
+        "coverageRatio": 0.6699133786675232,
+        "nativeSha256": "1b2e375e3af93e37c45bf9dc5e1d48533ffd1299474b9bc39c6eac39d4f108e0",
+        "webSha256": "0c7e3a54d7780357aa7ebe19ff9897c2f914368289341341bdffa062d09f845e",
+        "passed": false
+      },
+      {
+        "size": 24,
+        "style": "italic",
+        "maxChannelDifference": 248,
+        "differentPixels": 678,
+        "nativeCoverage": 95781,
+        "webCoverage": 121455,
+        "coverageRatio": 0.7886130665678647,
+        "nativeSha256": "206aeb802b5e42d27e7a94509668c0fe81ef2f49cb59cfbf31d54722d72834e1",
+        "webSha256": "eb74dc72a53b431e59b92fa6d950f7a362478681ba535eb3e504c7fbd7831caa",
+        "passed": false
+      },
+      {
+        "size": 36,
+        "style": "normal",
+        "maxChannelDifference": 174,
+        "differentPixels": 918,
+        "nativeCoverage": 214781,
+        "webCoverage": 254535,
+        "coverageRatio": 0.8438171567760818,
+        "nativeSha256": "751fcdfee8819c993dfc4afe44bbeb2b59894713d8ffa1bc561e5290f678cfd5",
+        "webSha256": "1e2cd5e29c9b34e5ce5d5d24bd814ee62f03e826d3783b5eb048b843dbeb0afb",
+        "passed": false
+      },
+      {
+        "size": 36,
+        "style": "bold",
+        "maxChannelDifference": 223,
+        "differentPixels": 1196,
+        "nativeCoverage": 275257,
+        "webCoverage": 369820,
+        "coverageRatio": 0.7442999296955276,
+        "nativeSha256": "6f5b15c13c5c50988667bbf73c1857f2bdb834f0a7442d013d8736e8cda9300a",
+        "webSha256": "3480e24b3fdf035a6b1749ece791ea2ba684e1e6f57f3d76ce868dab947b6f21",
+        "passed": false
+      },
+      {
+        "size": 36,
+        "style": "italic",
+        "maxChannelDifference": 254,
+        "differentPixels": 1247,
+        "nativeCoverage": 214540,
+        "webCoverage": 254815,
+        "coverageRatio": 0.8419441555638404,
+        "nativeSha256": "5b2c27d18680c79944833520d0cfe332c87a2f11ec05bcebb5123fe93f400567",
+        "webSha256": "8856f3ed0f0699d4d54876a9e63157ffa6b10090aa10746c5a10bbe3a974f0fa",
+        "passed": false
+      },
+      {
+        "size": 48,
+        "style": "normal",
+        "maxChannelDifference": 161,
+        "differentPixels": 1265,
+        "nativeCoverage": 382736,
+        "webCoverage": 435285,
+        "coverageRatio": 0.8792767956626119,
+        "nativeSha256": "a42992813b283dba0bb4a7fbba169a4fb8aa901ce57ffd93a1ab9ecbaa424fcf",
+        "webSha256": "ea3ea24eaa08528e637ac8a38ab083764d72b4485e0fe0c19cf04b00e6dde330",
+        "passed": false
+      },
+      {
+        "size": 48,
+        "style": "bold",
+        "maxChannelDifference": 254,
+        "differentPixels": 1798,
+        "nativeCoverage": 492351,
+        "webCoverage": 631349,
+        "coverageRatio": 0.7798396766289326,
+        "nativeSha256": "c40ed5cf7362bcc30f51acf3fca7178f90435ca608778a50502ab519a250a1ea",
+        "webSha256": "47e6fb4d584e3762e97793ee5d81a0e6e5fecf5088a5ee2b8bb48cebe9897c61",
+        "passed": false
+      },
+      {
+        "size": 48,
+        "style": "italic",
+        "maxChannelDifference": 254,
+        "differentPixels": 1756,
+        "nativeCoverage": 380910,
+        "webCoverage": 434781,
+        "coverageRatio": 0.8760962415560938,
+        "nativeSha256": "ed049883323de8737adcd24ace354df7e0a9ac5605c77f70ab56f0755cda5586",
+        "webSha256": "49f7ff0e339ea1b0f4f09164ea734ec6e65dd10a1297025fe55334d945fa1038",
+        "passed": false
+      }
+    ],
+    "passed": 0,
+    "total": 12
+  },
+  "experiment": {
+    "mutation": "DWRITE_GRID_FIT_MODE_DISABLED -> DWRITE_GRID_FIT_MODE_ENABLED; diagnostic copy only",
+    "sourceSha256": "058051afffaf38b85857ec279d2fd3ef1130b4edd676a3f8f7d163a8057979ec",
+    "comparison": {
+      "diagnosticOnly": true,
+      "width": 256,
+      "height": 128,
+      "text": "Atlas 123",
+      "browser": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "cases": [
+          {
+            "size": 12,
+            "style": 0,
+            "font": "12px M6Raw",
+            "width": 47.98828125
+          },
+          {
+            "size": 12,
+            "style": 1,
+            "font": "bold 12px M6Raw",
+            "width": 47.98828125
+          },
+          {
+            "size": 12,
+            "style": 2,
+            "font": "italic 12px M6Raw",
+            "width": 47.98828125
+          },
+          {
+            "size": 24,
+            "style": 0,
+            "font": "24px M6Raw",
+            "width": 95.9765625
+          },
+          {
+            "size": 24,
+            "style": 1,
+            "font": "bold 24px M6Raw",
+            "width": 95.9765625
+          },
+          {
+            "size": 24,
+            "style": 2,
+            "font": "italic 24px M6Raw",
+            "width": 95.9765625
+          },
+          {
+            "size": 36,
+            "style": 0,
+            "font": "36px M6Raw",
+            "width": 143.96484375
+          },
+          {
+            "size": 36,
+            "style": 1,
+            "font": "bold 36px M6Raw",
+            "width": 143.96484375
+          },
+          {
+            "size": 36,
+            "style": 2,
+            "font": "italic 36px M6Raw",
+            "width": 143.96484375
+          },
+          {
+            "size": 48,
+            "style": 0,
+            "font": "48px M6Raw",
+            "width": 191.953125
+          },
+          {
+            "size": 48,
+            "style": 1,
+            "font": "bold 48px M6Raw",
+            "width": 191.953125
+          },
+          {
+            "size": 48,
+            "style": 2,
+            "font": "italic 48px M6Raw",
+            "width": 191.953125
+          }
+        ]
+      },
+      "nativeDirectory": "ttf-raster-gridfit",
+      "sourceSha256": "957d2d311c8befda163c024feded71d38823a7c621da3ea030d0ef8498c4cd7d",
+      "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "cases": [
+        {
+          "size": 12,
+          "style": "normal",
+          "maxChannelDifference": 206,
+          "differentPixels": 274,
+          "nativeCoverage": 24073,
+          "webCoverage": 36764,
+          "coverageRatio": 0.6547981721249048,
+          "nativeSha256": "d9ba3928813240b36f48ed3796b30f949410c60352cfceb771a04a0332a64f40",
+          "webSha256": "88d999f14437bcd14451b4e3ef123174f8c5b2c4e23afdac468f8eacd71c1606",
+          "passed": false
+        },
+        {
+          "size": 12,
+          "style": "bold",
+          "maxChannelDifference": 234,
+          "differentPixels": 339,
+          "nativeCoverage": 41168,
+          "webCoverage": 55456,
+          "coverageRatio": 0.7423542989036354,
+          "nativeSha256": "70f5b964a922945209f6094e781e52476fdbf13dfc9b28888fc863a00b86ecd3",
+          "webSha256": "e655b9dbb39025ee4c8d02f4660c0b86ded55c8c14f59b4f1c0b950afd8410b7",
+          "passed": false
+        },
+        {
+          "size": 12,
+          "style": "italic",
+          "maxChannelDifference": 212,
+          "differentPixels": 276,
+          "nativeCoverage": 23754,
+          "webCoverage": 36248,
+          "coverageRatio": 0.6553189141469874,
+          "nativeSha256": "c3c62d5bfcdeab05d8357d228cf825a5b91589a9b7fbf1195f911edb17aaed38",
+          "webSha256": "9ab742cb9a028ef9647356117946636a4d82d36cbd526d878add930fcad36eaa",
+          "passed": false
+        },
+        {
+          "size": 24,
+          "style": "normal",
+          "maxChannelDifference": 129,
+          "differentPixels": 546,
+          "nativeCoverage": 95289,
+          "webCoverage": 121180,
+          "coverageRatio": 0.7863426307971613,
+          "nativeSha256": "bd60ce7e6b177e6e61882b66ab3a444b81b6c8e0e0eb3fe5616d13e5384d0654",
+          "webSha256": "b7b6bad522fb2f0bc3a2c95448ad97b24e7fc44a5b25cb36f1c91f11ec3adb93",
+          "passed": false
+        },
+        {
+          "size": 24,
+          "style": "bold",
+          "maxChannelDifference": 215,
+          "differentPixels": 790,
+          "nativeCoverage": 129832,
+          "webCoverage": 183673,
+          "coverageRatio": 0.7068649175436782,
+          "nativeSha256": "ecca20e6cc64cb3ed43dc7bab6dabafc12417785059820af88449ec9a809d0a2",
+          "webSha256": "0c7e3a54d7780357aa7ebe19ff9897c2f914368289341341bdffa062d09f845e",
+          "passed": false
+        },
+        {
+          "size": 24,
+          "style": "italic",
+          "maxChannelDifference": 248,
+          "differentPixels": 678,
+          "nativeCoverage": 95733,
+          "webCoverage": 121455,
+          "coverageRatio": 0.7882178584660986,
+          "nativeSha256": "5887623b229feeaee7e6c71e389a9291abd0e65efb08dd44cadc045d7ba16688",
+          "webSha256": "eb74dc72a53b431e59b92fa6d950f7a362478681ba535eb3e504c7fbd7831caa",
+          "passed": false
+        },
+        {
+          "size": 36,
+          "style": "normal",
+          "maxChannelDifference": 174,
+          "differentPixels": 918,
+          "nativeCoverage": 214781,
+          "webCoverage": 254535,
+          "coverageRatio": 0.8438171567760818,
+          "nativeSha256": "751fcdfee8819c993dfc4afe44bbeb2b59894713d8ffa1bc561e5290f678cfd5",
+          "webSha256": "1e2cd5e29c9b34e5ce5d5d24bd814ee62f03e826d3783b5eb048b843dbeb0afb",
+          "passed": false
+        },
+        {
+          "size": 36,
+          "style": "bold",
+          "maxChannelDifference": 254,
+          "differentPixels": 1274,
+          "nativeCoverage": 266583,
+          "webCoverage": 369820,
+          "coverageRatio": 0.7208452760802553,
+          "nativeSha256": "99377253a1bc0581bd49ffa154508ef19e08191f85cbc30f8b75bf8a120bd617",
+          "webSha256": "3480e24b3fdf035a6b1749ece791ea2ba684e1e6f57f3d76ce868dab947b6f21",
+          "passed": false
+        },
+        {
+          "size": 36,
+          "style": "italic",
+          "maxChannelDifference": 254,
+          "differentPixels": 1247,
+          "nativeCoverage": 214572,
+          "webCoverage": 254815,
+          "coverageRatio": 0.8420697368679237,
+          "nativeSha256": "66dc996662c52d156dc8d6d07db6619edf50428a5f0160d5a10e4bdc79566efd",
+          "webSha256": "8856f3ed0f0699d4d54876a9e63157ffa6b10090aa10746c5a10bbe3a974f0fa",
+          "passed": false
+        },
+        {
+          "size": 48,
+          "style": "normal",
+          "maxChannelDifference": 161,
+          "differentPixels": 1265,
+          "nativeCoverage": 382736,
+          "webCoverage": 435285,
+          "coverageRatio": 0.8792767956626119,
+          "nativeSha256": "a42992813b283dba0bb4a7fbba169a4fb8aa901ce57ffd93a1ab9ecbaa424fcf",
+          "webSha256": "ea3ea24eaa08528e637ac8a38ab083764d72b4485e0fe0c19cf04b00e6dde330",
+          "passed": false
+        },
+        {
+          "size": 48,
+          "style": "bold",
+          "maxChannelDifference": 254,
+          "differentPixels": 1801,
+          "nativeCoverage": 451679,
+          "webCoverage": 631349,
+          "coverageRatio": 0.7154188887604161,
+          "nativeSha256": "c9d2cc0882da39250fd40a2bc49830e2e1e3156f13f9e1af5ed7e58b115088ef",
+          "webSha256": "47e6fb4d584e3762e97793ee5d81a0e6e5fecf5088a5ee2b8bb48cebe9897c61",
+          "passed": false
+        },
+        {
+          "size": 48,
+          "style": "italic",
+          "maxChannelDifference": 254,
+          "differentPixels": 1756,
+          "nativeCoverage": 380910,
+          "webCoverage": 434781,
+          "coverageRatio": 0.8760962415560938,
+          "nativeSha256": "ed049883323de8737adcd24ace354df7e0a9ac5605c77f70ab56f0755cda5586",
+          "webSha256": "49f7ff0e339ea1b0f4f09164ea734ec6e65dd10a1297025fe55334d945fa1038",
+          "passed": false
+        }
+      ],
+      "passed": 0,
+      "total": 12
+    }
+  }
+}

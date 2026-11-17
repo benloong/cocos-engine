@@ -66,6 +66,7 @@
 - [x] 建立 RichText 同源字体实际应用夹具：asset-manager 加载/释放真实 TTF、12 例布局/图像记录，并修复 Label 字体失效后准备入口被禁用的黑屏。当前视觉 0/12 通过，Windows GDI 字体回退与后续字形/布局仍需修复，见 [未通过报告](./native-2d-m6.2-richtext-gpu.md)；此勾选仅表示夹具和失败基线建立。
 - [x] RichText 样式尺寸补充：native 计入斜体/描边范围，保留布局中间精度，修复自动宽度累计与不收缩；Windows Debug/Release 实际 JSB、11 项 Jest、ASAN 通过。当前同快照 12/12 布局一致，严格图像仍 0/12，见 [样式报告](./native-2d-m6.2-richtext-style-extents.md)。
 - [x] TTF 纹理映射基础修复：去掉额外边框、对齐 alphabetic 基线/下划线、背景预填与 clamp sampler；Windows 小数矩形覆盖和 source-over、1000 次 Canvas GDI 释放回归通过。12/12 布局及画布尺寸一致，严格像素仍 0/12，见 [映射报告](./native-2d-m6.2-label-raster.md)。
+- [x] 建立原始 TTF 画布诊断：4 字号 × 3 样式的生产 DirectWriteFont / Chrome Canvas 原始 RGBA 对照，Windows Debug/Release native 字节一致，严格像素 0/12；单独开启 grid fitting 无法解决差异，未改变生产参数，见 [诊断报告](./native-2d-m6.2-ttf-raw.md)。
 - [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
 - [ ] 保留 Windows GDI italic 宽度的已接受差异；平台、字体、用例、布局容差分别记录。现有 colored ±20% 只作 sanity，不能替代布局、字形、事件验收。

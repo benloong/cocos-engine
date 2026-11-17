@@ -18,6 +18,8 @@ target_link_libraries(cc2d_native_poc PRIVATE cocos_engine)
 if(WIN32)
     add_executable(cc2d_font_resource ../test_win_font_resource.cpp)
     target_link_libraries(cc2d_font_resource PRIVATE dwrite gdi32 user32)
+    add_executable(cc2d_ttf_raster ../test_ttf_raster.cpp)
+    target_link_libraries(cc2d_ttf_raster PRIVATE cocos_engine)
 endif()
 
 # Use the production compiler/library for the complete Web parser parity corpus.
