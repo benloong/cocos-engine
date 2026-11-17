@@ -139,8 +139,8 @@ private:
 class TextRenderer final : public IDWriteTextRenderer {
 public:
     // These buffers/factory are synchronous borrows for IDWriteTextLayout::Draw.
-    TextRenderer(IDWriteFactory *factory, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color, bool bold)
-    : _factory(factory), _pixels(pixels), _width(width), _height(height), _color(color), _bold(bold) {}
+    TextRenderer(IDWriteFactory *factory, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color, bool bold, bool italic)
+    : _factory(factory), _pixels(pixels), _width(width), _height(height), _color(color), _bold(bold), _italic(italic) {}
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **out) override {
         if (!out) return E_POINTER;
         *out = nullptr;
@@ -192,7 +192,11 @@ public:
     HRESULT drawMask(float x, float y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run) {
         ComOwner<IDWriteGlyphRunAnalysis> analysis;
         constexpr auto texture = DWRITE_TEXTURE_CLEARTYPE_3x1;
-        HRESULT hr = _factory->CreateGlyphRunAnalysis(run, 1, nullptr, DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC, mode, x, y, analysis.out());
+        // Canvas synthesizes italic by shearing the regular outline around
+        // each glyph origin, preserving the regular shaped advances.
+        const DWRITE_MATRIX transform{1, 0, -.25F, 1, x, y};
+        HRESULT hr = _factory->CreateGlyphRunAnalysis(run, 1, _italic ? &transform : nullptr,
+            DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC, mode, _italic ? 0.F : x, _italic ? 0.F : y, analysis.out());
         if (FAILED(hr)) return hr;
         RECT bounds{};
         hr = analysis->GetAlphaTextureBounds(texture, &bounds);
@@ -247,6 +251,7 @@ private:
     uint32_t _height;
     std::array<float, 4> _color;
     bool _bold;
+    bool _italic;
 };
 }
 
@@ -258,13 +263,15 @@ struct DirectWriteFont::Impl {
     std::wstring key;
     bool registered{false};
     bool bold{false};
+    bool italic{false};
     ~Impl() {
         format.reset(); collection.reset();
         if (registered) factory->UnregisterFontCollectionLoader(loader.get());
         loader.reset(); factory.reset(); // key remains alive through factory/cache destruction
     }
-    bool init(const std::string &path, float size, bool useBold, bool italic) {
+    bool init(const std::string &path, float size, bool useBold, bool useItalic) {
         bold = useBold;
+        italic = useItalic;
         if (!(size > 0) || !std::isfinite(size)) return false;
         key = wide(path);
         if (key.empty()) return false;
@@ -286,7 +293,7 @@ struct DirectWriteFont::Impl {
         std::wstring name(length + 1, 0);
         hr = names->GetString(0, name.data(), length + 1);
         if (SUCCEEDED(hr)) hr = factory->CreateTextFormat(name.c_str(), collection.get(), DWRITE_FONT_WEIGHT_NORMAL,
-            italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", format.out());
+            DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", format.out());
         if (FAILED(hr)) return false;
         return SUCCEEDED(format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP));
     }
@@ -321,7 +328,7 @@ bool DirectWriteFont::draw(const std::string &text, float x, float y, int baseli
         y -= line.baseline;
     }
     ComOwner<TextRenderer> renderer;
-    renderer.reset(new TextRenderer(_impl->factory.get(), pixels, width, height, color, _impl->bold));
+    renderer.reset(new TextRenderer(_impl->factory.get(), pixels, width, height, color, _impl->bold, _impl->italic));
     return SUCCEEDED(layout->Draw(nullptr, renderer.get(), x, y));
 }
 } // namespace cc

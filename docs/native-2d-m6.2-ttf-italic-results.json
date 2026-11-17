@@ -1,0 +1,1760 @@
+{
+  "date": "2026-11-17",
+  "snapshot": "79257552c199b5c9f8e33cd0e0762f464c73dbc44f659f2ab45d6dc363004655",
+  "sourceSha256": "c179e32d6c496d4dd16f5665e706186ad8900803292ef059275774a299b47b7f",
+  "validation": {
+    "nativeDebugRelease": true,
+    "webGoldens": 24,
+    "rawDebugReleaseByteEqual": true,
+    "normalAsanByteEqual": true,
+    "asanErrorBytes": 0,
+    "jest": {
+      "suites": 4,
+      "tests": 49
+    },
+    "staticTests": 10
+  },
+  "raw": {
+    "total": 96,
+    "passed": 56,
+    "runs": [
+      {
+        "color": "white",
+        "sample": "latin",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "Atlas 123",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 36764,
+            "webCoverage": 36764,
+            "coverageRatio": 1,
+            "nativeSha256": "88d999f14437bcd14451b4e3ef123174f8c5b2c4e23afdac468f8eacd71c1606",
+            "webSha256": "88d999f14437bcd14451b4e3ef123174f8c5b2c4e23afdac468f8eacd71c1606",
+            "passed": true
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 140,
+            "differentPixels": 341,
+            "nativeCoverage": 53010,
+            "webCoverage": 55456,
+            "coverageRatio": 0.9558929601846509,
+            "nativeSha256": "5adfb1103db13bf698fb8c2a20f0426322a1c0df56f99777fb7d9cd545b376d3",
+            "webSha256": "e655b9dbb39025ee4c8d02f4660c0b86ded55c8c14f59b4f1c0b950afd8410b7",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 36248,
+            "webCoverage": 36248,
+            "coverageRatio": 1,
+            "nativeSha256": "9ab742cb9a028ef9647356117946636a4d82d36cbd526d878add930fcad36eaa",
+            "webSha256": "9ab742cb9a028ef9647356117946636a4d82d36cbd526d878add930fcad36eaa",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 121180,
+            "webCoverage": 121180,
+            "coverageRatio": 1,
+            "nativeSha256": "b7b6bad522fb2f0bc3a2c95448ad97b24e7fc44a5b25cb36f1c91f11ec3adb93",
+            "webSha256": "b7b6bad522fb2f0bc3a2c95448ad97b24e7fc44a5b25cb36f1c91f11ec3adb93",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 192,
+            "differentPixels": 838,
+            "nativeCoverage": 156003,
+            "webCoverage": 183673,
+            "coverageRatio": 0.8493518372324729,
+            "nativeSha256": "08d53a72692a3f3cd2362f37ee0bc4f654e7e684454fe3a23e50e2f525878455",
+            "webSha256": "0c7e3a54d7780357aa7ebe19ff9897c2f914368289341341bdffa062d09f845e",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 121455,
+            "webCoverage": 121455,
+            "coverageRatio": 1,
+            "nativeSha256": "eb74dc72a53b431e59b92fa6d950f7a362478681ba535eb3e504c7fbd7831caa",
+            "webSha256": "eb74dc72a53b431e59b92fa6d950f7a362478681ba535eb3e504c7fbd7831caa",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 254535,
+            "webCoverage": 254535,
+            "coverageRatio": 1,
+            "nativeSha256": "1e2cd5e29c9b34e5ce5d5d24bd814ee62f03e826d3783b5eb048b843dbeb0afb",
+            "webSha256": "1e2cd5e29c9b34e5ce5d5d24bd814ee62f03e826d3783b5eb048b843dbeb0afb",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 218,
+            "differentPixels": 1326,
+            "nativeCoverage": 306582,
+            "webCoverage": 369820,
+            "coverageRatio": 0.8290032989021686,
+            "nativeSha256": "8c585e964bebdd2a2e31751ef7363119c5a1c31d55ccb757324518fd7c3d207c",
+            "webSha256": "3480e24b3fdf035a6b1749ece791ea2ba684e1e6f57f3d76ce868dab947b6f21",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 254815,
+            "webCoverage": 254815,
+            "coverageRatio": 1,
+            "nativeSha256": "8856f3ed0f0699d4d54876a9e63157ffa6b10090aa10746c5a10bbe3a974f0fa",
+            "webSha256": "8856f3ed0f0699d4d54876a9e63157ffa6b10090aa10746c5a10bbe3a974f0fa",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 435285,
+            "webCoverage": 435285,
+            "coverageRatio": 1,
+            "nativeSha256": "ea3ea24eaa08528e637ac8a38ab083764d72b4485e0fe0c19cf04b00e6dde330",
+            "webSha256": "ea3ea24eaa08528e637ac8a38ab083764d72b4485e0fe0c19cf04b00e6dde330",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 236,
+            "differentPixels": 1896,
+            "nativeCoverage": 504503,
+            "webCoverage": 631349,
+            "coverageRatio": 0.7990873510530626,
+            "nativeSha256": "65acfc2035ca11abf1295fb91b4fa333a3d0c17ce90d141a2e589570220438ac",
+            "webSha256": "47e6fb4d584e3762e97793ee5d81a0e6e5fecf5088a5ee2b8bb48cebe9897c61",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 434781,
+            "webCoverage": 434781,
+            "coverageRatio": 1,
+            "nativeSha256": "49f7ff0e339ea1b0f4f09164ea734ec6e65dd10a1297025fe55334d945fa1038",
+            "webSha256": "49f7ff0e339ea1b0f4f09164ea734ec6e65dd10a1297025fe55334d945fa1038",
+            "passed": true
+          }
+        ]
+      },
+      {
+        "color": "red",
+        "sample": "latin",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "Atlas 123",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 22593,
+            "webCoverage": 22593,
+            "coverageRatio": 1,
+            "nativeSha256": "54f9749f366d426b818897482ebdf4b99645c58723b18189a405b8b790808513",
+            "webSha256": "d3f3e5d722a28ab275d5d2c4025ef3da16d933099a8edc7c3d931f9c17c4b148",
+            "passed": true
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 251,
+            "differentPixels": 348,
+            "nativeCoverage": 39484,
+            "webCoverage": 38017,
+            "coverageRatio": 1.0385880001052161,
+            "nativeSha256": "1d286ddecbe3f5356ac67336d650290a8b746fba7083894fbbc6f01cc512b478",
+            "webSha256": "1dff50f9be912daf5a51b461496ad7a65e7de22ffa76ef65342774472ce38c2c",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 22228,
+            "webCoverage": 22228,
+            "coverageRatio": 1,
+            "nativeSha256": "1ef3cb340de515fc9c104d4cace36342540ad5ac1d6aaf0df02f74fdde6f7fde",
+            "webSha256": "aceea33591457ec32f6c5c0140bae6fb5aad7a060b241ae4b656d6999bb0a55c",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 91885,
+            "webCoverage": 91885,
+            "coverageRatio": 1,
+            "nativeSha256": "b46fcb0ca04e64ed82e530d893f6f4f5113db4a277ac59bdbb0231de88854530",
+            "webSha256": "099156f62b258549cc854a57f20f0fb7dc9ce7f9aa1d5a41618d91217b632963",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 253,
+            "differentPixels": 865,
+            "nativeCoverage": 126320,
+            "webCoverage": 146765,
+            "coverageRatio": 0.8606956699485572,
+            "nativeSha256": "a4b48bf36e980183ae7a37c69648bbac84e406263e8c0e7b6ad8e284bcbe3e17",
+            "webSha256": "eed0b22525d1729a857c9e4f0a99e6fbd3b19aff285e3e397ec7ef6a833653f8",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 91488,
+            "webCoverage": 91488,
+            "coverageRatio": 1,
+            "nativeSha256": "03b0037e4fffe4791554b496b41544dd1c517d99cd6744edd0236c039253168e",
+            "webSha256": "d12903a680bd385e3baf8d67f9c156afe03490c7bc1e7d2c6aa9fc69814af1a6",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 210418,
+            "webCoverage": 210418,
+            "coverageRatio": 1,
+            "nativeSha256": "2117f6210f03ce78b42c841e9fd4ec606f32a9917b7495dd8b22abc254ab7bcc",
+            "webSha256": "fc3d99f30dd9e33f743e4c543d903f854d28ad7014cf22ff16275b0907a1e36c",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 255,
+            "differentPixels": 1367,
+            "nativeCoverage": 261974,
+            "webCoverage": 314527,
+            "coverageRatio": 0.8329141854276422,
+            "nativeSha256": "33685866c864f7f9888be73b7064c824d88a7c5368cc195582bc93906d47d598",
+            "webSha256": "91f1a4efaec94a55ac91f6d8f96b8fe2eaf6cd143437fb27e5d0cb5d9ed01a12",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 209866,
+            "webCoverage": 209866,
+            "coverageRatio": 1,
+            "nativeSha256": "a85489735d6d311d591c111c2af77efa6dc0e288326b209f4330f172ed3f8ac3",
+            "webSha256": "b603ec1c9d2d0e6f030e42bb0d5bea47d6e417ed44da6dd5870f05b60ab4bc43",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 374127,
+            "webCoverage": 374127,
+            "coverageRatio": 1,
+            "nativeSha256": "19b86ae2be3bff12558eb515d6efdab1012d8d5ab3d7ac2218ae33aef1f9a20f",
+            "webSha256": "20881ade82a19eef52a0b164f6b0f6392fd1c9fd655ea085208f9018479ad535",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 255,
+            "differentPixels": 1947,
+            "nativeCoverage": 443270,
+            "webCoverage": 559717,
+            "coverageRatio": 0.7919537909336325,
+            "nativeSha256": "e10538c7ea645e28d38defc56939a1e0ebd25481b22f2ce310acf8877078be1b",
+            "webSha256": "6154dabaa995a2b8c31ae814fe6a1444384ba760315fa3ea23d874057ec43a3a",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 373633,
+            "webCoverage": 373633,
+            "coverageRatio": 1,
+            "nativeSha256": "bb3462da9172eeb89ec8149ccbea999e8d03bd409448c941a95534ecfdce64b6",
+            "webSha256": "395013f8b2ea1d77b2c951bb865a3e07dde1e5cfcf7c884ce9d664bfd8f37943",
+            "passed": true
+          }
+        ]
+      },
+      {
+        "color": "green",
+        "sample": "latin",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "Atlas 123",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 30072,
+            "webCoverage": 30072,
+            "coverageRatio": 1,
+            "nativeSha256": "5560eeab2d35bb3f7d876d05c4732311c0cda1a9a10f63fc1b2c52993427342f",
+            "webSha256": "5560eeab2d35bb3f7d876d05c4732311c0cda1a9a10f63fc1b2c52993427342f",
+            "passed": true
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 253,
+            "differentPixels": 343,
+            "nativeCoverage": 46958,
+            "webCoverage": 47353,
+            "coverageRatio": 0.9916583954554093,
+            "nativeSha256": "70b79ea7afef64badf07afed694c391898e2ce940abaa57bb8ae6fc6cde7ba95",
+            "webSha256": "5790b2d2df99ec46d32d02749fb032374ac3e3c7217f0ba9c636036558e8d46c",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 29726,
+            "webCoverage": 29726,
+            "coverageRatio": 1,
+            "nativeSha256": "7752886dfc7be4f66917eae740ebeb008b1c9406dd7b69a60bf597817e6a923b",
+            "webSha256": "01e68d0e81c32c8cfb280648518f64cd68c6a8ac4ecbdd8b702df4421d519d02",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 107913,
+            "webCoverage": 107913,
+            "coverageRatio": 1,
+            "nativeSha256": "8cd7b03bbbd87f3f78af5290627ef2517f05f7902fca1de462b0ea998e38e266",
+            "webSha256": "a0fce86d4c244369ba520bab7a70bbe6c1348011069b2a7dcf65ed4d68b255ce",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 255,
+            "differentPixels": 848,
+            "nativeCoverage": 142576,
+            "webCoverage": 166178,
+            "coverageRatio": 0.8579715726510128,
+            "nativeSha256": "b0f976443573c1296e519227b9c4b9f3a9c2707d953e0065d42ff5a1c50cb3eb",
+            "webSha256": "9acbd0fb919ebf77052a62b9635b83253385b1c64af09fd07ddb544aa2159329",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 107597,
+            "webCoverage": 107597,
+            "coverageRatio": 1,
+            "nativeSha256": "18f556710c2d02f3e00688c749bd8719b50a2c6def7b181b8cf0ff1120246edd",
+            "webSha256": "d016d4d36a46dd268eb594af81273541c76a81ad9734dba0055c522378f3e52b",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 234713,
+            "webCoverage": 234713,
+            "coverageRatio": 1,
+            "nativeSha256": "3164e02b9ccde8f0d1bd73d780c8cd0181f4d93f6e5e74c3072b7b8a99c8e8d9",
+            "webSha256": "5b3f7bee44f96f6ba875c2f51f38dabc2acdb5b1c6e1809533dc00e64a9d1bf8",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 255,
+            "differentPixels": 1344,
+            "nativeCoverage": 286533,
+            "webCoverage": 343803,
+            "coverageRatio": 0.8334220469280372,
+            "nativeSha256": "6ffa0f2ab86b4deac8c50a50fe3e3801a60c5274568a6ab4439c7f15b49aa209",
+            "webSha256": "727f4249ca2c66b10a93c235e8e0359e0dd8ca801cb1aabaae72fa3d93ea374c",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 234302,
+            "webCoverage": 234302,
+            "coverageRatio": 1,
+            "nativeSha256": "c9baaf4b37cbe866955de4df53a132051f80c4f5fee1df7fb9fb9a2f9aae9dd1",
+            "webSha256": "710f2b41119ad9b0ab7b3495db299dcdcc73648e1f8201329a718155329bdea5",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 407103,
+            "webCoverage": 407103,
+            "coverageRatio": 1,
+            "nativeSha256": "1d638266eb4a3bf2d04e987d0aab2a50b57358716ac5f7784660ca5444d4925f",
+            "webSha256": "166f5c3a1ed5469c69de7ee27e797573441d632be3caa0ed3e56be5b521492e6",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 255,
+            "differentPixels": 1917,
+            "nativeCoverage": 476324,
+            "webCoverage": 597717,
+            "coverageRatio": 0.7969055589852723,
+            "nativeSha256": "03c7c38cb0b217adaf0e8bd08b1197de23ac24a6ca4608dfd6dc5189feecf4d0",
+            "webSha256": "92162da5288493b0f348c92eb043f664a1a85b7488d27575f9c2d12ac175a6a9",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 406722,
+            "webCoverage": 406722,
+            "coverageRatio": 1,
+            "nativeSha256": "d66dc9deddeb7d083851f76d83eb86af317e551be28770eaf3e1562e14b7822d",
+            "webSha256": "a989d2ff3139e19966d00f45774ca3047fce2929645f94afeab02ef37039879c",
+            "passed": true
+          }
+        ]
+      },
+      {
+        "color": "gray",
+        "sample": "latin",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "Atlas 123",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 14,
+            "differentPixels": 47,
+            "nativeCoverage": 27353,
+            "webCoverage": 27353,
+            "coverageRatio": 1,
+            "nativeSha256": "12f2cf47506381128797627dccad750a02c963729f17b036be88ae51d131379a",
+            "webSha256": "22d78e773c9f4e3cb9bf1c1c5f8d699ef3dfe8004a6b98077a3cc22f0df41ccf",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 157,
+            "differentPixels": 344,
+            "nativeCoverage": 44381,
+            "webCoverage": 44002,
+            "coverageRatio": 1.0086132448525067,
+            "nativeSha256": "d54c805cceb27daec58625f9287eabe4647cab47c7bd0d3dfd1839da629d5410",
+            "webSha256": "8e0015727284345486f4f7836761e792eb04846dafaad8f645e6f24c59c9a581",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 14,
+            "differentPixels": 51,
+            "nativeCoverage": 27033,
+            "webCoverage": 27033,
+            "coverageRatio": 1,
+            "nativeSha256": "6e63ddc203baed10678ef0fab56ed870ef13d436776785e7dd3a366979bbb482",
+            "webSha256": "0c71e658f7074d13fee6a45893d738a241d301a9f2f791647d0a288c9f997dac",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 12,
+            "differentPixels": 134,
+            "nativeCoverage": 102224,
+            "webCoverage": 102224,
+            "coverageRatio": 1,
+            "nativeSha256": "b5d798532ac1153e0f5d45d01f456220491f5510c7ceb8771fa459ae4ea467e0",
+            "webSha256": "4a8027d38511f809f36730692d3c1527101f067f8aaa88eee47082d609d41ee6",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 181,
+            "differentPixels": 847,
+            "nativeCoverage": 136814,
+            "webCoverage": 159317,
+            "coverageRatio": 0.8587533031628766,
+            "nativeSha256": "7c19ad8a1fe689ebce1caae670b6fcb9d4811cf1770cadcdc1dc0253fb2bba2b",
+            "webSha256": "29ea2b575f8e91ec6c2145772684e2dd077c729f7de33c12efb387160011328d",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 14,
+            "differentPixels": 131,
+            "nativeCoverage": 101928,
+            "webCoverage": 101928,
+            "coverageRatio": 1,
+            "nativeSha256": "05dcde332e297b91f055f8800b633138a2d7a36de350d9c917365b7cad41f57d",
+            "webSha256": "a718ee9c9fc682bb218d3726f2a794033fe576625fdecd68c477c7188b653bba",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 12,
+            "differentPixels": 205,
+            "nativeCoverage": 226168,
+            "webCoverage": 226168,
+            "coverageRatio": 1,
+            "nativeSha256": "2e730fa9fd21895080d879d281049ddda8a17d6b26497c00c615f884120b6aa5",
+            "webSha256": "b7575e403242eb66acb07f9d5aa0214b75694b41d81ca46aa6b3124fc78cde78",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 205,
+            "differentPixels": 1347,
+            "nativeCoverage": 277871,
+            "webCoverage": 333393,
+            "coverageRatio": 0.833463809978014,
+            "nativeSha256": "80f4abb42a9955e2d63e8836adf41ff42d20dd6671b1ef31a0f7600554e4b1f4",
+            "webSha256": "3639f57f8c74b1977247893a2e7b64c77bf062e8435cd0dbc9d5e2199da9c2ed",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 14,
+            "differentPixels": 174,
+            "nativeCoverage": 225811,
+            "webCoverage": 225811,
+            "coverageRatio": 1,
+            "nativeSha256": "f583c94d8e09963282adf397786943a7e2bfb626e8501698cc9e91f1c0999386",
+            "webSha256": "98518193ad44839eaf3095122d1cb04a5b8ca5e3675d6b509c9bf1da99b3ae3f",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 14,
+            "differentPixels": 305,
+            "nativeCoverage": 395452,
+            "webCoverage": 395452,
+            "coverageRatio": 1,
+            "nativeSha256": "5f5f0dc0c1b5a5eff239a1a1429f1b2739a18731e96024da69fa8c0e4e4db810",
+            "webSha256": "5141a276ca5b72d75efa72847cdec3e39857ade4365898eaf7faea1ce55254ad",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 241,
+            "differentPixels": 1917,
+            "nativeCoverage": 464666,
+            "webCoverage": 584333,
+            "coverageRatio": 0.7952075272147902,
+            "nativeSha256": "8c0ca244de61c45cface9d339f18200f6d718419d72c5356d71b2a3d5ebb232d",
+            "webSha256": "6825bfc585ebbc362878db98f76987dbfccf1b051f4c9921001846da6c460d44",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 14,
+            "differentPixels": 251,
+            "nativeCoverage": 395126,
+            "webCoverage": 395126,
+            "coverageRatio": 1,
+            "nativeSha256": "456da25c2da3d8335fa0971a3e837166d2adc65154a9ae249eb1dc7d3f6df9e6",
+            "webSha256": "e6bb6a568ce02a81d9fed35010f3da6c2606dea1c524e14c87e528902a3945e5",
+            "passed": false
+          }
+        ]
+      },
+      {
+        "color": "black",
+        "sample": "latin",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "Atlas 123",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 22822,
+            "webCoverage": 22822,
+            "coverageRatio": 1,
+            "nativeSha256": "d5734ac5f12267e9de3fd8b5a8513cf013db7f0483a29075c2eace12b1099b6b",
+            "webSha256": "891e2ae9c917b200ea55c734fae561442e8fbfb92e2ce034c0fe7cf830d95089",
+            "passed": true
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 251,
+            "differentPixels": 344,
+            "nativeCoverage": 40063,
+            "webCoverage": 38467,
+            "coverageRatio": 1.0414901084046067,
+            "nativeSha256": "b575fa6db52c7badc3386fa238ea713ec4fa4f4912fa294ce273a314d2b2aeb7",
+            "webSha256": "0ab203164b415c51a2eec8f08fb13083a3ff98b8c5d31fead8ff777c86105144",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 22417,
+            "webCoverage": 22417,
+            "coverageRatio": 1,
+            "nativeSha256": "571b3f1a5c1501cc985e9fcc1341571d70a6f4e433a0f9068a25f9476d931107",
+            "webSha256": "02540e1803367eb70a2c94947143526d50fad114078a21578b5afd58ecab5522",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 92773,
+            "webCoverage": 92773,
+            "coverageRatio": 1,
+            "nativeSha256": "2bd9cafab407e994b7a648b600cabe1055ae9da0f2f365c198b42afec53a20fc",
+            "webSha256": "bcf6b7fb0efcf72c522cdfa7ab6085c4c0f862d76bdc81febb51d6160eb56e63",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 253,
+            "differentPixels": 831,
+            "nativeCoverage": 127215,
+            "webCoverage": 147928,
+            "coverageRatio": 0.8599791790600833,
+            "nativeSha256": "804251d3027d451b3f011ad0432f6f0f2b884524a8677868c7e150800f1c2e7a",
+            "webSha256": "a358080a86b0cf891ebc5566a01c22bb310bee43df887b492d514c162d856e04",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 92584,
+            "webCoverage": 92584,
+            "coverageRatio": 1,
+            "nativeSha256": "28c7e89decf0d2fa6e13bef3a62a793f7605ae59a2ed09b196837dba5a4c4cd9",
+            "webSha256": "6d12761d7fe076ce3c68e92650c95b5037330c6c7eef9d9a1d7e54a02daf6370",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 211895,
+            "webCoverage": 211895,
+            "coverageRatio": 1,
+            "nativeSha256": "f8a4b75033aa3c6a0ded001508ee1041c62226b2557cdd09a257b8669f45956f",
+            "webSha256": "3bd6bb59b0964907f10b168b4cf92c6747004375573a62c8f0554521e2dcbb08",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 255,
+            "differentPixels": 1314,
+            "nativeCoverage": 263430,
+            "webCoverage": 316425,
+            "coverageRatio": 0.8325195543967765,
+            "nativeSha256": "4668fd44ce0f9220725d2986fad830a6ad807d0dcda7765573b56c75e24c9264",
+            "webSha256": "f529994186b2195cec82a54138cc870202f10bb04244748e6444bb80fca99b5b",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 211625,
+            "webCoverage": 211625,
+            "coverageRatio": 1,
+            "nativeSha256": "e4b2929d4932ce854bb2f5ba61dc04c170e88478a35095ae08d28b909286b7dc",
+            "webSha256": "894f5a84b0b3f7fc75c8263e253bf2b290a6228829e82effb97572312c98cd82",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 376360,
+            "webCoverage": 376360,
+            "coverageRatio": 1,
+            "nativeSha256": "70eaf9979e3253cae106b952ccc2c6ceeb7f0ff0727a3bca01cd4f4a1325b61d",
+            "webSha256": "59139aa4b3a80e2d37c793510a14a864571159a79d073f1ff0dee6fb7023bcad",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 255,
+            "differentPixels": 1883,
+            "nativeCoverage": 445506,
+            "webCoverage": 562250,
+            "coverageRatio": 0.7923628279235215,
+            "nativeSha256": "f35e0932cd82ca12414273a44169485db64d07524fdce23ae75a572d16cd62a6",
+            "webSha256": "69a3ac6d7f6d33cf4a25d9ff9ccc352cef52d1478549acfc6a6d6c688fbc398a",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 375936,
+            "webCoverage": 375936,
+            "coverageRatio": 1,
+            "nativeSha256": "f9e070cda4c916f668bfce41e31804c36e6de805d647465296baa56743dd0c1f",
+            "webSha256": "1cb5357d5fe9c02a1b573df963ac2ba5cafdac957fe3df6addadf670c18147e8",
+            "passed": true
+          }
+        ]
+      },
+      {
+        "color": "half-white",
+        "sample": "latin",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "Atlas 123",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 18429,
+            "webCoverage": 18522,
+            "coverageRatio": 0.9949789439585358,
+            "nativeSha256": "65720a4f33e9c8a7422f6502c05bf0aa22f2002dff896e64f671ccde28937977",
+            "webSha256": "9b92839b6721734909523a0b454e5c1996de07f132ebbe599f109f22d50067af",
+            "passed": true
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 71,
+            "differentPixels": 333,
+            "nativeCoverage": 26849,
+            "webCoverage": 28149,
+            "coverageRatio": 0.9538171871114427,
+            "nativeSha256": "2cbf21ccdfb9f0096f741aa55dfda842bdf8ec6d30a370d8f70e12c67c00c6e9",
+            "webSha256": "0a9ab330cacf3fde06403d6ccdb1912a8279c6adee00bff6a4b2569848e70ff4",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 18161,
+            "webCoverage": 18253,
+            "coverageRatio": 0.9949597326466882,
+            "nativeSha256": "d0c37e810a61376633cc3f122d152446244eca46fd908df84cb7db81f119e927",
+            "webSha256": "99a4b661b537e7c52e81c661f7860434c6326f8662130ed4639b62c4469c8167",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 60687,
+            "webCoverage": 60886,
+            "coverageRatio": 0.9967315967545906,
+            "nativeSha256": "9f0e4dafeb411e021c9f9434755fd59eb4d56d6bbbabad1247495648c13a2c10",
+            "webSha256": "8ff1cc0fe1400b8ceb869431b456b06d64028310d2d51409f8fa3031c9b020cb",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 97,
+            "differentPixels": 811,
+            "nativeCoverage": 78097,
+            "webCoverage": 92268,
+            "coverageRatio": 0.8464147916937617,
+            "nativeSha256": "a2b7ad3001ebc1db940b41e4d69d0c97357b7f95d0277bf500c8be4324eef845",
+            "webSha256": "a1f8f219a176c80decfcddd11c3ccca506d8e8bf4e906e3a20bebdce3d27eefe",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 60786,
+            "webCoverage": 61081,
+            "coverageRatio": 0.9951703475712579,
+            "nativeSha256": "97c1cf21b36b11c0c3aed7ccf0aabd9b71899108bd89ab3679557a5219df7c11",
+            "webSha256": "d4183e35ee85120935ecba12766dbccd0d68bfa837184b09a3972b17a51da122",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 127420,
+            "webCoverage": 127736,
+            "coverageRatio": 0.9975261476795891,
+            "nativeSha256": "3412b282fdbc69a8968cefcb92806ec5658b179a76473ceee85db023d7b40d06",
+            "webSha256": "39018437439d6d6dc51c2ee7c9fd0c2c7f281174b3008aa15fc9582fb07ff824",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 110,
+            "differentPixels": 1285,
+            "nativeCoverage": 153435,
+            "webCoverage": 185528,
+            "coverageRatio": 0.8270180242335389,
+            "nativeSha256": "227e760dca8a9383e956f4f7b43da9138b62d24fffaf0dd1fe065411687e35a0",
+            "webSha256": "0f557495802894b312bb1b3aeed87222c2cdc930871118eb286033e0caccfb8a",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 127517,
+            "webCoverage": 127951,
+            "coverageRatio": 0.9966080765292964,
+            "nativeSha256": "de841bea5d960e340a1f14941484e34afaaafce44355481f031fb65311df7933",
+            "webSha256": "1753c27e014680a5498b79ea1818943125c069bae6942bddc4a29dcf95e5cdf3",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 217861,
+            "webCoverage": 218287,
+            "coverageRatio": 0.9980484408141576,
+            "nativeSha256": "68261536c39c4d503d73bfd46ad225fb104bf600b3262065d6e86d9a31c5da5e",
+            "webSha256": "5a23ff9ead8c57c3d28fac6f60db9658f4e5f80f4fd75e491d42dec5a269144a",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 119,
+            "differentPixels": 1846,
+            "nativeCoverage": 252477,
+            "webCoverage": 316465,
+            "coverageRatio": 0.7978038645663817,
+            "nativeSha256": "d0aab21476cc0c9815de3a055f2354a0ae7b604bace64ce817193d7eb3d39e07",
+            "webSha256": "7e3c054fe50ebbd071de5a5a9eed5278202e667c87be0be0a323744555ad4750",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 1,
+            "differentPixels": 0,
+            "nativeCoverage": 217526,
+            "webCoverage": 218112,
+            "coverageRatio": 0.9973133069248826,
+            "nativeSha256": "bc06c12938c04c13cdd50d5aaa1f02d3e4069b453312d23b1818447f1a377d6e",
+            "webSha256": "353c3ceaec45951eba26c73ebaf655261ce968ec6003ba45a80f54d541219b4c",
+            "passed": true
+          }
+        ]
+      },
+      {
+        "color": "white",
+        "sample": "combining",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "Átlas",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 23286,
+            "webCoverage": 23286,
+            "coverageRatio": 1,
+            "nativeSha256": "6fca62e547a35c1fc06f697ee489d3941fd9a5d06597a4dbedd08af8274d148b",
+            "webSha256": "6fca62e547a35c1fc06f697ee489d3941fd9a5d06597a4dbedd08af8274d148b",
+            "passed": true
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 140,
+            "differentPixels": 204,
+            "nativeCoverage": 33277,
+            "webCoverage": 34754,
+            "coverageRatio": 0.9575012948149854,
+            "nativeSha256": "1b40c56b34b860ef71d7fe5b24456e6881bfcfcc83f17190fe4b5874f365b913",
+            "webSha256": "9cf58e17bd58ef99aee9890532a5fac43f8ae4957504a373aac8e609a10260f4",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 22870,
+            "webCoverage": 22870,
+            "coverageRatio": 1,
+            "nativeSha256": "c65f8fed219fd8494ecacf0e7c11593800823ebb14c97a95a5b051fc2c659764",
+            "webSha256": "c65f8fed219fd8494ecacf0e7c11593800823ebb14c97a95a5b051fc2c659764",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 76287,
+            "webCoverage": 76287,
+            "coverageRatio": 1,
+            "nativeSha256": "9d3d47130eae8cc6eafd5d8c11dd750bed1453c786dcb2f199d55f1fa5d63ff3",
+            "webSha256": "9d3d47130eae8cc6eafd5d8c11dd750bed1453c786dcb2f199d55f1fa5d63ff3",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 191,
+            "differentPixels": 536,
+            "nativeCoverage": 98402,
+            "webCoverage": 116443,
+            "coverageRatio": 0.8450658261982258,
+            "nativeSha256": "d2878e2c7f8df2822747ce7b0918561b02e3e1dc01286ce25d280cc29484ad68",
+            "webSha256": "a7bf8ef00788e44f7ab9d193258efada991a37ff2241320f864b42a6b34b2bf3",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 76360,
+            "webCoverage": 76360,
+            "coverageRatio": 1,
+            "nativeSha256": "407efc2e45b5edd5405c826cdbd680cffd59dba119ffeac491f95a81aa3a6c06",
+            "webSha256": "407efc2e45b5edd5405c826cdbd680cffd59dba119ffeac491f95a81aa3a6c06",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 159679,
+            "webCoverage": 159679,
+            "coverageRatio": 1,
+            "nativeSha256": "abfdc9ac773e5d57cd1e349e5efc9903ef5ac8287126ebdda87393a1d58ee207",
+            "webSha256": "abfdc9ac773e5d57cd1e349e5efc9903ef5ac8287126ebdda87393a1d58ee207",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 211,
+            "differentPixels": 848,
+            "nativeCoverage": 192771,
+            "webCoverage": 233662,
+            "coverageRatio": 0.8249993580470937,
+            "nativeSha256": "f12aa31e19f46a0e39c78a355bd53bb46fef7147c617cfb49c28d9e10f5e6644",
+            "webSha256": "e97c4907a75df0c5075f7759bcf525decaf3b98610817efbc83307c0cff257c2",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 159993,
+            "webCoverage": 159993,
+            "coverageRatio": 1,
+            "nativeSha256": "ca722424465c223c7344440f748470e4bbb868e1f0ec44a22c04662c018b8019",
+            "webSha256": "ca722424465c223c7344440f748470e4bbb868e1f0ec44a22c04662c018b8019",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 273576,
+            "webCoverage": 273576,
+            "coverageRatio": 1,
+            "nativeSha256": "58fe61b5839a0ca47933a0cfc30e8b9d22ef59492f42b1efb7daceb336fa5283",
+            "webSha256": "58fe61b5839a0ca47933a0cfc30e8b9d22ef59492f42b1efb7daceb336fa5283",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 230,
+            "differentPixels": 1246,
+            "nativeCoverage": 317610,
+            "webCoverage": 400131,
+            "coverageRatio": 0.7937650419487617,
+            "nativeSha256": "cd0f936dd2c8db8c31d75a6cbd297a741da730e2d4a2f965d4114f864d1c5b67",
+            "webSha256": "de0f0b07bde263d7bffe663fbddefe7afc18395b75c417e7d6ec5ef31100bf1f",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 273002,
+            "webCoverage": 273002,
+            "coverageRatio": 1,
+            "nativeSha256": "88e804d5ea26616c919ed545efe037e3737b1c17d05d4de4527eb5790f6dd0e6",
+            "webSha256": "88e804d5ea26616c919ed545efe037e3737b1c17d05d4de4527eb5790f6dd0e6",
+            "passed": true
+          }
+        ]
+      },
+      {
+        "color": "white",
+        "sample": "thai",
+        "debugReleaseEqual": true,
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+        "text": "ภาษาไทย",
+        "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+        "cases": [
+          {
+            "size": 12,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 32352,
+            "webCoverage": 32352,
+            "coverageRatio": 1,
+            "nativeSha256": "7f9470a3a1f6e410777f3ca80d02613b26c028877a3ae57b427d0eaa874d0f4b",
+            "webSha256": "7f9470a3a1f6e410777f3ca80d02613b26c028877a3ae57b427d0eaa874d0f4b",
+            "passed": true
+          },
+          {
+            "size": 12,
+            "style": "bold",
+            "maxChannelDifference": 140,
+            "differentPixels": 283,
+            "nativeCoverage": 47928,
+            "webCoverage": 50295,
+            "coverageRatio": 0.9529376677602147,
+            "nativeSha256": "5a026e65b9c773ef02140bad8457c13090906aead71ca8589a37683a44486fdb",
+            "webSha256": "0b623db78cab5c3a643c505f8396326d5d81af9def9e5d62730881c8de18c50e",
+            "passed": false
+          },
+          {
+            "size": 12,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 33280,
+            "webCoverage": 33280,
+            "coverageRatio": 1,
+            "nativeSha256": "27192f85fe979b43a57bb779ed7bc23db19f8f48b9f270c530d3a0a848d6c50e",
+            "webSha256": "27192f85fe979b43a57bb779ed7bc23db19f8f48b9f270c530d3a0a848d6c50e",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 110614,
+            "webCoverage": 110614,
+            "coverageRatio": 1,
+            "nativeSha256": "c5c7616f31aa28faf0bcb88de2dd0a8ee25364779e45e25146ee077f15ab3b56",
+            "webSha256": "c5c7616f31aa28faf0bcb88de2dd0a8ee25364779e45e25146ee077f15ab3b56",
+            "passed": true
+          },
+          {
+            "size": 24,
+            "style": "bold",
+            "maxChannelDifference": 192,
+            "differentPixels": 758,
+            "nativeCoverage": 145336,
+            "webCoverage": 168943,
+            "coverageRatio": 0.8602664804105526,
+            "nativeSha256": "15cb56e3fdabffa2fa44b685f8530375876241f013a82c57d8b8907b79abce6a",
+            "webSha256": "8e416e7bb408cdc714e47797e63270bcf872d084e98f244a841e7373955ecb7b",
+            "passed": false
+          },
+          {
+            "size": 24,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 111967,
+            "webCoverage": 111967,
+            "coverageRatio": 1,
+            "nativeSha256": "817739c1a7870492da3daa75ad4cc2866c1583a0c177d5e2b21f9108a465d5e3",
+            "webSha256": "817739c1a7870492da3daa75ad4cc2866c1583a0c177d5e2b21f9108a465d5e3",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 231415,
+            "webCoverage": 231415,
+            "coverageRatio": 1,
+            "nativeSha256": "99dc84760e1708fc20aad8da87c2ca7f531dbdb3e62553734f621f28a7e4cfce",
+            "webSha256": "99dc84760e1708fc20aad8da87c2ca7f531dbdb3e62553734f621f28a7e4cfce",
+            "passed": true
+          },
+          {
+            "size": 36,
+            "style": "bold",
+            "maxChannelDifference": 203,
+            "differentPixels": 1310,
+            "nativeCoverage": 287019,
+            "webCoverage": 341980,
+            "coverageRatio": 0.8392859231534008,
+            "nativeSha256": "6da19126c5fe8c14d78748a64d4a42f03eb26025fb2a8db4befbe85ea5e4b457",
+            "webSha256": "503c3d0551d6f512b49e08390897ca6a1e2053a492eb43e62cf8b7f8d883b06a",
+            "passed": false
+          },
+          {
+            "size": 36,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 232967,
+            "webCoverage": 232967,
+            "coverageRatio": 1,
+            "nativeSha256": "632d83c1f44ef921c1e70d78a244b37244a34170bc9ef12539cb4c68c00e113c",
+            "webSha256": "632d83c1f44ef921c1e70d78a244b37244a34170bc9ef12539cb4c68c00e113c",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "normal",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 399447,
+            "webCoverage": 399447,
+            "coverageRatio": 1,
+            "nativeSha256": "fcae434275bd59f8759bf3c6cca0f4081c3200de91a9311256dc871e71962aab",
+            "webSha256": "fcae434275bd59f8759bf3c6cca0f4081c3200de91a9311256dc871e71962aab",
+            "passed": true
+          },
+          {
+            "size": 48,
+            "style": "bold",
+            "maxChannelDifference": 246,
+            "differentPixels": 1827,
+            "nativeCoverage": 475196,
+            "webCoverage": 584476,
+            "coverageRatio": 0.8130291064132659,
+            "nativeSha256": "961a885107a0f636559c82471ba3e4a4ab74c2f330e3b0d37f35ee5737d154a1",
+            "webSha256": "ec1cc0d780738f68731b82cd6d9f41997a4633f506b44edff33e35b128d6420a",
+            "passed": false
+          },
+          {
+            "size": 48,
+            "style": "italic",
+            "maxChannelDifference": 0,
+            "differentPixels": 0,
+            "nativeCoverage": 398762,
+            "webCoverage": 398762,
+            "coverageRatio": 1,
+            "nativeSha256": "ee690ec6511907eb329e654deac239d168ada902e0b4264255f27b50584c4ca3",
+            "webSha256": "ee690ec6511907eb329e654deac239d168ada902e0b4264255f27b50584c4ca3",
+            "passed": true
+          }
+        ]
+      }
+    ]
+  },
+  "gpu": {
+    "snapshot": "79257552c199b5c9f8e33cd0e0762f464c73dbc44f659f2ab45d6dc363004655",
+    "font": {
+      "source": "tests/fixtures/Thonburi.ttf",
+      "sha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "bytes": 223404,
+      "loaded": true,
+      "released": true
+    },
+    "environment": {
+      "native": {
+        "os": "Windows",
+        "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+        "vendor": "Imagination Technologies (Host: NVIDIA Corporation)"
+      },
+      "web": {
+        "os": "Windows",
+        "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "vendor": "Google Inc. (NVIDIA)"
+      }
+    },
+    "pass": false,
+    "results": [
+      {
+        "name": "text-basic",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3648,
+        "nativeColored": 3648,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-basic",
+          "width": 95.9765625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-basic",
+          "width": 95.9765625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+        "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87"
+      },
+      {
+        "name": "text-bold",
+        "max": 124,
+        "pixels": 1217,
+        "webColored": 3648,
+        "nativeColored": 3648,
+        "layoutEqual": true,
+        "pass": false,
+        "native": {
+          "name": "text-bold",
+          "width": 95.9765625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-bold",
+          "width": 95.9765625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "f8b9f970ccf2474d2f160f5c82284fea6445b904591c9b7eabbad2c62373a8e0",
+        "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9"
+      },
+      {
+        "name": "text-italic",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3876,
+        "nativeColored": 3876,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-italic",
+          "width": 101.07791900634766,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895950317383,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-italic",
+          "width": 101.07791997407736,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895998703868,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+        "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475"
+      },
+      {
+        "name": "text-underline",
+        "max": 1,
+        "pixels": 0,
+        "webColored": 3648,
+        "nativeColored": 3648,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-underline",
+          "width": 95.9765625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-underline",
+          "width": 95.9765625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "200bf94693f41bb3e257cef10e3cd5be52b3959c29de780f216c34ebbaa0c961",
+        "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a"
+      },
+      {
+        "name": "text-outline",
+        "max": 122,
+        "pixels": 494,
+        "webColored": 2268,
+        "nativeColored": 2268,
+        "layoutEqual": true,
+        "pass": false,
+        "native": {
+          "name": "text-outline",
+          "width": 53.3515625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -26.67578125,
+              "y": -20.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-outline",
+          "width": 53.3515625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -26.67578125,
+              "y": -20.9
+            }
+          ]
+        },
+        "nativeSha256": "854c1359f2f384ecbd2b2ae5e917a02c613261e85ada523ee4ca02f18c925b4e",
+        "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c"
+      },
+      {
+        "name": "text-nested",
+        "max": 140,
+        "pixels": 1223,
+        "webColored": 3876,
+        "nativeColored": 3876,
+        "layoutEqual": true,
+        "pass": false,
+        "native": {
+          "name": "text-nested",
+          "width": 101.07791900634766,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895950317383,
+              "y": -18.899999618530273
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": 5.453227519989014,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-nested",
+          "width": 101.07791997407736,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895998703868,
+              "y": -18.9
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": 5.45322751296132,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "18e04658a4de8c3ac6275eec283899350daa0b41efda84c14d57ddc40d553f9f",
+        "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3"
+      },
+      {
+        "name": "text-colors",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3496,
+        "nativeColored": 3496,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-colors",
+          "width": 91.5859375,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -45.79296875,
+              "y": -18.899999618530273
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -10.12109375,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-colors",
+          "width": 91.5859375,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -45.79296875,
+              "y": -18.9
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -10.12109375,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+        "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22"
+      },
+      {
+        "name": "text-wrap-left",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 6794,
+        "nativeColored": 6794,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-wrap-left",
+          "width": 120,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-wrap-left",
+          "width": 120,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+        "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f"
+      },
+      {
+        "name": "text-wrap-center",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 6756,
+        "nativeColored": 6756,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-wrap-center",
+          "width": 120,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -51.30859375,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-wrap-center",
+          "width": 120,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -51.30859375,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+        "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca"
+      },
+      {
+        "name": "text-wrap-right",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 6794,
+        "nativeColored": 6794,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-wrap-right",
+          "width": 120,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -42.6171875,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -35.9765625,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-wrap-right",
+          "width": 120,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -42.6171875,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -35.9765625,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+        "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da"
+      },
+      {
+        "name": "text-multiline",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 2800,
+        "nativeColored": 2800,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-multiline",
+          "width": 49.3515625,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-multiline",
+          "width": 49.3515625,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+        "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220"
+      },
+      {
+        "name": "text-unicode",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3876,
+        "nativeColored": 3876,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-unicode",
+          "width": 101.0703125,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53515625,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-unicode",
+          "width": 101.0703125,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53515625,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+        "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9"
+      }
+    ]
+  }
+}

@@ -260,20 +260,26 @@ void testFontAssets() {
         // Chrome 157 Canvas raw RGBA goldens, same Thonburi.ttf and drawing
         // parameters as test_ttf_raster.cpp. See the preblend evidence report.
         const char *samples[] = {"Atlas 123", u8"A\u0301tlas", u8"\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22"};
-        const uint32_t expected[3][4] = {
-            {970306460U, 179350236U, 1312405191U, 2526000213U},
-            {68228342U, 3381704447U, 541274943U, 1846771752U},
-            {2102269280U, 1921897622U, 563746039U, 2247375831U},
+        const uint32_t expected[2][3][4] = {
+            {{970306460U, 179350236U, 1312405191U, 2526000213U},
+             {68228342U, 3381704447U, 541274943U, 1846771752U},
+             {2102269280U, 1921897622U, 563746039U, 2247375831U}},
+            {{2502853528U, 3184567919U, 3001797215U, 2452649181U},
+             {2926620246U, 4239579592U, 1097032441U, 2138942570U},
+             {1926066176U, 4161798111U, 326542983U, 30686762U}},
         };
-        for (size_t sample = 0; sample < 3; ++sample) for (size_t index = 0; index < 4; ++index) {
+        for (size_t style = 0; style < 2; ++style) for (size_t sample = 0; sample < 3; ++sample) for (size_t index = 0; index < 4; ++index) {
             const float size = static_cast<float>((index + 1) * 12);
-            auto normal = cc::DirectWriteFont::create(path, size, false, false);
+            auto face = cc::DirectWriteFont::create(path, size, false, style == 1);
+            auto regular = cc::DirectWriteFont::create(path, size, false, false);
+            check(face && regular && std::fabs(face->measure(samples[sample])[0] - regular->measure(samples[sample])[0]) < .001F,
+                  "synthetic italic preserves regular shaped advances");
             std::vector<uint8_t> raster(256 * 128 * 4, 255);
             for (size_t pixel = 3; pixel < raster.size(); pixel += 4) raster[pixel] = 1;
-            check(normal && normal->draw(samples[sample], 4.5F, size * .87F + 4, 3, raster.data(), 256, 128, {1, 1, 1, 1}), "normal TTF golden draw succeeds");
+            check(face && face->draw(samples[sample], 4.5F, size * .87F + 4, 3, raster.data(), 256, 128, {1, 1, 1, 1}), "TTF golden draw succeeds");
             uint32_t checksum = 0;
             for (uint8_t byte : raster) checksum = checksum * 31U + byte;
-            check(checksum == expected[sample][index], "normal TTF raw RGBA matches independent Web Canvas golden");
+            check(checksum == expected[style][sample][index], "normal/italic TTF raw RGBA matches independent Web Canvas golden");
         }
         check(!cc::DirectWriteFont::create("missing-font.ttf", 24.F, false, false), "invalid custom font fails without fallback success");
     }
