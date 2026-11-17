@@ -429,6 +429,66 @@ void testLabelStyleExtents() {
     std::printf("label style extents: PASS\n");
 }
 
+void testLabelRasterMapping() {
+    cc::Node node("label-raster-mapping"); cc::UITransform ui(&node);
+    cc::Label label; label.setNode(&node); label.setUITransform(&ui);
+    cc::IntrusivePtr<cc::Material> material(new cc::Material()); label.setMaterial(material);
+    label.setFontSize(24); label.setLineHeight(30); label.setString("Atlas 123");
+    label.prepareRenderEntity(1.F);
+    const auto width = static_cast<uint32_t>(label.getContentWidth());
+    const auto height = static_cast<uint32_t>(label.getContentHeight());
+    check(label.getTextureWidth() == width && label.getTextureHeight() == height, "TTF canvas uses Web integer dimensions without extra border");
+    auto *entity = static_cast<cc::RenderEntity *>(node.getUserData());
+    auto *sampler = entity->getStaticRenderDrawInfo(0)->getSampler();
+    check(sampler && sampler->getInfo().addressU == cc::gfx::Address::CLAMP && sampler->getInfo().addressV == cc::gfx::Address::CLAMP, "TTF sampler clamps canvas borders like Web");
+    cc::CanvasRenderingContext2D reference(static_cast<float>(width), static_cast<float>(height));
+    reference.setFont("24px Arial"); reference.setTextBaseline("alphabetic"); reference.setTextAlign("left");
+    reference.setFillStyle("rgba(255,255,255,0.004)"); reference.fillRect(0, 0, static_cast<float>(width), static_cast<float>(height));
+    reference.setFillStyle("rgb(255,255,255)"); reference.fillText("Atlas 123", 0, 20.88F, 0);
+    uint32_t checksum = 0, covered = 0;
+    reference.setCanvasBufferUpdatedCallback([&](const cc::Data &data) {
+        for (uint32_t i = 3; i < data.getSize(); i += 4) {
+            checksum = checksum * 31U + data.getBytes()[i];
+            if (data.getBytes()[i] > 1) ++covered;
+        }
+    });
+    reference.fetchData();
+    check(label.getPixelChecksum() == checksum, "TTF raster follows Web alphabetic baseline and edge prefill");
+    check(label.getOpaquePixels() == covered, "TTF glyph coverage excludes invisible edge prefill");
+    label.setString(" "); label.prepareRenderEntity(1.F);
+    check(label.getOpaquePixels() == 0, "whitespace prefill is not counted as visible text");
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    {
+        cc::CanvasRenderingContext2D fractional(4, 4);
+        fractional.setFillStyle("rgb(255,0,0)");
+        uint8_t expected = 64;
+        fractional.setCanvasBufferUpdatedCallback([&](const cc::Data &data) {
+            for (uint32_t y = 0; y < 4; ++y) for (uint32_t x = 0; x < 4; ++x) {
+                const auto offset = (y * 4 + x) * 4;
+                check(data.getBytes()[offset + 3] == (x < 2 && y < 2 ? expected : 0), "fractional Canvas rect coverage and source-over");
+            }
+        });
+        fractional.fillRect(.5F, .5F, 1, 1); fractional.fetchData();
+        expected = 112; fractional.fillRect(.5F, .5F, 1, 1); fractional.fetchData();
+        cc::CanvasRenderingContext2D clipped(4, 4); clipped.setFillStyle("rgb(255,0,0)");
+        clipped.setCanvasBufferUpdatedCallback([&](const cc::Data &data) {
+            check(data.getBytes()[3] == 64, "negative Canvas rect clips fractional coverage");
+            for (uint32_t i = 7; i < data.getSize(); i += 4) check(data.getBytes()[i] == 0, "clipped Canvas rect does not write outside destination");
+        });
+        clipped.fillRect(.5F, .5F, -1.5F, -1.5F); clipped.fetchData();
+    }
+    const DWORD before = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+    for (int i = 0; i < 1000; ++i) {
+        cc::CanvasRenderingContext2D canvas(8, 8); canvas.setFont("14px Arial");
+        canvas.measureText("A"); canvas.setFillStyle("white"); canvas.fillRect(.5F, .5F, 1, 1);
+    }
+    const DWORD after = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+    check(before == after, "Canvas context cycles release GDI objects");
+    std::printf("Canvas GDI cycles: %lu -> %lu\n", before, after);
+#endif
+    std::printf("label raster mapping: PASS\n");
+}
+
 void testRichTextParser() {
     const auto spans = cc::RichTextParser::parse("<color=red>A<size=0>B</size><b click=\"tap\" param=\"arg\">C</b><img src=\"icon\" width=16 height=20/>D</color>");
     check(spans.size() == 5, "RichText emits text and image spans");
@@ -1706,6 +1766,7 @@ int main(int argc, char **argv) {
         testFrameConsumers();
         testFontAssets();
         testLabelStyleExtents();
+        testLabelRasterMapping();
         testRichTextParser();
         testRichTextLayout();
         testLayoutAndMaterials();

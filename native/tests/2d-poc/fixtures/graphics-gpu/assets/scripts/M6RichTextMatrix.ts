@@ -1,4 +1,4 @@
-import { assetManager, Color, isValid, Node, RichText, sys, TTFFont, UITransform } from 'cc';
+import { assetManager, Color, isValid, Label, Node, RichText, sys, TTFFont, UITransform } from 'cc';
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
@@ -45,6 +45,15 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
                 labels.push({ opaque, width: label.getTextureWidth(), height: label.getTextureHeight() });
             }
             raster.push({ name: item.name, labels });
+        } else {
+            raster.push({ name: item.name, labels: node.children.map(child => {
+                const label: any = child.getComponent(Label);
+                const canvas = label.assemblerData.canvas;
+                return { width: canvas.width, height: canvas.height, font: label.assemblerData.context.font,
+                    actualFontSize: label.textStyle.actualFontSize, fontScale: label.textStyle.fontScale,
+                    canvasSize: { width: label.textLayoutData.canvasSize.width, height: label.textLayoutData.canvasSize.height },
+                    start: { x: label.textLayoutData.startPosition.x, y: label.textLayoutData.startPosition.y } };
+            }) });
         }
         metrics.push({ name: item.name, width: ui.width, height: ui.height,
             segments: node.children.map(child => ({ name: child.name, x: child.position.x, y: child.position.y })) });

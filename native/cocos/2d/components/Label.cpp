@@ -823,24 +823,27 @@ void Label::rebuildTexture() {
         rebuildTexture();
         return;
     }
-    const uint32_t textureWidth = static_cast<uint32_t>(std::ceil(contentWidth)) + 2U;
-    uint32_t textureHeight = static_cast<uint32_t>(std::ceil(contentHeight)) + 2U;
+    const float canvasWidth = contentWidth;
+    float canvasHeight = contentHeight;
     if (_overflow == 1 && _transform->getContentSize().y > 0.0F) {
-        textureHeight = static_cast<uint32_t>(std::ceil(_transform->getContentSize().y)) + 2U;
+        canvasHeight = _transform->getContentSize().y;
     }
+    const uint32_t textureWidth = std::max(static_cast<uint32_t>(canvasWidth), 1U);
+    const uint32_t textureHeight = std::max(static_cast<uint32_t>(canvasHeight), 1U);
 
     CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));
     context.setFont(_font);
-    context.setTextBaseline("top");
+    context.setTextBaseline("alphabetic");
     context.setTextAlign("left");
 
+    const Color &edgeColor = _enableOutline && _outlineWidth > 0.F ? _outlineColor : _color;
     char fill[64] = {0};
-    std::snprintf(fill, sizeof(fill), "rgba(%u,%u,%u,%.3f)",
-                  static_cast<unsigned>(_color.r),
-                  static_cast<unsigned>(_color.g),
-                  static_cast<unsigned>(_color.b),
-                  1.0);
+    std::snprintf(fill, sizeof(fill), "rgba(%u,%u,%u,0.004)",
+                  static_cast<unsigned>(edgeColor.r),
+                  static_cast<unsigned>(edgeColor.g),
+                  static_cast<unsigned>(edgeColor.b));
     context.setFillStyle(fill);
+    context.fillRect(0, 0, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
     if (_enableShadow) {
         char shadow[64] = {0};
         std::snprintf(shadow, sizeof(shadow), "rgba(%u,%u,%u,%.3f)",
@@ -854,22 +857,22 @@ void Label::rebuildTexture() {
         context.setShadowOffsetY(_shadowOffsetY);
     }
 
-    float textTop = 1.0F;
-    if (_vAlign == 1) {
-        textTop = (static_cast<float>(textureHeight) - contentHeight) * 0.5F;
-    } else if (_vAlign == 2) {
-        textTop = static_cast<float>(textureHeight) - contentHeight - 1.0F;
+    float textTop = static_cast<float>(_fontSize * (1.0 - 0.26 / 2.0));
+    if (_vAlign != 0) {
+        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + _fontSize - canvasHeight;
+        if (_vAlign == 2) blank += static_cast<float>(_fontSize * 0.26 / 2.0);
+        textTop -= _vAlign == 1 ? blank / 2.F : blank;
     }
     textTop += outlineMargin;
 
     for (size_t i = 0; i < lines.size(); ++i) {
         const std::string &line = lines[i];
         const float lineWidth = measureText(context, line);
-        float x = 1.0F + outlineMargin;
+        float x = outlineMargin;
         if (_hAlign == 1) {
-            x = (static_cast<float>(textureWidth) - static_cast<float>(styleExtent[0]) - lineWidth) * 0.5F + outlineMargin;
+            x = (canvasWidth - static_cast<float>(styleExtent[0]) - lineWidth) * 0.5F + outlineMargin;
         } else if (_hAlign == 2) {
-            x = static_cast<float>(textureWidth) - lineWidth - 1.0F - static_cast<float>(styleExtent[0]) + outlineMargin;
+            x = canvasWidth - lineWidth - static_cast<float>(styleExtent[0]) + outlineMargin;
         }
         const float lineY = textTop + static_cast<float>(i) * lineHeight;
         auto fillWithColor = [&](float dx, float dy, const Color &color) {
@@ -912,7 +915,7 @@ void Label::rebuildTexture() {
         context.setFillStyle(fillColor);
         context.fillText(line, x, lineY, 0.0F);
         if (_isUnderline) {
-            context.fillRect(x, lineY + _fontSize + 1.0F, lineWidth, std::max(_underlineHeight, 0.F));
+            context.fillRect(x, lineY + _fontSize / 8.F, lineWidth, std::max(_underlineHeight, 0.F));
         }
     }
     cc::Data pixels;
@@ -931,11 +934,12 @@ void Label::rebuildTexture() {
     info.mipmapLevel = 1U;
     _texture->reset(info);
     _lastPixelChecksum = 0U;
+    _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
     _lastOpaquePixels = 0U;
     const uint8_t *bytes = pixels.getBytes();
     for (uint32_t i = 0; i + 3U < pixels.getSize(); i += 4U) {
         _lastPixelChecksum = _lastPixelChecksum * 31U + bytes[i + 3U];
-        if (bytes[i + 3U] > 0U) {
+        if (bytes[i + 3U] > 1U) {
             ++_lastOpaquePixels;
         }
     }

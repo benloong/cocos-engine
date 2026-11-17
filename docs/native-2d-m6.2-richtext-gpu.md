@@ -1,6 +1,6 @@
 # M6.2 RichText 同源字体、布局与 GPU 对照
 
-> 原始基线：2026-11-16。后续 DirectWrite 和样式尺寸修复已将布局一致提升到 12/12，见 [后续报告](./native-2d-m6.2-richtext-style-extents.md)；**视觉门禁仍未通过（0/12）**。不能把字体数据加载、像素非空或资源释放单项通过当作 RichText parity。
+> 原始基线：2026-11-16。后续 DirectWrite 和样式尺寸修复已将布局一致提升到 12/12，见 [后续报告](./native-2d-m6.2-richtext-style-extents.md)；**视觉门禁仍未通过（0/12）**。纹理/基线与当前剩余像素差异见 [最新映射报告](./native-2d-m6.2-label-raster.md)。不能把字体数据加载、像素非空或资源释放单项通过当作 RichText parity。
 
 ## 范围和当前发现
 

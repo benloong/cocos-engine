@@ -71,7 +71,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "510bbf705f8e151c414368744ee362f92512982858b8c5911a1f9e7658bba6dd"
+      "sha256": "0925e3144b55291287bd96741748069c21519407ee06eb233409844c9a1d4a1b"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -283,7 +283,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "6c86b2053bc7b2b37f318768d80b2b9218fdafa4d18f7dd7aeebd4237ea88285"
+      "sha256": "ef9de9e29f828747aa1f6d14cad9dadc5142c4f4e4758da0fe1b664097c53fce"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",

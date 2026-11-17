@@ -1,0 +1,993 @@
+{
+  "snapshot": "4e4e543e329b0f612ee9a02a315b54e6b31cba9dec9d310c6cd471020a68bf94",
+  "font": {
+    "source": "tests/fixtures/Thonburi.ttf",
+    "sha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+    "bytes": 223404,
+    "loaded": true,
+    "released": true
+  },
+  "environment": {
+    "native": {
+      "os": "Windows",
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "vendor": "Imagination Technologies (Host: NVIDIA Corporation)"
+    },
+    "web": {
+      "os": "Windows",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (NVIDIA)"
+    }
+  },
+  "pass": false,
+  "results": [
+    {
+      "name": "text-basic",
+      "max": 102,
+      "pixels": 951,
+      "webColored": 3648,
+      "nativeColored": 3648,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-basic",
+        "width": 95.9765625,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-basic",
+        "width": 95.9765625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "18de9f5d99e4fd0863b886abb9185521c9e456de62db8b908af7b3dc6f351632",
+      "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87"
+    },
+    {
+      "name": "text-bold",
+      "max": 188,
+      "pixels": 1215,
+      "webColored": 3648,
+      "nativeColored": 3648,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-bold",
+        "width": 95.9765625,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-bold",
+        "width": 95.9765625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "85ce5bb42dd63a981b4c84c1f0359674efcf5ecc4e6f0f622c19d684d22e6889",
+      "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9"
+    },
+    {
+      "name": "text-italic",
+      "max": 195,
+      "pixels": 1001,
+      "webColored": 3876,
+      "nativeColored": 3876,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-italic",
+        "width": 101.07791900634766,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53895950317383,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-italic",
+        "width": 101.07791997407736,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53895998703868,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "4b444a2fe4994bb43a0d93917347d3c98f506c9dd2a416a74113f2710a5983ab",
+      "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475"
+    },
+    {
+      "name": "text-underline",
+      "max": 102,
+      "pixels": 951,
+      "webColored": 3648,
+      "nativeColored": 3648,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-underline",
+        "width": 95.9765625,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-underline",
+        "width": 95.9765625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "003c30cb611c5e1dcfad4a8d54e95b1d6425a821e2bca53d4998bf2a62d832f1",
+      "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a"
+    },
+    {
+      "name": "text-outline",
+      "max": 136,
+      "pixels": 941,
+      "webColored": 2268,
+      "nativeColored": 2268,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-outline",
+        "width": 53.3515625,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -26.67578125,
+            "y": -20.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-outline",
+        "width": 53.3515625,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -26.67578125,
+            "y": -20.9
+          }
+        ]
+      },
+      "nativeSha256": "183c9dcc32baeb92abe831e01cd8c008850574104114cec98a07652699731ae8",
+      "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c"
+    },
+    {
+      "name": "text-nested",
+      "max": 200,
+      "pixels": 1202,
+      "webColored": 3876,
+      "nativeColored": 3876,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-nested",
+        "width": 101.07791900634766,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53895950317383,
+            "y": -18.899999618530273
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": 5.453227519989014,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-nested",
+        "width": 101.07791997407736,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53895998703868,
+            "y": -18.9
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": 5.45322751296132,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "a97f2f04eece7083fa94656c341082ec0fcb4a9b75229b666abd8ba17c4ddb1e",
+      "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3"
+    },
+    {
+      "name": "text-colors",
+      "max": 65,
+      "pixels": 976,
+      "webColored": 3496,
+      "nativeColored": 3496,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-colors",
+        "width": 91.5859375,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -45.79296875,
+            "y": -18.899999618530273
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -10.12109375,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-colors",
+        "width": 91.5859375,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -45.79296875,
+            "y": -18.9
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -10.12109375,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "aab482e0230f4dbd67be0867bd0d6f4ff719f5e03a07e5c8bc2da699345a7b00",
+      "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22"
+    },
+    {
+      "name": "text-wrap-left",
+      "max": 92,
+      "pixels": 1982,
+      "webColored": 6794,
+      "nativeColored": 6794,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-wrap-left",
+        "width": 120,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-wrap-left",
+        "width": 120,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -60,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "d99f872c5ebd80b18216a01fd8dfc74489b5fa4c07ced1942e0f2f5a1e4cf50a",
+      "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f"
+    },
+    {
+      "name": "text-wrap-center",
+      "max": 101,
+      "pixels": 1961,
+      "webColored": 6756,
+      "nativeColored": 6756,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-wrap-center",
+        "width": 120,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -51.30859375,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-wrap-center",
+        "width": 120,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -51.30859375,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -47.98828125,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "8934e90b7a81ab23586bcac9568f1b47d808229db873f3d1cda2712a2ce8a90d",
+      "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca"
+    },
+    {
+      "name": "text-wrap-right",
+      "max": 100,
+      "pixels": 1974,
+      "webColored": 6794,
+      "nativeColored": 6794,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-wrap-right",
+        "width": 120,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -42.6171875,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -35.9765625,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-wrap-right",
+        "width": 120,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -42.6171875,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -35.9765625,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "39c714e594aea6ec08ad7ee6f8096c280b8f55e37cf65637e569d04014538791",
+      "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da"
+    },
+    {
+      "name": "text-multiline",
+      "max": 100,
+      "pixels": 834,
+      "webColored": 2800,
+      "nativeColored": 2800,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-multiline",
+        "width": 49.3515625,
+        "height": 67.80000305175781,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -24.67578125,
+            "y": -3.9000000953674316
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -24.67578125,
+            "y": -33.900001525878906
+          }
+        ]
+      },
+      "web": {
+        "name": "text-multiline",
+        "width": 49.3515625,
+        "height": 67.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -24.67578125,
+            "y": -3.8999999999999986
+          },
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -24.67578125,
+            "y": -33.9
+          }
+        ]
+      },
+      "nativeSha256": "9a8342cbbbffeaa36f348287ad8d93b2fe0e5ed367e6a4f389cf62ed7327436d",
+      "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220"
+    },
+    {
+      "name": "text-unicode",
+      "max": 74,
+      "pixels": 935,
+      "webColored": 3876,
+      "nativeColored": 3876,
+      "layoutEqual": true,
+      "pass": false,
+      "native": {
+        "name": "text-unicode",
+        "width": 101.0703125,
+        "height": 37.79999923706055,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53515625,
+            "y": -18.899999618530273
+          }
+        ]
+      },
+      "web": {
+        "name": "text-unicode",
+        "width": 101.0703125,
+        "height": 37.8,
+        "segments": [
+          {
+            "name": "RICHTEXT_CHILD",
+            "x": -50.53515625,
+            "y": -18.9
+          }
+        ]
+      },
+      "nativeSha256": "163abbaae3cafa38b57582589fb4b63caea9b40f980d6988c601e2d9804527a7",
+      "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9"
+    }
+  ],
+  "validation": {
+    "normalAsanCapturesEqual": true,
+    "asanErrorBytes": 0,
+    "nativeRaster": [
+      {
+        "name": "text-basic",
+        "labels": [
+          {
+            "opaque": 552,
+            "width": 95,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-bold",
+        "labels": [
+          {
+            "opaque": 685,
+            "width": 95,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-italic",
+        "labels": [
+          {
+            "opaque": 589,
+            "width": 101,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-underline",
+        "labels": [
+          {
+            "opaque": 837,
+            "width": 95,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-outline",
+        "labels": [
+          {
+            "opaque": 806,
+            "width": 53,
+            "height": 41
+          }
+        ]
+      },
+      {
+        "name": "text-nested",
+        "labels": [
+          {
+            "opaque": 415,
+            "width": 55,
+            "height": 37
+          },
+          {
+            "opaque": 283,
+            "width": 45,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-colors",
+        "labels": [
+          {
+            "opaque": 296,
+            "width": 35,
+            "height": 37
+          },
+          {
+            "opaque": 384,
+            "width": 55,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-wrap-left",
+        "labels": [
+          {
+            "opaque": 552,
+            "width": 102,
+            "height": 37
+          },
+          {
+            "opaque": 636,
+            "width": 95,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-wrap-center",
+        "labels": [
+          {
+            "opaque": 552,
+            "width": 102,
+            "height": 37
+          },
+          {
+            "opaque": 636,
+            "width": 95,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-wrap-right",
+        "labels": [
+          {
+            "opaque": 552,
+            "width": 102,
+            "height": 37
+          },
+          {
+            "opaque": 636,
+            "width": 95,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-multiline",
+        "labels": [
+          {
+            "opaque": 337,
+            "width": 49,
+            "height": 37
+          },
+          {
+            "opaque": 140,
+            "width": 29,
+            "height": 37
+          }
+        ]
+      },
+      {
+        "name": "text-unicode",
+        "labels": [
+          {
+            "opaque": 594,
+            "width": 101,
+            "height": 37
+          }
+        ]
+      }
+    ],
+    "webRaster": [
+      {
+        "name": "text-basic",
+        "labels": [
+          {
+            "width": 95,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 95.9765625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-bold",
+        "labels": [
+          {
+            "width": 95,
+            "height": 37,
+            "font": "bold 24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 95.9765625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-italic",
+        "labels": [
+          {
+            "width": 101,
+            "height": 37,
+            "font": "italic 24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 101.07791997407736,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-underline",
+        "labels": [
+          {
+            "width": 95,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 95.9765625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-outline",
+        "labels": [
+          {
+            "width": 53,
+            "height": 41,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 53.3515625,
+              "height": 41.8
+            },
+            "start": {
+              "x": 2,
+              "y": 22.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-nested",
+        "labels": [
+          {
+            "width": 55,
+            "height": 37,
+            "font": "bold 24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 55.9921875,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          },
+          {
+            "width": 45,
+            "height": 37,
+            "font": "italic bold 24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 45.08573247407736,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-colors",
+        "labels": [
+          {
+            "width": 35,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 35.671875,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          },
+          {
+            "width": 55,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 55.9140625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-wrap-left",
+        "labels": [
+          {
+            "width": 102,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 102.6171875,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          },
+          {
+            "width": 95,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 95.9765625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-wrap-center",
+        "labels": [
+          {
+            "width": 102,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 102.6171875,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          },
+          {
+            "width": 95,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 95.9765625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-wrap-right",
+        "labels": [
+          {
+            "width": 102,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 102.6171875,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          },
+          {
+            "width": 95,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 95.9765625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-multiline",
+        "labels": [
+          {
+            "width": 49,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 49.3515625,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          },
+          {
+            "width": 29,
+            "height": 37,
+            "font": "18px m6-font_LABEL",
+            "actualFontSize": 18,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 29.98828125,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 15.66
+            }
+          }
+        ]
+      },
+      {
+        "name": "text-unicode",
+        "labels": [
+          {
+            "width": 101,
+            "height": 37,
+            "font": "24px m6-font_LABEL",
+            "actualFontSize": 24,
+            "fontScale": 0.596875,
+            "canvasSize": {
+              "width": 101.0703125,
+              "height": 37.8
+            },
+            "start": {
+              "x": 0,
+              "y": 20.88
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -25,22 +25,33 @@
 #include "platform/win32/modules/CanvasRenderingContext2DDelegate.h"
 #include "platform/win32/modules/DirectWriteFont.h"
 #include "base/memory/Memory.h"
+#include <algorithm>
+#include <cmath>
 
 namespace {
-void fillRectWithColor(uint8_t *buf, uint32_t totalWidth, uint32_t totalHeight, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-    CC_ASSERT(x + width <= totalWidth);
-    CC_ASSERT(y + height <= totalHeight);
-
-    uint32_t y0 = y;
-    uint32_t y1 = y + height;
-    uint8_t *p;
-    for (uint32_t offsetY = y0; offsetY < y1; ++offsetY) {
-        for (uint32_t offsetX = x; offsetX < (x + width); ++offsetX) {
-            p = buf + (totalWidth * offsetY + offsetX) * 4;
-            *p++ = r;
-            *p++ = g;
-            *p++ = b;
-            *p++ = a;
+void fillRectWithColor(uint8_t *buf, uint32_t totalWidth, uint32_t totalHeight, float x, float y, float width, float height, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    if (!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(width) || !std::isfinite(height) || !a) return;
+    if (width < 0) { x += width; width = -width; }
+    if (height < 0) { y += height; height = -height; }
+    const float left = std::max(x, 0.F), top = std::max(y, 0.F);
+    const float right = std::min(x + width, static_cast<float>(totalWidth));
+    const float bottom = std::min(y + height, static_cast<float>(totalHeight));
+    if (!(right > left && bottom > top)) return;
+    const uint8_t color[]{r, g, b};
+    for (uint32_t row = static_cast<uint32_t>(top); row < static_cast<uint32_t>(std::ceil(bottom)); ++row) {
+        for (uint32_t column = static_cast<uint32_t>(left); column < static_cast<uint32_t>(std::ceil(right)); ++column) {
+            const float coverX = std::min(right, column + 1.F) - std::max(left, static_cast<float>(column));
+            const float coverY = std::min(bottom, row + 1.F) - std::max(top, static_cast<float>(row));
+            const float sourceAlpha = a / 255.F * coverX * coverY;
+            if (sourceAlpha <= 0) continue;
+            auto *pixel = buf + (static_cast<size_t>(row) * totalWidth + column) * 4;
+            const float destAlpha = pixel[3] / 255.F;
+            const float outAlpha = sourceAlpha + destAlpha * (1 - sourceAlpha);
+            for (size_t channel = 0; channel < 3; ++channel) {
+                const float value = (color[channel] / 255.F * sourceAlpha + pixel[channel] / 255.F * destAlpha * (1 - sourceAlpha)) / outAlpha;
+                pixel[channel] = static_cast<uint8_t>(std::clamp(std::lround(value * 255), 0L, 255L));
+            }
+            pixel[3] = static_cast<uint8_t>(std::clamp(std::lround(outAlpha * 255), 0L, 255L));
         }
     }
 }
@@ -146,10 +157,7 @@ void CanvasRenderingContext2DDelegate::fillRect(float x, float y, float w, float
         fillRectWithColor(buffer,
                           static_cast<uint32_t>(_bufferWidth),
                           static_cast<uint32_t>(_bufferHeight),
-                          static_cast<uint32_t>(x),
-                          static_cast<uint32_t>(y),
-                          static_cast<uint32_t>(w),
-                          static_cast<uint32_t>(h), r, g, b, a);
+                          x, y, w, h, r, g, b, a);
     }
 }
 
