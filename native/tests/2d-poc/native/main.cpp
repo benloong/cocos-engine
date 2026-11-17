@@ -28,6 +28,7 @@
 #include <fstream>
 #include <functional>
 #include <memory>
+#include <limits>
 #include <thread>
 #include <vector>
 
@@ -351,8 +352,15 @@ void testFontAssets() {
     for (int kind = 0; kind < 2; ++kind) {
         cc::IntrusivePtr<cc::BitmapFontAsset> validated(kind == 0 ? new cc::BitmapFontAsset() : new cc::LabelAtlas());
         validated->setConfigJson(config);
+        validated->setFontSize(24.F);
         const auto before = validated->getRevision();
         const auto configBefore = validated->getConfigRevision();
+        for (float invalid : {std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::infinity(),
+                              -std::numeric_limits<float>::infinity()}) {
+            validated->setFontSize(invalid);
+            check(validated->getFontSize() == 24.F && validated->getRevision() == before,
+                  "nonfinite font size preserves native size and revision");
+        }
         for (const auto *invalid : {
                  R"({"fontDefDictionary":{"65":{"rect":{"width":1e100}}}})",
                  R"({"fontDefDictionary":{"65":{"rect":{"width":-1}}}})",

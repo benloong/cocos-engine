@@ -26,6 +26,24 @@ function require(id) {
 function check(value, message) { if (!value) throw new Error(message); }
 const { Font } = require('./font'), { TTFFont } = require('./ttf-font');
 const { BitmapFont } = require('./bitmap-font'), { LabelAtlas } = require('./label-atlas');
+for (const FontClass of [BitmapFont, LabelAtlas]) {
+    const sized = new FontClass();
+    for (const size of [-1, 0, 12.5]) {
+        sized.fontSize = size;
+        check(sized.fontSize === size, 'finite font sizes preserve fallback and fractional values');
+    }
+    const revision = sized.getRevision(), configRevision = sized.getConfigRevision();
+    for (const size of [NaN, Infinity, -Infinity, 1e100, 12.5]) {
+        sized.fontSize = size;
+        check(sized.fontSize === 12.5 && sized.getRevision() === revision,
+            'invalid or unchanged font size preserves data and revision through JSB');
+    }
+    check(sized.getConfigRevision() === configRevision, 'size validation preserves configuration revision');
+    sized.destroy();
+    const releasedRevision = sized.getRevision();
+    sized.fontSize = 24;
+    check(sized.fontSize === -1 && sized.getRevision() === releasedRevision, 'late font size cannot restore released data');
+}
 const ttf = new TTFFont();
 ttf._nativeUrl = ${JSON.stringify(path.join(repo, 'tests/fixtures/Thonburi.ttf').replaceAll('\\', '/'))};
 ttf._nativeAsset = 'Thonburi_LABEL';
@@ -33,7 +51,7 @@ check(ttf instanceof Font && ttf.getFontDataSize() > 1000, 'real TTF bytes loade
 check(ttf._fontFamily === 'Thonburi_LABEL', 'TTF alias native roundtrip');
 const font = new LabelAtlas();
 check(font instanceof BitmapFont && font instanceof Font, 'native font hierarchy');
-check(initialized === 2, 'Asset constructor hook: ' + initialized);
+check(initialized === 4, 'Asset constructor hook: ' + initialized);
 const config = { fontDefDictionary: {65: {rect: {x: 0, y: 0, width: 2, height: 2}, xAdvance: 2}}, kerningDict: {4259905: -1} };
 font.fntConfig = config; font.fontSize = 2; font.fntDataStr = 'source';
 const frame = new jsb.SpriteFrame(), texture = new jsb.Texture2D(); texture.create(2, 2); frame.setTexture(texture); font.spriteFrame = frame;

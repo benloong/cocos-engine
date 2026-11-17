@@ -1,5 +1,12 @@
 # M6.1 字体资产 native 数据与生命周期
 
+## 字号入口复核（2026-11-17）
+
+- BitmapFont/LabelAtlas 的原生 `setFontSize` 忽略 NaN、正负 Infinity；JSB 数字转换为 float 后溢出的值也不会进入布局。失败保持字号、资产 revision 和 config revision。保留有限值的原有语义，包括默认值 -1、0 和小数。
+- C++ 回归覆盖两类资产的非有限值；实际 JSB 探针覆盖有限值、溢出值、重复赋值，以及 destroy 后迟到赋值不能恢复字号或推进 revision。
+- Windows Debug/Release native harness 与实际字体 JSB 探针通过；字体/序列化相关 7 个 Jest suite、68 项通过。日志：`native/tests/2d-poc/build/font-size-{debug,release}-{build,tests}.log`、`font-size-jest.log`。
+- 所有权不变：TTF 值持有字节，BitmapFont/LabelAtlas 通过 IntrusivePtr 持有 SpriteFrame，Label 通过 IntrusivePtr 持有字体。真实资源管线、旧场景/Prefab、跨平台及最终泄漏门禁仍待验收。
+
 > 更新：2026-11-16。完成 TTFFont、BitmapFont、LabelAtlas 的基础数据、所有权和 Label 消费路径下沉。Windows Debug/Release 的 C++ 与实际 JSB 壳定向验证通过。真实旧场景/Prefab、完整资源加载释放及跨平台字体矩阵仍须独立验收。
 
 ## 数据与调用边界

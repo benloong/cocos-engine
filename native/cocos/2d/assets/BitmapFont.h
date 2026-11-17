@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include <cmath>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -43,7 +44,7 @@ class BitmapFontAsset : public FontAsset {
 public:
     void setSpriteFrame(SpriteFrame *value) { if (!_released) { _spriteFrame = value; ++_revision; } }
     SpriteFrame *getSpriteFrame() const { return _spriteFrame.get(); }
-    void setFontSize(float value) { if (!_released && value != _fontSize) { _fontSize = value; ++_revision; } }
+    void setFontSize(float value) { if (!_released && std::isfinite(value) && value != _fontSize) { _fontSize = value; ++_revision; } }
     float getFontSize() const { return _fontSize; }
     void setFntDataStr(const std::string &value) { if (!_released) _fntDataStr = value; }
     const std::string &getFntDataStr() const { return _fntDataStr; }
