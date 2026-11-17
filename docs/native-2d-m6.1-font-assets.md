@@ -2,6 +2,8 @@
 
 Windows 文件型 TTFFont 的共享 alias、同名换源与逐资产释放已补实现和 Debug/Release、实际 JSB、ASAN 应用证据，见 [alias 所有权报告](./native-2d-m6.1-font-alias-ownership.md)。完整异步资源与跨平台仍未收口。
 
+字体工厂现拒绝 native 空字节资产，并在赋值异常时释放半成品；通用 Factory 的同步失败恢复与迟到回调隔离见 [失败回滚报告](./native-2d-m6.1-font-factory-failure.md)。创建前无主注册记录的逐请求回收仍待补。
+
 ## 字号入口复核（2026-11-17）
 
 - BitmapFont/LabelAtlas 的原生 `setFontSize` 忽略 NaN、正负 Infinity；JSB 数字转换为 float 后溢出的值也不会进入布局。失败保持字号、资产 revision 和 config revision。保留有限值的原有语义，包括默认值 -1、0 和小数。

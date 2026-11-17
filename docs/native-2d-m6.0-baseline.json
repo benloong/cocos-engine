@@ -6,6 +6,14 @@
       "sha256": "8bc6e5f164cad4fb2cf22771fc6a2926c2e1c40fbdb7b09bc659c33d3e1bdffa"
     },
     {
+      "file": "cocos/2d/utils/font-loader.ts",
+      "sha256": "afb839f55827f909542d08e780d1560863d128b771613bc5ecfd3d514d105868"
+    },
+    {
+      "file": "cocos/asset/asset-manager/factory.ts",
+      "sha256": "d4fac5e1b212f3b0f42e99b0395f274bd3d6192355761017f6c94dcfe8c7e723"
+    },
+    {
       "file": "cocos/native-binding/decorators-2d.generated.ts",
       "sha256": "013757a5f62c4225f7626c06eb738846a5153f3ca400ca0eba713b6ff05f1c99"
     },
@@ -16824,8 +16832,8 @@
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
-      "sha256": "6452b0ed572e662eefb188229ff9d6866205401bfe95d47b0722562818606ff3",
-      "printedCodeLines": 195,
+      "sha256": "afb839f55827f909542d08e780d1560863d128b771613bc5ecfd3d514d105868",
+      "printedCodeLines": 209,
       "runtimeImports": [
         "../../core",
         "./font-family",

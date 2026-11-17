@@ -162,7 +162,10 @@ export class Factory {
         }
 
         this._creating.add(id, [onComplete]);
-        handler(id, data, options, (err, result): void => {
+        let completed = false;
+        const complete: Parameters<CreateHandler>[3] = (err, result): void => {
+            if (completed) { return; }
+            completed = true;
             if (!err && result instanceof Asset) {
                 result._uuid = id;
                 cache(id, result, options.cacheAsset);
@@ -171,7 +174,15 @@ export class Factory {
             for (let i = 0, l = callbacks!.length; i < l; i++) {
                 callbacks![i](err, result);
             }
-        });
+        };
+        try {
+            handler(id, data, options, complete);
+        } catch (error) {
+            // A consumer callback exception must remain observable. It is
+            // not a second producer failure and may belong to a new request.
+            if (completed) { throw error; }
+            complete(error instanceof Error ? error : new Error(String(error)), null);
+        }
     }
 }
 

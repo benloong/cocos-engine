@@ -226,9 +226,20 @@ export function getFontFamily (fontHandle: string): string {
 }
 
 function createFont (id: string, data: string, options: Record<string, any>, onComplete: ((err: Error | null, data?: TTFFont | null) => void)): void {
-    const out = new TTFFont();
-    out._nativeUrl = id;
-    out._nativeAsset = data;
+    let out: TTFFont | null = null;
+    try {
+        out = new TTFFont();
+        out._nativeUrl = id;
+        out._nativeAsset = data;
+        const nativeFont = out as TTFFont & { getFontDataSize?: () => number };
+        if (nativeFont.getFontDataSize && !nativeFont.getFontDataSize()) {
+            throw new Error(`Font data unavailable: ${id}`);
+        }
+    } catch (error) {
+        out?.destroy();
+        onComplete(error instanceof Error ? error : new Error(String(error)), null);
+        return;
+    }
     onComplete(null, out);
 }
 

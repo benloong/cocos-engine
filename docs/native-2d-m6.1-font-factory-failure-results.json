@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-17",
+  "validation": {
+    "jestSuites": 16,
+    "jestTests": 120,
+    "staticTests": 10,
+    "nativeSourceHashCount": 84,
+    "actualJsbDebugRelease": true,
+    "productionFactoryExecuted": true,
+    "nativeAssignmentFailureAfterAliasAcquired": true,
+    "nativeMissingFileRejected": true,
+    "partialAssetReleased": true,
+    "retryAfterFailure": true,
+    "joinedRequestsCompletedOnce": true,
+    "staleCallbackIsolation": true,
+    "consumerExceptionPreserved": true,
+    "ciUpdated": true,
+    "remoteCiVerified": false
+  },
+  "limitations": [
+    "The JSB probe stubs registration/DOM dependencies; it is not a complete async downloader test.",
+    "Native C++ source is unchanged; existing c7c9a6cc25 Debug/Release binaries run a newly generated TS probe.",
+    "No complete native TS build, GPU or ASAN rerun for this candidate.",
+    "Unclaimed pre-construction font registrations and full async pipeline/cross-platform gates remain open."
+  ],
+  "hashes": [
+    {
+      "file": "cocos/2d/utils/font-loader.ts",
+      "sha256": "afb839f55827f909542d08e780d1560863d128b771613bc5ecfd3d514d105868"
+    },
+    {
+      "file": "cocos/asset/asset-manager/factory.ts",
+      "sha256": "d4fac5e1b212f3b0f42e99b0395f274bd3d6192355761017f6c94dcfe8c7e723"
+    },
+    {
+      "file": "tests/asset-manager/factory.test.ts",
+      "sha256": "2ab08f792d3fedfe5140176f6b2a37a5f4ee869b5009467bf0d33d6efcb4c658"
+    },
+    {
+      "file": "tests/ui/font-loader.test.ts",
+      "sha256": "4232396c3f43ca7955420121d50780ee8c4ad1987b4b292517cefa97892de9a8"
+    },
+    {
+      "file": "native/tests/2d-poc/build-font-assets-probe.cjs",
+      "sha256": "0be93cbf32113de5c3238ec7dbb8df04813a64d5b37284b8dde44ee30d0ceb34"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-assets-probe.js",
+      "sha256": "0367cb595f8a50831407976f5357269f71159762cb2fcef6ddd8de61484d4f7e"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-factory-failure-full-jest.log",
+      "sha256": "865c147bee0ccda4af33034bc9c32a0b21f2cee56352b881d9b4432dc75d0878"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-factory-failure-debug-tests.log",
+      "sha256": "d32531a3796b8c5e31456bcebd21736f7c30caf530612dbdad313ab68ff816bf"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-factory-failure-release-tests.log",
+      "sha256": "ee1ee7a8b6ed658ddaed7d55e969b1e3385f9eb68c9059d4a04b1efb64714e28"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-factory-failure-static.log",
+      "sha256": "173c1b61adfc53a29407a49c96e5056224ff56ad99d4fdda9b78a17385f21f25"
+    }
+  ]
+}

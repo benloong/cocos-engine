@@ -6,6 +6,7 @@ const repo = path.resolve(__dirname, '../../..');
 const output = path.join(__dirname, 'build/font-assets-probe.js');
 const names = ['font', 'ttf-font', 'bitmap-font', 'label-atlas'];
 const modules = names.map(name => JSON.stringify('./' + name) + ': function (require, exports) {\n' + ts.transpileModule(fs.readFileSync(path.join(repo, 'cocos/2d/assets/' + name + '.jsb.ts'), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2019, module: ts.ModuleKind.CommonJS } }).outputText + '\n}').join(',\n');
+const loaderModule = ts.transpileModule(fs.readFileSync(path.join(repo, 'cocos/2d/utils/font-loader.ts'), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2019, module: ts.ModuleKind.CommonJS } }).outputText;
 const script = `
 (function () { try {
 const cclegacy = {}, js = { createMap: () => Object.create(null) };
@@ -14,11 +15,17 @@ jsb.Asset.prototype._ctor = function () { initialized++; };
 Object.defineProperty(jsb.Asset.prototype, 'nativeUrl', { get () { return this._nativeUrl || ''; } });
 Object.defineProperty(jsb.SpriteFrame.prototype, 'texture', { get () { return this.getTexture(); } });
 jsb.Asset.prototype.destroy = function () { return this._destroy(); };
-const modules = { ${modules} }, cache = {};
+let createFontAsset;
+const modules = { ${modules}, './font-loader': function (require, exports) { ${loaderModule} } }, cache = {};
 function require(id) {
     if (id === '../../core') return { cclegacy, js, path: { extname: s => s.slice(s.lastIndexOf('.')) }, warnID: () => {} };
     if (id === '../../asset/assets/asset') return {};
     if (id === './sprite-frame') return { SpriteFrame: jsb.SpriteFrame };
+    if (id === './font-family') return {};
+    if (id === '../../core/global-exports') return { ccwindow: { document: {} } };
+    if (id === '../../asset/asset-manager/downloader') return { default: { register() {} } };
+    if (id === '../../asset/asset-manager/factory') return { default: { register(handlers) { createFontAsset = handlers['.ttf']; } } };
+    if (id === '../assets/ttf-font') return require('./ttf-font');
     if (id === '../../native-binding/decorators') return { patch_cc_Font() {}, patch_cc_TTFFont() {}, patch_cc_BitmapFont() {}, patch_cc_LabelAtlas() {} };
     if (!cache[id]) { cache[id] = {}; modules[id](require, cache[id]); }
     return cache[id];
@@ -65,6 +72,37 @@ check(Math.abs(outlinedLabel.getContentWidth() - 101.9765625) < 0.001 && outline
     'Label renders a real native text stroke with preserved layout margins');
 outlinedLabel.setFontAsset(null);
 outlinedLabel.setUITransform(null); outlinedLabel.setNode(null);
+require('./font-loader');
+const originalNativeAsset = Object.getOwnPropertyDescriptor(TTFFont.prototype, '_nativeAsset');
+const assignmentFailure = new Error('injected font assignment failure');
+let partialFont, completionCount = 0;
+Object.defineProperty(TTFFont.prototype, '_nativeAsset', { ...originalNativeAsset, set(value) {
+    originalNativeAsset.set.call(this, value); partialFont = this;
+    throw assignmentFailure;
+} });
+try {
+    createFontAsset(ttf._nativeUrl, 'M6RollbackFont_LABEL', {}, (error, asset) => {
+        completionCount++;
+        check(error === assignmentFailure && asset === null, 'font factory reports assignment failure once');
+    });
+    check(completionCount === 1 && partialFont.isReleased() && partialFont.getFontDataSize() === 0 && partialFont._fontFamily === null,
+        'factory rollback destroys the real native font after bytes and alias were acquired');
+} finally { Object.defineProperty(TTFFont.prototype, '_nativeAsset', originalNativeAsset); }
+let missingFont;
+Object.defineProperty(TTFFont.prototype, '_nativeAsset', { ...originalNativeAsset, set(value) {
+    originalNativeAsset.set.call(this, value); missingFont = this;
+} });
+try {
+    createFontAsset(ttf._nativeUrl + '.missing', 'M6MissingFont_LABEL', {}, (error, asset) => {
+        check(error instanceof Error && asset === null, 'missing native font source is a factory error');
+    });
+    check(missingFont.isReleased() && !missingFont.getFontDataSize() && missingFont._fontFamily === null,
+        'unavailable source releases the failed native font rather than returning a fallback asset');
+} finally { Object.defineProperty(TTFFont.prototype, '_nativeAsset', originalNativeAsset); }
+createFontAsset(ttf._nativeUrl, 'M6RollbackFont_LABEL', {}, (error, asset) => {
+    check(!error && asset.getFontDataSize() > 1000 && !asset.isReleased(), 'font factory succeeds after rollback');
+    asset.destroy();
+});
 for (let iteration = 0; iteration < 1000; iteration++) {
     const first = new TTFFont(), second = new TTFFont();
     first._nativeUrl = ttf._nativeUrl; second._nativeUrl = ttf._nativeUrl;

@@ -48,7 +48,7 @@ jobs:
     - name: Verify RichText shell and native Node initialization
       run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/ui/native-2d-m6-richtext-shell.test.ts tests/scene-graph/native-node-constructor.test.ts tests/ui/richtext.test.ts
     - name: Verify font assets and nullable deserialization in both implementations
-      run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/assets/native-font-assets.test.ts tests/assets/native-font-assets-jit.test.ts tests/core/deserialize.test.ts tests/core/deserialize-jit.test.ts
+      run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/assets/native-font-assets.test.ts tests/assets/native-font-assets-jit.test.ts tests/core/deserialize.test.ts tests/core/deserialize-jit.test.ts tests/ui/font-loader.test.ts tests/asset-manager/factory.test.ts
     - name: Verify native Graphics and Mask lifecycle bridges
       run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/ui/native-2d-m6-layout-shell.test.ts tests/ui/native-2d-m4-mask-shell.test.ts tests/ui/mask-stencil-lifecycle.test.ts tests/ui/graphics.test.ts tests/ui/native-2d-m1-shell.test.ts tests/ui/native-render-root-lifecycle.test.ts
     - run: node ./scripts/compile-native-ts.js 
