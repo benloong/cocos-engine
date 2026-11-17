@@ -1,3 +1,4 @@
+import { BitmapGpuProbe } from './BitmapGpuProbe';
 import {
     Camera,
     Canvas,
@@ -21,6 +22,10 @@ import {
 /** RichText GPU pixels and real segment data on both render backends. */
 export class RichTextProbe {
     public static run (parent: Node): void {
+        this.runWithBitmap(parent).catch(error => console.log('M5_RICHTEXT_ERROR ' + String(error.stack || error)));
+    }
+    private static async runWithBitmap (parent: Node): Promise<void> {
+        await BitmapGpuProbe.run(parent);
         console.log('M5_RICHTEXT_BEGIN');
         const node = new Node('M5RichText');
         parent.addChild(node);

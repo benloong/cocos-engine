@@ -58,8 +58,10 @@
 - [x] HTTP 字体缓存来源修复：保留资产 URL，onLoaded 从已下载缓存/临时文件读取 native 字节；缓存换源与 released 回调测试通过。按统一文档构建测试工程并执行基础门禁，旧 M4/M5 探针迁移到真实 GPU/原生段观测；历史 HTTP/ASAN 补充证据及 HTTPS、取消、半文件、无主 alias 等剩余边界见 [报告](./native-2d-m6.1-font-http.md)。
 - [x] 字体数据边界补充：BitmapFont/LabelAtlas 拒绝溢出 float、非法 glyph/kerning 与重复字形，失败保留 native 数据、版本和 JS 编辑视图；TTFFont 销毁后 initDefault 不再改写状态。Windows Debug/Release native 与实际 JSB 定向回归通过，见 [字体资产报告](./native-2d-m6.1-font-assets.md)。
 - [x] 字体字号入口复核：BitmapFont/LabelAtlas 忽略非有限字号及 JSB float 溢出，保留默认/零/小数语义；重复赋值、销毁后迟到赋值保持版本稳定。Windows Debug/Release native 与实际 JSB、7 个 Jest suite（68 项）通过，见字体资产报告。
-- [x] SpriteFrame 动态合图状态：native 持有原图/图集与恢复坐标，打包/恢复、独立 clone、覆盖与析构所有权通过 1000 次循环和实际 JSB；补内存图片 buffer 上传及 Web Mask 默认阈值同步。文档工程各门禁最后执行通过，12/12 Web/native RGBA 字节相同；M5 间歇缺失标记、自动打包、完整资源/生命周期与平台范围仍待验收，见 [报告](./native-2d-m6.1-dynamic-atlas.md)。
-- [ ] 动态合图：确认迁移范围、纹理/UV 更新和回退策略，验证 Sprite/Label/Mask 联动。按需迁移项须有范围结论与证据，不能默认为完成。
+- [x] SpriteFrame 动态合图状态：native 持有原图/图集与恢复坐标，打包/恢复、独立 clone、覆盖与析构所有权通过 1000 次循环和实际 JSB；补内存图片 buffer 上传及 Web Mask 默认阈值同步。文档工程各门禁最后执行通过，12/12 Web/native RGBA 字节相同；M5 标记可见性已由后续日志节点修复；自动打包、完整资源/生命周期与平台范围仍待验收，见 [报告](./native-2d-m6.1-dynamic-atlas.md)和[日志观测](./native-2d-m6.4-log-observability.md)。
+- [x] BitmapFont/LabelAtlas GPU 图集消费者：原生字形 quad 直接采样活动图集，移除整段 CPU 纹理合成；帧 revision、纹理尺寸/同尺寸 GPU 重建、sampler 变化与清空引用回归通过。真实 Windows Debug 工程覆盖两类字体、普通/旋转帧的原图/打包/恢复，并验证 70000 字形分块；证据与布局边界见[报告](./native-2d-m6.1-bitmap-gpu.md)。
+- [ ] BitmapFont/LabelAtlas 完整布局：已观察到默认 CENTER/CENTER 与 Web 字形位置不同；字体/源字号缩放、spacing、换行、各 overflow、对齐与裁剪仍须实现并单独做 GPU 对照。本轮图集矩阵使用明确 TOP/LEFT 条件，不关闭此项。
+- [ ] 动态合图完整验收：Sprite/Mask 和受控 BMFont/LabelAtlas GPU 采样已有证据；自动触发、压缩/不可打包来源、图集满回退、完整资源/生命周期与跨平台仍待验收。manager/Atlas 排布迁移须有独立范围结论，不能默认为完成。
 - [ ] 补旧资产/场景/prefab 加载、instantiate/clone、延迟依赖解析、重复加载释放的原生回归。
 
 交付：资产 parity 报告和真实资源回归日志。prototype 改造本身不等于资产下沉验收完成。
@@ -93,7 +95,7 @@
 
 - [x] 原生几何核心准备：多子路径/增量 fill-stroke、曲线细分、单环 Earcut（含 Z-order、局部交点修复与拆分）、lineJoin/lineCap/miterLimit 网格生成；786 组实际 Web helper/assembler 对照在 g++ 与 Windows MSVC Debug/Release 通过，含 5000 点复杂填充，另验证 80000 顶点的 32-bit 索引。见 [报告](./native-2d-m6.3-graphics-geometry.md)。现已接入下述运行时基础路径，不能替代 GPU 像素/性能验收。
 - [x] 原生 Graphics 网格提交基础接入：移除 CPU pixels/Texture/Sprite 兼容路径，使用独立 mesh chunks、graphics 距离顶点布局与 local UBO；80000 顶点分块并实际上传 GPU buffer。Mask rect/ellipse/custom 改用几何，Sprite stencil 保留资产纹理；JS 移除 getFrame/lateUpdate 轮询。显式拥有者/借用通知、CHAR 缓存注册表租用、Windows Debug/Release 实际 JSB 和定向回归通过，见 [运行时报告](./native-2d-m6.3-graphics-runtime.md)。
-- [x] Windows Debug 应用 GPU 定向对照：独立相同场景/脚本经真实 Batcher、shader/local UBO、Camera、stencil 和 readPixels 捕获 40 例，Web/native 全通道差值 0；含大尺寸/缩放/3D 旋转、曲线/多路径、9 类描边、80000 顶点 Graphics/Mask、嵌套/inverted/空 Mask 与 alphaThreshold。修复 deprecated graphics→subComp、VERTEX alpha 和两端空嵌套 stencil 配对，见 [报告、结果与待办](./native-2d-m6.3-graphics-gpu.md)。本快照含未提交的已有 SpriteFrame native getter 改动，未作为 M6 最终候选验收。
+- [x] Windows Debug 应用 GPU 定向对照：独立相同场景/脚本经真实 Batcher、shader/local UBO、Camera、stencil 和 readPixels 捕获 40 例，Web/native 全通道差值 0；含大尺寸/缩放/3D 旋转、曲线/多路径、9 类描边、80000 顶点 Graphics/Mask、嵌套/inverted/空 Mask 与 alphaThreshold。修复 deprecated graphics→subComp、VERTEX alpha 和两端空嵌套 stencil 配对，见 [报告、结果与待办](./native-2d-m6.3-graphics-gpu.md)。该历史快照含当时未提交的 SpriteFrame native getter，未作为 M6 最终候选；getter 后续已移除，当前继续采用无 native property 方案。
 - [ ] 完成替换后的真实 GPU 绘制与缩放、大尺寸、复杂/多子路径像素回归；实际 Batcher/graphics shader/Camera/UBO 链路和混合场景须验证，buffer 上传通过不替代此门禁。
 - [x] Mask radius 与动态几何状态：半径归原生所有，圆角限幅/更新、尺寸/anchor 更新、rect→ellipse 已通过真实 GPU 对照；扩展夹具 48/48 图像全通道差值 0，见 [状态与命中报告](./native-2d-m6.4-mask-state-hit.md)。动态资产、完整混合场景和跨平台仍待验收。
 - [ ] 完成 lineJoin/lineCap/miterLimit、roundRect、ellipse、arc、曲线、填充/描边、clear 的场景/GPU 验收。几何对照和 JSB 参数桥接已补，实际像素仍待验收。

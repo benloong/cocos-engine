@@ -1,0 +1,724 @@
+{
+  "date": "2026-11-17",
+  "baseCommit": "3c00bf1b5456928823b7a678de4020a8c0b0365e",
+  "scope": "Windows Debug; controlled TOP/LEFT font GPU atlas sampling only",
+  "spriteFrameNativeProperty": false,
+  "sourceHashes": [
+    {
+      "file": "native/cocos/2d/components/Label.cpp",
+      "sha256": "14d35689c25d9c5a4c159f3d6f452111e742819d9e7a0246edea1295640cd9b9"
+    },
+    {
+      "file": "native/cocos/2d/components/Label.h",
+      "sha256": "d572c05729f50a8c97381e1ec8240b929c3655a415f0d5d38f582d8d4a1cf057"
+    },
+    {
+      "file": "native/cocos/2d/components/Sprite.cpp",
+      "sha256": "8e5d530184a355e5787609d91af092063b3f6e83ad6bc90cfbc00116f8d091de"
+    },
+    {
+      "file": "native/cocos/2d/components/Sprite.h",
+      "sha256": "ed7b66b2d4e64aaf48da88e3e2375e00f80ad32d65732f7ae0f08ea03ed65a1a"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RenderEntity.cpp",
+      "sha256": "04564c52feba3ad69689bdd0f0e38c9ac2fdfa37c2e9368d91a9649aae81ad96"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RenderEntity.h",
+      "sha256": "74707b7421348ba6a1f03daf12d288d35e2591fc9e0f29a72d54b2c8b1e1d6f0"
+    },
+    {
+      "file": "native/cocos/core/assets/SimpleTexture.cpp",
+      "sha256": "7e87e5243fb3f7001714f2191882dd37821fa4e7bc539250e89ad6514222e10e"
+    },
+    {
+      "file": "native/tests/2d-poc/audit-m6.cjs",
+      "sha256": "2e77dc092148cfbfab89fba2c4e238c1eeaeb46a085070e37283cdca8ea72ebd"
+    },
+    {
+      "file": "native/tests/2d-poc/fixtures/acceptance/RichTextProbe.ts",
+      "sha256": "03d6479a9e26eab06b97126a35095ca2de00047daad8c33e8ef129ad4347c37e"
+    },
+    {
+      "file": "native/tests/2d-poc/native/main.cpp",
+      "sha256": "8d2a6a7b5bb978741dabdb0fdd37691a8c37802face7a4480494cba23a8f3b80"
+    },
+    {
+      "file": "native/tests/2d-poc/run-dynamic-atlas-web.cjs",
+      "sha256": "96d84364bbf7438038c308a37b03f2808894916dbda5e5f414003a902694c954"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m5-richtext-probe.ps1",
+      "sha256": "8aae1588fe90995b092d0d2b709591e6deb7a068a33abcc601d21658deeea0a2"
+    },
+    {
+      "file": "native/tests/2d-poc/sync-acceptance-probes.cjs",
+      "sha256": "fd8d219ffa16a55c2c8baa714ac9256d952156b37d0d2af24c61d289c3aad9f7"
+    }
+  ],
+  "newFixtureHashes": [
+    {
+      "file": "native/tests/2d-poc/fixtures/acceptance/BitmapGpuProbe.ts",
+      "sha256": "61df57bd432eb5bc3fe99227c79b110a273459fefe6272c4491fe10bf6e3019b"
+    },
+    {
+      "file": "native/tests/2d-poc/fixtures/acceptance/BitmapGpuProbe.ts.meta",
+      "sha256": "8443228d3688d983deb80ffc59c973b5f15e266fe100e8db1e97cfe286d08c25"
+    },
+    {
+      "file": "native/tests/2d-poc/compare-bitmap-gpu.cjs",
+      "sha256": "ae05e52d70f5bd14a827ed57f36afc87bca4f076de5c0f4ed23ec17a403d39ef"
+    }
+  ],
+  "preExistingTestInputsNotCommitted": [
+    {
+      "file": "native/tests/2d-poc/run-m6-font-assets-tests.ps1",
+      "sha256": "323a904b5526f657c821f2da49da7fdad2200a7beeccd845cc5b6ed472de7186"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1",
+      "sha256": "6c655b4c3b8efccb947864d3e56e65440720b0ce26c5fbdcdac078ff856b7f34"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-layout-tests.ps1",
+      "sha256": "eb3784bfe36f65b9d721bbfb743687ae6a2e165974dcf440be4d7cee6a395c8c"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-richtext-runtime-tests.ps1",
+      "sha256": "bcea79d26edae09695208d5b0c26fed75860549d3f6c36a6e958cb4e3231fa16"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-sprite-api-tests.ps1",
+      "sha256": "27333014b09ac55360272f09d264dda131153fbdf91a545464d518bf8134ef93"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-sprite-atlas-tests.ps1",
+      "sha256": "86c5e2abdd2cdef34c329a390a25452a2d36a8016d2c93d852886ba39dfd62f5"
+    }
+  ],
+  "acceptance": {
+    "workflow": "docs/native-2d-build-and-acceptance.zh-CN.md",
+    "windowsCli": true,
+    "webCli": true,
+    "nativeOverride": true,
+    "debugAppBuild": true,
+    "fullSerialPass": true,
+    "m0": {
+      "passed": true,
+      "finalJestSuites": 8,
+      "finalJestTests": 33
+    },
+    "m2": true,
+    "m3": true,
+    "m4": true,
+    "m4extra": true,
+    "m5": true,
+    "uvParity": true,
+    "targetedJest": {
+      "suites": 6,
+      "tests": 32
+    },
+    "poc": true,
+    "appRun": {
+      "run": "20261117T115246523-4f4ba227",
+      "app": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\cocos-m1-test.exe",
+      "appSha256": "f64e24d09bb7e569c20814eda7121385dedecb239403c6584f3b3fe332711ee8",
+      "processId": 37036,
+      "startedUtc": "2026-11-17T11:52:46.6251196Z",
+      "timeoutSeconds": 45,
+      "passed": true,
+      "failure": null,
+      "elapsedSeconds": 30.0471816,
+      "aliveBeforeCleanup": true,
+      "exitBeforeCleanup": null,
+      "killedForCleanup": true,
+      "stdout": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T115246523-4f4ba227.stdout.log",
+      "stderr": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T115246523-4f4ba227.stdout.log.err",
+      "samples": [
+        {
+          "elapsed": 0.5117505,
+          "wallElapsed": 0.5118344,
+          "exited": false,
+          "cpu": 0.6875
+        },
+        {
+          "elapsed": 1.0384321,
+          "wallElapsed": 1.0385221,
+          "exited": false,
+          "cpu": 1.25
+        },
+        {
+          "elapsed": 1.5403447,
+          "wallElapsed": 1.540437,
+          "exited": false,
+          "cpu": 1.8125
+        },
+        {
+          "elapsed": 2.0556983,
+          "wallElapsed": 2.0558129,
+          "exited": false,
+          "cpu": 1.90625
+        },
+        {
+          "elapsed": 2.5703197,
+          "wallElapsed": 2.570422,
+          "exited": false,
+          "cpu": 2
+        },
+        {
+          "elapsed": 3.0843495,
+          "wallElapsed": 3.0845344,
+          "exited": false,
+          "cpu": 2.078125
+        },
+        {
+          "elapsed": 3.5999513,
+          "wallElapsed": 3.6000563,
+          "exited": false,
+          "cpu": 2.078125
+        },
+        {
+          "elapsed": 4.1122995,
+          "wallElapsed": 4.1123902,
+          "exited": false,
+          "cpu": 2.5
+        },
+        {
+          "elapsed": 4.628984,
+          "wallElapsed": 4.6290719,
+          "exited": false,
+          "cpu": 2.796875
+        },
+        {
+          "elapsed": 5.1405174,
+          "wallElapsed": 5.1406094,
+          "exited": false,
+          "cpu": 2.8125
+        },
+        {
+          "elapsed": 5.6561246,
+          "wallElapsed": 5.6562225,
+          "exited": false,
+          "cpu": 2.84375
+        },
+        {
+          "elapsed": 6.1699882,
+          "wallElapsed": 6.1700828,
+          "exited": false,
+          "cpu": 2.84375
+        },
+        {
+          "elapsed": 6.6833935,
+          "wallElapsed": 6.6835401,
+          "exited": false,
+          "cpu": 2.84375
+        },
+        {
+          "elapsed": 7.1970173,
+          "wallElapsed": 7.1971516,
+          "exited": false,
+          "cpu": 2.984375
+        },
+        {
+          "elapsed": 7.7102957,
+          "wallElapsed": 7.7103977,
+          "exited": false,
+          "cpu": 3.28125
+        },
+        {
+          "elapsed": 8.2224752,
+          "wallElapsed": 8.2225704,
+          "exited": false,
+          "cpu": 3.65625
+        },
+        {
+          "elapsed": 8.7356513,
+          "wallElapsed": 8.7357962,
+          "exited": false,
+          "cpu": 3.9375
+        },
+        {
+          "elapsed": 9.2641767,
+          "wallElapsed": 9.2643081,
+          "exited": false,
+          "cpu": 4.25
+        },
+        {
+          "elapsed": 9.7768318,
+          "wallElapsed": 9.7770007,
+          "exited": false,
+          "cpu": 4.40625
+        },
+        {
+          "elapsed": 10.2925587,
+          "wallElapsed": 10.2926955,
+          "exited": false,
+          "cpu": 4.734375
+        },
+        {
+          "elapsed": 10.804853,
+          "wallElapsed": 10.804935,
+          "exited": false,
+          "cpu": 5
+        },
+        {
+          "elapsed": 11.3180085,
+          "wallElapsed": 11.3181461,
+          "exited": false,
+          "cpu": 5.28125
+        },
+        {
+          "elapsed": 11.8278489,
+          "wallElapsed": 11.8281547,
+          "exited": false,
+          "cpu": 5.421875
+        },
+        {
+          "elapsed": 12.3428037,
+          "wallElapsed": 12.3429324,
+          "exited": false,
+          "cpu": 5.609375
+        },
+        {
+          "elapsed": 12.8978116,
+          "wallElapsed": 12.8979932,
+          "exited": false,
+          "cpu": 5.71875
+        },
+        {
+          "elapsed": 13.4089412,
+          "wallElapsed": 13.4090263,
+          "exited": false,
+          "cpu": 5.96875
+        },
+        {
+          "elapsed": 13.9195996,
+          "wallElapsed": 13.9196858,
+          "exited": false,
+          "cpu": 6.125
+        },
+        {
+          "elapsed": 14.4344418,
+          "wallElapsed": 14.4346075,
+          "exited": false,
+          "cpu": 6.3125
+        },
+        {
+          "elapsed": 14.9462886,
+          "wallElapsed": 14.9463738,
+          "exited": false,
+          "cpu": 6.53125
+        },
+        {
+          "elapsed": 15.4588929,
+          "wallElapsed": 15.4590596,
+          "exited": false,
+          "cpu": 6.828125
+        },
+        {
+          "elapsed": 15.9996974,
+          "wallElapsed": 15.9998455,
+          "exited": false,
+          "cpu": 7.0625
+        },
+        {
+          "elapsed": 16.5292343,
+          "wallElapsed": 16.5294341,
+          "exited": false,
+          "cpu": 7.1875
+        },
+        {
+          "elapsed": 17.0577998,
+          "wallElapsed": 17.0579893,
+          "exited": false,
+          "cpu": 7.421875
+        },
+        {
+          "elapsed": 17.5576903,
+          "wallElapsed": 17.5578474,
+          "exited": false,
+          "cpu": 7.71875
+        },
+        {
+          "elapsed": 18.0857638,
+          "wallElapsed": 18.0859365,
+          "exited": false,
+          "cpu": 8.015625
+        },
+        {
+          "elapsed": 18.6308823,
+          "wallElapsed": 18.6310292,
+          "exited": false,
+          "cpu": 8.328125
+        },
+        {
+          "elapsed": 19.1632084,
+          "wallElapsed": 19.1633737,
+          "exited": false,
+          "cpu": 8.578125
+        },
+        {
+          "elapsed": 19.7057468,
+          "wallElapsed": 19.7058326,
+          "exited": false,
+          "cpu": 8.875
+        },
+        {
+          "elapsed": 20.2213905,
+          "wallElapsed": 20.2214932,
+          "exited": false,
+          "cpu": 8.9375
+        },
+        {
+          "elapsed": 20.7325014,
+          "wallElapsed": 20.7326397,
+          "exited": false,
+          "cpu": 9.078125
+        },
+        {
+          "elapsed": 21.244936,
+          "wallElapsed": 21.2450383,
+          "exited": false,
+          "cpu": 9.140625
+        },
+        {
+          "elapsed": 21.7592222,
+          "wallElapsed": 21.7593069,
+          "exited": false,
+          "cpu": 9.46875
+        },
+        {
+          "elapsed": 22.2724572,
+          "wallElapsed": 22.2725363,
+          "exited": false,
+          "cpu": 9.8125
+        },
+        {
+          "elapsed": 22.7895052,
+          "wallElapsed": 22.7895838,
+          "exited": false,
+          "cpu": 10.109375
+        },
+        {
+          "elapsed": 23.2986525,
+          "wallElapsed": 23.2987335,
+          "exited": false,
+          "cpu": 10.1875
+        },
+        {
+          "elapsed": 23.8122149,
+          "wallElapsed": 23.812296,
+          "exited": false,
+          "cpu": 10.234375
+        },
+        {
+          "elapsed": 24.3258877,
+          "wallElapsed": 24.3259812,
+          "exited": false,
+          "cpu": 10.234375
+        },
+        {
+          "elapsed": 24.8393925,
+          "wallElapsed": 24.8394742,
+          "exited": false,
+          "cpu": 10.25
+        },
+        {
+          "elapsed": 25.350531,
+          "wallElapsed": 25.3506087,
+          "exited": false,
+          "cpu": 10.546875
+        },
+        {
+          "elapsed": 25.8651648,
+          "wallElapsed": 25.865278,
+          "exited": false,
+          "cpu": 10.90625
+        },
+        {
+          "elapsed": 26.3775181,
+          "wallElapsed": 26.3776062,
+          "exited": false,
+          "cpu": 11.25
+        },
+        {
+          "elapsed": 26.8914558,
+          "wallElapsed": 26.8915448,
+          "exited": false,
+          "cpu": 11.296875
+        },
+        {
+          "elapsed": 27.4050355,
+          "wallElapsed": 27.4051433,
+          "exited": false,
+          "cpu": 11.359375
+        },
+        {
+          "elapsed": 27.9349613,
+          "wallElapsed": 27.9350411,
+          "exited": false,
+          "cpu": 11.515625
+        },
+        {
+          "elapsed": 28.4489756,
+          "wallElapsed": 28.4490584,
+          "exited": false,
+          "cpu": 11.625
+        },
+        {
+          "elapsed": 28.961987,
+          "wallElapsed": 28.9620689,
+          "exited": false,
+          "cpu": 12.046875
+        },
+        {
+          "elapsed": 29.4748798,
+          "wallElapsed": 29.4749683,
+          "exited": false,
+          "cpu": 12.375
+        },
+        {
+          "elapsed": 29.9901906,
+          "wallElapsed": 29.9903096,
+          "exited": false,
+          "cpu": 12.65625
+        }
+      ],
+      "timeline": [
+        "19:52:50 [DEBUG]: JS: M1_TEST_NODE {\"contentSize\":{\"width\":20,\"height\":20},\"opacity\":128,\"box\":{\"x\":630,\"y\":470,\"width\":20,\"height\":20},\"world\":{\"x\":640,\"y\":480,\"z\":0}}",
+        "19:53:02 [DEBUG]: JS: M4_MASK_PIXEL {\"width\":256,\"height\":256,\"red\":6400,\"opaque\":65536,\"inverted\":false}",
+        "19:53:03 [DEBUG]: JS: M4_MASK_PIXEL {\"width\":256,\"height\":256,\"red\":44800,\"opaque\":0,\"inverted\":true}",
+        "19:53:06 [DEBUG]: JS: M4_GRAPHICS {\"textureWidth\":256,\"textureHeight\":256,\"opaque\":6400}",
+        "19:53:08 [DEBUG]: JS: M4_NESTED_MASK {\"red\":3600}",
+        "19:53:12 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"bitmap-flat-source\",\"colored\":512}",
+        "19:53:12 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"bitmap-flat-packed\",\"colored\":512}",
+        "19:53:12 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"bitmap-flat-restored\",\"colored\":512}",
+        "19:53:13 [DEBUG]: JS: M6_BITMAP_LARGE {\"glyphs\":70000,\"chunks\":5,\"cleared\":true,\"diagnostics\":0}",
+        "19:53:13 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"bitmap-rotated-source\",\"colored\":512}",
+        "19:53:13 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"bitmap-rotated-packed\",\"colored\":512}",
+        "19:53:13 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"bitmap-rotated-restored\",\"colored\":512}",
+        "19:53:14 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"atlas-flat-source\",\"colored\":512}",
+        "19:53:14 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"atlas-flat-packed\",\"colored\":512}",
+        "19:53:14 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"atlas-flat-restored\",\"colored\":512}",
+        "19:53:14 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"atlas-rotated-source\",\"colored\":512}",
+        "19:53:14 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"atlas-rotated-packed\",\"colored\":512}",
+        "19:53:15 [DEBUG]: JS: M6_BITMAP_CAPTURE {\"name\":\"atlas-rotated-restored\",\"colored\":512}",
+        "19:53:15 [DEBUG]: JS: M6_BITMAP_GPU_READY {\"captures\":12,\"checks\":[{\"name\":\"bitmap-flat\",\"gpuOnly\":true,\"quads\":2},{\"name\":\"bitmap-rotated\",\"gpuOnly\":true,\"quads\":2},{\"name\":\"atlas-flat\",\"gpuOnly\":true,\"quads\":2},{\"name\":\"atlas-rotated\",\"gpuOnly\":true,\"quads\":2}],\"native\":true}",
+        "19:53:15 [DEBUG]: JS: M5_RICHTEXT_BEGIN",
+        "19:53:15 [DEBUG]: JS: M5_STEP_ATLAS_BEFORE",
+        "19:53:15 [DEBUG]: JS: M5_STEP_ATLAS_AFTER",
+        "19:53:15 [DEBUG]: JS: M5_STEP_ADD_BEFORE",
+        "19:53:15 [DEBUG]: JS: M5_STEP_ADD_AFTER",
+        "19:53:15 [DEBUG]: JS: M5_ATLAS {\"found\":true}",
+        "19:53:16 [DEBUG]: JS: M5_RICHTEXT {\"children\":10,\"native\":true,\"jsLabelComponents\":0,\"labels\":9,\"sprites\":1,\"width\":300,\"height\":104.31999969482422,\"colored\":8725,\"styles\":[{\"fontSize\":20,\"bold\":false,\"italic\":false,\"underline\":false},{\"fontSize\":40,\"bold\":false,\"italic\":false,\"underline\":false},{\"fontSize\":40,\"bold\":false,\"italic\":false,\"underline\":false},{\"fontSize\":40,\"bold\":false,\"italic\":false,\"underline\":false},{\"fontSize\":40,\"bold\":true,\"italic\":false,\"underline\":false},{\"fontSize\":40,\"bold\":false,\"italic\":false,\"underline\":false},{\"fontSize\":40,\"bold\":false,\"italic\":true,\"underline\":false},{\"fontSize\":40,\"bold\":false,\"italic\":false,\"underline\":false},{\"fontSize\":40,\"bold\":false,\"italic\":false,\"underline\":true}],\"hit\":true,\"miss\":false,\"segments\":[{\"name\":\"RICHTEXT_CHILD\",\"text\":\"Small\",\"x\":-150,\"y\":11.84000015258789,\"w\":48,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\" \",\"x\":-102,\"y\":11.84000015258789,\"w\":11,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\"Red\",\"x\":-91,\"y\":11.84000015258789,\"w\":73,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\"Outline\",\"x\":-18,\"y\":9.84000015258789,\"w\":126,\"h\":44.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\"Bold\",\"x\":-150,\"y\":-20.15999984741211,\"w\":88,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\" \",\"x\":-62,\"y\":-20.15999984741211,\"w\":11,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\"Italic\",\"x\":-51,\"y\":-20.15999984741211,\"w\":89.50226593017578,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\" \",\"x\":38.502262115478516,\"y\":-20.15999984741211,\"w\":11,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_CHILD\",\"text\":\"Underline\",\"x\":-150,\"y\":-52.15999984741211,\"w\":166,\"h\":40.31999969482422},{\"name\":\"RICHTEXT_Image_CHILD\",\"text\":\"\",\"x\":16,\"y\":-48,\"w\":null,\"h\":null}]}"
+      ]
+    }
+  },
+  "bitmapGpu": {
+    "tolerance": 1,
+    "passed": true,
+    "captures": [
+      {
+        "name": "bitmap-flat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "bitmap-flat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "bitmap-flat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "bitmap-rotated-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "bitmap-rotated-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "bitmap-rotated-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-flat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-flat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-flat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-rotated-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-rotated-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-rotated-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      }
+    ]
+  },
+  "spriteMaskGpu": {
+    "tolerance": 1,
+    "passed": true,
+    "captures": [
+      {
+        "name": "sprite-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "mask-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      }
+    ]
+  },
+  "largeGpu": {
+    "glyphs": 70000,
+    "chunks": 5,
+    "lastVertices": 17872,
+    "lastIndices": 26808,
+    "cleared": true,
+    "cpuDiagnosticBuilds": 0
+  },
+  "failedDevelopmentChecks": [
+    {
+      "check": "GPU texture identity",
+      "cause": "SimpleTexture update event cached base texture while native getter returned view",
+      "resolved": true
+    },
+    {
+      "check": "default CENTER/CENTER bitmap layout",
+      "cause": "Native bitmap layout places glyphs at TOP/LEFT",
+      "resolved": false,
+      "action": "Retained separate M6 task; sampling fixture explicitly uses TOP/LEFT"
+    }
+  ],
+  "limitations": [
+    "Full bitmap layout/scale/overflow/spacing/clipping parity remains open.",
+    "Automatic packing, full asset pipeline/lifecycle, performance and cross-platform remain open.",
+    "No Release or ASAN acceptance performed in this node."
+  ]
+}

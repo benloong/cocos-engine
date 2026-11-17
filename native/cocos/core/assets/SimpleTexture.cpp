@@ -127,6 +127,7 @@ void SimpleTexture::tryReset() {
     }
     createTexture(device);
     _gfxTextureView = createTextureView(device);
+    notifyTextureUpdated();
 }
 
 void SimpleTexture::createTexture(gfx::Device *device) {
@@ -163,8 +164,6 @@ void SimpleTexture::createTexture(gfx::Device *device) {
     _textureHeight = textureCreateInfo.height;
 
     _gfxTexture = texture;
-
-    notifyTextureUpdated();
 }
 
 gfx::Texture *SimpleTexture::createTextureView(gfx::Device *device) {
@@ -200,7 +199,7 @@ void SimpleTexture::tryDestroyTextureView() {
         _gfxTextureView->destroy();
         _gfxTextureView = nullptr;
 
-        //TODO(minggo): should notify JS if the performance is low.
+        notifyTextureUpdated();
     }
 }
 
@@ -218,6 +217,7 @@ void SimpleTexture::setMipRange(uint32_t baseLevel, uint32_t maxLevel) {
     gfx::Texture *textureView = createTextureView(device);
     tryDestroyTextureView();
     _gfxTextureView = textureView;
+    notifyTextureUpdated();
 }
 
 bool SimpleTexture::isUsingOfflineMipmaps() {
@@ -230,7 +230,7 @@ void SimpleTexture::setMipRangeInternal(uint32_t baseLevel, uint32_t maxLevel) {
 }
 
 void SimpleTexture::notifyTextureUpdated() {
-    emit<TextureUpdated>(_gfxTexture.get());
+    emit<TextureUpdated>(getGFXTexture());
 }
 
 } // namespace cc

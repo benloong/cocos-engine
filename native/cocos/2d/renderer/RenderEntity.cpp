@@ -74,7 +74,7 @@ void RenderEntity::clearStaticRenderDrawInfos() {
     CC_ASSERT_EQ(_renderEntityType, RenderEntityType::STATIC);
 
     for (uint32_t i = 0; i < _staticDrawInfoSize; i++) {
-        RenderDrawInfo& drawInfo = _staticDrawInfos[i];
+        RenderDrawInfo& drawInfo = *getRenderDrawInfoAt(i);
         drawInfo.resetDrawInfo();
     }
     _staticDrawInfoSize = 0;
@@ -106,12 +106,17 @@ ccstd::vector<RenderDrawInfo*>& RenderEntity::getDynamicRenderDrawInfos() {
     return _dynamicDrawInfos;
 }
 void RenderEntity::setStaticDrawInfoSize(uint32_t size) {
-    CC_ASSERT(_renderEntityType == RenderEntityType::STATIC && size <= RenderEntity::STATIC_DRAW_INFO_CAPACITY);
+    CC_ASSERT(_renderEntityType == RenderEntityType::STATIC);
+    for (uint32_t i = size; i < _staticDrawInfoSize; ++i) getRenderDrawInfoAt(i)->resetDrawInfo();
+    if (size > STATIC_DRAW_INFO_CAPACITY) {
+        const auto needed = size - STATIC_DRAW_INFO_CAPACITY;
+        while (_staticOverflow.size() < needed) _staticOverflow.emplace_back(std::make_unique<RenderDrawInfo>());
+    }
     _staticDrawInfoSize = size;
 }
 RenderDrawInfo* RenderEntity::getStaticRenderDrawInfo(uint32_t index) {
     CC_ASSERT(_renderEntityType == RenderEntityType::STATIC && index < _staticDrawInfoSize);
-    return &(_staticDrawInfos[index]);
+    return getRenderDrawInfoAt(index);
 }
 std::array<RenderDrawInfo, RenderEntity::STATIC_DRAW_INFO_CAPACITY>& RenderEntity::getStaticRenderDrawInfos() {
     CC_ASSERT_EQ(_renderEntityType, RenderEntityType::STATIC);

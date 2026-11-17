@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "2d/assets/SpriteFrame.h"
+#include "2d/renderer/SpriteGeometry.h"
 #include "2d/assets/TTFFont.h"
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/DynamicAtlas.h"
@@ -162,6 +163,7 @@ void Label::applyFontAsset() {
 }
 void Label::clearRenderedData() {
     _renderer.clearFrame();
+    _bitmapDiagnosticsDirty = false; _renderedBitmapGlyphs = 0;
     // The entity also drives Label's prepare callback. An empty frame must
     // not disable that callback or later font/config changes cannot rebuild.
     _renderer.setEnabled(isEnabled());
@@ -383,10 +385,7 @@ void Label::setEnabled(bool enabled) {
 void Label::prepareRenderEntity(float opacity) {
     syncTransformSize();
     syncFontAsset();
-    if (_bitmapAtlas && _bitmapAtlasRevision != _bitmapAtlas->getRevision()) {
-        _bitmapAtlasRevision = _bitmapAtlas->getRevision();
-        _dirty = true;
-    }
+    syncBitmapAtlas();
     if (_dirty) {
         rebuildTexture();
     }
@@ -501,14 +500,136 @@ void Label::rebuildLetterTexture() {
     _renderer.setFrame(_frame);
     applyBitmapAtlas();
 }
+void Label::syncBitmapAtlas() {
+    if (!_bitmapAtlas) return;
+    auto *texture = _bitmapAtlas->getTexture();
+    const uint32_t width = texture ? texture->getWidth() : 0;
+    const uint32_t height = texture ? texture->getHeight() : 0;
+    const int32_t format = texture ? static_cast<int32_t>(texture->getPixelFormat()) : -1;
+    if (_bitmapAtlasRevision != _bitmapAtlas->getRevision() || _bitmapTextureSeen != texture
+        || _bitmapWidthSeen != width || _bitmapHeightSeen != height || _bitmapFormatSeen != format) {
+        _bitmapAtlasRevision = _bitmapAtlas->getRevision(); _bitmapTextureSeen = texture;
+        _bitmapWidthSeen = width; _bitmapHeightSeen = height; _bitmapFormatSeen = format; _dirty = true;
+    }
+}
+void Label::ensureBitmapDiagnostics() const {
+    if (_bitmapDiagnosticsDirty && _bitmapAtlas) const_cast<Label *>(this)->rasterizeBitmapDiagnostics();
+}
 void Label::rebuildBitmapTexture() {
     const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
     const auto &glyphMap = _bitmapFont ? _bitmapFont->getGlyphMap() : _glyphMap;
     const auto &kerningMap = _bitmapFont ? _bitmapFont->getKerningMap() : _kerning;
-    auto *atlasTexture = dynamic_cast<Texture2D *>(_bitmapAtlas->getTexture());
+    auto *texture = _bitmapAtlas->getTexture();
+    if (!texture || !texture->getGFXTexture() || !texture->getWidth() || !texture->getHeight()) { clearRenderedData(); return; }
+    const float lineHeight = _bitmapLineHeight > 0.0F ? _bitmapLineHeight : _fontSize;
+    const float maxWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
+        ? _transform->getContentSize().x
+        : 100000.0F;
+    const float baselineRatio = 0.26F;
+
+    std::vector<std::vector<size_t>> lines;
+    lines.emplace_back();
+    float lineWidth = 0.0F;
+    float contentWidth = 0.0F;
+
+    int32_t previousCode = -1;
+    for (const std::string &codepoint : splitUtf8(_string)) {
+        if (codepoint == "\n") {
+            contentWidth = std::max(contentWidth, lineWidth);
+            lines.emplace_back();
+            lineWidth = 0.0F;
+            previousCode = -1;
+            continue;
+        }
+        const int32_t code = utf8CodePoint(codepoint);
+        const auto found = glyphMap.find(code);
+        if (found == glyphMap.end()) {
+            continue;
+        }
+        const Glyph &glyph = glyphs[found->second];
+        float kerning = 0.0F;
+        if (previousCode >= 0) {
+            const auto kern = kerningMap.find((static_cast<uint64_t>(static_cast<uint32_t>(previousCode)) << 32U) | static_cast<uint32_t>(code));
+            if (kern != kerningMap.end()) { kerning = kern->second; }
+        }
+        if (_wrap && lineWidth + kerning + glyph.xAdvance > maxWidth && !lines.back().empty()) {
+            contentWidth = std::max(contentWidth, lineWidth);
+            lines.emplace_back();
+            lineWidth = 0.0F;
+        }
+        lines.back().push_back(found->second);
+        lineWidth += kerning + glyph.xAdvance;
+        previousCode = code;
+    }
+    contentWidth = std::max(contentWidth, lineWidth);
+
+    const float contentHeight = std::max((static_cast<float>(lines.size()) + baselineRatio) * lineHeight, 1.0F);
+    const uint32_t outWidth = static_cast<uint32_t>(std::ceil(std::max(contentWidth, 1.0F))) + 2U;
+    const uint32_t outHeight = static_cast<uint32_t>(std::ceil(contentHeight)) + 2U;
+    std::vector<SpriteQuad> quads;
+    size_t glyphCount = 0;
+    for (const auto &line : lines) glyphCount += line.size();
+    quads.reserve(glyphCount);
+    const float texWidth = static_cast<float>(texture->getWidth()), texHeight = static_cast<float>(texture->getHeight());
+    const auto *frame = _bitmapAtlas.get();
+    const float trimmedLeft = frame->getOffsetX() + (frame->getOriginalWidth() - frame->getRectWidth()) * .5F;
+    const float trimmedTop = frame->getOffsetY() - (frame->getOriginalHeight() - frame->getRectHeight()) * .5F;
+    for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex) {
+        float cursor = 0.F;
+        int32_t previous = -1;
+        for (const auto index : lines[lineIndex]) {
+            const auto &glyph = glyphs[index];
+            if (previous >= 0) {
+                const auto kern = kerningMap.find((static_cast<uint64_t>(static_cast<uint32_t>(previous)) << 32U) | static_cast<uint32_t>(glyph.code));
+                if (kern != kerningMap.end()) cursor += kern->second;
+            }
+            if (glyph.w > 0 && glyph.h > 0) {
+                SpriteQuad quad; quad.valid = true;
+                const float x = cursor + glyph.offsetX, top = -static_cast<float>(lineIndex) * lineHeight - glyph.offsetY;
+                quad.vertices[0].position.set(x, top - glyph.h, 0); quad.vertices[1].position.set(x + glyph.w, top - glyph.h, 0);
+                quad.vertices[2].position.set(x, top, 0); quad.vertices[3].position.set(x + glyph.w, top, 0);
+                float rx = frame->getRectX() + glyph.u - trimmedLeft, ry = frame->getRectY() + glyph.v + trimmedTop;
+                if (frame->isRotated()) {
+                    rx = frame->getRectX() + frame->getRectHeight() - glyph.v - glyph.h - trimmedTop;
+                    ry = glyph.u + frame->getRectY() - trimmedLeft;
+                    quad.vertices[0].uv.set(rx / texWidth, ry / texHeight);
+                    quad.vertices[1].uv.set(rx / texWidth, (ry + glyph.w) / texHeight);
+                    quad.vertices[2].uv.set((rx + glyph.h) / texWidth, ry / texHeight);
+                    quad.vertices[3].uv.set((rx + glyph.h) / texWidth, (ry + glyph.w) / texHeight);
+                } else {
+                    quad.vertices[0].uv.set(rx / texWidth, (ry + glyph.h) / texHeight);
+                    quad.vertices[1].uv.set((rx + glyph.w) / texWidth, (ry + glyph.h) / texHeight);
+                    quad.vertices[2].uv.set(rx / texWidth, ry / texHeight);
+                    quad.vertices[3].uv.set((rx + glyph.w) / texWidth, ry / texHeight);
+                }
+                quads.emplace_back(quad);
+            }
+            cursor += glyph.xAdvance; previous = glyph.code;
+        }
+    }
+    _renderedBitmapGlyphs = static_cast<uint32_t>(quads.size());
+    _lastTextureWidth = static_cast<float>(outWidth); _lastTextureHeight = static_cast<float>(outHeight);
+    _lastContentWidth = contentWidth; _lastContentHeight = contentHeight; _lastLineCount = static_cast<int32_t>(lines.size());
+    _lastAtlasTextureId = reinterpret_cast<uint64_t>(texture);
+    _lastAtlasX = frame->getRectX(); _lastAtlasY = frame->getRectY();
+    _lastAtlasWidth = frame->getRectWidth(); _lastAtlasHeight = frame->getRectHeight();
+    _texture = nullptr;
+    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0; _bitmapDiagnosticsDirty = true;
+    if (!_frame) _frame = new SpriteFrame();
+    _frame->copyFrom(frame);
+    _renderer.setColor(_color);
+    _renderer.setLabelQuads(_frame, std::move(quads));
+}
+void Label::rasterizeBitmapDiagnostics() {
+    _bitmapDiagnosticsDirty = false; ++_bitmapDiagnosticBuilds;
+    const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
+    const auto &glyphMap = _bitmapFont ? _bitmapFont->getGlyphMap() : _glyphMap;
+    const auto &kerningMap = _bitmapFont ? _bitmapFont->getKerningMap() : _kerning;
+    auto *atlasTexture = dynamic_cast<Texture2D *>(_bitmapAtlas->hasDynamicAtlasFrame()
+        ? _bitmapAtlas->getOriginalTexture() : _bitmapAtlas->getTexture());
     ImageAsset *image = atlasTexture != nullptr ? atlasTexture->getImage() : nullptr;
     if (image == nullptr || image->getData() == nullptr || image->getWidth() == 0U || image->getHeight() == 0U) {
-        clearRenderedData();
+        _lastPixels.clear(); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
         return;
     }
 
@@ -605,32 +726,7 @@ void Label::rebuildBitmapTexture() {
         }
     }
 
-    if (_texture == nullptr) {
-        _texture = new Texture2D();
-    }
-    ITexture2DCreateInfo info;
-    info.width = outWidth;
-    info.height = outHeight;
-    info.format = PixelFormat::RGBA8888;
-    info.mipmapLevel = 1U;
-    _texture->reset(info);
     _lastPixels = pixels;
-    _texture->uploadData(pixels.data());
-
-    if (_frame == nullptr) {
-        _frame = new SpriteFrame();
-    }
-    _frame->setTexture(_texture);
-    _frame->setRect(0.0F, 0.0F, static_cast<float>(outWidth), static_cast<float>(outHeight));
-    _frame->setOriginalSize(static_cast<float>(outWidth), static_cast<float>(outHeight));
-    _frame->setOffset(0.0F, 0.0F);
-    _frame->setRotated(false);
-
-    _lastTextureWidth = static_cast<float>(outWidth);
-    _lastTextureHeight = static_cast<float>(outHeight);
-    _lastLineCount = static_cast<int32_t>(lines.size());
-    _lastContentWidth = contentWidth;
-    _lastContentHeight = contentHeight;
     _lastPixelChecksum = 0U;
     _lastOpaquePixels = 0U;
     for (size_t i = 3; i < pixels.size(); i += 4U) {
@@ -638,8 +734,7 @@ void Label::rebuildBitmapTexture() {
         if (pixels[i] > 0U) { ++_lastOpaquePixels; }
     }
 
-    _renderer.setFrame(_frame);
-    applyBitmapAtlas();
+
 }
 void Label::applyBitmapAtlas() {
     if (_cacheMode != 1 || _lastPixels.empty() || _lastTextureWidth <= 0.0F || _lastTextureHeight <= 0.0F) {
@@ -733,6 +828,7 @@ std::array<double, 2> Label::measureUnwrappedTextPrecise(const std::string &text
 }
 void Label::updateRenderData() {
     syncFontAsset();
+    syncBitmapAtlas();
     if (_dirty) {
         rebuildTexture();
     }
@@ -747,6 +843,9 @@ void Label::rebuildTexture() {
         if (_bitmapAtlas && !glyphs.empty()) rebuildBitmapTexture(); else clearRenderedData();
         return;
     }
+    _renderedBitmapGlyphs = 0;
+    _bitmapDiagnosticsDirty = false;
+    _renderer.setColor(Color(255, 255, 255, _color.a));
     if (_fontAsset && _fontAsset->isReleased()) { clearRenderedData(); return; }
     if (_cacheMode == 2) { rebuildLetterTexture(); return; }
 

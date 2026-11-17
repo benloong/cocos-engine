@@ -41,6 +41,8 @@ class Node;
 class RenderDrawInfo;
 class TextureBase;
 class SpriteFrame;
+class Label;
+struct SpriteQuad;
 class UITransform;
 
 /**
@@ -118,6 +120,21 @@ public:
     void prepareRenderEntity(float opacity) override { prepare(opacity); }
 
 private:
+    friend class Label;
+    // Label owns layout; Sprite owns copied local quads and all submission buffers.
+    void setLabelQuads(SpriteFrame *frame, std::vector<SpriteQuad> quads);
+    void prepareLabelQuads(Material *material, float opacity);
+    struct LabelMeshChunk {
+        std::vector<float> vertices;
+        std::vector<uint16_t> indices;
+    };
+    gfx::Texture *_gpuTextureSeen{nullptr}; // borrowed identity; owned by _texture
+    gfx::Sampler *_gpuSamplerSeen{nullptr}; // borrowed identity; owned by texture/device
+    uint32_t _gpuTextureId{0};
+    uint32_t _gpuSamplerId{0};
+    bool _hasLabelQuads{false};
+    std::vector<SpriteQuad> _labelQuads;
+    std::vector<LabelMeshChunk> _labelChunks;
     void invalidateBuiltinMaterial() { if (!_material) _materialInstance = nullptr; _dirty = true; }
     Material *getBuiltinMaterial() const override;
     void updateVertexColors(float opacity);

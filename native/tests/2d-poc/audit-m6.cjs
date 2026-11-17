@@ -142,7 +142,7 @@ function build(root = ROOT) {
         }
     }
     nativeWalk('native/cocos/2d');
-    nativeFiles.push('native/cocos/base/Log.cpp');
+    nativeFiles.push('native/cocos/base/Log.cpp', 'native/cocos/core/assets/SimpleTexture.cpp');
     nativeFiles.push('native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h','native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp','native/cocos/platform/win32/modules/DirectWriteFont.h','native/cocos/platform/win32/modules/DirectWriteFont.cpp');
     nativeFiles.push('native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h','native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.h','native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp','native/cocos/bindings/manual/jsb_platform_win32.cpp','native/cocos/bindings/manual/jsb_platform.h');
     nativeFiles.push('cocos/2d/utils/font-loader.ts','cocos/asset/asset-manager/factory.ts');

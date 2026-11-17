@@ -234,6 +234,79 @@ void testSpriteFrameData() {
           "packed frame destructor releases source and atlas without reset");
 }
 
+void testBitmapGpuGeometry() {
+    cc::IntrusivePtr<cc::Texture2D> notified(new cc::Texture2D());
+    cc::gfx::Texture *lastNotified = nullptr; // borrowed identity only, owned by notified
+    notified->on<cc::SimpleTexture::TextureUpdated>([&](cc::SimpleTexture *emitter, cc::gfx::Texture *view) {
+        check(view == emitter->getGFXTexture(), "Texture event agrees with native public GPU view");
+        lastNotified = view;
+    });
+    notified->create(8, 8);
+    check(lastNotified && lastNotified == notified->getGFXTexture(), "Texture creation publishes completed view");
+    const auto notifiedId = lastNotified->getObjectID();
+    notified->setMipRange(0, 0);
+    check(lastNotified && lastNotified->getObjectID() != notifiedId && lastNotified == notified->getGFXTexture(), "Mip range publishes replacement view");
+    notified->create(8, 8);
+    check(lastNotified == notified->getGFXTexture(), "Texture recreation updates cached view");
+    notified->destroy();
+    check(lastNotified == nullptr, "Texture destruction clears cached view");
+    cc::IntrusivePtr<cc::Texture2D> source(new cc::Texture2D()); source->create(8, 8);
+    cc::IntrusivePtr<cc::Texture2D> packed(new cc::Texture2D()); packed->create(16, 16);
+    std::vector<uint8_t> pixels(16 * 16 * 4, 255);
+    source->uploadData(pixels.data()); packed->uploadData(pixels.data());
+    check(source->getImage() == nullptr && packed->getImage() == nullptr, "GPU bitmap fixture has no CPU image fallback");
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame());
+    frame->setTexture(source); frame->setRect(2, 3, 4, 4); frame->setOriginalSize(4, 4);
+    cc::IntrusivePtr<cc::LabelAtlas> font(new cc::LabelAtlas()); font->setFontSize(4);
+    check(font->setConfigJson(R"({"fontDefDictionary":{"65":{"rect":{"x":1,"y":1,"width":2,"height":2},"xOffset":0,"yOffset":0,"xAdvance":2}}})"), "GPU bitmap glyph config");
+    font->setSpriteFrame(frame);
+    cc::Node node("bitmap-gpu"); cc::UITransform transform(&node); transform.setContentSize(8,8);
+    cc::IntrusivePtr<cc::Material> material(new cc::Material());
+    cc::Label label; label.setNode(&node); label.setUITransform(&transform); label.setMaterial(material);
+    label.setFontSize(4); label.setLineHeight(4); label.setFontAsset(font); label.setString("AA");
+    label.prepareRenderEntity(1.F);
+    auto *entity = static_cast<cc::RenderEntity *>(node.getUserData());
+    auto *draw = entity->getStaticRenderDrawInfo(0);
+    check(draw && draw->getVbCount() == 8 && draw->getIbCount() == 12, "GPU bitmap submits one quad per glyph");
+    check(draw && draw->getTexture() == source->getGFXTexture(), "GPU bitmap samples original atlas directly");
+    check(label.getBitmapDiagnosticBuildCount() == 0, "Rendering bitmap geometry does not build a CPU image");
+    if (draw) checkNear(draw->getVDataBuffer()[3], 3.F/8.F, "Bitmap glyph UV includes frame origin");
+    frame->setDynamicAtlasFrame(packed, 6, 7); label.updateRenderData();
+    check(label.getAtlasTextureId() == reinterpret_cast<uint64_t>(packed.get()), "Explicit bitmap update observes frame packing before prepare");
+    label.prepareRenderEntity(1.F); draw = entity->getStaticRenderDrawInfo(0);
+    check(draw && draw->getTexture() == packed->getGFXTexture(), "GPU-only dynamic atlas is consumed without image data");
+    if (draw) checkNear(draw->getVDataBuffer()[3], 7.F/16.F, "Packed glyph UV uses current atlas origin/size");
+    frame->resetDynamicAtlasFrame(); label.updateRenderData(); label.prepareRenderEntity(1.F);
+    draw = entity->getStaticRenderDrawInfo(0);
+    check(draw && draw->getTexture() == source->getGFXTexture(), "Bitmap reset restores original GPU texture");
+    source->create(32,16); pixels.resize(32 * 16 * 4, 255); source->uploadData(pixels.data()); label.prepareRenderEntity(1.F);
+    draw = entity->getStaticRenderDrawInfo(0);
+    if (draw) checkNear(draw->getVDataBuffer()[3], 3.F/32.F, "Bitmap UV invalidates when the same texture is resized");
+    const auto oldGpuId = source->getGFXTexture()->getObjectID();
+    source->create(32,16); source->uploadData(pixels.data()); label.prepareRenderEntity(1.F);
+    draw = entity->getStaticRenderDrawInfo(0);
+    check(source->getGFXTexture()->getObjectID() != oldGpuId && draw->getTexture() == source->getGFXTexture(),
+          "Same-sized bitmap texture recreation rebinds GPU identity");
+    source->setWrapMode(cc::TextureBase::WrapMode::CLAMP_TO_EDGE, cc::TextureBase::WrapMode::CLAMP_TO_EDGE);
+    label.prepareRenderEntity(1.F);
+    check(entity->getStaticRenderDrawInfo(0)->getSampler() == source->getGFXSampler(), "Bitmap sampler changes rebind without font reassignment");
+    label.setString(std::string(17000, 'A')); label.prepareRenderEntity(1.F);
+    check(label.getRenderedBitmapGlyphCount() == 17000 && entity->getStaticDrawInfoSize() == 2, "Large bitmap text chunks all glyphs without truncating");
+    check(entity->getStaticRenderDrawInfo(0)->getVbCount() == 65532 && entity->getStaticRenderDrawInfo(1)->getVbCount() == 2468,
+          "Bitmap chunks respect 16-bit mesh-buffer limits");
+    check(label.getBitmapDiagnosticBuildCount() == 0, "Large GPU-only bitmap text never allocates diagnostic pixels");
+    label.setString(std::string(70000, 'A')); label.prepareRenderEntity(1.F);
+    check(label.getRenderedBitmapGlyphCount() == 70000 && entity->getStaticDrawInfoSize() == 5,
+          "Bitmap text exceeds inline DrawInfo slots without truncation");
+    check(entity->getRenderDrawInfoAt(4) == entity->getStaticRenderDrawInfo(4), "Batcher indexed access reaches owned overflow DrawInfo");
+    auto *overflow = entity->getStaticRenderDrawInfo(4);
+    label.setString(""); label.prepareRenderEntity(1.F);
+    check(overflow->getMaterial() == nullptr && overflow->getTexture() == nullptr && overflow->getVDataBuffer() == nullptr,
+          "Inactive overflow slots release resources and borrowed buffers");
+    check(entity->getStaticDrawInfoSize() == 0 && label.getRenderedBitmapGlyphCount() == 0, "Empty bitmap text clears glyph submissions");
+    label.setFontAsset(nullptr); label.setNode(nullptr);
+}
+
 void testFrameConsumers() {
     std::vector<uint8_t> pixels(16, 255);
     cc::IntrusivePtr<cc::ImageAsset> image(new cc::ImageAsset());
@@ -473,8 +546,8 @@ void testFontAssets() {
     const auto *labelVertices = labelDraw->getVDataBuffer();
     check(labelVertices != nullptr, "Label has submitted vertex data");
     if (labelVertices) {
-        checkNear(labelVertices[5], 1.F, "Label submitted RGB does not tint baked text twice");
-        checkNear(labelVertices[6], 1.F, "Label submitted green remains neutral");
+        checkNear(labelVertices[5], 128.F / 255.F, "Bitmap glyph vertices apply RGB to the untinted source once");
+        checkNear(labelVertices[6], 64.F / 255.F, "Bitmap glyph green is applied by the GPU");
         checkNear(labelVertices[8], 128.F / 255.F, "Label submitted opacity is applied once");
     }
     check(label.getPixelChecksum() == coverageChecksum, "Label texture coverage does not bake component alpha");
@@ -2127,6 +2200,7 @@ int main(int argc, char **argv) {
         testSpriteAtlas();
         testSpriteFrameData();
         testFrameConsumers();
+        testBitmapGpuGeometry();
         testFontAssets();
         testFontAliasOwnership();
         testTextStroke();

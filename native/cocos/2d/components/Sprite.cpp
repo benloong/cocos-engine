@@ -64,9 +64,12 @@ Sprite::Sprite() {
 
 Sprite::~Sprite() {
     _entity->setPrepareListener(nullptr);
+    _entity->setStaticDrawInfoSize(0); // Invalidate borrowed chunk pointers before their owner is destroyed.
     setNode(nullptr);
 }
 void Sprite::onDetach() {
+    _entity->setStaticDrawInfoSize(0);
+    _dirty = true;
     _entity->setNode(nullptr);
 }
 
@@ -119,6 +122,12 @@ void Sprite::setFrame(TextureBase *texture,
 }
 
 void Sprite::setFrame(SpriteFrame *frame) {
+    if (_hasLabelQuads) {
+        _entity->setStaticDrawInfoSize(0);
+        _hasLabelQuads = false;
+        _labelQuads.clear(); _labelChunks.clear();
+    }
+
     if (frame == nullptr) {
         clearFrame();
         return;
@@ -189,6 +198,12 @@ void Sprite::setFillCenter(float x, float y) {
 }
 
 void Sprite::clearFrame() {
+    if (_hasLabelQuads) {
+        _entity->setStaticDrawInfoSize(0);
+        _hasLabelQuads = false;
+        _labelQuads.clear(); _labelChunks.clear();
+    }
+
     _spriteFrame = nullptr;
     _texture = nullptr;
     _frameRect.setRect(0.F, 0.F, 0.F, 0.F);
@@ -328,6 +343,14 @@ void Sprite::prepare(float opacity) {
             setFrame(_spriteFrame.get());
         }
     }
+    auto *currentTexture = _texture ? _texture->getGFXTexture() : nullptr;
+    auto *currentSampler = _texture ? _texture->getGFXSampler() : nullptr;
+    const uint32_t textureId = currentTexture ? currentTexture->getObjectID() : 0;
+    const uint32_t samplerId = currentSampler ? currentSampler->getObjectID() : 0;
+    if (_gpuTextureSeen != currentTexture || _gpuTextureId != textureId || _gpuSamplerSeen != currentSampler || _gpuSamplerId != samplerId) {
+        _gpuTextureSeen = currentTexture; _gpuTextureId = textureId;
+        _gpuSamplerSeen = currentSampler; _gpuSamplerId = samplerId; _dirty = true;
+    }
     if (_node && _transform) {
         const auto &world = _node->getWorldMatrix();
         const auto &size = _transform->getContentSize();
@@ -362,6 +385,8 @@ void Sprite::prepare(float opacity) {
         _entity->setStaticDrawInfoSize(0);
         return;
     }
+
+    if (_hasLabelQuads) { prepareLabelQuads(material, opacity); return; }
 
     auto clearGeometry = [&]() {
         _entity->setStaticDrawInfoSize(0); _dirty = false; _lastOpacity = opacity;
@@ -526,6 +551,63 @@ void Sprite::prepare(float opacity) {
     updateVertexColors(opacity);
     _entity->setOpacity(opacity);
     _lastOpacity = opacity;
+}
+
+void Sprite::setLabelQuads(SpriteFrame *frame, std::vector<SpriteQuad> quads) {
+    setFrame(frame);
+    _labelQuads = std::move(quads);
+    _hasLabelQuads = true;
+    _dirty = true;
+}
+
+void Sprite::prepareLabelQuads(Material *material, float opacity) {
+    constexpr size_t QUADS_PER_CHUNK = 16383; // 65532 vertices, within the 16-bit mesh-buffer limit.
+    if (_dirty) {
+        _entity->setStaticDrawInfoSize(0);
+        _labelChunks.resize((_labelQuads.size() + QUADS_PER_CHUNK - 1) / QUADS_PER_CHUNK);
+        const auto size = _transform->getContentSize();
+        const auto anchor = _transform->getAnchorPoint();
+        const Vec3 origin(-anchor.x * size.x, (1.F - anchor.y) * size.y, 0.F);
+        for (size_t chunkIndex = 0; chunkIndex < _labelChunks.size(); ++chunkIndex) {
+            auto &chunk = _labelChunks[chunkIndex];
+            const size_t first = chunkIndex * QUADS_PER_CHUNK;
+            const size_t count = std::min(QUADS_PER_CHUNK, _labelQuads.size() - first);
+            chunk.vertices.resize(count * 4 * VERTEX_STRIDE);
+            chunk.indices.resize(count * 6);
+            for (size_t q = 0; q < count; ++q) {
+                for (size_t v = 0; v < 4; ++v) {
+                    auto position = _labelQuads[first + q].vertices[v].position + origin;
+                    Vec3::transformMat4(position, _node->getWorldMatrix(), &position);
+                    const size_t at = (q * 4 + v) * VERTEX_STRIDE;
+                    chunk.vertices[at] = position.x; chunk.vertices[at + 1] = position.y; chunk.vertices[at + 2] = position.z;
+                    chunk.vertices[at + 3] = _labelQuads[first + q].vertices[v].uv.x;
+                    chunk.vertices[at + 4] = _labelQuads[first + q].vertices[v].uv.y;
+                }
+                const auto base = static_cast<uint16_t>(q * 4);
+                const uint16_t indices[] = {base, static_cast<uint16_t>(base + 1), static_cast<uint16_t>(base + 2),
+                    static_cast<uint16_t>(base + 1), static_cast<uint16_t>(base + 3), static_cast<uint16_t>(base + 2)};
+                std::copy(indices, indices + 6, chunk.indices.begin() + q * 6);
+            }
+        }
+        _entity->setStaticDrawInfoSize(static_cast<uint32_t>(_labelChunks.size()));
+    }
+    for (size_t i = 0; i < _labelChunks.size(); ++i) {
+        auto &chunk = _labelChunks[i];
+        for (size_t at = 0; at < chunk.vertices.size(); at += VERTEX_STRIDE) {
+            chunk.vertices[at + 5] = _color.r / 255.F; chunk.vertices[at + 6] = _color.g / 255.F;
+            chunk.vertices[at + 7] = _color.b / 255.F; chunk.vertices[at + 8] = opacity;
+        }
+        auto *draw = _entity->getStaticRenderDrawInfo(static_cast<uint32_t>(i));
+        draw->setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
+        draw->setIsMeshBuffer(true); draw->setStride(static_cast<uint8_t>(VERTEX_STRIDE));
+        draw->setVbCount(static_cast<uint32_t>(chunk.vertices.size() / VERTEX_STRIDE));
+        draw->setIbCount(static_cast<uint32_t>(chunk.indices.size()));
+        draw->setVDataBuffer(chunk.vertices.data()); draw->setIDataBuffer(chunk.indices.data());
+        draw->setMaterial(material); draw->setTexture(_texture->getGFXTexture()); draw->setSampler(_texture->getGFXSampler()); draw->setDataHash(0);
+    }
+    _entity->setPriority(_priority); _entity->setColor(_color); _entity->setEnabled(isEnabled());
+    _entity->setFillColorType(FillColorType::VERTEX); _entity->setOpacity(opacity);
+    _dirty = false; _lastOpacity = opacity;
 }
 
 void Sprite::updateVertexColors(float opacity) {

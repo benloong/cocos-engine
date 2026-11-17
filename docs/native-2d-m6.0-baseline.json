@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "61ff07b4c82e75e97d6797bdd35d0b5c4f91107619c632b0d511081d2c63b5cb"
+      "sha256": "26fba73644a3a88d446b3be3a0ae7840bbe79667a17712421d228249ccdb4aef"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "dd0a63da81d32f4f805c0661eee831ae01be5581985b7ceaedefe5bcbb2152a9"
+      "sha256": "d572c05729f50a8c97381e1ec8240b929c3655a415f0d5d38f582d8d4a1cf057"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -103,11 +103,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "490b0510970935fad5a012687b7d8f8111d29de395f1a459f446f93eb97e0bb5"
+      "sha256": "8e5d530184a355e5787609d91af092063b3f6e83ad6bc90cfbc00116f8d091de"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "73494c5eaf5db3fc24d817a4dd2b11864dc04c3bc8d374b2961b4ec4ec1cf8d5"
+      "sha256": "ed7b66b2d4e64aaf48da88e3e2375e00f80ad32d65732f7ae0f08ea03ed65a1a"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -203,11 +203,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.cpp",
-      "sha256": "97257faf0b191b3016315a8dd44829e4b62b468ca9eb5b12ab82e390cdbc47a2"
+      "sha256": "04564c52feba3ad69689bdd0f0e38c9ac2fdfa37c2e9368d91a9649aae81ad96"
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.h",
-      "sha256": "24bbcb9ea9ca32c584eee234e8789ef3c9c74bd7cc2ee33b543da5b9abd270b1"
+      "sha256": "74707b7421348ba6a1f03daf12d288d35e2591fc9e0f29a72d54b2c8b1e1d6f0"
     },
     {
       "file": "native/cocos/2d/renderer/RichTextLayout.cpp",
@@ -284,6 +284,10 @@
     {
       "file": "native/cocos/core/Root.h",
       "sha256": "5d6b63e1961e095f3358f0e302c51853f04c692324edbe2994ebcb9979eb7db5"
+    },
+    {
+      "file": "native/cocos/core/assets/SimpleTexture.cpp",
+      "sha256": "7e87e5243fb3f7001714f2191882dd37821fa4e7bc539250e89ad6514222e10e"
     },
     {
       "file": "native/cocos/core/component/Component.cpp",

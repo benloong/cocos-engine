@@ -267,6 +267,18 @@ node native/tests/2d-poc/compare-dynamic-atlas.cjs
 
 每端必须生成 12 份 256×256 RGBA：Sprite/Mask × REPEAT/CLAMP × 原图/打包/恢复。通道容差沿用 M6 的 1；缺失、重复或旧 native 文件不得算通过。CLAMP 打包/恢复与原图字节相同；REPEAT 的跨边采样以同候选 Web 为准，全部恢复帧仍须字节相同。Web 阈值需与组件值一致，不能以材质默认 0.5 代替组件默认 0.1。两端构建先后不限，但必须是相同源码候选。
 
+### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
+
+涉及字体图集采样时，M5 探针会先运行 BitmapGpuProbe：BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，共 12 份 RGBA。字体字号与源字号均为 16，固定 TOP/LEFT、CLAMP、64×32 内容框；完整对齐、缩放及 overflow 布局仍由 M6 独立验收。打包纹理没有 CPU ImageAsset，必须直接提交原生字形网格，CPU 诊断构建次数为 0。另在真实 native GPU 路径提交 70000 字形、5 个 chunk，随后清空并检查引用。
+
+```powershell
+node native/tests/2d-poc/run-dynamic-atlas-web.cjs --bitmap
+pwsh -NoProfile -File native/tests/2d-poc/run-m5-richtext-probe.ps1
+node native/tests/2d-poc/compare-bitmap-gpu.cjs
+```
+
+两端每份图像必须为 256×256 RGBA，通道容差 1；打包/恢复与本端原图必须字节相同。完成标记、字形数、实际 GPU 纹理绑定、大字形分块/清空检查也必须通过。
+
 ## 8. 完整验收顺序
 
 ```text
@@ -284,6 +296,7 @@ node native/tests/2d-poc/compare-dynamic-atlas.cjs
 11. run-m6-sprite-frame-tests.ps1
 12. 定向 Jest
 13. 涉及动态合图/Mask 的节点追加第 7.8 节原始像素对照
+14. 涉及字体图集采样的节点追加第 7.9 节原始像素对照
 ```
 
 全部通过后再提交：
@@ -354,3 +367,5 @@ M6.1 UV parity: PASS
 探针更新后的 Windows Debug 定向结果：M4 Graphics GPU=6400、GRAPHICS_STENCIL=1600、nested Mask=3600；M5 原生段=10、Label=9、Sprite=1、colored=8725，样式与 hit/miss 通过。该功能验收不替代 M6 全平台、完整 API、长期内存、性能或严格文字像素门禁；RichText 严格 GPU 对照仍为 9/12，继续按 M6 计划跟踪。
 
 当前候选已修复 Win32 重定向 stdout 缓冲完成标记的问题：确定性 red/green 与 M0 新增可见性回归通过，完整串行文档门禁一次通过，同一 app 连续 3 次 M5 在原 45 秒预算内无重试通过。12/12 Web/native RGBA SHA256 仍相同，最大通道差值 0。旧两次缺失没有完整资料，不能逐例倒推根因；完整 M6 长期稳定性仍未收口，见 [观测报告](./native-2d-m6.4-log-observability.md)。
+
+字体 GPU 消费者节点也已完成同一候选的完整串行验收：M0、M2–M5、UV 与定向 Jest 全通过；BitmapFont/LabelAtlas 的 12/12 RGBA 和 Sprite/Mask 的 12/12 RGBA 最大通道差值均为 0，70000 字形/5 块的 GPU 提交及清空通过。仅覆盖固定 TOP/LEFT 字体采样条件，默认 CENTER/CENTER 等完整布局继续待办，见[报告与边界](./native-2d-m6.1-bitmap-gpu.md)。

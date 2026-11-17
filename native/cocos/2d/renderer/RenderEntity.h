@@ -24,6 +24,7 @@
 
 #pragma once
 #include <array>
+#include <memory>
 #include "2d/renderer/RenderDrawInfo.h"
 #include "2d/renderer/StencilManager.h"
 #include "base/Macros.h"
@@ -72,7 +73,7 @@ static_assert(sizeof(EntityAttrLayout) == 12, "Be carefull to add property to En
 
 class RenderEntity final : public Node::UserData {
 public:
-    static constexpr uint32_t STATIC_DRAW_INFO_CAPACITY = 4;
+    static constexpr uint32_t STATIC_DRAW_INFO_CAPACITY = 4; // Inline slots; native overflow uses indexed access.
 
     explicit RenderEntity(RenderEntityType type);
     ~RenderEntity() override;
@@ -123,6 +124,7 @@ public:
     void setStaticDrawInfoSize(uint32_t size);
 
     RenderDrawInfo* getStaticRenderDrawInfo(uint32_t index);
+    // Legacy inline-slot view. getRenderDrawInfoAt spans all active native slots.
     std::array<RenderDrawInfo, RenderEntity::STATIC_DRAW_INFO_CAPACITY>& getStaticRenderDrawInfos();
     RenderDrawInfo* getDynamicRenderDrawInfo(uint32_t index);
     ccstd::vector<RenderDrawInfo*>& getDynamicRenderDrawInfos();
@@ -140,7 +142,9 @@ public:
         return _renderEntityType == RenderEntityType::STATIC ? _staticDrawInfoSize : static_cast<uint32_t>(_dynamicDrawInfos.size());
     }
     inline RenderDrawInfo* getRenderDrawInfoAt(uint32_t index) {
-        return _renderEntityType == RenderEntityType::STATIC ? &(_staticDrawInfos[index]) : _dynamicDrawInfos[index];
+        return _renderEntityType == RenderEntityType::STATIC
+            ? (index < STATIC_DRAW_INFO_CAPACITY ? &_staticDrawInfos[index] : _staticOverflow[index - STATIC_DRAW_INFO_CAPACITY].get())
+            : _dynamicDrawInfos[index];
     }
 
     inline uint32_t getPriority() const { return _entityAttrLayout.priority; }
@@ -197,7 +201,9 @@ private:
 
     StencilStage _stencilStage{StencilStage::DISABLED};
     RenderEntityType _renderEntityType{RenderEntityType::STATIC};
-    uint8_t _staticDrawInfoSize{0};
+    uint32_t _staticDrawInfoSize{0};
+    // Inline slots stay stable; this entity exclusively owns additional slots.
+    ccstd::vector<std::unique_ptr<RenderDrawInfo>> _staticOverflow;
     bool _vbColorDirty{true};
     uint8_t _paddings[1];
 

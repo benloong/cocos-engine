@@ -116,8 +116,12 @@ public:
     float getContentHeight() const { return _lastContentHeight; }
     float getTextureHeight() const { return _lastTextureHeight; }
     int32_t getLineCount() const { return _lastLineCount; }
-    uint32_t getPixelChecksum() const { return _lastPixelChecksum; }
-    uint32_t getOpaquePixels() const { return _lastOpaquePixels; }
+    // Optional legacy CPU diagnostics. Bitmap rendering does not call these.
+    uint32_t getPixelChecksum() const { ensureBitmapDiagnostics(); return _lastPixelChecksum; }
+    uint32_t getOpaquePixels() const { ensureBitmapDiagnostics(); return _lastOpaquePixels; }
+    RenderEntity *getRenderEntity() const { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
+    uint32_t getRenderedBitmapGlyphCount() const { return _renderedBitmapGlyphs; }
+    uint32_t getBitmapDiagnosticBuildCount() const { return _bitmapDiagnosticBuilds; }
 
     void setColor(const Color &color);
     void setColorRGBA(float r, float g, float b, float a);
@@ -139,6 +143,12 @@ private:
     void applyFontAsset();
     void clearRenderedData();
     void rebuildBitmapTexture();
+    void rasterizeBitmapDiagnostics();
+    void ensureBitmapDiagnostics() const;
+    void syncBitmapAtlas();
+    bool _bitmapDiagnosticsDirty{false};
+    uint32_t _bitmapDiagnosticBuilds{0};
+    uint32_t _renderedBitmapGlyphs{0};
     void rebuildLetterTexture();
     void applyBitmapAtlas();
 
@@ -196,6 +206,10 @@ private:
 
     IntrusivePtr<SpriteFrame> _bitmapAtlas;
     uint32_t _bitmapAtlasRevision{0};
+    TextureBase *_bitmapTextureSeen{nullptr}; // comparison only; never dereferenced, owned through _bitmapAtlas
+    uint32_t _bitmapWidthSeen{0};
+    uint32_t _bitmapHeightSeen{0};
+    int32_t _bitmapFormatSeen{-1};
     float _bitmapLineHeight{0.0F};
     std::vector<Glyph> _glyphs;
     std::unordered_map<int32_t, size_t> _glyphMap;

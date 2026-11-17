@@ -3,8 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const { spawn } = require('child_process');
-const root = path.resolve(process.argv[2] || path.join(__dirname, '../../../../cocos-m1-test/build/web-mobile'));
-const output = path.join(__dirname, 'build/atlas-web-captures');
+const bitmap = process.argv.includes('--bitmap');
+const projectArg = process.argv.slice(2).find(arg => !arg.startsWith('--'));
+const root = path.resolve(projectArg || path.join(__dirname, '../../../../cocos-m1-test/build/web-mobile'));
+const output = path.join(__dirname, bitmap ? 'build/bitmap-web-captures' : 'build/atlas-web-captures');
 if (!fs.existsSync(path.join(root, 'index.html'))) throw new Error('Build the acceptance Web project first');
 fs.mkdirSync(output, { recursive: true });
 const logs = [], captures = new Set(), results = [];
@@ -13,15 +15,15 @@ const done = new Promise((resolve, reject) => { resolveDone = resolve; rejectDon
 const server = http.createServer(async (req, res) => {
     try {
         const url = new URL(req.url, 'http://127.0.0.1');
-        if (req.method === 'POST' && url.pathname === '/m6-capture') {
+        if (req.method === 'POST' && (url.pathname === '/m6-capture' || (bitmap && url.pathname === '/m6-bitmap-capture'))) {
             const name = url.searchParams.get('name');
-            if (!/^(sprite|mask)-(repeat|clamp)-(source|packed|restored)$/.test(name)) throw new Error('Invalid capture name');
+            const isBitmap = url.pathname === '/m6-bitmap-capture';
+            if (!(isBitmap ? /^(bitmap|atlas)-(flat|rotated)-(source|packed|restored)$/ : /^(sprite|mask)-(repeat|clamp)-(source|packed|restored)$/).test(name)) throw new Error('Invalid capture name');
             let length = 0;
             const chunks = [];
             for await (const chunk of req) { length += chunk.length; if (length > 262144) throw new Error('Capture too large'); chunks.push(chunk); }
-            if (length !== 262144 || captures.has(name)) throw new Error('Invalid or duplicate capture');
-            fs.writeFileSync(path.join(output, name + '.rgba'), Buffer.concat(chunks));
-            captures.add(name);
+            if (length !== 262144 || (isBitmap === bitmap && captures.has(name))) throw new Error('Invalid or duplicate capture');
+            if (isBitmap === bitmap) { fs.writeFileSync(path.join(output, name + '.rgba'), Buffer.concat(chunks)); captures.add(name); }
             res.writeHead(200); res.end('OK'); return;
         }
         const file = path.resolve(root, '.' + decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
@@ -51,12 +53,17 @@ const server = http.createServer(async (req, res) => {
                 if (message.method !== 'Runtime.consoleAPICalled') return;
                 const text = message.params.args.map(arg => arg.value ?? arg.description ?? '').join(' ');
                 logs.push(text);
-                if (text.startsWith('M6_DYNAMIC_ATLAS ')) {
+                if (!bitmap && text.startsWith('M6_DYNAMIC_ATLAS ')) {
                     const result = JSON.parse(text.slice(17)); results.push(result);
                     if (!result.state || !result.restored || (result.sampling === 'clamp' && !result.equal)) rejectDone(new Error('Web atlas state or framebuffer mismatch'));
                 }
-                if (text.startsWith('M6_ATLAS_CAPTURE ') || text.startsWith('M6_MASK_STATE ')) console.log(text);
-                if (text.startsWith('M4_GRAPHICS ')) {
+                if (text.startsWith('M5_RICHTEXT_ERROR ')) rejectDone(new Error(text));
+                if (bitmap && text.startsWith('M6_BITMAP_GPU_READY ')) {
+                    const result = JSON.parse(text.slice(20)); results.push(...result.checks);
+                    if (captures.size !== 12 || result.captures !== 12 || result.checks.length !== 4) rejectDone(new Error('Missing bitmap captures')); else resolveDone();
+                }
+                if (text.startsWith('M6_BITMAP_CAPTURE ') || text.startsWith('M6_ATLAS_CAPTURE ') || text.startsWith('M6_MASK_STATE ')) console.log(text);
+                if (!bitmap && text.startsWith('M4_GRAPHICS ')) {
                     if (captures.size !== 12 || results.length !== 4) rejectDone(new Error('Missing Web atlas captures/results'));
                     else resolveDone();
                 }
@@ -64,6 +71,6 @@ const server = http.createServer(async (req, res) => {
         } catch (error) { rejectDone(error); }
     });
     const timeout = setTimeout(() => rejectDone(new Error('Web atlas capture timeout')), 90000);
-    try { await done; fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({ captures: [...captures].sort(), results }, null, 2) + '\n'); console.log('Web dynamic atlas captures: PASS (12)'); }
+    try { await done; fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({ captures: [...captures].sort(), results }, null, 2) + '\n'); console.log('Web ' + (bitmap ? 'bitmap' : 'dynamic atlas') + ' captures: PASS (12)'); }
     finally { clearTimeout(timeout); socket?.close(); browser.kill(); server.close(); fs.writeFileSync(path.join(output, 'console.log'), logs.join('\n')); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
