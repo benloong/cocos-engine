@@ -23,7 +23,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "64f076aff7815399dbf5f70f81e1817b2ee7691784e3fd0fd080434387bd178d"
+      "sha256": "e255eb006011e1c6454ec87647c0269043d97ad7c5775e55d49bf1479390a972"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -291,7 +291,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
-      "sha256": "c179e32d6c496d4dd16f5665e706186ad8900803292ef059275774a299b47b7f"
+      "sha256": "9122176eab8ea9eb4a8b7aa736f6de51e3a8ee2b2b7cd907b3622f994161658b"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",

@@ -70,6 +70,7 @@
 - [x] Windows TTF mask 与预混合修复：LCD mask 整数平均、sRGB 亮度表、LTR glyph 定位与预乘字节处理；12 个 Web 普通字校验值、Debug/Release 原生/实际 JSB、49 项 Jest、ASAN 应用通过。完整应用同快照布局 12/12，严格图像提升为 8/12；原始扩展矩阵 28/96，合成样式、灰色 RGB 取整及其他边界仍待验收，见 [报告](./native-2d-m6.2-ttf-preblend.md)。
 - [x] Windows 自定义字体合成斜体：regular shaping + glyph 原点 -0.25 剪切，保留 advances/offsets；24 个 Web 普通/斜体校验值、Debug/Release 原生/实际 JSB、49 项 Jest、ASAN 应用通过。完整应用同快照严格图像提升至 9/12，布局 12/12；原始矩阵 56/96，粗体/描边/嵌套及灰色 RGB 取整仍待处理，见 [报告](./native-2d-m6.2-ttf-italic.md)。
 - [x] 建立合成粗体轮廓诊断：DWrite regular outline + D2D Widen/union，与横向四倍采样/FIR 两种独立候选均可复现；36 组 Debug/Release 输出一致，普通字/斜体不变，粗体仍 0/4，未接入生产或关闭视觉门禁，见 [失败记录与下一步](./native-2d-m6.2-ttf-outline-probe.md)。
+- [x] Windows 合成粗体轮廓下沉：regular shaping + 扩张/union、边缘量化/FIR，移除 bold face 替换；新增局部 mask 裁剪、STA lease 和 1000 次实际绘制释放回归，Debug/Release、实际 JSB、49 项 Jest、ASAN 应用通过。完整应用仍 9/12，bold 差值降至 20、nested 降至 47；剩余边缘及描边继续验收，见 [实现与边界](./native-2d-m6.2-ttf-bold.md)。
 - [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
 - [ ] 保留 Windows GDI italic 宽度的已接受差异；平台、字体、用例、布局容差分别记录。现有 colored ±20% 只作 sanity，不能替代布局、字形、事件验收。

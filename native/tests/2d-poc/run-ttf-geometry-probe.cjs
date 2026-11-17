@@ -42,7 +42,6 @@ if (generated[0] !== generated[1]) throw new Error('Generated diagnostic sources
 const report = {
     diagnosticOnly: true, productionUnchanged: true, nonBoldByteEqual: true, productionSourceSha256: before,
     generatorSha256: hash(path.join(__dirname, 'build-ttf-geometry-probe.cjs')),
-    helperSha256: hash(path.join(__dirname, 'ttf-geometry-probe.h')),
     generatedSourceSha256: generated[0], runs,
 };
 fs.writeFileSync(path.join(build, 'ttf-outline-probe-results.json'), JSON.stringify(report, null, 2) + '\n');

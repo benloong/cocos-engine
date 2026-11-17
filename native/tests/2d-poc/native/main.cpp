@@ -28,6 +28,7 @@
 #include <fstream>
 #include <functional>
 #include <memory>
+#include <thread>
 #include <vector>
 
 #include "2d/components/Sprite.h"
@@ -65,6 +66,7 @@
 
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     #include <windows.h>
+    #include <objbase.h>
     #include <psapi.h>
     #include "platform/win32/modules/DirectWriteFont.h"
 #endif
@@ -256,6 +258,19 @@ void testFontAssets() {
             std::vector<uint8_t> raster(160 * 80 * 4);
             check(bold->draw("Atlas 123", 4, 4, 0, raster.data(), 160, 80, {1, 1, 1, 1}), "DirectWrite synthetic bold draws shaped advances");
             check(std::any_of(raster.begin(), raster.end(), [](uint8_t value) { return value != 0; }), "synthetic bold glyph bitmap is nonempty");
+            std::fill(raster.begin(), raster.end(), 0);
+            check(bold->draw("Atlas 123", -1000, -1000, 0, raster.data(), 160, 80, {1, 1, 1, 1}), "fully clipped outline draw succeeds");
+            check(std::all_of(raster.begin(), raster.end(), [](uint8_t value) { return value == 0; }), "fully clipped outline leaves destination unchanged");
+        }
+        for (const bool italic : {false, true}) {
+            auto outlined = cc::DirectWriteFont::create(path, 24.F, true, italic);
+            std::vector<uint8_t> full(64 * 64 * 4), clipped(32 * 24 * 4);
+            check(outlined && outlined->draw("Atlas 123", 8, 32, 3, full.data(), 64, 64, {1, 1, 1, 1}), "outline reference draws");
+            check(outlined && outlined->draw("Atlas 123", -8, 16, 3, clipped.data(), 32, 24, {1, 1, 1, 1}), "outline clipped viewport draws");
+            for (size_t row = 0; row < 24; ++row) for (size_t column = 0; column < 32; ++column) for (size_t channel = 0; channel < 4; ++channel) {
+                check(full[((row + 16) * 64 + column + 16) * 4 + channel] == clipped[(row * 32 + column) * 4 + channel],
+                      "outline viewport clipping preserves offscreen filter samples");
+            }
         }
         // Chrome 157 Canvas raw RGBA goldens, same Thonburi.ttf and drawing
         // parameters as test_ttf_raster.cpp. See the preblend evidence report.
@@ -283,11 +298,31 @@ void testFontAssets() {
         }
         check(!cc::DirectWriteFont::create("missing-font.ttf", 24.F, false, false), "invalid custom font fails without fallback success");
     }
+    std::thread staOutline([] {
+        const auto initial = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+        check(initial == S_OK, "outline test starts with a fresh STA lease");
+        if (FAILED(initial)) return;
+        {
+            auto face = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 24.F, true, true);
+            std::vector<uint8_t> raster(32 * 32 * 4);
+            check(face && face->draw("A", 0, 24, 3, raster.data(), 32, 32, {1, 1, 1, 1}), "outline draws while borrowing an existing STA apartment");
+        }
+        const auto retained = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+        check(retained == S_FALSE, "outline draw preserves the caller STA lease");
+        if (SUCCEEDED(retained)) CoUninitialize();
+        CoUninitialize();
+        const auto switched = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        check(switched == S_OK, "outline draw leaves no extra COM initialization lease");
+        if (SUCCEEDED(switched)) CoUninitialize();
+    });
+    staOutline.join();
     const DWORD fontGdiBefore = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
     DWORD fontHandlesBefore = 0; GetProcessHandleCount(GetCurrentProcess(), &fontHandlesBefore);
     for (int i = 0; i < 1000; ++i) {
         auto face = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 24.F, i % 2 == 0, i % 3 == 0);
         check(face && face->measure("Atlas 123")[0] > 0, "custom font collection repeated create/shape/release");
+        std::array<uint8_t, 16 * 24 * 4> raster{};
+        check(face && face->draw("A", 0, 20, 3, raster.data(), 16, 24, {1, 1, 1, 1}), "repeated custom font draw releases mask resources and COM leases");
     }
     const DWORD fontGdiAfter = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
     DWORD fontHandlesAfter = 0; GetProcessHandleCount(GetCurrentProcess(), &fontHandlesAfter);

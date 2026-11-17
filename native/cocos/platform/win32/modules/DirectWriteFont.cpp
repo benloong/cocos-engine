@@ -25,6 +25,8 @@
 #include "platform/win32/modules/DirectWriteFont.h"
 #include <windows.h>
 #include <dwrite.h>
+#include <d2d1.h>
+#include <wincodec.h>
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -87,6 +89,162 @@ const std::array<uint8_t, 256> &coverageTable(const std::array<float, 4> &color)
     const auto luminance = (rgb[0] * 54U + rgb[1] * 183U + rgb[2] * 19U) >> 8U;
     return tables[luminance >> 5U];
 }
+// Kept as private constants so the standalone diagnostic can compare the
+// sampling stages in source copies without adding product build switches.
+constexpr bool SNAP_OUTLINE_EDGES = true;
+constexpr bool FILTER_OUTLINE_MASK = true;
+
+class SnappedOutlineSink final : public ID2D1SimplifiedGeometrySink {
+public:
+    explicit SnappedOutlineSink(ID2D1SimplifiedGeometrySink *sink) : _sink(sink) {}
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **out) override {
+        if (!out) return E_POINTER;
+        *out = nullptr;
+        if (id != __uuidof(IUnknown) && id != __uuidof(ID2D1SimplifiedGeometrySink)) return E_NOINTERFACE;
+        *out = static_cast<ID2D1SimplifiedGeometrySink *>(this); AddRef(); return S_OK;
+    }
+    ULONG STDMETHODCALLTYPE AddRef() override { return ++_refs; }
+    ULONG STDMETHODCALLTYPE Release() override { const auto refs = --_refs; if (!refs) delete this; return refs; }
+    void STDMETHODCALLTYPE SetFillMode(D2D1_FILL_MODE mode) override { _sink->SetFillMode(mode); }
+    void STDMETHODCALLTYPE SetSegmentFlags(D2D1_PATH_SEGMENT flags) override { _sink->SetSegmentFlags(flags); }
+    void STDMETHODCALLTYPE BeginFigure(D2D1_POINT_2F point, D2D1_FIGURE_BEGIN type) override { _sink->BeginFigure(snap(point), type); }
+    void STDMETHODCALLTYPE AddLines(const D2D1_POINT_2F *points, UINT count) override {
+        for (UINT i = 0; i < count; ++i) { const auto point = snap(points[i]); _sink->AddLines(&point, 1); }
+    }
+    void STDMETHODCALLTYPE AddBeziers(const D2D1_BEZIER_SEGMENT *, UINT) override { _invalid = true; }
+    void STDMETHODCALLTYPE EndFigure(D2D1_FIGURE_END type) override { _sink->EndFigure(type); }
+    HRESULT STDMETHODCALLTYPE Close() override { return _invalid ? E_UNEXPECTED : S_OK; }
+private:
+    static D2D1_POINT_2F snap(D2D1_POINT_2F point) {
+        if (!SNAP_OUTLINE_EDGES) return point;
+        return {std::trunc(point.x * 256.F) / 256.F, std::floor(std::trunc(point.y * 256.F) / 64.F + .5F) / 4.F};
+    }
+    std::atomic<ULONG> _refs{1};
+    ID2D1SimplifiedGeometrySink *_sink; // synchronous borrow during Simplify
+    bool _invalid{false};
+};
+
+struct OutlineMask {
+    RECT bounds{};
+    std::vector<uint8_t> coverage; // owns one byte per pixel inside bounds
+};
+
+class OutlineRasterizer {
+public:
+    HRESULT init() {
+        if (FAILED(_apartment.status) && _apartment.status != RPC_E_CHANGED_MODE) return _apartment.status;
+        HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, _factory.out());
+        if (SUCCEEDED(hr)) hr = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(_wic.out()));
+        return hr;
+    }
+    HRESULT draw(const DWRITE_GLYPH_RUN *run, float x, float y, bool italic, uint32_t width, uint32_t height, OutlineMask &mask) {
+        ComOwner<ID2D1PathGeometry> path, stroke, united, sampled;
+        ComOwner<ID2D1GeometrySink> sink;
+        HRESULT hr = _factory->CreatePathGeometry(path.out());
+        if (SUCCEEDED(hr)) hr = path->Open(sink.out());
+        if (SUCCEEDED(hr)) hr = run->fontFace->GetGlyphRunOutline(run->fontEmSize, run->glyphIndices, run->glyphAdvances,
+            run->glyphOffsets, run->glyphCount, run->isSideways, run->bidiLevel & 1U, sink.get());
+        if (SUCCEEDED(hr)) hr = sink->Close();
+        sink.reset();
+        if (FAILED(hr)) return hr;
+        // Canvas fake bold uses a filled regular outline plus this stroke.
+        const float t = std::clamp((run->fontEmSize - 9.F) / 27.F, 0.F, 1.F);
+        const float thickness = run->fontEmSize * ((1.F - t) / 24.F + t / 32.F);
+        ComOwner<ID2D1StrokeStyle> style;
+        auto properties = D2D1::StrokeStyleProperties(); properties.miterLimit = 4;
+        hr = _factory->CreateStrokeStyle(properties, nullptr, 0, style.out());
+        if (SUCCEEDED(hr)) hr = _factory->CreatePathGeometry(stroke.out());
+        if (SUCCEEDED(hr)) hr = stroke->Open(sink.out());
+        if (SUCCEEDED(hr)) hr = path->Widen(thickness, style.get(), nullptr, .01F, sink.get());
+        if (SUCCEEDED(hr)) hr = sink->Close();
+        sink.reset();
+        if (FAILED(hr)) return hr;
+        hr = _factory->CreatePathGeometry(united.out());
+        if (SUCCEEDED(hr)) hr = united->Open(sink.out());
+        if (SUCCEEDED(hr)) hr = path->CombineWithGeometry(stroke.get(), D2D1_COMBINE_MODE_UNION, nullptr, .01F, sink.get());
+        if (SUCCEEDED(hr)) hr = sink->Close();
+        sink.reset();
+        if (FAILED(hr)) return hr;
+
+        const D2D1::Matrix3x2F world(1, 0, italic ? -.25F : 0, 1, x, y);
+        D2D1_RECT_F bounds{};
+        hr = united->GetBounds(&world, &bounds);
+        if (FAILED(hr)) return hr;
+        if (bounds.right <= bounds.left || bounds.bottom <= bounds.top) return S_OK;
+        if (!std::isfinite(bounds.left) || !std::isfinite(bounds.right) || !std::isfinite(bounds.top) || !std::isfinite(bounds.bottom)
+            || width > LONG_MAX - 4 || height > LONG_MAX - 4) return E_INVALIDARG;
+        // The horizontal filter needs samples beyond the destination clip.
+        const LONG left = static_cast<LONG>(std::clamp(std::floor(static_cast<double>(bounds.left)) - 2, -1.0, static_cast<double>(width) + 1));
+        const LONG right = static_cast<LONG>(std::clamp(std::ceil(static_cast<double>(bounds.right)) + 2, -1.0, static_cast<double>(width) + 1));
+        const LONG top = static_cast<LONG>(std::clamp(std::floor(static_cast<double>(bounds.top)) - 1, 0.0, static_cast<double>(height)));
+        const LONG bottom = static_cast<LONG>(std::clamp(std::ceil(static_cast<double>(bounds.bottom)) + 1, 0.0, static_cast<double>(height)));
+        if (right <= left || bottom <= top || right <= 0 || left >= static_cast<LONG>(width)) return S_OK;
+        constexpr uint32_t scale = FILTER_OUTLINE_MASK ? 4U : 1U;
+        const auto columns = static_cast<uint32_t>(right - left), rows = static_cast<uint32_t>(bottom - top);
+        if (columns > UINT32_MAX / (scale * 4U) || rows > UINT32_MAX / (columns * scale * 4U)) return E_OUTOFMEMORY;
+        hr = _factory->CreatePathGeometry(sampled.out());
+        if (SUCCEEDED(hr)) hr = sampled->Open(sink.out());
+        if (FAILED(hr)) return hr;
+        ComOwner<SnappedOutlineSink> adapter;
+        adapter.reset(new SnappedOutlineSink(sink.get()));
+        const D2D1::Matrix3x2F transform(static_cast<float>(scale), 0, italic ? -.25F * scale : 0, 1, (x - left) * scale, y - top);
+        hr = united->Simplify(D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get());
+        if (SUCCEEDED(hr)) hr = adapter->Close();
+        if (SUCCEEDED(hr)) hr = sink->Close();
+        adapter.reset(); sink.reset();
+        if (FAILED(hr)) return hr;
+        ComOwner<IWICBitmap> bitmap;
+        hr = _wic->CreateBitmap(columns * scale, rows, GUID_WICPixelFormat32bppPBGRA, WICBitmapCacheOnLoad, bitmap.out());
+        ComOwner<ID2D1RenderTarget> target;
+        const auto propertiesTarget = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE,
+            D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
+        if (SUCCEEDED(hr)) hr = _factory->CreateWicBitmapRenderTarget(bitmap.get(), propertiesTarget, target.out());
+        ComOwner<ID2D1SolidColorBrush> brush;
+        if (SUCCEEDED(hr)) hr = target->CreateSolidColorBrush(D2D1::ColorF(1, 1, 1, 1), brush.out());
+        if (FAILED(hr)) return hr;
+        target->BeginDraw(); target->Clear(D2D1::ColorF(0, 0, 0, 0));
+        target->FillGeometry(sampled.get(), brush.get());
+        hr = target->EndDraw();
+        if (FAILED(hr)) return hr;
+        std::vector<uint8_t> pixels(static_cast<size_t>(columns) * scale * rows * 4U);
+        hr = bitmap->CopyPixels(nullptr, columns * scale * 4U, static_cast<UINT>(pixels.size()), pixels.data());
+        if (FAILED(hr)) return hr;
+        mask.bounds = {std::max<LONG>(0, left), top, std::min<LONG>(width, right), bottom};
+        const auto maskWidth = static_cast<size_t>(mask.bounds.right - mask.bounds.left);
+        mask.coverage.resize(maskWidth * rows);
+        // Fixed horizontal FIR coefficients used by Canvas path masks.
+        static constexpr unsigned coefficients[3][12] = {
+            {3, 11, 28, 51, 64, 57, 36, 16, 5, 1, 0, 0},
+            {0, 2, 8, 22, 43, 61, 61, 43, 22, 8, 2, 0},
+            {0, 0, 1, 5, 16, 36, 57, 64, 51, 28, 11, 3},
+        };
+        for (uint32_t row = 0; row < rows; ++row) for (size_t column = 0; column < maskWidth; ++column) {
+            const auto localColumn = static_cast<uint32_t>(column + mask.bounds.left - left);
+            unsigned value = 0;
+            if constexpr (!FILTER_OUTLINE_MASK) value = pixels[(static_cast<size_t>(row) * columns + localColumn) * 4U + 3];
+            else {
+                unsigned channels[3] = {};
+                for (int tap = 0; tap < 12; ++tap) {
+                    const int64_t sample = static_cast<int64_t>(localColumn) * 4 + tap - 4;
+                    if (sample < 0 || sample >= static_cast<int64_t>(columns) * 4) continue;
+                    const auto coverage = pixels[(static_cast<size_t>(row) * columns * 4 + sample) * 4 + 3];
+                    for (size_t channel = 0; channel < 3; ++channel) channels[channel] += coefficients[channel][tap] * coverage;
+                }
+                for (const auto channel : channels) value += std::min(channel / 256U, 255U);
+                value /= 3U;
+            }
+            mask.coverage[row * maskWidth + column] = static_cast<uint8_t>(value);
+        }
+        return S_OK;
+    }
+private:
+    struct Apartment {
+        HRESULT status{CoInitializeEx(nullptr, COINIT_MULTITHREADED)};
+        ~Apartment() { if (SUCCEEDED(status)) CoUninitialize(); }
+    } _apartment; // declared first: all owned COM interfaces die before this lease
+    ComOwner<ID2D1Factory> _factory;
+    ComOwner<IWICImagingFactory> _wic;
+};
 class FileEnumerator final : public IDWriteFontFileEnumerator {
 public:
     HRESULT init(IDWriteFactory *factory, const wchar_t *path) { return factory->CreateFontFileReference(path, nullptr, _file.out()); }
@@ -153,23 +311,6 @@ public:
     HRESULT STDMETHODCALLTYPE GetCurrentTransform(void *, DWRITE_MATRIX *matrix) override { *matrix = {1, 0, 0, 1, 0, 0}; return S_OK; }
     HRESULT STDMETHODCALLTYPE GetPixelsPerDip(void *, FLOAT *scale) override { *scale = 1; return S_OK; }
     HRESULT STDMETHODCALLTYPE DrawGlyphRun(void *, FLOAT x, FLOAT y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run, const DWRITE_GLYPH_RUN_DESCRIPTION *, IUnknown *) override {
-        // Canvas synthetic bold changes outlines, not the shaped advances.
-        // DWrite's bold text-format simulation also widens advances, so shape
-        // with the original face and substitute only the rasterization face.
-        ComOwner<IDWriteFontFace> boldFace;
-        DWRITE_GLYPH_RUN boldRun{};
-        if (_bold) {
-            UINT32 count = 0;
-            HRESULT hr = run->fontFace->GetFiles(&count, nullptr);
-            if (FAILED(hr)) return hr;
-            std::vector<IDWriteFontFile *> files(count, nullptr); // owns GetFiles references until CreateFontFace returns
-            hr = run->fontFace->GetFiles(&count, files.data());
-            if (SUCCEEDED(hr)) hr = _factory->CreateFontFace(run->fontFace->GetType(), count, files.data(), run->fontFace->GetIndex(),
-                static_cast<DWRITE_FONT_SIMULATIONS>(run->fontFace->GetSimulations() | DWRITE_FONT_SIMULATIONS_BOLD), boldFace.out());
-            for (auto *file : files) if (file) file->Release();
-            if (FAILED(hr)) return hr;
-            boldRun = *run; boldRun.fontFace = boldFace.get(); run = &boldRun;
-        }
         // Preserve the shaped advances and offsets. Quantize only raster
         // origins, as the horizontal Canvas glyph cache does. RTL/sideways
         // runs retain DWrite's full-run positioning until separately verified.
@@ -190,6 +331,17 @@ public:
         return S_OK;
     }
     HRESULT drawMask(float x, float y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run) {
+        if (_bold) {
+            if (!_outline) {
+                auto outline = std::make_unique<OutlineRasterizer>();
+                const auto hr = outline->init();
+                if (FAILED(hr)) return hr;
+                _outline = std::move(outline);
+            }
+            OutlineMask mask;
+            const auto hr = _outline->draw(run, x, y, _italic, _width, _height, mask);
+            return FAILED(hr) ? hr : blendMask(mask.bounds, mask.coverage, 1);
+        }
         ComOwner<IDWriteGlyphRunAnalysis> analysis;
         constexpr auto texture = DWRITE_TEXTURE_CLEARTYPE_3x1;
         // Canvas synthesizes italic by shearing the regular outline around
@@ -216,11 +368,16 @@ public:
         std::vector<uint8_t> alpha(count);
         hr = analysis->CreateAlphaTexture(texture, &bounds, alpha.data(), static_cast<UINT32>(count));
         if (FAILED(hr)) return hr;
+        return blendMask(bounds, alpha, stride);
+    }
+    HRESULT blendMask(const RECT &bounds, const std::vector<uint8_t> &alpha, size_t stride) {
+        if (bounds.right <= bounds.left || bounds.bottom <= bounds.top) return S_OK;
+        const auto rowWidth = static_cast<size_t>(bounds.right - bounds.left);
         const auto &preblend = coverageTable(_color);
         for (LONG row = std::max<LONG>(0, bounds.top); row < std::min<LONG>(_height, bounds.bottom); ++row) {
             for (LONG column = std::max<LONG>(0, bounds.left); column < std::min<LONG>(_width, bounds.right); ++column) {
                 const auto offset = ((row - bounds.top) * rowWidth + column - bounds.left) * stride;
-                const auto mask = (static_cast<uint32_t>(alpha[offset]) + alpha[offset + 1] + alpha[offset + 2]) / 3U;
+                const auto mask = stride == 1 ? alpha[offset] : (static_cast<uint32_t>(alpha[offset]) + alpha[offset + 1] + alpha[offset + 2]) / 3U;
                 const float coverage = preblend[mask];
                 const float sourceAlpha = coverage / 255.F * _color[3];
                 if (sourceAlpha <= 0) continue;
@@ -252,6 +409,7 @@ private:
     std::array<float, 4> _color;
     bool _bold;
     bool _italic;
+    std::unique_ptr<OutlineRasterizer> _outline; // owns this synchronous Draw's COM lease and factories
 };
 }
 

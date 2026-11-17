@@ -27,7 +27,6 @@ if(WIN32)
     add_custom_command(OUTPUT "${CC2D_GEOMETRY_SOURCE}"
         COMMAND "${CC2D_NODE_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs" "${CMAKE_CURRENT_BINARY_DIR}/ttf-geometry"
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs"
-                "${CMAKE_CURRENT_LIST_DIR}/../ttf-geometry-probe.h"
                 "${CMAKE_CURRENT_LIST_DIR}/../../../cocos/platform/win32/modules/DirectWriteFont.cpp"
         VERBATIM)
     foreach(CC2D_VARIANT IN ITEMS geometry geometry_filtered)

@@ -3822,7 +3822,7 @@ if(APPLE)
 endif()
 
 if(WINDOWS AND NOT USE_SERVER_MODE)
-    target_link_libraries(${ENGINE_NAME} PUBLIC dwrite)
+    target_link_libraries(${ENGINE_NAME} PUBLIC dwrite d2d1 ole32 windowscodecs)
 endif()
 
 if(QNX)

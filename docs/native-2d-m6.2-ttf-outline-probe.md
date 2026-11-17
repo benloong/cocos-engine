@@ -1,10 +1,10 @@
 # M6.2 合成粗体轮廓光栅化诊断
 
-> 2026-11-17。完成可复现的两种轮廓粗体诊断，均未通过严格图像标准，未接入生产。完整应用最近一次验证仍为 9/12，见 [斜体报告](./native-2d-m6.2-ttf-italic.md)。本节点没有重跑完整应用。
+> 2026-11-17，历史诊断节点 79301a2c4c。当时两种候选均未通过严格图像标准，未接入生产。后续增加边缘量化并接入轮廓粗体，见 [实现与仍未关闭的差异](./native-2d-m6.2-ttf-bold.md)。此处保留当时数值；当前诊断目标复用生产实现，旧重复 helper 已删除。
 
 ## 实现差异与实验
 
-当前生产粗体以 regular advances 做 shaping，再替换成 DirectWrite bold simulation face。核对 [Skia Windows 字体过滤](https://github.com/google/skia/blob/main/src/ports/SkTypeface_win_dw.cpp)、[fake-bold 扩张规则](https://github.com/google/skia/blob/main/src/core/SkTextFormatParams.h) 及 [路径 mask 处理](https://github.com/google/skia/blob/main/src/core/SkScalerContext.cpp) 后，确认 Web 对照对应的合成粗体需要 regular 字形轮廓的 stroke-and-fill，以及路径 mask 的横向采样和滤波；单换 bold face 不能复现。
+该节点生产粗体以 regular advances 做 shaping，再替换成 DirectWrite bold simulation face。核对 [Skia Windows 字体过滤](https://github.com/google/skia/blob/main/src/ports/SkTypeface_win_dw.cpp)、[fake-bold 扩张规则](https://github.com/google/skia/blob/main/src/core/SkTextFormatParams.h) 及 [路径 mask 处理](https://github.com/google/skia/blob/main/src/core/SkScalerContext.cpp) 后，确认 Web 对照对应的合成粗体需要 regular 字形轮廓的 stroke-and-fill，以及路径 mask 的横向采样和滤波；单换 bold face 不能复现。
 
 新增两个 Windows CMake 诊断目标，EXCLUDE_FROM_ALL，不改变生产库的依赖：
 
