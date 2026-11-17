@@ -35,6 +35,6 @@ Windows Debug/Release C++ 和实际 JSB 字体入口通过；7 个 Jest suite、
 
 本机日志位于忽略的 build 目录：directwrite-clip-tests.log、directwrite-resource-probe.log、directwrite-clip-normal-run.log、directwrite-clip-asan-run.log、directwrite-clip-comparison.log。审计基线增加四个 Windows Canvas/DirectWrite 支持文件的指纹，所有权静态检查也覆盖 DirectWrite 源码。
 
-TTFFont 的原生字节所有者不变，但此平台后端仍从文件创建字体；同 alias 重载/平台注册表清理、多字体/TTC/彩色字体、旧场景/Prefab、完整异步资源管线与跨平台/Release GPU/性能矩阵仍待验收。Windows 7 的无 Factory2 兼容分支没有本机运行证据。其他平台未迁移至 DirectWrite。
+TTFFont 的原生字节所有者不变，但此平台后端仍从文件创建字体。Windows 同 alias 重载、注册表清理与逐资产释放现已由[所有权节点](./native-2d-m6.1-font-alias-ownership.md)补齐；多字体/TTC/彩色字体、旧场景/Prefab、完整异步资源管线与跨平台/Release GPU/性能矩阵仍待验收。Windows 7 的无 Factory2 兼容分支没有本机运行证据。其他平台未迁移至 DirectWrite。
 
 Graphics/Scene 控制组同源码快照 448fba93e00225fb387f0a90183b63ddcae5fda4424574306c259f96513fe993：74 图像全通道差值 0、1000 次真实 Scene/动态纹理切换通过。该控制组不替代字体视觉验收。10 项静态审计检查通过；原有 SpriteFrame.native 工作区改动未纳入本节点，最终候选 Gate 仍未关闭。

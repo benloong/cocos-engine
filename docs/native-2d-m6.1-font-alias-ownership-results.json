@@ -1,0 +1,927 @@
+{
+  "date": "2026-11-17",
+  "snapshot": "d3ba54d7210611d94e69505089fc1069bc5a47c03d326b8a058e66a260af1385",
+  "validation": {
+    "nativeDebugRelease": true,
+    "nativeSharedCyclesPerBuild": 1000,
+    "actualJsbSharedCyclesPerBuild": 1000,
+    "legacyAliasReloadCyclesPerBuild": 1000,
+    "ownedLabelWithoutJsbRegistration": true,
+    "sharedLastOwnerCleanup": true,
+    "sourceGenerationReleaseOrders": [
+      "old-first",
+      "new-first"
+    ],
+    "failedLoadPreservesLease": true,
+    "destructorReleasesLease": true,
+    "cleanupReleasesLeasesAndGroups": true,
+    "lateReleaseAfterCleanupSafe": true,
+    "jestSuites": 4,
+    "jestTests": 49,
+    "staticTests": 10,
+    "nativeSourceHashCount": 82,
+    "normalAsanIdenticalFiles": 13,
+    "asanStderrBytes": 0,
+    "unchangedGpuImages": 12
+  },
+  "limitations": [
+    "Windows file-backed font aliases only; other platforms and in-memory font rendering remain open.",
+    "Native/JSB lifecycle loops directly create assets; these are not 1000 asset-manager load/release cycles.",
+    "Application uses real loadRemote/releaseAsset, but does not test full bundle, async failure, old scenes or prefab paths.",
+    "Legacy registrations without a TTFFont owner remain runtime-scoped.",
+    "Strict visual pass remains 9/12; this snapshot includes the pre-existing uncommitted SpriteFrame.native getter and is not the final M6 candidate."
+  ],
+  "nativeSourceHashes": [
+    {
+      "file": "cc.config.json",
+      "sha256": "8bc6e5f164cad4fb2cf22771fc6a2926c2e1c40fbdb7b09bc659c33d3e1bdffa"
+    },
+    {
+      "file": "cocos/native-binding/decorators-2d.generated.ts",
+      "sha256": "013757a5f62c4225f7626c06eb738846a5153f3ca400ca0eba713b6ff05f1c99"
+    },
+    {
+      "file": "cocos/render-scene/core/material-instance.jsb.ts",
+      "sha256": "2f250424236c8805080a7a167ba0d739fc09eda49a5f07dc3bfc2d7b5998ba8a"
+    },
+    {
+      "file": "cocos/scene-graph/node.jsb.ts",
+      "sha256": "f9e218c797353570f86bcb7f5dd7f00450b07ff92947381e0f7ce71c50c1e62e"
+    },
+    {
+      "file": "cocos/serialization/deserialize-dynamic.ts",
+      "sha256": "94eb999ae9e8d2a6c5d394d02afe5f5d678a90f17294013254b53568edd70f2f"
+    },
+    {
+      "file": "native/CMakeLists.txt",
+      "sha256": "e255eb006011e1c6454ec87647c0269043d97ad7c5775e55d49bf1479390a972"
+    },
+    {
+      "file": "native/cocos/2d/assets/BitmapFont.h",
+      "sha256": "989e28239372b89171a8eb67e45d1245326400fccd448d4dd590a8cb180d1fda"
+    },
+    {
+      "file": "native/cocos/2d/assets/Font.cpp",
+      "sha256": "29f230f2953e455412f892b2fdb827aa6ecc2fc98d5a4023359782e9cd619c26"
+    },
+    {
+      "file": "native/cocos/2d/assets/Font.h",
+      "sha256": "c1f6dc84b98aad4cd9ed186e77f0f715484b596e6ddb488f53cf0bd9e733f5e5"
+    },
+    {
+      "file": "native/cocos/2d/assets/LabelAtlas.h",
+      "sha256": "a71a5272be7a4bfe89b8bf242568e4bab040e07ca3c13b5c9c5fecff1efb2483"
+    },
+    {
+      "file": "native/cocos/2d/assets/SpriteAtlas.cpp",
+      "sha256": "e927ba992a90f0330cfe91fa96baa13d65e785ae549e629df1600deef33a02fd"
+    },
+    {
+      "file": "native/cocos/2d/assets/SpriteAtlas.h",
+      "sha256": "844af94c01f934b7858f758a683b41d190f127675b43a776d78955d30995e9d0"
+    },
+    {
+      "file": "native/cocos/2d/assets/SpriteFrame.h",
+      "sha256": "0f755f27b372fee29788a4c1c7dab7215334348a80c5a4a39b078a42b049af94"
+    },
+    {
+      "file": "native/cocos/2d/assets/SpriteFrameData.h",
+      "sha256": "f421ce5a348975a5ecc0c1785d717c7349593b86dd80a03253f92d27784e2e0b"
+    },
+    {
+      "file": "native/cocos/2d/assets/TTFFont.h",
+      "sha256": "023a0f8bcd12faf13a756ce3fe0524948e508fab7609341b977d9a8d0ff53991"
+    },
+    {
+      "file": "native/cocos/2d/components/Graphics.cpp",
+      "sha256": "c467f886f6ba0f0b7286bdd6056506150da9f995e7bcef8d16d9f0351cfcec77"
+    },
+    {
+      "file": "native/cocos/2d/components/Graphics.h",
+      "sha256": "a1642cc6333044ad85f37578cabf74509294da3d3a4c7219d36bdb98e0363be8"
+    },
+    {
+      "file": "native/cocos/2d/components/Label.cpp",
+      "sha256": "61ff07b4c82e75e97d6797bdd35d0b5c4f91107619c632b0d511081d2c63b5cb"
+    },
+    {
+      "file": "native/cocos/2d/components/Label.h",
+      "sha256": "dd0a63da81d32f4f805c0661eee831ae01be5581985b7ceaedefe5bcbb2152a9"
+    },
+    {
+      "file": "native/cocos/2d/components/Mask.cpp",
+      "sha256": "1dfea5fcb581dd6cb801d9e06b69fb905968641c93f2e004d2a31ed77350d155"
+    },
+    {
+      "file": "native/cocos/2d/components/Mask.h",
+      "sha256": "128709b191cba6cee842a54af8cffef38d78d95bb5f95bb56268d614a5f659de"
+    },
+    {
+      "file": "native/cocos/2d/components/RichText.cpp",
+      "sha256": "b850c1a3f7dfa725322a534ab0b544ba107bb704d66fdb7badce9751315f4617"
+    },
+    {
+      "file": "native/cocos/2d/components/RichText.h",
+      "sha256": "d70fa52c9b92d10ba8f27112aa82e8729716779885888a3350199710059727c9"
+    },
+    {
+      "file": "native/cocos/2d/components/Sprite.cpp",
+      "sha256": "490b0510970935fad5a012687b7d8f8111d29de395f1a459f446f93eb97e0bb5"
+    },
+    {
+      "file": "native/cocos/2d/components/Sprite.h",
+      "sha256": "73494c5eaf5db3fc24d817a4dd2b11864dc04c3bc8d374b2961b4ec4ec1cf8d5"
+    },
+    {
+      "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
+      "sha256": "b55bec3e8ccdac1bc8f8bee9b386a104a8621754bd29dcaec150b88b938d19f1"
+    },
+    {
+      "file": "native/cocos/2d/framework/RenderRoot2D.h",
+      "sha256": "e2d32203498caa4c156f87fcc3826c3f6fe0b16f2ddfd675fd221d0525c77835"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIComponentType.h",
+      "sha256": "39700d2257f4bb399a7a7137a2e97ac7573f7d1d5c9cdc95edbf5d7b6f6435b5"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIOpacity.cpp",
+      "sha256": "2058a7e4630eea9f61b1cfb8ab4b29c4daa951f69b1be159f704cb2bc93eaae1"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIOpacity.h",
+      "sha256": "1a1eb09a11f64131c6544a89590597e837d3014e761b75ca28753748251f7d1d"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIRenderer.cpp",
+      "sha256": "d53ba80ae8d51326b100f763db0eaa768eec4243360a227f353caeb02325bd5b"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIRenderer.h",
+      "sha256": "a64a2b0e1a76545b45f3514844227baa9f805ebd501d6ce653f848f2d5743c76"
+    },
+    {
+      "file": "native/cocos/2d/framework/UITransform.cpp",
+      "sha256": "33fad257892495326029f68e8c21b096950f49444afd24ec9830f7db8f6264e2"
+    },
+    {
+      "file": "native/cocos/2d/framework/UITransform.h",
+      "sha256": "f92e819f7a3bce345d9bcf62cea2bbbd9d3df60a6dbdd148a104ac064d989035"
+    },
+    {
+      "file": "native/cocos/2d/framework/UITransformMath.cpp",
+      "sha256": "0aba4f21271e852043f7c9d0779cf7d14efaaaf1cfd9ad118949bed2a1f10741"
+    },
+    {
+      "file": "native/cocos/2d/framework/UITransformMath.h",
+      "sha256": "d0693bbd067c5a26f7ad00fac90974b191a403c3c9ee38afde7b3a33a7a91598"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsEarcut.cpp",
+      "sha256": "0bf8d8d793a36a0a32b64e54bb883f1e2add115439ae1db39e934ed775bfa2fd"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsEarcut.h",
+      "sha256": "c9dd3b8b15c47e33d6b19e6a092778e21783ead752a720e244449b484df948ac"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsGeometry.cpp",
+      "sha256": "90a6af47dbda4865f731e6645a391060f9820b3c12730e2faceedf3ae787faa0"
+    },
+    {
+      "file": "native/cocos/2d/geometry/GraphicsGeometry.h",
+      "sha256": "6f3f4dcb8919bb2f7f9986a085577b8bdd254ed7c787f7e7f49906b5ccae26f4"
+    },
+    {
+      "file": "native/cocos/2d/renderer/Batcher2d.cpp",
+      "sha256": "4ac6eddd71cba63082fc26c87b3eb74d020117c30342abd06428ab1ca71e5b49"
+    },
+    {
+      "file": "native/cocos/2d/renderer/Batcher2d.h",
+      "sha256": "f425ca31193106ccbf822bf048a5b7de17b6f4d1c3acbaa1d631826a6469664a"
+    },
+    {
+      "file": "native/cocos/2d/renderer/DynamicAtlas.cpp",
+      "sha256": "638bd96b0b8c875787e61cbd5e4299db9d9590074768111ebec6f25d4ee36d75"
+    },
+    {
+      "file": "native/cocos/2d/renderer/DynamicAtlas.h",
+      "sha256": "8a988b201aed483caddb763919eb940a145f63370b23fa16ec86e1459d08c660"
+    },
+    {
+      "file": "native/cocos/2d/renderer/LetterAtlas.cpp",
+      "sha256": "0f6f57c3cc25f491db45680c1f8148b60e11febdd3aa9da06efa23bef576a624"
+    },
+    {
+      "file": "native/cocos/2d/renderer/LetterAtlas.h",
+      "sha256": "e467fa8414e0c4a933b561db4e4f5ce7a4444dfb9a1b674ae73b2f2b6b5ba520"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RenderDrawInfo.cpp",
+      "sha256": "7c077a92158a897255a0e676079fd7d1d491b12c074111c9c7fe23f9b6f813e1"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RenderDrawInfo.h",
+      "sha256": "80c3d7cc9ea3876ae2b8c9e1394796e78a4c4395ff22b9ec5bf48a67c770de74"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RenderEntity.cpp",
+      "sha256": "97257faf0b191b3016315a8dd44829e4b62b468ca9eb5b12ab82e390cdbc47a2"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RenderEntity.h",
+      "sha256": "24bbcb9ea9ca32c584eee234e8789ef3c9c74bd7cc2ee33b543da5b9abd270b1"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RichTextLayout.cpp",
+      "sha256": "234f5f8fb671d7a13168c2dd497bc6f27fd4cf075ea36546eae732eba28ed8d0"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RichTextLayout.h",
+      "sha256": "a31a0aa2157c630900ec7999c24f36f72e182bace7a085a9b82335ca341104d8"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RichTextParser.cpp",
+      "sha256": "42c0efc241215808b21682cc057661e6b3c854af773d122e17df4b7fbda6235a"
+    },
+    {
+      "file": "native/cocos/2d/renderer/RichTextParser.h",
+      "sha256": "3dde0d83fc85e80daa4f57aa7c8c87646c1e4464fbe58e44239cd4585c7e1a54"
+    },
+    {
+      "file": "native/cocos/2d/renderer/SpriteGeometry.cpp",
+      "sha256": "763871cb71fc6d78f61ff092ed2e60a864ddfa512377fe48696dae8030d5d30b"
+    },
+    {
+      "file": "native/cocos/2d/renderer/SpriteGeometry.h",
+      "sha256": "5878b6a4ddd5dac65c68754a5ec3a82c7f73c0bed3f23e81106ae92de5bbce1e"
+    },
+    {
+      "file": "native/cocos/2d/renderer/StencilManager.cpp",
+      "sha256": "1ed989156e6b25348c3fa1845db017d447561744b917cfc1fdd62fe1fdb299fa"
+    },
+    {
+      "file": "native/cocos/2d/renderer/StencilManager.h",
+      "sha256": "d1dab077a7e967590e2bc3d5afd60e1c165a8c1d6df7ee1e5162c6e10b3c751f"
+    },
+    {
+      "file": "native/cocos/2d/renderer/TextMetrics.cpp",
+      "sha256": "7f8a5d397964ba636bc84c72fb045ea97dd0bc059d131e183dde1e895760d82f"
+    },
+    {
+      "file": "native/cocos/2d/renderer/TextMetrics.h",
+      "sha256": "504a3e7ea0ff8f5f23d3a869ad4a1203a315affa37a8c70b7a0a6f77c26b1e74"
+    },
+    {
+      "file": "native/cocos/2d/renderer/UIMeshBuffer.cpp",
+      "sha256": "9947485e88a2f256dd74f7ac84c2802db495dfc346786b451d958b945a491c09"
+    },
+    {
+      "file": "native/cocos/2d/renderer/UIMeshBuffer.h",
+      "sha256": "0e72771ff8594b6a5de614b5dc50d385d6c0013e513ed06bbb979a94faf15706"
+    },
+    {
+      "file": "native/cocos/2d/renderer/UIModelProxy.cpp",
+      "sha256": "2c1a1761fe4faf549f1f0a2239568bd50a711a3972f5a7e62af6f06b273931f8"
+    },
+    {
+      "file": "native/cocos/2d/renderer/UIModelProxy.h",
+      "sha256": "941459d321eb6f0b1d21b8c838a867af0e72e99b2b1bb6c26651fe125c99dd8e"
+    },
+    {
+      "file": "native/cocos/bindings/manual/jsb_platform.h",
+      "sha256": "589bb714da1f2804c8b10de33616d9abc3fa6a4a46e298713349f3b9b28dffb6"
+    },
+    {
+      "file": "native/cocos/bindings/manual/jsb_platform_win32.cpp",
+      "sha256": "464f917595525e22b378344cda30e1dcc19d4e173bfbd05f8ae8eb0cdb808ab1"
+    },
+    {
+      "file": "native/cocos/core/Root.cpp",
+      "sha256": "2be8c42597e0f5f2b0422dd95e6abf7135168c1e6c3e5f3233b9d2a792a85f62"
+    },
+    {
+      "file": "native/cocos/core/Root.h",
+      "sha256": "5d6b63e1961e095f3358f0e302c51853f04c692324edbe2994ebcb9979eb7db5"
+    },
+    {
+      "file": "native/cocos/core/component/Component.cpp",
+      "sha256": "ecc0278476e9953dd905d18fc5c8339bc4c7ba510cd1a3ab07332d4cb76a119f"
+    },
+    {
+      "file": "native/cocos/core/component/Component.h",
+      "sha256": "b03a05301437af2ff24ed1f56a614ffe8ef2f42a5577c3f6424fbe9e28d7d0b2"
+    },
+    {
+      "file": "native/cocos/core/scene-graph/Node.cpp",
+      "sha256": "ce4005f1aef3a55cb856be698bea99f47e73d24042671d41a0a730ad46fb59cd"
+    },
+    {
+      "file": "native/cocos/core/scene-graph/Node.h",
+      "sha256": "14708be8569731f3ca28f4068c1a065076d625ee447a5020c01d3431617c548c"
+    },
+    {
+      "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp",
+      "sha256": "6094291e901bbd0a80247a4f05dd8f26f3981a4e4e7002057398954cfb966400"
+    },
+    {
+      "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.h",
+      "sha256": "b808b14f2b3ebbb768994121707a1e5d82595c217d9881aab524757677269fbc"
+    },
+    {
+      "file": "native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h",
+      "sha256": "7cc1835224403589cc6dfd5c7a4539af730a3243be352385e0eeee9ea79d8e2c"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
+      "sha256": "19f91c881619631950f62bffdb6ac84809f11f2bb94864f058de1efd77906671"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
+      "sha256": "909ee53469096a894523e5206bfe1e7f0319a932e223b4bb19c3ca113ff67b15"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
+      "sha256": "0b0e6b00a816ea3a705da4662d7649fb3a82f6b1c054cbedc8591722699736b1"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
+      "sha256": "882a2066074dc4ea00c92712c9de1ad20425c2d4028ee00eb41a5101e32e66c8"
+    },
+    {
+      "file": "native/tools/swig-config/2d.i",
+      "sha256": "d157dadca3af764351aad426d01e25cafaede87cbf11728f6f5420a1ca60c2a9"
+    },
+    {
+      "file": "native/tools/swig-config/assets.i",
+      "sha256": "2165fb80b9cb629cf3bc165abba4a3e0deaffd49f7685e7f4b2b9befb5beedc7"
+    },
+    {
+      "file": "scripts/compile-native-ts.js",
+      "sha256": "0dfa1228ea3294eaa68313d85889787d938ca2d580de290187bbb7e7c271a360"
+    }
+  ],
+  "logs": [
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-debug-build.log",
+      "sha256": "2702036231861242a645ad56c6ba343a8f80030356eacf0d95eda5c87f8eb8b9"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-release-build.log",
+      "sha256": "829a13221c161b842fb414f995d909554ad2c8025b778884d7e96de7a90434eb"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-debug-tests.log",
+      "sha256": "bd68bfd3a85fa2a2b33dd6f466dedf80475d3bcdfca7c4f722540c382e6e44c4"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-release-tests.log",
+      "sha256": "e2ca662ce2f517c0a06d605e664955cbed324222ea55cf1f2793991d082fa487"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-static.log",
+      "sha256": "2b018b30ef9759a2b890b3aadce0a5b796ecd953cb6ffb85579ed93766b51a3c"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-jest.log",
+      "sha256": "eafcef7e0cb029b7391475a8aa19bd8e884dbed3f1fa4825844fc4bbfe0ec3f0"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-gpu-build.log",
+      "sha256": "efb4ea5a405c1fdfb862f6ee174d2265db274cd34c0699058d30cbbc1af79b25"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-asan-build.log",
+      "sha256": "c3c7322b057348e6d5f8e745884db20b262a6e04a7546e0075aa1e4566d2abaf"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-cli-native.log",
+      "sha256": "d4b3f09a25d519b6aecc7e63a0a908cb8ab98cb98e15bcd49dbdf690b37bd859"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-cli-web.log",
+      "sha256": "bc64b6b72462128a5f6e6391216105d9d7e85441061067638b0aa0fcefc4840f"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-gpu-run.log",
+      "sha256": "bf96554b1b704c5075afed1156d99577f37be4e0d31365c07a7e1e11544a7249"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-asan-run.log",
+      "sha256": "bf96554b1b704c5075afed1156d99577f37be4e0d31365c07a7e1e11544a7249"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-web-run.log",
+      "sha256": "445bef69d749cdb5c570255145bc2c0213d41d56ea6e92b325dfb2ab4de838ee"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-alias-ownership-gpu-comparison.log",
+      "sha256": "01df72a6753778fa687829cfb637dae00fadea124d39518cfeee66143b4c7456"
+    }
+  ],
+  "gpu": {
+    "snapshot": "d3ba54d7210611d94e69505089fc1069bc5a47c03d326b8a058e66a260af1385",
+    "font": {
+      "source": "tests/fixtures/Thonburi.ttf",
+      "sha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "bytes": 223404,
+      "loaded": true,
+      "released": true
+    },
+    "environment": {
+      "native": {
+        "os": "Windows",
+        "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+        "vendor": "Imagination Technologies (Host: NVIDIA Corporation)"
+      },
+      "web": {
+        "os": "Windows",
+        "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "vendor": "Google Inc. (NVIDIA)"
+      }
+    },
+    "pass": false,
+    "results": [
+      {
+        "name": "text-basic",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3648,
+        "nativeColored": 3648,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-basic",
+          "width": 95.9765625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-basic",
+          "width": 95.9765625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+        "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87"
+      },
+      {
+        "name": "text-bold",
+        "max": 20,
+        "pixels": 467,
+        "webColored": 3648,
+        "nativeColored": 3648,
+        "layoutEqual": true,
+        "pass": false,
+        "native": {
+          "name": "text-bold",
+          "width": 95.9765625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-bold",
+          "width": 95.9765625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "0dd74ae6f769b10b63ffe14398329805b8efab6cc6c188aefee8d815ac4775d7",
+        "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9"
+      },
+      {
+        "name": "text-italic",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3876,
+        "nativeColored": 3876,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-italic",
+          "width": 101.07791900634766,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895950317383,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-italic",
+          "width": 101.07791997407736,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895998703868,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+        "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475"
+      },
+      {
+        "name": "text-underline",
+        "max": 1,
+        "pixels": 0,
+        "webColored": 3648,
+        "nativeColored": 3648,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-underline",
+          "width": 95.9765625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-underline",
+          "width": 95.9765625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "200bf94693f41bb3e257cef10e3cd5be52b3959c29de780f216c34ebbaa0c961",
+        "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a"
+      },
+      {
+        "name": "text-outline",
+        "max": 30,
+        "pixels": 202,
+        "webColored": 2268,
+        "nativeColored": 2268,
+        "layoutEqual": true,
+        "pass": false,
+        "native": {
+          "name": "text-outline",
+          "width": 53.3515625,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -26.67578125,
+              "y": -20.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-outline",
+          "width": 53.3515625,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -26.67578125,
+              "y": -20.9
+            }
+          ]
+        },
+        "nativeSha256": "b149ca666d8f4e617e59c3c6e122bf603cd32e68fb2732f8024f10d9f2d3db61",
+        "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c"
+      },
+      {
+        "name": "text-nested",
+        "max": 47,
+        "pixels": 573,
+        "webColored": 3876,
+        "nativeColored": 3876,
+        "layoutEqual": true,
+        "pass": false,
+        "native": {
+          "name": "text-nested",
+          "width": 101.07791900634766,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895950317383,
+              "y": -18.899999618530273
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": 5.453227519989014,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-nested",
+          "width": 101.07791997407736,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53895998703868,
+              "y": -18.9
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": 5.45322751296132,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "6edd9cc4c32ccbd760b54a5f508768a52fff74a2b1dbc463d77d7646bd27b09e",
+        "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3"
+      },
+      {
+        "name": "text-colors",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3496,
+        "nativeColored": 3496,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-colors",
+          "width": 91.5859375,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -45.79296875,
+              "y": -18.899999618530273
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -10.12109375,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-colors",
+          "width": 91.5859375,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -45.79296875,
+              "y": -18.9
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -10.12109375,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+        "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22"
+      },
+      {
+        "name": "text-wrap-left",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 6794,
+        "nativeColored": 6794,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-wrap-left",
+          "width": 120,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-wrap-left",
+          "width": 120,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -60,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+        "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f"
+      },
+      {
+        "name": "text-wrap-center",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 6756,
+        "nativeColored": 6756,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-wrap-center",
+          "width": 120,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -51.30859375,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-wrap-center",
+          "width": 120,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -51.30859375,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -47.98828125,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+        "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca"
+      },
+      {
+        "name": "text-wrap-right",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 6794,
+        "nativeColored": 6794,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-wrap-right",
+          "width": 120,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -42.6171875,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -35.9765625,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-wrap-right",
+          "width": 120,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -42.6171875,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -35.9765625,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+        "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da"
+      },
+      {
+        "name": "text-multiline",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 2800,
+        "nativeColored": 2800,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-multiline",
+          "width": 49.3515625,
+          "height": 67.80000305175781,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -3.9000000953674316
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -33.900001525878906
+            }
+          ]
+        },
+        "web": {
+          "name": "text-multiline",
+          "width": 49.3515625,
+          "height": 67.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -3.8999999999999986
+            },
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -24.67578125,
+              "y": -33.9
+            }
+          ]
+        },
+        "nativeSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+        "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220"
+      },
+      {
+        "name": "text-unicode",
+        "max": 0,
+        "pixels": 0,
+        "webColored": 3876,
+        "nativeColored": 3876,
+        "layoutEqual": true,
+        "pass": true,
+        "native": {
+          "name": "text-unicode",
+          "width": 101.0703125,
+          "height": 37.79999923706055,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53515625,
+              "y": -18.899999618530273
+            }
+          ]
+        },
+        "web": {
+          "name": "text-unicode",
+          "width": 101.0703125,
+          "height": 37.8,
+          "segments": [
+            {
+              "name": "RICHTEXT_CHILD",
+              "x": -50.53515625,
+              "y": -18.9
+            }
+          ]
+        },
+        "nativeSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+        "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9"
+      }
+    ]
+  }
+}

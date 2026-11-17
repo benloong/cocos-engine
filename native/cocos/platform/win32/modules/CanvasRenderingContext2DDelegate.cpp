@@ -212,7 +212,8 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
         LOGFONTA tFont = {0};
         if (!_fontName.empty()) {
             // firstly, try to create font from ttf file
-            const auto &fontInfoMap = getFontFamilyNameMap();
+            const auto &assetFonts = getFontAssetFamilyNameMap();
+            const auto &fontInfoMap = assetFonts.find(_fontName) != assetFonts.end() ? assetFonts : getFontFamilyNameMap();
             auto iter = fontInfoMap.find(_fontName);
             if (iter != fontInfoMap.end()) {
                 fontPath = iter->second;

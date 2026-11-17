@@ -31,7 +31,7 @@
     },
     {
       "file": "native/cocos/2d/assets/Font.cpp",
-      "sha256": "26811e4bd3b5ae596035eadf24a0167fd406b33eef1875e6e906c468b8644475"
+      "sha256": "29f230f2953e455412f892b2fdb827aa6ecc2fc98d5a4023359782e9cd619c26"
     },
     {
       "file": "native/cocos/2d/assets/Font.h",
@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/TTFFont.h",
-      "sha256": "4af3b322d63e2d95e1cb715b3a026889f349769f4370c4bc46f1bbc8da3d8740"
+      "sha256": "023a0f8bcd12faf13a756ce3fe0524948e508fab7609341b977d9a8d0ff53991"
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
@@ -71,7 +71,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "edd9db5b3632f3635d31b7d00d134877d7b7f60ecad43d3f71b71836b2573c09"
+      "sha256": "61ff07b4c82e75e97d6797bdd35d0b5c4f91107619c632b0d511081d2c63b5cb"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -258,8 +258,12 @@
       "sha256": "941459d321eb6f0b1d21b8c838a867af0e72e99b2b1bb6c26651fe125c99dd8e"
     },
     {
+      "file": "native/cocos/bindings/manual/jsb_platform.h",
+      "sha256": "589bb714da1f2804c8b10de33616d9abc3fa6a4a46e298713349f3b9b28dffb6"
+    },
+    {
       "file": "native/cocos/bindings/manual/jsb_platform_win32.cpp",
-      "sha256": "28200761f5ba4351364620777748a7ed95891106de649565e6648d7a6e23cadb"
+      "sha256": "464f917595525e22b378344cda30e1dcc19d4e173bfbd05f8ae8eb0cdb808ab1"
     },
     {
       "file": "native/cocos/core/Root.cpp",
@@ -299,7 +303,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "ad51cff2d9a0894559bbcfe75094bf93c14ba03cea70c174f9e6f496d55183d6"
+      "sha256": "19f91c881619631950f62bffdb6ac84809f11f2bb94864f058de1efd77906671"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
@@ -319,7 +323,7 @@
     },
     {
       "file": "native/tools/swig-config/assets.i",
-      "sha256": "ad6643537a5a368615f8077861edb28047b58886d5e56fcea1125e6a32a0dd0c"
+      "sha256": "2165fb80b9cb629cf3bc165abba4a3e0deaffd49f7685e7f4b2b9befb5beedc7"
     },
     {
       "file": "scripts/compile-native-ts.js",

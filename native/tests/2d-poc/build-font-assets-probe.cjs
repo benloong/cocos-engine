@@ -65,6 +65,24 @@ check(Math.abs(outlinedLabel.getContentWidth() - 101.9765625) < 0.001 && outline
     'Label renders a real native text stroke with preserved layout margins');
 outlinedLabel.setFontAsset(null);
 outlinedLabel.setUITransform(null); outlinedLabel.setNode(null);
+for (let iteration = 0; iteration < 1000; iteration++) {
+    const first = new TTFFont(), second = new TTFFont();
+    first._nativeUrl = ttf._nativeUrl; second._nativeUrl = ttf._nativeUrl;
+    first._nativeAsset = 'M6SharedFont_LABEL'; second._nativeAsset = 'M6SharedFont_LABEL';
+    const sharedLabel = new n2d.Label();
+    sharedLabel.setNode(outlinedNode); sharedLabel.setUITransform(outlinedTransform);
+    sharedLabel.setFontAsset(second); sharedLabel.setFontSize(24); sharedLabel.setString('Atlas 123');
+    first.destroy();
+    sharedLabel.updateRenderData();
+    check(second.getFontDataSize() > 1000 && Math.abs(sharedLabel.getContentWidth() - 95.9765625) < 0.001 && sharedLabel.getOpaquePixels() > 0,
+        'destroying one actual JSB font preserves shared alias and native Label selection');
+    second.clearNativeData(); second._nativeAsset = 'M6SharedFont_LABEL';
+    sharedLabel.updateRenderData();
+    check(second.getFontDataSize() > 1000 && Math.abs(sharedLabel.getContentWidth() - 95.9765625) < 0.001 && sharedLabel.getOpaquePixels() > 0,
+        'cleared actual JSB font can reload its alias and source');
+    second.destroy(); sharedLabel.setFontAsset(null);
+    sharedLabel.setUITransform(null); sharedLabel.setNode(null);
+}
 const config = { fontDefDictionary: {65: {rect: {x: 0, y: 0, width: 2, height: 2}, xAdvance: 2}}, kerningDict: {4259905: -1} };
 font.fntConfig = config; font.fontSize = 2; font.fntDataStr = 'source';
 const frame = new jsb.SpriteFrame(), texture = new jsb.Texture2D(); texture.create(2, 2); frame.setTexture(texture); font.spriteFrame = frame;

@@ -1,6 +1,6 @@
 # M6.1 Windows 字体 alias 重载与运行时清理
 
-> 2026-11-17。完成 Windows JSB 字体路径注册表的参数、重载和脚本引擎退出清理；逐资产 alias 释放仍待实现。
+> 2026-11-17。本节点完成 Windows JSB 字体路径注册表的参数、重载和脚本引擎退出清理；后续已补 Windows TTFFont 的[逐资产 alias 所有权](./native-2d-m6.1-font-alias-ownership.md)，完整异步与跨平台仍待验收。
 
 ## 修复
 
@@ -19,4 +19,4 @@ Windows Debug/Release 完整 native harness 和实际字体 JSB 探针通过。�
 
 ## 剩余
 
-全局路径表的 runtime cleanup 不等于 TTFFont.destroy 后逐个撤销平台注册。共享 alias、同名不同来源的存活资产、资源加载失败后回收，以及跨平台字体注册/句柄释放仍需明确所有权并在真实资源管线中验收。已有 Canvas 不会因表替换自动重建字体，热更新通知亦未在本节点完成。M6 字体终态门禁保持未通过。
+全局路径表的 runtime cleanup 不等于 TTFFont.destroy 后逐个撤销平台注册；Windows 文件型 TTFFont 的共享 alias 和同名来源现已由[后续节点](./native-2d-m6.1-font-alias-ownership.md)补齐。资源加载失败后的逐请求回收、完整异步资源管线和跨平台字体注册/句柄释放仍待验收。已有 Canvas 不会因表替换自动重建字体，热更新通知亦未在本节点完成。M6 字体终态门禁保持未通过。

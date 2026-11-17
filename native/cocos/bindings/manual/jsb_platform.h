@@ -23,6 +23,8 @@
 ****************************************************************************/
 
 #pragma once
+#include <cstdint>
+#include <cstddef>
 #include "base/std/container/string.h"
 #include "base/std/container/unordered_map.h"
 
@@ -36,6 +38,14 @@ class Object;
 
 bool register_platform_bindings(se::Object *obj); // NOLINT[readability-identifier-naming]
 const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontFamilyNameMap();
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+// Main-thread leases owned by TTFFont. Zero means no lease; release is idempotent.
+uint64_t retainFontFamilyAlias(const ccstd::string &family, const ccstd::string &source, const ccstd::string &renderFamily);
+void releaseFontFamilyAlias(uint64_t lease);
+const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontAssetFamilyNameMap();
+size_t getFontAliasLeaseCount();
+size_t getFontAliasGroupCount();
+#endif
 #if CC_PLATFORM == CC_PLATFORM_OPENHARMONY
 const std::string defaultFontKey = "openharmony_system_font";
 const std::unordered_map<std::string, OH_Drawing_FontCollection *> &getFontFamilyCollectionMap();

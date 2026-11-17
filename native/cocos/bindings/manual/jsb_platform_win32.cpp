@@ -34,9 +34,79 @@
 using namespace cc;
 
 static ccstd::unordered_map<ccstd::string, ccstd::string> fontFamilyNameMap;
+namespace {
+struct FontAliasGroup {
+    ccstd::string family;
+    ccstd::string source;
+    size_t owners{0};
+};
+struct FontAliasLease {
+    uint64_t group;
+    ccstd::string renderFamily;
+};
+// Value-owned records only. IDs never reset, so late releases after runtime
+// cleanup cannot affect leases acquired by a subsequent script engine.
+uint64_t nextFontAliasId{0};
+ccstd::unordered_map<uint64_t, FontAliasGroup> fontAliasGroups;
+ccstd::unordered_map<uint64_t, FontAliasLease> fontAliasLeases;
+ccstd::unordered_map<ccstd::string, uint64_t> currentFontAliasGroups;
+ccstd::unordered_map<ccstd::string, ccstd::string> fontAssetFamilyNameMap;
+} // namespace
 
 const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontFamilyNameMap() {
     return fontFamilyNameMap;
+}
+
+const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontAssetFamilyNameMap() {
+    return fontAssetFamilyNameMap;
+}
+size_t getFontAliasLeaseCount() { return fontAliasLeases.size(); }
+size_t getFontAliasGroupCount() { return fontAliasGroups.size(); }
+
+uint64_t retainFontFamilyAlias(const ccstd::string &family, const ccstd::string &source, const ccstd::string &renderFamily) {
+    if (family.empty() || source.empty() || renderFamily.empty()) return 0;
+    const auto path = FileUtils::getInstance()->fullPathForFilename(source);
+    if (path.empty() || !FileUtils::getInstance()->isFileExist(path)) return 0;
+    uint64_t group = 0;
+    const auto current = currentFontAliasGroups.find(family);
+    if (current != currentFontAliasGroups.end() && fontAliasGroups.at(current->second).source == path) group = current->second;
+    if (!group) {
+        group = ++nextFontAliasId;
+        fontAliasGroups.emplace(group, FontAliasGroup{family, path, 0});
+        currentFontAliasGroups.insert_or_assign(family, group);
+    }
+    ++fontAliasGroups.at(group).owners;
+    const uint64_t lease = ++nextFontAliasId;
+    fontAliasLeases.emplace(lease, FontAliasLease{group, renderFamily});
+    fontFamilyNameMap.insert_or_assign(family, path);
+    fontAssetFamilyNameMap.insert_or_assign(renderFamily, path);
+    return lease;
+}
+
+void releaseFontFamilyAlias(uint64_t lease) {
+    const auto owned = fontAliasLeases.find(lease);
+    if (owned == fontAliasLeases.end()) return;
+    fontAssetFamilyNameMap.erase(owned->second.renderFamily);
+    const auto group = fontAliasGroups.find(owned->second.group);
+    if (group != fontAliasGroups.end() && --group->second.owners == 0) {
+        const auto current = currentFontAliasGroups.find(group->second.family);
+        if (current != currentFontAliasGroups.end() && current->second == group->first) {
+            uint64_t previous = 0;
+            for (const auto &candidate : fontAliasGroups) {
+                if (candidate.second.owners && candidate.second.family == group->second.family && candidate.first > previous)
+                    previous = candidate.first;
+            }
+            if (previous) {
+                current->second = previous;
+                fontFamilyNameMap.insert_or_assign(group->second.family, fontAliasGroups.at(previous).source);
+            } else {
+                fontFamilyNameMap.erase(group->second.family);
+                currentFontAliasGroups.erase(current);
+            }
+        }
+        fontAliasGroups.erase(group);
+    }
+    fontAliasLeases.erase(owned);
 }
 
 static bool jsbLoadFont(se::State &s) {
@@ -68,6 +138,8 @@ static bool jsbLoadFont(se::State &s) {
         }
 
         // just put the path info, used at CanvasRenderingContext2DImpl::updateFont()
+        const auto current = fontFamilyNameMap.find(originalFamilyName);
+        if (current != fontFamilyNameMap.end() && current->second != fontFilePath) currentFontAliasGroups.erase(originalFamilyName);
         fontFamilyNameMap.insert_or_assign(originalFamilyName, fontFilePath);
 
         s.rval().setString(originalFamilyName);
@@ -85,6 +157,10 @@ bool register_platform_bindings(se::Object * /*obj*/) { // NOLINT(readability-id
     se::ScriptEngine::getInstance()->addAfterCleanupHook([]() {
         // Values own paths only; Canvas instances own their selected font faces.
         decltype(fontFamilyNameMap)().swap(fontFamilyNameMap);
+        decltype(fontAssetFamilyNameMap)().swap(fontAssetFamilyNameMap);
+        decltype(fontAliasGroups)().swap(fontAliasGroups);
+        decltype(fontAliasLeases)().swap(fontAliasLeases);
+        decltype(currentFontAliasGroups)().swap(currentFontAliasGroups);
     });
     return true;
 }

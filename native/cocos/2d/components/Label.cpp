@@ -196,7 +196,7 @@ void Label::updateFont() {
     auto *ttf = dynamic_cast<TTFFont *>(_fontAsset.get());
     if (ttf && !ttf->isReleased() && !ttf->getFontFamily().empty()) {
         font += '\"';
-        for (char c : ttf->getFontFamily()) { if (c == '\\' || c == '\"') font += '\\'; font += c; }
+        for (char c : ttf->getRenderFontFamily()) { if (c == '\\' || c == '\"') font += '\\'; font += c; }
         font += '\"';
     } else font += _fontFamily;
     releaseLetterAtlas();

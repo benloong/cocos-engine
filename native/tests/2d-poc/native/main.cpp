@@ -494,6 +494,53 @@ void testFontAssets() {
     std::printf("font assets: PASS\n");
 }
 
+void testFontAliasOwnership() {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    const auto publicBefore = getFontFamilyNameMap().size();
+    const auto privateBefore = getFontAssetFamilyNameMap().size();
+    const auto leasesBefore = getFontAliasLeaseCount(), groupsBefore = getFontAliasGroupCount();
+    const std::string family = "M6OwnedFont_LABEL";
+    auto create = [&]() {
+        cc::IntrusivePtr<cc::TTFFont> font(new cc::TTFFont());
+        font->setFontFamily(family);
+        check(font->loadFontData(CC2D_FONT_FIXTURE), "owned TTF loads actual font");
+        return font;
+    };
+    for (int iteration = 0; iteration < 1000; ++iteration) {
+        auto first = create(), second = create();
+        const auto firstRender = first->getRenderFontFamily(), secondRender = second->getRenderFontFamily();
+        check(firstRender != secondRender && firstRender != family, "font assets have independent render identities");
+        check(getFontFamilyNameMap().size() == publicBefore + 1 && getFontAssetFamilyNameMap().size() == privateBefore + 2,
+              "shared alias has one public record and two owned render records");
+        if (iteration == 0) {
+            cc::Label label;
+            label.setFontAsset(first); label.setFontSize(24);
+            checkNear(label.measureUnwrappedText("Atlas 123").width, 95.9765625F,
+                      "native Label selects owned font without a JS font registration");
+            const auto revision = first->getRevision();
+            check(!first->loadFontData("missing-font.ttf") && first->getRevision() == revision
+                      && first->getRenderFontFamily() == firstRender, "failed font load preserves alias lease");
+            label.setFontAsset(nullptr);
+        }
+        first->destroy();
+        check(getFontFamilyNameMap().count(family) == 1 && !getFontAssetFamilyNameMap().count(firstRender)
+                  && getFontAssetFamilyNameMap().count(secondRender) == 1, "destroying one shared font preserves its peer");
+        second->clearNativeData();
+        check(getFontFamilyNameMap().size() == publicBefore && getFontAssetFamilyNameMap().size() == privateBefore,
+              "last owner releases public and private font aliases");
+        check(getFontAliasLeaseCount() == leasesBefore && getFontAliasGroupCount() == groupsBefore,
+              "last owner releases lease and generation records");
+        first->setFontFamily(family); first->loadFontData(CC2D_FONT_FIXTURE);
+        check(getFontFamilyNameMap().size() == publicBefore, "released font cannot recreate alias ownership");
+        second->setFontFamily(family); second->loadFontData(CC2D_FONT_FIXTURE);
+        // second's C++ destructor, without explicit destroy, must release its lease.
+    }
+    check(getFontFamilyNameMap().size() == publicBefore && getFontAssetFamilyNameMap().size() == privateBefore,
+          "TTF C++ destruction releases font aliases");
+    std::printf("font alias ownership: 1000 shared create/destroy/clear/reload cycles PASS\n");
+#endif
+}
+
 void testTextStroke() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     cc::CanvasRenderingContext2D fallback(16, 16); fallback.setFont("24px Arial");
@@ -1408,6 +1455,33 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         if (created) {
             const auto replacement = directory / "replacement.ttf";
             check(std::filesystem::copy_file(CC2D_FONT_FIXTURE, replacement), "font reload fixture copies independent source");
+            {
+                cc::IntrusivePtr<cc::TTFFont> oldFont(new cc::TTFFont()), newFont(new cc::TTFFont());
+                oldFont->setFontFamily(alias); oldFont->loadFontData(CC2D_FONT_FIXTURE);
+                const auto oldRender = oldFont->getRenderFontFamily();
+                check(load("url('" + replacement.generic_string() + "')"), "legacy registration replaces owned public alias");
+                newFont->setFontFamily(alias); newFont->loadFontData(replacement.generic_string());
+                check(getFontAssetFamilyNameMap().at(oldRender) == originalPath,
+                      "old font keeps its source after same-name replacement");
+                const auto newRender = newFont->getRenderFontFamily();
+                oldFont->destroy();
+                check(getFontFamilyNameMap().at(alias) == replacement.generic_string()
+                          && getFontAssetFamilyNameMap().count(newRender) == 1,
+                      "old font destruction cannot remove a newer alias generation");
+                newFont->destroy();
+                check(!getFontFamilyNameMap().count(alias) && !getFontAssetFamilyNameMap().count(newRender),
+                      "last owner of replacement source releases its aliases");
+            }
+            {
+                cc::IntrusivePtr<cc::TTFFont> oldFont(new cc::TTFFont()), newFont(new cc::TTFFont());
+                oldFont->setFontFamily(alias); oldFont->loadFontData(CC2D_FONT_FIXTURE);
+                newFont->setFontFamily(alias); newFont->loadFontData(replacement.generic_string());
+                newFont->destroy();
+                check(getFontFamilyNameMap().at(alias) == originalPath,
+                      "releasing newest font generation restores a still-owned source");
+                oldFont->destroy();
+                check(!getFontFamilyNameMap().count(alias), "last older font releases restored alias");
+            }
             check(load("url('" + replacement.generic_string() + "')"), "font alias reload succeeds");
             check(getFontFamilyNameMap().at(alias) == replacement.generic_string(), "same alias now selects replacement path");
             check(getFontFamilyNameMap().size() == registryBefore + 1, "same alias reload does not grow registry");
@@ -1984,6 +2058,7 @@ int main(int argc, char **argv) {
         testSpriteFrameData();
         testFrameConsumers();
         testFontAssets();
+        testFontAliasOwnership();
         testTextStroke();
         testLabelStyleExtents();
         testLabelRasterMapping();
@@ -2029,9 +2104,26 @@ int main(int argc, char **argv) {
         std::printf("sprite scene benchmark done\n");
         std::fflush(stdout);
     }
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    cc::IntrusivePtr<cc::TTFFont> lateFont(new cc::TTFFont());
+    lateFont->setFontFamily("M6LateFont_LABEL"); lateFont->loadFontData(CC2D_FONT_FIXTURE);
+#endif
     scriptEngine->cleanup();
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     check(getFontFamilyNameMap().empty(), "script cleanup releases Windows font aliases");
+    check(getFontAssetFamilyNameMap().empty(), "script cleanup releases owned font render aliases");
+    check(!getFontAliasLeaseCount() && !getFontAliasGroupCount(), "script cleanup releases font lease and generation records");
+    {
+        cc::IntrusivePtr<cc::TTFFont> freshFont(new cc::TTFFont());
+        freshFont->setFontFamily("M6LateFont_LABEL"); freshFont->loadFontData(CC2D_FONT_FIXTURE);
+        lateFont->clearNativeData();
+        check(getFontAliasLeaseCount() == 1 && getFontAliasGroupCount() == 1
+                  && getFontFamilyNameMap().count("M6LateFont_LABEL") == 1,
+              "late release after cleanup cannot remove a new generation");
+    }
+    lateFont = nullptr;
+    check(getFontFamilyNameMap().empty() && getFontAssetFamilyNameMap().empty()
+              && !getFontAliasLeaseCount() && !getFontAliasGroupCount(), "post-cleanup font owners release all registry records");
 #endif
     delete scriptEngine;
     delete root;

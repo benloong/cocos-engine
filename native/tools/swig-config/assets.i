@@ -255,6 +255,7 @@
 %include "2d/assets/SpriteFrame.h"
 %include "2d/assets/SpriteAtlas.h"
 %include "2d/assets/Font.h"
+%ignore cc::TTFFont::getRenderFontFamily;
 %include "2d/assets/TTFFont.h"
 %include "2d/assets/BitmapFont.h"
 %include "2d/assets/LabelAtlas.h"

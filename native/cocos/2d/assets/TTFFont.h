@@ -29,10 +29,12 @@
 namespace cc {
 class TTFFont final : public FontAsset {
 public:
+    ~TTFFont() override;
     const std::string &getFontFamily() const { return _family; }
-    void setFontFamily(const std::string &value) { if (!_released && value != _family) { _family = value; ++_revision; } }
+    void setFontFamily(const std::string &value);
+    const std::string &getRenderFontFamily() const { return _renderFamily.empty() ? _family : _renderFamily; }
     bool loadFontData(const std::string &path);
-    void setFontData(const std::vector<uint8_t> &bytes) { if (!_released) { _bytes = bytes; _source.clear(); ++_revision; } }
+    void setFontData(const std::vector<uint8_t> &bytes);
     const std::vector<uint8_t> &getFontData() const { return _bytes; }
     uint32_t getFontDataSize() const { return static_cast<uint32_t>(_bytes.size()); }
     const std::string &getSourcePath() const { return _source; }
@@ -43,6 +45,10 @@ public:
         clearNativeData(); setFontFamily("Arial"); Asset::initDefault(uuid);
     }
 private:
+    void refreshFontAlias();
+    // Owns a Windows registry lease; zero on other platforms and after clear.
+    uint64_t _fontAliasLease{0};
+    std::string _renderFamily;
     std::string _family;
     std::string _source;
     std::vector<uint8_t> _bytes;

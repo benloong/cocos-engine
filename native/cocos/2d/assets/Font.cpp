@@ -26,6 +26,9 @@
 #include "2d/assets/TTFFont.h"
 #include "2d/assets/BitmapFont.h"
 #include "platform/FileUtils.h"
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+#include "bindings/manual/jsb_platform.h"
+#endif
 #include "rapidjson/document.h"
 #include <atomic>
 #include <cerrno>
@@ -63,18 +66,39 @@ bool FontAsset::destroy() {
     return result;
 }
 void FontAsset::destruct() { _released = true; clearNativeData(); Asset::destruct(); }
+TTFFont::~TTFFont() { clearNativeData(); }
+void TTFFont::refreshFontAlias() {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    releaseFontFamilyAlias(_fontAliasLease);
+    _fontAliasLease = 0;
+    _renderFamily.clear();
+    if (!_released && !_family.empty() && !_source.empty()) {
+        const auto family = "__cc2d_ttf_" + std::to_string(getIdentity());
+        _fontAliasLease = retainFontFamilyAlias(_family, _source, family);
+        if (_fontAliasLease) _renderFamily = family;
+    }
+#endif
+}
+void TTFFont::setFontFamily(const std::string &value) {
+    if (_released || value == _family) return;
+    _family = value; refreshFontAlias(); ++_revision;
+}
+void TTFFont::setFontData(const std::vector<uint8_t> &bytes) {
+    if (_released) return;
+    _bytes = bytes; _source.clear(); refreshFontAlias(); ++_revision;
+}
 bool TTFFont::loadFontData(const std::string &path) {
     auto *files = FileUtils::getInstance();
     if (_released || path.empty() || !files || !files->isFileExist(path)) return false;
     const auto data = files->getDataFromFile(path);
     if (data.isNull() || data.getSize() == 0) return false;
     _bytes.assign(data.getBytes(), data.getBytes() + data.getSize());
-    _source = path; ++_revision;
+    _source = path; refreshFontAlias(); ++_revision;
     return true;
 }
 void TTFFont::clearNativeData() {
     std::vector<uint8_t>().swap(_bytes);
-    _family.clear(); _source.clear(); FontAsset::clearNativeData();
+    _family.clear(); _source.clear(); refreshFontAlias(); FontAsset::clearNativeData();
 }
 bool BitmapFontAsset::setConfigJson(const std::string &json) {
     if (_released) return false;
