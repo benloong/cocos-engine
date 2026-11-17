@@ -33,6 +33,7 @@
 #include <thread>
 #include <vector>
 
+#include "base/Log.h"
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
 #include "2d/components/RichText.h"
@@ -2096,6 +2097,19 @@ void testSpriteSceneBenchmark() {
 } // namespace
 
 int main(int argc, char **argv) {
+    if (argc == 4 && std::string(argv[1]) == "--log-visibility-probe") {
+        // A quiet child must expose completed log records before it exits.
+        // The ready file establishes that both production log calls returned.
+        setvbuf(stdout, nullptr, _IOFBF, 4096);
+        cc::Log::logMessage(cc::LogType::KERNEL, cc::LogLevel::INFO, "M6_LOG_VISIBLE kernel");
+        cc::Log::logMessage(cc::LogType::SCRIPT, cc::LogLevel::WARN, "M6_LOG_VISIBLE script");
+        { std::ofstream ready(argv[2]); ready << "ready"; }
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+        while (!std::filesystem::exists(argv[3]) && std::chrono::steady_clock::now() < deadline) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+        return std::filesystem::exists(argv[3]) ? 0 : 2;
+    }
     setvbuf(stdout, nullptr, _IONBF, 0);
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     _set_error_mode(_OUT_TO_STDERR);

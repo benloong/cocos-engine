@@ -112,7 +112,8 @@
 - [x] Windows Scene/多 Camera 定向矩阵：修复 Graphics 在 onLoad 前丢命令和从未激活实例的 backend 清理；普通 Debug/ASAN 与 Web 同快照 74 图像差值 0，1000 次实际 director 切换、动态纹理创建销毁与 4998 项循环断言通过。见 [报告与边界](./native-2d-m6.4-scene-matrix.md)；不是完整 asset-manager、泄漏、Release GPU 或平台验收。
 - [ ] 所有 native 组件/资产核对 attach/detach、Node 非 owning 槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。
 - [ ] 主线程修改与渲染线程读取的快照/同步边界明确；覆盖场景切换、异步资源完成、禁用后销毁。
-- [ ] 测试工程调度稳定性：本轮 M5 两次在 45 秒窗口内未输出完成标记，保持原预算/断言重跑通过。旧尝试未留存退出码/完整 stdout，根因未证实；已补提前退出诊断，须保留时间线、进程状态与资源回收证据定位，不能用最后一次通过关闭稳定性门禁。
+- [x] Windows M5 日志观测缺陷：真实 Kernel/Script 日志在 stdout 全缓冲子进程中可确定复现“调用已返回、退出前不可见”；Win32 显式刷新后 red/green 通过。唯一运行日志/二进制指纹/双时钟/CPU/退出码诊断已接入，完整文档串行验收一次通过，同一 app 连续 3 次 M5 在原 45 秒预算内无重试通过，见 [报告](./native-2d-m6.4-log-observability.md)。
+- [ ] 测试工程/场景长期调度稳定性：旧两次 M5 缺失没有完整 stdout/退出码，无法逐例还原；本轮关闭日志可见性缺陷不等于全部运行时稳定性完成。持续使用新时间线区分观测、真实停帧和进程退出，并结合下方连续加载/线程/平台矩阵验收。
 - [ ] 连续加载/卸载 1000 次，无新增泄漏/崩溃；采集 native/JS 堆、引用数和 GC，支持的平台执行 ASan/LeakSanitizer 或等价工具并记录覆盖限制。
 - [ ] Win/macOS/iOS/Android/OHOS 的 Debug/Release 构建和关键渲染/字体/事件场景逐格验收；没有运行证据的格子标“待验证”。
 - [ ] 验证模块裁剪/构建组合，覆盖 2d、rich-text、mask、graphics 及现有相关开关；不扩大不下沉模块的范围。

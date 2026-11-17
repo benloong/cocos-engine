@@ -266,6 +266,10 @@
       "sha256": "941459d321eb6f0b1d21b8c838a867af0e72e99b2b1bb6c26651fe125c99dd8e"
     },
     {
+      "file": "native/cocos/base/Log.cpp",
+      "sha256": "6a91553002b4d9419bf256a634ef76217a2a2b422902d1dc16de73cc1e489142"
+    },
+    {
       "file": "native/cocos/bindings/manual/jsb_platform.h",
       "sha256": "589bb714da1f2804c8b10de33616d9abc3fa6a4a46e298713349f3b9b28dffb6"
     },

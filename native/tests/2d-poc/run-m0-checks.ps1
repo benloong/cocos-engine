@@ -62,6 +62,9 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
+    Write-Host '== Win32 redirected log visibility =='
+    & (Join-Path $PSScriptRoot 'run-native-log-visibility-tests.ps1')
+    if ($LASTEXITCODE -ne 0) { throw 'Redirected log visibility failed' }
     Write-Host '== Web/native sprite quad parity =='
     & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'run-sprite-quad-parity.ps1')
     if ($LASTEXITCODE -ne 0) {

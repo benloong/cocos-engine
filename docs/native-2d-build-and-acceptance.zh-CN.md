@@ -190,6 +190,8 @@ pwsh -NoProfile -File v4\native\tests\2d-poc\run-m0-checks.ps1
 - M4 Mask/Graphics；
 - Jest 套件。
 
+M0 在 native PoC 可执行文件存在时还执行 run-native-log-visibility-tests.ps1：安静子进程的日志调用返回后，必须在退出前从重定向 stdout 读到 Kernel/Script 标记；ready/release 与结果保存在 build/log-visibility。
+
 ### 7.2 M2 像素
 
 ```powershell
@@ -216,6 +218,8 @@ pwsh -NoProfile -File v4\native\tests\2d-poc\run-m4-extra-probe.ps1
 ```powershell
 pwsh -NoProfile -File v4\native\tests\2d-poc\run-m5-richtext-probe.ps1
 ```
+
+M5 默认预算保持 45 秒，可用 -TimeoutSeconds 指定；每次 stdout/stderr 和 JSON 持久保存在 native/tests/2d-poc/build/m5-probe-runs，可用 -LogDirectory 指定。报告包含实际 app SHA256、单调/墙钟采样、CPU、退出码与阶段时间线。killedForCleanup 仅表示工具善后，不是应用自然退出码。
 
 ### 7.6 M6.1 SpriteFrame 数据/UV
 
@@ -349,4 +353,4 @@ M6.1 UV parity: PASS
 
 探针更新后的 Windows Debug 定向结果：M4 Graphics GPU=6400、GRAPHICS_STENCIL=1600、nested Mask=3600；M5 原生段=10、Label=9、Sprite=1、colored=8725，样式与 hit/miss 通过。该功能验收不替代 M6 全平台、完整 API、长期内存、性能或严格文字像素门禁；RichText 严格 GPU 对照仍为 9/12，继续按 M6 计划跟踪。
 
-动态图集当前候选：12/12 Web/native 原始 RGBA 的 SHA256 相同，最大通道差值 0。M5 曾两次在原 45 秒预算内缺失完成标记，保持断言重跑通过；已补提前退出码诊断，间歇稳定性仍待定位。各门禁最后一次执行均通过，不表示一次完整串行运行已经稳定通过，详见 [本轮记录](./native-2d-m6.1-dynamic-atlas.md)。
+当前候选已修复 Win32 重定向 stdout 缓冲完成标记的问题：确定性 red/green 与 M0 新增可见性回归通过，完整串行文档门禁一次通过，同一 app 连续 3 次 M5 在原 45 秒预算内无重试通过。12/12 Web/native RGBA SHA256 仍相同，最大通道差值 0。旧两次缺失没有完整资料，不能逐例倒推根因；完整 M6 长期稳定性仍未收口，见 [观测报告](./native-2d-m6.4-log-observability.md)。

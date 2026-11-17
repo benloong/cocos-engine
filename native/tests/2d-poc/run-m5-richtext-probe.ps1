@@ -1,26 +1,42 @@
 param(
-    [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe'
+    [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe',
+    [int]$TimeoutSeconds = 45,
+    [string]$LogDirectory = (Join-Path $PSScriptRoot 'build/m5-probe-runs')
 )
 
 $ErrorActionPreference = 'Stop'
-$log = Join-Path $env:TEMP 'cc-m5-richtext-probe.log'
-Remove-Item $log -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Force -Path $LogDirectory | Out-Null
+$run = (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssfff') + '-' + [guid]::NewGuid().ToString('N').Substring(0,8)
+$log = Join-Path $LogDirectory "$run.stdout.log"
+$reportPath = Join-Path $LogDirectory "$run.json"
+$binarySha = (Get-FileHash -LiteralPath $AppExe -Algorithm SHA256).Hash.ToLowerInvariant()
+$started = (Get-Date).ToUniversalTime()
+$watch = [System.Diagnostics.Stopwatch]::StartNew()
 $proc = Start-Process $AppExe -WorkingDirectory (Split-Path $AppExe) `
     -WindowStyle Hidden `
     -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru
-
+$passed = $false
+$failure = $null
+$samples = [System.Collections.Generic.List[object]]::new()
+$exitBeforeCleanup = $null
+$aliveAtResult = $false
 try {
-    $deadline = (Get-Date).AddSeconds(45)
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
     $lines = @()
     while ((Get-Date) -lt $deadline) {
         Start-Sleep -Milliseconds 500
-        if (Test-Path $log) {
-            $lines = @(Get-Content $log | Select-String -Pattern 'M5_RICHTEXT ')
+        $proc.Refresh()
+        $exited = $proc.HasExited
+        $cpu = $null
+        try { $cpu = $proc.TotalProcessorTime.TotalSeconds } catch {}
+        $samples.Add([ordered]@{ elapsed = $watch.Elapsed.TotalSeconds; wallElapsed = ((Get-Date).ToUniversalTime() - $started).TotalSeconds; exited = $exited; cpu = $cpu })
+        if (Test-Path -LiteralPath $log) {
+            $lines = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M5_RICHTEXT ')
             if ($lines.Count -ge 1) { break }
-            if ($proc.HasExited) { throw "RichText app exited before probe marker (exit=$($proc.ExitCode)); stdout=$log; stderr=$log.err" }
         }
+        if ($exited) { throw "RichText app exited before probe marker (exit=$($proc.ExitCode)); stdout=$log; stderr=$log.err" }
     }
-    if ($lines.Count -lt 1) { throw 'RichText probe missing' }
+    if ($lines.Count -lt 1) { throw "RichText probe missing after $TimeoutSeconds seconds; stdout=$log" }
 
     $data = $lines[0].Line.Substring($lines[0].Line.IndexOf('M5_RICHTEXT ') + 12) | ConvertFrom-Json
     if ($data.children -lt 1) { throw 'RichText produced no segments' }
@@ -35,6 +51,23 @@ try {
     Write-Host 'M5 RichText probe: PASS'
     Write-Host ("  segments={0}, labels={1}, sprites={2}" -f $data.children, $data.labels, $data.sprites)
     Write-Host ("  content={0}x{1}, colored={2}" -f $data.width, $data.height, $data.colored)
+    $passed = $true
+} catch {
+    $failure = $_.Exception.Message
+    throw
 } finally {
-    if (-not $proc.HasExited) { $proc.Kill() }
+    $proc.Refresh()
+    $aliveAtResult = -not $proc.HasExited
+    if (-not $aliveAtResult) { $exitBeforeCleanup = $proc.ExitCode }
+    $elapsed = $watch.Elapsed.TotalSeconds
+    if ($aliveAtResult) { $proc.Kill(); $null = $proc.WaitForExit(5000) }
+    $timeline = @()
+    if (Test-Path -LiteralPath $log) {
+        $timeline = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M1_TEST_NODE|M4_MASK_PIXEL|M4_GRAPHICS |M4_NESTED_MASK|M5_' | ForEach-Object { $_.Line })
+    }
+    [ordered]@{ run = $run; app = $AppExe; appSha256 = $binarySha; processId = $proc.Id; startedUtc = $started.ToString('o'); timeoutSeconds = $TimeoutSeconds;
+        passed = $passed; failure = $failure; elapsedSeconds = $elapsed; aliveBeforeCleanup = $aliveAtResult;
+        exitBeforeCleanup = $exitBeforeCleanup; killedForCleanup = $aliveAtResult; stdout = $log; stderr = "$log.err";
+        samples = @($samples.ToArray()); timeline = $timeline } | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $reportPath -Encoding utf8
+    Write-Host "M5 run report: $reportPath"
 }

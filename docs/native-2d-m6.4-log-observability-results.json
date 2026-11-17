@@ -1,0 +1,440 @@
+{
+  "date": "2026-11-17",
+  "parentCommit": "341c2bed2e060c7712e541c3b9171dafa3c177d5",
+  "workflow": "docs/native-2d-build-and-acceptance.zh-CN.md",
+  "platform": "Windows Debug",
+  "fullSequentialAcceptancePassed": true,
+  "deterministicRegression": {
+    "red": {
+      "path": "native/tests/2d-poc/build/log-visibility/red-d8527ca4c748436b90141494b10e943b/result.json",
+      "sha256": "1a4d2247ae0d978c4cd9ec8d116d087b3ed4666f6c04aa21e5567fa85cbe6f87",
+      "result": {
+        "passed": false,
+        "failure": "Completed Win32 log messages are buffered until later output or process exit",
+        "childAliveBeforeRelease": true,
+        "visibleBeforeRelease": false,
+        "visibleAfterExit": true,
+        "exitCode": 0,
+        "elapsedSeconds": 0.0819609,
+        "stdout": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\log-visibility\\red-d8527ca4c748436b90141494b10e943b\\stdout.log",
+        "stderr": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\log-visibility\\red-d8527ca4c748436b90141494b10e943b\\stderr.log"
+      },
+      "stdoutSha256": "e8341a490e48572348d53be415dd6fd78b751ab01cb8ba7e06d75461be0b6364",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "green": {
+      "path": "native/tests/2d-poc/build/log-visibility/green-a5b4a28fa982421a8f7ca6cd869a4841/result.json",
+      "sha256": "c3b0bca2ba40e8def0cefb742bdf95e365ad686ec11f9b9ee82b26636e3ba475",
+      "result": {
+        "passed": true,
+        "failure": null,
+        "childAliveBeforeRelease": true,
+        "visibleBeforeRelease": true,
+        "visibleAfterExit": true,
+        "exitCode": 0,
+        "elapsedSeconds": 0.1376953,
+        "stdout": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\log-visibility\\green-a5b4a28fa982421a8f7ca6cd869a4841\\stdout.log",
+        "stderr": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\log-visibility\\green-a5b4a28fa982421a8f7ca6cd869a4841\\stderr.log"
+      },
+      "stdoutSha256": "09e7ec93719e4dba9d0099f598e67fa37b320ac92a321440160cfa7875ce739d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "redBinaryRetained": false,
+    "redLoggerSourceParentCommit": "341c2bed2e060c7712e541c3b9171dafa3c177d5"
+  },
+  "preFix": {
+    "app": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\cocos-m1-test.exe",
+    "appSha256": "2edbb88821cabd871ae8e81b612aba822674f694dc9318f6ece084661dd125ae",
+    "runs": [
+      {
+        "path": "native/tests/2d-poc/build/m5-probe-runs/20261117T101602643-8dbc4eae.json",
+        "sha256": "d28644145afaf73d2dfccac63935f2a2f9cd260c1da27ef87af671c1de33b36a",
+        "passed": true,
+        "timeoutSeconds": 45,
+        "elapsedSeconds": 31.5065511,
+        "aliveBeforeCleanup": true,
+        "exitBeforeCleanup": null,
+        "killedForCleanup": true,
+        "coarseLogObservationLagSeconds": 5.1027861328125,
+        "stdout": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T101602643-8dbc4eae.stdout.log",
+          "sha256": "7a294c39d0a4981f5e4798ac5cac1b0078735edab1cc91213613564cacb08cc9"
+        },
+        "stderr": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T101602643-8dbc4eae.stdout.log.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "path": "native/tests/2d-poc/build/m5-probe-runs/20261117T101634245-6d801c93.json",
+        "sha256": "437733b811610453d8983055840e657d7dd910544d6babd0952489057fac9004",
+        "passed": true,
+        "timeoutSeconds": 45,
+        "elapsedSeconds": 31.4533066,
+        "aliveBeforeCleanup": true,
+        "exitBeforeCleanup": null,
+        "killedForCleanup": true,
+        "coarseLogObservationLagSeconds": 4.672593017578125,
+        "stdout": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T101634245-6d801c93.stdout.log",
+          "sha256": "4cab17b521a5288a0cadfe790d417dc059f4914455a313c77b8bf0537d1f53d5"
+        },
+        "stderr": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T101634245-6d801c93.stdout.log.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "path": "native/tests/2d-poc/build/m5-probe-runs/20261117T101705791-01fd8ff0.json",
+        "sha256": "67aa608900ec4becb3742cbbfb2f774c0793aeb36c08478a6dd2af5fa16a13e2",
+        "passed": true,
+        "timeoutSeconds": 45,
+        "elapsedSeconds": 27.8706051,
+        "aliveBeforeCleanup": true,
+        "exitBeforeCleanup": null,
+        "killedForCleanup": true,
+        "coarseLogObservationLagSeconds": 1.642108154296875,
+        "stdout": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T101705791-01fd8ff0.stdout.log",
+          "sha256": "6d4c75a3b60f3890a1e468694d530d99b6c52a7411f2d7b2f6fd2f2161a1e60f"
+        },
+        "stderr": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T101705791-01fd8ff0.stdout.log.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    ]
+  },
+  "postFix": {
+    "app": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\cocos-m1-test.exe",
+    "appSha256": "c2ea0089102f78f3f6b52e50d88bad866362b528d63a34823f6eece2e436690f",
+    "runs": [
+      {
+        "path": "native/tests/2d-poc/build/m5-probe-runs/20261117T103035422-d849874e.json",
+        "sha256": "202043ae0dd0b4fabc812ac1f45a688d2fe8f7c986ae3e5d12c92f38ee448b5f",
+        "passed": true,
+        "timeoutSeconds": 45,
+        "elapsedSeconds": 27.1135538,
+        "appSha256": "c2ea0089102f78f3f6b52e50d88bad866362b528d63a34823f6eece2e436690f",
+        "aliveBeforeCleanup": true,
+        "exitBeforeCleanup": null,
+        "killedForCleanup": true,
+        "coarseLogObservationLagSeconds": 0.570929443359375,
+        "stdout": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T103035422-d849874e.stdout.log",
+          "sha256": "3837027b546ba8f8db800f6ee8409a53a27b64f27ecaa1c91a44845c78bc7921"
+        },
+        "stderr": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T103035422-d849874e.stdout.log.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "path": "native/tests/2d-poc/build/m5-probe-runs/20261117T103116921-7c024fc9.json",
+        "sha256": "fc04e896154eb945f4d6f9f3b823491c19f23e6e12e28902c6bcd27d358ca497",
+        "passed": true,
+        "timeoutSeconds": 45,
+        "elapsedSeconds": 27.5183145,
+        "appSha256": "c2ea0089102f78f3f6b52e50d88bad866362b528d63a34823f6eece2e436690f",
+        "aliveBeforeCleanup": true,
+        "exitBeforeCleanup": null,
+        "killedForCleanup": true,
+        "coarseLogObservationLagSeconds": 0.502415771484375,
+        "stdout": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T103116921-7c024fc9.stdout.log",
+          "sha256": "be2f9d641fce20fa94d81e0387c039069d569e08c762a2992bb65e8d78a6c807"
+        },
+        "stderr": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T103116921-7c024fc9.stdout.log.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "path": "native/tests/2d-poc/build/m5-probe-runs/20261117T103144602-0db73c38.json",
+        "sha256": "745910ff2f3255d563865ac6018ace572b8986258e30693be1ecbcba6d8732bc",
+        "passed": true,
+        "timeoutSeconds": 45,
+        "elapsedSeconds": 27.0116952,
+        "appSha256": "c2ea0089102f78f3f6b52e50d88bad866362b528d63a34823f6eece2e436690f",
+        "aliveBeforeCleanup": true,
+        "exitBeforeCleanup": null,
+        "killedForCleanup": true,
+        "coarseLogObservationLagSeconds": 0.665163818359375,
+        "stdout": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T103144602-0db73c38.stdout.log",
+          "sha256": "8343ce3c3009723f39b9201956b804c75a13eb198b411f898f4d8f28779b0822"
+        },
+        "stderr": {
+          "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m5-probe-runs\\20261117T103144602-0db73c38.stdout.log.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    ]
+  },
+  "lagMeasurement": {
+    "timezoneOffsetMinutes": 480,
+    "logTimestampPrecisionSeconds": 1,
+    "interpretation": "Observed file time minus second-resolution log prefix; approximate interval, not a renderer performance metric."
+  },
+  "acceptance": {
+    "m0FinalJest": {
+      "suites": 8,
+      "tests": 33
+    },
+    "m0IncludesLogChildAndApplicationM2M3": true,
+    "targetedJest": {
+      "suites": 6,
+      "tests": 32
+    },
+    "uv": {
+      "suites": 1,
+      "tests": 1
+    },
+    "m2m3m4m4ExtraM5": true
+  },
+  "rgba": {
+    "tolerance": 1,
+    "passed": true,
+    "captures": [
+      {
+        "name": "sprite-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "mask-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "path": "native/cocos/base/Log.cpp",
+      "sha256": "6a91553002b4d9419bf256a634ef76217a2a2b422902d1dc16de73cc1e489142"
+    },
+    {
+      "path": "native/tests/2d-poc/native/main.cpp",
+      "sha256": "83a9e0425be4be7ac8f2be235f3127a362bcacadcd230ea72000a5cc15201707"
+    },
+    {
+      "path": "native/tests/2d-poc/run-native-log-visibility-tests.ps1",
+      "sha256": "23ae758a03a59897f59a3aa537694555b95c47a8f61ce29ab89e4b5f8cf030fc"
+    },
+    {
+      "path": "native/tests/2d-poc/run-m5-richtext-probe.ps1",
+      "sha256": "f01a233876770818301c9d598245b718aa3d72f01bce140be0b376d94652c14f"
+    },
+    {
+      "path": "native/tests/2d-poc/run-m0-checks.ps1",
+      "sha256": "cc4ff57ed1a780a96f49f60fd2a505177e1ae98f5d4460467855ad39807ad63b"
+    },
+    {
+      "path": "native/tests/2d-poc/audit-m6.cjs",
+      "sha256": "504d1492f909b5cdc4b95d97173dca0c56f9e467ec37040756d955965571d7bb"
+    },
+    {
+      "path": "docs/native-2d-m6.0-baseline.json",
+      "sha256": "b219314500ca1b82d8f9206234e87f8436cc381da8980fcff3929877fbcc7724"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\cocos-m1-test.exe",
+      "sha256": "c2ea0089102f78f3f6b52e50d88bad866362b528d63a34823f6eece2e436690f"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\native\\out\\cc2d_native_poc.exe",
+      "sha256": "aec8a7d64b005867d3167986e5d5460ac25ea7168aa37bcec7e3390657e435dd"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\data\\src\\cocos-js\\cc.js",
+      "sha256": "69f4cb094dbc8f322aecaab0393ac61b5e3fa2e6dbe51e09bc09f7cc64704023"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\Resources\\src\\cocos-js\\cc.js",
+      "sha256": "69f4cb094dbc8f322aecaab0393ac61b5e3fa2e6dbe51e09bc09f7cc64704023"
+    }
+  ],
+  "logs": {
+    "cli": {
+      "path": "native/tests/2d-poc/build/log-visibility-cli.log",
+      "sha256": "73dd7cfdd1cf56c918fb9f2a453b6bfd874d7c3d79ceba72a1d1129083862d12"
+    },
+    "engine": {
+      "path": "native/tests/2d-poc/build/log-visibility-engine.log",
+      "sha256": "cc507ec651ccce3ca7dce1e9303b4e0233b86abf23a77070704d129e7e2dd773"
+    },
+    "resources": {
+      "path": "native/tests/2d-poc/build/log-visibility-resources.log",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "native-build": {
+      "path": "native/tests/2d-poc/build/log-visibility-native-build.log",
+      "sha256": "ad4283675bc62e6459e4b3173d324213c44fd70dfb2c5ce9f6992752296ae642"
+    },
+    "m0": {
+      "path": "native/tests/2d-poc/build/log-visibility-m0.log",
+      "sha256": "c94112cf7c6863023b322476a96f3357b4a890adce22425df163b35f15356f87"
+    },
+    "m2-pixel": {
+      "path": "native/tests/2d-poc/build/log-visibility-m2-pixel.log",
+      "sha256": "90118e6c737331dc81ee8fef4182b895f44555da5df568d5206ae15fdc84f5a4"
+    },
+    "m3-label": {
+      "path": "native/tests/2d-poc/build/log-visibility-m3-label.log",
+      "sha256": "671d1250048330665bf859f719f362fc27350532ea3f76af05a7ba2408f19194"
+    },
+    "m4-mask": {
+      "path": "native/tests/2d-poc/build/log-visibility-m4-mask.log",
+      "sha256": "252c66623dfebbafdb086e43599d8be961e376608051ad9aaf16d78eef3c77ec"
+    },
+    "m4-extra": {
+      "path": "native/tests/2d-poc/build/log-visibility-m4-extra.log",
+      "sha256": "6b7cd4a34b66cafd7d681ffa78c54999a412c3765e1fe9d2f7244d81aac50bcc"
+    },
+    "m5-richtext": {
+      "path": "native/tests/2d-poc/build/log-visibility-m5-richtext.log",
+      "sha256": "0e061cefe2b65ef1897b00872309b29ead8d31a2870a69902179ed65532d46e1"
+    },
+    "uv": {
+      "path": "native/tests/2d-poc/build/log-visibility-uv.log",
+      "sha256": "baa9988d226eb9142770fed6e061bfd0be8adf86531ba0bd84796849fa3c664b"
+    },
+    "jest": {
+      "path": "native/tests/2d-poc/build/log-visibility-jest.log",
+      "sha256": "2d178009e586751f48e26f90d399f5b1a2ac72dd5a069ec1645aaa4543c39436"
+    },
+    "comparison": {
+      "path": "native/tests/2d-poc/build/log-visibility-comparison.log",
+      "sha256": "ef2cebd1a3e9822c9ad5cd1deaf567d232a20dd5fb25e4a586c4d493e3c60286"
+    },
+    "web-cli": {
+      "path": "native/tests/2d-poc/build/log-visibility-web-cli.log",
+      "sha256": "1e11b26da9e1afe182e3f554853ab8c9cba01ae54d5925960a82c12c17644040"
+    },
+    "web-run": {
+      "path": "native/tests/2d-poc/build/log-visibility-web-run.log",
+      "sha256": "ba10a9be500a6451812b3a22f4998af61afcbdde008a2995ca7d9319a86706aa"
+    },
+    "green-build": {
+      "path": "native/tests/2d-poc/build/log-visibility-green-build.log",
+      "sha256": "41d2a570bf18e64a83566010da8f3cf8989e67ca10a2befeab70809324ca9c90"
+    },
+    "red-build": {
+      "path": "native/tests/2d-poc/build/log-visibility-red-build.log",
+      "sha256": "db17be94d841e19c67a4c906d0ba0dfccd0bc457b2c7e7c49880708e379be3e6"
+    }
+  },
+  "preExistingWorktreeHarnessDependencies": [
+    {
+      "path": "native/tests/2d-poc/run-m6-font-assets-tests.ps1",
+      "sha256": "323a904b5526f657c821f2da49da7fdad2200a7beeccd845cc5b6ed472de7186",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1",
+      "sha256": "6c655b4c3b8efccb947864d3e56e65440720b0ce26c5fbdcdac078ff856b7f34",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-layout-tests.ps1",
+      "sha256": "eb3784bfe36f65b9d721bbfb743687ae6a2e165974dcf440be4d7cee6a395c8c",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-richtext-runtime-tests.ps1",
+      "sha256": "bcea79d26edae09695208d5b0c26fed75860549d3f6c36a6e958cb4e3231fa16",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-sprite-api-tests.ps1",
+      "sha256": "27333014b09ac55360272f09d264dda131153fbdf91a545464d518bf8134ef93",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-sprite-atlas-tests.ps1",
+      "sha256": "86c5e2abdd2cdef34c329a390a25452a2d36a8016d2c93d852886ba39dfd62f5",
+      "includedInThisCommit": false
+    }
+  ],
+  "limitations": [
+    "Old two M5 failures have no retained complete stdout/exit code and cannot be individually reconstructed",
+    "Three repeated runs do not close M6 1000-load/lifetime/thread/platform gates",
+    "Only Windows stdout logging was changed and tested; no renderer performance KPI claimed"
+  ]
+}

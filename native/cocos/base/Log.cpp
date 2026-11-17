@@ -158,6 +158,9 @@ void Log::logMessage(LogType type, LogLevel level, const char *formats, ...) {
     }
     SET_CONSOLE_TEXT_COLOR(color);
     wprintf(L"%s", wszBuf);
+    // Redirected stdout is fully buffered; completed records must be observable
+    // without waiting for another message or process shutdown.
+    fflush(stdout);
     SET_CONSOLE_TEXT_COLOR(COLOR_NORMAL);
 
     OutputDebugStringW(wszBuf);
