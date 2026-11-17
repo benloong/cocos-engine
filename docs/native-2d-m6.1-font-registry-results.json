@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-17",
+  "validation": {
+    "nativeDebugRelease": true,
+    "actualFontJsbProbe": true,
+    "reloadsPerBuild": 1000,
+    "registryEntryGrowth": 1,
+    "missingArguments": [
+      0,
+      1
+    ],
+    "failedReloadPreservesPath": true,
+    "temporaryFontFileReleased": true,
+    "runtimeCleanupRegistryEmpty": true,
+    "staticTests": 10
+  },
+  "limitations": [
+    "Per-asset alias release, shared alias ownership and existing Canvas hot reload remain open.",
+    "Only Windows tested. GPU and ASAN were not rerun."
+  ],
+  "hashes": [
+    {
+      "file": "native/cocos/bindings/manual/jsb_platform_win32.cpp",
+      "sha256": "28200761f5ba4351364620777748a7ed95891106de649565e6648d7a6e23cadb"
+    },
+    {
+      "file": "native/tests/2d-poc/native/main.cpp",
+      "sha256": "dcb520c8590612b4d8c2e3f557c2b404f8243135c054c479805bb98fe41a3570"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-registry-debug-build.log",
+      "sha256": "7b45a7bba925da9c5bb648b969945a60659cd506feca565c34f6d1d7311f0acc"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-registry-release-build.log",
+      "sha256": "ffcaef3d7fb65cc2622cc652c78247fd24af983469e74b594e395cced9a77801"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-registry-debug-tests.log",
+      "sha256": "e523784a0d311fc5b6e5877137394c6b771b76c7c72b33c08f6b92d4a9768d1a"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-registry-release-tests.log",
+      "sha256": "f0ee43a197bcb528587e7abe43d7132dc41b464d528ae36d489510fdd8ac1685"
+    },
+    {
+      "file": "native/tests/2d-poc/build/font-registry-static.log",
+      "sha256": "31054a50072987e5917b55e8128f0bf9004118ec1dc56ca2f578e8e0ffc37375"
+    }
+  ]
+}

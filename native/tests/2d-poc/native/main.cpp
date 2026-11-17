@@ -26,6 +26,7 @@
 #include <cmath>
 #include <cstdio>
 #include <fstream>
+#include <filesystem>
 #include <functional>
 #include <memory>
 #include <limits>
@@ -1380,6 +1381,52 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         && namespaceValue.toObject()->getProperty("loadFont", &loadValue) && loadValue.isObject();
     check(loader, "real platform font loader is registered");
     if (loader) {
+        const auto registryBefore = getFontFamilyNameMap().size();
+        for (const auto &arguments : {se::ValueArray{}, se::ValueArray{se::Value("MissingSource_LABEL")}}) {
+            se::Value result;
+            loadValue.toObject()->call(arguments, namespaceValue.toObject(), &result);
+            check(!result.isString() && getFontFamilyNameMap().size() == registryBefore, "missing arguments do not register a font");
+            scriptEngine->clearException();
+        }
+        const std::string alias = "M6ReloadFont_LABEL";
+        auto load = [&](const std::string &source) {
+            se::Value result;
+            const se::ValueArray arguments{se::Value(alias), se::Value(source)};
+            check(loadValue.toObject()->call(arguments, namespaceValue.toObject(), &result), "font registry call");
+            return result.isString();
+        };
+        check(load(std::string("url('") + CC2D_FONT_FIXTURE + "')"), "font alias initially loads");
+        const auto originalPath = getFontFamilyNameMap().at(alias);
+        check(!load("url('C:/__cc2d_missing_font_fixture__.ttf')"), "missing absolute font path is rejected");
+        check(!load("not-a-font-url"), "malformed font source is rejected");
+        check(getFontFamilyNameMap().at(alias) == originalPath, "failed reload preserves previous font path");
+        // This fixture owns one temporary directory and file; no recursive deletion.
+        const auto directory = std::filesystem::temp_directory_path()
+            / ("cc2d-font-registry-" + std::to_string(GetCurrentProcessId()) + "-" + std::to_string(GetTickCount64()));
+        const bool created = std::filesystem::create_directory(directory);
+        check(created, "font reload fixture creates its own directory");
+        if (created) {
+            const auto replacement = directory / "replacement.ttf";
+            check(std::filesystem::copy_file(CC2D_FONT_FIXTURE, replacement), "font reload fixture copies independent source");
+            check(load("url('" + replacement.generic_string() + "')"), "font alias reload succeeds");
+            check(getFontFamilyNameMap().at(alias) == replacement.generic_string(), "same alias now selects replacement path");
+            check(getFontFamilyNameMap().size() == registryBefore + 1, "same alias reload does not grow registry");
+            for (int iteration = 0; iteration < 1000; ++iteration) {
+                const auto &path = iteration % 2 == 0 ? originalPath : replacement.generic_string();
+                check(load("url('" + path + "')"), "repeated font alias reload succeeds");
+                check(getFontFamilyNameMap().at(alias) == path && getFontFamilyNameMap().size() == registryBefore + 1,
+                      "repeated reload replaces exactly one registry entry");
+            }
+            {
+                cc::CanvasRenderingContext2D canvas(1, 1);
+                canvas.setFont("24px " + alias);
+                checkNear(canvas.measureText("Atlas 123").width, 95.9765625F, "reloaded alias selects real custom font");
+            }
+            // Restore a persistent source before removing the owned fixture.
+            check(load(std::string("url('") + CC2D_FONT_FIXTURE + "')"), "alias reload restores source");
+            check(std::filesystem::remove(replacement), "font reload releases source file handles");
+            check(std::filesystem::remove(directory), "font reload removes empty fixture directory");
+        }
         const se::ValueArray arguments{se::Value("M6StrokeFont_LABEL"), se::Value(std::string("url('") + CC2D_FONT_FIXTURE + "')")};
         check(loadValue.toObject()->call(arguments, namespaceValue.toObject(), &family) && family.isString(), "real loader registers Canvas test font");
         auto capture = [](bool explicitDefaults, bool invalidWidths) {
@@ -1983,6 +2030,9 @@ int main(int argc, char **argv) {
         std::fflush(stdout);
     }
     scriptEngine->cleanup();
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    check(getFontFamilyNameMap().empty(), "script cleanup releases Windows font aliases");
+#endif
     delete scriptEngine;
     delete root;
     delete files;

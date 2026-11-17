@@ -43,7 +43,7 @@ static bool jsbLoadFont(se::State &s) {
     const auto &args = s.args();
     size_t argc = args.size();
     CC_UNUSED bool ok = true;
-    if (argc >= 1) {
+    if (argc >= 2) {
         s.rval().setNull();
 
         ccstd::string originalFamilyName;
@@ -62,25 +62,29 @@ static bool jsbLoadFont(se::State &s) {
         }
 
         fontFilePath = FileUtils::getInstance()->fullPathForFilename(fontFilePath);
-        if (fontFilePath.empty()) {
+        if (originalFamilyName.empty() || fontFilePath.empty() || !FileUtils::getInstance()->isFileExist(fontFilePath)) {
             SE_LOGE("Font (%s) doesn't exist!", fontFilePath.c_str());
             return true;
         }
 
         // just put the path info, used at CanvasRenderingContext2DImpl::updateFont()
-        fontFamilyNameMap.emplace(originalFamilyName, fontFilePath);
+        fontFamilyNameMap.insert_or_assign(originalFamilyName, fontFilePath);
 
         s.rval().setString(originalFamilyName);
 
         return true;
     }
 
-    SE_REPORT_ERROR("wrong number of arguments: %d, was expecting %d", (int)argc, 1);
+    SE_REPORT_ERROR("wrong number of arguments: %d, was expecting %d", (int)argc, 2);
     return false;
 }
 SE_BIND_FUNC(jsbLoadFont)
 
 bool register_platform_bindings(se::Object * /*obj*/) { // NOLINT(readability-identifier-naming)
     __jsbObj->defineFunction("loadFont", _SE(jsbLoadFont));
+    se::ScriptEngine::getInstance()->addAfterCleanupHook([]() {
+        // Values own paths only; Canvas instances own their selected font faces.
+        decltype(fontFamilyNameMap)().swap(fontFamilyNameMap);
+    });
     return true;
 }
