@@ -149,6 +149,16 @@ public:
         if (SUCCEEDED(hr)) hr = sink->Close();
         sink.reset();
         if (FAILED(hr)) return hr;
+        // Italic belongs to the glyph outline, not to the stroke's pen.
+        // Widen after skewing so round joins and stroke width stay circular.
+        ComOwner<ID2D1TransformedGeometry> italicPath;
+        ID2D1Geometry *strokePath = path.get(); // borrowed from local owners
+        const bool skewBeforeStroke = italic && lineWidth > 0;
+        if (skewBeforeStroke) {
+            hr = _factory->CreateTransformedGeometry(path.get(), D2D1::Matrix3x2F(1, 0, -.25F, 1, 0, 0), italicPath.out());
+            if (FAILED(hr)) return hr;
+            strokePath = italicPath.get();
+        }
         // Canvas fake bold uses a filled regular outline plus this stroke.
         const float t = std::clamp((run->fontEmSize - 9.F) / 27.F, 0.F, 1.F);
         const float thickness = lineWidth + (bold ? run->fontEmSize * ((1.F - t) / 24.F + t / 32.F) : 0.F);
@@ -161,7 +171,7 @@ public:
         hr = _factory->CreateStrokeStyle(properties, nullptr, 0, style.out());
         if (SUCCEEDED(hr)) hr = _factory->CreatePathGeometry(stroke.out());
         if (SUCCEEDED(hr)) hr = stroke->Open(sink.out());
-        if (SUCCEEDED(hr)) hr = path->Widen(thickness, style.get(), nullptr, .01F, sink.get());
+        if (SUCCEEDED(hr)) hr = strokePath->Widen(thickness, style.get(), nullptr, .01F, sink.get());
         if (SUCCEEDED(hr)) hr = sink->Close();
         sink.reset();
         if (FAILED(hr)) return hr;
@@ -176,7 +186,8 @@ public:
             shape = united.get();
         }
 
-        const D2D1::Matrix3x2F world(1, 0, italic ? -.25F : 0, 1, x, y);
+        const float shear = italic && !skewBeforeStroke ? -.25F : 0;
+        const D2D1::Matrix3x2F world(1, 0, shear, 1, x, y);
         D2D1_RECT_F bounds{};
         hr = shape->GetBounds(&world, &bounds);
         if (FAILED(hr)) return hr;
@@ -197,7 +208,7 @@ public:
         if (FAILED(hr)) return hr;
         ComOwner<SnappedOutlineSink> adapter;
         adapter.reset(new SnappedOutlineSink(sink.get()));
-        const D2D1::Matrix3x2F transform(static_cast<float>(scale), 0, italic ? -.25F * scale : 0, 1, (x - left) * scale, y - top);
+        const D2D1::Matrix3x2F transform(static_cast<float>(scale), 0, shear * scale, 1, (x - left) * scale, y - top);
         hr = shape->Simplify(D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get());
         if (SUCCEEDED(hr)) hr = adapter->Close();
         if (SUCCEEDED(hr)) hr = sink->Close();

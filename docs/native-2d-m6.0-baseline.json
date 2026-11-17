@@ -303,7 +303,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
-      "sha256": "bd8c7a0dfd72d89ead04bbee4957bed93ccd0fb21ba53b831f7b76ac76c1dced"
+      "sha256": "0b0e6b00a816ea3a705da4662d7649fb3a82f6b1c054cbedc8591722699736b1"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
