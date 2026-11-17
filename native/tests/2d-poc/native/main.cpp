@@ -290,6 +290,16 @@ void testBitmapGpuGeometry() {
     source->setWrapMode(cc::TextureBase::WrapMode::CLAMP_TO_EDGE, cc::TextureBase::WrapMode::CLAMP_TO_EDGE);
     label.prepareRenderEntity(1.F);
     check(entity->getStaticRenderDrawInfo(0)->getSampler() == source->getGFXSampler(), "Bitmap sampler changes rebind without font reassignment");
+    label.setFontSize(8); label.setSpacingX(2); label.setLineHeight(6);
+    const auto measured = label.measureUnwrappedText("AA");
+    checkNear(measured.width, 10.F, "Bitmap measurement scales glyphs and applies spacing");
+    checkNear(measured.height, 6.F, "Bitmap measurement uses configured line height without TTF baseline padding");
+    label.setOverflow(1); transform.setContentSize(24, 12); label.updateRenderData();
+    checkNear(label.getContentWidth(), 24.F, "Bitmap clamp preserves fixed content width");
+    transform.setContentSize(20, 10); label.updateRenderData();
+    checkNear(label.getContentWidth(), 20.F, "Explicit bitmap update observes transform resize before prepare");
+    checkNear(label.getContentHeight(), 10.F, "Explicit bitmap update preserves new clamp height");
+    label.setOverflow(0); label.setFontSize(4); label.setSpacingX(0); label.setLineHeight(4);
     label.setString(std::string(17000, 'A')); label.prepareRenderEntity(1.F);
     check(label.getRenderedBitmapGlyphCount() == 17000 && entity->getStaticDrawInfoSize() == 2, "Large bitmap text chunks all glyphs without truncating");
     check(entity->getStaticRenderDrawInfo(0)->getVbCount() == 65532 && entity->getStaticRenderDrawInfo(1)->getVbCount() == 2468,

@@ -27,3 +27,5 @@ Label 通过 IntrusivePtr 持有字体、源帧及渲染帧；Sprite 拥有复�
 首次原始像素比较暴露默认 CENTER/CENTER 的已有 BMFont 布局缺口：两端颜色相同，字形边界位置不同。本矩阵随后明确为 TOP/LEFT，以隔离本节点的图集 GPU 采样；默认居中差异保持未解决，不算视觉门禁通过。完整字体缩放、spacing、换行、各 overflow、对齐与裁剪语义、trim/offset 组合、复杂文本仍需单独实现并扩大矩阵。
 
 本节点不迁移 DynamicAtlasManager/Atlas 排布算法，不代表自动合图、图集满/压缩来源回退、真实 bundle/旧场景/Prefab、异步/延迟销毁、长期内存、性能、Release、ASAN 或其他平台验收完成。RichText 严格图像历史结果仍为 9/12。
+
+后续状态：默认居中、字号/间距/换行和四种 overflow 已由[原生布局节点](./native-2d-m6.1-bitmap-layout.md)继续实现，并扩大到 76 组布局及默认居中图集 GPU 对照；上文未解决记录描述本节点当时的快照，不再作为当前居中对齐阻塞。复杂布局/资产与终态 M6 范围仍按后续计划验收。

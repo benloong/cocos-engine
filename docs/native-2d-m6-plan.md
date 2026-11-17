@@ -60,7 +60,8 @@
 - [x] 字体字号入口复核：BitmapFont/LabelAtlas 忽略非有限字号及 JSB float 溢出，保留默认/零/小数语义；重复赋值、销毁后迟到赋值保持版本稳定。Windows Debug/Release native 与实际 JSB、7 个 Jest suite（68 项）通过，见字体资产报告。
 - [x] SpriteFrame 动态合图状态：native 持有原图/图集与恢复坐标，打包/恢复、独立 clone、覆盖与析构所有权通过 1000 次循环和实际 JSB；补内存图片 buffer 上传及 Web Mask 默认阈值同步。文档工程各门禁最后执行通过，12/12 Web/native RGBA 字节相同；M5 标记可见性已由后续日志节点修复；自动打包、完整资源/生命周期与平台范围仍待验收，见 [报告](./native-2d-m6.1-dynamic-atlas.md)和[日志观测](./native-2d-m6.4-log-observability.md)。
 - [x] BitmapFont/LabelAtlas GPU 图集消费者：原生字形 quad 直接采样活动图集，移除整段 CPU 纹理合成；帧 revision、纹理尺寸/同尺寸 GPU 重建、sampler 变化与清空引用回归通过。真实 Windows Debug 工程覆盖两类字体、普通/旋转帧的原图/打包/恢复，并验证 70000 字形分块；证据与布局边界见[报告](./native-2d-m6.1-bitmap-gpu.md)。
-- [ ] BitmapFont/LabelAtlas 完整布局：已观察到默认 CENTER/CENTER 与 Web 字形位置不同；字体/源字号缩放、spacing、换行、各 overflow、对齐与裁剪仍须实现并单独做 GPU 对照。本轮图集矩阵使用明确 TOP/LEFT 条件，不关闭此项。
+- [x] BitmapFont/LabelAtlas 基础原生布局：修复默认 CENTER/CENTER，统一字号/源字号缩放、spacing、词/CJK 换行、九种对齐与四种 overflow/裁剪、无换行测量和尺寸更新；2307 组实际 Web 数值对照在 g++/MSVC 通过，含 kerning 的 76 组布局 GPU 与 12 组默认居中合图图像全部字节一致，文档完整串行门禁通过，见[布局报告](./native-2d-m6.1-bitmap-layout.md)。
+- [ ] 字体复杂布局与资产边界：补充平面 Unicode、bidi/shaping、任意 trim/offset/mesh、源字号元数据变更等入口，以及真实旧资产/场景/Prefab 和资源生命周期矩阵继续验收；基础布局通过不关闭字体终态项。
 - [ ] 动态合图完整验收：Sprite/Mask 和受控 BMFont/LabelAtlas GPU 采样已有证据；自动触发、压缩/不可打包来源、图集满回退、完整资源/生命周期与跨平台仍待验收。manager/Atlas 排布迁移须有独立范围结论，不能默认为完成。
 - [ ] 补旧资产/场景/prefab 加载、instantiate/clone、延迟依赖解析、重复加载释放的原生回归。
 

@@ -45,6 +45,11 @@ try {
     $bitmap = $bitmapLine[0].Line.Substring($bitmapLine[0].Line.IndexOf('M6_BITMAP_GPU_READY ') + 20) | ConvertFrom-Json
     if ($bitmap.captures -ne 12 -or $bitmap.native -ne $true -or $bitmap.checks.Count -ne 4 -or
         @($bitmap.checks | Where-Object { -not $_.gpuOnly -or $_.quads -ne 2 }).Count) { throw 'Bitmap GPU submission checks failed' }
+    $layoutMetrics = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LAYOUT ' | ForEach-Object {
+        $_.Line.Substring($_.Line.IndexOf('M6_BITMAP_LAYOUT ') + 17) | ConvertFrom-Json
+    })
+    if ($bitmap.layoutCaptures -ne 76 -or $layoutMetrics.Count -ne 76 -or @($layoutMetrics.name | Select-Object -Unique).Count -ne 76) { throw 'Bitmap layout captures missing' }
+    $layoutMetrics | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'build/bitmap-native-layout-metrics.json') -Encoding utf8
     $largeLine = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LARGE ')
     if ($largeLine.Count -ne 1) { throw 'Large bitmap GPU completion missing' }
     $large = $largeLine[0].Line.Substring($largeLine[0].Line.IndexOf('M6_BITMAP_LARGE ') + 16) | ConvertFrom-Json

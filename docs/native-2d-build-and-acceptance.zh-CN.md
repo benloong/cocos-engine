@@ -42,7 +42,7 @@ New-Item -ItemType Junction `
 
 `cocos-m1-test/tools/build-engine.cjs` 使用 v4 的 `@cocos/ccbuild` 和 `cc.config.json` 的 NATIVE override。
 
-构建前，从 v4 同步受版本管理的验收探针（保留测试工程现有 `.meta` UUID）：
+构建前，从 v4 同步受版本管理的验收探针（LabelSpike、M4Probe、M4ExtraProbe、RichTextProbe、BitmapGpuProbe；保留测试工程现有 `.meta` UUID）：
 
 ```powershell
 cd C:\Users\wangbenlong\Works\cocos-engine-worktrees\v4
@@ -269,15 +269,16 @@ node native/tests/2d-poc/compare-dynamic-atlas.cjs
 
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 
-涉及字体图集采样时，M5 探针会先运行 BitmapGpuProbe：BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，共 12 份 RGBA。字体字号与源字号均为 16，固定 TOP/LEFT、CLAMP、64×32 内容框；完整对齐、缩放及 overflow 布局仍由 M6 独立验收。打包纹理没有 CPU ImageAsset，必须直接提交原生字形网格，CPU 诊断构建次数为 0。另在真实 native GPU 路径提交 70000 字形、5 个 chunk，随后清空并检查引用。
+涉及字体图集采样时，M5 探针会先运行 BitmapGpuProbe：BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，共 12 份 RGBA。原有 12 份图集捕获现使用默认 CENTER/CENTER、CLAMP、64×32 内容框；另加入两类字体/普通和旋转帧各 19 组布局，共 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距和裁剪。打包纹理没有 CPU ImageAsset，必须直接提交原生字形网格，CPU 诊断构建次数为 0。另在真实 native GPU 路径提交 70000 字形、5 个 chunk，随后清空并检查引用。
 
 ```powershell
 node native/tests/2d-poc/run-dynamic-atlas-web.cjs --bitmap
 pwsh -NoProfile -File native/tests/2d-poc/run-m5-richtext-probe.ps1
 node native/tests/2d-poc/compare-bitmap-gpu.cjs
+node native/tests/2d-poc/compare-bitmap-layout.cjs
 ```
 
-两端每份图像必须为 256×256 RGBA，通道容差 1；打包/恢复与本端原图必须字节相同。完成标记、字形数、实际 GPU 纹理绑定、大字形分块/清空检查也必须通过。
+两端每份图像必须为 256×256 RGBA，通道容差 1；打包/恢复与本端原图必须字节相同。完成标记、字形数、实际 GPU 纹理绑定、大字形分块/清空检查也必须通过。布局对照还要求 76 组内容尺寸、actualFontSize 和字形数相同（数值容差 0.0001）。M0 已加入 run-m6-bitmap-layout-parity.ps1，执行 2307 组实际 Web TextProcessing 与原生布局核心对照；可传 NativeExecutables 追加其他编译器的同一夹具。
 
 ## 8. 完整验收顺序
 
@@ -369,3 +370,5 @@ M6.1 UV parity: PASS
 当前候选已修复 Win32 重定向 stdout 缓冲完成标记的问题：确定性 red/green 与 M0 新增可见性回归通过，完整串行文档门禁一次通过，同一 app 连续 3 次 M5 在原 45 秒预算内无重试通过。12/12 Web/native RGBA SHA256 仍相同，最大通道差值 0。旧两次缺失没有完整资料，不能逐例倒推根因；完整 M6 长期稳定性仍未收口，见 [观测报告](./native-2d-m6.4-log-observability.md)。
 
 字体 GPU 消费者节点也已完成同一候选的完整串行验收：M0、M2–M5、UV 与定向 Jest 全通过；BitmapFont/LabelAtlas 的 12/12 RGBA 和 Sprite/Mask 的 12/12 RGBA 最大通道差值均为 0，70000 字形/5 块的 GPU 提交及清空通过。仅覆盖固定 TOP/LEFT 字体采样条件，默认 CENTER/CENTER 等完整布局继续待办，见[报告与边界](./native-2d-m6.1-bitmap-gpu.md)。
+
+最新 BMFont 布局候选已完成完整串行验收：2307 组 g++/MSVC 实际 Web 数值对照通过；含 kerning 的 76 组布局、12 组默认居中字体合图、12 组 Sprite/Mask 图像全部字节一致，M5 保持 45 秒预算。M3 探针现固定字号/源配置，检查精确尺寸与字形提交；不再用旧 CPU 纹理宽度阈值代替 kerning GPU 验收，见[布局报告](./native-2d-m6.1-bitmap-layout.md)。

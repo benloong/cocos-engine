@@ -4,7 +4,7 @@ const path = require('path');
 const project = path.resolve(process.argv[2] || path.join(__dirname, '../../../../cocos-m1-test'));
 const target = path.join(project, 'assets/scripts');
 if (!fs.existsSync(path.join(project, 'package.json')) || !fs.existsSync(target)) throw new Error('Acceptance project not found: ' + project);
-for (const file of ['M4Probe.ts', 'M4ExtraProbe.ts', 'RichTextProbe.ts', 'BitmapGpuProbe.ts']) {
+for (const file of ['LabelSpike.ts', 'M4Probe.ts', 'M4ExtraProbe.ts', 'RichTextProbe.ts', 'BitmapGpuProbe.ts']) {
     if (!fs.existsSync(path.join(target, file + '.meta'))) {
         const meta = path.join(__dirname, 'fixtures/acceptance', file + '.meta');
         if (!fs.existsSync(meta)) throw new Error('Expected existing probe metadata: ' + file);

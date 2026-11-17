@@ -45,7 +45,10 @@ try {
     if ($bitmapLines.Count -lt 1) { throw 'BMFont label missing' }
     $bitmap = $bitmapLines[0].Line.Substring($bitmapLines[0].Line.IndexOf('M3_BITMAP_LABEL ') + 16) | ConvertFrom-Json
     if ($bitmap.textureWidth -le 0 -or $bitmap.opaque -le 0) { throw 'BMFont atlas path produced no pixels' }
-    if ($bitmap.textureWidth -ge 66) { throw 'BMFont kerning was not applied' }
+    # Kerning GPU pixels are compared in the fixed M5 BitmapGpuProbe matrix.
+    # This fixture now observes actual scaled layout and submissions, not a CPU texture-width proxy.
+    if ($bitmap.width -ne 80 -or $bitmap.height -ne 20 -or $bitmap.actualFontSize -ne 16 -or
+        $bitmap.glyphs -ne 4 -or $bitmap.vertices -ne 16 -or $bitmap.indices -ne 24) { throw 'BMFont layout or glyph submission mismatch' }
 
     $charAsciiLines = @(Get-Content $log | Select-String -Pattern 'M3_CHAR_ASCII ')
     if ($charAsciiLines.Count -lt 1) { throw 'ASCII CHAR Label missing' }

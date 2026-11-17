@@ -18,6 +18,7 @@ export class BitmapGpuProbe {
         const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 100));
         const names: string[] = [];
         const checks: any[] = [];
+        const layoutMetrics: any[] = [];
         try {
             for (const kind of ['bitmap', 'atlas']) for (const rotated of [false, true]) {
                 const width = rotated ? 16 : 32, height = rotated ? 32 : 16;
@@ -37,7 +38,7 @@ export class BitmapGpuProbe {
                 frame.rect = new Rect(0, 0, 32, 16); frame.originalSize = new Size(32, 16);
                 const font = kind === 'bitmap' ? new BitmapFont() : new LabelAtlas();
                 font.fontSize = 16; font.spriteFrame = frame;
-                font.fntConfig = { fontSize: 16, commonHeight: 16, atlasName: 'memory', kerningDict: {}, fontDefDictionary: {
+                font.fntConfig = { fontSize: 16, commonHeight: 16, atlasName: 'memory', kerningDict: { [(65 << 16) | 66]: -4 }, fontDefDictionary: {
                     65: { rect: { x: 0, y: 0, width: 16, height: 16 }, xOffset: 0, yOffset: 0, xAdvance: 16 },
                     66: { rect: { x: 16, y: 0, width: 16, height: 16 }, xOffset: 0, yOffset: 0, xAdvance: 16 },
                 } } as any;
@@ -48,8 +49,7 @@ export class BitmapGpuProbe {
                 const label = node.addComponent(Label);
                 label.fontSize = 16; label.lineHeight = 16; label.font = font; label.useSystemFont = false;
                 label.overflow = Label.Overflow.CLAMP; label.enableWrapText = false;
-                // This matrix isolates GPU atlas sampling; full bitmap alignment/layout remains a separate gate.
-                label.horizontalAlign = 0; label.verticalAlign = 0;
+                label.horizontalAlign = 1; label.verticalAlign = 1;
                 label.color = new Color(128, 192, 255, 200); label.string = 'AB';
                 transform.setContentSize(64, 32);
                 const manager = new DynamicAtlasManager(); manager.textureSize = 128; manager.enabled = true;
@@ -94,8 +94,36 @@ export class BitmapGpuProbe {
                     manager.reset(); refresh();
                     if (frame.original || frame.texture !== texture) throw new Error('Bitmap frame did not restore');
                     await capture('restored');
+                    const layouts: any[] = [];
+                    for (let h = 0; h < 3; h++) for (let v = 0; v < 3; v++) layouts.push({ id: 'align-' + h + '-' + v, horizontalAlign: h, verticalAlign: v });
+                    layouts.push({ id: 'small', fontSize: 8 }, { id: 'large', fontSize: 24 },
+                        { id: 'spacing', spacingX: 3 }, { id: 'wrap', string: 'AB AB AB', enableWrapText: true, width: 40, height: 64 },
+                        { id: 'none', overflow: Label.Overflow.NONE, string: 'AB\nA' },
+                        { id: 'resize', overflow: Label.Overflow.RESIZE_HEIGHT, string: 'AB AB AB', width: 40 },
+                        { id: 'shrink', overflow: Label.Overflow.SHRINK, string: 'ABABAB', width: 40, height: 20 },
+                        { id: 'clamp', string: 'ABAB', width: 24, height: 8 },
+                        { id: 'line-height', string: 'AB\nA', lineHeight: 24, height: 64 },
+                        { id: 'shrink-wrap', overflow: Label.Overflow.SHRINK, string: 'AB AB AB', enableWrapText: true, width: 40, height: 24 });
+                    for (const settings of layouts) {
+                        Object.assign(label, { fontSize: 16, lineHeight: 16, spacingX: 0, horizontalAlign: 1, verticalAlign: 1,
+                            overflow: Label.Overflow.CLAMP, enableWrapText: false, string: 'AB' });
+                        for (const key of Object.keys(settings)) if (key !== 'id' && key !== 'width' && key !== 'height') (label as any)[key] = settings[key];
+                        transform.setContentSize(settings.width ?? 64, settings.height ?? 32);
+                        await wait();
+                        const raw = rt.readPixels();
+                        if (!raw || raw.length !== 262144) throw new Error('Invalid bitmap layout capture');
+                        const data = new Uint8Array(raw), file = name + '-layout-' + settings.id;
+                        if (sys.isNative) {
+                            const output = native.fileUtils.getDefaultResourceRootPath() + 'm6-bitmap-captures/';
+                            if (!native.fileUtils.writeDataToFile(data.buffer, output + file + '.rgba')) throw new Error('Bitmap layout output failed');
+                        } else if (!(await fetch('/m6-bitmap-capture?name=' + file, { method: 'POST', body: data })).ok) throw new Error('Bitmap layout collector failed');
+                        const glyphs = sys.isNative ? (label as any)._native.getRenderedBitmapGlyphCount() : (label as any).renderData.vertexCount / 4;
+                        const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, glyphs };
+                        layoutMetrics.push(metric); console.log('M6_BITMAP_LAYOUT ' + JSON.stringify(metric));
+                    }
                     if (sys.isNative && kind === 'bitmap' && !rotated) {
                         const backend = (label as any)._native;
+                        label.overflow = Label.Overflow.NONE; label.enableWrapText = false; label.fontSize = 16; label.lineHeight = 16;
                         label.string = 'A'.repeat(70000); await wait();
                         const entity = backend.getRenderEntity();
                         const overflow = entity.getStaticRenderDrawInfo(4);
@@ -113,7 +141,7 @@ export class BitmapGpuProbe {
                     font.destroy(); frame.destroy(); texture.destroy(); image.destroy(); await wait();
                 }
             }
-            console.log('M6_BITMAP_GPU_READY ' + JSON.stringify({ captures: names.length, checks, native: sys.isNative }));
+            console.log('M6_BITMAP_GPU_READY ' + JSON.stringify({ captures: names.length, layoutCaptures: layoutMetrics.length, checks, native: sys.isNative }));
         } finally {
             for (const state of states) state.node.active = state.active;
             camera.targetTexture = oldTarget; camera.orthoHeight = oldHeight;

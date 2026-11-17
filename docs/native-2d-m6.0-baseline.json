@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "26fba73644a3a88d446b3be3a0ae7840bbe79667a17712421d228249ccdb4aef"
+      "sha256": "dd0927256a96812de091430c7d62f901922d0bf9ca6743927d472ec4b0c0959a"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -176,6 +176,10 @@
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
       "sha256": "f425ca31193106ccbf822bf048a5b7de17b6f4d1c3acbaa1d631826a6469664a"
+    },
+    {
+      "file": "native/cocos/2d/renderer/BitmapFontLayout.h",
+      "sha256": "fa7f7a0d5f280e2e0180588d75872842b86b167a91b9e635ab98731695840e6c"
     },
     {
       "file": "native/cocos/2d/renderer/DynamicAtlas.cpp",

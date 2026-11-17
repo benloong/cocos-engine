@@ -1,0 +1,1194 @@
+{
+  "date": "2026-11-17",
+  "baseCommit": "29e4322c853a2e21414e9c7ce69a2616ced3393a",
+  "scope": "Windows Debug BMFont/LabelAtlas layout; full M6 remains open",
+  "sourceHashes": [
+    {
+      "file": "native/cocos/2d/components/Label.cpp",
+      "sha256": "73a07d367738e4fa4761fca82b5e2bec13f8da1eb4d27fd7d481a12ee77fe227"
+    },
+    {
+      "file": "native/cocos/2d/renderer/BitmapFontLayout.h",
+      "sha256": "fa7f7a0d5f280e2e0180588d75872842b86b167a91b9e635ab98731695840e6c"
+    },
+    {
+      "file": "native/tests/2d-poc/native/main.cpp",
+      "sha256": "94c7e3b6f77cb489171b80ea26f25e72a30e27fe02dc15766f4aceab47f0e2c8"
+    },
+    {
+      "file": "native/tests/2d-poc/fixtures/acceptance/BitmapGpuProbe.ts",
+      "sha256": "47986f02928837d2530336abc984e3ba06d5984f23cd43a8b26b426fa48858d0"
+    },
+    {
+      "file": "native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts",
+      "sha256": "d9d5f6cfb517e242b9333daaa3359a4de33afe178a1e2e54cc3d464356ccd1ba"
+    },
+    {
+      "file": "native/tests/2d-poc/build-bitmap-layout-cases.cjs",
+      "sha256": "b1ecc6cb4604010bcfa0a81c03cab302970bf3240fbce961980298e69a6aaf90"
+    },
+    {
+      "file": "native/tests/2d-poc/test_bitmap_layout.cpp",
+      "sha256": "50cc7c3b8916f0d62ea169ac4d86c37c65a0fa94ef644654ca6d2708be741d80"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-bitmap-layout-parity.ps1",
+      "sha256": "d7abc0a0ce352f803ff95f0af7b7f3541354d2466d94791a4df058313ce5e771"
+    },
+    {
+      "file": "tests/ui/native-bitmap-layout-parity.test.ts",
+      "sha256": "92af333b9868b4eee389c5aba1a2e729bd0eb9bfacf67590b26932afc60f24e2"
+    },
+    {
+      "file": "native/tests/2d-poc/compare-bitmap-layout.cjs",
+      "sha256": "f44aecda3c13dde2e6d9140a6653cc821ba2142c2b107c6cf55750ac2bc785d3"
+    },
+    {
+      "file": "native/tests/2d-poc/run-dynamic-atlas-web.cjs",
+      "sha256": "ba888551d1feeb1285240fe956eb22328570a6508dee39d8ab17c2a7779f30c4"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m0-checks.ps1",
+      "sha256": "8e570e277fadea24b952c50bc31fa185f1dab966e687f18ed521eefc27ba67f9"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m3-label-probe.ps1",
+      "sha256": "f248f73d169e31bba9a4897a004e8fdc9e406000fdf6c008d478d7712cb90fcd"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m5-richtext-probe.ps1",
+      "sha256": "c681c4cc78b9918b6aebe7404064ab685e95c6434c1a49e4c26c614a33a2af0f"
+    },
+    {
+      "file": "native/tests/2d-poc/sync-acceptance-probes.cjs",
+      "sha256": "292112d843ddeece7dbb6eabe0ff3873289b90907afa0162205e7d57e0e0ce66"
+    }
+  ],
+  "preExistingTestInputsNotCommitted": [
+    {
+      "file": "native/tests/2d-poc/run-m6-font-assets-tests.ps1",
+      "sha256": "323a904b5526f657c821f2da49da7fdad2200a7beeccd845cc5b6ed472de7186"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1",
+      "sha256": "6c655b4c3b8efccb947864d3e56e65440720b0ce26c5fbdcdac078ff856b7f34"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-layout-tests.ps1",
+      "sha256": "eb3784bfe36f65b9d721bbfb743687ae6a2e165974dcf440be4d7cee6a395c8c"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-richtext-runtime-tests.ps1",
+      "sha256": "bcea79d26edae09695208d5b0c26fed75860549d3f6c36a6e958cb4e3231fa16"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-sprite-api-tests.ps1",
+      "sha256": "27333014b09ac55360272f09d264dda131153fbdf91a545464d518bf8134ef93"
+    },
+    {
+      "file": "native/tests/2d-poc/run-m6-sprite-atlas-tests.ps1",
+      "sha256": "86c5e2abdd2cdef34c329a390a25452a2d36a8016d2c93d852886ba39dfd62f5"
+    }
+  ],
+  "pureParity": {
+    "inputs": 2307,
+    "backends": [
+      "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\bitmap-layout.exe",
+      "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\bitmap-layout-msvc.exe"
+    ],
+    "passed": true,
+    "numericTolerance": 0.0001,
+    "resultFile": "native/tests/2d-poc/build/bitmap-layout-dual-result.json",
+    "resultSha256": "b37dd392492e7bf729b4433e75e8545def856c8309eff8b2ce1d0ac474369b5d"
+  },
+  "acceptance": {
+    "workflow": "docs/native-2d-build-and-acceptance.zh-CN.md",
+    "windowsCli": true,
+    "webCli": true,
+    "nativeOverride": true,
+    "debugAppBuild": true,
+    "fullSerialPass": true,
+    "m0": {
+      "passed": true,
+      "finalJestSuites": 8,
+      "finalJestTests": 33
+    },
+    "m2": true,
+    "m3": true,
+    "m4": true,
+    "m4extra": true,
+    "m5": true,
+    "uvParity": true,
+    "targetedJest": {
+      "suites": 6,
+      "tests": 32
+    },
+    "appRun": {
+      "run": "20261117T122931177-cf775139",
+      "appSha256": "f72035edbbdfda73e4fa5bd3c952c37fb6d5ab2beed392a306b2adab39c7cc31",
+      "reportFile": "native/tests/2d-poc/build/m5-probe-runs/20261117T122931177-cf775139.json",
+      "reportSha256": "52a30f728109cbb9d4a40e27dfc28dd405e7363e003ec5e30271d6193d35b7ce",
+      "passed": true,
+      "elapsedSeconds": 39.5872403,
+      "timeoutSeconds": 45,
+      "killedForCleanup": true
+    }
+  },
+  "layoutGpu": {
+    "tolerance": 1,
+    "passed": true,
+    "captures": [
+      {
+        "name": "bitmap-flat-layout-align-0-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "bitmap-flat-layout-align-0-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169",
+        "webSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169"
+      },
+      {
+        "name": "bitmap-flat-layout-align-0-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a",
+        "webSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a"
+      },
+      {
+        "name": "bitmap-flat-layout-align-1-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11",
+        "webSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11"
+      },
+      {
+        "name": "bitmap-flat-layout-align-1-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "bitmap-flat-layout-align-1-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5",
+        "webSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5"
+      },
+      {
+        "name": "bitmap-flat-layout-align-2-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b",
+        "webSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b"
+      },
+      {
+        "name": "bitmap-flat-layout-align-2-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2",
+        "webSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2"
+      },
+      {
+        "name": "bitmap-flat-layout-align-2-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793",
+        "webSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793"
+      },
+      {
+        "name": "bitmap-flat-layout-small",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 8,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d",
+        "webSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d"
+      },
+      {
+        "name": "bitmap-flat-layout-large",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 24,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f",
+        "webSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f"
+      },
+      {
+        "name": "bitmap-flat-layout-spacing",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919",
+        "webSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919"
+      },
+      {
+        "name": "bitmap-flat-layout-wrap",
+        "width": 40,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "bitmap-flat-layout-none",
+        "width": 28,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b",
+        "webSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b"
+      },
+      {
+        "name": "bitmap-flat-layout-resize",
+        "width": 40,
+        "height": 48,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "bitmap-flat-layout-shrink",
+        "width": 40,
+        "height": 20,
+        "actualFontSize": 7,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205",
+        "webSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205"
+      },
+      {
+        "name": "bitmap-flat-layout-clamp",
+        "width": 24,
+        "height": 8,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9",
+        "webSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9"
+      },
+      {
+        "name": "bitmap-flat-layout-line-height",
+        "width": 64,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49",
+        "webSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49"
+      },
+      {
+        "name": "bitmap-flat-layout-shrink-wrap",
+        "width": 40,
+        "height": 24,
+        "actualFontSize": 11,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a",
+        "webSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-0-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-0-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169",
+        "webSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-0-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a",
+        "webSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-1-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11",
+        "webSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-1-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-1-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5",
+        "webSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-2-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b",
+        "webSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-2-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2",
+        "webSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2"
+      },
+      {
+        "name": "bitmap-rotated-layout-align-2-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793",
+        "webSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793"
+      },
+      {
+        "name": "bitmap-rotated-layout-small",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 8,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d",
+        "webSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d"
+      },
+      {
+        "name": "bitmap-rotated-layout-large",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 24,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f",
+        "webSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f"
+      },
+      {
+        "name": "bitmap-rotated-layout-spacing",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919",
+        "webSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919"
+      },
+      {
+        "name": "bitmap-rotated-layout-wrap",
+        "width": 40,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "bitmap-rotated-layout-none",
+        "width": 28,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b",
+        "webSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b"
+      },
+      {
+        "name": "bitmap-rotated-layout-resize",
+        "width": 40,
+        "height": 48,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "bitmap-rotated-layout-shrink",
+        "width": 40,
+        "height": 20,
+        "actualFontSize": 7,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205",
+        "webSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205"
+      },
+      {
+        "name": "bitmap-rotated-layout-clamp",
+        "width": 24,
+        "height": 8,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9",
+        "webSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9"
+      },
+      {
+        "name": "bitmap-rotated-layout-line-height",
+        "width": 64,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49",
+        "webSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49"
+      },
+      {
+        "name": "bitmap-rotated-layout-shrink-wrap",
+        "width": 40,
+        "height": 24,
+        "actualFontSize": 11,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a",
+        "webSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a"
+      },
+      {
+        "name": "atlas-flat-layout-align-0-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-flat-layout-align-0-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169",
+        "webSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169"
+      },
+      {
+        "name": "atlas-flat-layout-align-0-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a",
+        "webSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a"
+      },
+      {
+        "name": "atlas-flat-layout-align-1-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11",
+        "webSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11"
+      },
+      {
+        "name": "atlas-flat-layout-align-1-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-flat-layout-align-1-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5",
+        "webSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5"
+      },
+      {
+        "name": "atlas-flat-layout-align-2-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b",
+        "webSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b"
+      },
+      {
+        "name": "atlas-flat-layout-align-2-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2",
+        "webSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2"
+      },
+      {
+        "name": "atlas-flat-layout-align-2-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793",
+        "webSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793"
+      },
+      {
+        "name": "atlas-flat-layout-small",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 8,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d",
+        "webSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d"
+      },
+      {
+        "name": "atlas-flat-layout-large",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 24,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f",
+        "webSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f"
+      },
+      {
+        "name": "atlas-flat-layout-spacing",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919",
+        "webSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919"
+      },
+      {
+        "name": "atlas-flat-layout-wrap",
+        "width": 40,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "atlas-flat-layout-none",
+        "width": 28,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b",
+        "webSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b"
+      },
+      {
+        "name": "atlas-flat-layout-resize",
+        "width": 40,
+        "height": 48,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "atlas-flat-layout-shrink",
+        "width": 40,
+        "height": 20,
+        "actualFontSize": 7,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205",
+        "webSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205"
+      },
+      {
+        "name": "atlas-flat-layout-clamp",
+        "width": 24,
+        "height": 8,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9",
+        "webSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9"
+      },
+      {
+        "name": "atlas-flat-layout-line-height",
+        "width": 64,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49",
+        "webSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49"
+      },
+      {
+        "name": "atlas-flat-layout-shrink-wrap",
+        "width": 40,
+        "height": 24,
+        "actualFontSize": 11,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a",
+        "webSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a"
+      },
+      {
+        "name": "atlas-rotated-layout-align-0-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630",
+        "webSha256": "800e84399f00ad5519bc0ed55387a04665426ffbe238a327a9aa131134df7630"
+      },
+      {
+        "name": "atlas-rotated-layout-align-0-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169",
+        "webSha256": "ccd556bed9aa9da4ddcfc38c70cef6d8f79cfe8b571b3b9d8a470e2d10798169"
+      },
+      {
+        "name": "atlas-rotated-layout-align-0-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a",
+        "webSha256": "329431286a192a82593ecda4577117520cb96104fbb592b3055971a092af2c9a"
+      },
+      {
+        "name": "atlas-rotated-layout-align-1-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11",
+        "webSha256": "137859d8383e9ed0dfa1b328a4c1e51d6c0a052fd8844657e4398e0d7184cf11"
+      },
+      {
+        "name": "atlas-rotated-layout-align-1-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-rotated-layout-align-1-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5",
+        "webSha256": "1c223dbbc754346ccfb413f9debae0ce6f9a1e793143adb3be53283215b88fb5"
+      },
+      {
+        "name": "atlas-rotated-layout-align-2-0",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b",
+        "webSha256": "763e26188839a42f1730969b6df4594e1746c2ccea9f57d24d6578845d6f913b"
+      },
+      {
+        "name": "atlas-rotated-layout-align-2-1",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2",
+        "webSha256": "4aa32c1a668e99aa2a5c8183ea3fe4704a83d4e69862ff82275847ae9bc27ed2"
+      },
+      {
+        "name": "atlas-rotated-layout-align-2-2",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793",
+        "webSha256": "57b0f45d2fdd1900fea28e710102b74116f992557c80151a8380fb7c2fc8f793"
+      },
+      {
+        "name": "atlas-rotated-layout-small",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 8,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d",
+        "webSha256": "a5be6c103b826b02ada83f4bf3b574ab7fd9f4ec0c67dd8dfc47cbf88c35a26d"
+      },
+      {
+        "name": "atlas-rotated-layout-large",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 24,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f",
+        "webSha256": "74ebf5a0291c3bf554cb93a54d6cebb76267d9eeb91496266bc5cd642afced2f"
+      },
+      {
+        "name": "atlas-rotated-layout-spacing",
+        "width": 64,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919",
+        "webSha256": "9b1f347b9c284eac457fc45d26a9207906be5ef339f16986f29fa9f88482f919"
+      },
+      {
+        "name": "atlas-rotated-layout-wrap",
+        "width": 40,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "atlas-rotated-layout-none",
+        "width": 28,
+        "height": 32,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b",
+        "webSha256": "f764da6a20bdfdb1d7091a57893a27544af57c85525fd7d2c7a390a3f07e6c9b"
+      },
+      {
+        "name": "atlas-rotated-layout-resize",
+        "width": 40,
+        "height": 48,
+        "actualFontSize": 16,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749",
+        "webSha256": "e59a41f640c0bd7b6a5260d5ed42854eef1dc3e45785d4e78613f150f8e0f749"
+      },
+      {
+        "name": "atlas-rotated-layout-shrink",
+        "width": 40,
+        "height": 20,
+        "actualFontSize": 7,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205",
+        "webSha256": "8a08c3ec336413043795b2a857d017a00ddeb9d2b19a57526aab757375dd4205"
+      },
+      {
+        "name": "atlas-rotated-layout-clamp",
+        "width": 24,
+        "height": 8,
+        "actualFontSize": 16,
+        "glyphs": 2,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9",
+        "webSha256": "707f9ddce712b2ec9d4c40fb4c1141fbd299d571f491a094c9ec2016536b4db9"
+      },
+      {
+        "name": "atlas-rotated-layout-line-height",
+        "width": 64,
+        "height": 64,
+        "actualFontSize": 16,
+        "glyphs": 3,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49",
+        "webSha256": "f13800c12573d1b4e14230756f8a0ffde5775bf5b7c2c30a09e4565f1ce92e49"
+      },
+      {
+        "name": "atlas-rotated-layout-shrink-wrap",
+        "width": 40,
+        "height": 24,
+        "actualFontSize": 11,
+        "glyphs": 6,
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a",
+        "webSha256": "a5bb14dd3b456845cf6420d8d3ffcaef839696d0336bf417d7a92be22d3cb13a"
+      }
+    ]
+  },
+  "bitmapAtlasGpu": {
+    "tolerance": 1,
+    "passed": true,
+    "captures": [
+      {
+        "name": "bitmap-flat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "bitmap-flat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "bitmap-flat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "bitmap-rotated-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "bitmap-rotated-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "bitmap-rotated-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-flat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-flat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-flat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-rotated-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-rotated-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      },
+      {
+        "name": "atlas-rotated-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2",
+        "webSha256": "63591effb6d11c1032c9f7b93f867e747bf15490ff8aafb372d43888e5c972e2"
+      }
+    ]
+  },
+  "spriteMaskGpu": {
+    "tolerance": 1,
+    "passed": true,
+    "captures": [
+      {
+        "name": "sprite-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "mask-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      }
+    ]
+  },
+  "largeGpu": {
+    "glyphs": 70000,
+    "chunks": 5,
+    "cleared": true,
+    "cpuDiagnosticBuilds": 0
+  },
+  "developmentFindings": [
+    {
+      "check": "M3 old CPU texture-width threshold",
+      "initiallyFailed": true,
+      "resolved": true,
+      "reason": "Old fixture omitted explicit source/target font size and used nested kerning; threshold assumed unscaled CPU output.",
+      "replacement": "Canonical valid source/target size16; exact content80x20 and 4 glyph/16 vertex/24 index checks; kerning covered by actual Web numeric and strict GPU comparisons."
+    },
+    {
+      "check": "SHRINK integer conversion boundaries",
+      "initiallyFailed": true,
+      "resolved": true,
+      "reason": "Web integer bitwise conversion/shift differs from mathematical binary search at INT32_MAX.",
+      "replacement": "Explicit overflow-safe ECMAScript ToInt32 and arithmetic-shift behavior; zero/INT32_MAX/2^31 cases included."
+    }
+  ],
+  "limitations": [
+    "Complex Unicode/supplementary planes/bidi/shaping remain open.",
+    "Arbitrary trim/offset/mesh and asset source-size metadata mutation remain open.",
+    "Full resource pipeline/lifecycle, auto atlas packing/fallback, performance and other platforms remain open.",
+    "No Release or ASAN acceptance in this node."
+  ],
+  "probeLineEndingNormalization": {
+    "file": "native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts",
+    "testedSourceSha256": "e162a29d7d74846c0bdecc9b4d14b65b39fa38a6ac233fbebb0b5e747a116cba",
+    "normalizedSourceSha256": "d9d5f6cfb517e242b9333daaa3359a4de33afe178a1e2e54cc3d464356ccd1ba",
+    "emittedJsIdentical": true,
+    "emittedJsSha256": "79334ffe04698859cf968d65be8b3af70a295eec2f65351af84354477a47f01e"
+  }
+}
