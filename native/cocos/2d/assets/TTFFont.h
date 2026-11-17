@@ -38,7 +38,10 @@ public:
     const std::string &getSourcePath() const { return _source; }
     void clearNativeData() override;
     void initDefault() override { initDefault(ccstd::nullopt); }
-    void initDefault(const ccstd::optional<ccstd::string> &uuid) override { clearNativeData(); setFontFamily("Arial"); Asset::initDefault(uuid); }
+    void initDefault(const ccstd::optional<ccstd::string> &uuid) override {
+        if (_released) return;
+        clearNativeData(); setFontFamily("Arial"); Asset::initDefault(uuid);
+    }
 private:
     std::string _family;
     std::string _source;

@@ -64,3 +64,11 @@ V8 探针隔离 core/metadata 与 Asset 初始化，元数据由 Jest 验证；�
 - 复现沿用上方字体测试命令。原始本机日志：`native/tests/2d-poc/build/font-assets-lifecycle-{debug-build,release-build,tests}.log`；两个 native harness 及实际 JSB 均通过，7 个 Jest suite 共 64 项通过。常规项目 TypeScript 检查通过。本次运行包含工作区其他既有改动，不能作为 M6 最终候选版本证据，也未据此声明无泄漏或跨平台通过。
 
 Windows 自定义字体选择补充（2026-11-17）：GDI 拒绝文件但 alias/字节已加载的回退问题已使用私有 DirectWrite collection 修复。COM 引用与同步像素借用、1000 次释放和 ASAN 证据见 [平台字体报告](./native-2d-m6.1-directwrite-fonts.md)。旧的 Canvas/GDI 平台边界记录属于历史实现；其他平台及完整平台注册表/多字体/性能验收继续待办。
+
+### 配置数值与销毁后初始化补充（2026-11-17）
+
+- BitmapFont/LabelAtlas 在原生提交前验证所有 glyph 和 kerning 数值：拒绝无法表示为有限 float 的数值、非数字字段、负字形宽高、重复字形 code，以及超出 signed/unsigned 32-bit 范围的 packed kerning key。缺省字段仍取 0，signed packed key 和 Unicode 嵌套 kerning 保持支持。
+- 校验失败不会替换原配置、glyph/kerning 表或推进任一 revision；JS setter 仍抛出 TypeError，同时保留当前可编辑配置视图和兼容图集视图。调用方修正数据后可继续提交。
+- TTFFont 的 initDefault 在 released 后直接返回，避免销毁后的迟到初始化改写 revision、UUID 或默认状态；存活资产仍可清空并初始化为 Arial。所有权仍为值持有字节及 IntrusivePtr 持有资产，没有引入 shared_ptr。
+- Windows Debug/Release native harness 和实际 JSB 壳均通过，包含 BitmapFont/LabelAtlas 的非法配置原子性与 TTFFont 销毁后 initDefault 检查。日志为 `native/tests/2d-poc/build/font-data-validation-{debug,release}-{build,tests}.log`。Jest 基础回归 7 suite、64 项通过；新增视图原子性测试后两个字体序列化 suite 复验 37 项通过，见 `font-data-validation-view-tests.log`。10 项 native 边界静态检查通过，见 `font-data-validation-audit-tests.log`。
+- 本次验证包含工作区既有改动，未运行完整 asset-manager 异步加载卸载、其他平台或新的 GPU 对照，不能据此关闭字体终态验收。

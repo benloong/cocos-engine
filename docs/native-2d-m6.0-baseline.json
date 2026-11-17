@@ -31,7 +31,7 @@
     },
     {
       "file": "native/cocos/2d/assets/Font.cpp",
-      "sha256": "128aa52b4bd403cecdf70a8de2332a0fe97f40b3946396ad1ed28500d547e18b"
+      "sha256": "26811e4bd3b5ae596035eadf24a0167fd406b33eef1875e6e906c468b8644475"
     },
     {
       "file": "native/cocos/2d/assets/Font.h",
@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/TTFFont.h",
-      "sha256": "bbe9a9b1048c7320cdf54f0547882a01097770427b4de4e6c14b1e1fb7fe021c"
+      "sha256": "4af3b322d63e2d95e1cb715b3a026889f349769f4370c4bc46f1bbc8da3d8740"
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",

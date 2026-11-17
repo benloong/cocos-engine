@@ -289,6 +289,28 @@ void testFontAssets() {
     const auto configRevision = font->getConfigRevision();
     check(!font->setConfigJson("{bad") && font->getRevision() == revision && font->getGlyphCount() == 1, "invalid config atomic");
     check(font->getConfigRevision() == configRevision, "failed parse preserves config revision");
+    for (int kind = 0; kind < 2; ++kind) {
+        cc::IntrusivePtr<cc::BitmapFontAsset> validated(kind == 0 ? new cc::BitmapFontAsset() : new cc::LabelAtlas());
+        validated->setConfigJson(config);
+        const auto before = validated->getRevision();
+        const auto configBefore = validated->getConfigRevision();
+        for (const auto *invalid : {
+                 R"({"fontDefDictionary":{"65":{"rect":{"width":1e100}}}})",
+                 R"({"fontDefDictionary":{"65":{"rect":{"width":-1}}}})",
+                 R"({"fontDefDictionary":{"65":{"rect":{},"xAdvance":"2"}}})",
+                 R"({"fontDefDictionary":{"65":{"rect":{}},"065":{"rect":{}}}})",
+                 R"({"kerningDict":{"4294967296":1}})",
+                 R"({"kerningDict":{"-2147483649":1}})",
+                 R"({"kerningDict":{"9999999999999999999999999999":1}})",
+                 R"({"kerningDict":{"4259905":1e100}})",
+                 R"({"kerningDict":{"65":{"65":1e100}}})"}) {
+            check(!validated->setConfigJson(invalid), "unsafe bitmap numeric data rejected");
+            check(validated->getRevision() == before && validated->getConfigRevision() == configBefore,
+                  "invalid bitmap data preserves both revisions");
+            check(validated->getConfigJson() == config && validated->getGlyphCount() == 1
+                      && validated->getKerning(65, 65) == -1.F, "invalid bitmap data preserves complete native state");
+        }
+    }
     font->setConfigJson(config);
     check(font->getConfigRevision() == configRevision + 1, "identical config reload advances config revision");
     const auto reloadRevision = font->getConfigRevision();
@@ -388,6 +410,7 @@ void testFontAssets() {
         cycle->destroy(); cc::CCObject::deferredDestroy();
         const auto releasedRevision = cycle->getRevision();
         cycle->setFontData(bytes); cycle->setFontFamily("Late Family");
+        cycle->initDefault(ccstd::optional<ccstd::string>("late-default"));
         check(!cycle->loadFontData("missing-font.ttf") && cycle->getRevision() == releasedRevision, "released TTF rejects reload");
         check(cycle->getFontDataSize() == 0 && cycle->getFontFamily().empty(), "late TTF writes cannot resurrect data");
         label.setFontAsset(nullptr);

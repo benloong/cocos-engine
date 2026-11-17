@@ -195,6 +195,25 @@ test('released TTF ignores the entire late native asset setter', () => {
     expect(font._nativeAsset).toBeNull();
 });
 
+test.each([NativeBitmap, NativeLabelAtlas])('rejected native configuration preserves the editable serialization view: %p', (FontClass) => {
+    const font: any = new FontClass();
+    font.fntConfig = { fontSize: 12, fontDefDictionary: {} };
+    const view = font.fntConfig;
+    const atlas = font.fontDefDictionary;
+    view.fontSize = 18;
+    const revision = font.getRevision();
+    const configRevision = font.getConfigRevision();
+    const reject = jest.spyOn(font, 'setConfigJson').mockReturnValueOnce(false);
+    expect(() => { font.fntConfig = { fontSize: 24 }; }).toThrow(TypeError);
+    expect(font.getRevision()).toBe(revision);
+    expect(font.getConfigRevision()).toBe(configRevision);
+    expect(font.fntConfig).toBe(view);
+    expect(font.fontDefDictionary).toBe(atlas);
+    reject.mockRestore();
+    font.onLoaded();
+    expect(JSON.parse(font.getConfigJson()).fontSize).toBe(18);
+});
+
 test.each(['BitmapFont', 'LabelAtlas'])('%s deserializes native data and records its atlas dependency', (name) => {
     const details = new Details();
     const config = { fontDefDictionary: { 65: { rect: { x: 0, y: 0, width: 2, height: 3 }, xAdvance: 4 } } };

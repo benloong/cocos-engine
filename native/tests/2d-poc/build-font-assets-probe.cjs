@@ -52,6 +52,25 @@ check(font.getGlyphData()[7] === 2 && font.fntConfig !== stale, 'stale JS view c
 for (const FontClass of [BitmapFont, LabelAtlas]) {
     const reloaded = new FontClass();
     reloaded.fntConfig = config;
+    const retainedView = reloaded.fntConfig;
+    const retainedRevision = reloaded.getRevision();
+    const retainedConfigRevision = reloaded.getConfigRevision();
+    for (const invalid of [
+        { fontDefDictionary: {65: {rect: {width: 1e100}}} },
+        { fontDefDictionary: {65: {rect: {height: -1}}} },
+        { fontDefDictionary: {65: {rect: {}, xAdvance: '2'}} },
+        { kerningDict: {'4294967296': 1} },
+        { kerningDict: {'4259905': 1e100} },
+        { kerningDict: {'65': {'65': 1e100}} },
+    ]) {
+        let rejected = false;
+        try { reloaded.fntConfig = invalid; } catch (error) { rejected = error instanceof TypeError; }
+        check(rejected, 'unsafe numeric config rejected through JSB');
+        check(reloaded.getRevision() === retainedRevision && reloaded.getConfigRevision() === retainedConfigRevision,
+            'rejected config preserves native revisions');
+        check(reloaded.fntConfig === retainedView && reloaded.getGlyphData()[7] === 2 && reloaded.getKerning(65, 65) === -1,
+            'rejected config preserves JS view and native glyph/kerning data');
+    }
     const edited = reloaded.fntConfig;
     edited.fontDefDictionary[65].xAdvance = 99;
     reloaded.setConfigJson(JSON.stringify(config));
@@ -99,6 +118,9 @@ font.onLoaded();
 check(font.getGlyphCount() === 0, 'late bitmap onLoaded does not recommit a released config view');
 ttf.initDefault(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === 'Arial', 'TTF default resets data');
 ttf.destroy(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === null, 'TTF destroy releases bytes');
+const ttfReleasedRevision = ttf.getRevision();
+ttf.initDefault('late-default');
+check(ttf.getRevision() === ttfReleasedRevision && ttf._nativeAsset === null, 'released TTF ignores default initialization');
 ttf._nativeAsset = 'Late_FONT';
 check(ttf._nativeAsset === null && ttf.getFontDataSize() === 0, 'released TTF rejects late loader writes');
 return 'OK';

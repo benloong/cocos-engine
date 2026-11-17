@@ -28,6 +28,8 @@
 #include "platform/FileUtils.h"
 #include "rapidjson/document.h"
 #include <atomic>
+#include <cerrno>
+#include <cmath>
 #include <cstdlib>
 #include <limits>
 namespace cc {
@@ -36,8 +38,16 @@ std::atomic<uint64_t> nextFontIdentity{0};
 uint64_t kerningKey(int32_t left, int32_t right) {
     return (static_cast<uint64_t>(static_cast<uint32_t>(left)) << 32U) | static_cast<uint32_t>(right);
 }
-float number(const rapidjson::Value &object, const char *key) {
-    return object.HasMember(key) && object[key].IsNumber() ? object[key].GetFloat() : 0.F;
+bool finiteNumber(const rapidjson::Value &value, float &result) {
+    if (!value.IsNumber()) return false;
+    const double number = value.GetDouble();
+    if (!std::isfinite(number) || std::abs(number) > std::numeric_limits<float>::max()) return false;
+    result = static_cast<float>(number);
+    return true;
+}
+bool number(const rapidjson::Value &object, const char *key, float &result) {
+    if (!object.HasMember(key)) { result = 0.F; return true; }
+    return finiteNumber(object[key], result);
 }
 bool codePoint(const char *text, int32_t &result) {
     char *end = nullptr;
@@ -83,9 +93,14 @@ bool BitmapFontAsset::setConfigJson(const std::string &json) {
             const auto &entry = it->value;
             if (!entry.HasMember("rect") || !entry["rect"].IsObject()) return false;
             const auto &rect = entry["rect"];
-            indices[code] = glyphs.size();
-            glyphs.push_back({code, number(rect, "x"), number(rect, "y"), number(rect, "width"), number(rect, "height"),
-                              number(entry, "xOffset"), number(entry, "yOffset"), number(entry, "xAdvance")});
+            BitmapFontGlyph glyph;
+            glyph.code = code;
+            if (!number(rect, "x", glyph.u) || !number(rect, "y", glyph.v)
+                || !number(rect, "width", glyph.w) || !number(rect, "height", glyph.h)
+                || !number(entry, "xOffset", glyph.offsetX) || !number(entry, "yOffset", glyph.offsetY)
+                || !number(entry, "xAdvance", glyph.xAdvance) || glyph.w < 0.F || glyph.h < 0.F) return false;
+            if (!indices.emplace(code, glyphs.size()).second) return false;
+            glyphs.push_back(glyph);
         }
     }
     if (doc.IsObject() && doc.HasMember("kerningDict")) {
@@ -95,16 +110,22 @@ bool BitmapFontAsset::setConfigJson(const std::string &json) {
             if (it->value.IsNumber()) {
                 // Web parser stores signed 32-bit (left << 16) | right keys.
                 char *end = nullptr;
-                const auto packed = static_cast<uint32_t>(std::strtoll(it->name.GetString(), &end, 10));
-                if (end == it->name.GetString() || *end != 0) return false;
-                kerning[kerningKey(static_cast<int32_t>(packed >> 16U), static_cast<int32_t>(packed & 0xFFFFU))] = it->value.GetFloat();
+                errno = 0;
+                const auto key = std::strtoll(it->name.GetString(), &end, 10);
+                float amount = 0.F;
+                if (errno == ERANGE || end == it->name.GetString() || *end != 0
+                    || key < std::numeric_limits<int32_t>::min() || key > std::numeric_limits<uint32_t>::max()
+                    || !finiteNumber(it->value, amount)) return false;
+                const auto packed = static_cast<uint32_t>(key);
+                kerning[kerningKey(static_cast<int32_t>(packed >> 16U), static_cast<int32_t>(packed & 0xFFFFU))] = amount;
             } else if (it->value.IsObject()) {
                 int32_t left = 0;
                 if (!codePoint(it->name.GetString(), left)) return false;
                 for (auto right = it->value.MemberBegin(); right != it->value.MemberEnd(); ++right) {
                     int32_t code = 0;
-                    if (!codePoint(right->name.GetString(), code) || !right->value.IsNumber()) return false;
-                    kerning[kerningKey(left, code)] = right->value.GetFloat();
+                    float amount = 0.F;
+                    if (!codePoint(right->name.GetString(), code) || !finiteNumber(right->value, amount)) return false;
+                    kerning[kerningKey(left, code)] = amount;
                 }
             } else return false;
         }
