@@ -898,11 +898,22 @@ void Label::rebuildTexture() {
         }
 
         if (_enableOutline && _outlineWidth > 0.0F) {
-            for (int pass = 0; pass < 8; ++pass) {
-                const float angle = static_cast<float>(pass) * 0.7853981634F;
-                fillWithColor(std::cos(angle) * _outlineWidth,
-                              std::sin(angle) * _outlineWidth,
-                              _outlineColor);
+            if (context.supportsTextStroke()) {
+                char strokeColor[64] = {};
+                std::snprintf(strokeColor, sizeof(strokeColor), "rgba(%u,%u,%u,%.3f)",
+                              static_cast<unsigned>(_outlineColor.r), static_cast<unsigned>(_outlineColor.g),
+                              static_cast<unsigned>(_outlineColor.b), static_cast<double>(_outlineColor.a) / 255.0);
+                context.setStrokeStyle(strokeColor);
+                context.setLineWidth(_outlineWidth * 2.F);
+                context.setLineJoin("round");
+                context.strokeText(line, x, lineY, 0.F);
+            } else {
+                for (int pass = 0; pass < 8; ++pass) {
+                    const float angle = static_cast<float>(pass) * 0.7853981634F;
+                    fillWithColor(std::cos(angle) * _outlineWidth,
+                                  std::sin(angle) * _outlineWidth,
+                                  _outlineColor);
+                }
             }
         }
 

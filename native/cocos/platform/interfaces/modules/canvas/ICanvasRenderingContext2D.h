@@ -75,6 +75,7 @@ public:
         virtual void fillRect(float x, float y, float w, float h) = 0;
         virtual void fillText(const ccstd::string &text, float x, float y, float /*maxWidth*/) = 0;
         virtual void strokeText(const ccstd::string &text, float /*x*/, float /*y*/, float /*maxWidth*/) = 0;
+        virtual bool supportsTextStroke() const { return false; }
         virtual Size measureText(const ccstd::string &text) = 0;
         virtual void updateFont(const ccstd::string &fontName, float fontSize, bool bold, bool italic, bool oblique, bool smallCaps) = 0;
         virtual void setTextAlign(TextAlign align) = 0;

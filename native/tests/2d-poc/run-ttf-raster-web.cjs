@@ -6,10 +6,12 @@ const http = require('http');
 const { spawn } = require('child_process');
 const color = process.argv[2] || 'white';
 const sample = process.argv[3] || 'latin';
+const mode = process.argv[4] || 'fill';
 const colors = { white: 'white', red: 'red', green: 'lime', gray: 'rgb(128,128,128)', black: 'black', 'half-white': 'rgba(255,255,255,0.5)' };
 const texts = { latin: 'Atlas 123', combining: 'A\u0301tlas', thai: '\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22' };
 if (!Object.hasOwn(colors, color) || !Object.hasOwn(texts, sample)) throw new Error('Unknown color or sample');
-const suffix = color === 'white' && sample === 'latin' ? '' : '-' + color + '-' + sample;
+if (!['fill', 'outline', 'stroke-round', 'stroke-miter', 'stroke-bevel'].includes(mode)) throw new Error('Unknown paint mode');
+const suffix = mode === 'fill' ? (color === 'white' && sample === 'latin' ? '' : '-' + color + '-' + sample) : '-' + color + '-' + sample + '-' + mode;
 const output = path.join(__dirname, 'build/ttf-raster-web' + suffix);
 const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 fs.mkdirSync(output, { recursive: true });
@@ -61,11 +63,18 @@ const server = http.createServer(async (req, res) => {
                 ctx.font=(style===1?'bold ':style===2?'italic ':'')+size+'px M6Raw';
                 ctx.textBaseline='alphabetic'; ctx.textAlign='left';
                 ctx.fillStyle='rgba(255,255,255,0.004)'; ctx.fillRect(0,0,256,128);
-                ctx.fillStyle=${JSON.stringify(colors[color])}; ctx.fillText(text,4.5,size*.87+4);
+                ctx.fillStyle=${JSON.stringify(colors[color])};
+                if (${JSON.stringify(mode)}==='fill') ctx.fillText(text,4.5,size*.87+4);
+                else {
+                    ctx.strokeStyle=${JSON.stringify(colors[color])}; ctx.lineWidth=4;
+                    ctx.lineJoin=${JSON.stringify(mode === 'stroke-miter' ? 'miter' : mode === 'stroke-bevel' ? 'bevel' : 'round')};
+                    ctx.strokeText(text,4.5,size*.87+4);
+                    if (${JSON.stringify(mode)}==='outline') { ctx.fillStyle='white'; ctx.fillText(text,4.5,size*.87+4); }
+                }
                 cases.push({size,style,font:ctx.font,width:ctx.measureText(text).width});
                 await fetch('/'+size+'-'+style+'.rgba',{method:'POST',body:ctx.getImageData(0,0,256,128).data});
             }
-            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},cases})});
+            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},cases})});
         })();</script>`);
     } catch (error) { res.writeHead(500); res.end(String(error)); fail(error); }
 });

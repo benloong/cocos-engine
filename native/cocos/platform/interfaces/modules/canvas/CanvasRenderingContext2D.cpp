@@ -25,6 +25,7 @@
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
 
 #include <cstdint>
+#include <cmath>
 #include "base/csscolorparser.h"
 #include "cocos/bindings/jswrapper/SeApi.h"
 #include "cocos/bindings/manual/jsb_platform.h"
@@ -102,6 +103,9 @@ void CanvasRenderingContext2D::strokeText(const ccstd::string &text, float x, fl
     recreateBufferIfNeeded();
     _delegate->strokeText(text, x, y, maxWidth);
 }
+bool CanvasRenderingContext2D::supportsTextStroke() const {
+    return _delegate && _delegate->supportsTextStroke();
+}
 
 cc::Size CanvasRenderingContext2D::measureText(const ccstd::string &text) {
     //SE_LOGD("CanvasRenderingContext2D::measureText: %s\n", text.c_str());
@@ -177,6 +181,7 @@ void CanvasRenderingContext2D::setHeight(float height) {
 }
 
 void CanvasRenderingContext2D::setLineWidth(float lineWidth) {
+    if (!(lineWidth > 0) || !std::isfinite(lineWidth)) return;
     //SE_LOGD("CanvasRenderingContext2D::set_lineWidth %d\n", lineWidth);
     _lineWidth = lineWidth;
     _delegate->setLineWidth(lineWidth);

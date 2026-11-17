@@ -181,10 +181,8 @@ void CanvasRenderingContext2DDelegate::fillText(const ccstd::string &text, float
     fillTextureData();
 }
 
-void CanvasRenderingContext2DDelegate::strokeText(const ccstd::string &text, float /*x*/, float /*y*/, float /*maxWidth*/) const {
-    if (text.empty() || _bufferWidth < 1.0F || _bufferHeight < 1.0F) {
-        return;
-    }
+bool CanvasRenderingContext2DDelegate::supportsTextStroke() const {
+    return _directWrite != nullptr;
 }
 
 CanvasRenderingContext2DDelegate::Size CanvasRenderingContext2DDelegate::measureText(const ccstd::string &text) {
@@ -304,6 +302,7 @@ void CanvasRenderingContext2DDelegate::setStrokeStyle(uint8_t r, uint8_t g, uint
 }
 
 void CanvasRenderingContext2DDelegate::setLineWidth(float lineWidth) {
+    if (!(lineWidth > 0) || !std::isfinite(lineWidth)) return;
     _lineWidth = lineWidth;
 }
 
@@ -508,7 +507,8 @@ void CanvasRenderingContext2DDelegate::fill() {
 void CanvasRenderingContext2DDelegate::setLineCap(const ccstd::string & /* lineCap */) {
 }
 
-void CanvasRenderingContext2DDelegate::setLineJoin(const ccstd::string & /* lineCap */) {
+void CanvasRenderingContext2DDelegate::setLineJoin(const ccstd::string &lineJoin) {
+    if (lineJoin == "round" || lineJoin == "miter" || lineJoin == "bevel") _lineJoin = lineJoin;
 }
 
 void CanvasRenderingContext2DDelegate::fillImageData(const Data & /* imageData */,
@@ -518,10 +518,18 @@ void CanvasRenderingContext2DDelegate::fillImageData(const Data & /* imageData *
                                                      float /* offsetY */) {
 }
 
-void CanvasRenderingContext2DDelegate::strokeText(const ccstd::string & /* text */,
-                                                  float /* x */,
-                                                  float /* y */,
+void CanvasRenderingContext2DDelegate::strokeText(const ccstd::string &text,
+                                                  float x,
+                                                  float y,
                                                   float /* maxWidth */) {
+    if (text.empty() || !_directWrite || _bufferWidth < 1 || _bufferHeight < 1) return;
+    const auto size = _directWrite->measure(text);
+    if (_textAlign == TextAlign::CENTER) x -= size[0] / 2;
+    else if (_textAlign == TextAlign::RIGHT) x -= size[0];
+    const auto join = _lineJoin == "round" ? DirectWriteFont::StrokeJoin::ROUND
+        : _lineJoin == "bevel" ? DirectWriteFont::StrokeJoin::BEVEL : DirectWriteFont::StrokeJoin::MITER;
+    _directWrite->stroke(text, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
+                        static_cast<uint32_t>(_bufferWidth), static_cast<uint32_t>(_bufferHeight), _strokeStyle, _lineWidth, join);
 }
 
 void CanvasRenderingContext2DDelegate::rect(float /* x */,

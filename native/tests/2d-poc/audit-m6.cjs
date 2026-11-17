@@ -143,6 +143,7 @@ function build(root = ROOT) {
     }
     nativeWalk('native/cocos/2d');
     nativeFiles.push('native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h','native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp','native/cocos/platform/win32/modules/DirectWriteFont.h','native/cocos/platform/win32/modules/DirectWriteFont.cpp');
+    nativeFiles.push('native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h','native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.h','native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp');
     nativeFiles.push('native/cocos/core/component/Component.h','native/cocos/core/component/Component.cpp','native/cocos/core/scene-graph/Node.h','native/cocos/core/scene-graph/Node.cpp','native/cocos/core/Root.h','native/cocos/core/Root.cpp');
     nativeFiles.push('native/tools/swig-config/2d.i','native/tools/swig-config/assets.i','cc.config.json','cocos/native-binding/decorators-2d.generated.ts','cocos/render-scene/core/material-instance.jsb.ts','cocos/scene-graph/node.jsb.ts','cocos/serialization/deserialize-dynamic.ts','native/CMakeLists.txt','scripts/compile-native-ts.js');
     const nativeSourceHashes = nativeFiles.sort().map(file=>({file,sha256:crypto.createHash('sha256').update(read(file)).digest('hex')}));

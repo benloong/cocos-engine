@@ -137,7 +137,9 @@ public:
         if (SUCCEEDED(hr)) hr = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(_wic.out()));
         return hr;
     }
-    HRESULT draw(const DWRITE_GLYPH_RUN *run, float x, float y, bool italic, uint32_t width, uint32_t height, OutlineMask &mask) {
+    HRESULT draw(const DWRITE_GLYPH_RUN *run, float x, float y, bool bold, bool italic, float lineWidth,
+                 DirectWriteFont::StrokeJoin join, uint32_t width, uint32_t height, OutlineMask &mask) {
+        mask.bounds = {}; mask.coverage.clear();
         ComOwner<ID2D1PathGeometry> path, stroke, united, sampled;
         ComOwner<ID2D1GeometrySink> sink;
         HRESULT hr = _factory->CreatePathGeometry(path.out());
@@ -149,9 +151,13 @@ public:
         if (FAILED(hr)) return hr;
         // Canvas fake bold uses a filled regular outline plus this stroke.
         const float t = std::clamp((run->fontEmSize - 9.F) / 27.F, 0.F, 1.F);
-        const float thickness = run->fontEmSize * ((1.F - t) / 24.F + t / 32.F);
+        const float thickness = lineWidth + (bold ? run->fontEmSize * ((1.F - t) / 24.F + t / 32.F) : 0.F);
         ComOwner<ID2D1StrokeStyle> style;
-        auto properties = D2D1::StrokeStyleProperties(); properties.miterLimit = 4;
+        auto properties = D2D1::StrokeStyleProperties(); properties.miterLimit = lineWidth > 0 ? 10 : 4;
+        if (lineWidth > 0) {
+            properties.lineJoin = join == DirectWriteFont::StrokeJoin::ROUND ? D2D1_LINE_JOIN_ROUND
+                : join == DirectWriteFont::StrokeJoin::BEVEL ? D2D1_LINE_JOIN_BEVEL : D2D1_LINE_JOIN_MITER;
+        }
         hr = _factory->CreateStrokeStyle(properties, nullptr, 0, style.out());
         if (SUCCEEDED(hr)) hr = _factory->CreatePathGeometry(stroke.out());
         if (SUCCEEDED(hr)) hr = stroke->Open(sink.out());
@@ -159,16 +165,20 @@ public:
         if (SUCCEEDED(hr)) hr = sink->Close();
         sink.reset();
         if (FAILED(hr)) return hr;
-        hr = _factory->CreatePathGeometry(united.out());
-        if (SUCCEEDED(hr)) hr = united->Open(sink.out());
-        if (SUCCEEDED(hr)) hr = path->CombineWithGeometry(stroke.get(), D2D1_COMBINE_MODE_UNION, nullptr, .01F, sink.get());
-        if (SUCCEEDED(hr)) hr = sink->Close();
-        sink.reset();
-        if (FAILED(hr)) return hr;
+        ID2D1Geometry *shape = stroke.get(); // borrowed from the local owner
+        if (lineWidth <= 0) {
+            hr = _factory->CreatePathGeometry(united.out());
+            if (SUCCEEDED(hr)) hr = united->Open(sink.out());
+            if (SUCCEEDED(hr)) hr = path->CombineWithGeometry(stroke.get(), D2D1_COMBINE_MODE_UNION, nullptr, .01F, sink.get());
+            if (SUCCEEDED(hr)) hr = sink->Close();
+            sink.reset();
+            if (FAILED(hr)) return hr;
+            shape = united.get();
+        }
 
         const D2D1::Matrix3x2F world(1, 0, italic ? -.25F : 0, 1, x, y);
         D2D1_RECT_F bounds{};
-        hr = united->GetBounds(&world, &bounds);
+        hr = shape->GetBounds(&world, &bounds);
         if (FAILED(hr)) return hr;
         if (bounds.right <= bounds.left || bounds.bottom <= bounds.top) return S_OK;
         if (!std::isfinite(bounds.left) || !std::isfinite(bounds.right) || !std::isfinite(bounds.top) || !std::isfinite(bounds.bottom)
@@ -188,7 +198,7 @@ public:
         ComOwner<SnappedOutlineSink> adapter;
         adapter.reset(new SnappedOutlineSink(sink.get()));
         const D2D1::Matrix3x2F transform(static_cast<float>(scale), 0, italic ? -.25F * scale : 0, 1, (x - left) * scale, y - top);
-        hr = united->Simplify(D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get());
+        hr = shape->Simplify(D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get());
         if (SUCCEEDED(hr)) hr = adapter->Close();
         if (SUCCEEDED(hr)) hr = sink->Close();
         adapter.reset(); sink.reset();
@@ -297,8 +307,9 @@ private:
 class TextRenderer final : public IDWriteTextRenderer {
 public:
     // These buffers/factory are synchronous borrows for IDWriteTextLayout::Draw.
-    TextRenderer(IDWriteFactory *factory, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color, bool bold, bool italic)
-    : _factory(factory), _pixels(pixels), _width(width), _height(height), _color(color), _bold(bold), _italic(italic) {}
+    TextRenderer(IDWriteFactory *factory, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color,
+                 bool bold, bool italic, float lineWidth, DirectWriteFont::StrokeJoin join)
+    : _factory(factory), _pixels(pixels), _width(width), _height(height), _color(color), _bold(bold), _italic(italic), _lineWidth(lineWidth), _join(join) {}
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **out) override {
         if (!out) return E_POINTER;
         *out = nullptr;
@@ -331,7 +342,7 @@ public:
         return S_OK;
     }
     HRESULT drawMask(float x, float y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run) {
-        if (_bold) {
+        if (_bold || _lineWidth > 0) {
             if (!_outline) {
                 auto outline = std::make_unique<OutlineRasterizer>();
                 const auto hr = outline->init();
@@ -339,7 +350,7 @@ public:
                 _outline = std::move(outline);
             }
             OutlineMask mask;
-            const auto hr = _outline->draw(run, x, y, _italic, _width, _height, mask);
+            const auto hr = _outline->draw(run, x, y, _bold, _italic, _lineWidth, _join, _width, _height, mask);
             return FAILED(hr) ? hr : blendMask(mask.bounds, mask.coverage, 1);
         }
         ComOwner<IDWriteGlyphRunAnalysis> analysis;
@@ -409,6 +420,8 @@ private:
     std::array<float, 4> _color;
     bool _bold;
     bool _italic;
+    float _lineWidth;
+    DirectWriteFont::StrokeJoin _join;
     std::unique_ptr<OutlineRasterizer> _outline; // owns this synchronous Draw's COM lease and factories
 };
 }
@@ -473,6 +486,15 @@ std::array<float, 2> DirectWriteFont::measure(const std::string &text) const {
     return {metrics.widthIncludingTrailingWhitespace, metrics.height};
 }
 bool DirectWriteFont::draw(const std::string &text, float x, float y, int baseline, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color) const {
+    return drawText(text, x, y, baseline, pixels, width, height, color, 0.F, StrokeJoin::MITER);
+}
+bool DirectWriteFont::stroke(const std::string &text, float x, float y, int baseline, uint8_t *pixels, uint32_t width, uint32_t height,
+                             const std::array<float, 4> &color, float lineWidth, StrokeJoin join) const {
+    if (!(lineWidth > 0) || !std::isfinite(lineWidth)) return false;
+    return drawText(text, x, y, baseline, pixels, width, height, color, lineWidth, join);
+}
+bool DirectWriteFont::drawText(const std::string &text, float x, float y, int baseline, uint8_t *pixels, uint32_t width, uint32_t height,
+                              const std::array<float, 4> &color, float lineWidth, StrokeJoin join) const {
     if (!pixels || !width || !height || width > LONG_MAX || height > LONG_MAX) return false;
     ComOwner<IDWriteTextLayout> layout;
     if (FAILED(_impl->layout(wide(text), layout.out()))) return false;
@@ -486,7 +508,7 @@ bool DirectWriteFont::draw(const std::string &text, float x, float y, int baseli
         y -= line.baseline;
     }
     ComOwner<TextRenderer> renderer;
-    renderer.reset(new TextRenderer(_impl->factory.get(), pixels, width, height, color, _impl->bold, _impl->italic));
+    renderer.reset(new TextRenderer(_impl->factory.get(), pixels, width, height, color, _impl->bold, _impl->italic, lineWidth, join));
     return SUCCEEDED(layout->Draw(nullptr, renderer.get(), x, y));
 }
 } // namespace cc

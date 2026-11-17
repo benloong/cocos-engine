@@ -47,6 +47,7 @@ public:
 
     void fillText(const ccstd::string &text, float x, float y, float maxWidth) override;
     void strokeText(const ccstd::string &text, float x, float y, float maxWidth) override;
+    bool supportsTextStroke() const;
     Size measureText(const ccstd::string &text) override;
     ICanvasGradient *createLinearGradient(float x0, float y0, float x1, float y1) override;
     void save() override;

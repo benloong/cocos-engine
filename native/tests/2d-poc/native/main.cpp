@@ -52,6 +52,8 @@
 #include "2d/renderer/RichTextParser.h"
 #include "2d/renderer/RichTextLayout.h"
 #include "bindings/jswrapper/SeApi.h"
+#include "bindings/manual/jsb_platform.h"
+#include "bindings/manual/jsb_global.h"
 #include "core/Root.h"
 #include "core/assets/Material.h"
 
@@ -307,6 +309,7 @@ void testFontAssets() {
             auto face = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 24.F, true, true);
             std::vector<uint8_t> raster(32 * 32 * 4);
             check(face && face->draw("A", 0, 24, 3, raster.data(), 32, 32, {1, 1, 1, 1}), "outline draws while borrowing an existing STA apartment");
+            check(face && face->stroke("A", 0, 24, 3, raster.data(), 32, 32, {1, 0, 0, 1}, 1.5F, cc::DirectWriteFont::StrokeJoin::ROUND), "stroke borrows the same caller-owned STA apartment");
         }
         const auto retained = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
         check(retained == S_FALSE, "outline draw preserves the caller STA lease");
@@ -324,6 +327,8 @@ void testFontAssets() {
         check(face && face->measure("Atlas 123")[0] > 0, "custom font collection repeated create/shape/release");
         std::array<uint8_t, 16 * 24 * 4> raster{};
         check(face && face->draw("A", 0, 20, 3, raster.data(), 16, 24, {1, 1, 1, 1}), "repeated custom font draw releases mask resources and COM leases");
+        if (i % 4 == 0) check(face && face->stroke("A", 0, 20, 3, raster.data(), 16, 24, {1, 0, 0, 1}, 1.5F,
+                                                cc::DirectWriteFont::StrokeJoin::ROUND), "repeated stroke releases temporary geometry and bitmap resources");
     }
     const DWORD fontGdiAfter = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
     DWORD fontHandlesAfter = 0; GetProcessHandleCount(GetCurrentProcess(), &fontHandlesAfter);
@@ -486,6 +491,48 @@ void testFontAssets() {
     ttf->destroy(); check(ttf->getFontDataSize() == 0 && ttf->getFontFamily().empty(), "TTF destroy releases data and alias");
     cc::CCObject::deferredDestroy();
     std::printf("font assets: PASS\n");
+}
+
+void testTextStroke() {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    cc::CanvasRenderingContext2D fallback(16, 16); fallback.setFont("24px Arial");
+    check(!fallback.supportsTextStroke(), "GDI font does not advertise unsupported outline stroke");
+    auto face = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 96, false, false);
+    std::vector<uint8_t> fill(128 * 128 * 4), narrow(fill.size()), wide(fill.size());
+    check(face && face->draw("H", 10, 110, 3, fill.data(), 128, 128, {1, 1, 1, 1}), "stroke interior reference draws");
+    check(face && face->stroke("H", 10, 110, 3, narrow.data(), 128, 128, {1, 1, 1, 1}, 1,
+                             cc::DirectWriteFont::StrokeJoin::ROUND), "thin hollow glyph stroke draws");
+    check(face && face->stroke("H", 10, 110, 3, wide.data(), 128, 128, {1, 1, 1, 1}, 5,
+                             cc::DirectWriteFont::StrokeJoin::ROUND), "wide hollow glyph stroke draws");
+    size_t interiors = 0, narrowCount = 0, wideCount = 0;
+    for (size_t i = 3; i < narrow.size(); i += 4) { if (narrow[i]) ++narrowCount; if (wide[i]) ++wideCount; }
+    for (int row = 2; row < 126; ++row) for (int column = 2; column < 126; ++column) {
+        bool interior = true;
+        for (int dy = -2; dy <= 2; ++dy) for (int dx = -2; dx <= 2; ++dx)
+            if (fill[((row + dy) * 128 + column + dx) * 4 + 3] != 255) interior = false;
+        if (interior) { ++interiors; check(narrow[(row * 128 + column) * 4 + 3] == 0, "stroke leaves glyph interior unfilled"); }
+    }
+    check(interiors > 0 && narrowCount > 0 && wideCount > narrowCount, "stroke preserves hollow interior and responds to line width");
+    std::vector<uint8_t> invalid(fill.size());
+    for (const float width : {0.F, -1.F, std::numeric_limits<float>::infinity(), std::numeric_limits<float>::quiet_NaN()}) {
+        check(face && !face->stroke("H", 10, 110, 3, invalid.data(), 128, 128, {1, 1, 1, 1}, width), "invalid stroke width rejected");
+    }
+    check(std::all_of(invalid.begin(), invalid.end(), [](uint8_t value) { return value == 0; }), "invalid stroke does not mutate pixels");
+    auto joined = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 48, true, true);
+    std::vector<uint8_t> round(fill.size()), bevel(fill.size());
+    check(joined && joined->stroke("M", 10, 90, 3, round.data(), 128, 128, {1, 1, 1, 1}, 8,
+                                 cc::DirectWriteFont::StrokeJoin::ROUND), "round bold italic stroke draws");
+    check(joined && joined->stroke("M", 10, 90, 3, bevel.data(), 128, 128, {1, 1, 1, 1}, 8,
+                                 cc::DirectWriteFont::StrokeJoin::BEVEL), "bevel bold italic stroke draws");
+    check(round != bevel, "glyph stroke honors line joins");
+    std::vector<uint8_t> full(64 * 64 * 4), clipped(32 * 24 * 4);
+    auto cropFace = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 24, true, true);
+    check(cropFace && cropFace->stroke("Atlas 123", 8, 32, 3, full.data(), 64, 64, {1, 1, 1, 1}, 3), "stroke crop reference draws");
+    check(cropFace && cropFace->stroke("Atlas 123", -8, 16, 3, clipped.data(), 32, 24, {1, 1, 1, 1}, 3), "stroke viewport crop draws");
+    for (size_t row = 0; row < 24; ++row) for (size_t column = 0; column < 32; ++column) for (size_t channel = 0; channel < 4; ++channel)
+        check(full[((row + 16) * 64 + column + 16) * 4 + channel] == clipped[(row * 32 + column) * 4 + channel], "stroke clipping preserves filter samples");
+    std::printf("native text stroke: PASS\n");
+#endif
 }
 
 void testLabelStyleExtents() {
@@ -1320,11 +1367,46 @@ void testUIOpacity() {
 void testJsBindings(se::ScriptEngine *scriptEngine) {
     se::Object *globalObject = scriptEngine->getGlobalObject();
     check(globalObject != nullptr, "global object");
+    check(jsb_register_global_variables(globalObject), "jsb_register_global_variables");
     check(register_all_engine(globalObject), "register_all_engine");
     // Match production: scene MaterialInstance derives from assets Material.
     check(register_all_assets(globalObject), "register_all_assets");
     check(register_all_scene(globalObject), "register_all_scene");
     check(register_all_native2d(globalObject), "register_all_native2d");
+    check(register_platform_bindings(globalObject), "register_platform_bindings");
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    se::Value namespaceValue, loadValue, family;
+    const bool loader = globalObject->getProperty("jsb", &namespaceValue) && namespaceValue.isObject()
+        && namespaceValue.toObject()->getProperty("loadFont", &loadValue) && loadValue.isObject();
+    check(loader, "real platform font loader is registered");
+    if (loader) {
+        const se::ValueArray arguments{se::Value("M6StrokeFont_LABEL"), se::Value(std::string("url('") + CC2D_FONT_FIXTURE + "')")};
+        check(loadValue.toObject()->call(arguments, namespaceValue.toObject(), &family) && family.isString(), "real loader registers Canvas test font");
+        auto capture = [](bool explicitDefaults, bool invalidWidths) {
+            cc::CanvasRenderingContext2D canvas(128, 128);
+            canvas.setFont("48px M6StrokeFont_LABEL");
+            check(canvas.supportsTextStroke(), "registered custom Canvas font advertises native stroke");
+            if (explicitDefaults) {
+                canvas.setLineWidth(1); canvas.setLineJoin("miter"); canvas.setTextAlign("left");
+                canvas.setTextBaseline("alphabetic"); canvas.setStrokeStyle("black");
+            }
+            if (invalidWidths) {
+                canvas.setLineWidth(0); canvas.setLineWidth(-1); canvas.setLineWidth(std::numeric_limits<float>::infinity());
+                canvas.setLineWidth(std::numeric_limits<float>::quiet_NaN());
+            }
+            canvas.strokeText("H", 20, 90, 0);
+            std::vector<uint8_t> pixels;
+            canvas.setCanvasBufferUpdatedCallback([&](const cc::Data &data) { pixels.assign(data.getBytes(), data.getBytes() + data.getSize()); });
+            canvas.fetchData();
+            return pixels;
+        };
+        const auto defaults = capture(false, false), explicitDefaults = capture(true, false), ignoredWidths = capture(false, true);
+        check(!defaults.empty() && defaults == explicitDefaults && defaults == ignoredWidths, "Canvas stroke defaults and ignored invalid widths match explicit state");
+        bool visible = false;
+        for (size_t pixel = 3; pixel < defaults.size(); pixel += 4) if (defaults[pixel]) visible = true;
+        check(visible, "default Canvas stroke draws opaque black pixels");
+    }
+#endif
 
     const char *script =
         "(function () {"
@@ -1855,6 +1937,7 @@ int main(int argc, char **argv) {
         testSpriteFrameData();
         testFrameConsumers();
         testFontAssets();
+        testTextStroke();
         testLabelStyleExtents();
         testLabelRasterMapping();
         testRichTextParser();

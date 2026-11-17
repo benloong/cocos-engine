@@ -62,7 +62,7 @@ public:
     void clearRect(float /*x*/, float /*y*/, float w, float h) override;
     void fillRect(float x, float y, float w, float h) override;
     void fillText(const ccstd::string &text, float x, float y, float /*maxWidth*/) override;
-    void strokeText(const ccstd::string &text, float /*x*/, float /*y*/, float /*maxWidth*/) const;
+    bool supportsTextStroke() const override;
     Size measureText(const ccstd::string &text) override;
     void updateFont(const ccstd::string &fontName, float fontSize, bool bold, bool italic, bool oblique, bool smallCaps) override;
     void setTextAlign(TextAlign align) override;
@@ -106,17 +106,18 @@ private:
     PAINTSTRUCT _paintStruct;
     ccstd::string _curFontPath;
     int _savedDC{0};
-    float _lineWidth{0.0F};
+    float _lineWidth{1.0F};
+    ccstd::string _lineJoin{"miter"};
     float _bufferWidth{0.0F};
     float _bufferHeight{0.0F};
 
     ccstd::string _fontName;
     int _fontSize{0};
     Size _textSize;
-    TextAlign _textAlign{TextAlign::CENTER};
-    TextBaseline _textBaseLine{TextBaseline::TOP};
-    Color4F _fillStyle;
-    Color4F _strokeStyle;
+    TextAlign _textAlign{TextAlign::LEFT};
+    TextBaseline _textBaseLine{TextBaseline::ALPHABETIC};
+    Color4F _fillStyle{0, 0, 0, 1};
+    Color4F _strokeStyle{0, 0, 0, 1};
 
     TEXTMETRIC _tm;
 };

@@ -47,11 +47,24 @@ for (const FontClass of [BitmapFont, LabelAtlas]) {
 const ttf = new TTFFont();
 ttf._nativeUrl = ${JSON.stringify(path.join(repo, 'tests/fixtures/Thonburi.ttf').replaceAll('\\', '/'))};
 ttf._nativeAsset = 'Thonburi_LABEL';
+check(jsb.loadFont('Thonburi_LABEL', "url('" + ttf._nativeUrl + "')") === 'Thonburi_LABEL', 'real platform font alias registration');
 check(ttf instanceof Font && ttf.getFontDataSize() > 1000, 'real TTF bytes loaded');
 check(ttf._fontFamily === 'Thonburi_LABEL', 'TTF alias native roundtrip');
 const font = new LabelAtlas();
 check(font instanceof BitmapFont && font instanceof Font, 'native font hierarchy');
 check(initialized === 4, 'Asset constructor hook: ' + initialized);
+const outlinedLabel = new n2d.Label();
+const outlinedNode = new jsb.Node('font-stroke-probe'), outlinedTransform = new n2d.UITransform(outlinedNode);
+outlinedLabel.setNode(outlinedNode); outlinedLabel.setUITransform(outlinedTransform);
+outlinedLabel.setFontAsset(ttf); outlinedLabel.setFontSize(24); outlinedLabel.setLineHeight(30); outlinedLabel.setString('Atlas 123');
+outlinedLabel.updateRenderData();
+check(Math.abs(outlinedLabel.getContentWidth() - 95.9765625) < 0.001, 'Label consumes the registered custom font: ' + outlinedLabel.getContentWidth());
+const baseCoverage = outlinedLabel.getOpaquePixels();
+outlinedLabel.setEnableOutline(true); outlinedLabel.setOutlineWidth(3); outlinedLabel.updateRenderData();
+check(Math.abs(outlinedLabel.getContentWidth() - 101.9765625) < 0.001 && outlinedLabel.getOpaquePixels() > baseCoverage,
+    'Label renders a real native text stroke with preserved layout margins');
+outlinedLabel.setFontAsset(null);
+outlinedLabel.setUITransform(null); outlinedLabel.setNode(null);
 const config = { fontDefDictionary: {65: {rect: {x: 0, y: 0, width: 2, height: 2}, xAdvance: 2}}, kerningDict: {4259905: -1} };
 font.fntConfig = config; font.fontSize = 2; font.fntDataStr = 'source';
 const frame = new jsb.SpriteFrame(), texture = new jsb.Texture2D(); texture.create(2, 2); frame.setTexture(texture); font.spriteFrame = frame;

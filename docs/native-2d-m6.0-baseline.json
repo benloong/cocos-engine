@@ -71,7 +71,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "0925e3144b55291287bd96741748069c21519407ee06eb233409844c9a1d4a1b"
+      "sha256": "edd9db5b3632f3635d31b7d00d134877d7b7f60ecad43d3f71b71836b2573c09"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -282,20 +282,32 @@
       "sha256": "14708be8569731f3ca28f4068c1a065076d625ee447a5020c01d3431617c548c"
     },
     {
+      "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp",
+      "sha256": "6094291e901bbd0a80247a4f05dd8f26f3981a4e4e7002057398954cfb966400"
+    },
+    {
+      "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.h",
+      "sha256": "b808b14f2b3ebbb768994121707a1e5d82595c217d9881aab524757677269fbc"
+    },
+    {
+      "file": "native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h",
+      "sha256": "7cc1835224403589cc6dfd5c7a4539af730a3243be352385e0eeee9ea79d8e2c"
+    },
+    {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "ef9de9e29f828747aa1f6d14cad9dadc5142c4f4e4758da0fe1b664097c53fce"
+      "sha256": "ad51cff2d9a0894559bbcfe75094bf93c14ba03cea70c174f9e6f496d55183d6"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
-      "sha256": "edc1e20352a9469c63513420dbc421e2e0efc5d16221b196b75f049ad3a17c43"
+      "sha256": "909ee53469096a894523e5206bfe1e7f0319a932e223b4bb19c3ca113ff67b15"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
-      "sha256": "9122176eab8ea9eb4a8b7aa736f6de51e3a8ee2b2b7cd907b3622f994161658b"
+      "sha256": "bd8c7a0dfd72d89ead04bbee4957bed93ccd0fb21ba53b831f7b76ac76c1dced"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
-      "sha256": "3656210529cd4ba2b2d13fb82c26002582d55a64a29b89859c37d440ea57435d"
+      "sha256": "882a2066074dc4ea00c92712c9de1ad20425c2d4028ee00eb41a5101e32e66c8"
     },
     {
       "file": "native/tools/swig-config/2d.i",
