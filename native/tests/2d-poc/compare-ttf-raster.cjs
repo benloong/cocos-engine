@@ -4,7 +4,8 @@ const path = require('path');
 const crypto = require('crypto');
 const root = path.resolve(__dirname, '../../..');
 const native = path.resolve(process.argv[2] || path.join(__dirname, 'build/ttf-raster-native'));
-const web = path.join(__dirname, 'build/ttf-raster-web');
+const web = path.resolve(process.argv[3] || path.join(__dirname, 'build/ttf-raster-web'));
+const metadata = JSON.parse(fs.readFileSync(path.join(web, 'metadata.json'), 'utf8'));
 const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const cases = [];
 for (const size of [12, 24, 36, 48]) for (let style = 0; style < 3; ++style) {
@@ -31,8 +32,8 @@ for (const size of [12, 24, 36, 48]) for (let style = 0; style < 3; ++style) {
         passed: maxChannelDifference <= 1 });
 }
 const result = {
-    diagnosticOnly: true, width: 256, height: 128, text: 'Atlas 123',
-    browser: JSON.parse(fs.readFileSync(path.join(web, 'metadata.json'), 'utf8')),
+    diagnosticOnly: true, width: 256, height: 128, text: metadata.text || 'Atlas 123',
+    browser: metadata,
     nativeDirectory: path.basename(native),
     sourceSha256: hash(path.join(root, 'native/cocos/platform/win32/modules/DirectWriteFont.cpp')),
     fontSha256: hash(path.join(root, 'tests/fixtures/Thonburi.ttf')),

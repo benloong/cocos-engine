@@ -4,7 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const { spawn } = require('child_process');
-const output = path.join(__dirname, 'build/ttf-raster-web');
+const color = process.argv[2] || 'white';
+const sample = process.argv[3] || 'latin';
+const colors = { white: 'white', red: 'red', green: 'lime', gray: 'rgb(128,128,128)', black: 'black', 'half-white': 'rgba(255,255,255,0.5)' };
+const texts = { latin: 'Atlas 123', combining: 'A\u0301tlas', thai: '\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22' };
+if (!Object.hasOwn(colors, color) || !Object.hasOwn(texts, sample)) throw new Error('Unknown color or sample');
+const suffix = color === 'white' && sample === 'latin' ? '' : '-' + color + '-' + sample;
+const output = path.join(__dirname, 'build/ttf-raster-web' + suffix);
 const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 fs.mkdirSync(output, { recursive: true });
 let complete, fail;
@@ -43,23 +49,23 @@ const server = http.createServer(async (req, res) => {
             received.add(req.url);
             return;
         }
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(`<script>
         (async () => {
             const face = new FontFace('M6Raw', 'url(/font.ttf)');
             document.fonts.add(await face.load());
-            const cases=[];
+            const cases=[], text=${JSON.stringify(texts[sample])};
             for (const size of [12,24,36,48]) for (let style=0; style<3; style++) {
                 const canvas = document.createElement('canvas'); canvas.width=256; canvas.height=128;
                 const ctx=canvas.getContext('2d');
                 ctx.font=(style===1?'bold ':style===2?'italic ':'')+size+'px M6Raw';
                 ctx.textBaseline='alphabetic'; ctx.textAlign='left';
                 ctx.fillStyle='rgba(255,255,255,0.004)'; ctx.fillRect(0,0,256,128);
-                ctx.fillStyle='white'; ctx.fillText('Atlas 123',4.5,size*.87+4);
-                cases.push({size,style,font:ctx.font,width:ctx.measureText('Atlas 123').width});
+                ctx.fillStyle=${JSON.stringify(colors[color])}; ctx.fillText(text,4.5,size*.87+4);
+                cases.push({size,style,font:ctx.font,width:ctx.measureText(text).width});
                 await fetch('/'+size+'-'+style+'.rgba',{method:'POST',body:ctx.getImageData(0,0,256,128).data});
             }
-            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,cases})});
+            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},cases})});
         })();</script>`);
     } catch (error) { res.writeHead(500); res.end(String(error)); fail(error); }
 });

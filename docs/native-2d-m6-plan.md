@@ -48,7 +48,7 @@
 - [x] TTFFont/LabelAtlas/BitmapFont 基础数据与生命周期：原生持有 TTF 字节/family/source、BMFont 配置/glyph/kerning/SpriteFrame；Label 直接持有字体资产并检测 revision，移除逐字形 JSB 传输；切换/清空/销毁、共享引用、实际 JSB 壳及 Windows Debug/Release 定向验证通过。补齐 deserialize/Details 依赖回填，修复 null 默认值 family 在快速反序列化中被当作对象，JIT/非 JIT 回归通过，见 [报告与边界](./native-2d-m6.1-font-assets.md)。
 - [x] 字体重载一致性补充：独立配置版本使同内容原生重载失效旧 JS 视图，同时保留依赖回填期间的编辑；released 后忽略迟到 onLoaded。Windows Debug/Release C++ 与实际 JSB 探针、7 个 Jest suite（58 项）通过，见字体资产报告。
 - [x] 字体重复生命周期补充：released 后的 JS 配置/TTF 加载赋值直接忽略；三类字体各 1000 次 native 创建、清空、重载、销毁，以及 BitmapFont/LabelAtlas 各 1000 次实际 JSB 循环通过 Windows Debug/Release。当时字体测试入口为 7 个 suite、64 项，后续新增测试见字体资产报告；直接创建资产的循环不替代 asset-manager 加载卸载或泄漏验收。
-- [x] Windows 自定义字体选择：GDI 拒绝真实 Thonburi.ttf 后回退，现以私有 DirectWrite collection 加载、shaping 和绘制；明确 COM/缓冲区所有权，Debug/Release 各 1000 次释放计数及 64 项 Jest、ASAN 应用通过。RichText 当前 9/12 布局一致、严格图像仍 0/12，见 [报告与未关闭门禁](./native-2d-m6.1-directwrite-fonts.md)。
+- [x] Windows 自定义字体选择：GDI 拒绝真实 Thonburi.ttf 后回退，现以私有 DirectWrite collection 加载、shaping 和绘制；明确 COM/缓冲区所有权，Debug/Release 各 1000 次释放计数及 64 项 Jest、ASAN 应用通过。该节点 RichText 当时为 9/12 布局一致、严格图像 0/12，见 [报告与未关闭门禁](./native-2d-m6.1-directwrite-fonts.md)。
 - [ ] 字体终态验收：真实字体资源/旧场景/Prefab、完整资源加载释放、跨平台 alias/字体句柄与注册表清理、复杂文本和 GPU 对照。TTF 原生字节已持有，渲染仍使用现有 Canvas 平台后端，基础数据通过不替代这些验收。
 - [x] 字体数据边界补充：BitmapFont/LabelAtlas 拒绝溢出 float、非法 glyph/kerning 与重复字形，失败保留 native 数据、版本和 JS 编辑视图；TTFFont 销毁后 initDefault 不再改写状态。Windows Debug/Release native 与实际 JSB 定向回归通过，见 [字体资产报告](./native-2d-m6.1-font-assets.md)。
 - [ ] 动态合图：确认迁移范围、纹理/UV 更新和回退策略，验证 Sprite/Label/Mask 联动。按需迁移项须有范围结论与证据，不能默认为完成。
@@ -63,10 +63,11 @@
 - [x] 基础运行时接入：native RichText + JSB override 使用原生解析、测量与布局，原生创建/复用/布局/销毁 Label/Sprite 段；JS 保留 Component、元数据/序列化、生命周期和 API/点击分发。字体/图集 revision、父 Renderer 共存、基础启停/命中/销毁在 Windows Debug/Release 与实际 JSB 定向验证通过，见 [报告](./native-2d-m6.2-richtext-runtime.md)。
 - [x] 完整 native TS 构建：修正 assembler 总入口与 UITransform 类型重入、Mask/SpriteFrame 导入边界，30 项诊断已消除；含 rich-text 的 OPEN_HARMONY preserveType 生成及完整 TypeScript 检查通过。保留 legacy assembler 名称并纯转发 native，定向源码闭包审计与 Windows Debug/Release 实际 JSB 回归通过，见 [构建边界报告](./native-2d-m6-native-ts-boundary.md)。该构建不等于 OHOS native 平台运行通过。
 - [x] RichText 点击回调重入：事件命中信息在回调前桥接，避免重排复用旧索引；销毁/禁用/关闭触摸立即停止分发。Windows Debug/Release 实际 JSB 重叠图片段与同步文本替换、3 个 Jest suite（11 项）和完整 native TS 通过，见运行时报告；真实输入/Camera/Mask 与 GPU 仍待验收。
-- [x] 建立 RichText 同源字体实际应用夹具：asset-manager 加载/释放真实 TTF、12 例布局/图像记录，并修复 Label 字体失效后准备入口被禁用的黑屏。当前视觉 0/12 通过，Windows GDI 字体回退与后续字形/布局仍需修复，见 [未通过报告](./native-2d-m6.2-richtext-gpu.md)；此勾选仅表示夹具和失败基线建立。
-- [x] RichText 样式尺寸补充：native 计入斜体/描边范围，保留布局中间精度，修复自动宽度累计与不收缩；Windows Debug/Release 实际 JSB、11 项 Jest、ASAN 通过。当前同快照 12/12 布局一致，严格图像仍 0/12，见 [样式报告](./native-2d-m6.2-richtext-style-extents.md)。
+- [x] 建立 RichText 同源字体实际应用夹具：asset-manager 加载/释放真实 TTF、12 例布局/图像记录，并修复 Label 字体失效后准备入口被禁用的黑屏。当时视觉 0/12 通过，记录了 Windows GDI 字体回退与字形/布局差异，后续修复见下方节点，见 [未通过报告](./native-2d-m6.2-richtext-gpu.md)；此勾选仅表示夹具和失败基线建立。
+- [x] RichText 样式尺寸补充：native 计入斜体/描边范围，保留布局中间精度，修复自动宽度累计与不收缩；Windows Debug/Release 实际 JSB、11 项 Jest、ASAN 通过。该节点同快照 12/12 布局一致，严格图像当时为 0/12，见 [样式报告](./native-2d-m6.2-richtext-style-extents.md)。
 - [x] TTF 纹理映射基础修复：去掉额外边框、对齐 alphabetic 基线/下划线、背景预填与 clamp sampler；Windows 小数矩形覆盖和 source-over、1000 次 Canvas GDI 释放回归通过。12/12 布局及画布尺寸一致，严格像素仍 0/12，见 [映射报告](./native-2d-m6.2-label-raster.md)。
 - [x] 建立原始 TTF 画布诊断：4 字号 × 3 样式的生产 DirectWriteFont / Chrome Canvas 原始 RGBA 对照，Windows Debug/Release native 字节一致，严格像素 0/12；单独开启 grid fitting 无法解决差异，未改变生产参数，见 [诊断报告](./native-2d-m6.2-ttf-raw.md)。
+- [x] Windows TTF mask 与预混合修复：LCD mask 整数平均、sRGB 亮度表、LTR glyph 定位与预乘字节处理；12 个 Web 普通字校验值、Debug/Release 原生/实际 JSB、49 项 Jest、ASAN 应用通过。完整应用同快照布局 12/12，严格图像提升为 8/12；原始扩展矩阵 28/96，合成样式、灰色 RGB 取整及其他边界仍待验收，见 [报告](./native-2d-m6.2-ttf-preblend.md)。
 - [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
 - [ ] 保留 Windows GDI italic 宽度的已接受差异；平台、字体、用例、布局容差分别记录。现有 colored ±20% 只作 sanity，不能替代布局、字形、事件验收。

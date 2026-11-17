@@ -24,7 +24,7 @@
 
 #include "platform/win32/modules/DirectWriteFont.h"
 #include <windows.h>
-#include <dwrite_2.h>
+#include <dwrite.h>
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -52,6 +52,40 @@ std::wstring wide(const std::string &text) {
     std::wstring result(count, 0);
     if (count) MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, text.data(), static_cast<int>(text.size()), result.data(), count);
     return result;
+}
+float linearSrgb(float value) {
+    return value <= .04045F ? value / 12.92F : std::pow((value + .055F) / 1.055F, 2.4F);
+}
+float encodedSrgb(float value) {
+    return value <= .0031308F ? value * 12.92F : 1.055F * std::pow(value, 1.F / 2.4F) - .055F;
+}
+uint32_t canonicalChannel(uint32_t value) {
+    const auto bits = value >> 5U;
+    return (bits << 5U) | (bits << 2U) | (bits >> 1U);
+}
+const std::array<uint8_t, 256> &coverageTable(const std::array<float, 4> &color) {
+    // Windows Canvas uses an sRGB, contrast=1 mask preblend. The eight
+    // immutable luminance tables are value-owned; no per-font shared owner.
+    static const auto tables = [] {
+        std::array<std::array<uint8_t, 256>, 8> result{};
+        for (uint32_t index = 0; index < result.size(); ++index) {
+            const float source = canonicalChannel(index << 5U) / 255.F;
+            const float destination = 1.F - source;
+            const float linearSource = linearSrgb(source), linearDestination = linearSrgb(destination);
+            for (uint32_t mask = 0; mask < 256; ++mask) {
+                const float coverage = mask / 255.F;
+                const float enhanced = coverage + (1.F - coverage) * linearDestination * coverage;
+                const float output = encodedSrgb(linearSource * enhanced + linearDestination * (1.F - enhanced));
+                const float alpha = (output - destination) / (source - destination);
+                result[index][mask] = static_cast<uint8_t>(std::clamp(std::lround(alpha * 255.F), 0L, 255L));
+            }
+        }
+        return result;
+    }();
+    uint32_t rgb[3];
+    for (size_t channel = 0; channel < 3; ++channel) rgb[channel] = canonicalChannel(static_cast<uint32_t>(std::clamp(std::lround(color[channel] * 255.F), 0L, 255L)));
+    const auto luminance = (rgb[0] * 54U + rgb[1] * 183U + rgb[2] * 19U) >> 8U;
+    return tables[luminance >> 5U];
 }
 class FileEnumerator final : public IDWriteFontFileEnumerator {
 public:
@@ -136,17 +170,29 @@ public:
             if (FAILED(hr)) return hr;
             boldRun = *run; boldRun.fontFace = boldFace.get(); run = &boldRun;
         }
-        ComOwner<IDWriteGlyphRunAnalysis> analysis;
-        ComOwner<IDWriteFactory2> factory2;
-        DWRITE_TEXTURE_TYPE texture = DWRITE_TEXTURE_CLEARTYPE_3x1;
-        HRESULT hr = _factory->QueryInterface(__uuidof(IDWriteFactory2), reinterpret_cast<void **>(factory2.out()));
-        if (SUCCEEDED(hr)) {
-            texture = DWRITE_TEXTURE_ALIASED_1x1;
-            hr = factory2->CreateGlyphRunAnalysis(run, nullptr, DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC, mode,
-                DWRITE_GRID_FIT_MODE_DISABLED, DWRITE_TEXT_ANTIALIAS_MODE_GRAYSCALE, x, y, analysis.out());
-        } else {
-            hr = _factory->CreateGlyphRunAnalysis(run, 1, nullptr, DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC, mode, x, y, analysis.out());
+        // Preserve the shaped advances and offsets. Quantize only raster
+        // origins, as the horizontal Canvas glyph cache does. RTL/sideways
+        // runs retain DWrite's full-run positioning until separately verified.
+        if (run->bidiLevel & 1U || run->isSideways) return drawMask(x, y, mode, run);
+        float origin = x;
+        for (UINT32 index = 0; index < run->glyphCount; ++index) {
+            DWRITE_GLYPH_RUN glyph = *run;
+            glyph.glyphCount = 1;
+            glyph.glyphIndices = run->glyphIndices + index;
+            glyph.glyphAdvances = run->glyphAdvances + index;
+            glyph.glyphOffsets = nullptr;
+            const auto offset = run->glyphOffsets ? run->glyphOffsets[index] : DWRITE_GLYPH_OFFSET{};
+            const auto hr = drawMask(std::floor((origin + offset.advanceOffset) * 4.F + .5F) / 4.F,
+                                     std::floor(y - offset.ascenderOffset + .5F), mode, &glyph);
+            if (FAILED(hr)) return hr;
+            origin += run->glyphAdvances[index];
         }
+        return S_OK;
+    }
+    HRESULT drawMask(float x, float y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run) {
+        ComOwner<IDWriteGlyphRunAnalysis> analysis;
+        constexpr auto texture = DWRITE_TEXTURE_CLEARTYPE_3x1;
+        HRESULT hr = _factory->CreateGlyphRunAnalysis(run, 1, nullptr, DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC, mode, x, y, analysis.out());
         if (FAILED(hr)) return hr;
         RECT bounds{};
         hr = analysis->GetAlphaTextureBounds(texture, &bounds);
@@ -158,7 +204,7 @@ public:
         bounds.right = std::min<LONG>(_width, bounds.right);
         bounds.bottom = std::min<LONG>(_height, bounds.bottom);
         if (bounds.right <= bounds.left || bounds.bottom <= bounds.top) return S_OK;
-        const size_t stride = texture == DWRITE_TEXTURE_ALIASED_1x1 ? 1 : 3;
+        constexpr size_t stride = 3;
         const size_t rowWidth = static_cast<size_t>(bounds.right - bounds.left);
         const size_t rows = static_cast<size_t>(bounds.bottom - bounds.top);
         if (rows > UINT32_MAX / stride / rowWidth) return E_OUTOFMEMORY;
@@ -166,21 +212,26 @@ public:
         std::vector<uint8_t> alpha(count);
         hr = analysis->CreateAlphaTexture(texture, &bounds, alpha.data(), static_cast<UINT32>(count));
         if (FAILED(hr)) return hr;
+        const auto &preblend = coverageTable(_color);
         for (LONG row = std::max<LONG>(0, bounds.top); row < std::min<LONG>(_height, bounds.bottom); ++row) {
             for (LONG column = std::max<LONG>(0, bounds.left); column < std::min<LONG>(_width, bounds.right); ++column) {
                 const auto offset = ((row - bounds.top) * rowWidth + column - bounds.left) * stride;
-                float coverage = alpha[offset];
-                if (stride == 3) coverage = (coverage + alpha[offset + 1] + alpha[offset + 2]) / 3.F;
+                const auto mask = (static_cast<uint32_t>(alpha[offset]) + alpha[offset + 1] + alpha[offset + 2]) / 3U;
+                const float coverage = preblend[mask];
                 const float sourceAlpha = coverage / 255.F * _color[3];
                 if (sourceAlpha <= 0) continue;
                 auto *pixel = _pixels + (static_cast<size_t>(row) * _width + column) * 4;
                 const float destAlpha = pixel[3] / 255.F;
                 const float outAlpha = sourceAlpha + destAlpha * (1 - sourceAlpha);
+                const auto alphaByte = std::clamp(std::lround(outAlpha * 255), 0L, 255L);
                 for (size_t channel = 0; channel < 3; ++channel) {
-                    const float color = (_color[channel] * sourceAlpha + pixel[channel] / 255.F * destAlpha * (1 - sourceAlpha)) / outAlpha;
-                    pixel[channel] = static_cast<uint8_t>(std::clamp(std::lround(color * 255), 0L, 255L));
+                    // Canvas stores premultiplied bytes. Quantize before
+                    // exposing straight RGBA, especially at alpha 1 or 2.
+                    const float destination = std::round(pixel[channel] * destAlpha);
+                    const auto premultiplied = std::lround(_color[channel] * sourceAlpha * 255 + destination * (1 - sourceAlpha));
+                    pixel[channel] = alphaByte ? static_cast<uint8_t>(std::clamp(std::lround(premultiplied * 255.F / alphaByte), 0L, 255L)) : 0;
                 }
-                pixel[3] = static_cast<uint8_t>(std::clamp(std::lround(outAlpha * 255), 0L, 255L));
+                pixel[3] = static_cast<uint8_t>(alphaByte);
             }
         }
         return S_OK;
