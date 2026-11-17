@@ -689,10 +689,20 @@ void Label::measureContent() {
     _transform->setContentSize(_lastContentWidth, _lastContentHeight);
 }
 Size Label::measureUnwrappedText(const std::string &text) {
+    const auto size = measureUnwrappedTextPrecise(text);
+    return Size(static_cast<float>(size[0]), static_cast<float>(size[1]));
+}
+std::array<double, 2> Label::getTextStyleExtent() const {
+    if (_cacheMode == 2) return {};
+    const double outline = _enableOutline ? std::max(_outlineWidth, 0.F) * 2.0 : 0.0;
+    const double italic = _isItalic ? _fontSize * std::tan(12 * 0.0174532925) : 0.0;
+    return {outline + italic, outline};
+}
+std::array<double, 2> Label::measureUnwrappedTextPrecise(const std::string &text) {
     syncFontAsset();
-    if (text.empty() || (_fontAsset && _fontAsset->isReleased())) return Size(0.F, 0.F);
+    if (text.empty() || (_fontAsset && _fontAsset->isReleased())) return {};
     if (_bitmapFont) {
-        if (!_bitmapAtlas || _bitmapFont->getGlyphs().empty()) return Size(0.F, 0.F);
+        if (!_bitmapAtlas || _bitmapFont->getGlyphs().empty()) return {};
         float width = 0.F, line = 0.F; uint32_t lines = 1; int32_t previous = -1;
         for (const auto &symbol : splitUtf8(text)) {
             if (symbol == "\n") { width = std::max(width, line); line = 0.F; previous = -1; ++lines; continue; }
@@ -703,7 +713,7 @@ Size Label::measureUnwrappedText(const std::string &text) {
             previous = code;
         }
         const float height = _bitmapLineHeight > 0.F ? _bitmapLineHeight : _fontSize;
-        return Size(std::max(width, line), std::max((lines + BASELINE_RATIO) * height, 1.F));
+        return {std::max(width, line), std::max((lines + BASELINE_RATIO) * height, 1.F)};
     }
     CanvasRenderingContext2D context(1.F, 1.F);
     context.setFont(_font);
@@ -718,7 +728,8 @@ Size Label::measureUnwrappedText(const std::string &text) {
     }
     width = std::max(width, _cacheMode == 2 ? line : measureText(context, paragraph));
     const float lineHeight = _lineHeight > 0.F ? _lineHeight : _fontSize * (_cacheMode == 2 ? 1.F : 1.2F);
-    return Size(std::max(width, _cacheMode == 2 ? 0.F : 1.F), std::max((lines + BASELINE_RATIO) * lineHeight, 1.F));
+    const auto extent = getTextStyleExtent();
+    return {std::max(width, _cacheMode == 2 ? 0.F : 1.F) + extent[0], std::max((lines + BASELINE_RATIO) * lineHeight, 1.F) + extent[1]};
 }
 void Label::updateRenderData() {
     syncFontAsset();
@@ -792,12 +803,18 @@ void Label::rebuildTexture() {
     for (const std::string &line : lines) {
         contentWidth = std::max(contentWidth, measureText(measureContext, line));
     }
-    if (_transform->getContentSize().x > 0.0F && (_wrap || _overflow != 0)) {
+    if (_transform->getContentSize().x > 0.0F && _overflow != 0) {
         contentWidth = std::max(contentWidth, _transform->getContentSize().x);
     }
     contentWidth = std::max(contentWidth, 1.0F);
 
-    const float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
+    const auto styleExtent = getTextStyleExtent();
+    const float outlineMargin = _enableOutline ? std::max(_outlineWidth, 0.F) : 0.F;
+    float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
+    if (_overflow == 0) {
+        contentWidth = static_cast<float>(contentWidth + styleExtent[0]);
+        contentHeight = static_cast<float>(contentHeight + styleExtent[1]);
+    }
     if (_overflow == 2 && _transform->getContentSize().y > 0.0F
         && contentHeight > _transform->getContentSize().y + 0.5F && _fontSize > 4.0F) {
         _fontSize *= 0.9F;
@@ -843,15 +860,16 @@ void Label::rebuildTexture() {
     } else if (_vAlign == 2) {
         textTop = static_cast<float>(textureHeight) - contentHeight - 1.0F;
     }
+    textTop += outlineMargin;
 
     for (size_t i = 0; i < lines.size(); ++i) {
         const std::string &line = lines[i];
         const float lineWidth = measureText(context, line);
-        float x = 1.0F;
+        float x = 1.0F + outlineMargin;
         if (_hAlign == 1) {
-            x = (static_cast<float>(textureWidth) - lineWidth) * 0.5F;
+            x = (static_cast<float>(textureWidth) - static_cast<float>(styleExtent[0]) - lineWidth) * 0.5F + outlineMargin;
         } else if (_hAlign == 2) {
-            x = static_cast<float>(textureWidth) - lineWidth - 1.0F;
+            x = static_cast<float>(textureWidth) - lineWidth - 1.0F - static_cast<float>(styleExtent[0]) + outlineMargin;
         }
         const float lineY = textTop + static_cast<float>(i) * lineHeight;
         auto fillWithColor = [&](float dx, float dy, const Color &color) {

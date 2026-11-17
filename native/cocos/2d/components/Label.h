@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include <array>
 #include "2d/framework/UIComponentType.h"
 
 #include <string>
@@ -127,6 +128,9 @@ public:
     void prepareRenderEntity(float opacity) override;
 
 private:
+    friend class RichText;
+    std::array<double, 2> measureUnwrappedTextPrecise(const std::string &text);
+    std::array<double, 2> getTextStyleExtent() const;
     void onMaterialChanged() override;
     void rebuildTexture();
     void syncFontAsset();

@@ -167,8 +167,8 @@ void RichText::updateLayout() {
     _layer = _node->getLayer();
     _layout = RichTextLayout::build(_spans, _options, [this](size_t index, const std::string &text) {
         configureLabel(*_measureLabel, index);
-        const auto size = _measureLabel->measureUnwrappedText(text);
-        return RichTextExtent{size.width, size.height};
+        const auto size = _measureLabel->measureUnwrappedTextPrecise(text);
+        return RichTextExtent{size[0], size[1]};
     }, [this](const std::string &name) -> std::optional<RichTextExtent> {
         auto *frame = _atlas ? _atlas->getSpriteFrame(name) : nullptr;
         return frame ? std::make_optional(RichTextExtent{frame->getRectWidth(), frame->getRectHeight()}) : std::nullopt;

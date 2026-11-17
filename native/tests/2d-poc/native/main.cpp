@@ -60,6 +60,7 @@
 #include "core/scene-graph/Scene.h"
 #include "math/Mat4.h"
 #include "platform/FileUtils.h"
+#include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
 #include "renderer/GFXDeviceManager.h"
 
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
@@ -395,6 +396,37 @@ void testFontAssets() {
     ttf->destroy(); check(ttf->getFontDataSize() == 0 && ttf->getFontFamily().empty(), "TTF destroy releases data and alias");
     cc::CCObject::deferredDestroy();
     std::printf("font assets: PASS\n");
+}
+
+void testLabelStyleExtents() {
+    cc::Node node("label-style-extents"); cc::UITransform ui(&node);
+    cc::Label label; label.setNode(&node); label.setUITransform(&ui);
+    label.setFontSize(24); label.setLineHeight(30); label.setEnableWrapText(false); label.setString("Atlas 123");
+    cc::CanvasRenderingContext2D raw(1, 1); raw.setFont("italic 24px Arial");
+    const float italicGlyphWidth = raw.measureText("Atlas 123").width;
+    label.setIsItalic(true);
+    const auto italic = label.measureUnwrappedText("Atlas 123");
+    checkNear(italic.width - italicGlyphWidth, 5.101357474F, "TTF italic reserves Web 12-degree overhang");
+    label.prepareRenderEntity(1.F);
+    checkNear(label.getContentWidth(), italic.width, "italic Label raster layout agrees with RichText measurement");
+    label.setEnableOutline(true); label.setOutlineWidth(2);
+    const auto combined = label.measureUnwrappedText("Atlas 123");
+    checkNear(combined.width - italic.width, 4.F, "outline extends both horizontal edges");
+    checkNear(combined.height - italic.height, 4.F, "outline extends both vertical edges");
+    label.prepareRenderEntity(1.F);
+    checkNear(label.getContentWidth(), combined.width, "outlined Label width agrees with measurement");
+    checkNear(label.getContentHeight(), combined.height, "outlined Label height agrees with measurement");
+    label.setEnableOutline(false); label.setIsItalic(false); label.prepareRenderEntity(1.F);
+    checkNear(label.getContentWidth(), label.measureUnwrappedText("Atlas 123").width, "style removal clears previous extent");
+    label.setEnableWrapText(true);
+    for (int i = 0; i < 3; ++i) {
+        label.setEnableOutline(true); label.prepareRenderEntity(1.F);
+        checkNear(label.getContentWidth(), label.measureUnwrappedText("Atlas 123").width, "auto width does not accumulate outline extent");
+        label.setEnableOutline(false); label.prepareRenderEntity(1.F);
+    }
+    label.setString("A"); label.prepareRenderEntity(1.F);
+    checkNear(label.getContentWidth(), label.measureUnwrappedText("A").width, "Overflow NONE shrinks with wrap flag enabled");
+    std::printf("label style extents: PASS\n");
 }
 
 void testRichTextParser() {
@@ -1673,6 +1705,7 @@ int main(int argc, char **argv) {
         testSpriteFrameData();
         testFrameConsumers();
         testFontAssets();
+        testLabelStyleExtents();
         testRichTextParser();
         testRichTextLayout();
         testLayoutAndMaterials();

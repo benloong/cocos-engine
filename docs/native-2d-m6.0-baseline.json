@@ -71,11 +71,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "757f6937ca36c64e0c2e29d99b6975187db75d59dbc9aaeb05549aff3368cdd4"
+      "sha256": "510bbf705f8e151c414368744ee362f92512982858b8c5911a1f9e7658bba6dd"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "4816367b5beb5fdd062d9710a76fe9fac15d4468826b17e100e6c4ad7410b892"
+      "sha256": "dd0a63da81d32f4f805c0661eee831ae01be5581985b7ceaedefe5bcbb2152a9"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -87,7 +87,7 @@
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
-      "sha256": "d0165d75e479f5e60fa152b998eb7051f13757e8c020035c18f4c6230963d655"
+      "sha256": "b850c1a3f7dfa725322a534ab0b544ba107bb704d66fdb7badce9751315f4617"
     },
     {
       "file": "native/cocos/2d/components/RichText.h",
