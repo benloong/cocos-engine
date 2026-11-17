@@ -14,6 +14,7 @@ $err = Join-Path $env:TEMP "m2-pixel-probe-$PID.err.log"
 Remove-Item $log, $err -Force -ErrorAction SilentlyContinue
 
 $process = Start-Process -FilePath $Exe `
+    -WindowStyle Hidden `
     -WorkingDirectory (Split-Path $Exe) `
     -RedirectStandardOutput $log `
     -RedirectStandardError $err `

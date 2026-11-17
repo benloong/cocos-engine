@@ -6,6 +6,7 @@ $ErrorActionPreference = 'Stop'
 $log = Join-Path $env:TEMP 'cc-m3-label-probe.log'
 Remove-Item $log -Force -ErrorAction SilentlyContinue
 $proc = Start-Process $AppExe -WorkingDirectory (Split-Path $AppExe) `
+    -WindowStyle Hidden `
     -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru
 
 try {

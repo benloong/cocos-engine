@@ -1,15 +1,17 @@
 param(
-    [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe'
+    [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe',
+    [int]$TimeoutSeconds = 60
 )
 
 $ErrorActionPreference = 'Stop'
 $log = Join-Path $env:TEMP 'cc-m4-mask-probe.log'
 Remove-Item $log -Force -ErrorAction SilentlyContinue
 $proc = Start-Process $AppExe -WorkingDirectory (Split-Path $AppExe) `
+    -WindowStyle Hidden `
     -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru
 
 try {
-    $deadline = (Get-Date).AddSeconds(25)
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
     $lines = @()
     while ((Get-Date) -lt $deadline) {
         Start-Sleep -Milliseconds 500

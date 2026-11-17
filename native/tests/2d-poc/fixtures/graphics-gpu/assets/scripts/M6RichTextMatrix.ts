@@ -2,7 +2,7 @@ import { assetManager, Color, isValid, Label, Node, RichText, sys, TTFFont, UITr
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
-async function checkNativeFontLifecycle (url: string): Promise<object | null> {
+async function checkNativeFontLifecycle (url: string, parent: Node): Promise<object | null> {
     if (!sys.isNative) return null;
     const stats = (): string => JSON.stringify((globalThis as any).jsb.getFontAliasStats());
     const before = stats();
@@ -11,11 +11,11 @@ async function checkNativeFontLifecycle (url: string): Promise<object | null> {
     const load = (source = url): Promise<TTFFont> => new Promise((resolve, reject) => {
         assetManager.loadRemote<TTFFont>(source, { ext: '.ttf' }, (error, asset) => error ? reject(error) : resolve(asset));
     });
-    const release = (asset: TTFFont): void => {
+    const release = (asset: TTFFont, source = url): void => {
         assetManager.releaseAsset(asset);
         lastReleased = asset;
         if (isValid(asset, true) || !(asset as any).isReleased() || (asset as any).getFontDataSize() !== 0
-            || assetManager.assets.has(url) || assetManager.assets.count !== cacheBefore || stats() !== before) {
+            || assetManager.assets.has(source) || assetManager.assets.count !== cacheBefore || stats() !== before) {
             throw new Error('loadRemote/releaseAsset retained font data, cache or alias records');
         }
     };
@@ -47,9 +47,32 @@ async function checkNativeFontLifecycle (url: string): Promise<object | null> {
     }
     await wait();
     if (isValid(lastReleased)) throw new Error('Font deferred destruction did not finish');
+    const files = (globalThis as any).jsb.fileUtils;
+    const origin = files.getStringFromFile('m6-font-http-origin.txt').trim();
+    if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(origin)) throw new Error('HTTP font fixture origin missing');
+    const httpUrl = `${origin}/m6-http-font.ttf`, cache = assetManager.cacheManager!;
+    if (cache.getCache(httpUrl)) cache.removeCache(httpUrl);
+    const httpFont = await load(httpUrl);
+    const cachedSource = (httpFont as any).getSourcePath();
+    if (httpFont.nativeUrl !== httpUrl || cachedSource !== cache.getCache(httpUrl) || !files.isFileExist(cachedSource)
+        || (httpFont as any).getFontDataSize() !== 223404) throw new Error('HTTP font did not resolve its downloaded cache path');
+    const node = new Node('http-font'); node.layer = parent.layer; parent.addChild(node);
+    const ui = node.addComponent(UITransform), label = node.addComponent(Label);
+    label.useSystemFont = false; label.font = httpFont; label.fontSize = 24; label.string = 'Atlas 123';
+    await wait();
+    const width = ui.width;
+    if (Math.abs(width - 95.9765625) > 0.001 || !(label as any)._native.getOpaquePixels()) throw new Error('HTTP font fallback or empty rendering');
+    node.destroy(); await wait();
+    release(httpFont, httpUrl);
+    cache.removeCache(httpUrl); await wait();
+    if (cache.getCache(httpUrl) || files.isFileExist(cachedSource)) throw new Error('Released HTTP font cache file was retained');
+    let httpMissingRejected = false;
+    try { await load(`${origin}/missing.ttf`); } catch { httpMissingRejected = true; }
+    if (!httpMissingRejected || stats() !== before || assetManager.assets.count !== cacheBefore) throw new Error('HTTP 404 retained font state');
+    const http = { loaded: true, bytes: 223404, cachePathResolved: true, width, released: true, cacheRemoved: true, missingRejected: true };
     return { cycles: 1000, cacheHits: 1000, bytesPerLoad: 223404, assignmentFailureRolledBack: true,
         retrySucceeded: true, missingRejected, deferredDestroyFinished: true,
-        before: JSON.parse(before), after: JSON.parse(stats()), cacheBefore, cacheAfter: assetManager.assets.count };
+        before: JSON.parse(before), after: JSON.parse(stats()), cacheBefore, cacheAfter: assetManager.assets.count, http };
 }
 
 /** The real asset factory loads the same TTF bytes in both applications. */
@@ -113,6 +136,6 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     const released = !isValid(font);
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
-    const lifecycle = await checkNativeFontLifecycle(url);
+    const lifecycle = await checkNativeFontLifecycle(url, parent);
     return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle };
 }

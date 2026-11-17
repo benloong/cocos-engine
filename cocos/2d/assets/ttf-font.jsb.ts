@@ -47,7 +47,11 @@ Object.defineProperties(proto, {
 });
 proto.onLoaded = function () {
     if (this.isReleased()) return;
-    const source = this.nativeUrl;
+    const url = this.nativeUrl;
+    const cacheManager = cclegacy.assetManager?.cacheManager;
+    const source = /^https?:\/\//i.test(url)
+        ? cacheManager?.getCache(url) || cacheManager?.getTemp?.(url) || url
+        : url;
     if (source && (this.getSourcePath() !== source || !this.getFontDataSize()) && !this.loadFontData(source)) warnID(4933, source);
 };
 patch_cc_TTFFont({ TTFFont });

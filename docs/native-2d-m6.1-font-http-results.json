@@ -1,0 +1,198 @@
+{
+  "date": "2026-11-17",
+  "platform": "Windows Debug",
+  "workflow": "docs/native-2d-build-and-acceptance.zh-CN.md",
+  "project": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test",
+  "spriteFrameNativeProperty": false,
+  "authoritativeAcceptance": {
+    "passed": true,
+    "m0": {
+      "finalJestSuites": 8,
+      "finalJestTests": 33
+    },
+    "m2": {
+      "modes": 5,
+      "red": 7936,
+      "center": [
+        128,
+        0,
+        0,
+        255
+      ]
+    },
+    "m3": {
+      "bmfont": [
+        62,
+        23,
+        960
+      ],
+      "realBmfont": [
+        100,
+        28,
+        872
+      ],
+      "charAsciiGpuColored": 2917
+    },
+    "m4": {
+      "normal": 6400,
+      "inverted": 44800,
+      "ellipse": 5024,
+      "spriteMask": 3360,
+      "graphics": 6400,
+      "graphicsStencil": 1600,
+      "nestedMask": 3600,
+      "geometry": {
+        "vertices": 4,
+        "indices": 6
+      }
+    },
+    "m5": {
+      "segments": 10,
+      "labels": 9,
+      "sprites": 1,
+      "width": 300,
+      "height": 104.31999969482422,
+      "colored": 8725,
+      "stylesAndHitMiss": true
+    },
+    "m6Uv": {
+      "suites": 1,
+      "tests": 1
+    },
+    "targetedJest": {
+      "suites": 6,
+      "tests": 30
+    },
+    "sourceAudit": true
+  },
+  "probes": [
+    {
+      "source": "native/tests/2d-poc/fixtures/acceptance/M4Probe.ts",
+      "installed": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\assets\\scripts\\M4Probe.ts",
+      "sha256": "d36662a66d7dcf957b8bd36b3ded9ca3dbef5a64e4a10203690203208b1fd715"
+    },
+    {
+      "source": "native/tests/2d-poc/fixtures/acceptance/M4ExtraProbe.ts",
+      "installed": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\assets\\scripts\\M4ExtraProbe.ts",
+      "sha256": "7c9874609b61297223e61eb62e18360b8d703324fbe81902e5413ec2d3ac135d"
+    },
+    {
+      "source": "native/tests/2d-poc/fixtures/acceptance/RichTextProbe.ts",
+      "installed": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\assets\\scripts\\RichTextProbe.ts",
+      "sha256": "d6e63af66432a9491b5de26c82fc26af07b70da8faaf78fc412c52d4eb7c709c"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\data\\src\\cocos-js\\cc.js",
+      "sha256": "bc84a670439e13b6c6c84f589b57c94e458f79214808619730f3091d99fb9d7a"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\Resources\\src\\cocos-js\\cc.js",
+      "sha256": "bc84a670439e13b6c6c84f589b57c94e458f79214808619730f3091d99fb9d7a"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\cocos-m1-test.exe",
+      "sha256": "1b5d210db4a1a5951aef42315fe46cef46f0da012c75c17a6096d4b30bce4e9f"
+    }
+  ],
+  "logs": {
+    "cli": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-cli.log",
+      "sha256": "da86d6a333aa1dc96f2dd0b1964b430651fc98357f721a101f95222751d0c392"
+    },
+    "engine": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-engine.log",
+      "sha256": "b52f21bfb53491f8a350da8450d5bb7d259705dfb5a6dff844dc4e4028343816"
+    },
+    "sync": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-sync.log",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "native-final": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-native-final.log",
+      "sha256": "bba5defba950db681720ab98e2c618feea357965155ea1cf139015fd07e0c692"
+    },
+    "m0": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-m0.log",
+      "sha256": "f86c79e0c225bf8e0cb5c4dbf57b86c56ccb46d4f34fcb4a21827e783d0427c5"
+    },
+    "m2-pixel": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-m2-pixel.log",
+      "sha256": "8273c3f7de20b5de62380a7349ff3f0e30d4c98e43bd014f1e9ecc85960f8c0c"
+    },
+    "m3-label": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-m3-label.log",
+      "sha256": "34e6557850bc396e34acde1d107c193d71414389237c9e68ee576592e9509ede"
+    },
+    "m4-mask": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-m4-mask.log",
+      "sha256": "a92191176287eda35d9c5bc7f2e3a374b37ffc50e3646052aab77da5c04b75ca"
+    },
+    "m4-extra": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-m4-extra.log",
+      "sha256": "6b7cd4a34b66cafd7d681ffa78c54999a412c3765e1fe9d2f7244d81aac50bcc"
+    },
+    "m5-richtext": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-m5-richtext.log",
+      "sha256": "d4b9d5074c90c52d8b982cfe0fa76702b0f444cfae5276acf6a7f9b83750f4df"
+    },
+    "m6-uv": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-m6-uv.log",
+      "sha256": "3a7f2f21bf94dcfc70b4f4bb3650376a317e71c4c11e1ee16606aae113e76b44"
+    },
+    "targeted-jest": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-targeted-jest.log",
+      "sha256": "aad2fc7f60d88fa4f73b151be2a1442ae2347e8aff0e929b14ad3a3e33bde796"
+    },
+    "audit-final": {
+      "path": "native/tests/2d-poc/build/font-http-acceptance-audit-final.log",
+      "sha256": "9cb37f21aa76f09b79ca01ecf79ac709f3fb53f763812fd8d738c1ae3d662c17"
+    }
+  },
+  "sources": [
+    {
+      "path": "cocos/2d/assets/ttf-font.jsb.ts",
+      "sha256": "d6476c8f5204cc592377973f485f16ec8840e6e664f22e93a9a0a7d9ffa7211b"
+    },
+    {
+      "path": "cocos/2d/assets/sprite-frame.jsb.ts",
+      "sha256": "a0e521378ae4cd193ae25552d4aa68b6963b3471969b2f4633a0330664e9fb20"
+    },
+    {
+      "path": "tests/assets/native-font-assets.test.ts",
+      "sha256": "3ab26c53b685e0ded042fa36a3490989eb9338ab9b11f0457196281ff6ad2929"
+    },
+    {
+      "path": "docs/native-2d-m6.0-baseline.json",
+      "sha256": "a78f9bc7216af29190641d7477fbfb4b9f00477d7d8774206f9c87d1d692e536"
+    }
+  ],
+  "historicalSupplement": {
+    "authoritativeForCurrentCandidate": false,
+    "reason": "Captured before user-authorized SpriteFrame.native getter removal",
+    "snapshot": "dfa775480014f46b36b064423aff383525441e9e960bec199f2cb27009cab425",
+    "jest": {
+      "suites": 4,
+      "tests": 52
+    },
+    "normalRequests": {
+      "font": 2,
+      "missing": 5
+    },
+    "asanRequests": {
+      "font": 2,
+      "missing": 5
+    },
+    "localCyclesPerRun": 1000,
+    "fontBytes": 223404,
+    "renderWidth": 95.9765625,
+    "identicalCaptureFiles": 13
+  },
+  "remaining": [
+    "Strict RichText GPU parity remains 9/12",
+    "Native internal segment Node.getComponent compatibility",
+    "HTTPS/TLS, cancellation, partial files and unowned aliases",
+    "Bundle, old scenes/Prefab, other platforms and long-term heap"
+  ]
+}

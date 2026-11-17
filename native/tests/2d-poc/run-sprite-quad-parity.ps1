@@ -14,10 +14,13 @@ try {
 }
 
 Write-Host '== Native sprite quad =='
+Remove-Item -LiteralPath (Join-Path $outDir 'native-sprite-quad.json') -ErrorAction SilentlyContinue
 Push-Location $outDir
 try {
-    & $nativeExe | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw 'native PoC failed' }
+    $nativeOutput = & $nativeExe
+    $nativeExit = $LASTEXITCODE
+    $nativeOutput | Set-Content -LiteralPath (Join-Path $outDir 'native-sprite-quad.log')
+    if ($nativeExit -ne 0) { $nativeOutput | Write-Output; throw 'native PoC failed' }
 } finally {
     Pop-Location
 }

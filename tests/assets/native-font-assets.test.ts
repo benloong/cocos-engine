@@ -1,5 +1,5 @@
 import { deserialize, Details } from '../../cocos/serialization/deserialize';
-import { js } from '../../cocos/core';
+import { cclegacy, js } from '../../cocos/core';
 
 const assetCtor = jest.fn();
 class NativeFont {
@@ -78,6 +78,30 @@ test('TTF alias, native dependency and load-once source forward to native storag
     expect(font.loadFontData).toHaveBeenLastCalledWith('/fonts/replacement.ttf');
     font._nativeAsset = null;
     expect(font._fontFamily).toBe('Arial');
+});
+
+test.each(['cache', 'temp'])('HTTP TTF resolves its %s path without changing its asset URL', (storage) => {
+    const previousManager = cclegacy.assetManager;
+    const getCache = jest.fn(() => storage === 'cache' ? '/cache/font.ttf' : '');
+    const getTemp = jest.fn(() => '/temp/font.ttf');
+    cclegacy.assetManager = { cacheManager: { getCache, getTemp } } as any;
+    try {
+        const font: any = new NativeTTF();
+        font.nativeUrl = 'https://example.test/font.ttf?v=2';
+        font._nativeAsset = 'Downloaded_LABEL'; font.onLoaded();
+        expect(font.loadFontData).toHaveBeenCalledTimes(1);
+        expect(font.loadFontData).toHaveBeenCalledWith(storage === 'cache' ? '/cache/font.ttf' : '/temp/font.ttf');
+        expect(font.nativeUrl).toBe('https://example.test/font.ttf?v=2');
+        expect(font._nativeAsset).toBe('Downloaded_LABEL');
+        if (storage === 'cache') expect(getTemp).not.toHaveBeenCalled();
+        getCache.mockReturnValue('/cache/reloaded.ttf');
+        font.onLoaded();
+        expect(font.loadFontData).toHaveBeenLastCalledWith('/cache/reloaded.ttf');
+        font._destroy();
+        const calls = getCache.mock.calls.length;
+        font.onLoaded();
+        expect(getCache).toHaveBeenCalledTimes(calls);
+    } finally { cclegacy.assetManager = previousManager; }
 });
 
 test('bitmap serialized data and dependency writes reach native and compatibility views release safely', () => {

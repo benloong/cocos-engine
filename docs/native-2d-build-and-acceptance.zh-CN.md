@@ -42,6 +42,15 @@ New-Item -ItemType Junction `
 
 `cocos-m1-test/tools/build-engine.cjs` 使用 v4 的 `@cocos/ccbuild` 和 `cc.config.json` 的 NATIVE override。
 
+构建前，从 v4 同步受版本管理的验收探针（保留测试工程现有 `.meta` UUID）：
+
+```powershell
+cd C:\Users\wangbenlong\Works\cocos-engine-worktrees\v4
+node native/tests/2d-poc/sync-acceptance-probes.cjs
+```
+
+M4 Graphics 已使用原生几何；探针以隔离的 GPU readPixels 检查 80×80 填充，不依赖旧 CPU 纹理的 getFrame/getOpaquePixels。GRAPHICS_STENCIL 使用 Mask.subComp 的真实路径；原有像素阈值保持不变。M5 在 native 下直接检查原生 Label/Sprite 段，另行记录 JS 子组件数量；不为探针创建重复 JS 渲染组件。内部节点的 JS 组件查询兼容性仍按 M6 单列验收。
+
 ## 3. CLI 构建
 
 ### Windows
@@ -195,6 +204,8 @@ pwsh -NoProfile -File v4\native\tests\2d-poc\run-m3-label-probe.ps1
 
 ### 7.4 M4 Mask / Graphics
 
+M4 探针默认启动预算为 60 秒，可用 `-TimeoutSeconds` 指定；该预算覆盖图形初始化和场景内 10/16 秒的延时阶段。像素及几何断言不变。
+
 ```powershell
 pwsh -NoProfile -File v4\native\tests\2d-poc\run-m4-mask-probe.ps1
 pwsh -NoProfile -File v4\native\tests\2d-poc\run-m4-extra-probe.ps1
@@ -241,6 +252,7 @@ node node_modules/jest/bin/jest.js --runInBand `
 ## 8. 完整验收顺序
 
 ```text
+0. sync-acceptance-probes.cjs
 1. CLI build windows
 2. tools/build-engine.cjs
 3. robocopy data -> Resources
@@ -310,5 +322,8 @@ M3 Label probe: PASS
 M0 checks passed
 M5 RichText: children=10, labels=9, sprites=1, colored=8337
 M6.1 UV parity: PASS
-Jest: 8 suites / 24 tests passed
+总门禁末尾 Jest: 8 suites / 33 tests passed
+定向 Jest: 6 suites / 30 tests passed
 ```
+
+探针更新后的 Windows Debug 定向结果：M4 Graphics GPU=6400、GRAPHICS_STENCIL=1600、nested Mask=3600；M5 原生段=10、Label=9、Sprite=1、colored=8725，样式与 hit/miss 通过。该功能验收不替代 M6 全平台、完整 API、长期内存、性能或严格文字像素门禁；RichText 严格 GPU 对照仍为 9/12，继续按 M6 计划跟踪。

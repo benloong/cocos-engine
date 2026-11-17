@@ -14674,8 +14674,8 @@
     },
     {
       "file": "cocos/2d/assets/ttf-font.jsb.ts",
-      "sha256": "d40a8059fd581ca8deb58f8160ead2131dbc92932f237ba95c1375c051a1b2f0",
-      "printedCodeLines": 33,
+      "sha256": "d6476c8f5204cc592377973f485f16ec8840e6e664f22e93a9a0a7d9ffa7211b",
+      "printedCodeLines": 37,
       "runtimeImports": [
         "../../core",
         "./font",

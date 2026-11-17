@@ -1448,7 +1448,9 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         check(!load("not-a-font-url"), "malformed font source is rejected");
         check(getFontFamilyNameMap().at(alias) == originalPath, "failed reload preserves previous font path");
         // This fixture owns one temporary directory and file; no recursive deletion.
-        const auto directory = std::filesystem::temp_directory_path()
+        // Keep owned fixture files beside the other harness outputs. The
+        // system TEMP may be an inaccessible 8.3 path in managed environments.
+        const auto directory = std::filesystem::current_path()
             / ("cc2d-font-registry-" + std::to_string(GetCurrentProcessId()) + "-" + std::to_string(GetTickCount64()));
         const bool created = std::filesystem::create_directory(directory);
         check(created, "font reload fixture creates its own directory");
@@ -2081,7 +2083,12 @@ int main(int argc, char **argv) {
         testUIOpacity();
         std::printf("uitransform done\n");
         std::fflush(stdout);
-        testJsBindings(scriptEngine);
+        try {
+            testJsBindings(scriptEngine);
+        } catch (const std::exception &error) {
+            ++gFailures;
+            std::printf("FAIL: JSB binding test exception: %s\n", error.what());
+        }
         if (argc > 1) {
             std::ifstream stream(argv[1]);
             const std::string script((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());

@@ -4,6 +4,7 @@
 > 状态：**未收口**。M2、M3、M4、M5 的阶段通过记录不代表整个模块满足终态薄壳契约。SpriteFrame 数据/UV、SpriteAtlas map/native 表已有 Windows 定向证据，不代表全平台、完整资源场景或性能 KPI 通过。
 > 本文是 M6 剩余任务与终态门禁的统一清单；历史数据保留在各阶段 report/gate 中。
 > 所有权约束：M6 原生 2D 代码禁止 shared_ptr/weak_ptr。值成员、unique_ptr、IntrusivePtr 与非 owning 指针分别标明拥有者；借用者必须在拥有者销毁前解绑或收到同步失效通知。
+> 构建验收约束：后续改动统一按 [Cocos CLI 构建与验收流程](./native-2d-build-and-acceptance.zh-CN.md) 第 8 节构建 cocos-m1-test、重建 override、同步资源、编译 Debug app 并执行全部门禁，通过后再提交。定向 PoC/GPU/ASAN 仅作补充证据；不得替代文档规定的测试工程验收。
 
 ## 1. 已有基础与验收边界
 
@@ -54,6 +55,7 @@
 - [x] Windows TTFFont 逐资产 alias：native 记录明确持有者与来源代次，独立渲染身份隔离同名换源；共享释放、最后持有者清理、两种换源销毁顺序及迟到释放通过。Debug/Release 各 1000 轮 native/实际 JSB、49 项 Jest、10 项静态检查与同快照真实加载/释放、ASAN 应用通过；严格图像仍 9/12，完整异步/跨平台仍待验收，见 [实现与边界](./native-2d-m6.1-font-alias-ownership.md)。
 - [x] 字体工厂失败回滚：native 空字节/赋值异常销毁半成品并回调错误，Factory 同步异常清理等待队列、支持同 ID 重试并隔离旧回调；16 个 suite、120 项和 Debug/Release 实际 JSB 故障探针通过。创建前无主 alias、完整异步下载与跨平台仍待验收，见 [报告](./native-2d-m6.1-font-factory-failure.md)。
 - [x] Windows 本地 TTFFont 真实资源循环：Debug 普通/ASAN 应用各 1000 次 loadRemote/releaseAsset 与缓存身份检查，逐轮字节/alias/缓存恢复、失败回滚与同 URL 重试、缺失源拒绝和最终延迟销毁通过；当前源码完整引擎 JS 重建，图像仍 9/12。长期 heap、HTTP/bundle、BMFont/LabelAtlas 与跨平台仍待验收，见 [证据](./native-2d-m6.1-font-remote-lifecycle.md)。
+- [x] HTTP 字体缓存来源修复：保留资产 URL，onLoaded 从已下载缓存/临时文件读取 native 字节；缓存换源与 released 回调测试通过。按统一文档构建测试工程并执行基础门禁，旧 M4/M5 探针迁移到真实 GPU/原生段观测；历史 HTTP/ASAN 补充证据及 HTTPS、取消、半文件、无主 alias 等剩余边界见 [报告](./native-2d-m6.1-font-http.md)。
 - [x] 字体数据边界补充：BitmapFont/LabelAtlas 拒绝溢出 float、非法 glyph/kerning 与重复字形，失败保留 native 数据、版本和 JS 编辑视图；TTFFont 销毁后 initDefault 不再改写状态。Windows Debug/Release native 与实际 JSB 定向回归通过，见 [字体资产报告](./native-2d-m6.1-font-assets.md)。
 - [x] 字体字号入口复核：BitmapFont/LabelAtlas 忽略非有限字号及 JSB float 溢出，保留默认/零/小数语义；重复赋值、销毁后迟到赋值保持版本稳定。Windows Debug/Release native 与实际 JSB、7 个 Jest suite（68 项）通过，见字体资产报告。
 - [ ] 动态合图：确认迁移范围、纹理/UV 更新和回退策略，验证 Sprite/Label/Mask 联动。按需迁移项须有范围结论与证据，不能默认为完成。
@@ -62,6 +64,8 @@
 交付：资产 parity 报告和真实资源回归日志。prototype 改造本身不等于资产下沉验收完成。
 
 ### M6.2 RichText 达到终态薄壳
+
+- [ ] 明确并验证原生内部段节点的 JS 组件查询边界：当前原生 Label/Sprite 段可直接观测、渲染和命中，内部节点未创建对应 JS 前端组件。M5 原生段计数通过不替代 Node.getComponent 等公开 API 的完整兼容性验收；须在最终组件契约中形成明确结论和证据。
 
 - [x] 原生解析准备：新增 RichTextParser/span/style，3871 组输入在 g++、Windows MSVC Debug/Release 产物上与实际 Web parser 对照通过，见 [报告](./native-2d-m6.2-richtext-parser.md)。现已接入下述原生运行时，完整视觉/场景验收仍待完成。
 - [x] 原生布局规则准备：RichTextLayout 直接消费 native span，1440 组相同测量值的用例在 g++、MSVC Debug/Release 与实际 Web RichText 布局对照通过，见 [报告](./native-2d-m6.2-richtext-layout.md)。现已连接原生测量和段管理，不能据此认定场景/视觉 parity。
