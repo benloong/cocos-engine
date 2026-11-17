@@ -152,8 +152,21 @@ static bool jsbLoadFont(se::State &s) {
 }
 SE_BIND_FUNC(jsbLoadFont)
 
+static bool jsbGetFontAliasStats(se::State &s) {
+    se::HandleObject result(se::Object::createPlainObject());
+    result->setProperty("publicAliases", se::Value(static_cast<double>(fontFamilyNameMap.size())));
+    result->setProperty("renderAliases", se::Value(static_cast<double>(fontAssetFamilyNameMap.size())));
+    result->setProperty("leases", se::Value(static_cast<double>(fontAliasLeases.size())));
+    result->setProperty("groups", se::Value(static_cast<double>(fontAliasGroups.size())));
+    s.rval().setObject(result);
+    return true;
+}
+SE_BIND_FUNC(jsbGetFontAliasStats)
+
 bool register_platform_bindings(se::Object * /*obj*/) { // NOLINT(readability-identifier-naming)
     __jsbObj->defineFunction("loadFont", _SE(jsbLoadFont));
+    // Explicit diagnostics only; never queried by the production frame path.
+    __jsbObj->defineFunction("getFontAliasStats", _SE(jsbGetFontAliasStats));
     se::ScriptEngine::getInstance()->addAfterCleanupHook([]() {
         // Values own paths only; Canvas instances own their selected font faces.
         decltype(fontFamilyNameMap)().swap(fontFamilyNameMap);

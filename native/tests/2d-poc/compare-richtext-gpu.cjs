@@ -3,6 +3,8 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const base=path.join(__dirname,'build');
 const read=side=>JSON.parse(fs.readFileSync(path.join(base,`richtext-gpu-${side}/manifest.json`)));
 const a=read('native'),b=read('web');
+const lifecycle=a.text?.lifecycle;
+if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||JSON.stringify(lifecycle.before)!==JSON.stringify(lifecycle.after)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
 const expected=['text-basic','text-bold','text-italic','text-underline','text-outline','text-nested','text-colors','text-wrap-left','text-wrap-center','text-wrap-right','text-multiline','text-unicode'];
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 for(const value of [a,b]) {
@@ -29,7 +31,7 @@ for(let n=0;n<expected.length;n++) {
         native:a.text.metrics[n],web:b.text.metrics[n],
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),webSha256:crypto.createHash('sha256').update(reference).digest('hex')});
 }
-const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true},environment:{native:a.environment,web:b.environment},pass:rows.every(x=>x.pass),results:rows};
+const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},pass:rows.every(x=>x.pass),results:rows};
 fs.writeFileSync(path.join(base,'richtext-gpu-comparison.json'),JSON.stringify(result,null,2)+'\n');
 for(const row of rows)console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: layout=${row.layoutEqual}, max=${row.max}, pixels=${row.pixels}, colored=${row.nativeColored}/${row.webColored}`);
 if(!result.pass)process.exitCode=1;

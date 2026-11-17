@@ -271,7 +271,7 @@
     },
     {
       "file": "native/cocos/bindings/manual/jsb_platform_win32.cpp",
-      "sha256": "464f917595525e22b378344cda30e1dcc19d4e173bfbd05f8ae8eb0cdb808ab1"
+      "sha256": "4d5ce67da3c0cf57d483460aa5c76139c6fd7e1c3574dfa2268bd45016e45a69"
     },
     {
       "file": "native/cocos/core/Root.cpp",
