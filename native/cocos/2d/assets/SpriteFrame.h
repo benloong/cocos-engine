@@ -45,6 +45,33 @@ public:
     TextureBase *getTexture() const { return _texture.get(); }
     uint32_t getRevision() const { return _revision; }
 
+    // The frame owns both textures while packed. Consumers borrow the active
+    // texture through this frame and observe the revision on either transition.
+    void setDynamicAtlasFrame(TextureBase *texture, float x, float y) {
+        if (!texture) return;
+        _originalTexture = _texture;
+        _originalX = _data.x;
+        _originalY = _data.y;
+        _hasOriginal = true;
+        _texture = texture;
+        _data.x = x;
+        _data.y = y;
+        ++_revision;
+    }
+    void resetDynamicAtlasFrame() {
+        if (!_hasOriginal) return;
+        _texture = _originalTexture;
+        _data.x = _originalX;
+        _data.y = _originalY;
+        _originalTexture = nullptr;
+        _hasOriginal = false;
+        ++_revision;
+    }
+    bool hasDynamicAtlasFrame() const { return _hasOriginal; }
+    TextureBase *getOriginalTexture() const { return _originalTexture.get(); }
+    float getOriginalX() const { return _originalX; }
+    float getOriginalY() const { return _originalY; }
+
     void setRect(float x, float y, float width, float height) {
         _data.x = x; _data.y = y; _data.width = width; _data.height = height; ++_revision;
     }
@@ -133,6 +160,9 @@ public:
     void copyFrom(const SpriteFrame *other) {
         if (!other || other == this) return;
         _data = other->_data; _texture = other->_texture; _atlasUuid = other->_atlasUuid; ++_revision;
+        _originalTexture = other->_originalTexture;
+        _originalX = other->_originalX; _originalY = other->_originalY;
+        _hasOriginal = other->_hasOriginal;
     }
     std::vector<float> getUV() const {
         if (!_texture) return {};
@@ -154,6 +184,10 @@ public:
 private:
     SpriteFrameData _data;
     IntrusivePtr<TextureBase> _texture;
+    IntrusivePtr<TextureBase> _originalTexture;
+    float _originalX{0.F};
+    float _originalY{0.F};
+    bool _hasOriginal{false};
     std::string _atlasUuid;
     uint32_t _revision{0};
 };

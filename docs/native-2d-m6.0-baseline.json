@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "0f755f27b372fee29788a4c1c7dab7215334348a80c5a4a39b078a42b049af94"
+      "sha256": "cef9f3373a8e1040397b528e3e5c2eacc02374b6e9fcee6fe085d86b1ac596b7"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
@@ -14619,8 +14619,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "a0e521378ae4cd193ae25552d4aa68b6963b3471969b2f4633a0330664e9fb20",
-      "printedCodeLines": 211,
+      "sha256": "a85668ae8ba03a04e99c11ef56471cc8ed41cb47f94e8be07a0a805f08f79cca",
+      "printedCodeLines": 230,
       "runtimeImports": [
         "../../core",
         "../../asset/assets/asset",
@@ -15325,8 +15325,8 @@
     },
     {
       "file": "cocos/2d/components/mask.ts",
-      "sha256": "878cbb8adc568ec9766bf209be3a6278e9593d40ad07d1b7ab6fb2729197c0d4",
-      "printedCodeLines": 486,
+      "sha256": "3db0cb25dbee5e7bd6df967e6f0bf3c4d4d12b5cb23a6b54119760da6ed5c868",
+      "printedCodeLines": 487,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15343,22 +15343,22 @@
       "frameMethods": [
         {
           "name": "updateRenderer",
-          "line": 589
+          "line": 591
         },
         {
           "name": "fillBuffers",
-          "line": 600
+          "line": 602
         },
         {
           "name": "postUpdateAssembler",
-          "line": 607
+          "line": 609
         }
       ],
       "nativeCalls": [],
       "allocations": [],
       "loops": [
         49,
-        483
+        485
       ]
     },
     {
@@ -16801,8 +16801,8 @@
     },
     {
       "file": "cocos/2d/utils/dynamic-atlas/atlas.ts",
-      "sha256": "fde6c2341873ce25de4c79970a7f4ec00097eb335a7113b1fb8aab449921fa95",
-      "printedCodeLines": 152,
+      "sha256": "589eebb02ac706d9ed722f12f865cb45869118c90128993d3badce801f1cfc46",
+      "printedCodeLines": 158,
       "runtimeImports": [
         "../../../asset/assets/asset-enum",
         "../../../asset/assets/image-asset",

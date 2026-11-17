@@ -17,6 +17,7 @@ try {
         if (Test-Path $log) {
             $lines = @(Get-Content $log | Select-String -Pattern 'M5_RICHTEXT ')
             if ($lines.Count -ge 1) { break }
+            if ($proc.HasExited) { throw "RichText app exited before probe marker (exit=$($proc.ExitCode)); stdout=$log; stderr=$log.err" }
         }
     }
     if ($lines.Count -lt 1) { throw 'RichText probe missing' }

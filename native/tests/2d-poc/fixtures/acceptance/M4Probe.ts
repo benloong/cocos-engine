@@ -4,7 +4,12 @@ import {
     Canvas,
     Color,
     director,
+    native,
+    sys,
     Graphics,
+    DynamicAtlasManager,
+    dynamicAtlasManager,
+    ImageAsset,
     Mask,
     Material,
     Node,
@@ -20,10 +25,14 @@ import {
 /** M4 Mask + Graphics probe. */
 export class M4Probe {
     public static run (parent: Node): void {
+        // A local manager owns these frames; Web auto packing must not preempt it.
+        const autoPacking = dynamicAtlasManager.enabled;
+        dynamicAtlasManager.enabled = false;
         const texture = new Texture2D();
         texture.reset({ width: 8, height: 8, format: Texture2D.PixelFormat.RGBA8888 });
         const pixels = new Uint8Array(8 * 8 * 4);
         for (let i = 0; i < pixels.length; i += 4) { pixels[i] = 255; pixels[i + 3] = 255; }
+        texture.image = new ImageAsset({ _data: pixels, width: 8, height: 8, format: Texture2D.PixelFormat.RGBA8888 } as any);
         texture.uploadData(pixels);
         const frame = new SpriteFrame();
         frame.texture = texture;
@@ -42,6 +51,7 @@ export class M4Probe {
                 alphaPixels[i + 3] = x >= 32 ? 255 : 0;
             }
         }
+        alphaTexture.image = new ImageAsset({ _data: alphaPixels, width: 64, height: 64, format: Texture2D.PixelFormat.RGBA8888 } as any);
         alphaTexture.uploadData(alphaPixels);
         const spriteMaskFrame = new SpriteFrame();
         spriteMaskFrame.texture = alphaTexture;
@@ -101,7 +111,77 @@ export class M4Probe {
             return red;
         };
 
-        setTimeout(() => {
+        // Native renders outside the JS director AFTER_DRAW dispatch.
+        const wait = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 80));
+        const verifyPacking = async (target: SpriteFrame, consumer: Sprite | null, name: string, sampling: 'repeat' | 'clamp'): Promise<void> => {
+            // Native observes frame revision. Web assembler refresh is explicit
+            // because this test calls the internal packing hook outside it.
+            const refreshWeb = (): void => { if (!sys.isNative) consumer!.markForUpdateRenderData(); };
+            const source = target.texture;
+            const previous = source.getSamplerInfo();
+            const wraps = [previous.addressU, previous.addressV, previous.addressW];
+            const mode = sampling === 'repeat' ? Texture2D.WrapMode.REPEAT : Texture2D.WrapMode.CLAMP_TO_EDGE;
+            source.setWrapMode(mode, mode, mode);
+            target.rect = target.rect;
+            refreshWeb();
+            await wait();
+            const capture = async (stage: string): Promise<Uint8Array> => {
+                const pixels = renderTexture.readPixels();
+                if (!pixels || pixels.length !== 256 * 256 * 4) throw new Error('Invalid atlas capture');
+                const data = new Uint8Array(pixels);
+                const file = name.toLowerCase() + '-' + sampling + '-' + stage;
+                if (sys.isNative) {
+                    const output = native.fileUtils.getDefaultResourceRootPath() + 'm6-atlas-captures';
+                    if (!native.fileUtils.createDirectory(output)) throw new Error('Atlas capture directory failed');
+                    if (!native.fileUtils.writeDataToFile(data.buffer, output + '/' + file + '.rgba')) throw new Error('Atlas capture write failed');
+                } else {
+                    const response = await fetch('/m6-capture?name=' + file, { method: 'POST', body: data });
+                    if (!response.ok) throw new Error('Atlas capture upload failed');
+                }
+                return data;
+            };
+            const before = await capture('source');
+            const uv = target.uv.slice();
+            const manager = new DynamicAtlasManager();
+            manager.textureSize = 128;
+            manager.enabled = true;
+            const matches = async (stage: string): Promise<boolean> => {
+                const actual = await capture(stage);
+                let differences = 0;
+                actual.forEach((v, i) => { if (v !== before[i]) differences++; });
+                console.log('M6_ATLAS_CAPTURE ' + JSON.stringify({ consumer: name, sampling, stage, differences }));
+                return differences === 0;
+            };
+            try {
+                manager.packToDynamicAtlas(null, target);
+                refreshWeb();
+                const atlas = target.texture;
+                if (target.original?._texture !== source || atlas === source || target.rect.x <= 0 || target.rect.y <= 0) throw new Error('dynamic atlas state');
+                const clone = target.clone();
+                clone._resetDynamicAtlasFrame();
+                if (clone.texture !== source || target.texture !== atlas) throw new Error('dynamic atlas clone');
+                clone.destroy();
+                await wait();
+                const packedMatches = await matches('packed');
+                manager.reset();
+                refreshWeb();
+                await wait();
+                const restoredMatches = await matches('restored');
+                const state = target.original === null && target.texture === source && target.uv.every((v, i) => v === uv[i]);
+                console.log('M6_DYNAMIC_ATLAS ' + JSON.stringify({ consumer: name, sampling, state, restored: restoredMatches, equal: packedMatches && restoredMatches }));
+            } finally {
+                target._resetDynamicAtlasFrame();
+                manager.enabled = false;
+                source.setWrapMode(wraps[0] as any, wraps[1] as any, wraps[2] as any);
+                target.rect = target.rect;
+                refreshWeb();
+                await wait();
+            }
+        };
+
+        setTimeout(async () => {
+            await verifyPacking(frame, sprite, 'Sprite', 'repeat');
+            await verifyPacking(frame, sprite, 'Sprite', 'clamp');
             const normal = readRed();
             console.log(`M4_MASK_PIXEL ${JSON.stringify({ width: 256, height: 256, red: normal, opaque: 65536, inverted: false })}`);
 
@@ -117,7 +197,17 @@ export class M4Probe {
 
                     mask.type = Mask.Type.SPRITE_STENCIL;
                     mask.spriteFrame = spriteMaskFrame;
-                    setTimeout(() => {
+                    // Web Mask creates a TRIMMED Sprite; keep the same explicit size on both backends.
+                    maskTransform.setContentSize(80, 80);
+                    setTimeout(async () => {
+                        const stencil = mask.subComp as Sprite;
+                        const pass = stencil?.getMaterialInstance(0)?.passes[0];
+                        const sampler = spriteMaskFrame.texture.getSamplerInfo();
+                        console.log('M6_MASK_STATE ' + JSON.stringify({ alphaThreshold: mask.alphaThreshold,
+                            uniform: pass?.getUniform(pass.getHandle('alphaThreshold'), 0),
+                            min: sampler.minFilter, mag: sampler.magFilter, u: sampler.addressU, v: sampler.addressV }));
+                        await verifyPacking(spriteMaskFrame, stencil, 'Mask', 'repeat');
+                        await verifyPacking(spriteMaskFrame, stencil, 'Mask', 'clamp');
                         console.log(`M4_SPRITE_PIXEL ${JSON.stringify({ red: readRed() })}`);
 
                         maskNode.active = false;
@@ -142,6 +232,7 @@ export class M4Probe {
                             camera.orthoHeight = oldOrthoHeight;
                             camera.targetTexture = oldTarget;
                             renderTexture.destroy();
+                            dynamicAtlasManager.enabled = autoPacking;
                         }, 600);
                     }, 700);
                 }, 700);

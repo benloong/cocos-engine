@@ -124,6 +124,13 @@ Object.defineProperties(spriteFrameProto, {
     packable: nativeProperty('getPackable', 'setPackable'),
     pixelsToUnit: nativeProperty('getPixelsToUnit', 'setPixelsToUnit'),
     meshType: nativeProperty('getMeshType', 'setMeshType'),
+    original: {
+        enumerable: true, configurable: true,
+        get () {
+            return this.hasDynamicAtlasFrame()
+                ? { _texture: this.getOriginalTexture(), _x: this.getOriginalX(), _y: this.getOriginalY() } : null;
+        },
+    },
     uv: nativeProperty('getUV'),
     unbiasUV: nativeProperty('getUV'),
     trimmedBorder: {
@@ -143,6 +150,16 @@ Object.defineProperties(spriteFrameProto, {
 });
 
 SpriteFrame.EVENT_UV_UPDATED = SpriteFrameEvent.UV_UPDATED;
+spriteFrameProto._setDynamicAtlasFrame = function (frame): void {
+    if (!frame) return;
+    this.setDynamicAtlasFrame(frame.texture, frame.x, frame.y);
+    this._calculateUV();
+};
+spriteFrameProto._resetDynamicAtlasFrame = function (): void {
+    if (!this.hasDynamicAtlasFrame()) return;
+    this.resetDynamicAtlasFrame();
+    this._calculateUV();
+};
 spriteFrameProto._calculateUV = function (): void {
     if (this.getTexture()) this.emit(SpriteFrame.EVENT_UV_UPDATED, this);
 };

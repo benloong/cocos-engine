@@ -249,6 +249,20 @@ node node_modules/jest/bin/jest.js --runInBand `
   tests/ui/sprite-frame.test.ts
 ```
 
+### 7.8 动态合图 Web/native 原始像素
+
+涉及 SpriteFrame 合图、动态图集或 Mask 时，在同一候选上构建第 3 节 Web 工程，并收集/比较两端产物：
+
+```powershell
+# Web 工程已从 cocos-cli 构建为 cocos-m1-test/build/web-mobile
+cd C:\Users\wangbenlong\Works\cocos-engine-worktrees\v4
+node native/tests/2d-poc/run-dynamic-atlas-web.cjs
+pwsh -NoProfile -File native/tests/2d-poc/run-m4-mask-probe.ps1
+node native/tests/2d-poc/compare-dynamic-atlas.cjs
+```
+
+每端必须生成 12 份 256×256 RGBA：Sprite/Mask × REPEAT/CLAMP × 原图/打包/恢复。通道容差沿用 M6 的 1；缺失、重复或旧 native 文件不得算通过。CLAMP 打包/恢复与原图字节相同；REPEAT 的跨边采样以同候选 Web 为准，全部恢复帧仍须字节相同。Web 阈值需与组件值一致，不能以材质默认 0.5 代替组件默认 0.1。两端构建先后不限，但必须是相同源码候选。
+
 ## 8. 完整验收顺序
 
 ```text
@@ -265,6 +279,7 @@ node node_modules/jest/bin/jest.js --runInBand `
 10. run-m5-richtext-probe.ps1
 11. run-m6-sprite-frame-tests.ps1
 12. 定向 Jest
+13. 涉及动态合图/Mask 的节点追加第 7.8 节原始像素对照
 ```
 
 全部通过后再提交：
@@ -276,6 +291,12 @@ git -C v4 commit
 ```
 
 ## 9. 常见问题
+
+### CLI 工作目录与缺失脚本组件
+
+CLI 命令必须从第 3 节的 cocos-cli 目录执行。从引擎目录运行曾使测试工程的编辑器脚本缓存混入 CommonJS `exports`，出现 `ReferenceError: exports is not defined`。之后 CLI 即使显示 Build completed，也可能记录 `Missing class`，并把场景中的 M1Test 编译为 null；此时应用不会运行验收探针，不能判定构建验收通过。
+
+先核对构建日志中的脚本加载异常与场景组件 UUID。确认是该问题后，可将该测试工程自身的 `temp/programming/packer-driver/targets` 可逆移到同目录备份，再从 cocos-cli 重建。不得改写源场景或删除缺失组件来绕过检查。重建后确认生成场景保留 M1Test 类型，再执行 override、资源同步、native 编译和完整门禁。
 
 ### LNK1163 / COMDAT
 
@@ -320,10 +341,12 @@ build/windows/data/src/cocos-js/cc.js
 M2 pixel probe: PASS
 M3 Label probe: PASS
 M0 checks passed
-M5 RichText: children=10, labels=9, sprites=1, colored=8337
+M5 RichText: children=10, labels=9, sprites=1, colored=8725
 M6.1 UV parity: PASS
 总门禁末尾 Jest: 8 suites / 33 tests passed
-定向 Jest: 6 suites / 30 tests passed
+定向 Jest: 6 suites / 32 tests passed
 ```
 
 探针更新后的 Windows Debug 定向结果：M4 Graphics GPU=6400、GRAPHICS_STENCIL=1600、nested Mask=3600；M5 原生段=10、Label=9、Sprite=1、colored=8725，样式与 hit/miss 通过。该功能验收不替代 M6 全平台、完整 API、长期内存、性能或严格文字像素门禁；RichText 严格 GPU 对照仍为 9/12，继续按 M6 计划跟踪。
+
+动态图集当前候选：12/12 Web/native 原始 RGBA 的 SHA256 相同，最大通道差值 0。M5 曾两次在原 45 秒预算内缺失完成标记，保持断言重跑通过；已补提前退出码诊断，间歇稳定性仍待定位。各门禁最后一次执行均通过，不表示一次完整串行运行已经稳定通过，详见 [本轮记录](./native-2d-m6.1-dynamic-atlas.md)。

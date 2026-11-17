@@ -184,6 +184,53 @@ void testSpriteFrameData() {
         temporary->setTexture(nullptr);
     }
     check(frame->getTexture() == texture, "clone/release keeps original texture alive");
+    cc::IntrusivePtr<cc::Texture2D> packed(new cc::Texture2D());
+    packed->create(512, 512);
+    const auto sourceRefs = texture->getRefCount();
+    const auto packedRefs = packed->getRefCount();
+    const auto restoredUV = frame->getUV();
+    for (int i = 0; i < 1000; ++i) {
+        const auto revision = frame->getRevision();
+        frame->setDynamicAtlasFrame(packed, 101, 103);
+        check(frame->hasDynamicAtlasFrame() && frame->getOriginalTexture() == texture,
+              "packed frame owns original texture");
+        check(frame->getOriginalX() == 7 && frame->getOriginalY() == 11,
+              "packed frame preserves original origin");
+        check(frame->getTexture() == packed && frame->getRevision() == revision + 1,
+              "packing updates active texture and consumer revision");
+        check(texture->getRefCount() == sourceRefs && packed->getRefCount() == packedRefs + 1,
+              "packing transfers source reference to backup and owns atlas");
+        cc::IntrusivePtr<cc::SpriteFrame> clone(new cc::SpriteFrame());
+        clone->copyFrom(frame);
+        clone->resetDynamicAtlasFrame();
+        check(clone->getTexture() == texture && clone->getUV() != frame->getUV(),
+              "packed clone restores independently");
+        clone = nullptr;
+        frame->resetDynamicAtlasFrame();
+        check(frame->getTexture() == texture && frame->getUV() == restoredUV,
+              "atlas reset restores texture and flipped UV");
+        check(!frame->hasDynamicAtlasFrame() && frame->getOriginalTexture() == nullptr,
+              "atlas reset clears owned backup");
+        check(texture->getRefCount() == sourceRefs && packed->getRefCount() == packedRefs,
+              "atlas cycle releases both temporary texture references");
+        const auto restoredRevision = frame->getRevision();
+        frame->resetDynamicAtlasFrame();
+        check(frame->getRevision() == restoredRevision, "unpacked reset is a no-op");
+    }
+    {
+        cc::IntrusivePtr<cc::SpriteFrame> temporary(new cc::SpriteFrame());
+        temporary->copyFrom(frame);
+        temporary->setDynamicAtlasFrame(packed, 2, 3);
+        check(texture->getRefCount() == sourceRefs + 1 && packed->getRefCount() == packedRefs + 1,
+              "packed temporary explicitly owns source and atlas");
+        // Copying an unpacked source must also discard a previous atlas backup.
+        temporary->copyFrom(frame);
+        check(!temporary->hasDynamicAtlasFrame() && packed->getRefCount() == packedRefs,
+              "copy from unpacked frame releases previous atlas state");
+        temporary->setDynamicAtlasFrame(packed, 2, 3);
+    }
+    check(texture->getRefCount() == sourceRefs && packed->getRefCount() == packedRefs,
+          "packed frame destructor releases source and atlas without reset");
 }
 
 void testFrameConsumers() {
@@ -1576,6 +1623,13 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    sf.setFlipUVX(false);"
         "    if (sf.getUV().length !== 8 || sf.getSlicedUV().length !== 32) return 'frame UV binding conversion';"
         "    if (Math.abs(sf.getUV()[0] - 7 / 128) > 0.000001) return 'frame UV binding values';"
+        "    var packedTexture = new jsb.Texture2D(); packedTexture.create(512, 512);"
+        "    sf.setDynamicAtlasFrame(packedTexture, 21, 31);"
+        "    if (!sf.hasDynamicAtlasFrame() || sf.getOriginalTexture() !== texture || sf.getOriginalX() !== 7 || sf.getOriginalY() !== 11) return 'atlas original binding';"
+        "    clone.copyFrom(sf); clone.resetDynamicAtlasFrame();"
+        "    if (clone.getTexture() !== texture || sf.getTexture() !== packedTexture) return 'atlas clone independence';"
+        "    sf.resetDynamicAtlasFrame();"
+        "    if (sf.hasDynamicAtlasFrame() || sf.getTexture() !== texture || sf.getRectX() !== 7 || sf.getRectY() !== 11) return 'atlas reset binding';"
         "    sf.resetFrame(true);"
         "    if (sf.getRectWidth() !== 0 || sf.getInsetLeft() !== 0) return 'frame reset';"
         "    var atlas = new jsb.SpriteAtlas();"

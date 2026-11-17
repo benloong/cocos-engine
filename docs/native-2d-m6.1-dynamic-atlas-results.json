@@ -1,0 +1,399 @@
+{
+  "date": "2026-11-17",
+  "parentCommit": "0dae39141febb8d20535d3da0467de1da0c18563",
+  "workflow": "docs/native-2d-build-and-acceptance.zh-CN.md",
+  "project": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test",
+  "platforms": [
+    "Windows Debug GLES3/PVRVFrame",
+    "Chrome WebGL headless"
+  ],
+  "latestIndividualGatesPassed": true,
+  "uninterruptedFullRunPassed": false,
+  "ownership": {
+    "frameData": "value",
+    "activeTexture": "SpriteFrame IntrusivePtr",
+    "originalTexture": "SpriteFrame IntrusivePtr; cleared on restore; copied independently by clone",
+    "sharedPtrAdded": false
+  },
+  "acceptance": {
+    "m0": {
+      "applicationM2M3Included": true,
+      "finalJestSuites": 8,
+      "finalJestTests": 33
+    },
+    "m2": {
+      "modes": 5,
+      "red": 7936,
+      "center": [
+        128,
+        0,
+        0,
+        255
+      ]
+    },
+    "m3": {
+      "bmfont": [
+        62,
+        23,
+        960
+      ],
+      "realBmfont": [
+        100,
+        28,
+        872
+      ]
+    },
+    "m4": {
+      "normal": 6400,
+      "inverted": 44800,
+      "ellipse": 5024,
+      "sprite": 3360,
+      "graphics": 6400,
+      "graphicsStencil": 1600,
+      "nested": 3600
+    },
+    "m5": {
+      "segments": 10,
+      "labels": 9,
+      "sprites": 1,
+      "width": 300,
+      "height": 104.31999969482422,
+      "colored": 8725,
+      "hitMissAndStyles": true,
+      "passedOnRetry": true
+    },
+    "uv": {
+      "suites": 1,
+      "tests": 1
+    },
+    "targetedJest": {
+      "suites": 6,
+      "tests": 32
+    },
+    "nativeFrameOwnershipCycles": 1000,
+    "sourceAudit": true
+  },
+  "rgba": {
+    "tolerance": 1,
+    "passed": true,
+    "captures": [
+      {
+        "name": "sprite-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "sprite-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+        "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+      },
+      {
+        "name": "mask-repeat-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-repeat-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-repeat-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15",
+        "webSha256": "fb02adbc3d3a441e9085ad47b71f3c5b81a199492d3227a6d46fe8d2f6f68d15"
+      },
+      {
+        "name": "mask-clamp-source",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-packed",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      },
+      {
+        "name": "mask-clamp-restored",
+        "maxDifference": 0,
+        "differingChannels": 0,
+        "nativeSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7",
+        "webSha256": "9b53f1b7bb824f8f061fadeb183345627f147d9cdb69c6ba4c997d38301074b7"
+      }
+    ]
+  },
+  "webManifest": {
+    "path": "native/tests/2d-poc/build/atlas-web-captures/manifest.json",
+    "sha256": "f2e872b49252ceeccea447310771c3d4ec5eb699f92e80e9b6205cadf399b104"
+  },
+  "webLogs": [
+    {
+      "path": "native/tests/2d-poc/build/atlas-web-cli.log",
+      "sha256": "185460b99c2fdaa5d133e7f01a57a2e5a261d9cd9e53cf395a9125c309dee87e"
+    },
+    {
+      "path": "native/tests/2d-poc/build/atlas-web-run.log",
+      "sha256": "ba10a9be500a6451812b3a22f4998af61afcbdde008a2995ca7d9319a86706aa"
+    }
+  ],
+  "probes": [
+    {
+      "source": "native/tests/2d-poc/fixtures/acceptance/M4Probe.ts",
+      "installed": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\assets\\scripts\\M4Probe.ts",
+      "sha256": "30a66c6723fcd8398d3c66439163e078014f0878c1e23395992337a0465efb92"
+    },
+    {
+      "source": "native/tests/2d-poc/fixtures/acceptance/M4ExtraProbe.ts",
+      "installed": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\assets\\scripts\\M4ExtraProbe.ts",
+      "sha256": "7c9874609b61297223e61eb62e18360b8d703324fbe81902e5413ec2d3ac135d"
+    },
+    {
+      "source": "native/tests/2d-poc/fixtures/acceptance/RichTextProbe.ts",
+      "installed": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\assets\\scripts\\RichTextProbe.ts",
+      "sha256": "d6e63af66432a9491b5de26c82fc26af07b70da8faaf78fc412c52d4eb7c709c"
+    }
+  ],
+  "sources": [
+    {
+      "path": "cocos/2d/assets/sprite-frame.jsb.ts",
+      "sha256": "a85668ae8ba03a04e99c11ef56471cc8ed41cb47f94e8be07a0a805f08f79cca"
+    },
+    {
+      "path": "native/cocos/2d/assets/SpriteFrame.h",
+      "sha256": "cef9f3373a8e1040397b528e3e5c2eacc02374b6e9fcee6fe085d86b1ac596b7"
+    },
+    {
+      "path": "cocos/2d/utils/dynamic-atlas/atlas.ts",
+      "sha256": "589eebb02ac706d9ed722f12f865cb45869118c90128993d3badce801f1cfc46"
+    },
+    {
+      "path": "cocos/2d/components/mask.ts",
+      "sha256": "3db0cb25dbee5e7bd6df967e6f0bf3c4d4d12b5cb23a6b54119760da6ed5c868"
+    },
+    {
+      "path": "native/tests/2d-poc/native/main.cpp",
+      "sha256": "69e39d2f2464085fa6b4016281cdf3976b5daa0b8db96186fa9b26d1e62fabac"
+    },
+    {
+      "path": "tests/ui/sprite-frame.test.ts",
+      "sha256": "bd591418c161dbeb77b25e7449ef050b74bfcc056ea0f6d8155dc5a9968244b6"
+    },
+    {
+      "path": "native/tests/2d-poc/run-m4-mask-probe.ps1",
+      "sha256": "7ddefe60fc7690f988c01dbb50d8345ea434744bdd50fdb9b33b19cc77621b07"
+    },
+    {
+      "path": "native/tests/2d-poc/run-m5-richtext-probe.ps1",
+      "sha256": "fa0fa9b3db13f1d2953388cf1e4fecbd9aebf5d97e42e29beb52b05e16b76185"
+    },
+    {
+      "path": "native/tests/2d-poc/run-dynamic-atlas-web.cjs",
+      "sha256": "2582387666222d0d1819d254b95391c7b345235d450cfb2a70384b8b17db80b7"
+    },
+    {
+      "path": "native/tests/2d-poc/compare-dynamic-atlas.cjs",
+      "sha256": "318fc2005106c1105bc4727069be37d8d44ab47ad76d6b3851be0ce5f4dbd36e"
+    },
+    {
+      "path": "docs/native-2d-m6.0-baseline.json",
+      "sha256": "f81f439909c9183ac854df1d68e8f60f4db4c53711398fa2b0c8a4f2326d7b43"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\data\\src\\cocos-js\\cc.js",
+      "sha256": "69f4cb094dbc8f322aecaab0393ac61b5e3fa2e6dbe51e09bc09f7cc64704023"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\Resources\\src\\cocos-js\\cc.js",
+      "sha256": "69f4cb094dbc8f322aecaab0393ac61b5e3fa2e6dbe51e09bc09f7cc64704023"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\proj\\Debug\\cocos-m1-test.exe",
+      "sha256": "2edbb88821cabd871ae8e81b612aba822674f694dc9318f6ece084661dd125ae"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\windows\\data\\assets\\main\\index.js",
+      "sha256": "0f85bc84fd557cae2deac6b2412cf03f4f1e77136c8cfcc3f4f979442c1b7b17"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\web-mobile\\assets\\main\\index.js",
+      "sha256": "250e409c3561658ffd61b0341cc88168aba487222c291ca360a124af434d4a21"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\tools\\build-engine.cjs",
+      "sha256": "04f2899b71a48ac35d8d1606822d3661fb2f09ceb68dc65a58ad345714ff108e"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\web-mobile\\cocos-js\\_virtual_cc-B-LJGARK.js",
+      "sha256": "ea12514c947e4eb45ac8023fb6cfb5bb4fa9c5bda52735468bd9081d05c9baad"
+    },
+    {
+      "path": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\native\\out\\cc2d_native_poc.exe",
+      "sha256": "055b111fd8ae1fb0e4dcaf32b21b6a306711c61c0c179e1949e67dc5ba6957a8"
+    }
+  ],
+  "logs": {
+    "cli": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-cli.log",
+      "sha256": "0a50e5ed45532a12ef09ed4316f716ee9bfbd61f465978009e6f432b88680788"
+    },
+    "engine": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-engine.log",
+      "sha256": "aa047603d68d280bd52ed6e585aec10c233529891412028143688d32836195db"
+    },
+    "resources": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-resources.log",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    "native-final": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-native-final.log",
+      "sha256": "336632794cf2429ce61f9a2a5cad3d9993f895bc6f5bb34c09d4cb432673ceac"
+    },
+    "poc-build": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-poc-build.log",
+      "sha256": "db17be94d841e19c67a4c906d0ba0dfccd0bc457b2c7e7c49880708e379be3e6"
+    },
+    "sync": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-sync.log",
+      "sha256": "000261cdc94b11869abd77d5d0e5674f50e80798ee572665f27187a03cedfba6"
+    },
+    "m0": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m0.log",
+      "sha256": "f1835e23aa1ad1b547483defc82120ac5b7d28cd21d4d4dc012bce6e7b75299f"
+    },
+    "m2-pixel": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m2-pixel.log",
+      "sha256": "43e1eee529dd72ba7d2de4b48475ca6e979bdd2d600aa0df26ff302759fcb4b7"
+    },
+    "m3-label": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m3-label.log",
+      "sha256": "fddddc35026272f35f8e0e97740be74fc236287dc6ea181b89ab4ad207ef2c6e"
+    },
+    "m4-mask": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m4-mask.log",
+      "sha256": "252c66623dfebbafdb086e43599d8be961e376608051ad9aaf16d78eef3c77ec"
+    },
+    "m4-extra": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m4-extra.log",
+      "sha256": "6b7cd4a34b66cafd7d681ffa78c54999a412c3765e1fe9d2f7244d81aac50bcc"
+    },
+    "m4-app": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m4-app.log",
+      "sha256": "588cb743b6492e8a9b1d4ecd0e92b8bcf9137d8c14f61b11d1e9e2ce08f64a85"
+    },
+    "m5-richtext": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m5-richtext.log",
+      "sha256": "d4b9d5074c90c52d8b982cfe0fa76702b0f444cfae5276acf6a7f9b83750f4df"
+    },
+    "m6-uv": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-m6-uv.log",
+      "sha256": "e82e5db67ab77a5b2cb595d9019c76da51bf8504e3e05853e2d9cb011d21aafb"
+    },
+    "targeted-jest": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-targeted-jest.log",
+      "sha256": "309f6b1a66e16dce63e5177c9781d242372571b5809a8a6622dbbca9d4bd6a57"
+    },
+    "comparison": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-comparison.log",
+      "sha256": "ef2cebd1a3e9822c9ad5cd1deaf567d232a20dd5fb25e4a586c4d493e3c60286"
+    },
+    "audit-final": {
+      "path": "native/tests/2d-poc/build/atlas-acceptance-audit-final.log",
+      "sha256": "c3dc3884daece0c3daf08bdbbc7ae9f57dc2b7be615a56480f64a3b966601f6a"
+    }
+  },
+  "preExistingWorktreeHarnessDependencies": [
+    {
+      "path": "native/tests/2d-poc/run-m6-font-assets-tests.ps1",
+      "sha256": "323a904b5526f657c821f2da49da7fdad2200a7beeccd845cc5b6ed472de7186",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1",
+      "sha256": "6c655b4c3b8efccb947864d3e56e65440720b0ce26c5fbdcdac078ff856b7f34",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-layout-tests.ps1",
+      "sha256": "eb3784bfe36f65b9d721bbfb743687ae6a2e165974dcf440be4d7cee6a395c8c",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-richtext-runtime-tests.ps1",
+      "sha256": "bcea79d26edae09695208d5b0c26fed75860549d3f6c36a6e958cb4e3231fa16",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-sprite-api-tests.ps1",
+      "sha256": "27333014b09ac55360272f09d264dda131153fbdf91a545464d518bf8134ef93",
+      "includedInThisCommit": false
+    },
+    {
+      "path": "native/tests/2d-poc/run-m6-sprite-atlas-tests.ps1",
+      "sha256": "86c5e2abdd2cdef34c329a390a25452a2d36a8016d2c93d852886ba39dfd62f5",
+      "includedInThisCommit": false
+    }
+  ],
+  "retryHistory": {
+    "m5MissingMarkerAttempts": 2,
+    "timeoutSeconds": 45,
+    "priorExitCodesCollected": false,
+    "priorStdoutCopiesRetained": false,
+    "lastKnownFirstAttempt": {
+      "started": "2026-11-17 17:59:16 +08:00",
+      "lastMarker": "M4_NESTED_MASK",
+      "lastMarkerTime": "2026-11-17 17:59:38 +08:00"
+    },
+    "conclusion": "Cause unproven. Added early process-exit diagnostic; original assertions and 45s budget retained. Latest run passed; intermittent scheduling/stability remains open."
+  },
+  "remaining": [
+    "Native automatic atlas packing and JS Atlas placement scope",
+    "Label/BMFont, eligibility, other raw pixel formats, full-atlas fallback and real resources",
+    "Delayed destruction, packed clone outliving manager and cross-platform lifecycle",
+    "Original object full writable API compatibility",
+    "Intermittent M5 missing completion marker",
+    "Full M6 performance, stability and platform gates"
+  ]
+}
