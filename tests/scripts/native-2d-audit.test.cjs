@@ -8,7 +8,7 @@ const { declaration, runtimeImports, inspect, build } = require('../../native/te
 
 test('native 2D owners do not use shared_ptr or weak_ptr', () => {
     const root=path.resolve(__dirname,'../..');
-    for(const {file} of build().nativeSourceHashes.filter(x=>x.file.startsWith('native/cocos/2d/'))) {
+    for(const {file} of build().nativeSourceHashes.filter(x=>x.file.startsWith('native/cocos/2d/')||/\/DirectWriteFont\.(h|cpp)$/.test(x.file))) {
         assert.doesNotMatch(fs.readFileSync(path.join(root,file),'utf8'), /\b(?:shared_ptr|weak_ptr|make_shared)\s*[<(]/, file);
     }
 });

@@ -65,6 +65,7 @@
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     #include <windows.h>
     #include <psapi.h>
+    #include "platform/win32/modules/DirectWriteFont.h"
 #endif
 
 // UniversalPlatform references this entry point when the engine library is
@@ -228,6 +229,48 @@ void testFrameConsumers() {
 }
 
 void testFontAssets() {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    {
+        const std::string path = CC2D_FONT_FIXTURE;
+        auto face = cc::DirectWriteFont::create(path, 24.F, false, false);
+        check(face != nullptr, "DirectWrite loads TTF rejected by GDI");
+        if (face) {
+            checkNear(face->measure("Atlas 123")[0], 95.9765625F, "DirectWrite uses actual Thonburi glyph advances");
+            check(face->measure("\xE0\xB9\x84\xE0\xB8\x97\xE0\xB8\xA2 A\xCC\x81")[0] > 0, "DirectWrite shapes Thai and combining marks");
+            std::vector<uint8_t> raster(160 * 80 * 4);
+            check(face->draw("Atlas 123", 4, 4, 0, raster.data(), 160, 80, {1, 0, 0, 1}), "DirectWrite draws custom font glyphs");
+            size_t covered = 0;
+            for (size_t i = 0; i < raster.size(); i += 4) {
+                if (raster[i + 3]) { ++covered; check(raster[i] == 255 && raster[i + 1] == 0 && raster[i + 2] == 0, "custom glyph pixels preserve unpremultiplied color"); }
+            }
+            check(covered > 100 && covered < 3000, "DirectWrite glyph coverage excludes empty/full rectangle");
+            std::fill(raster.begin(), raster.end(), 0);
+            check(face->draw("Atlas 123", -1000, -1000, 0, raster.data(), 160, 80, {1, 0, 0, 1}), "fully clipped glyphs draw safely");
+            check(std::all_of(raster.begin(), raster.end(), [](uint8_t value) { return value == 0; }), "offscreen glyphs leave destination unchanged");
+            check(face->draw("Atlas 123", -80, -8, 0, raster.data(), 160, 80, {1, 0, 0, 1}), "partially clipped glyphs draw safely");
+        }
+        auto bold = cc::DirectWriteFont::create(path, 24.F, true, false);
+        check(bold && std::fabs(bold->measure("Atlas 123")[0] - 95.9765625F) < .001F, "synthetic bold preserves font advances");
+        if (bold) {
+            std::vector<uint8_t> raster(160 * 80 * 4);
+            check(bold->draw("Atlas 123", 4, 4, 0, raster.data(), 160, 80, {1, 1, 1, 1}), "DirectWrite synthetic bold draws shaped advances");
+            check(std::any_of(raster.begin(), raster.end(), [](uint8_t value) { return value != 0; }), "synthetic bold glyph bitmap is nonempty");
+        }
+        check(!cc::DirectWriteFont::create("missing-font.ttf", 24.F, false, false), "invalid custom font fails without fallback success");
+    }
+    const DWORD fontGdiBefore = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+    DWORD fontHandlesBefore = 0; GetProcessHandleCount(GetCurrentProcess(), &fontHandlesBefore);
+    for (int i = 0; i < 1000; ++i) {
+        auto face = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 24.F, i % 2 == 0, i % 3 == 0);
+        check(face && face->measure("Atlas 123")[0] > 0, "custom font collection repeated create/shape/release");
+    }
+    const DWORD fontGdiAfter = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+    DWORD fontHandlesAfter = 0; GetProcessHandleCount(GetCurrentProcess(), &fontHandlesAfter);
+    check(fontGdiBefore == fontGdiAfter, "DirectWrite font cycles retain no GDI objects");
+    check(fontHandlesAfter <= fontHandlesBefore, "DirectWrite font cycles retain no process handles");
+    std::printf("DirectWrite cycles: 1000, GDI objects %lu -> %lu\n", fontGdiBefore, fontGdiAfter);
+    std::printf("DirectWrite handles: %lu -> %lu\n", fontHandlesBefore, fontHandlesAfter);
+#endif
     cc::IntrusivePtr<cc::TTFFont> ttf(new cc::TTFFont());
     std::vector<uint8_t> bytes{1, 2, 3};
     ttf->setFontData(bytes); bytes[0] = 9;

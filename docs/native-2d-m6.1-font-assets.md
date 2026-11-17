@@ -62,3 +62,5 @@ V8 探针隔离 core/metadata 与 Asset 初始化，元数据由 Jest 验证；�
 - Windows C++ Debug/Release 分别完成 TTFFont、BitmapFont、LabelAtlas 各 1000 次创建、清空、重载、销毁循环。检查 TTF 字节/family 清理、Label 强引用解绑、共享 SpriteFrame 引用计数恢复、BMFont 清空后旧像素消失及重载恢复、销毁后所有数据写入被拒绝。
 - 实际 JSB 探针新增 BitmapFont/LabelAtlas 各 1000 次创建、clear、重新填充与 destroy，检查兼容视图释放、共享纹理保持可用，以及迟到配置/依赖写入不能恢复数据。该循环使用直接创建的资产，不等同于 asset-manager 加载卸载测试。
 - 复现沿用上方字体测试命令。原始本机日志：`native/tests/2d-poc/build/font-assets-lifecycle-{debug-build,release-build,tests}.log`；两个 native harness 及实际 JSB 均通过，7 个 Jest suite 共 64 项通过。常规项目 TypeScript 检查通过。本次运行包含工作区其他既有改动，不能作为 M6 最终候选版本证据，也未据此声明无泄漏或跨平台通过。
+
+Windows 自定义字体选择补充（2026-11-17）：GDI 拒绝文件但 alias/字节已加载的回退问题已使用私有 DirectWrite collection 修复。COM 引用与同步像素借用、1000 次释放和 ASAN 证据见 [平台字体报告](./native-2d-m6.1-directwrite-fonts.md)。旧的 Canvas/GDI 平台边界记录属于历史实现；其他平台及完整平台注册表/多字体/性能验收继续待办。

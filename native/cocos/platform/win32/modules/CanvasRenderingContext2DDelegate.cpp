@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #include "platform/win32/modules/CanvasRenderingContext2DDelegate.h"
+#include "platform/win32/modules/DirectWriteFont.h"
 #include "base/memory/Memory.h"
 
 namespace {
@@ -157,6 +158,14 @@ void CanvasRenderingContext2DDelegate::fillText(const ccstd::string &text, float
         return;
     }
 
+    if (_directWrite) {
+        const auto size = _directWrite->measure(text);
+        if (_textAlign == TextAlign::CENTER) x -= size[0] / 2;
+        else if (_textAlign == TextAlign::RIGHT) x -= size[0];
+        _directWrite->draw(text, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
+                          static_cast<uint32_t>(_bufferWidth), static_cast<uint32_t>(_bufferHeight), _fillStyle);
+        return;
+    }
     SIZE textSize = {0, 0};
     Point offsetPoint = convertDrawPoint(Point{x, y}, text);
 
@@ -173,6 +182,7 @@ void CanvasRenderingContext2DDelegate::strokeText(const ccstd::string &text, flo
 CanvasRenderingContext2DDelegate::Size CanvasRenderingContext2DDelegate::measureText(const ccstd::string &text) {
     if (text.empty())
         return ccstd::array<float, 2>{0.0f, 0.0f};
+    if (_directWrite) return _directWrite->measure(text);
 
     int bufferLen = 0;
     wchar_t *pwszBuffer = CanvasRenderingContext2DDelegate::utf8ToUtf16(text, &bufferLen);
@@ -189,6 +199,7 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
                                                   bool /* oblique */,
                                                   bool /* smallCaps */) {
     do {
+        _directWrite.reset();
         _fontName = fontName;
         _fontSize = static_cast<int>(fontSize);
         ccstd::string fontPath;
@@ -215,6 +226,11 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
                         _fontName = &_fontName[nFindPos + 1];
                     }
                 }
+            }
+            if (!fontPath.empty()) {
+                removeCustomFont();
+                _directWrite = DirectWriteFont::create(fontPath, fontSize, bold, italic);
+                if (_directWrite) return;
             }
             tFont.lfCharSet = DEFAULT_CHARSET;
             strcpy_s(tFont.lfFaceName, LF_FACESIZE, _fontName.c_str());
@@ -313,6 +329,7 @@ void CanvasRenderingContext2DDelegate::removeCustomFont() {
     HFONT hDefFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
     if (hDefFont != _font) {
         DeleteObject(SelectObject(_DC, hDefFont));
+        _font = hDefFont;
     }
     // release temp font resource
     if (!_curFontPath.empty()) {

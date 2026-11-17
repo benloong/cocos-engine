@@ -12,7 +12,13 @@ set(USE_MODULES OFF)
 include(${CMAKE_CURRENT_LIST_DIR}/../../../CMakeLists.txt)
 
 add_executable(cc2d_native_poc main.cpp)
+get_filename_component(CC2D_FONT_FIXTURE "${CMAKE_CURRENT_LIST_DIR}/../../../../tests/fixtures/Thonburi.ttf" ABSOLUTE)
+target_compile_definitions(cc2d_native_poc PRIVATE CC2D_FONT_FIXTURE="${CC2D_FONT_FIXTURE}")
 target_link_libraries(cc2d_native_poc PRIVATE cocos_engine)
+if(WIN32)
+    add_executable(cc2d_font_resource ../test_win_font_resource.cpp)
+    target_link_libraries(cc2d_font_resource PRIVATE dwrite gdi32 user32)
+endif()
 
 # Use the production compiler/library for the complete Web parser parity corpus.
 add_executable(cc2d_richtext_parser ../test_richtext_parser.cpp)

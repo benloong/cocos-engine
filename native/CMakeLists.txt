@@ -677,6 +677,8 @@ elseif(WINDOWS)
     cocos_source_files(
         cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp
         cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h
+        cocos/platform/win32/modules/DirectWriteFont.cpp
+        cocos/platform/win32/modules/DirectWriteFont.h
     )
 elseif(OPENHARMONY)
     cocos_source_files(
@@ -3817,6 +3819,10 @@ if(APPLE)
         set_property(TARGET ${ENGINE_NAME} PROPERTY XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
     endif()
 
+endif()
+
+if(WINDOWS AND NOT USE_SERVER_MODE)
+    target_link_libraries(${ENGINE_NAME} PUBLIC dwrite)
 endif()
 
 if(QNX)

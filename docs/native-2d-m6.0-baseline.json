@@ -23,7 +23,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "6af2f6a902c688254fd5f8c10b3437c437e3a2ea47b4f8f47ceb6fe43db738e9"
+      "sha256": "64f076aff7815399dbf5f70f81e1817b2ee7691784e3fd0fd080434387bd178d"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -280,6 +280,22 @@
     {
       "file": "native/cocos/core/scene-graph/Node.h",
       "sha256": "14708be8569731f3ca28f4068c1a065076d625ee447a5020c01d3431617c548c"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
+      "sha256": "6c86b2053bc7b2b37f318768d80b2b9218fdafa4d18f7dd7aeebd4237ea88285"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
+      "sha256": "edc1e20352a9469c63513420dbc421e2e0efc5d16221b196b75f049ad3a17c43"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
+      "sha256": "957d2d311c8befda163c024feded71d38823a7c621da3ea030d0ef8498c4cd7d"
+    },
+    {
+      "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
+      "sha256": "3656210529cd4ba2b2d13fb82c26002582d55a64a29b89859c37d440ea57435d"
     },
     {
       "file": "native/tools/swig-config/2d.i",

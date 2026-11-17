@@ -28,6 +28,7 @@
 
 #include <Windows.h>
 #include <cstdint>
+#include <memory>
 #include <regex>
 #include "base/csscolorparser.h"
 #include "base/std/container/array.h"
@@ -37,6 +38,7 @@
 #include "platform/FileUtils.h"
 
 namespace cc {
+class DirectWriteFont;
 
 class CC_DLL CanvasRenderingContext2DDelegate : public ICanvasRenderingContext2D::Delegate {
 public:
@@ -96,6 +98,7 @@ public:
     HBITMAP _bmp{nullptr};
 
 private:
+    std::unique_ptr<DirectWriteFont> _directWrite;
     cc::Data _imageData;
     HFONT _font{static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT))};
     HWND _wnd{nullptr};

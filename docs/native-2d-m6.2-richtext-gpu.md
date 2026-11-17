@@ -1,6 +1,6 @@
 # M6.2 RichText 同源字体、布局与 GPU 对照
 
-> 2026-11-16：夹具已建立，**视觉门禁未通过（0/12）**。不能把字体数据加载、像素非空或资源释放单项通过当作 RichText parity。
+> 原始基线：2026-11-16。后续 DirectWrite 修复已将布局一致提升到 9/12，见 [后续报告](./native-2d-m6.1-directwrite-fonts.md)；**视觉门禁仍未通过（0/12）**。不能把字体数据加载、像素非空或资源释放单项通过当作 RichText parity。
 
 ## 范围和当前发现
 
@@ -10,7 +10,7 @@
 
 夹具发现并推动修复 Label 字体失效后 RenderEntity 被禁用的黑屏，见 [运行时记录](./native-2d-m6.2-richtext-runtime.md)。该修复已提交为 `77df1d9239`，Windows Debug/Release 原生和实际 JSB、11 项 Jest 通过。修复前真实捕获时字形 opaque=0，手工 prepare 后才出现；修复后真实渲染路径自行生成字形。
 
-当前同一快照 `6ffee460c14d84c33d3e624961bf1f8bff1d2412cc3459284b77214404ba4805`：
+本报告原始同一快照 `6ffee460c14d84c33d3e624961bf1f8bff1d2412cc3459284b77214404ba4805`：
 
 - 两端完成 12 例捕获，字体加载和释放检查通过；native 持有 223404 字节，releaseAsset 后 released 且字节数为 0。Native 应用 stderr 为空。
 - 视觉 **0/12 通过**；普通文字 native 宽度 108、Web 95.9765625。只有 wrap-left 的记录布局一致，字形像素仍不同。逐例尺寸、位置、最大通道差值和 RGBA SHA256 见 [未通过结果](./native-2d-m6.2-richtext-gpu-results.json)。
