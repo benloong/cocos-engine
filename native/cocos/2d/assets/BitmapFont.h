@@ -46,6 +46,9 @@ public:
     SpriteFrame *getSpriteFrame() const { return _spriteFrame.get(); }
     void setFontSize(float value) { if (!_released && std::isfinite(value) && value != _fontSize) { _fontSize = value; ++_revision; } }
     float getFontSize() const { return _fontSize; }
+    // Config source size drives glyph scale; public fontSize remains serialized metadata.
+    bool hasSourceFontSize() const { return _hasSourceFontSize; }
+    float getSourceFontSize() const { return _hasSourceFontSize ? _sourceFontSize : _fontSize; }
     void setFntDataStr(const std::string &value) { if (!_released) _fntDataStr = value; }
     const std::string &getFntDataStr() const { return _fntDataStr; }
     bool setConfigJson(const std::string &json);
@@ -61,6 +64,8 @@ public:
 private:
     IntrusivePtr<SpriteFrame> _spriteFrame;
     float _fontSize{-1};
+    float _sourceFontSize{0};
+    bool _hasSourceFontSize{false};
     std::string _fntDataStr;
     std::string _configJson{"null"};
     uint32_t _configRevision{0};

@@ -290,6 +290,34 @@ void testBitmapGpuGeometry() {
     source->setWrapMode(cc::TextureBase::WrapMode::CLAMP_TO_EDGE, cc::TextureBase::WrapMode::CLAMP_TO_EDGE);
     label.prepareRenderEntity(1.F);
     check(entity->getStaticRenderDrawInfo(0)->getSampler() == source->getGFXSampler(), "Bitmap sampler changes rebind without font reassignment");
+    const std::string sourceConfig = R"({"fontSize":4,"fontDefDictionary":{"65":{"rect":{"x":1,"y":1,"width":2,"height":2},"xOffset":0,"yOffset":0,"xAdvance":2}}})";
+    check(font->setConfigJson(sourceConfig), "Bitmap source-size config accepted");
+    font->setFontSize(64); label.prepareRenderEntity(1.F);
+    check(font->hasSourceFontSize() && font->getSourceFontSize() == 4 && font->getFontSize() == 64, "Bitmap source size stays independent of metadata size");
+    for (const float metadata : {-1.F, 0.F, 64.F}) {
+        font->setFontSize(metadata);
+        checkNear(label.measureUnwrappedText("AA").width, 4.F, "Default/zero/positive metadata sizes do not rescale configured glyphs");
+    }
+    const auto sourceRevision = font->getConfigRevision();
+    for (const auto *invalid : {R"({"fontSize":1e100})", R"({"fontSize":null})", R"({"fontSize":"16"})"}) {
+        check(!font->setConfigJson(invalid), "Unsafe source-size config rejected");
+        check(font->getConfigRevision() == sourceRevision && font->getConfigJson() == sourceConfig && font->getSourceFontSize() == 4, "Invalid source size preserves complete config atomically");
+    }
+    for (const auto emptySource : {0, -1}) {
+        auto emptyConfig = sourceConfig;
+        emptyConfig.replace(emptyConfig.find(":4,"), 3, ":" + std::to_string(emptySource) + ",");
+        check(font->setConfigJson(emptyConfig), "Nonpositive source-size data accepted without non-finite geometry");
+        label.prepareRenderEntity(1.F);
+        const auto emptyMeasure = label.measureUnwrappedText("AA");
+        checkNear(emptyMeasure.width, 0.F, "Nonpositive configured source size has empty measurement width");
+        checkNear(emptyMeasure.height, 0.F, "Nonpositive configured source size has empty measurement height");
+        check(entity->getStaticDrawInfoSize() == 0, "Nonpositive configured source size clears old GPU submissions");
+    }
+    check(font->setConfigJson(R"({"fontSize":8,"fontDefDictionary":{"65":{"rect":{"x":1,"y":1,"width":2,"height":2},"xOffset":0,"yOffset":0,"xAdvance":2}}})"), "Bitmap source size reload");
+    label.updateRenderData();
+    checkNear(label.getContentWidth(), 2.F, "Config source-size reload invalidates existing Label without font reassignment");
+    check(font->setConfigJson("{}") && !font->hasSourceFontSize() && font->getSourceFontSize() == 64, "Removing configured source size restores legacy metadata fallback");
+    font->setConfigJson(sourceConfig);
     label.setFontSize(8); label.setSpacingX(2); label.setLineHeight(6);
     const auto measured = label.measureUnwrappedText("AA");
     checkNear(measured.width, 10.F, "Bitmap measurement scales glyphs and applies spacing");
@@ -315,6 +343,8 @@ void testBitmapGpuGeometry() {
           "Inactive overflow slots release resources and borrowed buffers");
     check(entity->getStaticDrawInfoSize() == 0 && label.getRenderedBitmapGlyphCount() == 0, "Empty bitmap text clears glyph submissions");
     label.setFontAsset(nullptr); label.setNode(nullptr);
+    font->clearNativeData();
+    check(!font->hasSourceFontSize() && font->getSourceFontSize() == -1, "Clearing bitmap asset releases configured source-size state");
 }
 
 void testFrameConsumers() {

@@ -105,6 +105,9 @@ bool BitmapFontAsset::setConfigJson(const std::string &json) {
     rapidjson::Document doc;
     doc.Parse(json.c_str());
     if (doc.HasParseError() || (!doc.IsObject() && !doc.IsNull())) return false;
+    const bool hasSourceSize = doc.IsObject() && doc.HasMember("fontSize");
+    float sourceSize = 0.F;
+    if (hasSourceSize && !finiteNumber(doc["fontSize"], sourceSize)) return false;
     std::vector<BitmapFontGlyph> glyphs;
     std::unordered_map<int32_t, size_t> indices;
     std::unordered_map<uint64_t, float> kerning;
@@ -155,6 +158,7 @@ bool BitmapFontAsset::setConfigJson(const std::string &json) {
         }
     }
     _glyphs.swap(glyphs); _glyphMap.swap(indices); _kerning.swap(kerning);
+    _sourceFontSize = sourceSize; _hasSourceFontSize = hasSourceSize;
     _configJson = json; ++_configRevision; ++_revision;
     return true;
 }
@@ -170,7 +174,7 @@ float BitmapFontAsset::getKerning(int32_t left, int32_t right) const {
 }
 void BitmapFontAsset::clearNativeData() {
     ++_configRevision;
-    _spriteFrame = nullptr; _fontSize = -1;
+    _spriteFrame = nullptr; _fontSize = -1; _sourceFontSize = 0; _hasSourceFontSize = false;
     std::string().swap(_fntDataStr); std::string("null").swap(_configJson);
     std::vector<BitmapFontGlyph>().swap(_glyphs);
     decltype(_glyphMap)().swap(_glyphMap); decltype(_kerning)().swap(_kerning); FontAsset::clearNativeData();

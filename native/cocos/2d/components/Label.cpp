@@ -159,7 +159,8 @@ void Label::syncFontAsset() {
 void Label::applyFontAsset() {
     _bitmapFont = _fontAsset && !_fontAsset->isReleased() ? dynamic_cast<BitmapFontAsset *>(_fontAsset.get()) : nullptr;
     _bitmapAtlas = _bitmapFont ? _bitmapFont->getSpriteFrame() : nullptr;
-    _bitmapLineHeight = _bitmapFont && _bitmapFont->getFontSize() > 0 ? _bitmapFont->getFontSize() : _lineHeight;
+    const float sourceSize = _bitmapFont ? _bitmapFont->getSourceFontSize() : -1.F;
+    _bitmapLineHeight = _bitmapFont && (_bitmapFont->hasSourceFontSize() || sourceSize > 0) ? sourceSize : _lineHeight;
     updateFont(); clearRenderedData(); _dirty = true;
 }
 void Label::clearRenderedData() {
@@ -524,7 +525,7 @@ void Label::rebuildBitmapTexture() {
     if (!texture || !texture->getGFXTexture() || !texture->getWidth() || !texture->getHeight()) { clearRenderedData(); return; }
     BitmapLayoutOptions options;
     if (_transform) { options.width = _transform->getContentSize().x; options.height = _transform->getContentSize().y; }
-    options.fontSize = _fontSize; options.sourceFontSize = _bitmapLineHeight > 0 ? _bitmapLineHeight : _fontSize;
+    options.fontSize = _fontSize; options.sourceFontSize = _bitmapFont ? _bitmapLineHeight : (_bitmapLineHeight > 0 ? _bitmapLineHeight : _fontSize);
     options.lineHeight = _lineHeight; options.spacing = _spacingX; options.overflow = _overflow;
     options.horizontal = _hAlign; options.vertical = _vAlign; options.wrap = _wrap;
     std::vector<int32_t> text;
@@ -755,7 +756,7 @@ std::array<double, 2> Label::measureUnwrappedTextPrecise(const std::string &text
     if (_bitmapFont) {
         if (!_bitmapAtlas || _bitmapFont->getGlyphs().empty()) return {};
         BitmapLayoutOptions options;
-        options.fontSize = _fontSize; options.sourceFontSize = _bitmapLineHeight > 0 ? _bitmapLineHeight : _fontSize;
+        options.fontSize = _fontSize; options.sourceFontSize = _bitmapLineHeight;
         options.lineHeight = _lineHeight; options.spacing = _spacingX;
         std::vector<int32_t> symbols;
         for (const auto &symbol : splitUtf8(text)) symbols.push_back(utf8CodePoint(symbol));

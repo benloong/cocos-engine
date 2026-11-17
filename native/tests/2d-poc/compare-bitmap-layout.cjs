@@ -8,7 +8,7 @@ if(web.length!==76||native.length!==76)throw Error('Expected 76 layout captures 
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');const captures=[];
 for(let i=0;i<web.length;i++){
  const w=web[i],n=native[i];if(w.name!==n.name)throw Error('Layout names differ');
- for(const key of ['width','height','actualFontSize','glyphs'])if(!Number.isFinite(n[key])||Math.abs(w[key]-n[key])>.0001)throw Error(w.name+' '+key+': native '+n[key]+', Web '+w[key]);
+ for(const key of ['width','height','actualFontSize','glyphs','sourceFontSize','metadataFontSize'])if(!Number.isFinite(n[key])||Math.abs(w[key]-n[key])>.0001)throw Error(w.name+' '+key+': native '+n[key]+', Web '+w[key]);
  const expected=fs.readFileSync(path.join(__dirname,'build/bitmap-web-captures',w.name+'.rgba'));
  const actual=fs.readFileSync(path.join(project,'build/windows/proj/Debug/m6-bitmap-captures',n.name+'.rgba'));
  if(expected.length!==262144||actual.length!==262144)throw Error('Invalid RGBA size');

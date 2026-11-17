@@ -35,11 +35,11 @@
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
-      "sha256": "989e28239372b89171a8eb67e45d1245326400fccd448d4dd590a8cb180d1fda"
+      "sha256": "696c4277c35c8a7ea7348b250f4216d857e86037678b5f13f5fbddd6fd0c19ab"
     },
     {
       "file": "native/cocos/2d/assets/Font.cpp",
-      "sha256": "29f230f2953e455412f892b2fdb827aa6ecc2fc98d5a4023359782e9cd619c26"
+      "sha256": "e26dd30df7366eebf40a93a5c9f8dd03d08d0673225a6aa6bf6508432424471c"
     },
     {
       "file": "native/cocos/2d/assets/Font.h",
@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "dd0927256a96812de091430c7d62f901922d0bf9ca6743927d472ec4b0c0959a"
+      "sha256": "9501cc2ff1d5c5021c3e2f5bf6bc0f002a0dcc183c320822a5bf77db07a8931d"
     },
     {
       "file": "native/cocos/2d/components/Label.h",

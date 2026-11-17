@@ -372,3 +372,5 @@ M6.1 UV parity: PASS
 字体 GPU 消费者节点也已完成同一候选的完整串行验收：M0、M2–M5、UV 与定向 Jest 全通过；BitmapFont/LabelAtlas 的 12/12 RGBA 和 Sprite/Mask 的 12/12 RGBA 最大通道差值均为 0，70000 字形/5 块的 GPU 提交及清空通过。仅覆盖固定 TOP/LEFT 字体采样条件，默认 CENTER/CENTER 等完整布局继续待办，见[报告与边界](./native-2d-m6.1-bitmap-gpu.md)。
 
 最新 BMFont 布局候选已完成完整串行验收：2307 组 g++/MSVC 实际 Web 数值对照通过；含 kerning 的 76 组布局、12 组默认居中字体合图、12 组 Sprite/Mask 图像全部字节一致，M5 保持 45 秒预算。M3 探针现固定字号/源配置，检查精确尺寸与字形提交；不再用旧 CPU 纹理宽度阈值代替 kerning GPU 验收，见[布局报告](./native-2d-m6.1-bitmap-layout.md)。
+
+配置源字号验收已纳入同一字体矩阵：公共 fontSize=64，fntConfig.fontSize=16/32/8；尺寸、actualFontSize、字形数及两个独立字号字段都须一致。最新候选完整串行门禁和 100 组 RGBA 比较通过，非法/清空/非正源字号由原生回归覆盖，见[源字号报告](./native-2d-m6.1-bitmap-source-size.md)。

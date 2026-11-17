@@ -94,6 +94,10 @@ export class BitmapGpuProbe {
                     manager.reset(); refresh();
                     if (frame.original || frame.texture !== texture) throw new Error('Bitmap frame did not restore');
                     await capture('restored');
+                    font.fontSize = 64; // Metadata differs from the configured source size.
+                    const reloadSource = (size: number): void => {
+                        font.fntConfig!.fontSize = size; font.onLoaded(); refresh();
+                    };
                     const layouts: any[] = [];
                     for (let h = 0; h < 3; h++) for (let v = 0; v < 3; v++) layouts.push({ id: 'align-' + h + '-' + v, horizontalAlign: h, verticalAlign: v });
                     layouts.push({ id: 'small', fontSize: 8 }, { id: 'large', fontSize: 24 },
@@ -102,12 +106,13 @@ export class BitmapGpuProbe {
                         { id: 'resize', overflow: Label.Overflow.RESIZE_HEIGHT, string: 'AB AB AB', width: 40 },
                         { id: 'shrink', overflow: Label.Overflow.SHRINK, string: 'ABABAB', width: 40, height: 20 },
                         { id: 'clamp', string: 'ABAB', width: 24, height: 8 },
-                        { id: 'line-height', string: 'AB\nA', lineHeight: 24, height: 64 },
-                        { id: 'shrink-wrap', overflow: Label.Overflow.SHRINK, string: 'AB AB AB', enableWrapText: true, width: 40, height: 24 });
+                        { id: 'line-height', string: 'AB\nA', lineHeight: 24, height: 64, sourceSize: 32 },
+                        { id: 'shrink-wrap', overflow: Label.Overflow.SHRINK, string: 'AB AB AB', enableWrapText: true, width: 40, height: 24, sourceSize: 8 });
                     for (const settings of layouts) {
+                        reloadSource(settings.sourceSize ?? 16);
                         Object.assign(label, { fontSize: 16, lineHeight: 16, spacingX: 0, horizontalAlign: 1, verticalAlign: 1,
                             overflow: Label.Overflow.CLAMP, enableWrapText: false, string: 'AB' });
-                        for (const key of Object.keys(settings)) if (key !== 'id' && key !== 'width' && key !== 'height') (label as any)[key] = settings[key];
+                        for (const key of Object.keys(settings)) if (key !== 'id' && key !== 'width' && key !== 'height' && key !== 'sourceSize') (label as any)[key] = settings[key];
                         transform.setContentSize(settings.width ?? 64, settings.height ?? 32);
                         await wait();
                         const raw = rt.readPixels();
@@ -118,11 +123,13 @@ export class BitmapGpuProbe {
                             if (!native.fileUtils.writeDataToFile(data.buffer, output + file + '.rgba')) throw new Error('Bitmap layout output failed');
                         } else if (!(await fetch('/m6-bitmap-capture?name=' + file, { method: 'POST', body: data })).ok) throw new Error('Bitmap layout collector failed');
                         const glyphs = sys.isNative ? (label as any)._native.getRenderedBitmapGlyphCount() : (label as any).renderData.vertexCount / 4;
-                        const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, glyphs };
+                        const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, glyphs, metadataFontSize: font.fontSize,
+                            sourceFontSize: sys.isNative ? (font as any).getSourceFontSize() : font.fntConfig!.fontSize };
                         layoutMetrics.push(metric); console.log('M6_BITMAP_LAYOUT ' + JSON.stringify(metric));
                     }
                     if (sys.isNative && kind === 'bitmap' && !rotated) {
                         const backend = (label as any)._native;
+                        reloadSource(16);
                         label.overflow = Label.Overflow.NONE; label.enableWrapText = false; label.fontSize = 16; label.lineHeight = 16;
                         label.string = 'A'.repeat(70000); await wait();
                         const entity = backend.getRenderEntity();
