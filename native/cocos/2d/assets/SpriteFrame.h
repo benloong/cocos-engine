@@ -41,14 +41,22 @@ public:
     SpriteFrame() = default;
     ~SpriteFrame() override = default;
 
-    void setTexture(TextureBase *texture) { _texture = texture; ++_revision; }
+    void setTexture(TextureBase *texture) { assignTexture(texture); }
+    void clearTextureReferences() {
+        if (!_texture && !_originalTexture && !_hasOriginal) return;
+        _texture = nullptr;
+        _originalTexture = nullptr;
+        _originalX = _originalY = 0.F;
+        _hasOriginal = false;
+        ++_revision;
+    }
     TextureBase *getTexture() const { return _texture.get(); }
     uint32_t getRevision() const { return _revision; }
 
     // The frame owns both textures while packed. Consumers borrow the active
     // texture through this frame and observe the revision on either transition.
     void setDynamicAtlasFrame(TextureBase *texture, float x, float y) {
-        if (!texture) return;
+        if (!texture || !isObjectValid(this, true)) return;
         _originalTexture = _texture;
         _originalX = _data.x;
         _originalY = _data.y;
@@ -127,12 +135,12 @@ public:
     void setAtlasUuid(const std::string &value) { _atlasUuid = value; }
     void resetFrame(bool clearData) { if (clearData) { _data.resetGeometry(); ++_revision; } }
     void resetWithTexture(TextureBase *texture) {
+        if (!isObjectValid(this, true)) return;
         _data.resetGeometry();
         resetTexture(texture);
     }
     void resetTexture(TextureBase *texture) {
-        setTexture(texture);
-        if (texture) {
+        if (assignTexture(texture) && texture) {
             _data.width = static_cast<float>(texture->getWidth());
             _data.height = static_cast<float>(texture->getHeight());
             if (_data.originalWidth == 0 || _data.originalHeight == 0) {
@@ -143,8 +151,7 @@ public:
     }
     // Dependency resolution must preserve serialized geometry.
     void loadTexture(TextureBase *texture) {
-        setTexture(texture);
-        if (!texture) return;
+        if (!assignTexture(texture) || !texture) return;
         const bool resetRect = _data.width == 0 || _data.height == 0 || !checkRect(texture);
         if (resetRect) {
             setRect(0, 0, static_cast<float>(texture->getWidth()), static_cast<float>(texture->getHeight()));
@@ -158,7 +165,7 @@ public:
             && _data.y + (_data.rotated ? _data.width : _data.height) <= texture->getHeight();
     }
     void copyFrom(const SpriteFrame *other) {
-        if (!other || other == this) return;
+        if (!other || other == this || !isObjectValid(this, true)) return;
         _data = other->_data; _texture = other->_texture; _atlasUuid = other->_atlasUuid; ++_revision;
         _originalTexture = other->_originalTexture;
         _originalX = other->_originalX; _originalY = other->_originalY;
@@ -181,8 +188,22 @@ public:
         return {uv.begin(), uv.end()};
     }
 
+protected:
+    bool onPreDestroy() override {
+        clearTextureReferences();
+        return Super::onPreDestroy();
+    }
+
 private:
+    bool assignTexture(TextureBase *texture) {
+        if (!isObjectValid(this, true)) return false;
+        _texture = texture;
+        ++_revision;
+        return true;
+    }
+
     SpriteFrameData _data;
+    // Active and original textures are owned independently while packed.
     IntrusivePtr<TextureBase> _texture;
     IntrusivePtr<TextureBase> _originalTexture;
     float _originalX{0.F};

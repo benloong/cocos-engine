@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "cef9f3373a8e1040397b528e3e5c2eacc02374b6e9fcee6fe085d86b1ac596b7"
+      "sha256": "85e8fb551f7dd3d3bd359095cccfd820a3dd2675ab46717ce12c7195676f6388"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
@@ -14664,8 +14664,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "3eb8d35f6ac55b1e37c861b85cc1fec4d33e97cd65efa775e348a959aa137c02",
-      "printedCodeLines": 251,
+      "sha256": "2659bd765c18403d477178dbcc64759959279b021c10ce5b3f6b0a12a6ff2055",
+      "printedCodeLines": 264,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
         "../../core",

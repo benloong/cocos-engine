@@ -252,6 +252,30 @@ void testSpriteFrameData() {
     }
     check(texture->getRefCount() == sourceRefs && packed->getRefCount() == packedRefs,
           "packed frame destructor releases source and atlas without reset");
+    for (int i = 0; i < 1000; ++i) {
+        cc::IntrusivePtr<cc::SpriteFrame> released(new cc::SpriteFrame());
+        released->copyFrom(frame);
+        const bool withAtlas = (i % 2) != 0;
+        if (withAtlas) released->setDynamicAtlasFrame(packed, 2, 3);
+        const auto revision = released->getRevision();
+        check(released->destroy(), "SpriteFrame queues deferred destruction");
+        released->loadTexture(packed);
+        released->resetWithTexture(packed);
+        released->setDynamicAtlasFrame(packed, 8, 9);
+        check(released->isValid() && released->getTexture() == (withAtlas ? packed.get() : texture.get())
+                  && released->getRevision() == revision
+                  && texture->getRefCount() == sourceRefs + 1
+                  && packed->getRefCount() == packedRefs + static_cast<unsigned>(withAtlas),
+              "pending SpriteFrame retains existing texture references and ignores late replacement");
+        cc::CCObject::deferredDestroy();
+        released->setTexture(packed);
+        released->copyFrom(frame);
+        check(!released->isValid() && released->getTexture() == nullptr
+                  && released->getOriginalTexture() == nullptr && !released->hasDynamicAtlasFrame()
+                  && released->getUV().empty() && released->getRevision() == revision + 1
+                  && texture->getRefCount() == sourceRefs && packed->getRefCount() == packedRefs,
+              "deferred SpriteFrame releases textures while its native wrapper is retained");
+    }
 }
 
 void testUiBatchInputResources() {

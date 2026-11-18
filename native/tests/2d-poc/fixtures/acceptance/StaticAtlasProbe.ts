@@ -1,5 +1,5 @@
 import {
-    Asset, assetManager, instantiate, isValid, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys,
+    Asset, assetManager, instantiate, isValid, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys, Texture2D,
 } from 'cc';
 
 const BASE = 'M6StaticAtlas/';
@@ -89,6 +89,19 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
             if (isValid(atlas) || nativeAtlas.getSpriteFrameCount() !== 0
                 || atlas.getSpriteFrames().length !== 0 || atlas.getTexture() !== null) {
                 throw new Error('Released static atlas still owns frames with its wrapper retained');
+            }
+            const lateTexture = new Texture2D();
+            try {
+                for (const frame of [previousMap.left, previousMap.right]) {
+                    if (!frame || frame.isValid || frame.texture || frame.original || frame.uv.length !== 0) {
+                        throw new Error('Released SpriteFrame still owns a texture with its wrapper retained');
+                    }
+                    frame.texture = lateTexture;
+                    Object.assign(frame, { _textureSource: lateTexture });
+                    if (frame.texture) throw new Error('Late SpriteFrame texture dependency was accepted');
+                }
+            } finally {
+                lateTexture.destroy();
             }
         }
     }

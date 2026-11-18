@@ -55,3 +55,11 @@ native harness 用 `native/tests/2d-poc/native/CMakeLists.txt` 配置，构建 c
 - 更新后的 Web/native GPU RenderTexture 像素 golden；本次检查了 native draw buffer 与 UV，未重跑 M2/M3 场景像素探针。
 - 动态合图打包/恢复、mesh/vertices/ensureMeshData 等扩展 API 的完整 parity；meshType 已原生存储，不代表 polygon/mesh 功能已实现。
 - SpriteAtlas map/native 表同步、字体资产完整生命周期及 M6 平台/内存/线程矩阵，见 [M6 计划](./native-2d-m6-plan.md)。
+
+## 帧末归还纹理引用
+
+SpriteFrame 通过 IntrusivePtr 持有当前纹理。打包状态下，另一份 IntrusivePtr 持有原图。C++ 与 JSB 分别在自己的帧末销毁队列调用同一清理方法，清空两份引用和原图状态，并更新 revision。Sprite 和 BitmapFont Label 在下次原生准备阶段据此收到空纹理。仍由调用方独立持有的纹理沿用其自身生命周期。
+
+销毁请求排队后仍可读取现有数据。公开纹理赋值、依赖回填和原生纹理绑定入口检查销毁标志。JSB 在帧末同时移除图集登记。C++ 夹具在保留帧对象的条件下交替销毁普通与打包帧，检查引用计数复归以及迟到写入。真实 Prefab 夹具在保留已释放的帧 wrapper 时检查纹理、原图和 UV，并尝试写入一份新纹理验证回填约束。
+
+Windows Debug 和 Release 的 C++ 探针各完成 1000 轮，普通帧与打包帧各占一半。真实 Windows Debug Prefab 与 Web 工程、完整串行门禁及 39 项定向 Jest 通过，100 组现有像素对照逐字节一致。M5 用时 40.33 秒。测试覆盖图集与帧归还自身的引用，长期堆和跨平台仍待验收。
