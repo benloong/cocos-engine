@@ -5,12 +5,22 @@ const http = require('http');
 const { spawn } = require('child_process');
 const bitmap = process.argv.includes('--bitmap');
 const stress = process.argv.includes('--static-atlas-stress');
+const heapSnapshots = process.argv.includes('--heap-snapshots');
+const noOptimizingJit = process.argv.includes('--no-optimizing-jit');
 if (bitmap && stress) throw new Error('Select one atlas probe mode');
+if ((heapSnapshots && !stress) || (noOptimizingJit && !heapSnapshots)) {
+    throw new Error('Heap snapshots require Web static atlas stress, and disabling optimizing JIT requires heap snapshots');
+}
 const projectArg = process.argv.slice(2).find(arg => !arg.startsWith('--'));
 const root = path.resolve(projectArg || path.join(__dirname, '../../../../cocos-m1-test/build/web-mobile'));
-const output = path.join(__dirname, stress ? 'build/static-atlas-stress-web' : bitmap ? 'build/bitmap-web-captures' : 'build/atlas-web-captures');
+const stressOutput = heapSnapshots
+    ? (noOptimizingJit ? 'static-atlas-heap-no-opt' : 'static-atlas-heap')
+    : 'static-atlas-stress-web';
+const output = path.join(__dirname, 'build', stress ? stressOutput : bitmap ? 'bitmap-web-captures' : 'atlas-web-captures');
 if (!fs.existsSync(path.join(root, 'index.html'))) throw new Error('Build the acceptance Web project first');
 fs.mkdirSync(output, { recursive: true });
+const manifestPath = path.join(output, 'manifest.json');
+if (heapSnapshots) fs.rmSync(manifestPath, { force: true });
 const logs = [], captures = new Set(), results = [], samples = [];
 let layoutMetrics = [];
 let fallbackPassed = false;
@@ -45,12 +55,27 @@ const server = http.createServer(async (req, res) => {
     const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
     const browserArgs = ['--headless=new', '--no-first-run', '--no-default-browser-check', '--ignore-gpu-blocklist',
         '--remote-debugging-port=0', '--user-data-dir=' + path.join(__dirname, 'build/atlas-web-profile-' + process.pid)];
-    if (stress) browserArgs.push('--js-flags=--expose-gc', '--enable-precise-memory-info', '--disable-background-timer-throttling');
+    if (stress) {
+        const flags = noOptimizingJit ? '--expose-gc --no-turbofan --no-maglev' : '--expose-gc';
+        browserArgs.push('--js-flags=' + flags, '--enable-precise-memory-info', '--disable-background-timer-throttling');
+    }
     browserArgs.push('http://127.0.0.1:' + server.address().port + (stress ? '/?static-atlas-stress=1' : ''));
     const browser = spawn(chrome, browserArgs, { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
     browser.on('error', rejectDone);
     browser.on('exit', code => rejectDone(new Error('Browser exited: ' + code)));
     let socket;
+    let snapshot = null;
+    let snapshotWork = Promise.resolve();
+    const snapshots = [];
+    function takeSnapshot (cycle) {
+        return new Promise((resolve, reject) => {
+            const name = cycle + '.heapsnapshot';
+            const fd = fs.openSync(path.join(output, name), 'w');
+            const id = cycle + 1;
+            snapshot = { id, fd, name, cycle, resolve, reject };
+            socket.send(JSON.stringify({ id, method: 'HeapProfiler.takeHeapSnapshot', params: { reportProgress: false, captureNumericValue: true } }));
+        });
+    }
     browser.stderr.on('data', async data => {
         const match = /DevTools listening on ws:\/\/127\.0\.0\.1:(\d+)/.exec(data.toString());
         if (!match || socket) return;
@@ -58,8 +83,25 @@ const server = http.createServer(async (req, res) => {
             const tabs = await (await fetch('http://127.0.0.1:' + match[1] + '/json/list')).json();
             socket = new WebSocket(tabs.find(tab => tab.type === 'page').webSocketDebuggerUrl);
             socket.onopen = () => socket.send(JSON.stringify({ id: 1, method: 'Runtime.enable' }));
-            socket.onmessage = event => {
+            function handleMessage (event) {
                 const message = JSON.parse(event.data);
+                if (snapshot && message.method === 'HeapProfiler.addHeapSnapshotChunk') {
+                    fs.writeSync(snapshot.fd, message.params.chunk);
+                    return;
+                }
+                if (snapshot && message.id === snapshot.id) {
+                    const completed = snapshot;
+                    snapshot = null;
+                    fs.closeSync(completed.fd);
+                    if (message.error) {
+                        completed.reject(new Error(message.error.message));
+                    } else {
+                        snapshots.push({ cycle: completed.cycle, file: completed.name });
+                        console.log('Captured Web heap checkpoint ' + completed.cycle);
+                        completed.resolve();
+                    }
+                    return;
+                }
                 if (message.method === 'Runtime.exceptionThrown') rejectDone(new Error(message.params.exceptionDetails.exception?.description || message.params.exceptionDetails.text));
                 if (message.method !== 'Runtime.consoleAPICalled') return;
                 const text = message.params.args.map(arg => arg.value ?? arg.description ?? '').join(' ');
@@ -73,6 +115,10 @@ const server = http.createServer(async (req, res) => {
                     if (text.startsWith('M6_STATIC_ATLAS_STRESS_SAMPLE ')) {
                         const sample = JSON.parse(text.slice('M6_STATIC_ATLAS_STRESS_SAMPLE '.length));
                         samples.push(sample);
+                        if (heapSnapshots && (sample.cycle === 100 || sample.cycle === 1000)) {
+                            snapshotWork = snapshotWork.then(() => takeSnapshot(sample.cycle));
+                            snapshotWork.catch(rejectDone);
+                        }
                         console.log(text);
                     } else if (text.startsWith('M6_STATIC_ATLAS_STRESS_PASS ')) {
                         const result = JSON.parse(text.slice('M6_STATIC_ATLAS_STRESS_PASS '.length));
@@ -82,7 +128,10 @@ const server = http.createServer(async (req, res) => {
                             rejectDone(new Error('Incomplete Web static atlas stress report'));
                         } else {
                             results.push(result);
-                            resolveDone();
+                            snapshotWork.then(() => {
+                                if (heapSnapshots && snapshots.length !== 2) rejectDone(new Error('Missing Web heap snapshots'));
+                                else resolveDone();
+                            }, rejectDone);
                         }
                     }
                     return;
@@ -102,10 +151,26 @@ const server = http.createServer(async (req, res) => {
                     if (!fallbackPassed || !lifecyclePassed || !automaticPassed || !staticAtlasPassed || captures.size !== 12 || results.length !== 4) rejectDone(new Error('Missing Web atlas captures/results'));
                     else resolveDone();
                 }
+            }
+            socket.onmessage = event => {
+                try { handleMessage(event); } catch (error) { rejectDone(error); }
             };
         } catch (error) { rejectDone(error); }
     });
     const timeout = setTimeout(() => rejectDone(new Error('Web atlas capture timeout')), stress ? 600000 : 90000);
-    try { await done; fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify(stress ? { result: results[0], samples } : { captures: [...captures].sort(), results, layoutMetrics }, null, 2) + '\n'); console.log(stress ? 'Web static atlas: PASS (1000 cycles)' : 'Web ' + (bitmap ? 'bitmap' : 'dynamic atlas') + ' captures: PASS (' + captures.size + ')'); }
-    finally { clearTimeout(timeout); socket?.close(); browser.kill(); server.close(); fs.writeFileSync(path.join(output, 'console.log'), logs.join('\n')); }
+    try {
+        await done;
+        const manifest = stress ? { result: results[0], samples, ...(heapSnapshots && { snapshots, noOptimizingJit }) }
+            : { captures: [...captures].sort(), results, layoutMetrics };
+        fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+        console.log(stress ? 'Web static atlas: PASS (1000 cycles)'
+            : 'Web ' + (bitmap ? 'bitmap' : 'dynamic atlas') + ' captures: PASS (' + captures.size + ')');
+    } finally {
+        clearTimeout(timeout);
+        if (snapshot) fs.closeSync(snapshot.fd);
+        socket?.close();
+        browser.kill();
+        server.close();
+        fs.writeFileSync(path.join(output, 'console.log'), logs.join('\n'));
+    }
 })().catch(error => { console.error(error); process.exitCode = 1; });

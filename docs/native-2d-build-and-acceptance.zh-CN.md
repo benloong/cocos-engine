@@ -282,6 +282,19 @@ node native/tests/2d-poc/run-dynamic-atlas-web.cjs --static-atlas-stress
 
 每轮从资源路径加载 plist 编译资产与 Prefab、实例化两个 Sprite、实际提交两种原图帧、销毁实例并归还资源。每端要求 5000 个资产引用和缓存断言、22 个 GPU 中心像素断言以及 11 个 GC 采样。Windows 记录 V8 wrapper 存活、进程私有字节和工作集；Web 记录 Chrome JS 堆与 wrapper 存活。Windows 进程私有字节同时包含脚本堆、原生分配和其他进程占用。两端在各自的 build/static-atlas-stress-* 目录写入 JSON 和完整原始日志。
 
+#### Web 堆增长诊断
+
+同一压力场景可在第 100 和 1000 轮的采样标记后立即取 Chrome 堆快照，并按对象类型和名称比较自身字节变化。第二次运行关闭 V8 的 TurboFan 和 Maglev 优化编译器，用于区分编译代码增长与资产引用累积。两种运行写到不同目录。
+
+```powershell
+node native/tests/2d-poc/run-dynamic-atlas-web.cjs --static-atlas-stress --heap-snapshots
+node native/tests/2d-poc/compare-static-atlas-heap.cjs
+node native/tests/2d-poc/run-dynamic-atlas-web.cjs --static-atlas-stress --heap-snapshots --no-optimizing-jit
+node native/tests/2d-poc/compare-static-atlas-heap.cjs native/tests/2d-poc/build/static-atlas-heap-no-opt
+```
+
+快照自身字节与时点采样的 Chrome JS 堆是两套指标。分析时同时检查资产对象数量、V8 编译代码和元数据，以及其余对象的增量和持有者。
+
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 
 M5 探针先运行 BitmapGpuProbe。Web 采集 BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，Windows Debug 采集原图/尝试启用后/重置后。两端各有 12 份固定 CENTER/CENTER、CLAMP、64×32 内容框的 RGBA，另有 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距、裁剪，以及带 padding 的非零帧原点、trim、offset 和旋转。Windows Debug 直接提交原生字形网格并检查实际源纹理绑定，CPU 诊断构建次数须为 0。70000 字形须分为 5 个 chunk，随后清空并检查引用。

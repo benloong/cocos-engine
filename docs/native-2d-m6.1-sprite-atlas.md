@@ -85,8 +85,20 @@ Windows Debug 和 Web 在同一套 plist、PNG、Prefab 资产上各完成 1000 
 | 900 | 222.80 | 246.18 | 261 | 145.09 | 5 / 5 |
 | 1000 | 224.52 | 245.39 | 261 | 145.12 | 5 / 5 |
 
-每批统计本批 500 个受测资产 wrapper。在 100 至 1000 轮的样本里，Windows V8 映射一直是 261。Windows 进程内存是组合指标。Chrome JS 堆从首批到末批增加约 0.93 MiB，仍需更长时间或堆快照定位累积来源。跨场景切换、ASan 和长期泄漏判定仍待验收。
+每批统计本批 500 个受测资产 wrapper。在 100 至 1000 轮的样本里，Windows V8 映射一直是 261。Windows 进程内存是组合指标。Chrome JS 堆从首批到末批增加约 0.93 MiB，增长来源见第 8 节。跨场景切换、ASan 和长期泄漏判定仍待验收。
 
 Windows 应用 SHA256 为 `b84de791a260ea158d6d515f4882fa0a48e659e8fd61aff51d53d5de3b87e946`，场景 JS 包 SHA256 为 `5f13e1322566665c0eb9d2e5bcfb0df418e84e74865f73003dd6dc14c2240671`。原始报告和日志位于 `native/tests/2d-poc/build/static-atlas-stress-native` 与 `native/tests/2d-poc/build/static-atlas-stress-web`。最初用六分钟预算启动的 Windows 采集在第 500 轮后主动停止，延长压力预算后重新完整采集上述结果。
 
 同一候选的常规 Windows Debug 连续门禁、Web 构建和 39 项定向 Jest 通过，100 组常规 GPU 捕获逐字节一致。M5 用时 40.06 秒。
+
+## 8. Web 堆快照归因
+
+从引擎 `605097fe88` 构建 `cocos-m1-test`，在 Chrome 157.0.8103.78 中运行相同的静态图集压力场景。默认与对照运行各通过 1000 轮、5000 个资产检查和 22 个 GPU 采样。在第 100 和 1000 轮 GC 采样后各取一次堆快照。对照运行关闭 TurboFan 和 Maglev。采集及对照命令见[构建与验收流程](./native-2d-build-and-acceptance.zh-CN.md#web-堆增长诊断)。
+
+默认运行的快照自身字节净增 781280 B，其中 V8 `code` 类净增 706756 B，占净增长的 90.5%。最大的条目是 `InstructionStream`（455296 B）和 `TrustedByteArray`（136388 B）。Prefab、SpriteAtlas、SpriteFrame 和 Texture2D 实例计数分别从 2、1、15、22 降到 1、0、12、20。
+
+关闭优化编译后，快照自身字节净减 1408 B，V8 `code` 类净增 10604 B，四类资产的对象计数变化与默认运行相同。第 100 轮取快照后，从第 200 到 1000 轮的 Chrome JS 堆时点采样，默认运行增加 732916 B，对照运行增加 7824 B。两组证据均指向优化编译造成的堆增长。
+
+预采集的对象边显示，新增 `WeakArrayList` 的主要入边来自 V8 `Map` 的 `dependent_code`。少量 `RenderData` 由场景中现存的 Label 和 Sprite 持有，其 `chunk` 指向对应的 `StaticVBChunk`。默认运行中这两类对象的自身字节合计净增 1404 B。
+
+取快照会触发额外的 GC。快照的对象自身字节、时点采样的 Chrome JS 堆以及原生或 GPU 分配分别计量。两组原始快照分别保存在 `native/tests/2d-poc/build/static-atlas-heap` 和 `native/tests/2d-poc/build/static-atlas-heap-no-opt`，差分 JSON 和门禁日志位于 `native/tests/2d-poc/build/static-atlas-heap-gate`。本节归因覆盖同场景的 Web 千轮夹具。跨场景、长期运行和原生泄漏检测仍待验收。
