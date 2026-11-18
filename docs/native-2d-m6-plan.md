@@ -29,7 +29,8 @@
 - [x] 已建立 17 类的声明/默认值/API/枚举/静态字段/生命周期与运行时依赖矩阵，含原生绑定需复核项和逐类欠项，见 [审计报告与原始基线](./native-2d-m6.0-audit.md)。矩阵建立不等于行为 parity 通过。
 - [x] 已逐项复核 M0–M5 阶段记录的边界并映射到 M6.1–M6.5，见 [遗留复核](./native-2d-m6.0-audit.md#m0m5-遗留复核)。历史通过不重新认定为当前候选版本通过。
 - [x] 源码/override/2D 范围内静态导入审计：已记录字段镜像、帧方法、buffer/RenderData 分配、native 调用点及 AST 体积，见 [报告](./native-2d-m6.0-audit.md)。
-- [ ] 完成非 2D 边界重入/动态导入的实际构建产物审计，以及逐组件稳态 JSB trace 基线；源码调用点不能替代运行计数，终态门禁继续归 M6.5。
+- [x] Windows Debug 部署产物依赖审计。运行 `node native/tests/2d-poc/audit-windows-bundle.cjs`，用相同配置生成 Rollup 模块图，与实际部署的引擎 chunk 校验 SHA256。在 `7abbf5c6f882f280164b0e4f874026f9975ea0adefec6f86719d189ad5858c51` 的 cc.js 中，2D 依赖图包含 81 个模块，57 个产生代码，非 2D 到 2D 的静态边为 72 条。Rollup 没有解析出动态 chunk，部署 JS 中另有三个运行时加载入口，分别为 settingsModule、bundle prerequisites 和 script packages，目标由运行配置决定。报告 `native/tests/2d-poc/build/windows-bundle-audit/report.json` 保留模块、边、动态表达式与行号。发现 exports/graphics.ts 直接重入 Web Graphics assembler 和 Earcut，列入下沉修复。
+- [ ] 采集逐组件稳态 JSB trace 基线；终态门禁继续归 M6.5。
 - [x] 已观察到的壳残留：移除 Label lateUpdate 高度轮询；原生统一管理布局尺寸并由 UITransform 在变化时推送缓存/事件；Label/Graphics 内置材质由原生解析。Windows Debug/Release 实际 JSB、1000 次静止 prepare 与定向测试通过，见 [报告](./native-2d-m6.0-layout-material.md)。全模块稳态调用门禁继续归 M6.5。
 - [x] 新增 2D 元数据维护入口：仓库内脚本从六个 Web 资产声明生成补丁，由 native-binding/decorators 重导出；补齐产物检查、生成器/元数据测试与 native-ts-build CI。组件壳使用源码装饰器；历史外部生成器归属未推断，见 [维护说明](./native-2d-m6.0-metadata.md)。
 
