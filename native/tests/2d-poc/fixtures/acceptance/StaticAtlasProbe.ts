@@ -1,5 +1,5 @@
 import {
-    Asset, assetManager, instantiate, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys,
+    Asset, assetManager, instantiate, isValid, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys,
 } from 'cc';
 
 const BASE = 'M6StaticAtlas/';
@@ -26,6 +26,7 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
         let first: Node | null = null;
         let second: Node | null = null;
         const keys = [prefab.uuid];
+        let previousMap: SpriteAtlas['spriteFrames'] | null = null;
         try {
             // The prefab loads both the atlas and a frame before the explicit atlas load.
             atlas = (await load('colors', SpriteAtlas)).addRef();
@@ -46,6 +47,7 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
                 throw new Error('Native atlas table missed deserialized frames');
             }
             keys.push(atlas.uuid, left.uuid, right.uuid, texture.uuid);
+            previousMap = atlas.spriteFrames;
             first = instantiate(prefab);
             second = instantiate(prefab);
             const sprite = first.getComponent(Sprite);
@@ -81,6 +83,14 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
         }
         await waitForRender();
         if (keys.some(uuid => assetManager.assets.has(uuid))) throw new Error('Static atlas dependencies remained in the asset cache after release');
+        if (sys.isNative && atlas && previousMap) {
+            previousMap.late = null;
+            const nativeAtlas = atlas as SpriteAtlas & { getSpriteFrameCount(): number };
+            if (isValid(atlas) || nativeAtlas.getSpriteFrameCount() !== 0
+                || atlas.getSpriteFrames().length !== 0 || atlas.getTexture() !== null) {
+                throw new Error('Released static atlas still owns frames with its wrapper retained');
+            }
+        }
     }
     console.log('M6_STATIC_ATLAS_PASS');
 }

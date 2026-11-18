@@ -51,11 +51,11 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteAtlas.cpp",
-      "sha256": "e927ba992a90f0330cfe91fa96baa13d65e785ae549e629df1600deef33a02fd"
+      "sha256": "5926a90fef3d846e9bbc19c11dfb50a6d452c362edb7b437e369e02ce69e1d62"
     },
     {
       "file": "native/cocos/2d/assets/SpriteAtlas.h",
-      "sha256": "844af94c01f934b7858f758a683b41d190f127675b43a776d78955d30995e9d0"
+      "sha256": "54c40cbc1c9f9079bfe138920de37d856d67dc9f0feff52ad7aeb3cb828cb23b"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
@@ -14620,8 +14620,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-atlas.jsb.ts",
-      "sha256": "fec02e4bdcaad34badebeb40bae9f87cb037e1c86ae2df3b84a9ccf3025918e3",
-      "printedCodeLines": 148,
+      "sha256": "fa990e4f9e565cc2910a5a68ef7886ca9372bf2045e4d866a8cd6c5526f0a73c",
+      "printedCodeLines": 162,
       "runtimeImports": [
         "../../core",
         "../../asset/assets/asset",
@@ -14631,15 +14631,15 @@
       "nativeCalls": [
         {
           "expression": "jsb.Asset.prototype._ctor.apply",
-          "line": 98
+          "line": 102
         }
       ],
       "allocations": [],
       "loops": [
-        81,
-        127,
-        143,
-        145
+        84,
+        138,
+        155,
+        157
       ]
     },
     {

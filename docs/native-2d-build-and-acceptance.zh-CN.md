@@ -269,7 +269,7 @@ Web 生成 12 份 256×256 RGBA，覆盖 Sprite/Mask × REPEAT/CLAMP × 原图/�
 
 JSB + Native 暂停运行时动态图集。Windows Debug 必须记录 `M6_ATLAS_NATIVE_DISABLED_PASS`。显式设置单例和独立管理器的 enabled、插入和打包应保持源纹理、UV 和零图集页。原生侧生成原图、尝试启用后、重置后三个状态的 12 份 RGBA，全部与同候选的 Web 原图比较，通道容差 1。原生同组图像须逐字节一致。清除旧的预期原生捕获后再运行，不接受缺失或重复数据。仍须运行 `node node_modules/jest/bin/jest.js --runInBand tests/ui/auto-atlas.test.ts`。
 
-Windows Debug 与 Web 均须记录 `M6_STATIC_ATLAS_PASS`。M4 先加载包含旧式 TexturePacker 图集引用的真实 Prefab，再显式加载同一 SpriteAtlas，检查依赖身份、旋转和裁剪数据、两个实例独立换帧、红绿 GPU 采样、Prefab 释放后独立持有的图集仍可访问，以及最终依赖移出缓存。该流程重复三次。
+Windows Debug 与 Web 均须记录 `M6_STATIC_ATLAS_PASS`。M4 先加载包含旧式 TexturePacker 图集引用的真实 Prefab，再显式加载同一 SpriteAtlas，检查依赖身份、旋转和裁剪数据、两个实例独立换帧、红绿 GPU 采样、Prefab 释放后独立持有的图集仍可访问，以及最终依赖移出缓存。该流程重复三次。Windows Debug 还须在保留图集 JS wrapper 和旧字典时验证帧末原生帧表为空，旧字典的迟到写入不能恢复条目。
 
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 

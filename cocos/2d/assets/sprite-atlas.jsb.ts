@@ -4,7 +4,7 @@
  http://www.cocos.com
 */
 
-import { cclegacy, js } from '../../core';
+import { cclegacy, isValid, js } from '../../core';
 import '../../asset/assets/asset';
 import { patch_cc_SpriteAtlas } from '../../native-binding/decorators';
 import type { SpriteFrame } from './sprite-frame';
@@ -23,6 +23,8 @@ const nativeAddSpriteFrame = spriteAtlasProto.addSpriteFrame;
 const nativeRemoveSpriteFrame = spriteAtlasProto.removeSpriteFrame;
 const nativeGetSpriteFrame = spriteAtlasProto.getSpriteFrame;
 const nativeGetTexture = spriteAtlasProto.getTexture;
+const nativeClear = spriteAtlasProto.clear;
+const onPreDestroy = spriteAtlasProto._onPreDestroy;
 
 function checkFrame (frame: SpriteFrame | null): void {
     if (frame !== null && !(frame instanceof jsb.SpriteFrame)) {
@@ -38,7 +40,7 @@ function createFrameMap (atlas: any, source: FrameMap): FrameMap {
     function mutate (key: PropertyKey, value: SpriteFrame | null, operation: () => boolean, remove = false): boolean {
         // Detached dependency maps are ordinary dictionaries, with no authority
         // over the atlas that replaced them.
-        if (atlas._spriteFrames !== proxy || typeof key !== 'string') return operation();
+        if (atlas._spriteFrames !== proxy || !isValid(atlas, true) || typeof key !== 'string') return operation();
         const before = Object.getOwnPropertyDescriptor(target, key);
         if (!remove) checkFrame(value);
         // Convert/retain the native argument before publishing a potentially
@@ -75,16 +77,18 @@ Object.defineProperty(spriteAtlasProto, 'spriteFrames', {
     enumerable: true,
     configurable: true,
     get (): FrameMap {
-        if (!this._spriteFrames) {
-            // Also support assets created in C++ and subsequently exposed to JS.
-            const frames: FrameMap = js.createMap();
-            for (const name of this.getSpriteFrameNames()) frames[name] = nativeGetSpriteFrame.call(this, name);
-            this._spriteFrames = createFrameMap(this, frames);
-            this.setSpriteFrameOrder(Object.keys(frames));
-        }
+        const writable = isValid(this, true);
+        if (writable && this._spriteFrames) return this._spriteFrames;
+        // Native slots remain readable until the deferred destruction runs.
+        const frames: FrameMap = js.createMap();
+        for (const name of this.getSpriteFrameNames()) frames[name] = nativeGetSpriteFrame.call(this, name);
+        if (!writable) return frames;
+        this.setSpriteFrameOrder(Object.keys(frames));
+        this._spriteFrames = createFrameMap(this, frames);
         return this._spriteFrames;
     },
     set (value: FrameMap) {
+        if (!isValid(this, true)) return;
         const frames = createFrameMap(this, value);
         const names = Object.keys(frames);
         const values = names.map(name => frames[name]);
@@ -96,6 +100,13 @@ Object.defineProperty(spriteAtlasProto, 'spriteFrames', {
 
 spriteAtlasProto._ctor = function () {
     jsb.Asset.prototype._ctor.apply(this, arguments);
+};
+
+spriteAtlasProto._onPreDestroy = function (): void {
+    // JS-initiated destruction is drained by CCObject's script queue.
+    nativeClear.call(this);
+    this._spriteFrames = undefined;
+    onPreDestroy?.call(this);
 };
 
 spriteAtlasProto.addSpriteFrame = function (name: string, frame: SpriteFrame | null): void {
@@ -135,6 +146,7 @@ spriteAtlasProto._serialize = function (ctxForExporting?: any): any {
     return { name: this._name, spriteFrames: frames };
 };
 spriteAtlasProto._deserialize = function (data: { name?: string; spriteFrames?: string[] }, handle: any): void {
+    if (!isValid(this, true)) return;
     this._name = data.name ?? '';
     const frames = data.spriteFrames ?? [];
     const pending: FrameMap = js.createMap();

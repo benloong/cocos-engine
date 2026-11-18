@@ -12,6 +12,7 @@
 namespace cc {
 
 void SpriteAtlas::addSpriteFrame(const ccstd::string &name, SpriteFrame *frame) {
+    if (!isObjectValid(this, true)) return;
     if (_spriteFrames.find(name) == _spriteFrames.end()) _frameNames.emplace_back(name);
     // A null value is still a named slot, matching the serialized JS map.
     _spriteFrames[name] = frame;
@@ -36,6 +37,7 @@ void SpriteAtlas::clear() {
 }
 
 void SpriteAtlas::setSpriteFrames(const ccstd::vector<ccstd::string> &names, const ccstd::vector<SpriteFrame *> &frames) {
+    if (!isObjectValid(this, true)) return;
     CC_ASSERT(names.size() == frames.size());
     if (names.size() != frames.size()) return;
     ccstd::unordered_map<ccstd::string, IntrusivePtr<SpriteFrame>> replacement;
@@ -47,6 +49,15 @@ void SpriteAtlas::setSpriteFrames(const ccstd::vector<ccstd::string> &names, con
     _spriteFrames.swap(replacement);
     _frameNames = names;
     ++_revision;
+}
+
+void SpriteAtlas::setSpriteFrameOrder(const ccstd::vector<ccstd::string> &names) {
+    if (isObjectValid(this, true)) _frameNames = names;
+}
+
+bool SpriteAtlas::onPreDestroy() {
+    clear();
+    return Super::onPreDestroy();
 }
 
 TextureBase *SpriteAtlas::getTexture() const {

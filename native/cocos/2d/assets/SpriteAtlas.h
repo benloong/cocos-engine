@@ -34,14 +34,18 @@ public:
     void removeSpriteFrame(const ccstd::string &name);
     void clear();
     void setSpriteFrames(const ccstd::vector<ccstd::string> &names, const ccstd::vector<SpriteFrame *> &frames);
-    void setSpriteFrameOrder(const ccstd::vector<ccstd::string> &names) { _frameNames = names; }
+    void setSpriteFrameOrder(const ccstd::vector<ccstd::string> &names);
     const ccstd::vector<ccstd::string> &getSpriteFrameNames() const { return _frameNames; }
     uint32_t getSpriteFrameCount() const { return static_cast<uint32_t>(_spriteFrames.size()); }
     uint32_t getRevision() const { return _revision; }
     TextureBase *getTexture() const;
 
+protected:
+    bool onPreDestroy() override;
+
 private:
     uint32_t _revision{0};
+    // Each named slot owns its frame until removal or deferred atlas destruction.
     ccstd::unordered_map<ccstd::string, IntrusivePtr<SpriteFrame>> _spriteFrames;
     ccstd::vector<ccstd::string> _frameNames;
 };

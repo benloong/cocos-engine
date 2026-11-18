@@ -13,12 +13,14 @@ const rawGet = jsb.SpriteAtlas.prototype.getSpriteFrame;
 const rawTexture = jsb.SpriteAtlas.prototype.getTexture;
 const cclegacy = {};
 const js = { createMap: () => Object.create(null) };
+const destroyedFlag = 1 << 0, toDestroyFlag = 1 << 2;
+const isValid = (object, strict) => !(object._objFlags & (strict ? (destroyedFlag | toDestroyFlag) : destroyedFlag));
 let initialized = 0;
 jsb.Asset.prototype._ctor = function () { initialized++; };
 // Core metadata is covered by Jest; here the real asset classes, ownership,
 // argument conversion and native map are exercised with the actual shell.
 function require(id) {
-    if (id === '../../core') return { cclegacy, js };
+    if (id === '../../core') return { cclegacy, isValid, js };
     if (id === '../../asset/assets/asset') return {};
     if (id === '../../native-binding/decorators') return { patch_cc_SpriteAtlas: () => {} };
     throw new Error('Unexpected probe import: ' + id);
@@ -77,6 +79,18 @@ atlas.spriteFrames = { hero: first };
 Object.freeze(atlas.spriteFrames);
 check(!Reflect.set(atlas.spriteFrames, 'hero', null) && rawGet.call(atlas, 'hero') === first, 'frozen map rollback');
 atlas.clear();
+atlas._deserialize({ spriteFrames: ['hero', 'first-id'] }, { result: { push: (...args) => dependencies.push(args) } });
+const outstanding = atlas.spriteFrames;
+outstanding.hero = first;
+check(atlas._destroy(), 'queue real native destruction');
+check(isValid(atlas) && !isValid(atlas, true), 'JSB lifetime flags are deferred');
+outstanding.hero = second;
+atlas.spriteFrames = { hero: second };
+atlas.addSpriteFrame('late', second);
+check(atlas.spriteFrames !== outstanding && atlas.getSpriteFrame('hero') === first
+    && rawGet.call(atlas, 'hero') === first && atlas.getSpriteFrameCount() === 1, 'pending atlas reads native state and rejects detached writes');
+jsb.CCObject.deferredDestroy();
+check(!isValid(atlas) && atlas.getSpriteFrameCount() === 0 && atlas.getTexture() === null, 'native deferred destruction clears the retained wrapper’s table');
 return 'OK';
 `;
 fs.mkdirSync(path.dirname(output), { recursive: true });

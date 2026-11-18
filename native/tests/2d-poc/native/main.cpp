@@ -144,6 +144,25 @@ void testSpriteAtlas() {
         atlas->clear();
     }
     check(frame->getRefCount() == retained, "SpriteAtlas replace/clear releases all frame references");
+    for (int i = 0; i < 1000; ++i) {
+        cc::IntrusivePtr<cc::SpriteAtlas> released(new cc::SpriteAtlas());
+        released->setSpriteFrames({"frame", "alias"}, {frame.get(), frame.get()});
+        check(released->destroy(), "SpriteAtlas queues deferred destruction");
+        check(released->isValid() && released->getSpriteFrame("frame") == frame
+                  && frame->getRefCount() == retained + 2,
+              "SpriteAtlas keeps owned frames until deferred destruction");
+        released->addSpriteFrame("late", frame);
+        released->setSpriteFrames({"late"}, {frame.get()});
+        check(released->getSpriteFrameCount() == 2 && released->getSpriteFrame("frame") == frame,
+              "SpriteAtlas does not accept pending replacements");
+        cc::CCObject::deferredDestroy();
+        released->addSpriteFrame("late", frame);
+        released->setSpriteFrameOrder({"late"});
+        check(!released->isValid() && released->getSpriteFrameCount() == 0
+                  && released->getSpriteFrameNames().empty() && released->getTexture() == nullptr
+                  && frame->getRefCount() == retained,
+              "SpriteAtlas releases aliases and rejects late repopulation with a live owner");
+    }
 }
 void testSpriteFrameData() {
     cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D());
