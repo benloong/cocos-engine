@@ -1,0 +1,164 @@
+{
+  "snapshot": "7e7bfc1807ab3352a8a149ff593ef9fb0fbd4bd61465c5739b3d67519f6c56eb",
+  "font": {
+    "source": "tests/fixtures/Thonburi.ttf",
+    "sha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+    "bytes": 223404,
+    "loaded": true,
+    "released": true,
+    "lifecycle": {
+      "cycles": 1000,
+      "cacheHits": 1000,
+      "bytesPerLoad": 223404,
+      "assignmentFailureRolledBack": true,
+      "retrySucceeded": true,
+      "missingRejected": true,
+      "deferredDestroyFinished": true,
+      "before": {
+        "publicAliases": 4,
+        "renderAliases": 4,
+        "leases": 4,
+        "groups": 4
+      },
+      "after": {
+        "publicAliases": 4,
+        "renderAliases": 4,
+        "leases": 4,
+        "groups": 4
+      },
+      "cacheBefore": 22,
+      "cacheAfter": 22,
+      "http": {
+        "loaded": true,
+        "bytes": 223404,
+        "cachePathResolved": true,
+        "width": 95.9765625,
+        "released": true,
+        "cacheRemoved": true,
+        "missingRejected": true
+      }
+    }
+  },
+  "configs": [
+    "Debug",
+    "Release",
+    "ASan"
+  ],
+  "reportHashes": [
+    "c90a3b600913e6d628d3086fc377e83cce0a21ed66655c37191f161f5d3817ad",
+    "c90a3b600913e6d628d3086fc377e83cce0a21ed66655c37191f161f5d3817ad",
+    "c90a3b600913e6d628d3086fc377e83cce0a21ed66655c37191f161f5d3817ad"
+  ],
+  "configurationParity": true,
+  "strictWebParity": false,
+  "cases": [
+    {
+      "name": "text-basic",
+      "nativeSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+      "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-bold",
+      "nativeSha256": "0dd74ae6f769b10b63ffe14398329805b8efab6cc6c188aefee8d815ac4775d7",
+      "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9",
+      "layoutEqual": true,
+      "max": 20,
+      "pixels": 467,
+      "pass": false
+    },
+    {
+      "name": "text-italic",
+      "nativeSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+      "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-underline",
+      "nativeSha256": "200bf94693f41bb3e257cef10e3cd5be52b3959c29de780f216c34ebbaa0c961",
+      "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a",
+      "layoutEqual": true,
+      "max": 1,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-outline",
+      "nativeSha256": "b149ca666d8f4e617e59c3c6e122bf603cd32e68fb2732f8024f10d9f2d3db61",
+      "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c",
+      "layoutEqual": true,
+      "max": 30,
+      "pixels": 202,
+      "pass": false
+    },
+    {
+      "name": "text-nested",
+      "nativeSha256": "6edd9cc4c32ccbd760b54a5f508768a52fff74a2b1dbc463d77d7646bd27b09e",
+      "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3",
+      "layoutEqual": true,
+      "max": 47,
+      "pixels": 573,
+      "pass": false
+    },
+    {
+      "name": "text-colors",
+      "nativeSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+      "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-wrap-left",
+      "nativeSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+      "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-wrap-center",
+      "nativeSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+      "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-wrap-right",
+      "nativeSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+      "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-multiline",
+      "nativeSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+      "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    },
+    {
+      "name": "text-unicode",
+      "nativeSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+      "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+      "layoutEqual": true,
+      "max": 0,
+      "pixels": 0,
+      "pass": true
+    }
+  ]
+}
