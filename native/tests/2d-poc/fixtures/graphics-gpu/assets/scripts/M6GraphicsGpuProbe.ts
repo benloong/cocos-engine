@@ -1,4 +1,4 @@
-import { _decorator, Camera, Canvas, Color, Component, director, Graphics, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, BitmapFont, Camera, Canvas, Color, Component, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { runSceneMatrix } from './M6SceneMatrix';
 import { runRichTextMatrix } from './M6RichTextMatrix';
 
@@ -83,6 +83,35 @@ export class M6GraphicsGpuProbe extends Component {
             { name: 'mask-nested-empty', draw: root => { const outer = mask(root, 140, 120); const inner = mask(outer.n, 80, 60, 2); (inner.m.subComp as Graphics).clear(); red(inner.n); red(outer.n); } },
             { name: 'mask-multichunk', draw: root => { const { n, m } = mask(root, 200, 100, 2); const g = m.subComp as Graphics; g.clear(); for (let i = 0; i < 20000; ++i) { g.rect(-100 + i % 200, -50 + Math.floor(i / 200), .6, .6); if (i % 4000 === 3999) g.fill(); } red(n); } },
             { name: 'mask-disable', draw: root => { const { n, m } = mask(root, 80, 80); red(n); return () => { m.enabled = false; }; } },
+            { name: 'mask-ellipse-segments', draw: root => {
+                const { n, m } = mask(root, 160, 100, Mask.Type.GRAPHICS_ELLIPSE);
+                m.segments = 4; red(n);
+                return () => { m.segments = 64; };
+            } },
+            { name: 'mask-mixed-frame', draw: root => {
+                const { n, m } = mask(root, 120, 100, Mask.Type.SPRITE_STENCIL);
+                const setFrame = (value: SpriteFrame): void => {
+                    if (sys.isNative) (m as any).spriteFrame = value;
+                    else {
+                        const source = m.subComp as Sprite;
+                        source.sizeMode = Sprite.SizeMode.CUSTOM;
+                        source.spriteFrame = value;
+                    }
+                };
+                setFrame(whiteFrame); m.alphaThreshold = .5; red(n);
+                const shape = graphics(node(n, 'blue'));
+                shape.fillColor = new Color(0, 0, 255, 255); shape.fillRect(-40, -20, 32, 40);
+                const font = new BitmapFont(); font.fontSize = 16; font.spriteFrame = whiteFrame;
+                font.fntConfig = { fontSize: 16, commonHeight: 16, atlasName: 'memory', kerningDict: {},
+                    fontDefDictionary: { 65: { rect: { x: 0, y: 0, width: 16, height: 16 }, xOffset: 0, yOffset: 0, xAdvance: 16 } } } as any;
+                font.onLoaded();
+                const glyph = node(n, 'green'); glyph.setPosition(24, 0);
+                const label = glyph.addComponent(Label); label.font = font;
+                label.fontSize = 16; label.lineHeight = 16; label.string = 'A'; label.color = new Color(0, 255, 0, 255);
+                const sibling = graphics(node(root, 'yellow'));
+                sibling.fillColor = new Color(255, 255, 0, 255); sibling.fillRect(70, -10, 20, 20);
+                return () => { setFrame(alphaFrame); };
+            } },
         ];
         for (const threshold of [.2, .5, .8]) cases.push({ name: `mask-alpha-${threshold}`, draw: root => {
             const { n, m } = mask(root, 120, 100, 3);

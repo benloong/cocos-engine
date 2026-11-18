@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==74) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==78) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==74) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==78) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -49,6 +49,16 @@ for(const name of a.captures) {
     if(actual.length!==262144||expected.length!==262144) throw new Error('Invalid capture size: '+name);
     if(name in centers && centers[name].some((channel,i)=>Math.abs(expected[(128*256+128)*4+i]-channel)>1)) throw new Error('Root blend/order sanity failed: '+name);
     if(name.startsWith('scene-cycle-')&&[0,255,0,255].some((channel,i)=>expected[(128*256+218)*4+i]!==channel)) throw new Error('Persistent renderer sanity failed: '+name);
+    if (name === 'mask-mixed-frame' || name === 'mask-mixed-frame-updated') {
+        const samples = [[-20, name === 'mask-mixed-frame' ? [0,0,255] : [0,0,0]],
+            [24, [0,255,0]], [48, [255,0,0]], [80, [255,255,0]]];
+        for (const [x, rgb] of samples) {
+            const offset = (128 * 256 + 128 + x) * 4;
+            if (rgb.some((channel, i) => expected[offset + i] !== channel)) {
+                throw new Error('Mixed scene sample mismatch at x=' + x + ' in ' + name);
+            }
+        }
+    }
     let max=0,channels=0,pixels=0,colored=0;
     for(let i=0;i<actual.length;i+=4) {
         let different=false;

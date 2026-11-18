@@ -1,5 +1,5 @@
 {
-  "snapshot": "ef2e334eaa4e889cf5cdb2e2fafd65854b4ee0bea82ea42c8c01ea2f37edaf39",
+  "snapshot": "b289a5a50e6a20b62d571abbd7d63b853de744438aa880d13ea767d69e509d4f",
   "width": 256,
   "height": 256,
   "environment": {
@@ -631,6 +631,46 @@
       "pass": true,
       "nativeSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b",
       "webSha256": "7b96093f70e60fd70fb037113747d47cdaa439ca4d8c67b3ab227de25768826b"
+    },
+    {
+      "name": "mask-ellipse-segments",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 8000,
+      "pass": true,
+      "nativeSha256": "e5950ebc92440d2d5bfd630bc6c618aa77b890a380590b367c70afa5ce56c078",
+      "webSha256": "e5950ebc92440d2d5bfd630bc6c618aa77b890a380590b367c70afa5ce56c078"
+    },
+    {
+      "name": "mask-ellipse-segments-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 12560,
+      "pass": true,
+      "nativeSha256": "83561c9896db8cf7ecd14ff0d5e002c0708f0b4fe4f9ce05626bdeb6d0e3fd6e",
+      "webSha256": "83561c9896db8cf7ecd14ff0d5e002c0708f0b4fe4f9ce05626bdeb6d0e3fd6e"
+    },
+    {
+      "name": "mask-mixed-frame",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 12400,
+      "pass": true,
+      "nativeSha256": "cf922b53c3315d762b10a262443e06a5282ad4aa13dc4d85b337c2d7b2ff9fec",
+      "webSha256": "cf922b53c3315d762b10a262443e06a5282ad4aa13dc4d85b337c2d7b2ff9fec"
+    },
+    {
+      "name": "mask-mixed-frame-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "8ccab45440c18795c0de0fdf33d07d99db7ef317bc3b2034407d19139b3fdfe6",
+      "webSha256": "8ccab45440c18795c0de0fdf33d07d99db7ef317bc3b2034407d19139b3fdfe6"
     },
     {
       "name": "mask-alpha-0.2",
