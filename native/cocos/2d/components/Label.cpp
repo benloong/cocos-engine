@@ -42,10 +42,51 @@
 #include "core/assets/ImageAsset.h"
 #include "core/assets/Texture2D.h"
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+#include "bindings/manual/jsb_platform.h"
+#include "platform/interfaces/modules/canvas/CanvasFont.h"
+#endif
 
 namespace cc {
 
 namespace {
+
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+// Only the idle 1x1 system-font context is shared. Nested measurements own
+// separate contexts and file-backed fonts release their handles immediately.
+class TextMeasurement {
+public:
+    explicit TextMeasurement(const std::string &font) : _slot(std::move(idle())) {
+        if (!_slot.context || _slot.font != font) {
+            _slot.font = font;
+            _slot.family = detail::parseCanvasFont(font).family;
+            _slot.context.reset();
+        }
+        _reusable = !getFontAssetFamilyNameMap().count(_slot.family) && !getFontFamilyNameMap().count(_slot.family);
+        if (!_reusable || !_slot.context) {
+            _slot.context = std::make_unique<CanvasRenderingContext2D>(1.F, 1.F);
+            _slot.context->setFont(font);
+        }
+    }
+    ~TextMeasurement() {
+        if (_reusable) idle() = std::move(_slot);
+    }
+    CanvasRenderingContext2D &context() { return *_slot.context; }
+
+private:
+    struct Slot {
+        std::unique_ptr<CanvasRenderingContext2D> context;
+        std::string font;
+        std::string family;
+    };
+    static Slot &idle() {
+        static thread_local Slot slot;
+        return slot;
+    }
+    Slot _slot;
+    bool _reusable;
+};
+#endif
 
 struct LetterAtlasEntry {
     std::unique_ptr<LetterAtlas> atlas; // registry owns each live cache
@@ -755,8 +796,13 @@ std::array<double, 2> Label::measureUnwrappedTextPrecise(const std::string &text
         const auto layout = layoutBitmapFont(symbols, _bitmapFont->getGlyphs(), _bitmapFont->getGlyphMap(), _bitmapFont->getKerningMap(), options);
         return {layout.width, layout.height};
     }
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    TextMeasurement measurement(_font);
+    auto &context = measurement.context();
+#else
     CanvasRenderingContext2D context(1.F, 1.F);
     context.setFont(_font);
+#endif
     float width = 0.F, line = 0.F; uint32_t lines = 1;
     std::string paragraph;
     for (const auto &symbol : splitUtf8(text)) {
@@ -800,8 +846,13 @@ void Label::rebuildTexture() {
         return;
     }
 
-    CanvasRenderingContext2D measureContext(1.0F, 1.0F);
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    TextMeasurement measurement(_font);
+    auto &measureContext = measurement.context();
+#else
+    CanvasRenderingContext2D measureContext(1.F, 1.F);
     measureContext.setFont(_font);
+#endif
 
     const float lineHeight = _lineHeight > 0.0F ? _lineHeight : _fontSize * 1.2F;
     float maxWidth = _transform->getContentSize().x;

@@ -1,0 +1,293 @@
+{
+  "platform": "Windows x64 Release",
+  "baselineRuntime": "dfd1b03028",
+  "candidateParent": "8906b527b9",
+  "warmupFramesPerScene": 30,
+  "samplesPerPhase": 120,
+  "pairs": 6,
+  "oddOrder": [
+    "baseline",
+    "reuse"
+  ],
+  "evenOrder": [
+    "reuse",
+    "baseline"
+  ],
+  "sha256": {
+    "baselineLabel": "dd9bf7f79c539e12ca33b5d5216590612c9c100d8d5a7ce672ecb1101fca2b71",
+    "reuseLabel": "5340e7f9ffaea0894b614894e4dc7e7e527fb7011aa83d81c930db54fc60f37f",
+    "baselineExe": "24a5c315a151dc685cee448390604f537bd8244134ee8eb0e388a908ac49f417",
+    "reuseExe": "2500afcbff955bc5706cf787c4019e7316a7dc231e521886fa9ce6675d306359",
+    "sharedEngineJS": "e3aebe4176662e78de598f7f20b72dec49e8955ea48d432b2508dbafbb24d525",
+    "workload": "8cd09b7e55d8afcff2602b6e6d325f1714c1a32c9dce8edaf1f82099190ae10e"
+  },
+  "dirtyFrameMs": {
+    "empty": {
+      "baseline": [
+        0.00805,
+        0.0108,
+        0.01025,
+        0.0074,
+        0.00925,
+        0.0086
+      ],
+      "reuse": [
+        0.00655,
+        0.01015,
+        0.0055,
+        0.0086,
+        0.0087,
+        0.00785
+      ],
+      "pairedSaving": [
+        0.0015,
+        0.00065,
+        0.00475,
+        -0.0012,
+        0.00055,
+        0.00075
+      ],
+      "medianPairedSaving": 0.0007,
+      "medianBaseline": 0.008925,
+      "medianReuse": 0.008225
+    },
+    "sprites": {
+      "baseline": [
+        0.5136,
+        0.7022,
+        0.6833,
+        0.55935,
+        0.63315,
+        0.6444
+      ],
+      "reuse": [
+        0.70845,
+        0.56445,
+        0.6071,
+        0.5971,
+        0.4888,
+        0.66455
+      ],
+      "pairedSaving": [
+        -0.19485,
+        0.13775,
+        0.0762,
+        -0.03775,
+        0.14435,
+        -0.02015
+      ],
+      "medianPairedSaving": 0.028025,
+      "medianBaseline": 0.638775,
+      "medianReuse": 0.6021
+    },
+    "labels": {
+      "baseline": [
+        3.8013,
+        3.666,
+        3.6736,
+        3.50805,
+        3.58855,
+        3.5571
+      ],
+      "reuse": [
+        3.19665,
+        3.2248,
+        3.02845,
+        3.04895,
+        3.02795,
+        3.28785
+      ],
+      "pairedSaving": [
+        0.60465,
+        0.4412,
+        0.64515,
+        0.4591,
+        0.5606,
+        0.26925
+      ],
+      "medianPairedSaving": 0.50985,
+      "medianBaseline": 3.627275,
+      "medianReuse": 3.1228
+    },
+    "masks": {
+      "baseline": [
+        0.35915,
+        0.3762,
+        0.2993,
+        0.32565,
+        0.315,
+        0.3271
+      ],
+      "reuse": [
+        0.3651,
+        0.33115,
+        0.30335,
+        0.32195,
+        0.3,
+        0.31185
+      ],
+      "pairedSaving": [
+        -0.00595,
+        0.04505,
+        -0.00405,
+        0.0037,
+        0.015,
+        0.01525
+      ],
+      "medianPairedSaving": 0.00935,
+      "medianBaseline": 0.326375,
+      "medianReuse": 0.3169
+    },
+    "rich": {
+      "baseline": [
+        2.1952,
+        2.13515,
+        2.23305,
+        2.29545,
+        2.2842,
+        2.2958
+      ],
+      "reuse": [
+        1.9535,
+        0.9643,
+        1.90795,
+        1.99515,
+        1.91305,
+        1.8476
+      ],
+      "pairedSaving": [
+        0.2417,
+        1.17085,
+        0.3251,
+        0.3003,
+        0.37115,
+        0.4482
+      ],
+      "medianPairedSaving": 0.348125,
+      "medianBaseline": 2.258625,
+      "medianReuse": 1.9105
+    },
+    "mixed": {
+      "baseline": [
+        5.41815,
+        5.47785,
+        5.29445,
+        5.342,
+        5.2486,
+        5.2683
+      ],
+      "reuse": [
+        9.3863,
+        4.7868,
+        4.6076,
+        4.41065,
+        4.54655,
+        4.6363
+      ],
+      "pairedSaving": [
+        -3.96815,
+        0.69105,
+        0.68685,
+        0.93135,
+        0.70205,
+        0.632
+      ],
+      "medianPairedSaving": 0.68895,
+      "medianBaseline": 5.318225,
+      "medianReuse": 4.62195
+    }
+  },
+  "rawFrameSHA256": {
+    "m6-ctx-measure-base-1.json": "21d2e59f143e6a8d1fa0d01ad3624e127d8ac91fe39295d38e46d9dfabdd75d0",
+    "m6-ctx-measure-1.json": "5a171bc6831d1cd79f29822de573d383fff6782d302fc69a505e59bb1ef8b6e3",
+    "m6-ctx-measure-base-2.json": "2b65502f0bb3f77505395424f0cbe7a1eaf593fc83d73294e2c74030655fed9c",
+    "m6-ctx-measure-2.json": "dbe832f5193599967b99ece12873ea9d5271effb830c1a987df708225feed628",
+    "m6-ctx-measure-base-3.json": "4684332b51120734f5dcb3d2361cb256758ced040b79e141b10809b5ffe18bab",
+    "m6-ctx-measure-3.json": "b72b7192febd9ee14dcd6ec50d6ae3c326cf098976e53e5199c4e50162c7c030",
+    "m6-ctx-measure-base-4.json": "cd23726a6b4a530812d9eeaf839bc8d6b05e607f0729ba858227869c867e990d",
+    "m6-ctx-measure-4.json": "48a83d3a0e481eff5e1cea24e2134308bf1da4e331d44e7f81bcfc42b048dbad",
+    "m6-ctx-measure-base-5.json": "af46723327a0d5fb98a5b5f9793b93f0d4eb42be893ca6e36b33cd4c74a3a15c",
+    "m6-ctx-measure-5.json": "e53f320a7b44d244079fa96e8f89bb04ae04eb2372e2bc7d34f9089b399f5303",
+    "m6-ctx-measure-base-6.json": "7784798ab686efee41a41addb951573cc7212012c14f1d42129a7fc3b24b75f9",
+    "m6-ctx-measure-6.json": "748ddb98112cde51ef0bbff3985420e98d3cf53ce1e7a693a843c97c1d2734d5"
+  },
+  "labelPixelChecks": {
+    "fields": [
+      "width",
+      "height",
+      "checksum",
+      "opaquePixels"
+    ],
+    "samples": [
+      "AB 14",
+      "CD 14",
+      "AB 14",
+      "AB italic 24",
+      "AB 14"
+    ],
+    "allRuns": [
+      [
+        18,
+        20,
+        3849098014,
+        57
+      ],
+      [
+        20,
+        20,
+        1037418992,
+        48
+      ],
+      [
+        18,
+        20,
+        3849098014,
+        57
+      ],
+      [
+        37,
+        20,
+        3569165761,
+        241
+      ],
+      [
+        18,
+        20,
+        3849098014,
+        57
+      ]
+    ]
+  },
+  "canvasMicrosecondsPerCall": {
+    "callsPerBlock": 2000,
+    "font": "14px Arial",
+    "strings": [
+      "AB",
+      "CD"
+    ],
+    "baseline": [
+      35.39195,
+      35.89035,
+      35.43815,
+      33.8025,
+      35.3236,
+      33.1284,
+      33.7016,
+      36.24975
+    ],
+    "reuse": [
+      13.7093,
+      13.67685,
+      13.6882,
+      13.4285,
+      13.4664,
+      13.44545,
+      13.1295,
+      15.94405
+    ],
+    "medianBaseline": 35.357775,
+    "medianReuse": 13.571625,
+    "medianPairedSaving": 21.127375,
+    "widthSumPerBlock": 38000.0
+  }
+}
