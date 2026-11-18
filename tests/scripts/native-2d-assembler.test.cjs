@@ -38,3 +38,36 @@ test('native assembler managers forward updates without loading Web assemblers',
     label.updateRenderData(comp); label.updateColor(comp);
     assert.equal(calls.length, 5);
 });
+
+test('native Graphics export forwards explicit assembler calls to its component', () => {
+    const root = path.resolve(__dirname, '../..');
+    const config = JSON.parse(fs.readFileSync(path.join(root, 'cc.config.json'), 'utf8'));
+    const overrides = Object.assign({}, ...config.moduleOverrides.filter(entry => /NATIVE/.test(entry.test || '')).map(entry => entry.overrides));
+    const file = overrides['cocos/2d/assembler/graphics/index.ts'];
+    assert.equal(file, 'cocos/2d/assembler/graphics/index.jsb.ts');
+    const code = ts.transpileModule(fs.readFileSync(path.join(root, file), 'utf8'), {
+        compilerOptions: { module: ts.ModuleKind.CommonJS },
+    }).outputText;
+    const exports = {};
+    class Graphics {}
+    vm.runInNewContext(code, { exports, require(id) {
+        assert.equal(id, '../../components/graphics');
+        return { Graphics };
+    } });
+    assert.equal(Graphics.Assembler, exports.graphicsAssembler);
+    const calls = [];
+    const component = {
+        fill: () => calls.push('fill'), stroke: () => calls.push('stroke'),
+        _markForUpdateRenderData: () => calls.push('end'), getMaterialInstance: slot => slot,
+    };
+    const assembler = Graphics.Assembler.getAssembler(component);
+    assert.equal(assembler, exports.graphics);
+    assembler.fill(component);
+    assembler.stroke(component);
+    assembler.end(component);
+    assembler.updateRenderData(component);
+    component.renderData = {};
+    assembler.updateRenderData(component);
+    assert.equal(component.renderData.material, 0);
+    assert.deepEqual(calls, ['fill', 'stroke', 'end']);
+});

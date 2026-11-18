@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "8bc6e5f164cad4fb2cf22771fc6a2926c2e1c40fbdb7b09bc659c33d3e1bdffa"
+      "sha256": "802914d353dd3416afb6305ccee42aa33ec316223829866bc8bc956a33a35a05"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -366,6 +366,7 @@
     "Native call sites are not measured per-frame call counts."
   ],
   "native2dOverrides": {
+    "cocos/2d/assembler/graphics/index.ts": "cocos/2d/assembler/graphics/index.jsb.ts",
     "cocos/2d/assembler/index.ts": "cocos/2d/assembler/index.jsb.ts",
     "cocos/2d/assets/bitmap-font.ts": "cocos/2d/assets/bitmap-font.jsb.ts",
     "cocos/2d/assets/font.ts": "cocos/2d/assets/font.jsb.ts",

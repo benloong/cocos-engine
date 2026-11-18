@@ -8,6 +8,7 @@ import {
     native,
     sys,
     Graphics,
+    graphicsAssembler,
     DynamicAtlasManager,
     dynamicAtlasManager,
     ImageAsset,
@@ -411,7 +412,12 @@ export class M4Probe {
                         const graphics = graphicsNode.addComponent(Graphics);
                         graphics.fillColor = new Color(255, 0, 0, 255);
                         graphics.rect(-40, -40, 80, 80);
-                        graphics.fill();
+                        if (sys.isNative) {
+                            if (Graphics.Assembler !== graphicsAssembler) throw new Error('Graphics assembler registration');
+                            (graphicsAssembler.getAssembler(graphics) as { fill(component: Graphics): void }).fill(graphics);
+                        } else {
+                            graphics.fill();
+                        }
                         setTimeout(() => {
                             console.log(`M4_GRAPHICS ${JSON.stringify({
                                 textureWidth: renderTexture.width,

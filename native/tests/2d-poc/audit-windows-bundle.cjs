@@ -71,6 +71,8 @@ async function main () {
         }
     }
     if (!modules.some(m => m.bytes > 0 && m.id.endsWith('/sprite.jsb.ts'))) throw new Error('Missing native Sprite override');
+    const webGraphics = modules.filter(module => module.bytes > 0 && module.id.includes('/assembler/graphics/webgl/'));
+    if (webGraphics.length) throw new Error('Native bundle contains Web Graphics geometry: ' + webGraphics.map(module => module.id).join(', '));
     const report = { chunks, modules, edges };
     fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
     console.log('Verified engine chunks:', Object.keys(chunks).length, '2D graph modules:', modules.length,
