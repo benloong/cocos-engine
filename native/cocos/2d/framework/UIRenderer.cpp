@@ -24,20 +24,32 @@
 
 #include "2d/framework/UIRenderer.h"
 
+#include "2d/renderer/RenderEntity.h"
+#include "core/scene-graph/Node.h"
 #include "core/assets/Material.h"
 #include "core/builtin/BuiltinResMgr.h"
 #include "renderer/core/MaterialInstance.h"
 
 namespace cc {
 
-UIRenderer::UIRenderer() : _rendererSlot(UIRendererManager::nativeRenderers().addNativeRenderer(this)) {}
-UIRenderer::~UIRenderer() { UIRendererManager::nativeRenderers().removeRenderer(_rendererSlot); }
+UIRenderer::~UIRenderer() { UIRendererManager::getInstance().removeRenderer(this); }
 
 void UIRenderer::onEnable() {
-    if (_pendingFlags) UIRendererManager::nativeRenderers().markDirtyRenderer(_rendererSlot, _pendingFlags);
+    auto &manager = UIRendererManager::getInstance();
+    manager.addRenderer(this);
+    if (_pendingFlags) manager.markDirtyRenderer(this);
 }
-void UIRenderer::onDisable() { UIRendererManager::nativeRenderers().clearDirtyRenderer(_rendererSlot); }
-void UIRenderer::onDetach() { UIRendererManager::nativeRenderers().clearDirtyRenderer(_rendererSlot); }
+
+void UIRenderer::onDisable() { UIRendererManager::getInstance().removeRenderer(this); }
+void UIRenderer::onDetach() { UIRendererManager::getInstance().removeRenderer(this); }
+
+void UIRenderer::updateRenderer() {
+    if (!_pendingFlags || !_node || !_node->isActiveInHierarchy()) return;
+    auto *entity = getRenderEntity();
+    if (entity && entity->isEnabled() && _node->_getFinalOpacity() > 0.F) {
+        entity->prepare(_node->_getFinalOpacity());
+    }
+}
 
 void UIRenderer::setColor(const Color &color) {
     _color = color;

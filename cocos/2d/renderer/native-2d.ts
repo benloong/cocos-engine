@@ -132,3 +132,7 @@ export declare class NativeStencilManager {
     setStencilStage(stageIndex: number);
     getStencilSharedBufferForJS(): ArrayBufferLike;
 }
+
+export declare class NativeUIRendererManager {
+    updateAllDirtyRenderers(): void;
+}

@@ -34,6 +34,7 @@
 
 // Insert code at the beginning of generated source file (.cpp)
 %{
+#define SWIGINTERN static
 #include "bindings/auto/jsb_2d_auto.h"
 #include "bindings/auto/jsb_cocos_auto.h"
 #include "bindings/auto/jsb_scene_auto.h"
@@ -249,9 +250,16 @@
 %include "2d/framework/UITransform.h"
 %clear const std::function<void(float, float)> &;
 %include "2d/framework/UIOpacity.h"
-%ignore cc::UIRendererManager::pendingNativeRenderers;
-%ignore cc::UIRendererManager::getDirtyNativeRenderer;
-%include "2d/framework/UIRendererManager.h"
+// Registration and dirty slots are internal to native components.
+namespace cc {
+class UIRendererManager : public RefCounted {
+public:
+    void updateAllDirtyRenderers();
+};
+}
+%extend cc::UIRendererManager {
+    UIRendererManager() { return &cc::UIRendererManager::getInstance(); }
+}
 %include "2d/framework/UIRenderer.h"
 %include "2d/framework/RenderRoot2D.h"
 %import "2d/assets/SpriteFrame.h"

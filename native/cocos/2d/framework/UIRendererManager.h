@@ -32,84 +32,24 @@ namespace cc {
 
 class UIRenderer;
 
-// Stable slots allow native components to cancel or acknowledge work in O(1).
-// A slot is valid from addRenderer to removeRenderer, on the game thread.
 class UIRendererManager final : public RefCounted {
 public:
-    uint32_t addRenderer() {
-        if (_free == NONE) {
-            _slots.emplace_back();
-            return static_cast<uint32_t>(_slots.size() - 1);
-        }
-        const auto id = _free;
-        _free = _slots[id].nextFree;
-        _slots[id] = {};
-        return id;
-    }
-    void removeRenderer(uint32_t id) {
-        if (!active(id)) return;
-        clearDirtyRenderer(id);
-        _slots[id].owner = nullptr;
-        _slots[id].active = false;
-        _slots[id].nextFree = _free;
-        _free = id;
-    }
-    void markDirtyRenderer(uint32_t id, uint32_t flags) {
-        if (!active(id) || !flags) return;
-        auto &slot = _slots[id];
-        if (!slot.flags) {
-            slot.index = static_cast<uint32_t>(_dirty.size());
-            _dirty.push_back(id);
-        }
-        slot.flags |= flags;
-    }
-    void clearDirtyRenderer(uint32_t id) {
-        if (!getDirtyFlags(id)) return;
-        auto &slot = _slots[id];
-        const auto last = _dirty.back();
-        _dirty[slot.index] = last;
-        _slots[last].index = slot.index;
-        _dirty.pop_back();
-        slot.flags = 0;
-    }
-    uint32_t getDirtyFlags(uint32_t id) const { return active(id) ? _slots[id].flags : 0; }
-    uint32_t getDirtyCount() const { return static_cast<uint32_t>(_dirty.size()); }
-    std::vector<uint32_t> takeDirtyRenderers() {
-        std::vector<uint32_t> result(_dirty);
-        for (auto id : _dirty) _slots[id].flags = 0;
-        _dirty.clear();
-        return result;
-    }
+    static UIRendererManager &getInstance();
+    void addRenderer(UIRenderer *renderer);
+    void removeRenderer(UIRenderer *renderer);
+    void markDirtyRenderer(UIRenderer *renderer);
+    void updateAllDirtyRenderers();
 
-    // Traversal acknowledges native entries after preparing their render data.
-    // Other consumers can inspect the live collection without draining it.
-    static const UIRendererManager &pendingNativeRenderers() { return nativeRenderers(); }
+    uint32_t getDirtyCount() const { return static_cast<uint32_t>(_dirtyRenderers.size()); }
     UIRenderer *getDirtyNativeRenderer(uint32_t index) const {
-        return index < _dirty.size() ? _slots[_dirty[index]].owner : nullptr;
+        return index < _dirtyRenderers.size() ? _dirtyRenderers[index] : nullptr;
     }
+    static const UIRendererManager &pendingNativeRenderers() { return getInstance(); }
+
 private:
-    friend class UIRenderer;
-    static UIRendererManager &nativeRenderers() {
-        static UIRendererManager manager;
-        return manager;
-    }
-    uint32_t addNativeRenderer(UIRenderer *owner) {
-        const auto id = addRenderer();
-        _slots[id].owner = owner;
-        return id;
-    }
-    static constexpr uint32_t NONE = UINT32_MAX;
-    struct Slot {
-        UIRenderer *owner{nullptr}; // borrowed until removeRenderer
-        uint32_t index{0};
-        uint32_t flags{0};
-        uint32_t nextFree{NONE};
-        bool active{true};
-    };
-    bool active(uint32_t id) const { return id < _slots.size() && _slots[id].active; }
-    std::vector<Slot> _slots;
-    std::vector<uint32_t> _dirty;
-    uint32_t _free{NONE};
+    std::vector<UIRenderer *> _allRenderers;
+    std::vector<UIRenderer *> _dirtyRenderers;
+    int64_t _dirtyVersion{0};
 };
 
 } // namespace cc

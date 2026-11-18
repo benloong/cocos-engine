@@ -115,7 +115,7 @@ public:
 
     void setSizeMode(int32_t sizeMode);
     int32_t getSizeMode() const { return _sizeMode; }
-    RenderEntity *getRenderEntity() const { return _entity.get(); }
+    RenderEntity *getRenderEntity() const override { return _entity.get(); }
 
     void setDirty() { markRenderDirty(); }
     void prepare(float opacity);

@@ -1989,17 +1989,36 @@ void testDirtyRenderers() {
         sprite.setNode(&node);
     }
     check(native.getDirtyCount() == previous, "destroying a dirty native renderer cancels its entry");
-    cc::UIRendererManager manager;
-    const auto first = manager.addRenderer();
-    const auto second = manager.addRenderer();
-    manager.markDirtyRenderer(first, 1);
-    manager.markDirtyRenderer(second, 1);
-    manager.markDirtyRenderer(second, 2);
-    manager.removeRenderer(first);
-    const auto replacement = manager.addRenderer();
-    check(replacement == first && !manager.getDirtyFlags(replacement), "recycled renderer slot starts clean");
-    check(manager.getDirtyFlags(second) == 3 && manager.takeDirtyRenderers() == std::vector<uint32_t>{second}
-              && !manager.getDirtyCount() && !manager.getDirtyFlags(second), "native dirty flags merge and drain once");
+    // Removing the next item swaps the tail into its place. Appends during a callback
+    // are visited in the same pass, and repeated marks of the current item coalesce.
+    class Probe final : public cc::UIRenderer {
+    public:
+        std::function<void()> run;
+        void updateRenderer() override { run(); }
+    };
+    cc::Node root("manager-parity");
+    Probe first, second, third, fourth;
+    for (auto *item : {&first, &second, &third, &fourth}) item->setNode(&root);
+    auto &manager = cc::UIRendererManager::getInstance();
+    std::vector<int> order;
+    first.run = [&] {
+        order.push_back(1);
+        manager.markDirtyRenderer(&first);
+        second.setEnabled(false);
+        second.setEnabled(true);
+        manager.markDirtyRenderer(&fourth);
+        manager.markDirtyRenderer(&second);
+    };
+    second.run = [&] { order.push_back(2); };
+    third.run = [&] { order.push_back(3); };
+    fourth.run = [&] { order.push_back(4); };
+    for (auto *item : {&first, &second, &third, &first}) manager.markDirtyRenderer(item);
+    manager.updateAllDirtyRenderers();
+    check(order == std::vector<int>{1, 3, 4, 2}, "native update order matches TS live dirty array");
+    manager.markDirtyRenderer(&second);
+    manager.updateAllDirtyRenderers();
+    manager.updateAllDirtyRenderers();
+    check(order == std::vector<int>{1, 3, 4, 2, 2}, "version advances and idle pass skips clean renderers");
 }
 
 void testSpritePrepare() {
@@ -2091,13 +2110,18 @@ void testSpritePrepare() {
         peer.setFrame(shared);
         auto *peerEntity = peer.getRenderEntity();
         peerEntity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         auto *draw = peerEntity->getStaticRenderDrawInfo(0);
         check(draw && draw->getVbCount() == 4 && !pending(&peer), "child starts with prepared quad");
         const float initialX = draw->getVDataBuffer()[0];
         parent->setPosition(17.F, 0.F, 0.F);
         child->getWorldMatrix(); // A different consumer can clear Node transform flags first.
         check(pending(&peer), "ancestor motion queues descendant geometry");
-        peerEntity->prepare(.5F);
+        child->setActiveInHierarchy(true);
+        peer.setEnabled(true);
+        child->_setFinalOpacity(.5F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(!pending(&peer), "manager prepares the dirty Sprite before traversal");
         checkNear(draw->getVDataBuffer()[0], initialX + 17.F, "ancestor motion updates cached positions");
         checkNear(draw->getVDataBuffer()[8], .5F, "inherited opacity updates vertex alpha");
         texture->setFilters(cc::Filter::NEAREST, cc::Filter::NEAREST);
@@ -2113,6 +2137,7 @@ void testSpritePrepare() {
         checkNear(draw->getVDataBuffer()[12], .5F, "resized texture recomputes frame UV");
         peer.setFrame(texture, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2, false);
         peerEntity->prepare(.5F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         shared->setRectWidth(.5F);
         check(!pending(&peer), "switching to a raw texture unsubscribes the old frame");
         texture->create(1, 1, cc::Texture2D::PixelFormat::RGBA8888);

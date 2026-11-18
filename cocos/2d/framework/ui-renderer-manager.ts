@@ -22,16 +22,20 @@
  THE SOFTWARE.
 */
 
-import { DEBUG } from 'internal:constants';
+import { DEBUG, NATIVE } from 'internal:constants';
 import { assert, js } from '../../core';
-import { UIMeshRenderer } from '../components';
-import { UIRenderer } from './ui-renderer';
+import type { UIMeshRenderer } from '../components/ui-mesh-renderer';
+import { NativeUIRendererManager } from '../renderer/native-2d';
+import type { UIRenderer } from './ui-renderer';
 
 /** @mangle */
 export class UIRendererManager {
     private _allRenderers: (UIRenderer | UIMeshRenderer)[] = [];
     private _dirtyRenderers: (UIRenderer | UIMeshRenderer)[] = [];
     private _dirtyVersion = 0;
+
+    constructor (private readonly _native?: NativeUIRendererManager) {}
+
     public addRenderer (uiRenderer: UIRenderer | UIMeshRenderer): void {
         if (uiRenderer._internalId === -1) {
             uiRenderer._internalId = this._allRenderers.length;
@@ -72,7 +76,8 @@ export class UIRendererManager {
         }
         this._dirtyRenderers.length = 0;
         this._dirtyVersion++;
+        this._native?.updateAllDirtyRenderers();
     }
 }
 
-export const uiRendererManager = new UIRendererManager();
+export const uiRendererManager = new UIRendererManager(NATIVE ? new NativeUIRendererManager() : undefined);

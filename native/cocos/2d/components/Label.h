@@ -119,7 +119,7 @@ public:
     // Optional legacy CPU diagnostics. Bitmap rendering does not call these.
     uint32_t getPixelChecksum() const { ensureBitmapDiagnostics(); return _lastPixelChecksum; }
     uint32_t getOpaquePixels() const { ensureBitmapDiagnostics(); return _lastOpaquePixels; }
-    RenderEntity *getRenderEntity() const { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
+    RenderEntity *getRenderEntity() const override { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
     uint32_t getRenderedBitmapGlyphCount() const { return _renderedBitmapGlyphs; }
     uint32_t getBitmapDiagnosticBuildCount() const { return _bitmapDiagnosticBuilds; }
 

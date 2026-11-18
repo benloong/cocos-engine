@@ -36,6 +36,7 @@
 namespace cc {
 
 class Material;
+class RenderEntity;
 
 /**
  * Native base for the 2D UI rendering components.
@@ -49,7 +50,7 @@ class UIRenderer : public Component {
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::UIRenderer);
 
-    UIRenderer();
+    UIRenderer() = default;
     ~UIRenderer() override;
 
     void onEnable() override;
@@ -82,18 +83,15 @@ public:
     uint32_t getDstBlendFactor() const { return _dstBlendFactor; }
 
 protected:
+    virtual RenderEntity *getRenderEntity() const { return nullptr; }
+    virtual void updateRenderer();
     enum DirtyFlag : uint32_t { GEOMETRY = 1, COLOR = 2 };
     void markRenderDirty(uint32_t flags = GEOMETRY) {
-        if ((_pendingFlags & flags) == flags) return;
         _pendingFlags |= flags;
-        if (_node && _enabled) UIRendererManager::nativeRenderers().markDirtyRenderer(_rendererSlot, flags);
+        UIRendererManager::getInstance().markDirtyRenderer(this);
     }
     uint32_t renderDirtyFlags() const { return _pendingFlags; }
-    void clearRenderDirty() {
-        if (!_pendingFlags) return;
-        _pendingFlags = 0;
-        UIRendererManager::nativeRenderers().clearDirtyRenderer(_rendererSlot);
-    }
+    void clearRenderDirty() { _pendingFlags = 0; }
     virtual void onMaterialChanged() {}
     virtual Material *getBuiltinMaterial() const;
     Color _color{255, 255, 255, 255};
@@ -107,7 +105,9 @@ protected:
     uint32_t _dstBlendFactor{4}; // gfx::BlendFactor::ONE_MINUS_SRC_ALPHA
 
 private:
-    const uint32_t _rendererSlot;
+    friend class UIRendererManager;
+    int32_t _internalId{-1};
+    int64_t _dirtyVersion{-1};
     uint32_t _pendingFlags{0}; // Detached components can still be measured synchronously.
 };
 

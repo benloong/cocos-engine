@@ -27,6 +27,7 @@ import type {
     NativeUIMeshBuffer as N2dNativeUIMeshBuffer,
     NativeRenderEntity as N2dNativeRenderEntity,
     NativeUIModelProxy as N2dNativeUIModelProxy,
+    NativeUIRendererManager as N2dNativeUIRendererManager,
     NativeStencilManager as N2dNativeStencilManager,
 } from './native-2d';
 
@@ -45,3 +46,5 @@ export const NativeUIModelProxy: typeof N2dNativeUIModelProxy = n2d.UIModelProxy
 export type NativeUIModelProxy = N2dNativeUIModelProxy;
 export const NativeStencilManager: typeof N2dNativeStencilManager = n2d.StencilManager;
 export type NativeStencilManager = N2dNativeStencilManager;
+export const NativeUIRendererManager: typeof N2dNativeUIRendererManager = n2d.UIRendererManager;
+export type NativeUIRendererManager = N2dNativeUIRendererManager;

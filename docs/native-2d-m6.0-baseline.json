@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "f2f871071aabe245820cff9b9973c1edaf8fbe68e8d8449df47a1fcc04d608b0"
+      "sha256": "802914d353dd3416afb6305ccee42aa33ec316223829866bc8bc956a33a35a05"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -31,7 +31,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "4da8d2f8ae335b72e0264ac67020316b29517901255cba3819441984eb159ef7"
+      "sha256": "0a9f182874cbb64b3e475666f62a6c6e248c2908d92110a9be7cbc33a583cab6"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -75,7 +75,7 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "9099d6f77f8867c84aa10eed0829a52f49b4036b7684a5c5ed4ea6213cea2198"
+      "sha256": "5ec3f62fb830ea46b743d484ca28116f82c3fb4571492765ffb473cdc1809953"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
@@ -83,7 +83,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "00b29bee8ee0834559d5eb72158bdadba89f0c9e66899708cc830935bf51bcfb"
+      "sha256": "247d81c9691683dff0a2fc6d25b1e16139ae8342c499f02d3c252695fafcd993"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -107,7 +107,7 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "12c0fd57a0fe7d93ff974ff8a6ebc875837ab443cb6811745fd5df1e590f6b47"
+      "sha256": "245f0737b469a8226879049bd639232b7fac25ce260ef10ea75a0a630eb683f2"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -131,15 +131,19 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.cpp",
-      "sha256": "3348fe5edaa1883256ab0e008fd5dad28c4a457cd57611cfc71a6b53409c1f00"
+      "sha256": "e6202c266212a456b737a5df13c142a0d2f92f51ede668f5cf558dd8e3d5db52"
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "05425562feedbf268b0403016f41479e1d93e8255cc13baa280a8128d6505d0a"
+      "sha256": "e954fbb34c28d8c2c3a7a470ce75ad11a3ddf2e044e883e34d77abdd6eedcca3"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIRendererManager.cpp",
+      "sha256": "c779bf4648259c95134ba3ce915b7784b7b58f7eef9b8c73a578a887ae5a8ffa"
     },
     {
       "file": "native/cocos/2d/framework/UIRendererManager.h",
-      "sha256": "169364a795dc51d2ce66344ed0ff389d280bbaf014dd9bf461d856e5fb5764fd"
+      "sha256": "4cd400c9853f9dc9f560e8fca02d354479c8704c471b248db9369ed7a7611921"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
@@ -351,7 +355,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "f5533c7c76c6f4facb86df6c5bbee95c351d6425747af96b3787347bf22ab548"
+      "sha256": "557a199f9d05c61b3f5f15c5ecbe2d7bef4f505ea0b9b3af543a37f0389f8a32"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -385,7 +389,6 @@
     "cocos/2d/components/sprite.ts": "cocos/2d/components/sprite.jsb.ts",
     "cocos/2d/components/ui-opacity.ts": "cocos/2d/components/ui-opacity.jsb.ts",
     "cocos/2d/framework/render-root-2d.ts": "cocos/2d/framework/render-root-2d.jsb.ts",
-    "cocos/2d/framework/ui-renderer-manager.ts": "cocos/2d/framework/ui-renderer-manager.jsb.ts",
     "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
     "cocos/2d/poc/native-2d-poc.ts": "cocos/2d/poc/native-2d-poc.jsb.ts",
     "cocos/2d/renderer/native-2d.ts": "cocos/2d/renderer/native-2d.jsb.ts"
@@ -426,7 +429,7 @@
       "cocos/2d/framework/render-root-2d.jsb.ts",
       "cocos/2d/framework/sprite-renderer.ts",
       "cocos/2d/framework/ui-component.ts",
-      "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+      "cocos/2d/framework/ui-renderer-manager.ts",
       "cocos/2d/framework/ui-renderer.ts",
       "cocos/2d/framework/ui-transform.jsb.ts",
       "cocos/2d/index.ts",
@@ -2539,7 +2542,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -4305,7 +4308,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -7295,7 +7298,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -8577,7 +8580,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -10072,7 +10075,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12018,7 +12021,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12453,7 +12456,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12675,7 +12678,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+          "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -16068,38 +16071,24 @@
       "loops": []
     },
     {
-      "file": "cocos/2d/framework/ui-renderer-manager.jsb.ts",
-      "sha256": "bab172a874bba13e635470e4ca155ba9d34bfa895be3e84d4cc04d7e1052c4e8",
-      "printedCodeLines": 79,
-      "runtimeImports": [],
+      "file": "cocos/2d/framework/ui-renderer-manager.ts",
+      "sha256": "890126c604618e92a63647a3bd98e26e25bb8fa769eb4ee7ae6de1331507f96e",
+      "printedCodeLines": 51,
+      "runtimeImports": [
+        "internal:constants",
+        "../../core",
+        "../renderer/native-2d"
+      ],
       "frameMethods": [],
       "nativeCalls": [
         {
-          "expression": "this._native!.removeRenderer",
-          "line": 56
-        },
-        {
-          "expression": "this._native!.markDirtyRenderer",
-          "line": 64
-        },
-        {
-          "expression": "this._native!.takeDirtyRenderers().map",
-          "line": 76
-        },
-        {
-          "expression": "this._native!.takeDirtyRenderers",
-          "line": 76
-        },
-        {
-          "expression": "this._native!.markDirtyRenderer",
-          "line": 86
+          "expression": "this._native?.updateAllDirtyRenderers",
+          "line": 79
         }
       ],
       "allocations": [],
       "loops": [
-        73,
-        77,
-        83
+        71
       ]
     },
     {
@@ -16551,8 +16540,8 @@
     },
     {
       "file": "cocos/2d/renderer/native-2d.jsb.ts",
-      "sha256": "e9f78e35ef5e1cecf5dbe8f8d5385c2b7ce0469b42ddc9d653c6ea1ea2dd4a11",
-      "printedCodeLines": 14,
+      "sha256": "dcfaacde3e37b4743169108443aa71d6c61281911dba3c68ed464ba22ec4df40",
+      "printedCodeLines": 16,
       "runtimeImports": [],
       "frameMethods": [],
       "nativeCalls": [],

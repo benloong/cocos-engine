@@ -52,7 +52,7 @@ public:
     void setFillColor(const Color &color);
     void setStrokeColor(const Color &color);
     void prepareRenderEntity(float opacity) override;
-    RenderEntity *getRenderEntity() const { return _entity.get(); }
+    RenderEntity *getRenderEntity() const override { return _entity.get(); }
     uint64_t getRevision() const { return _revision; }
     uint32_t getVertexCount() const { return static_cast<uint32_t>(_geometry.getVertices().size()); }
     uint32_t getIndexCount() const { return static_cast<uint32_t>(_geometry.getIndices().size()); }
