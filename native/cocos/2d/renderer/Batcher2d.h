@@ -152,6 +152,18 @@ private:
 
     UIMeshBufferMap _meshBuffersMap;
 
+    struct SpriteMeshPage {
+        RenderDrawInfo draw;
+        ccstd::vector<float> vertices;
+        ccstd::vector<uint16_t> indices;
+        void append(RenderDrawInfo *source);
+    };
+    // Pages own the submitted CPU data and GPU input assembler until reset.
+    ccstd::vector<std::unique_ptr<SpriteMeshPage>> _spriteMeshPages;
+    size_t _usedSpritePages{0};
+    SpriteMeshPage *_openSpritePage{nullptr};
+    bool _openSpriteRun{false};
+
     // DefaultAttribute
     ccstd::vector<gfx::Attribute> _attributes{
         gfx::Attribute{gfx::ATTR_NAME_POSITION, gfx::Format::RGB32F},

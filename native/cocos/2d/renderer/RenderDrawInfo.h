@@ -239,6 +239,7 @@ public:
         _drawInfoAttrs._stride = 0;
         _drawInfoAttrs._dataHash = 0;
         _drawInfoAttrs._vertDirty = false;
+        _batchableSpriteMesh = false;
         _drawInfoAttrs._isMeshBuffer = false;
 
         _vbBuffer = nullptr;
@@ -254,6 +255,9 @@ public:
     }
 
 private:
+    friend class Sprite;
+    friend class Batcher2d;
+    bool _batchableSpriteMesh{false};
     CC_DISALLOW_COPY_MOVE_ASSIGN(RenderDrawInfo);
     void destroy();
 

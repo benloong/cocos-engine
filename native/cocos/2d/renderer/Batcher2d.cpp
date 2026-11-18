@@ -388,6 +388,22 @@ void Batcher2d::handlePostRender(RenderEntity* entity) {
     }
 }
 
+void Batcher2d::SpriteMeshPage::append(RenderDrawInfo *source) {
+    const auto base = static_cast<uint32_t>(vertices.size() / 9);
+    const auto *v = source->getVDataBuffer();
+    vertices.insert(vertices.end(), v, v + static_cast<size_t>(source->getVbCount()) * 9);
+    const auto *idx = source->getIDataBuffer();
+    const size_t start = indices.size();
+    indices.resize(start + source->getIbCount());
+    for (uint32_t i = 0; i < source->getIbCount(); ++i) {
+        indices[start + i] = static_cast<uint16_t>(base + idx[i]);
+    }
+    draw.setVbCount(static_cast<uint32_t>(vertices.size() / 9));
+    draw.setIbCount(static_cast<uint32_t>(indices.size()));
+    draw.setVDataBuffer(vertices.data());
+    draw.setIDataBuffer(indices.data());
+}
+
 CC_FORCE_INLINE void Batcher2d::handleComponentDraw(RenderEntity* entity, RenderDrawInfo* drawInfo, Node* node) {
     ccstd::hash_t dataHash = drawInfo->getDataHash();
     if (drawInfo->getIsMeshBuffer()) {
@@ -401,6 +417,30 @@ CC_FORCE_INLINE void Batcher2d::handleComponentDraw(RenderEntity* entity, Render
     }
     auto tempStage = static_cast<StencilStage>(entity->getStencilStage());
 
+    const bool spriteMesh = drawInfo->_batchableSpriteMesh && !isMask && !entity->getUseLocal()
+        && drawInfo->getVbCount() > 0 && drawInfo->getVbCount() <= 65535U && drawInfo->getIbCount() > 0;
+    if (spriteMesh && _openSpriteRun && _currMaterial == drawInfo->getMaterial()
+        && _currLayer == node->getLayer() && _currStencilStage == tempStage
+        && _currTexture == drawInfo->getTexture() && _currSampler == drawInfo->getSampler()
+        && _currDrawInfo->getVbCount() + drawInfo->getVbCount() <= 65535U) {
+        // Single draws retain their own IA. Stage CPU vertices only when a
+        // second compatible draw actually joins this batch.
+        if (!_openSpritePage) {
+            if (_usedSpritePages == _spriteMeshPages.size()) {
+                _spriteMeshPages.emplace_back(std::make_unique<SpriteMeshPage>());
+            }
+            _openSpritePage = _spriteMeshPages[_usedSpritePages++].get();
+            _openSpritePage->vertices.clear();
+            _openSpritePage->indices.clear();
+            _openSpritePage->draw.setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
+            _openSpritePage->draw.setIsMeshBuffer(true);
+            _openSpritePage->draw.setStride(9);
+            _openSpritePage->append(_currDrawInfo);
+            _currDrawInfo = &_openSpritePage->draw;
+        }
+        _openSpritePage->append(drawInfo);
+        return;
+    }
     if (_currHash != dataHash || dataHash == 0 || _currMaterial != drawInfo->getMaterial() || _currStencilStage != tempStage) {
         // Generate a batch if not batching
         generateBatch(_currEntity, _currDrawInfo);
@@ -418,6 +458,7 @@ CC_FORCE_INLINE void Batcher2d::handleComponentDraw(RenderEntity* entity, Render
         _currLayer = entity->getNode()->getLayer();
         _currEntity = entity;
         _currDrawInfo = drawInfo;
+        _openSpriteRun = spriteMesh;
 
         _currTexture = drawInfo->getTexture();
         _currSampler = drawInfo->getSampler();
@@ -549,6 +590,8 @@ CC_FORCE_INLINE void Batcher2d::handleDrawInfo(RenderEntity* entity, RenderDrawI
 }
 
 void Batcher2d::generateBatch(RenderEntity* entity, RenderDrawInfo* drawInfo) {
+    _openSpriteRun = false;
+    _openSpritePage = nullptr;
     if (drawInfo == nullptr) {
         return;
     }
@@ -656,6 +699,8 @@ void Batcher2d::generateBatchForMiddleware(RenderEntity* entity, RenderDrawInfo*
 }
 
 void Batcher2d::resetRenderStates() {
+    _openSpriteRun = false;
+    _openSpritePage = nullptr;
     _currMaterial = nullptr;
     _currTexture = nullptr;
     _currSampler = nullptr;
@@ -753,6 +798,12 @@ void Batcher2d::reset() {
     // Draw infos are borrowed for upload. Their components may have been
     // collected during render callbacks; the submitted batches own their IAs.
     _meshRenderDrawInfo.clear();
+    _openSpriteRun = false;
+    _openSpritePage = nullptr;
+    _currDrawInfo = nullptr;
+    _currEntity = nullptr;
+    _spriteMeshPages.resize(_usedSpritePages);
+    _usedSpritePages = 0;
 
     // meshDataArray
     for (auto& map : _meshBuffersMap) {

@@ -268,7 +268,8 @@ void Sprite::setColor(const Color &color) {
     if (_entity != nullptr) {
         _entity->setColor(_color);
     }
-    _dirty = true;
+    // Keep geometry for a tint-only change; prepare still refreshes RGBA.
+    _lastOpacity = -1.F;
 }
 
 void Sprite::setColorRGBA(float red, float green, float blue, float alpha) {
@@ -529,6 +530,7 @@ void Sprite::prepare(float opacity) {
         }
 
         drawInfo->setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
+        drawInfo->_batchableSpriteMesh = !_material && !_materialInstance;
         drawInfo->setIsMeshBuffer(true);
         drawInfo->setStride(static_cast<uint8_t>(VERTEX_STRIDE));
         drawInfo->setVbCount(vertexCount);
@@ -599,6 +601,7 @@ void Sprite::prepareLabelQuads(Material *material, float opacity) {
         }
         auto *draw = _entity->getStaticRenderDrawInfo(static_cast<uint32_t>(i));
         draw->setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
+        draw->_batchableSpriteMesh = !_material && !_materialInstance;
         draw->setIsMeshBuffer(true); draw->setStride(static_cast<uint8_t>(VERTEX_STRIDE));
         draw->setVbCount(static_cast<uint32_t>(chunk.vertices.size() / VERTEX_STRIDE));
         draw->setIbCount(static_cast<uint32_t>(chunk.indices.size()));

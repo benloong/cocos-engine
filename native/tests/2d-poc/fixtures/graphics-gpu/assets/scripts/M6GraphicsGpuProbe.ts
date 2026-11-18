@@ -122,9 +122,21 @@ export class M6GraphicsGpuProbe extends Component {
         for (let cap = 0; cap < 3; ++cap) for (let join = 0; join < 3; ++join) cases.push({
             name: `stroke-${cap}-${join}`, draw: root => { const g = graphics(root); g.lineWidth = 18; g.lineCap = cap; g.lineJoin = join; g.miterLimit = 2; g.strokeColor = new Color(220, 30, 40, 160); g.moveTo(-80, -35); g.lineTo(-15, 45); g.lineTo(20, -35); g.lineTo(80, 40); g.stroke(); },
         });
+        for (const count of [1, 128]) cases.push({ name: 'sprite-batch-' + count, draw: root => {
+            for (let i = 0; i < count; ++i) {
+                const n = node(root, 'quad');
+                n.setPosition((i % 16 - 7.5) * 12, (Math.floor(i / 16) - 3.5) * 12);
+                n.getComponent(UITransform)!.setContentSize(8, 8);
+                const sprite = n.addComponent(Sprite);
+                sprite.sizeMode = Sprite.SizeMode.CUSTOM; sprite.spriteFrame = whiteFrame;
+                sprite.color = i % 2 ? new Color(0, 255, 0, 255) : new Color(255, 0, 0, 255);
+            }
+        } });
+        const batchDrawCalls: Record<string, number> = {};
         const captures: string[] = [];
         const capture = async (name: string, source = rt): Promise<void> => {
             await wait();
+            if (name.startsWith('sprite-batch-')) batchDrawCalls[name] = director.root!.device.numDrawCalls;
             const pixels = source.readPixels();
             if (!pixels || pixels.length !== 256 * 256 * 4) throw new Error(`Bad capture ${name}`);
             if (sys.isNative) {
@@ -257,7 +269,7 @@ export class M6GraphicsGpuProbe extends Component {
         const scenes = await runSceneMatrix(rt, capture);
         const device = director.root!.device;
         const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures,
-            scenes, roots, hits, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            scenes, roots, hits, batchDrawCalls, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
         console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);

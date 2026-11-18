@@ -1,5 +1,5 @@
 {
-  "snapshot": "b289a5a50e6a20b62d571abbd7d63b853de744438aa880d13ea767d69e509d4f",
+  "snapshot": "e2c8f9091d62452ce8e405edb4cf4ebc591b8c4efc4ca3807ea65c8c661b350b",
   "width": 256,
   "height": 256,
   "environment": {
@@ -269,6 +269,16 @@
       "expected": true
     }
   ],
+  "batchDrawCalls": {
+    "native": {
+      "sprite-batch-1": 1,
+      "sprite-batch-128": 1
+    },
+    "web": {
+      "sprite-batch-1": 1,
+      "sprite-batch-128": 1
+    }
+  },
   "tolerance": 1,
   "pass": true,
   "results": [
@@ -791,6 +801,26 @@
       "pass": true,
       "nativeSha256": "f5e14fd044a24fbd71057c0cc8110a52e65170de2bb81d6f2b2a83646b460f1c",
       "webSha256": "f5e14fd044a24fbd71057c0cc8110a52e65170de2bb81d6f2b2a83646b460f1c"
+    },
+    {
+      "name": "sprite-batch-1",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 64,
+      "pass": true,
+      "nativeSha256": "38934bb6d73a41cf53e6969e06c589a06172df9abd713b22e216fb35c306e034",
+      "webSha256": "38934bb6d73a41cf53e6969e06c589a06172df9abd713b22e216fb35c306e034"
+    },
+    {
+      "name": "sprite-batch-128",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 8192,
+      "pass": true,
+      "nativeSha256": "122e064207ecd27b72b334ce1ca4d80c906555ae71bd5ee1b73a81fdfc74125d",
+      "webSha256": "122e064207ecd27b72b334ce1ca4d80c906555ae71bd5ee1b73a81fdfc74125d"
     },
     {
       "name": "root-order-registration",
