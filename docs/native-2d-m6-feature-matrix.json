@@ -1,0 +1,222 @@
+[
+  {
+    "platform": "WINDOWS",
+    "selected": [],
+    "exposed": [],
+    "sha256": "0cf6104377847275ae165d4f14350ae3ebb5fab888af7fba936ee0f43da4f6ce"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d"
+    ],
+    "exposed": [
+      "Sprite"
+    ],
+    "sha256": "e156e8ad72177968c3c44d7d7b855663e5fa47ff94f49e929237efca2f2ae0d6"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d",
+      "rich-text"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText"
+    ],
+    "sha256": "0cb852e1b2889a8101c2137b82459acd1a93410f1857ef1279e9c61187a311b9"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d",
+      "mask"
+    ],
+    "exposed": [
+      "Sprite",
+      "Mask"
+    ],
+    "sha256": "6c9245386e7812ca25d4471a27a75bbad4e483db1572bb70d1f6dbfffcf63bc3"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d",
+      "rich-text",
+      "mask"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText",
+      "Mask"
+    ],
+    "sha256": "f2046d374abf1b5290ec256c34bacfa397da53f29a35a10f9b70edcb09512386"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "Graphics"
+    ],
+    "sha256": "320246e2500fadeb5f5579638783168b6648e4023e174dd590484fd2e24c063b"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d",
+      "rich-text",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText",
+      "Graphics"
+    ],
+    "sha256": "c4981ecefb872818ceb07c61c952b9d4df367cdcd9d0470992495b57c60f00ef"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d",
+      "mask",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "Mask",
+      "Graphics"
+    ],
+    "sha256": "f64b618bb8923009ddc46d08f826d9f4c9c53c49f7fc863ccff3ee308dfc482f"
+  },
+  {
+    "platform": "WINDOWS",
+    "selected": [
+      "2d",
+      "rich-text",
+      "mask",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText",
+      "Mask",
+      "Graphics"
+    ],
+    "sha256": "76fbe415cee863170c5ec929f33fd05c20c20e903db7c4d4aabdc0210b2f9cd2"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [],
+    "exposed": [],
+    "sha256": "b28eb8fddf364467a50a41d23f981432fc7ac0ab3373f51252c9d62887bdb95f"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d"
+    ],
+    "exposed": [
+      "Sprite"
+    ],
+    "sha256": "933adea07ed6353eb49e0476b0a7af63bbb7cea8ead6b026d5549a1c20065729"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d",
+      "rich-text"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText"
+    ],
+    "sha256": "07a22d61129f7639c1a393322b04f236729b22863d80a05ef3b55c9eb69a2d31"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d",
+      "mask"
+    ],
+    "exposed": [
+      "Sprite",
+      "Mask"
+    ],
+    "sha256": "9a9a91d79c6df7040f3bebe0d6dba8819c10209fbc72882a5ec57704746fecd9"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d",
+      "rich-text",
+      "mask"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText",
+      "Mask"
+    ],
+    "sha256": "6759b59f10d80a62c28c9ddc92e2605958337bc1754d13b67d6ee28cfa0285f0"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "Graphics"
+    ],
+    "sha256": "33aa6d0484e49678628cd6f04bc7f2bf01de23d596cf238cf067e2f2dc3e1c20"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d",
+      "rich-text",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText",
+      "Graphics"
+    ],
+    "sha256": "b7149cb1399e0521ea7870539c82c73143a43b12373b1b74b657530280bc4679"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d",
+      "mask",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "Mask",
+      "Graphics"
+    ],
+    "sha256": "9dfa18eca297bd3cf2cf7b15e6915e1f04545197e3b2a6bd9ab1bd9c0d3ca6a5"
+  },
+  {
+    "platform": "HTML5",
+    "selected": [
+      "2d",
+      "rich-text",
+      "mask",
+      "graphics"
+    ],
+    "exposed": [
+      "Sprite",
+      "RichText",
+      "Mask",
+      "Graphics"
+    ],
+    "sha256": "e832c71cfe58bd7759ab7893eb8ded1ab18917c13ccb03c888d1aac9dc354ba7"
+  }
+]

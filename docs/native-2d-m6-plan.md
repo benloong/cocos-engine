@@ -136,7 +136,7 @@
 - [ ] 连续加载/卸载 1000 次，无新增泄漏/崩溃；采集 native/JS 堆、引用数和 GC，支持的平台执行 ASan/LeakSanitizer 或等价工具并记录覆盖限制。
 - [x] Windows MSVC Release 应用项目构建与基础渲染矩阵。使用同一套 Debug 验收脚本资源，Release 原生二进制完成 M2 五模式、M3 Label、M4 Mask/Graphics 和 M5 RichText，M5 计入 9 个 Label、1 个 Sprite，着色像素为 8725。Release 输出的 12 份图集与 88 份字体 RGBA 和 Debug 同名捕获逐字节一致。Release 应用 SHA256 为 `ed9de14382436006389b64a9b23928b4dba834766993aec429666ee4e816b6b4`；日志见 `native/tests/2d-poc/build/m6-release-*.log` 和 `m6-windows-release-build.log`。此处 Release 指 C++ 配置，发布脚本与完整事件矩阵继续验收。
 - [ ] Windows Debug/Release 构建和关键渲染、字体、事件场景逐格验收。macOS、iOS、Android、OHOS 的 Debug/Release 标为暂缓、待验证。
-- [ ] 验证模块裁剪/构建组合，覆盖 2d、rich-text、mask、graphics 及现有相关开关；不扩大不下沉模块的范围。
+- [x] 模块裁剪通过。Windows 和 Web 的 Release 引擎分别构建 9 种组合：无 2D，以及 2D 加 rich-text、mask、graphics 三个独立特性的全部 8 种组合。检查每个实际 cc.js 的公开导出，逐类核对启用及移除结果。[18 个 bundle 的 SHA256 和导出清单](./native-2d-m6-feature-matrix.json)。复现命令为 node native/tests/2d-poc/check-m6-feature-matrix.cjs。
 
 交付：平台矩阵、生命周期/泄漏/线程报告和可定位的失败项。
 
