@@ -1,5 +1,5 @@
 {
-  "snapshot": "3a6417dfc3fd2ac54ef90fa3a92901a83cc1050b0f60cc5fc5255c3efd4b02a9",
+  "snapshot": "ef2e334eaa4e889cf5cdb2e2fafd65854b4ee0bea82ea42c8c01ea2f37edaf39",
   "width": 256,
   "height": 256,
   "environment": {
@@ -217,6 +217,21 @@
       "name": "camera-layer-excluded",
       "actual": false,
       "expected": false
+    },
+    {
+      "name": "second-root-transformed-center",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "second-root-transformed-rounded-corner",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "original-root-after-destroy",
+      "actual": true,
+      "expected": true
     },
     {
       "name": "disabled-mask",
