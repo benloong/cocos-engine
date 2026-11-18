@@ -36,6 +36,10 @@ function drawTextureAt (texture: DynamicAtlasTexture, image: ImageAsset, x: numb
 }
 
 export class Atlas {
+    public static fits (texture: Texture2D, width: number, height: number): boolean {
+        return texture.width + space * 2 <= width && texture.height + space * 2 <= height;
+    }
+
     private declare _texture: DynamicAtlasTexture;
     private declare _width: number;
     private declare _height: number;
@@ -73,14 +77,12 @@ export class Atlas {
      * @method insertSpriteFrame
      * @param spriteFrame  the sprite frame that will be inserted in the atlas.
      */
-    public insertSpriteFrame (spriteFrame: SpriteFrame): {
+    public insertSpriteFrame (spriteFrame: SpriteFrame, texture: Texture2D): {
         x: number;
         y: number;
         texture: DynamicAtlasTexture;
     } | null {
         const rect = spriteFrame.rect;
-        // Todo:No renderTexture
-        const texture = spriteFrame.texture as Texture2D;
         const info = this._innerTextureInfos[texture.getId()];
 
         let sx = rect.x;
@@ -93,18 +95,16 @@ export class Atlas {
             const width = texture.width;
             const height = texture.height;
 
-            if ((this._x + width + space) > this._width) {
-                this._x = space;
-                this._y = this._nextY;
-            }
+            if (!Atlas.fits(texture, this._width, this._height)) return null;
 
-            if ((this._y + height + space) > this._nextY) {
-                this._nextY = this._y + height + space;
+            let x = this._x;
+            let y = this._y;
+            if (x + width + space > this._width) {
+                x = space;
+                y = this._nextY;
             }
-
-            if (this._nextY > this._height) {
-                return null;
-            }
+            const nextY = Math.max(this._nextY, y + height + space);
+            if (nextY > this._height) return null;
 
             const thisTexture = this._texture;
             const image = texture.image!;
@@ -112,32 +112,34 @@ export class Atlas {
             if (cclegacy.internal.dynamicAtlasManager.textureBleeding) {
                 // Smaller frame is more likely to be affected by linear filter
                 if (width <= 8 || height <= 8) {
-                    drawTextureAt(thisTexture, image, this._x - 1, this._y - 1);
-                    drawTextureAt(thisTexture, image, this._x - 1, this._y + 1);
-                    drawTextureAt(thisTexture, image, this._x + 1, this._y - 1);
-                    drawTextureAt(thisTexture, image, this._x + 1, this._y + 1);
+                    drawTextureAt(thisTexture, image, x - 1, y - 1);
+                    drawTextureAt(thisTexture, image, x - 1, y + 1);
+                    drawTextureAt(thisTexture, image, x + 1, y - 1);
+                    drawTextureAt(thisTexture, image, x + 1, y + 1);
                 }
 
-                drawTextureAt(thisTexture, image, this._x - 1, this._y);
-                drawTextureAt(thisTexture, image, this._x + 1, this._y);
-                drawTextureAt(thisTexture, image, this._x, this._y - 1);
-                drawTextureAt(thisTexture, image, this._x, this._y + 1);
+                drawTextureAt(thisTexture, image, x - 1, y);
+                drawTextureAt(thisTexture, image, x + 1, y);
+                drawTextureAt(thisTexture, image, x, y - 1);
+                drawTextureAt(thisTexture, image, x, y + 1);
             }
 
-            drawTextureAt(thisTexture, image, this._x, this._y);
+            drawTextureAt(thisTexture, image, x, y);
 
             this._innerTextureInfos[texture.getId()] = {
-                x: this._x,
-                y: this._y,
+                x: x,
+                y: y,
                 texture,
             };
 
             this._count++;
 
-            sx += this._x;
-            sy += this._y;
+            sx += x;
+            sy += y;
 
-            this._x += width + space;
+            this._x = x + width + space;
+            this._y = y;
+            this._nextY = nextY;
         }
 
         const frame = {
@@ -149,6 +151,10 @@ export class Atlas {
         this._innerSpriteFrames.push(spriteFrame);
 
         return frame;
+    }
+
+    public hasTexture (texture: Texture2D): boolean {
+        return !!this._innerTextureInfos[texture.getId()];
     }
 
     public removeSpriteFrame (spriteFrame: SpriteFrame): void {
@@ -209,6 +215,7 @@ export class Atlas {
         }
         this._innerSpriteFrames.length = 0;
         this._innerTextureInfos = {};
+        this._count = 0;
     }
 
     /**

@@ -58,6 +58,45 @@ export class M4Probe {
         spriteMaskFrame.rect = new Rect(0, 0, 64, 64);
         spriteMaskFrame.originalSize = new Size(64, 64);
 
+        // The page fits one 8x8 upload with its required padding.
+        const fallback = new DynamicAtlasManager();
+        fallback.textureSize = 12;
+        fallback.maxAtlasCount = 1;
+        fallback.enabled = true;
+        const first = frame.clone();
+        const shared = frame.clone();
+        const oversized = spriteMaskFrame.clone();
+        const gpuOnly = new Texture2D();
+        gpuOnly.reset({ width: 4, height: 4, format: Texture2D.PixelFormat.RGBA8888 });
+        const gpuFrame = new SpriteFrame();
+        gpuFrame.texture = gpuOnly;
+        gpuFrame.packable = true;
+        try {
+            oversized.packable = true;
+            fallback.packToDynamicAtlas(null, oversized);
+            fallback.packToDynamicAtlas(null, gpuFrame);
+            if (fallback.atlasCount !== 0 || oversized.original || gpuFrame.original) {
+                throw new Error('Invalid source changed a frame or allocated a page');
+            }
+            fallback.packToDynamicAtlas(null, first);
+            fallback.packToDynamicAtlas(null, shared);
+            if (!first.original || !shared.original || first.texture !== shared.texture || fallback.atlasCount !== 1) {
+                throw new Error('Full-page shared texture reuse failed');
+            }
+            fallback.reset();
+            if (first.original || shared.original || first.texture !== texture || shared.texture !== texture) {
+                throw new Error('Fallback manager did not restore shared frames');
+            }
+            console.log('M6_ATLAS_FALLBACK_PASS');
+        } finally {
+            fallback.enabled = false;
+            first.destroy();
+            shared.destroy();
+            oversized.destroy();
+            gpuFrame.destroy();
+            gpuOnly.destroy();
+        }
+
         const maskNode = new Node('M4RectMask');
         parent.addChild(maskNode);
         maskNode.setPosition(0, 0, 0);

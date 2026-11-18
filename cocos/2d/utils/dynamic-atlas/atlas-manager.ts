@@ -46,7 +46,6 @@ export class DynamicAtlasManager extends System {
     public static instance: DynamicAtlasManager;
 
     private _atlases: Atlas[] = [];
-    private _atlasIndex = -1;
 
     private _maxAtlasCount = 5;
     private _textureSize = 2048;
@@ -150,15 +149,6 @@ export class DynamicAtlasManager extends System {
         this._maxFrameSize = value;
     }
 
-    private newAtlas (): Atlas | null {
-        let atlas = this._atlases[++this._atlasIndex];
-        if (!atlas && this._atlasIndex < this.maxAtlasCount) {
-            atlas = new Atlas(this._textureSize, this._textureSize);
-            this._atlases.push(atlas);
-        }
-        return atlas;
-    }
-
     private beforeSceneLoad (): void {
         this.reset();
     }
@@ -185,27 +175,36 @@ export class DynamicAtlasManager extends System {
         y: number;
         texture: DynamicAtlasTexture;
     } | null {
-        if (EDITOR_NOT_IN_PREVIEW) return null;
-        if (!this._enabled || this._atlasIndex >= this._maxAtlasCount
-            || !spriteFrame || spriteFrame.original) return null;
+        if (EDITOR_NOT_IN_PREVIEW || !this._enabled || !spriteFrame || spriteFrame.original || !spriteFrame.packable) return null;
 
-        if (!spriteFrame.packable) return null;
+        const texture = spriteFrame.texture;
+        if (!(texture instanceof Texture2D) || texture.isCompressed || !texture.image
+            || texture.width <= 0 || texture.height <= 0
+            || texture.width > this._maxFrameSize || texture.height > this._maxFrameSize) return null;
 
-        // hack for pixel game,should pack to different sampler atlas
-        const sampler = spriteFrame.texture.getSamplerInfo();
+        const sampler = texture.getSamplerInfo();
         if (sampler.minFilter !== Filter.LINEAR || sampler.magFilter !== Filter.LINEAR || sampler.mipFilter !== Filter.NONE) {
             return null;
         }
 
-        let atlas: Atlas | null = this._atlases[this._atlasIndex];
-        if (!atlas) {
-            atlas = this.newAtlas();
+        // Look for an existing upload before trying any free space.
+        const existing = this._atlases.find((atlas) => atlas.hasTexture(texture));
+        if (existing) return existing.insertSpriteFrame(spriteFrame, texture);
+
+        for (const atlas of this._atlases) {
+            const frame = atlas.insertSpriteFrame(spriteFrame, texture);
+            if (frame) return frame;
+        }
+        if (this._atlases.length >= this._maxAtlasCount || !Atlas.fits(texture, this._textureSize, this._textureSize)) {
+            return null;
         }
 
-        const frame = atlas ? atlas.insertSpriteFrame(spriteFrame) : null;
-        if (!frame && this._atlasIndex < this._maxAtlasCount) {
-            atlas = this.newAtlas();
-            return atlas ? atlas.insertSpriteFrame(spriteFrame) : null;
+        const atlas = new Atlas(this._textureSize, this._textureSize);
+        const frame = atlas.insertSpriteFrame(spriteFrame, texture);
+        if (frame) {
+            this._atlases.push(atlas);
+        } else {
+            atlas.destroy();
         }
         return frame;
     }
@@ -224,7 +223,6 @@ export class DynamicAtlasManager extends System {
             this._atlases[i].destroy();
         }
         this._atlases.length = 0;
-        this._atlasIndex = -1;
     }
 
     /**
@@ -267,7 +265,6 @@ export class DynamicAtlasManager extends System {
                 if (this._atlases[i].isEmpty()) {
                     this._atlases[i].destroy();
                     this._atlases.splice(i, 1);
-                    this._atlasIndex--;
                 }
             }
         }
