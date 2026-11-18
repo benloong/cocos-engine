@@ -1,0 +1,222 @@
+[
+  {
+    "config": "Debug",
+    "round": 1,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T070820854-6a875457",
+    "seconds": 39.8707631,
+    "samples": 77,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 1,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T070901339-db7c1223",
+    "seconds": 37.5210274,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 2,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T070939336-2d7ec7f8",
+    "seconds": 39.9469139,
+    "samples": 77,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 2,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071019697-f0343984",
+    "seconds": 37.1842132,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 3,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T071057286-8be49110",
+    "seconds": 39.2330506,
+    "samples": 76,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 3,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071136934-1626db2d",
+    "seconds": 37.6519547,
+    "samples": 73,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 4,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T071215007-1537dad0",
+    "seconds": 39.8483635,
+    "samples": 77,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 4,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071255283-bb3acf98",
+    "seconds": 37.4359691,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 5,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T071333193-e7a3b411",
+    "seconds": 39.8780501,
+    "samples": 77,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 5,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071413508-d371225e",
+    "seconds": 37.1834128,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 6,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T071451076-82e7e00e",
+    "seconds": 39.9289908,
+    "samples": 77,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 6,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071531462-cfc2c125",
+    "seconds": 37.2796227,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 7,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T071609132-e2221d89",
+    "seconds": 39.8580927,
+    "samples": 77,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 7,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071649417-4e40236d",
+    "seconds": 37.3587656,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 8,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T071727169-62eeabdb",
+    "seconds": 39.313891,
+    "samples": 76,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 8,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071806946-2c4c2f3c",
+    "seconds": 37.3147052,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 9,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T071844653-ea164dc8",
+    "seconds": 39.8774734,
+    "samples": 77,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 9,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T071924959-fd5d09b0",
+    "seconds": 37.1889724,
+    "samples": 71,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Debug",
+    "round": 10,
+    "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+    "run": "20261118T072002608-55250f64",
+    "seconds": 39.6902731,
+    "samples": 76,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  },
+  {
+    "config": "Release",
+    "round": 10,
+    "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+    "run": "20261118T072042728-fd37a445",
+    "seconds": 37.9157623,
+    "samples": 72,
+    "passed": true,
+    "aliveBeforeCleanup": true,
+    "exitBeforeCleanup": null
+  }
+]
