@@ -1,3 +1,4 @@
+import { M4ExtraProbe } from './M4ExtraProbe';
 import { BitmapGpuProbe } from './BitmapGpuProbe';
 import {
     Camera,
@@ -25,6 +26,8 @@ export class RichTextProbe {
         this.runWithBitmap(parent).catch(error => console.log('M5_RICHTEXT_ERROR ' + String(error.stack || error)));
     }
     private static async runWithBitmap (parent: Node): Promise<void> {
+        // All three probes borrow the same Camera. Wait for the previous target to be restored.
+        await M4ExtraProbe.completion;
         await BitmapGpuProbe.run(parent);
         console.log('M5_RICHTEXT_BEGIN');
         const node = new Node('M5RichText');

@@ -267,7 +267,7 @@ node native/tests/2d-poc/compare-dynamic-atlas.cjs
 
 每端必须生成 12 份 256×256 RGBA：Sprite/Mask × REPEAT/CLAMP × 原图/打包/恢复。通道容差沿用 M6 的 1；缺失、重复或旧 native 文件不得算通过。CLAMP 打包/恢复与原图字节相同；REPEAT 的跨边采样以同候选 Web 为准，全部恢复帧仍须字节相同。Web 阈值需与组件值一致，不能以材质默认 0.5 代替组件默认 0.1。两端构建先后不限，但必须是相同源码候选。
 
-动态图集回退变更还须运行 `node node_modules/jest/bin/jest.js --runInBand tests/ui/auto-atlas.test.ts`，并确认两端 M4 捕获都记录 `M6_ATLAS_FALLBACK_PASS`。该探针检查拒绝来源保留原图、不分配新页、满页复用已上传纹理，以及重置恢复。两端还须记录 `M6_ATLAS_LIFECYCLE_PASS`，验证删除单帧不会影响同源帧，打包克隆可随重置与源纹理删除恢复。
+动态图集回退变更还须运行 `node node_modules/jest/bin/jest.js --runInBand tests/ui/auto-atlas.test.ts`，并确认两端 M4 捕获都记录 `M6_ATLAS_FALLBACK_PASS`。该探针检查拒绝来源保留原图、不分配新页、满页复用已上传纹理，以及重置恢复。两端还须记录 `M6_ATLAS_LIFECYCLE_PASS`，验证删除单帧不会影响同源帧，打包克隆可随重置与源纹理删除恢复。两端还须记录 `M6_ATLAS_AUTOMATIC_PASS`，验证 Sprite、Sprite stencil Mask 和 BitmapFont Label 的激活、换资源和关闭图集恢复。
 
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 

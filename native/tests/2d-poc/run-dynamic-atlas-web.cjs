@@ -13,6 +13,7 @@ const logs = [], captures = new Set(), results = [];
 let layoutMetrics = [];
 let fallbackPassed = false;
 let lifecyclePassed = false;
+let automaticPassed = false;
 let resolveDone, rejectDone;
 const done = new Promise((resolve, reject) => { resolveDone = resolve; rejectDone = reject; });
 const server = http.createServer(async (req, res) => {
@@ -58,6 +59,7 @@ const server = http.createServer(async (req, res) => {
                 logs.push(text);
                 if (text === 'M6_ATLAS_FALLBACK_PASS') fallbackPassed = true;
                 if (text === 'M6_ATLAS_LIFECYCLE_PASS') lifecyclePassed = true;
+                if (text === 'M6_ATLAS_AUTOMATIC_PASS') automaticPassed = true;
                 if (!bitmap && text.startsWith('M6_DYNAMIC_ATLAS ')) {
                     const result = JSON.parse(text.slice(17)); results.push(result);
                     if (!result.state || !result.restored || (result.sampling === 'clamp' && !result.equal)) rejectDone(new Error('Web atlas state or framebuffer mismatch'));
@@ -66,11 +68,11 @@ const server = http.createServer(async (req, res) => {
                 if (bitmap && text.startsWith('M6_BITMAP_LAYOUT ')) layoutMetrics.push(JSON.parse(text.slice(17)));
                 if (bitmap && text.startsWith('M6_BITMAP_GPU_READY ')) {
                     const result = JSON.parse(text.slice(20)); results.push(...result.checks);
-                    if (!fallbackPassed || !lifecyclePassed || captures.size !== 88 || result.captures !== 12 || result.layoutCaptures !== 76 || layoutMetrics.length !== 76 || result.checks.length !== 4) rejectDone(new Error('Missing bitmap captures')); else resolveDone();
+                    if (!fallbackPassed || !lifecyclePassed || !automaticPassed || captures.size !== 88 || result.captures !== 12 || result.layoutCaptures !== 76 || layoutMetrics.length !== 76 || result.checks.length !== 4) rejectDone(new Error('Missing bitmap captures')); else resolveDone();
                 }
                 if (text.startsWith('M6_BITMAP_CAPTURE ') || text.startsWith('M6_ATLAS_CAPTURE ') || text.startsWith('M6_MASK_STATE ')) console.log(text);
                 if (!bitmap && text.startsWith('M4_GRAPHICS ')) {
-                    if (!fallbackPassed || !lifecyclePassed || captures.size !== 12 || results.length !== 4) rejectDone(new Error('Missing Web atlas captures/results'));
+                    if (!fallbackPassed || !lifecyclePassed || !automaticPassed || captures.size !== 12 || results.length !== 4) rejectDone(new Error('Missing Web atlas captures/results'));
                     else resolveDone();
                 }
             };

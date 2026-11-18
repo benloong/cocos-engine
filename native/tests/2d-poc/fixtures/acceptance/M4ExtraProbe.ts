@@ -17,9 +17,17 @@ import {
     UITransform,
 } from 'cc';
 
+import { M4Probe } from './M4Probe';
+
 /** M4 GRAPHICS_STENCIL + nested Mask pixel probe. */
 export class M4ExtraProbe {
+    public static completion: Promise<void> = Promise.resolve();
+
     public static run (parent: Node): void {
+        this.completion = M4Probe.completion.then(() => new Promise<void>((resolve) => this.runProbe(parent, resolve)));
+    }
+
+    private static runProbe (parent: Node, finish: () => void): void {
         const texture = new Texture2D();
         texture.reset({ width: 8, height: 8, format: Texture2D.PixelFormat.RGBA8888 });
         const pixels = new Uint8Array(8 * 8 * 4);
@@ -33,7 +41,7 @@ export class M4ExtraProbe {
         const scene = director.getScene();
         const canvas = scene?.getComponentInChildren(Canvas) ?? null;
         const camera = canvas?.cameraComponent ?? null;
-        if (!camera || !canvas) { console.log('M4_EXTRA_ERROR no camera'); return; }
+        if (!camera || !canvas) { console.log('M4_EXTRA_ERROR no camera'); finish(); return; }
 
         const rt = new RenderTexture();
         rt.reset({ width: 256, height: 256 });
@@ -126,6 +134,7 @@ export class M4ExtraProbe {
                     camera.orthoHeight = oldOrtho;
                     camera.targetTexture = oldTarget;
                     rt.destroy();
+                    finish();
                 }, 700);
             }, 450);
         }, 1000);

@@ -1,4 +1,5 @@
 import {
+    BitmapFont,
     builtinResMgr,
     Camera,
     Canvas,
@@ -10,6 +11,7 @@ import {
     DynamicAtlasManager,
     dynamicAtlasManager,
     ImageAsset,
+    Label,
     Mask,
     Material,
     Node,
@@ -24,6 +26,75 @@ import {
 
 /** M4 Mask + Graphics probe. */
 export class M4Probe {
+    public static completion: Promise<void> = Promise.resolve();
+    private static async verifyAutomaticPacking (parent: Node, source: SpriteFrame): Promise<void> {
+        const group = new Node('AutomaticAtlasProbe');
+        group.active = false;
+        parent.addChild(group);
+        const frames = Array.from({ length: 6 }, () => {
+            const frame = source.clone();
+            frame.packable = true;
+            return frame;
+        });
+        const fonts = [frames[2], frames[5]].map((frame) => {
+            const font = new BitmapFont();
+            font.spriteFrame = frame;
+            font.fontSize = 8;
+            font.fntConfig = { fontSize: 8, commonHeight: 8, atlasName: 'automatic-probe', kerningDict: {},
+                fontDefDictionary: { 65: { rect: { x: 0, y: 0, width: 8, height: 8 }, xOffset: 0, yOffset: 0, xAdvance: 8 } } } as any;
+            font.onLoaded();
+            return font;
+        });
+        const node = (): Node => {
+            const child = new Node();
+            group.addChild(child);
+            child.addComponent(UITransform).setContentSize(16, 16);
+            return child;
+        };
+        const sprite = node().addComponent(Sprite);
+        sprite.spriteFrame = frames[0];
+        const mask = node().addComponent(Mask);
+        mask.type = Mask.Type.SPRITE_STENCIL;
+        mask.spriteFrame = frames[1];
+        const label = node().addComponent(Label);
+        label.font = fonts[0];
+        label.string = 'A';
+        label.fontSize = 8;
+        label.lineHeight = 8;
+
+        const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 120));
+        const texture = source.texture;
+        const wasPackable = source.packable;
+        source.packable = false;
+        dynamicAtlasManager.enabled = true;
+        try {
+            await wait();
+            if (frames.some(frame => frame.original)) throw new Error('Inactive UI packed its frames');
+            group.active = true;
+            await wait();
+            if (frames.slice(0, 3).some(frame => !frame.original || frame.texture === texture)) {
+                throw new Error('Sprite, Mask or BitmapFont activation did not pack');
+            }
+            sprite.spriteFrame = frames[3];
+            mask.spriteFrame = frames[4];
+            label.font = fonts[1];
+            await wait();
+            if (frames.slice(3).some(frame => !frame.original || frame.texture !== frames[0].texture)) {
+                throw new Error('Component asset replacement did not reuse its upload');
+            }
+            dynamicAtlasManager.enabled = false;
+            if (frames.some(frame => frame.original || frame.texture !== texture)) throw new Error('Atlas disable did not restore originals');
+            console.log('M6_ATLAS_AUTOMATIC_PASS');
+        } finally {
+            dynamicAtlasManager.enabled = false;
+            source.packable = wasPackable;
+            group.destroy();
+            await wait();
+            for (const font of fonts) font.destroy();
+            for (const frame of frames) frame.destroy();
+        }
+    }
+
     public static run (parent: Node): void {
         // A local manager owns these frames; Web auto packing must not preempt it.
         const autoPacking = dynamicAtlasManager.enabled;
@@ -242,7 +313,10 @@ export class M4Probe {
             }
         };
 
+        let finish: () => void;
+        this.completion = new Promise(resolve => { finish = resolve; });
         setTimeout(async () => {
+            await this.verifyAutomaticPacking(parent, frame);
             await verifyPacking(frame, sprite, 'Sprite', 'repeat');
             await verifyPacking(frame, sprite, 'Sprite', 'clamp');
             const normal = readRed();
@@ -298,6 +372,7 @@ export class M4Probe {
                             camera.targetTexture = oldTarget;
                             renderTexture.destroy();
                             dynamicAtlasManager.enabled = autoPacking;
+                            finish();
                         }, 600);
                     }, 700);
                 }, 700);

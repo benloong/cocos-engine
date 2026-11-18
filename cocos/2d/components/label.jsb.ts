@@ -22,6 +22,8 @@
  THE SOFTWARE.
 */
 
+import { BitmapFont } from '../assets/bitmap-font';
+import { dynamicAtlasManager } from '../utils/dynamic-atlas/atlas-manager';
 import { ccclass, displayOrder, executionOrder, help, menu, multiline, requireComponent, serializable, type } from 'cc.decorator';
 import type { Material } from '../../asset/assets';
 import { Color, Vec2 } from '../../core';
@@ -155,6 +157,7 @@ export class Label extends UIRenderer {
     }
 
     public onEnable (): void {
+        this._packBitmapFrame();
         this._native?.setEnabled(true);
     }
 
@@ -263,6 +266,7 @@ export class Label extends UIRenderer {
     set font (value: any) {
         this._font = value;
         this._isSystemFontUsed = !value;
+        if (this.enabledInHierarchy) this._packBitmapFrame();
         this._syncFont();
     }
 
@@ -272,6 +276,7 @@ export class Label extends UIRenderer {
 
     set useSystemFont (value: boolean) {
         this._isSystemFontUsed = value;
+        if (this.enabledInHierarchy) this._packBitmapFrame();
         this._syncFont();
     }
 
@@ -410,6 +415,12 @@ export class Label extends UIRenderer {
     set shadowOffset (value: Vec2) {
         this._shadowOffset.set(value);
         this._native?.setShadowOffset(value.x, value.y);
+    }
+
+    private _packBitmapFrame (): void {
+        if (this._native && !this._isSystemFontUsed && this._font instanceof BitmapFont) {
+            dynamicAtlasManager.packToDynamicAtlas(this, this._font.spriteFrame);
+        }
     }
 
     private _syncFont (): void {

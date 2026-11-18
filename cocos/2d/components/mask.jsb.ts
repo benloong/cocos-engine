@@ -22,6 +22,7 @@
  THE SOFTWARE.
 */
 
+import { dynamicAtlasManager } from '../utils/dynamic-atlas/atlas-manager';
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
 import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
 import { Material } from '../../asset/assets';
@@ -99,6 +100,7 @@ export class Mask extends Component {
     }
 
     public onEnable (): void {
+        this._packStencilFrame();
         this._native?.setEnabled(true);
     }
 
@@ -125,6 +127,7 @@ export class Mask extends Component {
     set type (value: MaskType) {
         this._type = value;
         this._native?.setType(value);
+        if (this.enabledInHierarchy) this._packStencilFrame();
         if (value === MaskType.GRAPHICS_STENCIL) this._getGraphics();
     }
 
@@ -177,7 +180,14 @@ export class Mask extends Component {
 
     set spriteFrame (value: SpriteFrame | null) {
         this._spriteFrame = value;
+        if (this.enabledInHierarchy) this._packStencilFrame();
         this._native?.setSpriteFrame(value);
+    }
+
+    private _packStencilFrame (): void {
+        if (this._native && this._type === MaskType.SPRITE_STENCIL) {
+            dynamicAtlasManager.packToDynamicAtlas(this, this._spriteFrame);
+        }
     }
 
     get radius (): number {
