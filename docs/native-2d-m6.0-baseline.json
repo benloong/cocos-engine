@@ -171,7 +171,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "4ac6eddd71cba63082fc26c87b3eb74d020117c30342abd06428ab1ca71e5b49"
+      "sha256": "d00429afffad88b945549d1c8823284098eaf3ee21d0618917dea471b3f341a5"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
@@ -339,11 +339,11 @@
     },
     {
       "file": "native/cocos/scene/DrawBatch2D.cpp",
-      "sha256": "c1209732a49f20872c242507407dd6a15c63d89d3c9361f2878d9db56864778b"
+      "sha256": "ae38a7dc393dbf83f4b43a00f4e95d84f466f77be634115d3d53839032793b7e"
     },
     {
       "file": "native/cocos/scene/DrawBatch2D.h",
-      "sha256": "dbb2a4b798745d6d3ef17664da4512a44be043b5e18d1283b4eec5ed948621c0"
+      "sha256": "4286d63e708ae2b4fe1f6c1c65cd4dad3e9af14a83b56133637d3b9ea8105571"
     },
     {
       "file": "native/tools/swig-config/2d.i",

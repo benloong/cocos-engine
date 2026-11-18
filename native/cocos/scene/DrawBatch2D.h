@@ -30,6 +30,7 @@
 #include "core/scene-graph/Node.h"
 #include "renderer/gfx-base/GFXBuffer.h"
 #include "renderer/gfx-base/GFXInputAssembler.h"
+#include "renderer/gfx-base/GFXTexture.h"
 #include "scene/Define.h"
 
 namespace cc {
@@ -49,6 +50,7 @@ public:
     void clear();
     void fillPass(Material *mat, const gfx::DepthStencilState *depthStencilState, ccstd::hash_t dsHash, const ccstd::vector<IMacroPatch> *patches = nullptr);
     void setInputAssembler(gfx::InputAssembler *ia);
+    void setSampledTexture(gfx::Texture *texture);
     inline void setFirstIndex(uint32_t index) { _drawInfo.firstIndex = index; }
     inline void setIndexCount(uint32_t count) { _drawInfo.indexCount = count; }
 
@@ -71,6 +73,8 @@ protected:
     IntrusivePtr<gfx::Buffer> _indexBuffer;
     IntrusivePtr<gfx::Buffer> _indirectBuffer;
     IntrusivePtr<gfx::InputAssembler> _inputAssembler;
+    IntrusivePtr<gfx::Texture> _sourceTexture;
+    IntrusivePtr<gfx::Texture> _sampledTexture;
     gfx::DescriptorSet *_descriptorSet{nullptr};
     uint32_t _visFlags{0};
     ccstd::vector<IntrusivePtr<scene::Pass>> _passes;

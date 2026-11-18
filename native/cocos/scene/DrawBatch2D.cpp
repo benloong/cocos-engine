@@ -32,9 +32,16 @@ namespace scene {
 
 void DrawBatch2D::clear() {
     setInputAssembler(nullptr);
+    setSampledTexture(nullptr);
     _descriptorSet = nullptr;
     _model = nullptr;
     _visFlags = 1 << 23;
+}
+
+void DrawBatch2D::setSampledTexture(gfx::Texture *texture) {
+    // The descriptor borrows the view, and the view borrows its source.
+    _sampledTexture = texture;
+    _sourceTexture = texture && texture->isTextureView() ? texture->getViewInfo().texture : nullptr;
 }
 
 void DrawBatch2D::fillPass(Material *mat, const gfx::DepthStencilState *depthStencilState, ccstd::hash_t dsHash, const ccstd::vector<IMacroPatch> *patches) {

@@ -306,10 +306,10 @@ void updateDepthStencilImpl(
                 desc.width = width;
                 desc.height = height;
                 desc.format = format;
+                ppl.resourceGraph.invalidatePersistentRenderPassAndFramebuffer(sc.texture);
                 sc.swapchain = swapchain;
                 sc.generation = swapchain->getGeneration();
-                ppl.resourceGraph.invalidatePersistentRenderPassAndFramebuffer(
-                    sc.swapchain->getDepthStencilTexture());
+                sc.texture = RenderSwapchain::getDepthStencilTexture(swapchain);
             }
         },
         [](const auto & /*res*/) {});
@@ -825,8 +825,7 @@ void NativePipeline::updateRenderWindow(
         [&](RenderSwapchain &sc) {
             CC_EXPECTS(!sc.isDepthStencil);
             auto *newSwapchain = renderWindow->getSwapchain();
-            const auto &oldTexture = resourceGraph.getTexture(resID);
-            resourceGraph.invalidatePersistentRenderPassAndFramebuffer(oldTexture);
+            resourceGraph.invalidatePersistentRenderPassAndFramebuffer(sc.texture);
             if (newSwapchain) {
                 width = newSwapchain->getWidth();
                 height = newSwapchain->getHeight();
@@ -834,6 +833,7 @@ void NativePipeline::updateRenderWindow(
                 sc.renderWindow = nullptr;
                 sc.swapchain = renderWindow->getSwapchain();
                 sc.generation = newSwapchain->getGeneration();
+                sc.texture = RenderSwapchain::getColorTexture(newSwapchain);
             } else {
                 CC_EXPECTS(renderWindow->getFramebuffer());
                 CC_EXPECTS(renderWindow->getFramebuffer()->getColorTextures().size() == 1);
@@ -845,6 +845,7 @@ void NativePipeline::updateRenderWindow(
 
                 sc.renderWindow = renderWindow;
                 sc.swapchain = nullptr;
+                sc.texture = texture;
                 sc.generation = 0xFFFFFFFF;
             }
         },

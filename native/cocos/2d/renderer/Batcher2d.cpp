@@ -595,6 +595,7 @@ void Batcher2d::generateBatch(RenderEntity* entity, RenderDrawInfo* drawInfo) {
     auto* curdrawBatch = _drawBatchPool.alloc();
     curdrawBatch->setVisFlags(_currLayer);
     curdrawBatch->setInputAssembler(ia);
+    curdrawBatch->setSampledTexture(_currTexture);
     curdrawBatch->setFirstIndex(indexOffset);
     curdrawBatch->setIndexCount(indexCount);
     curdrawBatch->fillPass(_currMaterial, depthStencil, dssHash);
@@ -636,6 +637,7 @@ void Batcher2d::generateBatchForMiddleware(RenderEntity* entity, RenderDrawInfo*
     auto* curdrawBatch = _drawBatchPool.alloc();
     curdrawBatch->setVisFlags(_currLayer);
     curdrawBatch->setInputAssembler(ia);
+    curdrawBatch->setSampledTexture(texture);
     curdrawBatch->setFirstIndex(drawInfo->getIndexOffset());
     curdrawBatch->setIndexCount(indexCount);
     curdrawBatch->fillPass(material, depthStencil, dssHash);
@@ -748,9 +750,8 @@ void Batcher2d::reset() {
     }
     _batches.clear();
 
-    for (auto& meshRenderData : _meshRenderDrawInfo) {
-        meshRenderData->resetMeshIA();
-    }
+    // Draw infos are borrowed for upload. Their components may have been
+    // collected during render callbacks; the submitted batches own their IAs.
     _meshRenderDrawInfo.clear();
 
     // meshDataArray

@@ -287,6 +287,15 @@ void testUiBatchInputResources() {
     cc::IntrusivePtr<cc::gfx::Buffer> indexGuard(ia->getIndexBuffer());
     const auto iaRefs = ia->getRefCount(), vbRefs = vertexGuard->getRefCount(), ibRefs = indexGuard->getRefCount();
     cc::scene::DrawBatch2D batch;
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D());
+    texture->create(8, 8);
+    auto *view = texture->getGFXTexture();
+    auto *source = view->getViewInfo().texture;
+    const auto sourceRefs = source->getRefCount(), viewRefs = view->getRefCount();
+    batch.setSampledTexture(view);
+    batch.setSampledTexture(view);
+    check(source->getRefCount() == sourceRefs + 1 && view->getRefCount() == viewRefs + 1,
+          "Queued UI batch retains both the sampled view and its source exactly once");
     batch.setInputAssembler(ia);
     check(ia->getRefCount() == iaRefs + 1, "Queued UI batch owns its IA until clear");
     check(vertexGuard->getRefCount() == vbRefs + 1 && indexGuard->getRefCount() == ibRefs + 1,
@@ -296,6 +305,8 @@ void testUiBatchInputResources() {
     check(vertexGuard->getRefCount() == 2 && indexGuard->getRefCount() == 2, "DrawInfo reset preserves queued GPU buffers");
     batch.setInputAssembler(ia);
     batch.clear();
+    check(source->getRefCount() == sourceRefs && view->getRefCount() == viewRefs,
+          "Batch clear returns its texture references");
     check(batch.getInputAssembler() == nullptr && ia->getRefCount() == 1 && vertexGuard->getRefCount() == 1 && indexGuard->getRefCount() == 1,
           "Batch clear releases IA and buffer leases exactly once");
     iaGuard = nullptr; indexGuard = nullptr; vertexGuard = nullptr;

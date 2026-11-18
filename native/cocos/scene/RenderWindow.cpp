@@ -24,6 +24,7 @@
 
 #include "scene/RenderWindow.h"
 #include "BasePlatform.h"
+#include "core/Root.h"
 #include "interfaces/modules/ISystemWindow.h"
 #include "interfaces/modules/ISystemWindowManager.h"
 #include "platform/interfaces/modules/Device.h"
@@ -31,6 +32,7 @@
 #include "renderer/gfx-base/GFXFramebuffer.h"
 #include "renderer/gfx-base/GFXSwapchain.h"
 #include "renderer/gfx-base/GFXTexture.h"
+#include "renderer/pipeline/custom/NativePipelineTypes.h"
 #include "scene/Camera.h"
 
 #include <atomic>
@@ -122,6 +124,25 @@ bool RenderWindow::initialize(gfx::Device *device, IRenderWindowInfo &info) {
 
 void RenderWindow::destroy() {
     clearCameras();
+
+    // Cached pipeline framebuffers borrow the offscreen window's attachments.
+    // Queue their destruction before releasing the textures on the device thread.
+    auto *root = Root::getInstance();
+    if (!_swapchain && _frameBuffer && root) {
+        if (auto *pipeline = dynamic_cast<render::NativePipeline *>(root->getPipeline())) {
+            auto &graph = pipeline->resourceGraph;
+            for (auto *texture : _colorTextures) {
+                graph.invalidatePersistentRenderPassAndFramebuffer(texture);
+            }
+            graph.invalidatePersistentRenderPassAndFramebuffer(_depthStencilTexture);
+            for (auto &resource : graph.swapchains) {
+                if (resource.renderWindow == this) {
+                    resource.renderWindow = nullptr;
+                    resource.texture = nullptr;
+                }
+            }
+        }
+    }
 
     // Gfx objects invoke destroy in VK\GL\MTL Object destructor.
     _frameBuffer = nullptr;

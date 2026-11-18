@@ -125,6 +125,7 @@
 - [ ] 所有 native 组件/资产核对 attach/detach、Node 非 owning 槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。
 - [ ] 主线程修改与渲染线程读取的快照/同步边界明确；覆盖场景切换、异步资源完成、禁用后销毁。
 - [x] Windows M5 日志观测缺陷：真实 Kernel/Script 日志在 stdout 全缓冲子进程中可确定复现“调用已返回、退出前不可见”；Win32 显式刷新后 red/green 通过。唯一运行日志/二进制指纹/双时钟/CPU/退出码诊断已接入，完整文档串行验收一次通过，同一 app 连续 3 次 M5 在原 45 秒预算内无重试通过，见 [报告](./native-2d-m6.4-log-observability.md)。
+- [x] Windows 图集与 RichText 连续场景的帧内资源生命周期。离屏窗口销毁前清除依赖附件的管线帧缓冲，切换窗口刷新活动纹理。UI 批次持有采样视图和源纹理直至清理，帧末停止访问已上传的 DrawInfo。三次原始 ASan 报告分别定位到 framebuffer 析构、批次 reset 和 GLES3 纹理绑定。修复后原生引用计数回归、Windows Debug 串行门禁及 32 项定向 Jest 通过，100 组图像对既有 Web 基准差值为零。ASan M5 共四次通过（含连续三次），每次 9 个 Label、1 个 Sprite、8725 个着色像素。Debug 应用 SHA256 为 `5a3e867cf950618f42342b7f72dbcebe107ae733c649723be6e82204f462fb6d`，ASan 应用 SHA256 为 `decc3ca0c8af6d23c1c7df266706a07149c4e15a821b754879a68c3df84ecff7`。日志位于 `native/tests/2d-poc/build/m6-window-*.log` 和 `build/static-atlas-heap-gate/asan-m5-reports`。完整线程与平台矩阵继续验收。
 - [ ] 测试工程/场景长期调度稳定性：旧两次 M5 缺失没有完整 stdout/退出码，无法逐例还原；本轮关闭日志可见性缺陷不等于全部运行时稳定性完成。持续使用新时间线区分观测、真实停帧和进程退出，并结合下方连续加载/线程/平台矩阵验收。
 - [x] 同场景静态图集与 Prefab 真实资源千轮压力：Windows Debug 与 Web 各通过 5000 个资产引用和缓存检查、22 个 GPU 像素断言。Windows 私有字节采样和 V8 映射稳定，Chrome GC 后堆从第 100 到 1000 轮增加约 0.93 MiB。完整串行门禁通过，见[采样与范围](./native-2d-m6.1-sprite-atlas.md#7-真实资源千轮压力)。
 - [x] 完成同场景 Web 千轮堆增长归因。默认与关闭 V8 优化编译各运行 1000 轮，比较第 100 和 1000 轮堆快照。默认快照增长的 90.5% 落在 V8 `code` 类，对照的总自身字节基本持平，两组关键资产实例计数均下降。见[堆快照对照](./native-2d-m6.1-sprite-atlas.md#8-web-堆快照归因)。
