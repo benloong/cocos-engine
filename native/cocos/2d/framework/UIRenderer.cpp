@@ -30,8 +30,14 @@
 
 namespace cc {
 
-UIRenderer::UIRenderer() = default;
-UIRenderer::~UIRenderer() = default;
+UIRenderer::UIRenderer() : _rendererSlot(UIRendererManager::nativeRenderers().addNativeRenderer(this)) {}
+UIRenderer::~UIRenderer() { UIRendererManager::nativeRenderers().removeRenderer(_rendererSlot); }
+
+void UIRenderer::onEnable() {
+    if (_pendingFlags) UIRendererManager::nativeRenderers().markDirtyRenderer(_rendererSlot, _pendingFlags);
+}
+void UIRenderer::onDisable() { UIRendererManager::nativeRenderers().clearDirtyRenderer(_rendererSlot); }
+void UIRenderer::onDetach() { UIRendererManager::nativeRenderers().clearDirtyRenderer(_rendererSlot); }
 
 void UIRenderer::setColor(const Color &color) {
     _color = color;

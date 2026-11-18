@@ -1967,6 +1967,41 @@ void testJsSceneRecord(se::ScriptEngine *scriptEngine) {
     check(ok && result.isString() && result.toString() == "OK", "jsb scene record attach");
 }
 
+void testDirtyRenderers() {
+    const auto &native = cc::UIRendererManager::pendingNativeRenderers();
+    const auto previous = native.getDirtyCount();
+    {
+        cc::Node node("dirty-sprite");
+        cc::Sprite sprite;
+        check(native.getDirtyCount() == previous, "detached renderer does not enter the active dirty set");
+        sprite.setNode(&node);
+        sprite.setDirty();
+        sprite.setColorRGBA(.5F, .5F, .5F, 1.F);
+        check(native.getDirtyCount() == previous + 1 && native.getDirtyNativeRenderer(previous) == &sprite,
+              "native Sprite mutations coalesce in the renderer dirty set");
+        sprite.setEnabled(false);
+        sprite.setType(1);
+        check(native.getDirtyCount() == previous, "disabled renderer keeps pending work off the queue");
+        sprite.setEnabled(true);
+        check(native.getDirtyCount() == previous + 1, "enable reschedules pending renderer work");
+        sprite.setNode(nullptr);
+        check(native.getDirtyCount() == previous, "detach cancels pending renderer work");
+        sprite.setNode(&node);
+    }
+    check(native.getDirtyCount() == previous, "destroying a dirty native renderer cancels its entry");
+    cc::UIRendererManager manager;
+    const auto first = manager.addRenderer();
+    const auto second = manager.addRenderer();
+    manager.markDirtyRenderer(first, 1);
+    manager.markDirtyRenderer(second, 1);
+    manager.markDirtyRenderer(second, 2);
+    manager.removeRenderer(first);
+    const auto replacement = manager.addRenderer();
+    check(replacement == first && !manager.getDirtyFlags(replacement), "recycled renderer slot starts clean");
+    check(manager.getDirtyFlags(second) == 3 && manager.takeDirtyRenderers() == std::vector<uint32_t>{second}
+              && !manager.getDirtyCount() && !manager.getDirtyFlags(second), "native dirty flags merge and drain once");
+}
+
 void testSpritePrepare() {
     cc::Node node("native-sprite");
     cc::UITransform transform(&node);
@@ -2375,6 +2410,7 @@ int main(int argc, char **argv) {
         writeSpriteQuadJson();
         std::printf("geometry done\n");
         std::fflush(stdout);
+        testDirtyRenderers();
         testSpritePrepare();
         std::printf("sprite prepare done\n");
         std::fflush(stdout);

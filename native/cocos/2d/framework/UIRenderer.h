@@ -24,6 +24,7 @@
 
 #pragma once
 #include "2d/framework/UIComponentType.h"
+#include "2d/framework/UIRendererManager.h"
 
 #include <cstdint>
 #include <vector>
@@ -51,6 +52,10 @@ public:
     UIRenderer();
     ~UIRenderer() override;
 
+    void onEnable() override;
+    void onDisable() override;
+    void onDetach() override;
+
     uint32_t getTypeId() const override { return TYPE_ID; }
 
     void setColor(const Color &color);
@@ -77,6 +82,18 @@ public:
     uint32_t getDstBlendFactor() const { return _dstBlendFactor; }
 
 protected:
+    enum DirtyFlag : uint32_t { GEOMETRY = 1, COLOR = 2 };
+    void markRenderDirty(uint32_t flags = GEOMETRY) {
+        if ((_pendingFlags & flags) == flags) return;
+        _pendingFlags |= flags;
+        if (_node && _enabled) UIRendererManager::nativeRenderers().markDirtyRenderer(_rendererSlot, flags);
+    }
+    uint32_t renderDirtyFlags() const { return _pendingFlags; }
+    void clearRenderDirty() {
+        if (!_pendingFlags) return;
+        _pendingFlags = 0;
+        UIRendererManager::nativeRenderers().clearDirtyRenderer(_rendererSlot);
+    }
     virtual void onMaterialChanged() {}
     virtual Material *getBuiltinMaterial() const;
     Color _color{255, 255, 255, 255};
@@ -88,6 +105,10 @@ protected:
     int32_t _priority{0};
     uint32_t _srcBlendFactor{2}; // gfx::BlendFactor::SRC_ALPHA
     uint32_t _dstBlendFactor{4}; // gfx::BlendFactor::ONE_MINUS_SRC_ALPHA
+
+private:
+    const uint32_t _rendererSlot;
+    uint32_t _pendingFlags{0}; // Detached components can still be measured synchronously.
 };
 
 } // namespace cc

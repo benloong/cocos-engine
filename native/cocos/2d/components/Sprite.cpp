@@ -56,6 +56,7 @@ uint32_t materialVariant(TextureBase *texture) {
 } // namespace
 
 Sprite::Sprite() {
+    markRenderDirty();
     _entity = new RenderEntity(RenderEntityType::STATIC);
     _entity->setPrepareListener(this);
     _vertices.reserve(64U * VERTEX_STRIDE);
@@ -69,8 +70,9 @@ Sprite::~Sprite() {
 }
 void Sprite::onDetach() {
     _entity->setStaticDrawInfoSize(0);
-    _dirty = true;
+    markRenderDirty();
     _entity->setNode(nullptr);
+    UIRenderer::onDetach();
 }
 
 void Sprite::setNode(Node *node) {
@@ -89,7 +91,7 @@ void Sprite::setNode(Node *node) {
         _entity->setNode(getNode());
         _entity->setEnabled(isEnabled());
     }
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setFrame(TextureBase *texture,
@@ -115,7 +117,7 @@ void Sprite::setFrame(TextureBase *texture,
     _rotated = rotated;
     _insetLeft = _insetRight = _insetTop = _insetBottom = 0.F;
     _flipUVX = _flipUVY = false;
-    _dirty = true;
+    markRenderDirty();
     if (_entity != nullptr) {
         _entity->setEnabled(isEnabled());
     }
@@ -154,7 +156,7 @@ void Sprite::setFrame(SpriteFrame *frame) {
     _flipUVX = frame->getFlipUVX();
     _flipUVY = frame->getFlipUVY();
     applySizeMode();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setType(int32_t type) {
@@ -162,7 +164,7 @@ void Sprite::setType(int32_t type) {
         return;
     }
     _type = type;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setFillType(int32_t fillType) {
@@ -170,7 +172,7 @@ void Sprite::setFillType(int32_t fillType) {
         return;
     }
     _fillType = fillType;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setFillStart(float fillStart) {
@@ -178,7 +180,7 @@ void Sprite::setFillStart(float fillStart) {
         return;
     }
     _fillStart = std::clamp(fillStart, 0.F, 1.F);
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setFillRange(float fillRange) {
@@ -186,7 +188,7 @@ void Sprite::setFillRange(float fillRange) {
         return;
     }
     _fillRange = std::clamp(fillRange, -1.F, 1.F);
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setFillCenter(float x, float y) {
@@ -194,7 +196,7 @@ void Sprite::setFillCenter(float x, float y) {
         return;
     }
     _fillCenter.set(x, y);
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::clearFrame() {
@@ -212,20 +214,20 @@ void Sprite::clearFrame() {
         _entity->setEnabled(false);
     }
     if (_builtinVariant != 0) { _builtinVariant = 0; invalidateBuiltinMaterial(); }
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setMaterial(Material *material) {
     UIRenderer::setMaterial(material);
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setSharedMaterial(Material *material, uint32_t index, bool forceUpdate) {
     UIRenderer::setSharedMaterial(material, index, forceUpdate);
-    _dirty = true;
+    markRenderDirty();
 }
 void Sprite::setMaterialInstance(Material *material, uint32_t index) {
-    UIRenderer::setMaterialInstance(material, index); _dirty = true;
+    UIRenderer::setMaterialInstance(material, index); markRenderDirty();
 }
 void Sprite::setGrayscale(bool enabled) {
     if (_grayscale == enabled) return;
@@ -234,7 +236,7 @@ void Sprite::setGrayscale(bool enabled) {
 void Sprite::refreshMaterial() {
     const auto variant = materialVariant(_texture.get());
     if (_builtinVariant != variant) { _builtinVariant = variant; invalidateBuiltinMaterial(); }
-    _dirty = true;
+    markRenderDirty();
 }
 Material *Sprite::getBuiltinMaterial() const {
     auto *resources = BuiltinResMgr::getInstance();
@@ -269,7 +271,7 @@ void Sprite::setColor(const Color &color) {
         _entity->setColor(_color);
     }
     // Keep geometry for a tint-only change; prepare still refreshes RGBA.
-    _lastOpacity = -1.F;
+    markRenderDirty(COLOR);
 }
 
 void Sprite::setColorRGBA(float red, float green, float blue, float alpha) {
@@ -284,7 +286,7 @@ void Sprite::setEnabled(bool enabled) {
     if (_entity != nullptr) {
         _entity->setEnabled(enabled);
     }
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setPriority(int32_t priority) {
@@ -295,7 +297,7 @@ void Sprite::setPriority(int32_t priority) {
     if (_entity != nullptr) {
         _entity->setPriority(static_cast<uint32_t>(_priority));
     }
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::setSizeMode(int32_t sizeMode) {
@@ -304,7 +306,7 @@ void Sprite::setSizeMode(int32_t sizeMode) {
     }
     _sizeMode = sizeMode;
     applySizeMode();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::applySizeMode() {
@@ -329,7 +331,7 @@ void Sprite::setTrim(bool trim) {
         return;
     }
     _trim = trim;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::prepare(float opacity) {
@@ -350,7 +352,7 @@ void Sprite::prepare(float opacity) {
     const uint32_t samplerId = currentSampler ? currentSampler->getObjectID() : 0;
     if (_gpuTextureSeen != currentTexture || _gpuTextureId != textureId || _gpuSamplerSeen != currentSampler || _gpuSamplerId != samplerId) {
         _gpuTextureSeen = currentTexture; _gpuTextureId = textureId;
-        _gpuSamplerSeen = currentSampler; _gpuSamplerId = samplerId; _dirty = true;
+        _gpuSamplerSeen = currentSampler; _gpuSamplerId = samplerId; markRenderDirty();
     }
     if (_node && _transform) {
         const auto &world = _node->getWorldMatrix();
@@ -360,10 +362,10 @@ void Sprite::prepare(float opacity) {
             || size.x != _lastContentSize.x || size.y != _lastContentSize.y
             || anchor.x != _lastAnchorPoint.x || anchor.y != _lastAnchorPoint.y) {
             _lastWorldMatrix = world; _lastContentSize = size; _lastAnchorPoint = anchor;
-            _hasTransformSnapshot = true; _dirty = true;
+            _hasTransformSnapshot = true; markRenderDirty();
         }
     }
-    if (!_dirty && _lastOpacity >= 0.F && std::fabs(opacity - _lastOpacity) <= 1e-6F) {
+    if (!renderDirtyFlags() && _lastOpacity >= 0.F && std::fabs(opacity - _lastOpacity) <= 1e-6F) {
         return;
     }
     if (_node == nullptr || _transform == nullptr || _texture == nullptr || _entity == nullptr) {
@@ -390,9 +392,9 @@ void Sprite::prepare(float opacity) {
     if (_hasLabelQuads) { prepareLabelQuads(material, opacity); return; }
 
     auto clearGeometry = [&]() {
-        _entity->setStaticDrawInfoSize(0); _dirty = false; _lastOpacity = opacity;
+        _entity->setStaticDrawInfoSize(0); clearRenderDirty(); _lastOpacity = opacity;
     };
-    if (_dirty) {
+    if (renderDirtyFlags() & GEOMETRY) {
         uint32_t vertexCount = 0;
         uint32_t indexCount = 0;
 
@@ -547,9 +549,9 @@ void Sprite::prepare(float opacity) {
         _entity->setEnabled(isEnabled());
         _entity->setFillColorType(FillColorType::VERTEX);
 
-        _dirty = false;
     }
 
+    clearRenderDirty();
     updateVertexColors(opacity);
     _entity->setOpacity(opacity);
     _lastOpacity = opacity;
@@ -559,12 +561,12 @@ void Sprite::setLabelQuads(SpriteFrame *frame, std::vector<SpriteQuad> quads) {
     setFrame(frame);
     _labelQuads = std::move(quads);
     _hasLabelQuads = true;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Sprite::prepareLabelQuads(Material *material, float opacity) {
     constexpr size_t QUADS_PER_CHUNK = 16383; // 65532 vertices, within the 16-bit mesh-buffer limit.
-    if (_dirty) {
+    if (renderDirtyFlags() & GEOMETRY) {
         _entity->setStaticDrawInfoSize(0);
         _labelChunks.resize((_labelQuads.size() + QUADS_PER_CHUNK - 1) / QUADS_PER_CHUNK);
         const auto size = _transform->getContentSize();
@@ -610,7 +612,7 @@ void Sprite::prepareLabelQuads(Material *material, float opacity) {
     }
     _entity->setPriority(_priority); _entity->setColor(_color); _entity->setEnabled(isEnabled());
     _entity->setFillColorType(FillColorType::VERTEX); _entity->setOpacity(opacity);
-    _dirty = false; _lastOpacity = opacity;
+    clearRenderDirty(); _lastOpacity = opacity;
 }
 
 void Sprite::updateVertexColors(float opacity) {

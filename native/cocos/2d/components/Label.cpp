@@ -157,6 +157,7 @@ float measureText(CanvasRenderingContext2D &context, const std::string &text) {
 } // namespace
 
 Label::Label() {
+    markRenderDirty();
     _renderer.setSizeMode(0); // Label layout owns dimensions, not the padded texture.
     _renderer.getRenderEntity()->setPrepareListener(this);
 }
@@ -182,13 +183,13 @@ void Label::setNode(Node *node) {
         _renderer.getRenderEntity()->setPrepareListener(this);
     }
     Component::setNode(node);
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setUITransform(UITransform *transform) {
     _transform = transform;
     _renderer.setUITransform(transform);
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setString(const std::string &text) {
@@ -196,7 +197,7 @@ void Label::setString(const std::string &text) {
         return;
     }
     _string = text;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setFontAsset(FontAsset *font) {
@@ -216,7 +217,7 @@ void Label::applyFontAsset() {
     _bitmapAtlas = _bitmapFont ? _bitmapFont->getSpriteFrame() : nullptr;
     const float sourceSize = _bitmapFont ? _bitmapFont->getSourceFontSize() : -1.F;
     _bitmapLineHeight = _bitmapFont && (_bitmapFont->hasSourceFontSize() || sourceSize > 0) ? sourceSize : _lineHeight;
-    updateFont(); clearRenderedData(); _dirty = true;
+    updateFont(); clearRenderedData(); markRenderDirty();
 }
 void Label::clearRenderedData() {
     _renderer.clearFrame();
@@ -244,7 +245,7 @@ void Label::setFont(const std::string &font) {
         try { _fontSize = std::stof(size); } catch (...) {}
     }
     updateFont();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::updateFont() {
@@ -268,7 +269,7 @@ void Label::setFontSize(float size) {
     }
     _fontSize = size;
     updateFont();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setLineHeight(float height) {
@@ -278,7 +279,7 @@ void Label::setLineHeight(float height) {
     _lineHeight = height;
     releaseLetterAtlas();
     if (_bitmapFont && _bitmapFont->getFontSize() <= 0) _bitmapLineHeight = height;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setEnableWrapText(bool wrap) {
@@ -286,7 +287,7 @@ void Label::setEnableWrapText(bool wrap) {
         return;
     }
     _wrap = wrap;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setOverflow(int32_t overflow) {
@@ -294,7 +295,7 @@ void Label::setOverflow(int32_t overflow) {
         return;
     }
     _overflow = overflow;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setHorizontalAlign(int32_t align) {
@@ -302,7 +303,7 @@ void Label::setHorizontalAlign(int32_t align) {
         return;
     }
     _hAlign = align;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setVerticalAlign(int32_t align) {
@@ -310,7 +311,7 @@ void Label::setVerticalAlign(int32_t align) {
         return;
     }
     _vAlign = align;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setSpacingX(float spacing) {
@@ -318,53 +319,53 @@ void Label::setSpacingX(float spacing) {
         return;
     }
     _spacingX = spacing;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setEnableOutline(bool enable) {
     if (_enableOutline == enable) { return; }
     _enableOutline = enable;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setOutlineColor(const Color &color) {
     _outlineColor = color;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setOutlineWidth(float width) {
     if (std::fabs(_outlineWidth - width) < 0.01F) { return; }
     _outlineWidth = width;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setEnableShadow(bool enable) {
     if (_enableShadow == enable) { return; }
     _enableShadow = enable;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setShadowColor(const Color &color) {
     _shadowColor = color;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setShadowBlur(float blur) {
     if (std::fabs(_shadowBlur - blur) < 0.01F) { return; }
     _shadowBlur = blur;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setShadowOffset(float x, float y) {
     _shadowOffsetX = x;
     _shadowOffsetY = y;
-    _dirty = true;
+    markRenderDirty();
 }
 void Label::setBitmapAtlas(SpriteFrame *atlas, float lineHeight) {
     if (_fontAsset) setFontAsset(nullptr);
     _bitmapAtlas = atlas;
     _bitmapLineHeight = lineHeight;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::clearBitmapFont() {
@@ -376,36 +377,36 @@ void Label::clearBitmapFont() {
     clearRenderedData();
     _glyphs.clear();
     _glyphMap.clear();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::clearKerning() {
     _kerning.clear();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::addKerning(int32_t left, int32_t right, float amount) {
     _kerning[(static_cast<uint64_t>(static_cast<uint32_t>(left)) << 32U) | static_cast<uint32_t>(right)] = amount;
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::clearGlyphs() {
     _glyphs.clear();
     _glyphMap.clear();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::addGlyph(int32_t code, float u, float v, float w, float h, float offsetX, float offsetY, float xAdvance) {
     _glyphMap[code] = _glyphs.size();
     _glyphs.push_back(Glyph{code, u, v, w, h, offsetX, offsetY, xAdvance});
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setCacheMode(int32_t mode) {
     if (_cacheMode == mode) { return; }
     _cacheMode = mode;
     if (mode != 2) releaseLetterAtlas();
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setColor(const Color &color) {
@@ -413,7 +414,7 @@ void Label::setColor(const Color &color) {
     // Textures contain the text RGB. Component opacity belongs to the render
     // entity/vertices, so it also cascades to children without tinting twice.
     _renderer.setColor(Color(255, 255, 255, color.a));
-    _dirty = true;
+    markRenderDirty();
 }
 
 void Label::setColorRGBA(float r, float g, float b, float a) {
@@ -443,7 +444,7 @@ void Label::prepareRenderEntity(float opacity) {
     syncTransformSize();
     syncFontAsset();
     syncBitmapAtlas();
-    if (_dirty) {
+    if (renderDirtyFlags() & GEOMETRY) {
         rebuildTexture();
     }
     syncContentSize();
@@ -560,7 +561,7 @@ void Label::syncBitmapAtlas() {
     if (_bitmapAtlasRevision != _bitmapAtlas->getRevision() || _bitmapTextureSeen != texture
         || _bitmapWidthSeen != width || _bitmapHeightSeen != height || _bitmapFormatSeen != format) {
         _bitmapAtlasRevision = _bitmapAtlas->getRevision(); _bitmapTextureSeen = texture;
-        _bitmapWidthSeen = width; _bitmapHeightSeen = height; _bitmapFormatSeen = format; _dirty = true;
+        _bitmapWidthSeen = width; _bitmapHeightSeen = height; _bitmapFormatSeen = format; markRenderDirty();
     }
 }
 void Label::ensureBitmapDiagnostics() const {
@@ -752,7 +753,7 @@ void Label::applyBitmapAtlas() {
 void Label::syncTransformSize() {
     if (!_transform) return;
     const auto size = _transform->getContentSize();
-    if (std::fabs(size.x - _layoutWidth) > 0.001F || std::fabs(size.y - _layoutHeight) > 0.001F) _dirty = true;
+    if (std::fabs(size.x - _layoutWidth) > 0.001F || std::fabs(size.y - _layoutHeight) > 0.001F) markRenderDirty();
 }
 void Label::syncContentSize() {
     if (_transform && _overflow == 0) {
@@ -769,7 +770,7 @@ void Label::syncContentSize() {
 void Label::measureContent() {
     if (!_transform) return;
     _transform->setContentSize(0.F, 0.F);
-    _dirty = true;
+    markRenderDirty();
     updateRenderData();
     _transform->setContentSize(_lastContentWidth, _lastContentHeight);
 }
@@ -821,14 +822,14 @@ void Label::updateRenderData() {
     syncTransformSize();
     syncFontAsset();
     syncBitmapAtlas();
-    if (_dirty) {
+    if (renderDirtyFlags() & GEOMETRY) {
         rebuildTexture();
     }
     syncContentSize();
 }
 
 void Label::rebuildTexture() {
-    _dirty = false;
+    clearRenderDirty();
     _actualFontSize = _fontSize;
     if (_bitmapFont || (_bitmapAtlas != nullptr && !_glyphs.empty())) {
         const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
@@ -915,7 +916,7 @@ void Label::rebuildTexture() {
         && contentHeight > _transform->getContentSize().y + 0.5F && _fontSize > 4.0F) {
         _fontSize *= 0.9F;
         updateFont();
-        _dirty = true;
+        markRenderDirty();
         rebuildTexture();
         return;
     }

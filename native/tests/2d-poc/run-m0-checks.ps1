@@ -66,6 +66,16 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
+    Write-Host '== Native UI renderer dirty set and JSB dispatch =='
+    & node (Join-Path $PSScriptRoot 'build-renderer-manager-probe.cjs')
+    if ($LASTEXITCODE -ne 0) { throw 'Could not build renderer manager probe' }
+    Push-Location (Join-Path $PSScriptRoot 'native/out')
+    try {
+        & ./cc2d_native_poc.exe (Join-Path $PSScriptRoot 'build/renderer-manager-probe.js')
+        if ($LASTEXITCODE -ne 0) { throw 'Native renderer manager probe failed' }
+    } finally {
+        Pop-Location
+    }
     Write-Host '== Win32 redirected log visibility =='
     & (Join-Path $PSScriptRoot 'run-native-log-visibility-tests.ps1')
     if ($LASTEXITCODE -ne 0) { throw 'Redirected log visibility failed' }

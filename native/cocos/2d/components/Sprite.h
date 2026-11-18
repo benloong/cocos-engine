@@ -65,7 +65,7 @@ public:
     void onDetach() override;
     Node *getNode() const { return Component::getNode(); }
 
-    void setUITransform(UITransform *transform) { _transform = transform; _hasTransformSnapshot = false; _dirty = true; applySizeMode(); }
+    void setUITransform(UITransform *transform) { _transform = transform; _hasTransformSnapshot = false; markRenderDirty(); applySizeMode(); }
     UITransform *getUITransform() const { return _transform; }
 
     void setFrame(TextureBase *texture,
@@ -115,7 +115,7 @@ public:
     int32_t getSizeMode() const { return _sizeMode; }
     RenderEntity *getRenderEntity() const { return _entity.get(); }
 
-    void setDirty() { _dirty = true; }
+    void setDirty() { markRenderDirty(); }
     void prepare(float opacity);
     void prepareRenderEntity(float opacity) override { prepare(opacity); }
 
@@ -135,7 +135,7 @@ private:
     bool _hasLabelQuads{false};
     std::vector<SpriteQuad> _labelQuads;
     std::vector<LabelMeshChunk> _labelChunks;
-    void invalidateBuiltinMaterial() { if (!_material) _materialInstance = nullptr; _dirty = true; }
+    void invalidateBuiltinMaterial() { if (!_material) _materialInstance = nullptr; markRenderDirty(); }
     Material *getBuiltinMaterial() const override;
     void updateVertexColors(float opacity);
     void applySizeMode();
@@ -151,7 +151,6 @@ private:
     bool _trim{true};
     bool _grayscale{false};
     uint32_t _builtinVariant{0};
-    bool _dirty{true};
     bool _hasTransformSnapshot{false};
     Mat4 _lastWorldMatrix;
     Vec2 _lastContentSize;

@@ -39,11 +39,11 @@ public:
     void quadraticCurveTo(double a, double b, double x, double y) { _geometry.quadraticCurveTo(a, b, x, y); }
     void fill() {
         _geometry.fill();
-        ++_revision;
+        geometryChanged();
     }
     void stroke() {
         _geometry.stroke();
-        ++_revision;
+        geometryChanged();
     }
     void setLineWidth(double width) { _geometry.lineWidth = width; }
     void setLineJoin(int value) { _geometry.lineJoin = static_cast<GraphicsGeometry::LineJoin>(value); }
@@ -72,13 +72,14 @@ private:
         RenderDrawInfo draw;
     };
     void rebuildChunks();
+    void geometryChanged();
+    void onMaterialChanged() override { markRenderDirty(COLOR); }
     GraphicsGeometry _geometry;
     Graphics *_source{nullptr};         // borrowed; registered in source->_consumers
     std::vector<Graphics *> _consumers; // borrowed observers; never deleted here
     bool _useSource{false};
     IntrusivePtr<RenderEntity> _entity; // owning reference; Node::UserData also retains it while attached
     std::vector<std::unique_ptr<Chunk>> _chunks;
-    uint64_t _preparedRevision{UINT64_MAX};
     uint64_t _revision{0};
 };
 } // namespace cc

@@ -9,6 +9,7 @@
 
 namespace cc {
 Graphics::Graphics() : _entity(new RenderEntity(RenderEntityType::DYNAMIC)) {
+    markRenderDirty();
     _entity->setPrepareListener(this);
     _entity->setUseLocal(true);
     _entity->setFillColorType(FillColorType::VERTEX);
@@ -24,6 +25,7 @@ Graphics::~Graphics() {
 void Graphics::onDetach() {
     _entity->setNode(nullptr);
     _entity->setRenderTransform(nullptr);
+    UIRenderer::onDetach();
 }
 void Graphics::setNode(Node *node) {
     if (getNode() == node) return;
@@ -55,12 +57,19 @@ Material *Graphics::getBuiltinMaterial() const {
 }
 void Graphics::setFillColor(const Color &color) { _geometry.fillColor = {color.r / 255.F, color.g / 255.F, color.b / 255.F, color.a / 255.F}; }
 void Graphics::setStrokeColor(const Color &color) { _geometry.strokeColor = {color.r / 255.F, color.g / 255.F, color.b / 255.F, color.a / 255.F}; }
+void Graphics::geometryChanged() {
+    ++_revision;
+    if (!_useSource) markRenderDirty();
+    for (auto *consumer : _consumers) {
+        if (consumer->_useSource) consumer->markRenderDirty();
+    }
+}
 void Graphics::clear() {
     _geometry.clear();
-    ++_revision;
+    geometryChanged();
     _entity->clearDynamicRenderDrawInfos();
     _chunks.clear();
-    _preparedRevision = UINT64_MAX;
+    markRenderDirty();
 }
 void Graphics::setGeometrySource(Graphics *source) {
     if (source == this || source == _source) return;
@@ -70,12 +79,12 @@ void Graphics::setGeometrySource(Graphics *source) {
     }
     _source = source;
     if (_source) _source->_consumers.push_back(this);
-    _preparedRevision = UINT64_MAX;
+    markRenderDirty();
     _entity->clearDynamicRenderDrawInfos();
 }
 void Graphics::setUseGeometrySource(bool value) {
     _useSource = value;
-    _preparedRevision = UINT64_MAX;
+    markRenderDirty();
 }
 const GraphicsGeometry &Graphics::getGeometry() const {
     static const GraphicsGeometry empty;
@@ -113,11 +122,8 @@ void Graphics::rebuildChunks() {
     _chunks.resize(used);
 }
 void Graphics::prepareRenderEntity(float opacity) {
-    const auto revision = _useSource ? (_source ? _source->_revision : 0) : _revision;
-    if (_preparedRevision != revision) {
-        rebuildChunks();
-        _preparedRevision = revision;
-    }
+    if (renderDirtyFlags() & GEOMETRY) rebuildChunks();
+    clearRenderDirty();
     _entity->clearDynamicRenderDrawInfos();
     auto *material = getRenderMaterial();
     for (auto &item : _chunks) {

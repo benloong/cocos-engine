@@ -20,6 +20,7 @@
 #include "2d/renderer/UIModelProxy.h"
 #include "2d/framework/UITransform.h"
 #include "2d/framework/UIOpacity.h"
+#include "2d/framework/UIRendererManager.h"
 #include "2d/framework/UIRenderer.h"
 #include "2d/framework/RenderRoot2D.h"
 #include "2d/assets/SpriteFrame.h"
@@ -248,6 +249,9 @@
 %include "2d/framework/UITransform.h"
 %clear const std::function<void(float, float)> &;
 %include "2d/framework/UIOpacity.h"
+%ignore cc::UIRendererManager::pendingNativeRenderers;
+%ignore cc::UIRendererManager::getDirtyNativeRenderer;
+%include "2d/framework/UIRendererManager.h"
 %include "2d/framework/UIRenderer.h"
 %include "2d/framework/RenderRoot2D.h"
 %import "2d/assets/SpriteFrame.h"

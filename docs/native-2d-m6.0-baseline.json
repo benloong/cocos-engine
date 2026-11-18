@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "802914d353dd3416afb6305ccee42aa33ec316223829866bc8bc956a33a35a05"
+      "sha256": "f2f871071aabe245820cff9b9973c1edaf8fbe68e8d8449df47a1fcc04d608b0"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -31,7 +31,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "e255eb006011e1c6454ec87647c0269043d97ad7c5775e55d49bf1479390a972"
+      "sha256": "4da8d2f8ae335b72e0264ac67020316b29517901255cba3819441984eb159ef7"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -71,19 +71,19 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
-      "sha256": "c467f886f6ba0f0b7286bdd6056506150da9f995e7bcef8d16d9f0351cfcec77"
+      "sha256": "63d8945bede56ba04729910218a18a04c1c310b1c67edb4aa99e9d986a897b82"
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "a1642cc6333044ad85f37578cabf74509294da3d3a4c7219d36bdb98e0363be8"
+      "sha256": "9099d6f77f8867c84aa10eed0829a52f49b4036b7684a5c5ed4ea6213cea2198"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "c25776eabb251e92239dcbb24fbfa802f224249fb0e981d5074e3964ccff1cef"
+      "sha256": "5fa02390106ffb363d246d99a74d4dac7a94bc2771fdfa10a824754b438803df"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "d572c05729f50a8c97381e1ec8240b929c3655a415f0d5d38f582d8d4a1cf057"
+      "sha256": "00b29bee8ee0834559d5eb72158bdadba89f0c9e66899708cc830935bf51bcfb"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -103,11 +103,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "50b3655a4a11fb991ded30cec4f39ba04f52ca4b2f7e15053d9ed078765e185d"
+      "sha256": "e7f18b5260c73c623d37ab3de7f1ce7414ef719fb4a995fbe87829e85f757b5b"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "ed7b66b2d4e64aaf48da88e3e2375e00f80ad32d65732f7ae0f08ea03ed65a1a"
+      "sha256": "3f127b4faa8ea0224dd4465310f0727b703649ae71660126e4ccad1fd7ac7ccc"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -131,11 +131,15 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.cpp",
-      "sha256": "d53ba80ae8d51326b100f763db0eaa768eec4243360a227f353caeb02325bd5b"
+      "sha256": "3348fe5edaa1883256ab0e008fd5dad28c4a457cd57611cfc71a6b53409c1f00"
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "a64a2b0e1a76545b45f3514844227baa9f805ebd501d6ce653f848f2d5743c76"
+      "sha256": "05425562feedbf268b0403016f41479e1d93e8255cc13baa280a8128d6505d0a"
+    },
+    {
+      "file": "native/cocos/2d/framework/UIRendererManager.h",
+      "sha256": "169364a795dc51d2ce66344ed0ff389d280bbaf014dd9bf461d856e5fb5764fd"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
@@ -347,7 +351,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "d157dadca3af764351aad426d01e25cafaede87cbf11728f6f5420a1ca60c2a9"
+      "sha256": "f5533c7c76c6f4facb86df6c5bbee95c351d6425747af96b3787347bf22ab548"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -381,6 +385,7 @@
     "cocos/2d/components/sprite.ts": "cocos/2d/components/sprite.jsb.ts",
     "cocos/2d/components/ui-opacity.ts": "cocos/2d/components/ui-opacity.jsb.ts",
     "cocos/2d/framework/render-root-2d.ts": "cocos/2d/framework/render-root-2d.jsb.ts",
+    "cocos/2d/framework/ui-renderer-manager.ts": "cocos/2d/framework/ui-renderer-manager.jsb.ts",
     "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
     "cocos/2d/poc/native-2d-poc.ts": "cocos/2d/poc/native-2d-poc.jsb.ts",
     "cocos/2d/renderer/native-2d.ts": "cocos/2d/renderer/native-2d.jsb.ts"
@@ -421,7 +426,7 @@
       "cocos/2d/framework/render-root-2d.jsb.ts",
       "cocos/2d/framework/sprite-renderer.ts",
       "cocos/2d/framework/ui-component.ts",
-      "cocos/2d/framework/ui-renderer-manager.ts",
+      "cocos/2d/framework/ui-renderer-manager.jsb.ts",
       "cocos/2d/framework/ui-renderer.ts",
       "cocos/2d/framework/ui-transform.jsb.ts",
       "cocos/2d/index.ts",
@@ -2515,7 +2520,6 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -2524,17 +2528,7 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
-          "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
-          "cocos/2d/components/label-outline.ts",
-          "cocos/2d/components/label-shadow.ts",
-          "cocos/2d/components/label.jsb.ts",
-          "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.jsb.ts",
-          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -2542,11 +2536,10 @@
           "cocos/2d/framework/deprecated-3.6.0.ts",
           "cocos/2d/framework/deprecated.ts",
           "cocos/2d/framework/index.ts",
-          "cocos/2d/framework/native-ui-materials.ts",
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -2565,7 +2558,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -2575,8 +2567,6 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
-          "cocos/core/math/color.ts",
-          "cocos/core/math/vec2.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -4294,7 +4284,6 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -4303,17 +4292,8 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
-          "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
-          "cocos/2d/components/label-outline.ts",
-          "cocos/2d/components/label-shadow.ts",
-          "cocos/2d/components/label.jsb.ts",
-          "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -4325,7 +4305,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -4344,7 +4324,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -7295,7 +7274,6 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -7304,17 +7282,8 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
-          "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
-          "cocos/2d/components/label-outline.ts",
-          "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
-          "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.jsb.ts",
-          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -7326,7 +7295,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -7345,7 +7314,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -7355,8 +7323,6 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
-          "cocos/core/math/color.ts",
-          "cocos/core/math/vec2.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -8597,17 +8563,9 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
           "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
-          "cocos/2d/components/label-outline.ts",
-          "cocos/2d/components/label-shadow.ts",
-          "cocos/2d/components/label.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.jsb.ts",
-          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -8619,7 +8577,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -8648,8 +8606,6 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
-          "cocos/core/math/color.ts",
-          "cocos/core/math/vec2.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -10103,17 +10059,8 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
           "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
-          "cocos/2d/components/label-outline.ts",
-          "cocos/2d/components/label-shadow.ts",
-          "cocos/2d/components/label.jsb.ts",
-          "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.jsb.ts",
-          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -10125,7 +10072,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -10144,7 +10091,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -10154,8 +10100,6 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
-          "cocos/core/math/color.ts",
-          "cocos/core/math/vec2.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -12052,7 +11996,6 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -12061,17 +12004,9 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
-          "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
-          "cocos/2d/components/label-outline.ts",
-          "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
-          "cocos/2d/components/mask.jsb.ts",
           "cocos/2d/components/rich-text.jsb.ts",
-          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -12083,7 +12018,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12102,7 +12037,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -12112,8 +12046,6 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
-          "cocos/core/math/color.ts",
-          "cocos/core/math/vec2.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -12499,7 +12431,6 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -12508,17 +12439,9 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
-          "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
           "cocos/2d/components/label-outline.ts",
-          "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
-          "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.jsb.ts",
-          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -12530,7 +12453,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12549,7 +12472,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -12559,8 +12481,6 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
-          "cocos/core/math/color.ts",
-          "cocos/core/math/vec2.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -12733,7 +12653,6 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/graphics/types.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
@@ -12742,17 +12661,9 @@
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
-          "cocos/2d/components/deprecated.ts",
-          "cocos/2d/components/graphics.jsb.ts",
-          "cocos/2d/components/index.ts",
-          "cocos/2d/components/label-outline.ts",
           "cocos/2d/components/label-shadow.ts",
           "cocos/2d/components/label.jsb.ts",
-          "cocos/2d/components/mask.jsb.ts",
-          "cocos/2d/components/rich-text.jsb.ts",
-          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
-          "cocos/2d/components/ui-opacity.jsb.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
           "cocos/2d/framework/deprecated-1.2.0.ts",
@@ -12764,7 +12675,7 @@
           "cocos/2d/framework/render-root-2d.jsb.ts",
           "cocos/2d/framework/sprite-renderer.ts",
           "cocos/2d/framework/ui-component.ts",
-          "cocos/2d/framework/ui-renderer-manager.ts",
+          "cocos/2d/framework/ui-renderer-manager.jsb.ts",
           "cocos/2d/framework/ui-renderer.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12783,7 +12694,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -12793,8 +12703,6 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
-          "cocos/core/math/color.ts",
-          "cocos/core/math/vec2.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -16160,20 +16068,38 @@
       "loops": []
     },
     {
-      "file": "cocos/2d/framework/ui-renderer-manager.ts",
-      "sha256": "389fd1807a07703e614ded5944a2769ca6744aa8d699e93ffdf736f6aaed153d",
-      "printedCodeLines": 48,
-      "runtimeImports": [
-        "internal:constants",
-        "../../core",
-        "../components",
-        "./ui-renderer"
-      ],
+      "file": "cocos/2d/framework/ui-renderer-manager.jsb.ts",
+      "sha256": "bab172a874bba13e635470e4ca155ba9d34bfa895be3e84d4cc04d7e1052c4e8",
+      "printedCodeLines": 79,
+      "runtimeImports": [],
       "frameMethods": [],
-      "nativeCalls": [],
+      "nativeCalls": [
+        {
+          "expression": "this._native!.removeRenderer",
+          "line": 56
+        },
+        {
+          "expression": "this._native!.markDirtyRenderer",
+          "line": 64
+        },
+        {
+          "expression": "this._native!.takeDirtyRenderers().map",
+          "line": 76
+        },
+        {
+          "expression": "this._native!.takeDirtyRenderers",
+          "line": 76
+        },
+        {
+          "expression": "this._native!.markDirtyRenderer",
+          "line": 86
+        }
+      ],
       "allocations": [],
       "loops": [
-        67
+        73,
+        77,
+        83
       ]
     },
     {

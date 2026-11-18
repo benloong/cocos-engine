@@ -73,11 +73,11 @@ public:
     void setFontSize(float size);
     float getActualFontSize() const { return _actualFontSize; }
     void setActualFontSize(float size) { _actualFontSize = size; }
-    void setUnderlineHeight(float height) { if (_underlineHeight != height) { _underlineHeight = height; _dirty = true; } }
+    void setUnderlineHeight(float height) { if (_underlineHeight != height) { _underlineHeight = height; markRenderDirty(); } }
     float getUnderlineHeight() const { return _underlineHeight; }
-    void setIsBold(bool bold) { if (_isBold != bold) { _isBold = bold; updateFont(); _dirty = true; } }
-    void setIsItalic(bool italic) { if (_isItalic != italic) { _isItalic = italic; updateFont(); _dirty = true; } }
-    void setIsUnderline(bool underline) { if (_isUnderline != underline) { _isUnderline = underline; _dirty = true; } }
+    void setIsBold(bool bold) { if (_isBold != bold) { _isBold = bold; updateFont(); markRenderDirty(); } }
+    void setIsItalic(bool italic) { if (_isItalic != italic) { _isItalic = italic; updateFont(); markRenderDirty(); } }
+    void setIsUnderline(bool underline) { if (_isUnderline != underline) { _isUnderline = underline; markRenderDirty(); } }
     bool isBold() const { return _isBold; }
     bool isItalic() const { return _isItalic; }
     bool isUnderline() const { return _isUnderline; }
@@ -179,7 +179,6 @@ private:
     float _shadowBlur{0.0F};
     float _shadowOffsetX{0.0F};
     float _shadowOffsetY{0.0F};
-    bool _dirty{true};
     float _layoutWidth{-1.F};
     float _layoutHeight{-1.F};
     float _lastTextureWidth{0.0F};
