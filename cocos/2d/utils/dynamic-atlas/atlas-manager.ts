@@ -53,6 +53,7 @@ export class DynamicAtlasManager extends System {
     private _textureBleeding = true;
 
     private _enabled = false;
+    private _resetting = false;
 
     constructor () {
         super();
@@ -149,6 +150,13 @@ export class DynamicAtlasManager extends System {
         this._maxFrameSize = value;
     }
 
+    private releasePage (page: Atlas): void {
+        const index = this._atlases.indexOf(page);
+        if (index < 0) return;
+        this._atlases.splice(index, 1);
+        page.destroy();
+    }
+
     private beforeSceneLoad (): void {
         this.reset();
     }
@@ -175,7 +183,7 @@ export class DynamicAtlasManager extends System {
         y: number;
         texture: DynamicAtlasTexture;
     } | null {
-        if (EDITOR_NOT_IN_PREVIEW || !this._enabled || !spriteFrame || spriteFrame.original || !spriteFrame.packable) return null;
+        if (EDITOR_NOT_IN_PREVIEW || !this._enabled || this._resetting || !spriteFrame || spriteFrame.original || !spriteFrame.packable) return null;
 
         const texture = spriteFrame.texture;
         if (!(texture instanceof Texture2D) || texture.isCompressed || !texture.image
@@ -199,7 +207,7 @@ export class DynamicAtlasManager extends System {
             return null;
         }
 
-        const atlas = new Atlas(this._textureSize, this._textureSize);
+        const atlas = new Atlas(this._textureSize, this._textureSize, (page) => this.releasePage(page));
         const frame = atlas.insertSpriteFrame(spriteFrame, texture);
         if (frame) {
             this._atlases.push(atlas);
@@ -219,10 +227,14 @@ export class DynamicAtlasManager extends System {
      * @method reset
     */
     public reset (): void {
-        for (let i = 0, l = this._atlases.length; i < l; i++) {
-            this._atlases[i].destroy();
+        if (this._resetting) return;
+        this._resetting = true;
+        const pages = this._atlases.splice(0);
+        try {
+            for (const page of pages) page.destroy();
+        } finally {
+            this._resetting = false;
         }
-        this._atlases.length = 0;
     }
 
     /**
@@ -236,15 +248,7 @@ export class DynamicAtlasManager extends System {
      * @param spriteFrame  the sprite frame that will be removed from the atlas.
      */
     public deleteAtlasSpriteFrame (spriteFrame: SpriteFrame): void {
-        if (!spriteFrame.original) return;
-
-        let atlas: Atlas;
-        for (let i = this._atlases.length - 1; i >= 0; i--) {
-            atlas = this._atlases[i];
-            atlas.removeSpriteFrame(spriteFrame);
-        }
-        const texture = spriteFrame.original._texture;
-        this.deleteAtlasTexture(texture);
+        for (const page of [...this._atlases]) page.removeSpriteFrame(spriteFrame);
     }
 
     /**
@@ -258,16 +262,8 @@ export class DynamicAtlasManager extends System {
      * @param texture  the texture that will be removed from the atlas.
      */
     public deleteAtlasTexture (texture: TextureBase): void {
-        if (texture) {
-            for (let i = this._atlases.length - 1; i >= 0; i--) {
-                this._atlases[i].deleteInnerTexture(texture as Texture2D);
-
-                if (this._atlases[i].isEmpty()) {
-                    this._atlases[i].destroy();
-                    this._atlases.splice(i, 1);
-                }
-            }
-        }
+        if (!(texture instanceof Texture2D)) return;
+        for (const page of [...this._atlases]) page.deleteInnerTexture(texture);
     }
 
     /**

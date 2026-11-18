@@ -83,9 +83,27 @@ export class M4Probe {
             if (!first.original || !shared.original || first.texture !== shared.texture || fallback.atlasCount !== 1) {
                 throw new Error('Full-page shared texture reuse failed');
             }
-            fallback.reset();
-            if (first.original || shared.original || first.texture !== texture || shared.texture !== texture) {
-                throw new Error('Fallback manager did not restore shared frames');
+            const packedClone = first.clone();
+            try {
+                const page = first.texture;
+                fallback.deleteAtlasSpriteFrame(first);
+                if (first.texture !== texture || first.original || shared.texture !== page || packedClone.texture !== page || fallback.atlasCount !== 1) {
+                    throw new Error('Deleting a packed frame released a shared upload');
+                }
+                shared.destroy();
+                if (packedClone.texture !== page || fallback.atlasCount !== 1) throw new Error('Packed clone lost its atlas page');
+                fallback.reset();
+                if (packedClone.original || packedClone.texture !== texture || fallback.atlasCount !== 0) {
+                    throw new Error('Reset did not restore the packed clone');
+                }
+                fallback.packToDynamicAtlas(null, packedClone);
+                fallback.deleteAtlasTexture(texture);
+                if (packedClone.original || packedClone.texture !== texture || fallback.atlasCount !== 0) {
+                    throw new Error('Deleting an atlas source did not restore the packed clone');
+                }
+                console.log('M6_ATLAS_LIFECYCLE_PASS');
+            } finally {
+                packedClone.destroy();
             }
             console.log('M6_ATLAS_FALLBACK_PASS');
         } finally {

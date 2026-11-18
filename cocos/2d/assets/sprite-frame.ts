@@ -25,6 +25,7 @@
  THE SOFTWARE.
 */
 
+import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { ccclass } from 'cc.decorator';
 import { EDITOR, NODEJS, TEST, BUILD } from 'internal:constants';
 import { Rect, Size, Vec2, Vec3, Vec4, cclegacy, errorID, warnID, js, v3, mat4, rect, v4, v2, size } from '../../core';
@@ -940,9 +941,7 @@ export class SpriteFrame extends Asset {
     }
 
     public destroy (): boolean {
-        if (this._packable && dynamicAtlasManager) {
-            dynamicAtlasManager.deleteAtlasSpriteFrame(this);
-        }
+        Atlas.releaseFrame(this);
         return super.destroy();
     }
 
@@ -1164,6 +1163,7 @@ export class SpriteFrame extends Asset {
         this._rect.y = this._original._y;
         this._texture = this._original._texture;
         this._original = null;
+        Atlas.releaseFrame(this);
         this._calculateUV();
     }
 
@@ -1363,6 +1363,7 @@ export class SpriteFrame extends Asset {
         } else {
             sp._original = null;
         }
+        Atlas.trackClone(self, sp);
         sp._packable = self._packable;
         sp._pixelsToUnit = self._pixelsToUnit;
         sp._pivot.set(self._pivot);
@@ -1381,7 +1382,11 @@ export class SpriteFrame extends Asset {
 
     protected _refreshTexture (texture: TextureBase): void {
         const self = this;
-        self._texture = texture;
+        if (self._texture !== texture) {
+            self._original = null;
+            self._texture = texture;
+            Atlas.releaseFrame(self);
+        }
         const tex = self._texture;
         const config: ISpriteFrameInitInfo = {};
         let isReset = false;

@@ -1,3 +1,4 @@
+import { director, DirectorEvent } from '../../cocos/game';
 import { Sprite, SpriteFrame } from '../../cocos/2d';
 import { DynamicAtlasManager, dynamicAtlasManager } from '../../cocos/2d/utils/dynamic-atlas/atlas-manager';
 import { ImageAsset, RenderTexture, Texture2D } from '../../cocos/asset/assets';
@@ -150,5 +151,67 @@ test('unpackable sources and failed placement leave existing page capacity usabl
         expect(small.original).toBeNull();
     } finally {
         manager.enabled = false;
+    }
+});
+
+test('removing packed frames preserves shared uploads and scene launch restores clones', () => {
+    const manager = new DynamicAtlasManager();
+    manager.textureSize = 16;
+    manager.maxAtlasCount = 1;
+    manager.enabled = true;
+    const texture = new Texture2D();
+    setPixels(texture, 4, 4);
+    const source = new SpriteFrame();
+    source.texture = texture;
+    source.packable = true;
+    const peer = source.clone();
+    manager.packToDynamicAtlas(null, source);
+    manager.packToDynamicAtlas(null, peer);
+    const clone = source.clone();
+    const page = source.texture;
+    expect(clone.texture).toBe(page);
+
+    try {
+        manager.deleteAtlasSpriteFrame(source);
+        expect(source.texture).toBe(texture);
+        expect(peer.texture).toBe(page);
+        expect(clone.texture).toBe(page);
+        expect(manager.atlasCount).toBe(1);
+        peer.destroy();
+        expect(clone.texture).toBe(page);
+        expect(manager.atlasCount).toBe(1);
+
+        director.emit(DirectorEvent.BEFORE_SCENE_LAUNCH);
+        expect(clone.texture).toBe(texture);
+        expect(clone.original).toBeNull();
+        expect(manager.atlasCount).toBe(0);
+
+        manager.packToDynamicAtlas(null, clone);
+        const copied = clone.clone();
+        manager.deleteAtlasTexture(texture);
+        expect(clone.texture).toBe(texture);
+        expect(copied.texture).toBe(texture);
+        expect(manager.atlasCount).toBe(0);
+        copied.destroy();
+
+        manager.packToDynamicAtlas(null, clone);
+        clone._resetDynamicAtlasFrame();
+        expect(clone.original).toBeNull();
+        expect(manager.atlasCount).toBe(0);
+
+        const replacement = new Texture2D();
+        setPixels(replacement, 4, 4);
+        manager.packToDynamicAtlas(null, clone);
+        clone.texture = replacement;
+        expect(clone.texture).toBe(replacement);
+        expect(clone.original).toBeNull();
+        expect(manager.atlasCount).toBe(0);
+        clone.texture = texture;
+        replacement.destroy();
+    } finally {
+        manager.enabled = false;
+        source.destroy();
+        clone.destroy();
+        texture.destroy();
     }
 });

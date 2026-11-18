@@ -70,6 +70,7 @@ try {
     }
 
     if (-not (Select-String -LiteralPath $log -SimpleMatch "M6_ATLAS_FALLBACK_PASS" -Quiet)) { throw "Dynamic atlas fallback probe missing" }
+    if (-not (Select-String -LiteralPath $log -SimpleMatch "M6_ATLAS_LIFECYCLE_PASS" -Quiet)) { throw "Dynamic atlas lifecycle probe missing" }
     foreach ($file in $captureFiles) {
         if (-not (Test-Path -LiteralPath $file) -or (Get-Item -LiteralPath $file).Length -ne 262144) { throw "Missing/invalid atlas capture: $file" }
     }

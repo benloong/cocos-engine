@@ -22,6 +22,7 @@
  THE SOFTWARE.
 */
 
+import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { cclegacy, js, Rect, Size, Vec2, Vec4 } from '../../core';
 import '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
@@ -81,15 +82,25 @@ spriteFrameProto._ctor = function () {
     jsb.Asset.prototype._ctor.apply(this, arguments);
 };
 
+function detachReplacedTexture (frame: any, texture: TextureBase | null): void {
+    if (frame.getTexture() === texture) return;
+    if (frame.hasDynamicAtlasFrame()) frame.resetDynamicAtlasFrame();
+    Atlas.releaseFrame(frame);
+}
+
 Object.defineProperties(spriteFrameProto, {
     texture: {
         enumerable: true, configurable: true,
         get (): TextureBase | null { return this.getTexture(); },
-        set (value: TextureBase | null) { this.resetWithTexture(value); this._calculateUV(); },
+        set (value: TextureBase | null) {
+            detachReplacedTexture(this, value);
+            this.resetWithTexture(value);
+            this._calculateUV();
+        },
     },
     _textureSource: {
         enumerable: true, configurable: true,
-        set (value: TextureBase | null) { this.loadTexture(value); this._calculateUV(); },
+        set (value: TextureBase | null) { detachReplacedTexture(this, value); this.loadTexture(value); this._calculateUV(); },
     },
     rect: {
         enumerable: true, configurable: true,
@@ -158,6 +169,7 @@ spriteFrameProto._setDynamicAtlasFrame = function (frame): void {
 spriteFrameProto._resetDynamicAtlasFrame = function (): void {
     if (!this.hasDynamicAtlasFrame()) return;
     this.resetDynamicAtlasFrame();
+    Atlas.releaseFrame(this);
     this._calculateUV();
 };
 spriteFrameProto._calculateUV = function (): void {
@@ -178,6 +190,7 @@ spriteFrameProto.getHash = function (): number { return this.getTexture()?.getHa
 spriteFrameProto.getSamplerInfo = function (): any { return this.getTexture()?.getSamplerInfo() ?? null; };
 
 spriteFrameProto.reset = function (info?: ISpriteFrameInitInfo, clearData = false): void {
+    if (info?.texture) detachReplacedTexture(this, info.texture);
     this.resetFrame(clearData);
     if (info) {
         if (info.texture) this.resetTexture(info.texture);
@@ -194,9 +207,16 @@ spriteFrameProto.reset = function (info?: ISpriteFrameInitInfo, clearData = fals
     this._calculateUV();
 };
 
+const nativeDestroy = spriteFrameProto.destroy;
+spriteFrameProto.destroy = function (): boolean {
+    Atlas.releaseFrame(this);
+    return nativeDestroy.call(this);
+};
+
 spriteFrameProto.clone = function (): SpriteFrame {
     const frame = new SpriteFrame();
     (frame as any).copyFrom(this);
+    Atlas.trackClone(this, frame);
     return frame;
 };
 

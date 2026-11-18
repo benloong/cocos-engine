@@ -26,8 +26,8 @@ import { PixelFormat } from '../../../asset/assets/asset-enum';
 import { ImageAsset } from '../../../asset/assets/image-asset';
 import { Texture2D } from '../../../asset/assets/texture-2d';
 import { BufferTextureCopy } from '../../../gfx';
-import { cclegacy, js, warnID } from '../../../core';
-import { SpriteFrame } from '../../assets/sprite-frame';
+import { cclegacy, warnID } from '../../../core';
+import type { SpriteFrame } from '../../assets/sprite-frame';
 
 const space = 2;
 
@@ -36,6 +36,21 @@ function drawTextureAt (texture: DynamicAtlasTexture, image: ImageAsset, x: numb
 }
 
 export class Atlas {
+    // The manager owns the page. The page owns the records of frames using it.
+    private static readonly _owners = new WeakMap<SpriteFrame, Atlas>();
+
+    public static trackClone (source: SpriteFrame, clone: SpriteFrame): void {
+        const page = Atlas._owners.get(source);
+        const texture = page?._frames.get(source);
+        if (page && texture && clone.original && clone.texture === page._texture) {
+            page.trackFrame(clone, texture);
+        }
+    }
+
+    public static releaseFrame (frame: SpriteFrame): void {
+        Atlas._owners.get(frame)?.removeSpriteFrame(frame);
+    }
+
     public static fits (texture: Texture2D, width: number, height: number): boolean {
         return texture.width + space * 2 <= width && texture.height + space * 2 <= height;
     }
@@ -49,12 +64,12 @@ export class Atlas {
     private _innerTextureInfos: Record<string, {
             x: number,
             y: number,
-            texture: Texture2D,
+            frames: Set<SpriteFrame>,
         }> = {};
-    private _innerSpriteFrames: SpriteFrame[] = [];
+    private readonly _frames = new Map<SpriteFrame, Texture2D>();
     private _count: number = 0;
 
-    constructor (width: number, height: number) {
+    constructor (width: number, height: number, private readonly _onEmpty: (atlas: Atlas) => void) {
         const texture = new DynamicAtlasTexture();
         texture.initWithSize(width, height);
         this._texture = texture;
@@ -129,7 +144,7 @@ export class Atlas {
             this._innerTextureInfos[texture.getId()] = {
                 x: x,
                 y: y,
-                texture,
+                frames: new Set(),
             };
 
             this._count++;
@@ -148,7 +163,7 @@ export class Atlas {
             texture: this._texture,
         };
 
-        this._innerSpriteFrames.push(spriteFrame);
+        this.trackFrame(spriteFrame, texture);
 
         return frame;
     }
@@ -157,24 +172,37 @@ export class Atlas {
         return !!this._innerTextureInfos[texture.getId()];
     }
 
-    public removeSpriteFrame (spriteFrame: SpriteFrame): void {
-        js.array.fastRemove(this._innerSpriteFrames, spriteFrame);
+    private trackFrame (frame: SpriteFrame, texture: Texture2D): void {
+        Atlas._owners.set(frame, this);
+        this._frames.set(frame, texture);
+        this._innerTextureInfos[texture.getId()].frames.add(frame);
     }
 
-    /**
-     * @en
-     * Delete a texture from the atlas.
-     *
-     * @zh
-     * 从动态图集中删除某张纹理。
-     *
-     * @method deleteAtlasTexture
-     * @param texture  the texture that will be removed from the atlas.
-     */
+    public removeSpriteFrame (frame: SpriteFrame): void {
+        const source = this._frames.get(frame);
+        if (!source) return;
+        const id = source.getId();
+        const info = this._innerTextureInfos[id];
+        this._frames.delete(frame);
+        if (Atlas._owners.get(frame) === this) Atlas._owners.delete(frame);
+        info.frames.delete(frame);
+        if (info.frames.size === 0) {
+            delete this._innerTextureInfos[id];
+            --this._count;
+        }
+        this.restoreFrame(frame);
+        if (this.isEmpty()) this._onEmpty(this);
+    }
+
     public deleteInnerTexture (texture: Texture2D): void {
-        if (texture && this._innerTextureInfos[texture.getId()]) {
-            delete this._innerTextureInfos[texture.getId()];
-            this._count--;
+        const frames = this._innerTextureInfos[texture.getId()]?.frames;
+        if (!frames) return;
+        for (const frame of Array.from(frames)) this.removeSpriteFrame(frame);
+    }
+
+    private restoreFrame (frame: SpriteFrame): void {
+        if (frame.isValid && frame.original && frame.texture === this._texture) {
+            frame._resetDynamicAtlasFrame();
         }
     }
 
@@ -205,17 +233,14 @@ export class Atlas {
         this._y = space;
         this._nextY = space;
 
-        const frames = this._innerSpriteFrames;
-        for (let i = 0, l = frames.length; i < l; i++) {
-            const frame = frames[i];
-            if (!frame.isValid) {
-                continue;
-            }
-            frame._resetDynamicAtlasFrame();
-        }
-        this._innerSpriteFrames.length = 0;
+        const frames = Array.from(this._frames.keys());
+        this._frames.clear();
         this._innerTextureInfos = {};
         this._count = 0;
+        for (const frame of frames) {
+            if (Atlas._owners.get(frame) === this) Atlas._owners.delete(frame);
+        }
+        for (const frame of frames) this.restoreFrame(frame);
     }
 
     /**

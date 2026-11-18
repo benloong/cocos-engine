@@ -8,6 +8,7 @@ const defaults = {
     PixelsToUnit: 100, PivotX: 0.5, PivotY: 0.5, MeshType: 0, AtlasUuid: '',
 };
 class NativeFrame {
+    hasDynamicAtlasFrame (): boolean { return false; }
     data: Record<string, any> = { ...defaults };
     texture: any;
     emit = jest.fn();

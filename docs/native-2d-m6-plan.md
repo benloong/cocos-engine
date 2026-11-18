@@ -65,6 +65,7 @@
 - [x] BMFont/LabelAtlas 帧转换：2307 组 Web 帧矩形、顶点位置和 UV 对照通过，真实 GPU 覆盖非零帧原点、trim/offset 和旋转组合。原生 UI 批次持有 IA 和使用的缓冲区直至清理，确定性回归和完整工程门禁通过，见[帧转换报告](./native-2d-m6.1-bitmap-frame.md)。
 - [ ] 字体复杂布局与资产边界：补充平面 Unicode、bidi/shaping、任意 mesh 和其余 packed 帧状态组合、其余字体配置/元数据动态入口，以及真实旧资产/场景/Prefab 和资源生命周期矩阵继续验收；基础布局通过不关闭字体终态项。
 - [x] 动态图集入口回退：拒绝不可上传的来源，满页失败保留剩余空间，同源帧复用已有页。定向 Jest 和真实 Windows Debug/Web 回退探针通过，100 份 RGBA 逐字节一致，见[回退报告](./native-2d-m6.1-atlas-fallback.md)。
+- [x] 动态图集帧所有权：删除单帧保留共享源，打包克隆随页跟踪，删除源纹理与重置先恢复帧后释放页。真实 Windows Debug/Web 探针和 100 份 RGBA 对照通过，见[所有权报告](./native-2d-m6.1-atlas-lifecycle.md)。
 - [ ] 动态合图完整验收：Sprite/Mask 和受控 BMFont/LabelAtlas GPU 采样已有证据；自动触发、压缩/不可打包来源、图集满回退、完整资源/生命周期与跨平台仍待验收。manager/Atlas 排布迁移须有独立范围结论，不能默认为完成。
 - [ ] 补旧资产/场景/prefab 加载、instantiate/clone、延迟依赖解析、重复加载释放的原生回归。
 

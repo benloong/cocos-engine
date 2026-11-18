@@ -2560,11 +2560,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -4337,11 +4339,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -7336,11 +7340,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -8627,11 +8633,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -10131,11 +10139,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -12087,11 +12097,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -12532,11 +12544,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -12764,11 +12778,13 @@
           "cocos/2d/renderer/render-entity.ts",
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
-          "cocos/2d/renderer/vertex-format.ts"
+          "cocos/2d/renderer/vertex-format.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/index.jsb.ts",
@@ -13123,14 +13139,17 @@
         "within2d": [
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
-          "cocos/2d/assets/sprite-frame.jsb.ts"
+          "cocos/2d/assets/sprite-frame.jsb.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/gfx/index.jsb.ts",
           "cocos/native-binding/decorators.ts"
         ],
         "unresolved": []
@@ -13174,14 +13193,17 @@
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
-          "cocos/2d/assets/sprite-frame.jsb.ts"
+          "cocos/2d/assets/sprite-frame.jsb.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/gfx/index.jsb.ts",
           "cocos/native-binding/decorators.ts"
         ],
         "unresolved": []
@@ -14256,14 +14278,17 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assets/sprite-frame.jsb.ts"
+          "cocos/2d/assets/sprite-frame.jsb.ts",
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/gfx/index.jsb.ts",
           "cocos/native-binding/decorators.ts"
         ],
         "unresolved": []
@@ -14639,9 +14664,10 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "a85668ae8ba03a04e99c11ef56471cc8ed41cb47f94e8be07a0a805f08f79cca",
-      "printedCodeLines": 230,
+      "sha256": "3eb8d35f6ac55b1e37c861b85cc1fec4d33e97cd65efa775e348a959aa137c02",
+      "printedCodeLines": 251,
       "runtimeImports": [
+        "../utils/dynamic-atlas/atlas",
         "../../core",
         "../../asset/assets/asset",
         "../../asset/assets/texture-base",
@@ -14653,19 +14679,20 @@
       "nativeCalls": [
         {
           "expression": "jsb.Asset.prototype._ctor.apply",
-          "line": 81
+          "line": 82
         }
       ],
       "allocations": [],
       "loops": [
-        68
+        69
       ]
     },
     {
       "file": "cocos/2d/assets/sprite-frame.ts",
-      "sha256": "75d5e5e818ad681c11b9dc71b37405c95a6db0f081499f5a551bad48d25e1f57",
-      "printedCodeLines": 929,
+      "sha256": "53302796a237e88f8f2b9c975f715d50bb06203b8e54a941278da1e3c192efd0",
+      "printedCodeLines": 934,
       "runtimeImports": [
+        "../utils/dynamic-atlas/atlas",
         "cc.decorator",
         "internal:constants",
         "../../core",
@@ -14683,13 +14710,13 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        982,
-        984,
-        1002,
-        1004,
+        981,
+        983,
+        1001,
+        1003,
         1218,
         1320,
-        1536
+        1541
       ]
     },
     {
@@ -16798,8 +16825,8 @@
     },
     {
       "file": "cocos/2d/utils/dynamic-atlas/atlas-manager.ts",
-      "sha256": "f7e8bed759f85f7304d42e2094f1e245d0d28914e2fb17c9095293d2181b042c",
-      "printedCodeLines": 147,
+      "sha256": "7767b1a86acde99ca7cb5b706c2f38bc8e0fa0ba8b9a61c8988542bbc310f809",
+      "printedCodeLines": 150,
       "runtimeImports": [
         "internal:constants",
         "../../../core",
@@ -16814,29 +16841,30 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        194,
-        222,
-        242,
-        262
+        202,
+        234,
+        251,
+        266
       ]
     },
     {
       "file": "cocos/2d/utils/dynamic-atlas/atlas.ts",
-      "sha256": "08411483ccdf4c8ace23980229ca05eebc749b575d5420018977d2e056bcea30",
-      "printedCodeLines": 167,
+      "sha256": "ee8da962cc7071dca25eb57131cb834cb57c3756a1941b172dd28d388a817e8b",
+      "printedCodeLines": 203,
       "runtimeImports": [
         "../../../asset/assets/asset-enum",
         "../../../asset/assets/image-asset",
         "../../../asset/assets/texture-2d",
         "../../../gfx",
-        "../../../core",
-        "../../assets/sprite-frame"
+        "../../../core"
       ],
       "frameMethods": [],
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        209
+        200,
+        240,
+        243
       ]
     },
     {
