@@ -30,15 +30,12 @@ Color.BLACK=new Color(0,0,0,255);Color.WHITE=new Color();Color.prototype.clone=f
 class UIRenderer {
  constructor(){this.isValid=true;this._materials=[];this._materialInstances=[];this._color=new Color();this._customMaterial=null;this._srcBlendFactor=2;this._dstBlendFactor=4;this.priority=0;this.enabledInHierarchy=true;}
 }
-const atlasRequests = [];
-const dynamicAtlasManager = { packToDynamicAtlas(component, frame) { atlasRequests.push({component, frame}); } };
 function require(id){
  if(id==='internal:constants')return {EDITOR:true};
  if(id==='cc.decorator')return new Proxy({}, {get:(_,name)=>['serializable','executeInEditMode','disallowMultiple','editable'].includes(name)?()=>{}:()=>()=>{}});
  if(id==='../../core')return {cclegacy,ccenum:()=>{},warnID:()=>{},Color,Vec2};
  if(id==='../assets/font')return {Font:jsb.Font};
  if(id==='../assets/bitmap-font')return {BitmapFont:jsb.BitmapFont};
- if(id==='../utils/dynamic-atlas/atlas-manager')return {dynamicAtlasManager};
  if(id==='../../core/math/vec2')return {Vec2};
  if(id==='../../core/math/color')return {Color};
  if(id==='../assets/sprite-frame')return {SpriteFrame:jsb.SpriteFrame};
@@ -94,7 +91,6 @@ sprite.customMaterial=null;
 check(sprite.getSharedMaterial(0)===gray,'custom clear explicitly restores builtin');
 const frame=new jsb.SpriteFrame();
 sprite.spriteFrame=frame;check(events===1,'frame without texture retained with editor event');
-check(atlasRequests.length===1&&atlasRequests[0].component===sprite&&atlasRequests[0].frame===frame,'active replacement requests automatic atlas packing');
 const texture=new jsb.Texture2D();texture.create(4,4);frame.resetWithTexture(texture);
 sprite._native.prepare(1);check(transform.getWidth()===4,'late texture/frame update');
 const spriteAssembler=assemblerExports.spriteAssembler.getAssembler(sprite);

@@ -45,6 +45,18 @@ try {
     $bitmap = $bitmapLine[0].Line.Substring($bitmapLine[0].Line.IndexOf('M6_BITMAP_GPU_READY ') + 20) | ConvertFrom-Json
     if ($bitmap.captures -ne 12 -or $bitmap.native -ne $true -or $bitmap.checks.Count -ne 4 -or
         @($bitmap.checks | Where-Object { -not $_.gpuOnly -or $_.quads -ne 2 }).Count) { throw 'Bitmap GPU submission checks failed' }
+    $bitmapCaptures = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_CAPTURE ' | ForEach-Object {
+        ($_.Line.Substring($_.Line.IndexOf('M6_BITMAP_CAPTURE ') + 18) | ConvertFrom-Json).name
+    })
+    foreach ($kind in @('bitmap', 'atlas')) {
+        foreach ($rotation in @('flat', 'rotated')) {
+            foreach ($stage in @('source', 'disabled', 'reset')) {
+                if (@($bitmapCaptures | Where-Object { $_ -eq "$kind-$rotation-$stage" }).Count -ne 1) {
+                    throw "Bitmap source fallback capture missing or duplicated: $kind-$rotation-$stage"
+                }
+            }
+        }
+    }
     $layoutMetrics = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LAYOUT ' | ForEach-Object {
         $_.Line.Substring($_.Line.IndexOf('M6_BITMAP_LAYOUT ') + 17) | ConvertFrom-Json
     })

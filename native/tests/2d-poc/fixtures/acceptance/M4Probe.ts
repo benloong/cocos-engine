@@ -68,6 +68,21 @@ export class M4Probe {
         source.packable = false;
         dynamicAtlasManager.enabled = true;
         try {
+            if (sys.isNative) {
+                if (dynamicAtlasManager.enabled) throw new Error('JSB Native dynamic atlas accepted enable');
+                group.active = true;
+                await wait();
+                sprite.spriteFrame = frames[3];
+                mask.spriteFrame = frames[4];
+                label.font = fonts[1];
+                dynamicAtlasManager.packToDynamicAtlas(sprite, frames[3]);
+                await wait();
+                if (dynamicAtlasManager.atlasCount !== 0 || frames.some(frame => frame.original || frame.texture !== texture)) {
+                    throw new Error('JSB Native component changed source texture with atlas disabled');
+                }
+                console.log('M6_ATLAS_NATIVE_DISABLED_PASS');
+                return;
+            }
             await wait();
             if (frames.some(frame => frame.original)) throw new Error('Inactive UI packed its frames');
             group.active = true;
@@ -92,6 +107,65 @@ export class M4Probe {
             await wait();
             for (const font of fonts) font.destroy();
             for (const frame of frames) frame.destroy();
+        }
+    }
+
+    private static verifyWebFallback (frame: SpriteFrame, spriteMaskFrame: SpriteFrame): void {
+        // The page fits one 8x8 upload with its required padding.
+        const fallback = new DynamicAtlasManager();
+        fallback.textureSize = 12;
+        fallback.maxAtlasCount = 1;
+        fallback.enabled = true;
+        const first = frame.clone();
+        const shared = frame.clone();
+        const oversized = spriteMaskFrame.clone();
+        const gpuOnly = new Texture2D();
+        gpuOnly.reset({ width: 4, height: 4, format: Texture2D.PixelFormat.RGBA8888 });
+        const gpuFrame = new SpriteFrame();
+        gpuFrame.texture = gpuOnly;
+        gpuFrame.packable = true;
+        try {
+            oversized.packable = true;
+            fallback.packToDynamicAtlas(null, oversized);
+            fallback.packToDynamicAtlas(null, gpuFrame);
+            if (fallback.atlasCount !== 0 || oversized.original || gpuFrame.original) {
+                throw new Error('Invalid source changed a frame or allocated a page');
+            }
+            fallback.packToDynamicAtlas(null, first);
+            fallback.packToDynamicAtlas(null, shared);
+            if (!first.original || !shared.original || first.texture !== shared.texture || fallback.atlasCount !== 1) {
+                throw new Error('Full-page shared texture reuse failed');
+            }
+            const packedClone = first.clone();
+            try {
+                const page = first.texture;
+                fallback.deleteAtlasSpriteFrame(first);
+                if (first.texture !== frame.texture || first.original || shared.texture !== page || packedClone.texture !== page || fallback.atlasCount !== 1) {
+                    throw new Error('Deleting a packed frame released a shared upload');
+                }
+                shared.destroy();
+                if (packedClone.texture !== page || fallback.atlasCount !== 1) throw new Error('Packed clone lost its atlas page');
+                fallback.reset();
+                if (packedClone.original || packedClone.texture !== frame.texture || fallback.atlasCount !== 0) {
+                    throw new Error('Reset did not restore the packed clone');
+                }
+                fallback.packToDynamicAtlas(null, packedClone);
+                fallback.deleteAtlasTexture(frame.texture);
+                if (packedClone.original || packedClone.texture !== frame.texture || fallback.atlasCount !== 0) {
+                    throw new Error('Deleting an atlas source did not restore the packed clone');
+                }
+                console.log('M6_ATLAS_LIFECYCLE_PASS');
+            } finally {
+                packedClone.destroy();
+            }
+            console.log('M6_ATLAS_FALLBACK_PASS');
+        } finally {
+            fallback.enabled = false;
+            first.destroy();
+            shared.destroy();
+            oversized.destroy();
+            gpuFrame.destroy();
+            gpuOnly.destroy();
         }
     }
 
@@ -129,62 +203,7 @@ export class M4Probe {
         spriteMaskFrame.rect = new Rect(0, 0, 64, 64);
         spriteMaskFrame.originalSize = new Size(64, 64);
 
-        // The page fits one 8x8 upload with its required padding.
-        const fallback = new DynamicAtlasManager();
-        fallback.textureSize = 12;
-        fallback.maxAtlasCount = 1;
-        fallback.enabled = true;
-        const first = frame.clone();
-        const shared = frame.clone();
-        const oversized = spriteMaskFrame.clone();
-        const gpuOnly = new Texture2D();
-        gpuOnly.reset({ width: 4, height: 4, format: Texture2D.PixelFormat.RGBA8888 });
-        const gpuFrame = new SpriteFrame();
-        gpuFrame.texture = gpuOnly;
-        gpuFrame.packable = true;
-        try {
-            oversized.packable = true;
-            fallback.packToDynamicAtlas(null, oversized);
-            fallback.packToDynamicAtlas(null, gpuFrame);
-            if (fallback.atlasCount !== 0 || oversized.original || gpuFrame.original) {
-                throw new Error('Invalid source changed a frame or allocated a page');
-            }
-            fallback.packToDynamicAtlas(null, first);
-            fallback.packToDynamicAtlas(null, shared);
-            if (!first.original || !shared.original || first.texture !== shared.texture || fallback.atlasCount !== 1) {
-                throw new Error('Full-page shared texture reuse failed');
-            }
-            const packedClone = first.clone();
-            try {
-                const page = first.texture;
-                fallback.deleteAtlasSpriteFrame(first);
-                if (first.texture !== texture || first.original || shared.texture !== page || packedClone.texture !== page || fallback.atlasCount !== 1) {
-                    throw new Error('Deleting a packed frame released a shared upload');
-                }
-                shared.destroy();
-                if (packedClone.texture !== page || fallback.atlasCount !== 1) throw new Error('Packed clone lost its atlas page');
-                fallback.reset();
-                if (packedClone.original || packedClone.texture !== texture || fallback.atlasCount !== 0) {
-                    throw new Error('Reset did not restore the packed clone');
-                }
-                fallback.packToDynamicAtlas(null, packedClone);
-                fallback.deleteAtlasTexture(texture);
-                if (packedClone.original || packedClone.texture !== texture || fallback.atlasCount !== 0) {
-                    throw new Error('Deleting an atlas source did not restore the packed clone');
-                }
-                console.log('M6_ATLAS_LIFECYCLE_PASS');
-            } finally {
-                packedClone.destroy();
-            }
-            console.log('M6_ATLAS_FALLBACK_PASS');
-        } finally {
-            fallback.enabled = false;
-            first.destroy();
-            shared.destroy();
-            oversized.destroy();
-            gpuFrame.destroy();
-            gpuOnly.destroy();
-        }
+        if (!sys.isNative) this.verifyWebFallback(frame, spriteMaskFrame);
 
         const maskNode = new Node('M4RectMask');
         parent.addChild(maskNode);
@@ -287,6 +306,17 @@ export class M4Probe {
                 return differences === 0;
             };
             try {
+                if (sys.isNative) {
+                    manager.packToDynamicAtlas(null, target);
+                    if (manager.enabled || manager.insertSpriteFrame(target) || manager.atlasCount !== 0
+                        || target.original || target.texture !== source || target.uv.some((v, i) => v !== uv[i])) {
+                        throw new Error('JSB Native manager changed its source frame');
+                    }
+                    if (!(await matches('disabled'))) throw new Error('Disabled native atlas changed pixels');
+                    manager.reset();
+                    if (!(await matches('reset'))) throw new Error('Native atlas reset changed pixels');
+                    return;
+                }
                 manager.packToDynamicAtlas(null, target);
                 refreshWeb();
                 const atlas = target.texture;

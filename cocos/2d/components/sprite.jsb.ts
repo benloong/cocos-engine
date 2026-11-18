@@ -22,7 +22,6 @@
  THE SOFTWARE.
 */
 
-import { dynamicAtlasManager } from '../utils/dynamic-atlas/atlas-manager';
 import { ccclass, displayOrder, executionOrder, help, menu, serializable, type } from 'cc.decorator';
 import { EDITOR } from 'internal:constants';
 import { ccenum, cclegacy, warnID } from '../../core';
@@ -108,7 +107,6 @@ export class Sprite extends UIRenderer {
             return;
         }
         this._spriteFrame = value;
-        if (this._native && this.enabledInHierarchy) dynamicAtlasManager.packToDynamicAtlas(this, value);
         this._syncFrame();
         if (EDITOR) this.node.emit(SpriteEventType.SPRITE_FRAME_CHANGED, this);
     }
@@ -241,7 +239,6 @@ export class Sprite extends UIRenderer {
     }
 
     public onEnable (): void {
-        if (this._native) dynamicAtlasManager.packToDynamicAtlas(this, this._spriteFrame);
         this._native?.setEnabled(true);
     }
 

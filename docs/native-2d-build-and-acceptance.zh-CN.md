@@ -265,13 +265,13 @@ pwsh -NoProfile -File native/tests/2d-poc/run-m4-mask-probe.ps1
 node native/tests/2d-poc/compare-dynamic-atlas.cjs
 ```
 
-每端必须生成 12 份 256×256 RGBA：Sprite/Mask × REPEAT/CLAMP × 原图/打包/恢复。通道容差沿用 M6 的 1；缺失、重复或旧 native 文件不得算通过。CLAMP 打包/恢复与原图字节相同；REPEAT 的跨边采样以同候选 Web 为准，全部恢复帧仍须字节相同。Web 阈值需与组件值一致，不能以材质默认 0.5 代替组件默认 0.1。两端构建先后不限，但必须是相同源码候选。
+Web 生成 12 份 256×256 RGBA，覆盖 Sprite/Mask × REPEAT/CLAMP × 原图/打包/恢复。CLAMP 打包/恢复与原图字节相同，REPEAT 的恢复帧与原图字节相同。Web 阈值使用组件的默认值 0.1。Web 必须记录 `M6_ATLAS_FALLBACK_PASS`、`M6_ATLAS_LIFECYCLE_PASS` 和 `M6_ATLAS_AUTOMATIC_PASS`，覆盖拒绝来源、满页复用、同源帧生命周期及组件激活、换资源和恢复。
 
-动态图集回退变更还须运行 `node node_modules/jest/bin/jest.js --runInBand tests/ui/auto-atlas.test.ts`，并确认两端 M4 捕获都记录 `M6_ATLAS_FALLBACK_PASS`。该探针检查拒绝来源保留原图、不分配新页、满页复用已上传纹理，以及重置恢复。两端还须记录 `M6_ATLAS_LIFECYCLE_PASS`，验证删除单帧不会影响同源帧，打包克隆可随重置与源纹理删除恢复。两端还须记录 `M6_ATLAS_AUTOMATIC_PASS`，验证 Sprite、Sprite stencil Mask 和 BitmapFont Label 的激活、换资源和关闭图集恢复。
+JSB + Native 暂停运行时动态图集。Windows Debug 必须记录 `M6_ATLAS_NATIVE_DISABLED_PASS`。显式设置单例和独立管理器的 enabled、插入和打包应保持源纹理、UV 和零图集页。原生侧生成原图、尝试启用后、重置后三个状态的 12 份 RGBA，全部与同候选的 Web 原图比较，通道容差 1。原生同组图像须逐字节一致。清除旧的预期原生捕获后再运行，不接受缺失或重复数据。仍须运行 `node node_modules/jest/bin/jest.js --runInBand tests/ui/auto-atlas.test.ts`。
 
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 
-涉及字体图集采样时，M5 探针会先运行 BitmapGpuProbe：BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，共 12 份 RGBA。原有 12 份图集捕获现使用默认 CENTER/CENTER、CLAMP、64×32 内容框；另加入两类字体/普通和旋转帧各 19 组布局，共 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距和裁剪，并交叉带 padding 的非零帧原点、trim、offset 和旋转边界。打包纹理没有 CPU ImageAsset，必须直接提交原生字形网格，CPU 诊断构建次数为 0。另在真实 native GPU 路径提交 70000 字形、5 个 chunk，随后清空并检查引用。
+M5 探针先运行 BitmapGpuProbe。Web 采集 BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，Windows Debug 采集原图/尝试启用后/重置后。两端各有 12 份固定 CENTER/CENTER、CLAMP、64×32 内容框的 RGBA，另有 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距、裁剪，以及带 padding 的非零帧原点、trim、offset 和旋转。Windows Debug 直接提交原生字形网格并检查实际源纹理绑定，CPU 诊断构建次数须为 0。70000 字形须分为 5 个 chunk，随后清空并检查引用。
 
 ```powershell
 node native/tests/2d-poc/run-dynamic-atlas-web.cjs --bitmap
@@ -280,7 +280,7 @@ node native/tests/2d-poc/compare-bitmap-gpu.cjs
 node native/tests/2d-poc/compare-bitmap-layout.cjs
 ```
 
-两端每份图像必须为 256×256 RGBA，通道容差 1；打包/恢复与本端原图必须字节相同。完成标记、字形数、实际 GPU 纹理绑定、大字形分块/清空检查也必须通过。布局对照还要求 76 组内容尺寸、actualFontSize、字形数及记录的帧状态相同（数值容差 0.0001）。M0 已加入 run-m6-bitmap-layout-parity.ps1，执行 2307 组实际 Web TextProcessing、BmfontUtils 与原生布局及四顶点位置和 UV 对照；可传 NativeExecutables 追加其他编译器的同一夹具。
+每份图像必须为 256×256 RGBA。Web 打包/恢复与 Web 原图逐字节相同，Windows Debug 三个状态也须逐字节相同。比较 Windows Debug 三个状态与 Web 原图和双端 76 份布局，通道容差 1。完成标记、字形数、实际 GPU 纹理绑定、大字形分块和清空检查均须通过。布局对照还要求 76 组内容尺寸、actualFontSize、字形数及记录的帧状态相同（数值容差 0.0001）。M0 已加入 run-m6-bitmap-layout-parity.ps1，执行 2307 组实际 Web TextProcessing、BmfontUtils 与原生布局及四顶点位置和 UV 对照；可传 NativeExecutables 追加其他编译器的同一夹具。
 
 ## 8. 完整验收顺序
 
@@ -376,3 +376,5 @@ M6.1 UV parity: PASS
 最新 BMFont 布局候选已完成完整串行验收：2307 组 g++/MSVC 实际 Web 数值对照通过；含 kerning 的 76 组布局、12 组默认居中字体合图、12 组 Sprite/Mask 图像全部字节一致，M5 保持 45 秒预算。M3 探针现固定字号/源配置，检查精确尺寸与字形提交；不再用旧 CPU 纹理宽度阈值代替 kerning GPU 验收，见[布局报告](./native-2d-m6.1-bitmap-layout.md)。
 
 配置源字号验收已纳入同一字体矩阵：公共 fontSize=64，fntConfig.fontSize=16/32/8；尺寸、actualFontSize、字形数及两个独立字号字段都须一致。最新候选完整串行门禁和 100 组 RGBA 比较通过，非法/清空/非正源字号由原生回归覆盖，见[源字号报告](./native-2d-m6.1-bitmap-source-size.md)。
+
+JSB + Native 暂停动态图集的候选已通过完整文档门禁。Windows Debug 记录了禁用标记，Web 保留自动合图、回退和生命周期标记。12 组 Sprite/Mask、12 组位图字体源纹理及 76 组字体布局的最大通道差值均为 0。M5 用时 40.12 秒，见[验收记录](./native-2d-m6.1-atlas-automatic.md#jsb--native-暂停运行时合图)。

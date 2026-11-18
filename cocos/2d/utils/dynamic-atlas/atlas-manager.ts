@@ -22,7 +22,7 @@
  THE SOFTWARE.
 */
 
-import { EDITOR_NOT_IN_PREVIEW } from 'internal:constants';
+import { EDITOR_NOT_IN_PREVIEW, JSB, NATIVE } from 'internal:constants';
 import { System, macro, cclegacy } from '../../../core';
 import { Atlas, DynamicAtlasTexture } from './atlas';
 import { director, DirectorEvent } from '../../../game';
@@ -70,7 +70,8 @@ export class DynamicAtlasManager extends System {
         return this._enabled;
     }
     set enabled (value) {
-        if (this._enabled === value) return;
+        // JSB Native renders from the source textures until runtime atlas support returns.
+        if ((JSB && NATIVE) || this._enabled === value) return;
 
         if (value) {
             this.reset();

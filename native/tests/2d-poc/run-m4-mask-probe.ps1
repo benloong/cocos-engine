@@ -8,7 +8,7 @@ $log = Join-Path $env:TEMP 'cc-m4-mask-probe.log'
 Remove-Item $log -Force -ErrorAction SilentlyContinue
 $captureRoot = Join-Path (Split-Path $AppExe) 'm6-atlas-captures'
 $captureFiles = @()
-foreach ($consumer in @('sprite', 'mask')) { foreach ($sampling in @('repeat', 'clamp')) { foreach ($stage in @('source', 'packed', 'restored')) {
+foreach ($consumer in @('sprite', 'mask')) { foreach ($sampling in @('repeat', 'clamp')) { foreach ($stage in @('source', 'disabled', 'reset')) {
     $file = Join-Path $captureRoot "$consumer-$sampling-$stage.rgba"
     $captureFiles += $file
     Remove-Item -LiteralPath $file -ErrorAction SilentlyContinue
@@ -58,20 +58,20 @@ try {
     $graphics = $graphicsLines[0].Line.Substring($graphicsLines[0].Line.IndexOf('M4_GRAPHICS ') + 12) | ConvertFrom-Json
     if ($graphics.opaque -lt 6000 -or $graphics.opaque -gt 7000) { throw "Graphics opaque=$($graphics.opaque), expected ~6400" }
 
-    $atlasEntries = @(Get-Content $log | Select-String -Pattern 'M6_DYNAMIC_ATLAS ' | ForEach-Object {
-        $_.Line.Substring($_.Line.IndexOf('M6_DYNAMIC_ATLAS ') + 17) | ConvertFrom-Json
+    if (-not (Select-String -LiteralPath $log -SimpleMatch 'M6_ATLAS_NATIVE_DISABLED_PASS' -Quiet)) {
+        throw 'Native dynamic atlas disable probe missing'
+    }
+    $atlasEntries = @(Get-Content $log | Select-String -Pattern 'M6_ATLAS_CAPTURE ' | ForEach-Object {
+        $_.Line.Substring($_.Line.IndexOf('M6_ATLAS_CAPTURE ') + 17) | ConvertFrom-Json
     })
     foreach ($consumer in @('Sprite', 'Mask')) {
         foreach ($sampling in @('repeat', 'clamp')) {
-            $entry = @($atlasEntries | Where-Object { $_.consumer -eq $consumer -and $_.sampling -eq $sampling })
-            if ($entry.Count -ne 1 -or -not $entry[0].state -or -not $entry[0].restored) { throw "Dynamic atlas $consumer/$sampling state/restore mismatch" }
-            if ($sampling -eq 'clamp' -and -not $entry[0].equal) { throw "Dynamic atlas $consumer clamp framebuffer mismatch" }
+            foreach ($stage in @('disabled', 'reset')) {
+                $entry = @($atlasEntries | Where-Object { $_.consumer -eq $consumer -and $_.sampling -eq $sampling -and $_.stage -eq $stage })
+                if ($entry.Count -ne 1 -or $entry[0].differences -ne 0) { throw "Native atlas $consumer/$sampling/$stage changed pixels" }
+            }
         }
     }
-
-    if (-not (Select-String -LiteralPath $log -SimpleMatch "M6_ATLAS_FALLBACK_PASS" -Quiet)) { throw "Dynamic atlas fallback probe missing" }
-    if (-not (Select-String -LiteralPath $log -SimpleMatch "M6_ATLAS_LIFECYCLE_PASS" -Quiet)) { throw "Dynamic atlas lifecycle probe missing" }
-    if (-not (Select-String -LiteralPath $log -SimpleMatch "M6_ATLAS_AUTOMATIC_PASS" -Quiet)) { throw "Automatic dynamic atlas probe missing" }
     foreach ($file in $captureFiles) {
         if (-not (Test-Path -LiteralPath $file) -or (Get-Item -LiteralPath $file).Length -ne 262144) { throw "Missing/invalid atlas capture: $file" }
     }
@@ -79,7 +79,7 @@ try {
     Write-Host ("  normal red={0}, inverted red={1}" -f $normal.red, $inverted.red)
     Write-Host ("  ellipse red={0}, sprite red={1}" -f $ellipse.red, $sprite.red)
     Write-Host ("  Graphics opaque={0}" -f $graphics.opaque)
-    Write-Host '  Dynamic atlas Sprite/Mask repeat+clamp state and restore passed; clamp framebuffer identical'
+    Write-Host '  Native atlas remains disabled; Sprite/Mask source pixels survive enable and reset attempts'
 } finally {
     if (-not $proc.HasExited) { $proc.Kill() }
 }

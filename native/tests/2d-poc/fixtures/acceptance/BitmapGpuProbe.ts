@@ -73,7 +73,6 @@ export class BitmapGpuProbe {
                         if (backend.getRenderedBitmapGlyphCount() !== 2 || backend.getBitmapDiagnosticBuildCount() !== 0
                             || entity.staticDrawInfoSize !== 1 || draw.vbCount !== 8 || draw.ibCount !== 12
                             || draw.texture !== frame.texture.getGFXTexture()) throw new Error('Bitmap is not sampling its current GPU atlas directly: ' + JSON.stringify({ stage, glyphs: backend.getRenderedBitmapGlyphCount(), diagnostics: backend.getBitmapDiagnosticBuildCount(), draws: entity.staticDrawInfoSize, vertices: draw.vbCount, indices: draw.ibCount, textureMatches: draw.texture === frame.texture.getGFXTexture(), submittedId: draw.texture?.objectID, expectedId: frame.texture.getGFXTexture()?.objectID, submittedNull: draw.texture == null, expectedNull: frame.texture.getGFXTexture() == null }));
-                        if (stage === 'packed' && (frame.texture as Texture2D).image) throw new Error('Packed bitmap fixture must have no CPU image');
                     }
                     const file = name + '-' + stage;
                     if (sys.isNative) {
@@ -89,11 +88,17 @@ export class BitmapGpuProbe {
                 try {
                     await capture('source');
                     manager.packToDynamicAtlas(label, frame); refresh();
-                    if (!frame.original || frame.texture === texture) throw new Error('Bitmap frame did not pack');
-                    await capture('packed');
+                    if (sys.isNative) {
+                        if (manager.enabled || manager.atlasCount !== 0 || frame.original || frame.texture !== texture) {
+                            throw new Error('JSB Native packed a bitmap font frame');
+                        }
+                    } else if (!frame.original || frame.texture === texture) {
+                        throw new Error('Web bitmap frame did not pack');
+                    }
+                    await capture(sys.isNative ? 'disabled' : 'packed');
                     manager.reset(); refresh();
                     if (frame.original || frame.texture !== texture) throw new Error('Bitmap frame did not restore');
-                    await capture('restored');
+                    await capture(sys.isNative ? 'reset' : 'restored');
                     font.fontSize = 64; // Metadata differs from the configured source size.
                     const reloadSource = (size: number): void => {
                         font.fntConfig!.fontSize = size; font.onLoaded(); refresh();
