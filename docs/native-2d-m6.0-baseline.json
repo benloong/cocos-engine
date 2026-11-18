@@ -14522,8 +14522,8 @@
     },
     {
       "file": "cocos/2d/assets/bitmap-font.ts",
-      "sha256": "be9af06051cef776dc8740162294d8688357e52be53e97ded4f16b9c21de4a45",
-      "printedCodeLines": 123,
+      "sha256": "649480d612f9855692408bf2118b5d6cabfc6ac23094f8a30c5fbefc31c66920",
+      "printedCodeLines": 126,
       "runtimeImports": [
         "cc.decorator",
         "./font",
@@ -14538,7 +14538,7 @@
       "allocations": [],
       "loops": [
         86,
-        175
+        178
       ]
     },
     {

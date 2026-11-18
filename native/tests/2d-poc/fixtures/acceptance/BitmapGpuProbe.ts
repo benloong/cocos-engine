@@ -40,6 +40,7 @@ export class BitmapGpuProbe {
                 font.fontSize = 16; font.spriteFrame = frame;
                 font.fntConfig = { fontSize: 16, commonHeight: 16, atlasName: 'memory', kerningDict: { [(65 << 16) | 66]: -4 }, fontDefDictionary: {
                     65: { rect: { x: 0, y: 0, width: 16, height: 16 }, xOffset: 0, yOffset: 0, xAdvance: 16 },
+                    128578: { rect: { x: 4, y: 0, width: 12, height: 16 }, xOffset: 1, yOffset: 0, xAdvance: 15 },
                     66: { rect: { x: 16, y: 0, width: 16, height: 16 }, xOffset: 0, yOffset: 0, xAdvance: 16 },
                 } } as any;
                 font.onLoaded();
@@ -113,6 +114,7 @@ export class BitmapGpuProbe {
                         { id: 'clamp', string: 'ABAB', width: 24, height: 8 },
                         { id: 'line-height', string: 'AB\nA', lineHeight: 24, height: 64, sourceSize: 32 },
                         { id: 'shrink-wrap', overflow: Label.Overflow.SHRINK, string: 'AB AB AB', enableWrapText: true, width: 40, height: 24, sourceSize: 8 });
+                    layouts.push({ id: 'unicode-scalar', string: '🙂ABA', overflow: Label.Overflow.NONE });
                     const profiles = [
                         { id: 'base', x: 4, y: 6, width: 32, height: 16, ox: 0, oy: 0 },
                         { id: 'trim', x: 6, y: 3, width: 40, height: 24, ox: 2, oy: -2 },
@@ -138,6 +140,7 @@ export class BitmapGpuProbe {
                             if (!native.fileUtils.writeDataToFile(data.buffer, output + file + '.rgba')) throw new Error('Bitmap layout output failed');
                         } else if (!(await fetch('/m6-bitmap-capture?name=' + file, { method: 'POST', body: data })).ok) throw new Error('Bitmap layout collector failed');
                         const glyphs = sys.isNative ? (label as any)._native.getRenderedBitmapGlyphCount() : (label as any).renderData.vertexCount / 4;
+                        if (settings.id === 'unicode-scalar' && glyphs !== 4) throw new Error('Missing supplementary BMFont glyph');
                         const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, glyphs, metadataFontSize: font.fontSize,
                             sourceFontSize: sys.isNative ? (font as any).getSourceFontSize() : font.fntConfig!.fontSize,
                             frameProfile: profile.id, rectX: frame.rect.x, rectY: frame.rect.y, originalWidth: frame.originalSize.width,

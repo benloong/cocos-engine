@@ -105,6 +105,9 @@ export class FontAtlas {
         let letter: FontLetterDefinition | null = null;
         if (hasKey) {
             letter = this.letterDefinitions[key];
+        } else if (char.length === 2 && char.codePointAt(0)! > 0xffff) {
+            // BMFont files store supplementary characters by Unicode scalar value.
+            letter = this.letterDefinitions[char.codePointAt(0)!] ?? null;
         }
         return letter;
     }

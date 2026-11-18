@@ -60,7 +60,7 @@ try {
     $layoutMetrics = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LAYOUT ' | ForEach-Object {
         $_.Line.Substring($_.Line.IndexOf('M6_BITMAP_LAYOUT ') + 17) | ConvertFrom-Json
     })
-    if ($bitmap.layoutCaptures -ne 76 -or $layoutMetrics.Count -ne 76 -or @($layoutMetrics.name | Select-Object -Unique).Count -ne 76) { throw 'Bitmap layout captures missing' }
+    if ($bitmap.layoutCaptures -ne 80 -or $layoutMetrics.Count -ne 80 -or @($layoutMetrics.name | Select-Object -Unique).Count -ne 80) { throw 'Bitmap layout captures missing' }
     $layoutMetrics | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'build/bitmap-native-layout-metrics.json') -Encoding utf8
     $largeLine = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LARGE ')
     if ($largeLine.Count -ne 1) { throw 'Large bitmap GPU completion missing' }

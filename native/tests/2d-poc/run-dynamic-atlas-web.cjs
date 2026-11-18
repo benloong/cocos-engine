@@ -145,7 +145,7 @@ const server = http.createServer(async (req, res) => {
                 if (bitmap && text.startsWith('M6_BITMAP_LAYOUT ')) layoutMetrics.push(JSON.parse(text.slice(17)));
                 if (bitmap && text.startsWith('M6_BITMAP_GPU_READY ')) {
                     const result = JSON.parse(text.slice(20)); results.push(...result.checks);
-                    if (!fallbackPassed || !lifecyclePassed || !automaticPassed || !staticAtlasPassed || captures.size !== 88 || result.captures !== 12 || result.layoutCaptures !== 76 || layoutMetrics.length !== 76 || result.checks.length !== 4) rejectDone(new Error('Missing bitmap captures'));
+                    if (!fallbackPassed || !lifecyclePassed || !automaticPassed || !staticAtlasPassed || captures.size !== 92 || result.captures !== 12 || result.layoutCaptures !== 80 || layoutMetrics.length !== 80 || result.checks.length !== 4) rejectDone(new Error('Missing bitmap captures'));
                     else bitmapReady = true;
                 }
                 if (bitmap && text.startsWith('M5_RICHTEXT ')) {

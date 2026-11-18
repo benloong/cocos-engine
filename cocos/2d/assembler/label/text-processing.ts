@@ -742,16 +742,18 @@ export class TextProcessing {
             return;
         }
 
-        let prev = -1;
-        for (let i = 0; i < stringLen; ++i) {
-            const key = string.charCodeAt(i);
-            const kerningAmount = kerningDict[(prev << 16) | (key & 0xffff)] || 0;
-            if (i < stringLen - 1) {
-                horizontalKerning[i] = kerningAmount;
-            } else {
-                horizontalKerning[i] = 0;
-            }
-            prev = key;
+        let previous = -1;
+        let symbol = 0;
+        for (let offset = 0; offset < stringLen;) {
+            const first = string.charCodeAt(offset);
+            const isJoined = first === 0x200d || (first >= 0xd800 && first <= 0xdbff);
+            const units = isJoined ? Math.max(1, getSymbolAt(string.slice(offset), 0).length) : 1;
+            const key = units === 1 ? first : -1;
+            offset += units;
+            // The serialized kerning key encodes two BMP character IDs in 32 bits.
+            horizontalKerning[symbol++] = offset < stringLen && previous >= 0 && key >= 0
+                ? kerningDict[(previous << 16) | key] || 0 : 0;
+            previous = key;
         }
     }
 
@@ -959,7 +961,10 @@ export class TextProcessing {
         }
 
         const char = getSymbolCodeAt(character, 0);
-        const key = `${char}${shareLabelInfo.hash}`;
+        let key = `${char}${shareLabelInfo.hash}`;
+        if (character.length === 2 && character.codePointAt(0)! > 0xffff && !shareLabelInfo.fontAtlas!.getLetter(key)) {
+            key = String(character.codePointAt(0));
+        }
 
         lettersInfo[letterIndex].line = lineIndex;
         lettersInfo[letterIndex].char = character;
