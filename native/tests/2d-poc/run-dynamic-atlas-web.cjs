@@ -23,6 +23,7 @@ const manifestPath = path.join(output, 'manifest.json');
 if (heapSnapshots) fs.rmSync(manifestPath, { force: true });
 const logs = [], captures = new Set(), results = [], samples = [];
 let layoutMetrics = [];
+let bitmapReady = false;
 let fallbackPassed = false;
 let lifecyclePassed = false;
 let automaticPassed = false;
@@ -144,7 +145,19 @@ const server = http.createServer(async (req, res) => {
                 if (bitmap && text.startsWith('M6_BITMAP_LAYOUT ')) layoutMetrics.push(JSON.parse(text.slice(17)));
                 if (bitmap && text.startsWith('M6_BITMAP_GPU_READY ')) {
                     const result = JSON.parse(text.slice(20)); results.push(...result.checks);
-                    if (!fallbackPassed || !lifecyclePassed || !automaticPassed || !staticAtlasPassed || captures.size !== 88 || result.captures !== 12 || result.layoutCaptures !== 76 || layoutMetrics.length !== 76 || result.checks.length !== 4) rejectDone(new Error('Missing bitmap captures')); else resolveDone();
+                    if (!fallbackPassed || !lifecyclePassed || !automaticPassed || !staticAtlasPassed || captures.size !== 88 || result.captures !== 12 || result.layoutCaptures !== 76 || layoutMetrics.length !== 76 || result.checks.length !== 4) rejectDone(new Error('Missing bitmap captures'));
+                    else bitmapReady = true;
+                }
+                if (bitmap && text.startsWith('M5_RICHTEXT ')) {
+                    const rich = JSON.parse(text.slice('M5_RICHTEXT '.length));
+                    if (!bitmapReady || rich.native || !rich.queryMatches
+                        || rich.jsLabelComponents !== rich.labels || rich.jsSpriteComponents !== rich.sprites
+                        || rich.labels !== 9 || rich.sprites !== 1 || rich.children !== 10) {
+                        rejectDone(new Error('Missing Web RichText segment components: ' + text));
+                    } else {
+                        console.log('Web RichText segment queries: 9 Label, 1 Sprite');
+                        resolveDone();
+                    }
                 }
                 if (text.startsWith('M6_BITMAP_CAPTURE ') || text.startsWith('M6_ATLAS_CAPTURE ') || text.startsWith('M6_MASK_STATE ')) console.log(text);
                 if (!bitmap && text.startsWith('M4_GRAPHICS ')) {

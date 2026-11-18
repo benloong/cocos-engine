@@ -219,6 +219,8 @@ pwsh -NoProfile -File v4\native\tests\2d-poc\run-m4-extra-probe.ps1
 pwsh -NoProfile -File v4\native\tests\2d-poc\run-m5-richtext-probe.ps1
 ```
 
+M6 内部段查询契约已在 Windows Debug、Release 与 Web 验证。宿主节点均可通过 getComponent(RichText) 查询。Windows 上，逐子节点 getComponent 与宿主 getComponentsInChildren 均查到 0 个 JS Label/Sprite，原生段 API 查到 9 个 Label、1 个 Sprite。两种 Windows 构建实测内容尺寸 300×104.32，着色像素 8725。Web 通过 run-dynamic-atlas-web.cjs --bitmap 在同一夹具验证两种 JS 查询均查到 9 个 Label、1 个 Sprite。
+
 M5 默认预算保持 45 秒，可用 -TimeoutSeconds 指定；每次 stdout/stderr 和 JSON 持久保存在 native/tests/2d-poc/build/m5-probe-runs，可用 -LogDirectory 指定。报告包含实际 app SHA256、单调/墙钟采样、CPU、退出码与阶段时间线。killedForCleanup 仅表示工具善后，不是应用自然退出码。
 
 ### 7.6 M6.1 SpriteFrame 数据/UV

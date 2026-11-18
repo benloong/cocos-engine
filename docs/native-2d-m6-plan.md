@@ -82,7 +82,7 @@
 
 ### M6.2 RichText 达到终态薄壳
 
-- [ ] 明确并验证原生内部段节点的 JS 组件查询边界：当前原生 Label/Sprite 段可直接观测、渲染和命中，内部节点未创建对应 JS 前端组件。M5 原生段计数通过不替代 Node.getComponent 等公开 API 的完整兼容性验收；须在最终组件契约中形成明确结论和证据。
+- [x] RichText 内部段查询契约已确认并验证。Windows Debug/Release 的 9 个 Label、1 个 Sprite 通过原生段 API 查询，JS 查询结果均为空；Web 的逐子节点和递归 JS 查询均返回对应组件。[验收入口与结果](./native-2d-build-and-acceptance.zh-CN.md#75-m5-richtext)
 
 - [x] 原生解析准备：新增 RichTextParser/span/style，3871 组输入在 g++、Windows MSVC Debug/Release 产物上与实际 Web parser 对照通过，见 [报告](./native-2d-m6.2-richtext-parser.md)。现已接入下述原生运行时，完整视觉/场景验收仍待完成。
 - [x] 原生布局规则准备：RichTextLayout 直接消费 native span，1440 组相同测量值的用例在 g++、MSVC Debug/Release 与实际 Web RichText 布局对照通过，见 [报告](./native-2d-m6.2-richtext-layout.md)。现已连接原生测量和段管理，不能据此认定场景/视觉 parity。

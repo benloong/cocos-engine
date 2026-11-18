@@ -90,9 +90,16 @@ export class RichTextProbe {
             const native = !!backend?.getSegmentCount;
             const nativeLabels = native ? Array.from({ length: backend.getSegmentCount() }, (_, i) => backend.getSegmentLabel(i)).filter(Boolean) : [];
             const jsLabels = children.filter((child) => !!child.getComponent(Label));
+            const jsSprites = children.filter(child => !!child.getComponent(Sprite));
+            const queryMatches = node.getComponent(RichText) === richText
+                && node.getComponentsInChildren(Label).length === jsLabels.length
+                && node.getComponentsInChildren(Sprite).length === jsSprites.length;
+            if (!queryMatches || (native && (jsLabels.length || jsSprites.length))) {
+                throw new Error('RichText segment component query contract failed');
+            }
             const labels = native ? nativeLabels.length : jsLabels.length;
             const sprites = native ? children.filter((_, i) => !!backend.getSegmentSprite(i)).length
-                : children.filter((child) => !!child.getComponent(Sprite)).length;
+                : jsSprites.length;
             if (native && (backend.getSegmentCount() !== children.length || labels + sprites !== children.length)) {
                 throw new Error('Native RichText segment graph is incomplete');
             }
@@ -162,6 +169,8 @@ export class RichTextProbe {
                 children: children.length,
                 native,
                 jsLabelComponents: jsLabels.length,
+                jsSpriteComponents: jsSprites.length,
+                queryMatches,
                 labels,
                 sprites,
                 width: transform.contentSize.width,

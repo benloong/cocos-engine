@@ -79,6 +79,9 @@ try {
     Write-Host 'M5 RichText probe: PASS'
     Write-Host ("  segments={0}, labels={1}, sprites={2}" -f $data.children, $data.labels, $data.sprites)
     Write-Host ("  content={0}x{1}, colored={2}" -f $data.width, $data.height, $data.colored)
+    if (!$data.native -or !$data.queryMatches -or $data.jsLabelComponents -ne 0 -or $data.jsSpriteComponents -ne 0) {
+        throw 'JSB internal segment nodes exposed unexpected script renderer components'
+    }
     $passed = $true
 } catch {
     $failure = $_.Exception.Message
