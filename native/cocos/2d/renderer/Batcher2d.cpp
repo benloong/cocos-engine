@@ -381,17 +381,39 @@ void Batcher2d::handlePostRender(RenderEntity* entity) {
 }
 
 void Batcher2d::SpriteMeshPage::append(RenderDrawInfo *source) {
-    const auto base = static_cast<uint32_t>(vertices.size() / 9);
-    const auto *v = source->getVDataBuffer();
-    vertices.insert(vertices.end(), v, v + static_cast<size_t>(source->getVbCount()) * 9);
-    const auto *idx = source->getIDataBuffer();
-    const size_t start = indices.size();
-    indices.resize(start + source->getIbCount());
-    for (uint32_t i = 0; i < source->getIbCount(); ++i) {
-        indices[start + i] = static_cast<uint16_t>(base + idx[i]);
+    const uint32_t base = draw.getVbCount();
+    const uint32_t indexStart = usedSlots ? slots[usedSlots - 1].indexEnd : 0;
+    const uint32_t vertexEnd = base + source->getVbCount();
+    const uint32_t indexEnd = indexStart + source->getIbCount();
+    if (usedSlots < slots.size() && (slots[usedSlots].vertexEnd != vertexEnd || slots[usedSlots].indexEnd != indexEnd)) {
+        // A different-sized draw moves every following range.
+        slots.resize(usedSlots);
     }
-    draw.setVbCount(static_cast<uint32_t>(vertices.size() / 9));
-    draw.setIbCount(static_cast<uint32_t>(indices.size()));
+    if (usedSlots == slots.size()) {
+        slots.push_back({0, 0, vertexEnd, indexEnd});
+        vertices.resize(static_cast<size_t>(vertexEnd) * 9);
+        indices.resize(indexEnd);
+    }
+    auto &slot = slots[usedSlots++];
+    if (slot.vertexRevision != source->_spriteVertexRevision) {
+        const auto *v = source->getVDataBuffer();
+        std::copy_n(v, static_cast<size_t>(source->getVbCount()) * 9, vertices.data() + static_cast<size_t>(base) * 9);
+        slot.vertexRevision = source->_spriteVertexRevision;
+    }
+    if (slot.geometryRevision != source->_spriteGeometryRevision) {
+        const auto *idx = source->getIDataBuffer();
+        for (uint32_t i = 0; i < source->getIbCount(); ++i) {
+            const auto rebased = static_cast<uint16_t>(base + idx[i]);
+            if (indices[indexStart + i] != rebased) indices[indexStart + i] = rebased;
+        }
+        slot.geometryRevision = source->_spriteGeometryRevision;
+    }
+    draw.setVbCount(vertexEnd);
+}
+
+void Batcher2d::SpriteMeshPage::finish() {
+    slots.resize(usedSlots);
+    draw.setIbCount(slots.back().indexEnd);
     draw.setVDataBuffer(vertices.data());
     draw.setIDataBuffer(indices.data());
 }
@@ -422,8 +444,8 @@ CC_FORCE_INLINE void Batcher2d::handleComponentDraw(RenderEntity* entity, Render
                 _spriteMeshPages.emplace_back(std::make_unique<SpriteMeshPage>());
             }
             _openSpritePage = _spriteMeshPages[_usedSpritePages++].get();
-            _openSpritePage->vertices.clear();
-            _openSpritePage->indices.clear();
+            _openSpritePage->usedSlots = 0;
+            _openSpritePage->draw.setVbCount(0);
             _openSpritePage->draw.setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
             _openSpritePage->draw.setIsMeshBuffer(true);
             _openSpritePage->draw.setStride(9);
@@ -582,6 +604,7 @@ CC_FORCE_INLINE void Batcher2d::handleDrawInfo(RenderEntity* entity, RenderDrawI
 }
 
 void Batcher2d::generateBatch(RenderEntity* entity, RenderDrawInfo* drawInfo) {
+    if (_openSpritePage) _openSpritePage->finish();
     _openSpriteRun = false;
     _openSpritePage = nullptr;
     if (drawInfo == nullptr) {

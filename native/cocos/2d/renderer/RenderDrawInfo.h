@@ -257,6 +257,10 @@ public:
 private:
     friend class Sprite;
     friend class Batcher2d;
+    friend class RenderEntity;
+    void markSpriteVerticesUpdated(bool geometryChanged);
+    uint64_t _spriteVertexRevision{0};
+    uint64_t _spriteGeometryRevision{0};
     bool _batchableSpriteMesh{false};
     CC_DISALLOW_COPY_MOVE_ASSIGN(RenderDrawInfo);
     void destroy();

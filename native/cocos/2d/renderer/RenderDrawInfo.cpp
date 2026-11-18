@@ -47,6 +47,13 @@ RenderDrawInfo::~RenderDrawInfo() {
     destroy();
 }
 
+// Globally distinct revisions also identify replacement draws at recycled addresses.
+void RenderDrawInfo::markSpriteVerticesUpdated(bool geometryChanged) {
+    static uint64_t revision = 0; // Sprite mesh writes run on the scene thread.
+    _spriteVertexRevision = ++revision;
+    if (geometryChanged) _spriteGeometryRevision = revision;
+}
+
 void RenderDrawInfo::changeMeshBuffer() {
     CC_ASSERT(Root::getInstance()->getBatcher2D());
     _meshBuffer = Root::getInstance()->getBatcher2D()->getMeshBuffer(_drawInfoAttrs._accId, _drawInfoAttrs._bufferId);

@@ -156,7 +156,16 @@ private:
         RenderDrawInfo draw;
         ccstd::vector<float> vertices;
         ccstd::vector<uint16_t> indices;
+        struct Slot {
+            uint64_t vertexRevision;
+            uint64_t geometryRevision;
+            uint32_t vertexEnd;
+            uint32_t indexEnd;
+        };
+        ccstd::vector<Slot> slots;
+        size_t usedSlots{0};
         void append(RenderDrawInfo *source);
+        void finish();
     };
     // Pages own the submitted CPU data and GPU input assembler until reset.
     ccstd::vector<std::unique_ptr<SpriteMeshPage>> _spriteMeshPages;

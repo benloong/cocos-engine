@@ -574,6 +574,9 @@ void Sprite::prepare(float opacity) {
 
     }
 
+    if (_entity->getStaticDrawInfoSize()) {
+        _entity->getStaticRenderDrawInfo(0)->markSpriteVerticesUpdated(renderDirtyFlags() & GEOMETRY);
+    }
     clearRenderDirty();
     updateVertexColors(opacity);
     _entity->setOpacity(opacity);
@@ -626,6 +629,7 @@ void Sprite::prepareLabelQuads(Material *material, float opacity) {
         }
         auto *draw = _entity->getStaticRenderDrawInfo(static_cast<uint32_t>(i));
         draw->setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
+        draw->markSpriteVerticesUpdated(renderDirtyFlags() & GEOMETRY);
         draw->_batchableSpriteMesh = !_material && !_materialInstance;
         draw->setIsMeshBuffer(true); draw->setStride(static_cast<uint8_t>(VERTEX_STRIDE));
         draw->setVbCount(static_cast<uint32_t>(chunk.vertices.size() / VERTEX_STRIDE));

@@ -1,0 +1,416 @@
+{
+  "baseline": "4fcdb412a0",
+  "platform": "Windows x64 Release",
+  "pairs": 6,
+  "oddOrder": [
+    "baseline",
+    "candidate"
+  ],
+  "evenOrder": [
+    "candidate",
+    "baseline"
+  ],
+  "warmup": 30,
+  "framesPerPhase": 120,
+  "sprites": 1000,
+  "dirtyPerFrame": 100,
+  "units": "ms/frame",
+  "columns": [
+    "setter",
+    "manager",
+    "batcher",
+    "update",
+    "upload",
+    "reset",
+    "total"
+  ],
+  "rounds": {
+    "baseline": {
+      "steady": [
+        [0.001, 0.003, 0.29625, 0.27475, 0.01995, 0.00095, 0.3018],
+        [0.001, 0.003, 0.29055, 0.26855, 0.02095, 0.0009, 0.2953],
+        [0.001, 0.003, 0.28205, 0.25835, 0.02105, 0.0009, 0.28655],
+        [0.001, 0.003, 0.272, 0.25335, 0.01955, 0.00105, 0.2765],
+        [0.001, 0.004, 0.29005, 0.26305, 0.02325, 0.001, 0.2945],
+        [0.001, 0.003, 0.26155, 0.24505, 0.018, 0.0009, 0.26455]
+      ],
+      "dirty": [
+        [0.1275, 0.045, 0.24815, 0.2294, 0.0172, 0.0008, 0.4323],
+        [0.16, 0.061, 0.29375, 0.26845, 0.02195, 0.001, 0.52105],
+        [0.142, 0.0505, 0.2656, 0.24445, 0.01905, 0.0009, 0.4824],
+        [0.135, 0.0425, 0.27525, 0.2568, 0.0188, 0.0009, 0.47305],
+        [0.154, 0.059, 0.2976, 0.273, 0.02345, 0.001, 0.51365],
+        [0.1355, 0.046, 0.2595, 0.24195, 0.01725, 0.0009, 0.45785]
+      ]
+    },
+    "candidate": {
+      "steady": [
+        [0.001, 0.003, 0.2022, 0.17565, 0.02275, 0.0009, 0.2062],
+        [0.001, 0.002, 0.1577, 0.1415, 0.0167, 0.0006, 0.1607],
+        [0.001, 0.003, 0.2097, 0.18225, 0.0268, 0.0011, 0.2122],
+        [0.001, 0.003, 0.2107, 0.17985, 0.02645, 0.0011, 0.2146],
+        [0.001, 0.004, 0.23075, 0.2006, 0.0279, 0.0013, 0.236],
+        [0.001, 0.003, 0.1975, 0.1712, 0.02485, 0.0011, 0.201]
+      ],
+      "dirty": [
+        [0.138, 0.054, 0.2123, 0.18895, 0.02325, 0.001, 0.42045],
+        [0.136, 0.045, 0.185, 0.1645, 0.02, 0.0009, 0.37685],
+        [0.1375, 0.05, 0.1967, 0.1732, 0.0216, 0.0011, 0.40565],
+        [0.158, 0.0565, 0.21715, 0.1904, 0.02445, 0.0011, 0.4419],
+        [0.161, 0.061, 0.23475, 0.2027, 0.02555, 0.0013, 0.45845],
+        [0.1405, 0.048, 0.19585, 0.1716, 0.0229, 0.0011, 0.3888]
+      ]
+    }
+  },
+  "pairedDelta": {
+    "steady": {
+      "baseline": [0.001, 0.003, 0.28605, 0.2607, 0.02045, 0.000925, 0.290525],
+      "candidate": [0.001, 0.003, 0.20595, 0.17775, 0.02565, 0.0011, 0.2092],
+      "delta": [0, 0, -0.0682, -0.074975, 0.0052, 0.000125, -0.06895],
+      "updateFaster": 6,
+      "totalFaster": 6
+    },
+    "dirty": {
+      "baseline": [0.13875, 0.04825, 0.270425, 0.250625, 0.018925, 0.0009, 0.477725],
+      "candidate": [0.13925, 0.052, 0.2045, 0.181075, 0.023075, 0.0011, 0.41305],
+      "delta": [0.006, 0.002, -0.06325, -0.070325, 0.0041, 0.0002, -0.062125],
+      "updateFaster": 6,
+      "totalFaster": 6
+    }
+  },
+  "hashes": {
+    "baseline/1": "ab96f0bd687ef6e2af9697dfa12d959c5c78a321b68e27e832551fdff6dd98a0",
+    "baseline/2": "1ecc808fad25a0d17b5b8fc47e8f672cfcf021d1770da0bcb04a2a1d8da437ec",
+    "baseline/3": "e598b9755c39fcdd4514f2ff1a03d08e4afe1b99fb470926e33e558af5c52e84",
+    "baseline/4": "9eab4d10eff19e38ed5be96e6ca432e0d5e457c2b90b3ed6e7c86a5feae6eb62",
+    "baseline/5": "49b413552b8638fc4546c55ed5c20132635e2fb7f6f7452863fafc6697e14b65",
+    "baseline/6": "9211e04c47806295b23a83b600fc5299a365401b9946cacc56273d649a48abc0",
+    "baseline/native-2d-m6-gpu.exe": "bc7933d32af3020054f5e0cfd0b6fbdb7d45ffc6ecf56191ea88505f636637d6",
+    "baseline/Resources/src/cocos-js/cc.js": "4f3ca364af504ecae034050614ced3299847a191895bf0fcea5aa92ed25a02e4",
+    "candidate/1": "20749e8a1f3f3085ccfe038a34e7d0ee4f89243b075258a2eccd987e046a9c0a",
+    "candidate/2": "69ce4841d48f3ad40fced8d06cef6937af778e51c7f53f5dd996eb1fa0a08d3a",
+    "candidate/3": "069de4bec45cc6c676c49a86e86d6c1d38fc77c8b2336616eee63b29051a0a9d",
+    "candidate/4": "048264f4b1b53ba76c85a40fb4bcfd38fdee91c41293d168aa8529cb11ab8346",
+    "candidate/5": "9090cf4225ece0a2c47c88daf06c3c63c7b9e300754a7d4d909d2b5b85af89ca",
+    "candidate/6": "1b4e2572f068e63314485c2eb7b488077c8e8c455a8095f5e32a1a35ed36ebb8",
+    "candidate/native-2d-m6-gpu.exe": "1eeff61b7b4fc764bc94d41b36bbb9be99fba0adbcb7229c62a607057cd6e2cb",
+    "candidate/Resources/src/cocos-js/cc.js": "4f3ca364af504ecae034050614ced3299847a191895bf0fcea5aa92ed25a02e4",
+    "workload": "3e589d8303cadacaf05255a0c540bbbf16291649ab0c379244758497152487c4"
+  },
+  "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+  "vendor": "Imagination Technologies (Host: NVIDIA Corporation)",
+  "dependencies": {
+    "baseline": [
+      [
+        "ancestor-position",
+        1000,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1
+      ],
+      [
+        "unchanged",
+        0,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1
+      ],
+      [
+        "ancestor-opacity",
+        0,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        0.501960813999176
+      ],
+      [
+        "invisible",
+        0,
+        1,
+        2000,
+        0,
+        0,
+        0,
+        0.501960813999176
+      ],
+      [
+        "visible-again",
+        0,
+        0,
+        0,
+        0,
+        1,
+        2000,
+        1
+      ],
+      [
+        "shared-sampler",
+        1000,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1
+      ],
+      [
+        "shared-frame",
+        1000,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1
+      ],
+      [
+        "unchanged-after-assets",
+        0,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1
+      ]
+    ],
+    "candidate": [
+      [
+        "ancestor-position",
+        1000,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1,
+        1000,
+        0,
+        0,
+        0
+      ],
+      [
+        "unchanged",
+        0,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        "ancestor-opacity",
+        0,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        0.501960813999176,
+        1000,
+        0,
+        0,
+        0
+      ],
+      [
+        "invisible",
+        0,
+        1,
+        2000,
+        0,
+        0,
+        0,
+        0.501960813999176,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        "visible-again",
+        0,
+        0,
+        0,
+        0,
+        1,
+        2000,
+        1,
+        1000,
+        5999,
+        0,
+        0
+      ],
+      [
+        "shared-sampler",
+        1000,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1,
+        1000,
+        0,
+        0,
+        0
+      ],
+      [
+        "shared-frame",
+        1000,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1,
+        1000,
+        0,
+        0,
+        0
+      ],
+      [
+        "unchanged-after-assets",
+        0,
+        1,
+        2000,
+        0,
+        1,
+        2000,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "dependencyColumns": [
+    "change",
+    "firstPrepareCalls",
+    "firstDraws",
+    "firstTriangles",
+    "nextPrepareCalls",
+    "nextDraws",
+    "nextTriangles",
+    "entityOpacity"
+  ],
+  "observed": {
+    "baselinePrepareCallsSteadyDirty": [0, 100],
+    "candidatePrepareCallsSteadyDirty": [0, 100],
+    "drawsPerSpriteFrame": 1,
+    "triangles": 2000,
+    "candidateSteadyDirtyCountBeforeAfter": [0, 0],
+    "candidateTintDirtyCountBeforeAfter": [0, 0],
+    "candidateVertexRangesCopiedSteadyDirty": [0, 100],
+    "candidateIndexWritesSteadyDirty": [0, 0]
+  },
+  "candidateDependencyColumns": [
+    "change",
+    "firstPrepareCalls",
+    "firstDraws",
+    "firstTriangles",
+    "nextPrepareCalls",
+    "nextDraws",
+    "nextTriangles",
+    "entityOpacity",
+    "firstVertexCopies",
+    "firstIndexWrites",
+    "nextVertexCopies",
+    "nextIndexWrites"
+  ],
+  "pixels": {
+    "width": 256,
+    "height": 256,
+    "draws": [
+      [
+        "initial",
+        1,
+        6
+      ],
+      [
+        "steady",
+        1,
+        6
+      ],
+      [
+        "reorder",
+        1,
+        6
+      ],
+      [
+        "tint",
+        1,
+        6
+      ],
+      [
+        "opacity",
+        1,
+        6
+      ],
+      [
+        "radial",
+        1,
+        8
+      ],
+      [
+        "retopology",
+        1,
+        6
+      ],
+      [
+        "shifted-ranges",
+        1,
+        6
+      ],
+      [
+        "shorter",
+        1,
+        4
+      ],
+      [
+        "regrown",
+        1,
+        6
+      ],
+      [
+        "replacement",
+        1,
+        6
+      ]
+    ],
+    "hashes": {
+      "initial": "d8ebce389f454eec61164a19ad899503b148df3ee4e0e0e886fcd06b2d51ed50",
+      "steady": "d8ebce389f454eec61164a19ad899503b148df3ee4e0e0e886fcd06b2d51ed50",
+      "reorder": "39f05ee4a71d421bd77e60661e17c99734b77b2ef15fe026f98b071aa3215538",
+      "tint": "c7bb3924f2807f857d1977f80c47cfdde29bf865d968d477f85abe1a98ecbf60",
+      "opacity": "aed0e073e6f56ea85358dd9d22da61381b7604c088570bfa58c09cd7a273db8f",
+      "radial": "35f1d05194c6e56fc8e113bc5b9775d67404eb1d91cf566e4d7a1ccb28850f52",
+      "retopology": "e14a97dbda1fe31da4d90498f4e3b0ed67e045846c271e83f11f93d004b005e4",
+      "shifted-ranges": "0b943e1ac07baf2d0c51e38208cf002ac5d88fb62ff27d66af9850ef2df3e252",
+      "shorter": "098ae27d7c9b32cd8a0440438d4c5593b6a18c44d8de27a61db0a104548398e9",
+      "regrown": "0b943e1ac07baf2d0c51e38208cf002ac5d88fb62ff27d66af9850ef2df3e252",
+      "replacement": "2c7457fad7aed3c70368e2537b1417576725cbc1d82022eef500826006d78ae5"
+    }
+  },
+  "probes": [
+    "native 2D PoC",
+    "M2 Sprite",
+    "M3 Label",
+    "M4 Mask",
+    "M4 extra",
+    "M5 RichText"
+  ]
+}

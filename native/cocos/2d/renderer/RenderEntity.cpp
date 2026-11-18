@@ -86,6 +86,7 @@ void RenderEntity::updateInheritedOpacity(float opacity) {
     // Sprite and bitmap Label chunks own float XYZ/UV/RGBA vertices.
     for (uint32_t i = 0; i < getStaticDrawInfoSize(); ++i) {
         auto *draw = getStaticRenderDrawInfo(i);
+        draw->markSpriteVerticesUpdated(false);
         auto *vertices = draw->getVDataBuffer();
         for (uint32_t v = 0; v < draw->getVbCount(); ++v) {
             vertices[v * draw->getStride() + 8] = opacity;
