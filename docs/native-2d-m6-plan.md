@@ -45,7 +45,7 @@
 - [x] SpriteFrame 基础状态：rect/offset/originalSize/pivot 使用 native 可写视图；setter、分量修改、反序列化、克隆和 native 回读不再依赖 JS 权威镜像，Sprite/Mask/BMFont 有原生消费者联动测试。
 - [ ] SpriteFrame 扩展与场景验收：动态合图打包/恢复、mesh/vertices/ensureMeshData 等完整 API parity；真实资源/旧场景/prefab 和 GPU 像素回归。基础数据通过不替代这些验收。
 - [x] SpriteAtlas 表同步：可观察 map 的整体赋值/修改、同名替换、null、remove/clear、Details 依赖回填与 getTexture 顺序已同步到 native；迟到回填隔离、原生引用持有/释放和 Windows 实际 JSB 壳联调通过，见 [报告与写入契约](./native-2d-m6.1-sprite-atlas.md)。真实资源/场景加载仍归下方独立验收项。
-- [ ] 验证两个 prototype 资产的构造身份、Asset 初始化、ccclass/属性元数据、实例间独立状态与原生回调；保存的原生方法必须在同一实例上调用且无递归。
+- [x] Windows Debug 真实 JSB 应用验证 SpriteFrame、SpriteAtlas 的构造身份、Asset 初始化、ccclass 注册、图集序列化属性及实例隔离。两组实例交替查询原生纹理、写入帧表、改变旋转并检查 UV 回调的发送者与次数。与既有依赖回填及原生方法接收者探针一同通过第 8 节门禁。夹具见 [StaticAtlasProbe](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)，日志见 `native/tests/2d-poc/build/m6-prototype-*.log`。
 - [x] TTFFont/LabelAtlas/BitmapFont 基础数据与生命周期：原生持有 TTF 字节/family/source、BMFont 配置/glyph/kerning/SpriteFrame；Label 直接持有字体资产并检测 revision，移除逐字形 JSB 传输；切换/清空/销毁、共享引用、实际 JSB 壳及 Windows Debug/Release 定向验证通过。补齐 deserialize/Details 依赖回填，修复 null 默认值 family 在快速反序列化中被当作对象，JIT/非 JIT 回归通过，见 [报告与边界](./native-2d-m6.1-font-assets.md)。
 - [x] 字体重载一致性补充：独立配置版本使同内容原生重载失效旧 JS 视图，同时保留依赖回填期间的编辑；released 后忽略迟到 onLoaded。Windows Debug/Release C++ 与实际 JSB 探针、7 个 Jest suite（58 项）通过，见字体资产报告。
 - [x] 字体重复生命周期补充：released 后的 JS 配置/TTF 加载赋值直接忽略；三类字体各 1000 次 native 创建、清空、重载、销毁，以及 BitmapFont/LabelAtlas 各 1000 次实际 JSB 循环通过 Windows Debug/Release。当时字体测试入口为 7 个 suite、64 项，后续新增测试见字体资产报告；直接创建资产的循环不替代 asset-manager 加载卸载或泄漏验收。

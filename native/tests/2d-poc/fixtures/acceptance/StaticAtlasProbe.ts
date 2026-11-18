@@ -1,5 +1,5 @@
 import {
-    Asset, assetManager, director, DirectorEvent, instantiate, isValid, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys, Texture2D,
+    Asset, assetManager, director, DirectorEvent, instantiate, isValid, js, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys, Texture2D,
 } from 'cc';
 
 const BASE = 'M6StaticAtlas/';
@@ -23,6 +23,45 @@ function checkCenter (target: RenderTexture, channel: number): void {
     const center = (Math.floor(target.height / 2) * target.width + Math.floor(target.width / 2)) * 4;
     if (!pixels || pixels[center + channel] < 250 || pixels[center + (1 - channel)] > 5 || pixels[center + 2] > 5) {
         throw new Error('Static atlas sprite sampled the wrong frame at the viewport center');
+    }
+}
+
+function verifyNativeAssetPrototypes (texture: Texture2D): void {
+    const bindings = (globalThis as any).jsb;
+    const atlases = [new SpriteAtlas(), new SpriteAtlas()];
+    const frames = [new SpriteFrame(), new SpriteFrame()];
+    try {
+        for (const [type, name, assets] of [
+            [SpriteAtlas, 'SpriteAtlas', atlases], [SpriteFrame, 'SpriteFrame', frames],
+        ] as const) {
+            if (type !== bindings[name] || js.getClassByName('cc.' + name) !== type
+                || assets.some(asset => !(asset instanceof Asset) || Object.getPrototypeOf(asset) !== type.prototype
+                    || !asset.loaded || asset.refCount !== 0 || !(asset as any)._callbackTable)
+                || (assets[0] as any)._callbackTable === (assets[1] as any)._callbackTable) {
+                throw new Error('Invalid native Asset constructor or registration for ' + name);
+            }
+        }
+        if (!(SpriteAtlas as any).__values__?.includes('spriteFrames')) {
+            throw new Error('SpriteAtlas frame map is missing from serialized properties');
+        }
+        const [frame, otherFrame] = frames;
+        const [atlas, otherAtlas] = atlases;
+        frame.texture = texture;
+        let updates = 0;
+        frame.on(SpriteFrame.EVENT_UV_UPDATED, (sender: SpriteFrame) => {
+            if (sender !== frame) throw new Error('Unexpected UV event sender');
+            updates++;
+        });
+        otherFrame.on(SpriteFrame.EVENT_UV_UPDATED, () => { throw new Error('UV event reached a sibling asset'); });
+        frame.setRotated(true);
+        atlas.spriteFrames.icon = frame;
+        if (updates !== 1 || !frame.rotated || otherFrame.rotated || atlas.getTexture() !== texture
+            || otherAtlas.getTexture() !== null || atlas.getSpriteFrame('icon') !== frame
+            || otherAtlas.getSpriteFrame('icon') !== null) {
+            throw new Error('Native prototype methods or callbacks lost per-instance state');
+        }
+    } finally {
+        for (const asset of [...atlases, ...frames]) asset.destroy();
     }
 }
 
@@ -82,6 +121,7 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
             if (sys.isNative && (atlas as SpriteAtlas & { getSpriteFrameCount(): number }).getSpriteFrameCount() !== 2) {
                 throw new Error('Native atlas table missed deserialized frames');
             }
+            if (sys.isNative && !stress && cycle === 1) verifyNativeAssetPrototypes(texture as Texture2D);
             keys.push(atlas.uuid, left.uuid, right.uuid, texture.uuid);
             if (stress) {
                 ownedAssets.push(atlas, left, right, texture);
