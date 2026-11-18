@@ -34,13 +34,15 @@ const sanity={
     'large-mesh-chunks':20000,'mask-rect':6400,'mask-inverted':46400,
     'mask-custom':3500,'mask-empty':52800,'mask-empty-inverted':52800,
     'mask-nested-empty':16800,'mask-multichunk':20000,
+    'mask-ellipse-segments':8000,'mask-ellipse-segments-updated':12560,
+    'mask-mixed-frame':12400,'mask-mixed-frame-updated':6400,
     'mask-alpha-0.2':12000,'mask-alpha-0.5':6000,'mask-alpha-0.8':0,
 };
 const geometryCases = ['fill-rect', 'curves', 'ellipse', 'arc', 'round-rect', 'clear-and-replace'];
 for (let cap = 0; cap < 3; cap++) {
     for (let join = 0; join < 3; join++) geometryCases.push(`stroke-${cap}-${join}`);
 }
-for (const name of geometryCases) {
+for (const name of [...Object.keys(sanity), ...geometryCases]) {
     if (!a.captures.includes(name)) throw new Error('Missing graphics geometry capture: ' + name);
 }
 const results=[];
