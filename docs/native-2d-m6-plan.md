@@ -132,6 +132,7 @@
 - [x] 同场景静态图集与 Prefab 真实资源千轮压力：Windows Debug 与 Web 各通过 5000 个资产引用和缓存检查、22 个 GPU 像素断言。Windows 私有字节采样和 V8 映射稳定，Chrome GC 后堆从第 100 到 1000 轮增加约 0.93 MiB。完整串行门禁通过，见[采样与范围](./native-2d-m6.1-sprite-atlas.md#7-真实资源千轮压力)。
 - [x] 完成同场景 Web 千轮堆增长归因。默认与关闭 V8 优化编译各运行 1000 轮，比较第 100 和 1000 轮堆快照。默认快照增长的 90.5% 落在 V8 `code` 类，对照的总自身字节基本持平，两组关键资产实例计数均下降。见[堆快照对照](./native-2d-m6.1-sprite-atlas.md#8-web-堆快照归因)。
 - [ ] 连续加载/卸载 1000 次，无新增泄漏/崩溃；采集 native/JS 堆、引用数和 GC，支持的平台执行 ASan/LeakSanitizer 或等价工具并记录覆盖限制。
+- [x] Windows MSVC Release 应用项目构建与基础渲染矩阵。使用同一套 Debug 验收脚本资源，Release 原生二进制完成 M2 五模式、M3 Label、M4 Mask/Graphics 和 M5 RichText，M5 计入 9 个 Label、1 个 Sprite，着色像素为 8725。Release 输出的 12 份图集与 88 份字体 RGBA 和 Debug 同名捕获逐字节一致。Release 应用 SHA256 为 `ed9de14382436006389b64a9b23928b4dba834766993aec429666ee4e816b6b4`；日志见 `native/tests/2d-poc/build/m6-release-*.log` 和 `m6-windows-release-build.log`。此处 Release 指 C++ 配置，发布脚本与完整事件矩阵继续验收。
 - [ ] Windows Debug/Release 构建和关键渲染、字体、事件场景逐格验收。macOS、iOS、Android、OHOS 的 Debug/Release 标为暂缓、待验证。
 - [ ] 验证模块裁剪/构建组合，覆盖 2d、rich-text、mask、graphics 及现有相关开关；不扩大不下沉模块的范围。
 
