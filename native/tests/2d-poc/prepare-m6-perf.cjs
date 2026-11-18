@@ -36,7 +36,7 @@ instrument('native/cocos/bindings/jswrapper/v8/HelperMacros.h', [
 const hook = 'SE_BIND_FUNC(js_performance_now)';
 instrument('native/cocos/bindings/manual/jsb_global.cpp', [
     [hook, hook + '\n' + fs.readFileSync(path.join(__dirname, 'm6-perf-bindings.inc'), 'utf8')],
-    ['__jsbObj->defineFunction("garbageCollect"', '\n#if defined(_MSC_VER) && defined(_DEBUG)\n    __jsbObj->defineFunction("readM6CrtHeap", _SE(js_readM6CrtHeap));\n#endif\n    __jsbObj->defineFunction("readM6Perf", _SE(js_readM6Perf));\n    __jsbObj->defineFunction("garbageCollect"'],
+    ['__jsbObj->defineFunction("garbageCollect"', '\n#if defined(_MSC_VER) && defined(_DEBUG)\n    __jsbObj->defineFunction("saveM6HeapSnapshot", _SE(js_saveM6HeapSnapshot));\n    __jsbObj->defineFunction("readM6CrtHeap", _SE(js_readM6CrtHeap));\n#endif\n    __jsbObj->defineFunction("readM6Perf", _SE(js_readM6Perf));\n    __jsbObj->defineFunction("garbageCollect"'],
 ]);
 const update = 'uiRendererManager.updateAllDirtyRenderers();';
 instrument('cocos/game/director.ts', [[update, 'const m6Start = performance.now();\n            ' + update

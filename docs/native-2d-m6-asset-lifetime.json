@@ -1,0 +1,1331 @@
+{
+  "windows": {
+    "Debug": {
+      "appSha256": "c4efcfa5053c3d25426f7ee0181b31df4692dae40d3d578bbf1c8d4133fbab46",
+      "scenarioSha256": "703c9888099feea592259388ff6620ba8fa2ff332eecdb243a7a2f7949f427ce",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 233816064,
+          "workingSetBytes": 253415424
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 236011520,
+          "workingSetBytes": 257191936
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 236118016,
+          "workingSetBytes": 257064960
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 235589632,
+          "workingSetBytes": 256188416
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 233459712,
+          "workingSetBytes": 256475136
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 232951808,
+          "workingSetBytes": 257011712
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 233295872,
+          "workingSetBytes": 257925120
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 233373696,
+          "workingSetBytes": 257499136
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 233365504,
+          "workingSetBytes": 257736704
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 234033152,
+          "workingSetBytes": 258723840
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 235302912,
+          "workingSetBytes": 258109440
+        }
+      ],
+      "stdoutSha256": "aa3dfe3c9dee172c252376156ed28ee7d34fac78f91dbab2ca0bf063424661d2",
+      "stderrBytes": 0,
+      "v8": [
+        {
+          "cycle": 0,
+          "usedSize": 27529864,
+          "totalSize": 35475456
+        },
+        {
+          "cycle": 100,
+          "usedSize": 28811560,
+          "totalSize": 35893248
+        },
+        {
+          "cycle": 200,
+          "usedSize": 28658104,
+          "totalSize": 35893248
+        },
+        {
+          "cycle": 300,
+          "usedSize": 28865660,
+          "totalSize": 35893248
+        },
+        {
+          "cycle": 400,
+          "usedSize": 29267368,
+          "totalSize": 36155392
+        },
+        {
+          "cycle": 500,
+          "usedSize": 29062080,
+          "totalSize": 36155392
+        },
+        {
+          "cycle": 600,
+          "usedSize": 29132152,
+          "totalSize": 36155392
+        },
+        {
+          "cycle": 700,
+          "usedSize": 29103012,
+          "totalSize": 36155392
+        },
+        {
+          "cycle": 800,
+          "usedSize": 29256904,
+          "totalSize": 36155392
+        },
+        {
+          "cycle": 900,
+          "usedSize": 29221536,
+          "totalSize": 36155392
+        },
+        {
+          "cycle": 1000,
+          "usedSize": 29558132,
+          "totalSize": 36417536
+        }
+      ]
+    },
+    "Release": {
+      "appSha256": "02b1153f21af6e9a9895398d50556d25ec108d5bb89f05293282703e3ae87e25",
+      "scenarioSha256": "703c9888099feea592259388ff6620ba8fa2ff332eecdb243a7a2f7949f427ce",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 216596480,
+          "workingSetBytes": 194494464
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 214409216,
+          "workingSetBytes": 194711552
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 214323200,
+          "workingSetBytes": 195035136
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 213389312,
+          "workingSetBytes": 194588672
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 213946368,
+          "workingSetBytes": 195416064
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 212639744,
+          "workingSetBytes": 196169728
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 212500480,
+          "workingSetBytes": 196497408
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 213078016,
+          "workingSetBytes": 196358144
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 213843968,
+          "workingSetBytes": 198209536
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 214724608,
+          "workingSetBytes": 197365760
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 215867392,
+          "workingSetBytes": 198004736
+        }
+      ],
+      "stdoutSha256": "b86fbbc5c6408b7fc27f70f36f2e149f59ccceb0be38edf3ab43e165b0bc1279",
+      "stderrBytes": 0
+    },
+    "ASan": {
+      "appSha256": "1e9f1a6e3b5363fa137e20bd940951bc530f8585fa8e4b4f47883285bd585f34",
+      "scenarioSha256": "703c9888099feea592259388ff6620ba8fa2ff332eecdb243a7a2f7949f427ce",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 997335040,
+          "workingSetBytes": 900120576
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1078890496,
+          "workingSetBytes": 940486656
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1098469376,
+          "workingSetBytes": 959033344
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1133629440,
+          "workingSetBytes": 994660352
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1136586752,
+          "workingSetBytes": 1002831872
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1139445760,
+          "workingSetBytes": 1006952448
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1148944384,
+          "workingSetBytes": 1015091200
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1160876032,
+          "workingSetBytes": 1024741376
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1172086784,
+          "workingSetBytes": 1028165632
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1173024768,
+          "workingSetBytes": 1029480448
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 1174822912,
+          "workingSetBytes": 1032769536
+        }
+      ],
+      "stdoutSha256": "c24905e86a4065a8a6215245606f5c7fc08a76f7573effda54d01912be0deafa",
+      "stderrBytes": 0
+    },
+    "CRT": {
+      "appSha256": "b9c0850277fe88273cfe876d726d3cefe21235eea137fad67f4bea0353658356",
+      "scenarioSha256": "703c9888099feea592259388ff6620ba8fa2ff332eecdb243a7a2f7949f427ce",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 233472000,
+          "workingSetBytes": 250748928
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 235180032,
+          "workingSetBytes": 253591552
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 235520000,
+          "workingSetBytes": 254115840
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 232853504,
+          "workingSetBytes": 251904000
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 232390656,
+          "workingSetBytes": 253562880
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 231727104,
+          "workingSetBytes": 254197760
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 232947712,
+          "workingSetBytes": 255275008
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 233426944,
+          "workingSetBytes": 255115264
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 233455616,
+          "workingSetBytes": 255991808
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 234283008,
+          "workingSetBytes": 256081920
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 235069440,
+          "workingSetBytes": 256155648
+        }
+      ],
+      "stdoutSha256": "7d09dad6c56b04c8d0be6442e9b9df5720b19b644417c81395e00ebd8f349823",
+      "stderrBytes": 0,
+      "v8": [
+        {
+          "cycle": 0,
+          "usedSize": 27575552,
+          "totalSize": 35475456,
+          "nativeCrtBytes": 29741515,
+          "nativeCrtBlocks": 128431
+        },
+        {
+          "cycle": 100,
+          "usedSize": 28643460,
+          "totalSize": 35368960,
+          "nativeCrtBytes": 29704996,
+          "nativeCrtBlocks": 128285
+        },
+        {
+          "cycle": 200,
+          "usedSize": 28918848,
+          "totalSize": 35631104,
+          "nativeCrtBytes": 29743863,
+          "nativeCrtBlocks": 129005
+        },
+        {
+          "cycle": 300,
+          "usedSize": 28916228,
+          "totalSize": 35631104,
+          "nativeCrtBytes": 29735887,
+          "nativeCrtBlocks": 128855
+        },
+        {
+          "cycle": 400,
+          "usedSize": 28985228,
+          "totalSize": 35631104,
+          "nativeCrtBytes": 29713892,
+          "nativeCrtBlocks": 128520
+        },
+        {
+          "cycle": 500,
+          "usedSize": 29320512,
+          "totalSize": 35893248,
+          "nativeCrtBytes": 29730201,
+          "nativeCrtBlocks": 128638
+        },
+        {
+          "cycle": 600,
+          "usedSize": 29203328,
+          "totalSize": 35368960,
+          "nativeCrtBytes": 29731736,
+          "nativeCrtBlocks": 128680
+        },
+        {
+          "cycle": 700,
+          "usedSize": 29371924,
+          "totalSize": 35631104,
+          "nativeCrtBytes": 29734486,
+          "nativeCrtBlocks": 128738
+        },
+        {
+          "cycle": 800,
+          "usedSize": 29244020,
+          "totalSize": 35631104,
+          "nativeCrtBytes": 29728025,
+          "nativeCrtBlocks": 128568
+        },
+        {
+          "cycle": 900,
+          "usedSize": 29226472,
+          "totalSize": 35631104,
+          "nativeCrtBytes": 29721768,
+          "nativeCrtBlocks": 128548
+        },
+        {
+          "cycle": 1000,
+          "usedSize": 29343824,
+          "totalSize": 35631104,
+          "nativeCrtBytes": 29738151,
+          "nativeCrtBlocks": 128774
+        }
+      ]
+    },
+    "snapshots": {
+      "appSha256": "8b219fa2cd327a51a1a5bf5789602c53eeb774396e409cc2f3892c12f115c2a7",
+      "scenarioSha256": "703c9888099feea592259388ff6620ba8fa2ff332eecdb243a7a2f7949f427ce",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 234409984,
+          "workingSetBytes": 251314176
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 237715456,
+          "workingSetBytes": 254726144
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 254504960,
+          "workingSetBytes": 272027648
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 251232256,
+          "workingSetBytes": 268861440
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 252518400,
+          "workingSetBytes": 270909440
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 252964864,
+          "workingSetBytes": 272683008
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 252342272,
+          "workingSetBytes": 273494016
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 251965440,
+          "workingSetBytes": 272859136
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 252620800,
+          "workingSetBytes": 273862656
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 252850176,
+          "workingSetBytes": 273997824
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 252817408,
+          "workingSetBytes": 272805888
+        }
+      ],
+      "stdoutSha256": "83d0d58f1e0705a06165ebc71a66779a353ded021b3c93d384be423cb893be76",
+      "stderrBytes": 0,
+      "v8": [
+        {
+          "cycle": 0,
+          "usedSize": 27749444,
+          "totalSize": 35737600,
+          "nativeCrtBytes": 29698015,
+          "nativeCrtBlocks": 128120
+        },
+        {
+          "cycle": 100,
+          "usedSize": 28585568,
+          "totalSize": 35893248,
+          "nativeCrtBytes": 29677895,
+          "nativeCrtBlocks": 127898
+        },
+        {
+          "cycle": 200,
+          "usedSize": 27740036,
+          "totalSize": 30588928,
+          "nativeCrtBytes": 49726902,
+          "nativeCrtBlocks": 127702
+        },
+        {
+          "cycle": 300,
+          "usedSize": 27729964,
+          "totalSize": 30588928,
+          "nativeCrtBytes": 49710786,
+          "nativeCrtBlocks": 127441
+        },
+        {
+          "cycle": 400,
+          "usedSize": 27852328,
+          "totalSize": 31113216,
+          "nativeCrtBytes": 49710242,
+          "nativeCrtBlocks": 127359
+        },
+        {
+          "cycle": 500,
+          "usedSize": 27927012,
+          "totalSize": 31113216,
+          "nativeCrtBytes": 49734565,
+          "nativeCrtBlocks": 127666
+        },
+        {
+          "cycle": 600,
+          "usedSize": 27887808,
+          "totalSize": 31113216,
+          "nativeCrtBytes": 49693525,
+          "nativeCrtBlocks": 127187
+        },
+        {
+          "cycle": 700,
+          "usedSize": 28201640,
+          "totalSize": 31375360,
+          "nativeCrtBytes": 49714217,
+          "nativeCrtBlocks": 127428
+        },
+        {
+          "cycle": 800,
+          "usedSize": 28056480,
+          "totalSize": 31375360,
+          "nativeCrtBytes": 49709418,
+          "nativeCrtBlocks": 127322
+        },
+        {
+          "cycle": 900,
+          "usedSize": 28109824,
+          "totalSize": 31375360,
+          "nativeCrtBytes": 49738573,
+          "nativeCrtBlocks": 127640
+        },
+        {
+          "cycle": 1000,
+          "usedSize": 28166668,
+          "totalSize": 31375360,
+          "nativeCrtBytes": 49779653,
+          "nativeCrtBlocks": 128592
+        }
+      ]
+    },
+    "heap": {
+      "snapshots": [
+        {
+          "cycle": 100,
+          "sha256": "acc9cc84b269adf7b299c3b24bec577dd9e5804e66ce8f5c688b651893e3568e"
+        },
+        {
+          "cycle": 1000,
+          "sha256": "ae2acc425c63c24378837d2fa3569adfeaa77dc5e1b2865c728fc62e27ee9569"
+        }
+      ],
+      "totalSelfBytesDelta": 729176,
+      "codeBytesDelta": 707328,
+      "assetCounts": [
+        {
+          "key": "object:Prefab",
+          "beforeCount": 3,
+          "afterCount": 1,
+          "countDelta": -2,
+          "selfBytesDelta": -144
+        },
+        {
+          "key": "object:SpriteAtlas",
+          "beforeCount": 3,
+          "afterCount": 1,
+          "countDelta": -2,
+          "selfBytesDelta": -40
+        },
+        {
+          "key": "object:SpriteFrame",
+          "beforeCount": 11,
+          "afterCount": 6,
+          "countDelta": -5,
+          "selfBytesDelta": -100
+        },
+        {
+          "key": "object:Texture2D",
+          "beforeCount": 9,
+          "afterCount": 6,
+          "countDelta": -3,
+          "selfBytesDelta": -60
+        },
+        {
+          "key": "object:ImageAsset",
+          "beforeCount": 7,
+          "afterCount": 5,
+          "countDelta": -2,
+          "selfBytesDelta": -40
+        },
+        {
+          "key": "object:Node",
+          "beforeCount": 24,
+          "afterCount": 23,
+          "countDelta": -1,
+          "selfBytesDelta": -20
+        },
+        {
+          "key": "object:Sprite",
+          "beforeCount": 10,
+          "afterCount": 7,
+          "countDelta": -3,
+          "selfBytesDelta": -528
+        },
+        {
+          "key": "object:RenderData",
+          "beforeCount": 0,
+          "afterCount": 0,
+          "countDelta": 0,
+          "selfBytesDelta": 0
+        },
+        {
+          "key": "object:StaticVBChunk",
+          "beforeCount": 0,
+          "afterCount": 0,
+          "countDelta": 0,
+          "selfBytesDelta": 0
+        }
+      ]
+    }
+  },
+  "web": {
+    "result": {
+      "cycles": 1000,
+      "checkedAssets": 5000,
+      "pixelChecks": 22
+    },
+    "samples": [
+      {
+        "cycle": 0,
+        "wrappers": 0,
+        "liveWrappers": 0,
+        "jsHeapBytes": 151051038
+      },
+      {
+        "cycle": 100,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 151224422
+      },
+      {
+        "cycle": 200,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150071818
+      },
+      {
+        "cycle": 300,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150310522
+      },
+      {
+        "cycle": 400,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150348366
+      },
+      {
+        "cycle": 500,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150509114
+      },
+      {
+        "cycle": 600,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150622310
+      },
+      {
+        "cycle": 700,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150633750
+      },
+      {
+        "cycle": 800,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150685942
+      },
+      {
+        "cycle": 900,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150757838
+      },
+      {
+        "cycle": 1000,
+        "wrappers": 500,
+        "liveWrappers": 5,
+        "jsHeapBytes": 150751994
+      }
+    ],
+    "heap": {
+      "snapshots": [
+        {
+          "cycle": 100,
+          "sha256": "b6a6027ce1f9b6bad79a27a03453b3bab6a8b9ced6346c50ecef12e4c1eef0e8"
+        },
+        {
+          "cycle": 1000,
+          "sha256": "d4686ff280f6c834131000a418fdbdb827a38a7106798382466b2ce5e62f96c6"
+        }
+      ],
+      "retainedRenderers": [
+        {
+          "id": 1177285,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Label",
+              "id": 585777,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M3RealBitmapLabel"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1225479,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Sprite",
+              "id": 316901,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M1TestNode-001"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1255625,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Sprite",
+              "id": 123515,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M4MaskedSprite"
+                },
+                {
+                  "type": "Node",
+                  "name": "M4RectMask"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1257037,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Label",
+              "id": 366423,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M3CharAscii"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1257039,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Label",
+              "id": 366453,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M3BitmapAtlasA"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1257041,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Label",
+              "id": 366481,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M3BitmapAtlasB"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1257043,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Label",
+              "id": 366509,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "(concatenated string)"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1284025,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Sprite",
+              "id": 317555,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M1TestClone"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1284403,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Label",
+              "id": 322461,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M3Label-wrap"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1285829,
+          "name": "RenderData",
+          "owners": [
+            {
+              "type": "property",
+              "label": "_renderData",
+              "name": "Label",
+              "id": 326489,
+              "chain": [
+                {
+                  "type": "Node",
+                  "name": "M3Label-cjk"
+                },
+                {
+                  "type": "Node",
+                  "name": "Canvas"
+                },
+                {
+                  "type": "Scene",
+                  "name": "m1-test"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1319713,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1257037
+            }
+          ]
+        },
+        {
+          "id": 1319725,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1257039
+            }
+          ]
+        },
+        {
+          "id": 1319843,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1257041
+            }
+          ]
+        },
+        {
+          "id": 1319961,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1257043
+            }
+          ]
+        },
+        {
+          "id": 1320079,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1285829
+            }
+          ]
+        },
+        {
+          "id": 1320091,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1284403
+            }
+          ]
+        },
+        {
+          "id": 1320209,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1284025
+            }
+          ]
+        },
+        {
+          "id": 1320327,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1177285
+            }
+          ]
+        },
+        {
+          "id": 1321697,
+          "name": "StaticVBChunk",
+          "owners": [
+            {
+              "type": "property",
+              "label": "chunk",
+              "name": "RenderData",
+              "id": 1255625
+            }
+          ]
+        }
+      ],
+      "totalSelfBytesDelta": 798296,
+      "codeBytesDelta": 721212,
+      "assetCounts": [
+        {
+          "key": "object:Prefab",
+          "beforeCount": 2,
+          "afterCount": 1,
+          "countDelta": -1,
+          "selfBytesDelta": -68
+        },
+        {
+          "key": "object:SpriteAtlas",
+          "beforeCount": 1,
+          "afterCount": 0,
+          "countDelta": -1,
+          "selfBytesDelta": -56
+        },
+        {
+          "key": "object:SpriteFrame",
+          "beforeCount": 15,
+          "afterCount": 12,
+          "countDelta": -3,
+          "selfBytesDelta": -228
+        },
+        {
+          "key": "object:Texture2D",
+          "beforeCount": 22,
+          "afterCount": 20,
+          "countDelta": -2,
+          "selfBytesDelta": -184
+        },
+        {
+          "key": "object:ImageAsset",
+          "beforeCount": 41,
+          "afterCount": 40,
+          "countDelta": -1,
+          "selfBytesDelta": -68
+        },
+        {
+          "key": "object:Node",
+          "beforeCount": 22,
+          "afterCount": 21,
+          "countDelta": -1,
+          "selfBytesDelta": -60
+        },
+        {
+          "key": "object:Sprite",
+          "beforeCount": 5,
+          "afterCount": 3,
+          "countDelta": -2,
+          "selfBytesDelta": -168
+        },
+        {
+          "key": "object:RenderData",
+          "beforeCount": 36,
+          "afterCount": 46,
+          "countDelta": 10,
+          "selfBytesDelta": 1080
+        },
+        {
+          "key": "object:StaticVBChunk",
+          "beforeCount": 0,
+          "afterCount": 9,
+          "countDelta": 9,
+          "selfBytesDelta": 324
+        }
+      ]
+    }
+  }
+}

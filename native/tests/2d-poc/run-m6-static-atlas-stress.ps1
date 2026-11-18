@@ -1,10 +1,13 @@
 param(
     [string]$AppExe = 'C:/Users/wangbenlong/Works/cocos-engine-worktrees/cocos-m1-test/build/windows/proj/Debug/cocos-m1-test.exe',
     [int]$TimeoutSeconds = 600,
+    [switch]$CollectV8Heap,
+    [switch]$HeapSnapshots,
     [string]$LogDirectory = (Join-Path $PSScriptRoot 'build/static-atlas-stress-native')
 )
 
 $ErrorActionPreference = 'Stop'
+if ($HeapSnapshots) { $CollectV8Heap = $true }
 $AppExe = (Resolve-Path -LiteralPath $AppExe).Path
 $working = Split-Path -Parent $AppExe
 New-Item -ItemType Directory -Force -Path $LogDirectory | Out-Null
@@ -17,6 +20,7 @@ $scenarioSha = (Get-FileHash -LiteralPath (Join-Path $working 'Resources/assets/
 $marker = Join-Path $working 'm6-static-atlas-stress'
 [System.IO.File]::Open($marker, 'CreateNew', 'Write', 'None').Dispose()
 $proc = $null
+$sampler = $null
 $samples = [System.Collections.Generic.List[object]]::new()
 $samplePrefix = 'M6_STATIC_ATLAS_STRESS_SAMPLE '
 $passPrefix = 'M6_STATIC_ATLAS_STRESS_PASS '
@@ -31,6 +35,12 @@ try {
         $proc.Refresh()
         if ($proc.HasExited) { throw "Static atlas stress app exited with $($proc.ExitCode)" }
         $contents = Get-Content -LiteralPath $stdout
+        if ($CollectV8Heap -and !$sampler -and ($contents -match 'v8only=true&ws=127\.0\.0\.1:')) {
+            $arguments = @((Join-Path $PSScriptRoot 'sample-native-v8-heap.cjs'), $stdout, (Join-Path $LogDirectory "$run.v8.json"))
+            if ($HeapSnapshots) { $arguments += @('--snapshots', $working) }
+            $quoted = ($arguments | ForEach-Object { '"' + $_ + '"' }) -join ' '
+            $sampler = Start-Process -FilePath (Get-Command node).Source -ArgumentList $quoted -PassThru -WindowStyle Hidden -RedirectStandardError (Join-Path $LogDirectory "$run.v8.err")
+        }
         $failure = $contents | Select-String -SimpleMatch 'M6_STATIC_ATLAS_ERROR ' | Select-Object -First 1
         if ($failure) { throw $failure.Line }
         $rows = @($contents | Select-String -SimpleMatch $samplePrefix)
@@ -59,9 +69,13 @@ try {
             throw "Invalid static atlas stress sample $i"
         }
     }
+    if ($CollectV8Heap -and (!$sampler -or !$sampler.WaitForExit(90000) -or $sampler.ExitCode -ne 0)) {
+        throw "V8 heap sampler failed. See $LogDirectory"
+    }
     $passed = $true
     Write-Host 'Windows static atlas: PASS (1000 cycles)'
 } finally {
+    if ($sampler -and !$sampler.HasExited) { $sampler.Kill() }
     if ($null -ne $proc -and -not $proc.HasExited) { $proc.Kill(); $null = $proc.WaitForExit(5000) }
     Remove-Item -LiteralPath $marker -Force
     [ordered]@{ passed = $passed; appSha256 = $sha; scenarioSha256 = $scenarioSha; result = $result; samples = @($samples.ToArray()); stdout = $stdout; stderr = $stderr } |
