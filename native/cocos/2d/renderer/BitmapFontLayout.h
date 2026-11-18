@@ -23,6 +23,7 @@
 ****************************************************************************/
 #pragma once
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <string>
@@ -39,6 +40,45 @@ struct BitmapGlyphPlacement {
     size_t glyph{0};
     double x{0}, y{0}, u{0}, v{0}, width{0}, height{0}; // top-left position; source-pixel rectangle
 };
+struct BitmapFrameRect {
+    double x{0}, y{0}, width{0}, height{0}, originalWidth{0}, originalHeight{0}, offsetX{0}, offsetY{0};
+    double textureWidth{0}, textureHeight{0};
+    bool rotated{false};
+};
+struct BitmapGlyphVertex { double x{0}, y{0}, u{0}, v{0}; };
+struct BitmapGlyphQuad {
+    BitmapGlyphPlacement source;
+    std::array<BitmapGlyphVertex, 4> vertices;
+};
+// Value result only. Frame and glyph inputs remain owned by their assets/layout.
+inline BitmapGlyphQuad buildBitmapGlyphQuad(const BitmapGlyphPlacement &placement, double scale, const BitmapFrameRect &frame) {
+    BitmapGlyphQuad out; out.source = placement;
+    auto &rect = out.source;
+    const double trimmedLeft = frame.offsetX + (frame.originalWidth - frame.width) * .5;
+    const double trimmedTop = frame.offsetY - (frame.originalHeight - frame.height) * .5;
+    if (frame.rotated) {
+        rect.u = frame.x + frame.height - placement.v - placement.height - trimmedTop;
+        rect.v = placement.u + frame.y - trimmedLeft;
+        // Web determines the rect after its initial positive-height check.
+        if (rect.v < 0) rect.height += trimmedTop;
+    } else {
+        rect.u += frame.x - trimmedLeft;
+        rect.v += frame.y + trimmedTop;
+    }
+    if (!(frame.textureWidth > 0 && frame.textureHeight > 0)) return out;
+    const double left = rect.u / frame.textureWidth, top = rect.v / frame.textureHeight;
+    const double right = (rect.u + (frame.rotated ? rect.height : rect.width)) / frame.textureWidth;
+    const double bottom = (rect.v + (frame.rotated ? rect.width : rect.height)) / frame.textureHeight;
+    const double x = placement.x, y = placement.y, width = rect.width * scale, height = rect.height * scale;
+    if (frame.rotated) {
+        out.vertices = {{{x, y - height, left, top}, {x + width, y - height, left, bottom},
+                         {x, y, right, top}, {x + width, y, right, bottom}}};
+    } else {
+        out.vertices = {{{x, y - height, left, bottom}, {x + width, y - height, right, bottom},
+                         {x, y, left, top}, {x + width, y, right, top}}};
+    }
+    return out;
+}
 struct BitmapLayoutResult {
     double width{0}, height{0}, actualFontSize{0}, scale{1};
     std::vector<double> lineWidths;

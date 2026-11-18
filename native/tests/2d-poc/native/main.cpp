@@ -36,6 +36,7 @@
 #include "base/Log.h"
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
+#include "scene/DrawBatch2D.h"
 #include "2d/components/RichText.h"
 #include "2d/components/Graphics.h"
 #include "core/builtin/BuiltinResMgr.h"
@@ -234,6 +235,29 @@ void testSpriteFrameData() {
           "packed frame destructor releases source and atlas without reset");
 }
 
+void testUiBatchInputResources() {
+    cc::RenderDrawInfo info;
+    info.setIsMeshBuffer(true); info.setStride(8); info.setVbCount(4); info.setIbCount(6);
+    auto *ia = info.requestIA(cc::Root::getInstance()->getDevice());
+    cc::IntrusivePtr<cc::gfx::InputAssembler> iaGuard(ia);
+    cc::IntrusivePtr<cc::gfx::Buffer> vertexGuard(ia->getVertexBuffers()[0]);
+    cc::IntrusivePtr<cc::gfx::Buffer> indexGuard(ia->getIndexBuffer());
+    const auto iaRefs = ia->getRefCount(), vbRefs = vertexGuard->getRefCount(), ibRefs = indexGuard->getRefCount();
+    cc::scene::DrawBatch2D batch;
+    batch.setInputAssembler(ia);
+    check(ia->getRefCount() == iaRefs + 1, "Queued UI batch owns its IA until clear");
+    check(vertexGuard->getRefCount() == vbRefs + 1 && indexGuard->getRefCount() == ibRefs + 1,
+          "Queued UI batch owns IA vertex/index buffers independently of DrawInfo");
+    info.resetDrawInfo();
+    check(batch.getInputAssembler() == ia && ia->getRefCount() == 2, "DrawInfo reset does not invalidate queued batch IA");
+    check(vertexGuard->getRefCount() == 2 && indexGuard->getRefCount() == 2, "DrawInfo reset preserves queued GPU buffers");
+    batch.setInputAssembler(ia);
+    batch.clear();
+    check(batch.getInputAssembler() == nullptr && ia->getRefCount() == 1 && vertexGuard->getRefCount() == 1 && indexGuard->getRefCount() == 1,
+          "Batch clear releases IA and buffer leases exactly once");
+    iaGuard = nullptr; indexGuard = nullptr; vertexGuard = nullptr;
+}
+
 void testBitmapGpuGeometry() {
     cc::IntrusivePtr<cc::Texture2D> notified(new cc::Texture2D());
     cc::gfx::Texture *lastNotified = nullptr; // borrowed identity only, owned by notified
@@ -271,6 +295,16 @@ void testBitmapGpuGeometry() {
     check(draw && draw->getTexture() == source->getGFXTexture(), "GPU bitmap samples original atlas directly");
     check(label.getBitmapDiagnosticBuildCount() == 0, "Rendering bitmap geometry does not build a CPU image");
     if (draw) checkNear(draw->getVDataBuffer()[3], 3.F/8.F, "Bitmap glyph UV includes frame origin");
+    frame->setOffset(1, 0); frame->setOriginalSize(6, 6); label.prepareRenderEntity(1.F);
+    draw = entity->getStaticRenderDrawInfo(0);
+    checkNear(draw->getVDataBuffer()[3], 1.F/8.F, "Bitmap frame-only offset/original-size changes invalidate native UVs");
+    checkNear(draw->getVDataBuffer()[4], 5.F/8.F, "Bitmap frame trim applies vertical source correction");
+    frame->setOriginalSize(4, 4); frame->setOffset(6, -1); frame->setRotated(true); label.prepareRenderEntity(1.F);
+    draw = entity->getStaticRenderDrawInfo(0);
+    checkNear(draw->getVDataBuffer()[3], .5F, "Rotated bitmap frame trim updates current texture coordinate");
+    checkNear(draw->getVDataBuffer()[4], -.25F, "Rotated bitmap negative source origin follows Web mapping");
+    checkNear(draw->getVDataBuffer()[19] - draw->getVDataBuffer()[1], 1.F, "Rotated bitmap trim updates physical glyph height");
+    frame->setRotated(false); frame->setOffset(0, 0); label.prepareRenderEntity(1.F);
     frame->setDynamicAtlasFrame(packed, 6, 7); label.updateRenderData();
     check(label.getAtlasTextureId() == reinterpret_cast<uint64_t>(packed.get()), "Explicit bitmap update observes frame packing before prepare");
     label.prepareRenderEntity(1.F); draw = entity->getStaticRenderDrawInfo(0);
@@ -2240,6 +2274,7 @@ int main(int argc, char **argv) {
         testSpriteAtlas();
         testSpriteFrameData();
         testFrameConsumers();
+        testUiBatchInputResources();
         testBitmapGpuGeometry();
         testFontAssets();
         testFontAliasOwnership();

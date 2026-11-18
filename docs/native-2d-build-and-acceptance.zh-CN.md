@@ -269,7 +269,7 @@ node native/tests/2d-poc/compare-dynamic-atlas.cjs
 
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 
-涉及字体图集采样时，M5 探针会先运行 BitmapGpuProbe：BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，共 12 份 RGBA。原有 12 份图集捕获现使用默认 CENTER/CENTER、CLAMP、64×32 内容框；另加入两类字体/普通和旋转帧各 19 组布局，共 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距和裁剪。打包纹理没有 CPU ImageAsset，必须直接提交原生字形网格，CPU 诊断构建次数为 0。另在真实 native GPU 路径提交 70000 字形、5 个 chunk，随后清空并检查引用。
+涉及字体图集采样时，M5 探针会先运行 BitmapGpuProbe：BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，共 12 份 RGBA。原有 12 份图集捕获现使用默认 CENTER/CENTER、CLAMP、64×32 内容框；另加入两类字体/普通和旋转帧各 19 组布局，共 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距和裁剪，并交叉带 padding 的非零帧原点、trim、offset 和旋转边界。打包纹理没有 CPU ImageAsset，必须直接提交原生字形网格，CPU 诊断构建次数为 0。另在真实 native GPU 路径提交 70000 字形、5 个 chunk，随后清空并检查引用。
 
 ```powershell
 node native/tests/2d-poc/run-dynamic-atlas-web.cjs --bitmap
@@ -278,7 +278,7 @@ node native/tests/2d-poc/compare-bitmap-gpu.cjs
 node native/tests/2d-poc/compare-bitmap-layout.cjs
 ```
 
-两端每份图像必须为 256×256 RGBA，通道容差 1；打包/恢复与本端原图必须字节相同。完成标记、字形数、实际 GPU 纹理绑定、大字形分块/清空检查也必须通过。布局对照还要求 76 组内容尺寸、actualFontSize 和字形数相同（数值容差 0.0001）。M0 已加入 run-m6-bitmap-layout-parity.ps1，执行 2307 组实际 Web TextProcessing 与原生布局核心对照；可传 NativeExecutables 追加其他编译器的同一夹具。
+两端每份图像必须为 256×256 RGBA，通道容差 1；打包/恢复与本端原图必须字节相同。完成标记、字形数、实际 GPU 纹理绑定、大字形分块/清空检查也必须通过。布局对照还要求 76 组内容尺寸、actualFontSize、字形数及记录的帧状态相同（数值容差 0.0001）。M0 已加入 run-m6-bitmap-layout-parity.ps1，执行 2307 组实际 Web TextProcessing、BmfontUtils 与原生布局及四顶点位置和 UV 对照；可传 NativeExecutables 追加其他编译器的同一夹具。
 
 ## 8. 完整验收顺序
 

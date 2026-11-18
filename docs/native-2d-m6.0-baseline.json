@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "9501cc2ff1d5c5021c3e2f5bf6bc0f002a0dcc183c320822a5bf77db07a8931d"
+      "sha256": "ca24c973cfc825c392906b8f8146de6a15c715a59fe984d267aa410ce4951a8d"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -179,7 +179,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/BitmapFontLayout.h",
-      "sha256": "fa7f7a0d5f280e2e0180588d75872842b86b167a91b9e635ab98731695840e6c"
+      "sha256": "9c88e3daef7da737e9a9ac7b5dbd1682f160e24b506ee0e5cfa5f8f32ec07ceb"
     },
     {
       "file": "native/cocos/2d/renderer/DynamicAtlas.cpp",
@@ -336,6 +336,14 @@
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
       "sha256": "882a2066074dc4ea00c92712c9de1ad20425c2d4028ee00eb41a5101e32e66c8"
+    },
+    {
+      "file": "native/cocos/scene/DrawBatch2D.cpp",
+      "sha256": "c1209732a49f20872c242507407dd6a15c63d89d3c9361f2878d9db56864778b"
+    },
+    {
+      "file": "native/cocos/scene/DrawBatch2D.h",
+      "sha256": "dbb2a4b798745d6d3ef17664da4512a44be043b5e18d1283b4eec5ed948621c0"
     },
     {
       "file": "native/tools/swig-config/2d.i",

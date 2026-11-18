@@ -84,6 +84,12 @@ export class M4Probe {
         if (!camera || !canvas) { console.log('M4_MASK_ERROR no canvas camera'); return; }
         const renderTexture = new RenderTexture();
         renderTexture.reset({ width: 256, height: 256 });
+        // Keep unrelated UI batches out of the capture on both render backends.
+        const captureLayer = 1 << 18;
+        const oldVisibility = camera.visibility;
+        maskNode.layer = captureLayer;
+        spriteNode.layer = captureLayer;
+        camera.visibility = captureLayer;
         const oldTarget = camera.targetTexture;
         const oldOrthoHeight = camera.orthoHeight;
         camera.targetTexture = renderTexture;
@@ -213,6 +219,7 @@ export class M4Probe {
                         maskNode.active = false;
                         const graphicsNode = new Node('M4Graphics');
                         parent.addChild(graphicsNode);
+                        graphicsNode.layer = captureLayer;
                         graphicsNode.setPosition(0, 0, 0);
                         const graphics = graphicsNode.addComponent(Graphics);
                         graphics.fillColor = new Color(255, 0, 0, 255);
@@ -229,6 +236,7 @@ export class M4Probe {
                                 state.node.setPosition(state.position);
                             }
                             graphicsNode.destroy();
+                            camera.visibility = oldVisibility;
                             camera.orthoHeight = oldOrthoHeight;
                             camera.targetTexture = oldTarget;
                             renderTexture.destroy();

@@ -533,33 +533,17 @@ void Label::rebuildBitmapTexture() {
     const auto layout = layoutBitmapFont(text, glyphs, glyphMap, kerningMap, options);
     _actualFontSize = static_cast<float>(layout.actualFontSize);
     std::vector<SpriteQuad> quads; quads.reserve(layout.glyphs.size());
-    const float texWidth = static_cast<float>(texture->getWidth()), texHeight = static_cast<float>(texture->getHeight());
     const auto *frame = _bitmapAtlas.get();
-    const float trimmedLeft = frame->getOffsetX() + (frame->getOriginalWidth() - frame->getRectWidth()) * .5F;
-    const float trimmedTop = frame->getOffsetY() - (frame->getOriginalHeight() - frame->getRectHeight()) * .5F;
+    const BitmapFrameRect frameRect{frame->getRectX(), frame->getRectY(), frame->getRectWidth(), frame->getRectHeight(),
+        frame->getOriginalWidth(), frame->getOriginalHeight(), frame->getOffsetX(), frame->getOffsetY(),
+        static_cast<double>(texture->getWidth()), static_cast<double>(texture->getHeight()), frame->isRotated()};
     for (const auto &placement : layout.glyphs) {
         SpriteQuad quad; quad.valid = true;
-        const float x = static_cast<float>(placement.x), top = static_cast<float>(placement.y);
-        const float width = static_cast<float>(placement.width), height = static_cast<float>(placement.height);
-        const float scale = static_cast<float>(layout.scale);
-        quad.vertices[0].position.set(x, top - height * scale, 0); quad.vertices[1].position.set(x + width * scale, top - height * scale, 0);
-        quad.vertices[2].position.set(x, top, 0); quad.vertices[3].position.set(x + width * scale, top, 0);
-        float rx = frame->getRectX() + static_cast<float>(placement.u) - trimmedLeft;
-        float ry = frame->getRectY() + static_cast<float>(placement.v) + trimmedTop;
-        if (frame->isRotated()) {
-            rx = frame->getRectX() + frame->getRectHeight() - static_cast<float>(placement.v) - height - trimmedTop;
-            ry = static_cast<float>(placement.u) + frame->getRectY() - trimmedLeft;
-            const float rotatedHeight = ry < 0 ? height + trimmedTop : height;
-            quad.vertices[0].uv.set(rx / texWidth, ry / texHeight);
-            quad.vertices[1].uv.set(rx / texWidth, (ry + width) / texHeight);
-            quad.vertices[2].uv.set((rx + rotatedHeight) / texWidth, ry / texHeight);
-            quad.vertices[3].uv.set((rx + rotatedHeight) / texWidth, (ry + width) / texHeight);
-            quad.vertices[0].position.y = quad.vertices[1].position.y = top - rotatedHeight * scale;
-        } else {
-            quad.vertices[0].uv.set(rx / texWidth, (ry + height) / texHeight);
-            quad.vertices[1].uv.set((rx + width) / texWidth, (ry + height) / texHeight);
-            quad.vertices[2].uv.set(rx / texWidth, ry / texHeight);
-            quad.vertices[3].uv.set((rx + width) / texWidth, ry / texHeight);
+        const auto glyphQuad = buildBitmapGlyphQuad(placement, layout.scale, frameRect);
+        for (size_t i = 0; i < glyphQuad.vertices.size(); ++i) {
+            const auto &vertex = glyphQuad.vertices[i];
+            quad.vertices[i].position.set(static_cast<float>(vertex.x), static_cast<float>(vertex.y), 0);
+            quad.vertices[i].uv.set(static_cast<float>(vertex.u), static_cast<float>(vertex.v));
         }
         quads.emplace_back(quad);
     }

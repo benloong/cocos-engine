@@ -28,7 +28,8 @@
 //#include "core/scene-graph/Layers.h"
 #include "base/Macros.h"
 #include "core/scene-graph/Node.h"
-#include "renderer/gfx-base/GFXDef-common.h"
+#include "renderer/gfx-base/GFXBuffer.h"
+#include "renderer/gfx-base/GFXInputAssembler.h"
 #include "scene/Define.h"
 
 namespace cc {
@@ -56,7 +57,7 @@ public:
     inline void setModel(Model *model) { _model = model; }
 
     inline const gfx::DrawInfo &getDrawInfo() const { return _drawInfo; }
-    inline gfx::InputAssembler *getInputAssembler() const { return _inputAssembler; }
+    inline gfx::InputAssembler *getInputAssembler() const { return _inputAssembler.get(); }
     inline gfx::DescriptorSet *getDescriptorSet() const { return _descriptorSet; }
     inline uint32_t getVisFlags() const { return _visFlags; }
     inline const ccstd::vector<gfx::Shader *> &getShaders() const { return _shaders; }
@@ -64,7 +65,12 @@ public:
     inline Model *getModel() const { return _model; }
 
 protected:
-    gfx::InputAssembler *_inputAssembler{nullptr}; // IntrusivePtr ?
+    // The batch retains the IA and its borrowed buffers until clear().
+    // Declaration order releases the IA before its buffers on destruction.
+    ccstd::vector<IntrusivePtr<gfx::Buffer>> _vertexBuffers;
+    IntrusivePtr<gfx::Buffer> _indexBuffer;
+    IntrusivePtr<gfx::Buffer> _indirectBuffer;
+    IntrusivePtr<gfx::InputAssembler> _inputAssembler;
     gfx::DescriptorSet *_descriptorSet{nullptr};
     uint32_t _visFlags{0};
     ccstd::vector<IntrusivePtr<scene::Pass>> _passes;

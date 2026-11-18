@@ -1,5 +1,5 @@
 import { BitmapFont, LabelAtlas, Canvas, Color, director, DynamicAtlasManager, dynamicAtlasManager, ImageAsset,
-    Label, native, Node, Rect, RenderTexture, Size, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
+    Label, native, Node, Rect, RenderTexture, Size, SpriteFrame, sys, Texture2D, UITransform, Vec2 } from 'cc';
 
 /** Real GPU font source/packed/restored captures. No CPU diagnostic getter is used. */
 export class BitmapGpuProbe {
@@ -21,10 +21,10 @@ export class BitmapGpuProbe {
         const layoutMetrics: any[] = [];
         try {
             for (const kind of ['bitmap', 'atlas']) for (const rotated of [false, true]) {
-                const width = rotated ? 16 : 32, height = rotated ? 32 : 16;
+                const width = rotated ? 32 : 48, height = rotated ? 48 : 32;
                 const pixels = new Uint8Array(width * height * 4);
                 for (let y = 0; y < 16; y++) for (let x = 0; x < 32; x++) {
-                    const px = rotated ? 15 - y : x, py = rotated ? x : y;
+                    const px = 4 + (rotated ? 15 - y : x), py = 6 + (rotated ? x : y);
                     const at = (py * width + px) * 4;
                     pixels[at] = x < 16 ? (x < 8 ? 255 : 64) : 32;
                     pixels[at + 1] = x >= 16 ? (x < 24 ? 255 : 64) : 32;
@@ -35,7 +35,7 @@ export class BitmapGpuProbe {
                 texture.setWrapMode(Texture2D.WrapMode.CLAMP_TO_EDGE, Texture2D.WrapMode.CLAMP_TO_EDGE);
                 texture.uploadData(pixels);
                 const frame = new SpriteFrame(); frame.texture = texture; frame.rotated = rotated;
-                frame.rect = new Rect(0, 0, 32, 16); frame.originalSize = new Size(32, 16);
+                frame.rect = new Rect(4, 6, 32, 16); frame.originalSize = new Size(32, 16);
                 const font = kind === 'bitmap' ? new BitmapFont() : new LabelAtlas();
                 font.fontSize = 16; font.spriteFrame = frame;
                 font.fntConfig = { fontSize: 16, commonHeight: 16, atlasName: 'memory', kerningDict: { [(65 << 16) | 66]: -4 }, fontDefDictionary: {
@@ -108,7 +108,17 @@ export class BitmapGpuProbe {
                         { id: 'clamp', string: 'ABAB', width: 24, height: 8 },
                         { id: 'line-height', string: 'AB\nA', lineHeight: 24, height: 64, sourceSize: 32 },
                         { id: 'shrink-wrap', overflow: Label.Overflow.SHRINK, string: 'AB AB AB', enableWrapText: true, width: 40, height: 24, sourceSize: 8 });
-                    for (const settings of layouts) {
+                    const profiles = [
+                        { id: 'base', x: 4, y: 6, width: 32, height: 16, ox: 0, oy: 0 },
+                        { id: 'trim', x: 6, y: 3, width: 40, height: 24, ox: 2, oy: -2 },
+                        { id: 'offset', x: 2, y: 8, width: 40, height: 24, ox: -6, oy: 6 },
+                        { id: 'rotated-edge', x: 4, y: 6, width: 32, height: 16, ox: 8, oy: -4 },
+                    ];
+                    for (const [caseIndex, settings] of layouts.entries()) {
+                        const profile = profiles[caseIndex % profiles.length];
+                        frame.rect = new Rect(profile.x, profile.y, 32, 16);
+                        frame.originalSize = new Size(profile.width, profile.height);
+                        frame.offset = new Vec2(profile.ox, profile.oy); refresh();
                         reloadSource(settings.sourceSize ?? 16);
                         Object.assign(label, { fontSize: 16, lineHeight: 16, spacingX: 0, horizontalAlign: 1, verticalAlign: 1,
                             overflow: Label.Overflow.CLAMP, enableWrapText: false, string: 'AB' });
@@ -124,11 +134,14 @@ export class BitmapGpuProbe {
                         } else if (!(await fetch('/m6-bitmap-capture?name=' + file, { method: 'POST', body: data })).ok) throw new Error('Bitmap layout collector failed');
                         const glyphs = sys.isNative ? (label as any)._native.getRenderedBitmapGlyphCount() : (label as any).renderData.vertexCount / 4;
                         const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, glyphs, metadataFontSize: font.fontSize,
-                            sourceFontSize: sys.isNative ? (font as any).getSourceFontSize() : font.fntConfig!.fontSize };
+                            sourceFontSize: sys.isNative ? (font as any).getSourceFontSize() : font.fntConfig!.fontSize,
+                            frameProfile: profile.id, rectX: frame.rect.x, rectY: frame.rect.y, originalWidth: frame.originalSize.width,
+                            originalHeight: frame.originalSize.height, offsetX: frame.offset.x, offsetY: frame.offset.y };
                         layoutMetrics.push(metric); console.log('M6_BITMAP_LAYOUT ' + JSON.stringify(metric));
                     }
                     if (sys.isNative && kind === 'bitmap' && !rotated) {
                         const backend = (label as any)._native;
+                        frame.rect = new Rect(4, 6, 32, 16); frame.originalSize = new Size(32, 16); frame.offset = new Vec2();
                         reloadSource(16);
                         label.overflow = Label.Overflow.NONE; label.enableWrapText = false; label.fontSize = 16; label.lineHeight = 16;
                         label.string = 'A'.repeat(70000); await wait();

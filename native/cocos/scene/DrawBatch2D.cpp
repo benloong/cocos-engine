@@ -31,7 +31,7 @@ namespace cc {
 namespace scene {
 
 void DrawBatch2D::clear() {
-    _inputAssembler = nullptr;
+    setInputAssembler(nullptr);
     _descriptorSet = nullptr;
     _model = nullptr;
     _visFlags = 1 << 23;
@@ -59,8 +59,25 @@ void DrawBatch2D::fillPass(Material *mat, const gfx::DepthStencilState *depthSte
 }
 
 void DrawBatch2D::setInputAssembler(gfx::InputAssembler *ia) {
-    _inputAssembler = ia;
-    _drawInfo = _inputAssembler->getDrawInfo();
+    if (_inputAssembler.get() != ia) {
+        // Retain the replacement before dropping the old batch resources.
+        IntrusivePtr<gfx::InputAssembler> retained(ia);
+        const auto previousCount = _vertexBuffers.size();
+        if (ia) {
+            const auto &buffers = ia->getVertexBuffers();
+            _vertexBuffers.reserve(previousCount + buffers.size());
+            for (auto *buffer : buffers) {
+                _vertexBuffers.emplace_back(buffer);
+            }
+        }
+        IntrusivePtr<gfx::Buffer> indexBuffer(ia ? ia->getIndexBuffer() : nullptr);
+        IntrusivePtr<gfx::Buffer> indirectBuffer(ia ? ia->getIndirectBuffer() : nullptr);
+        _inputAssembler = std::move(retained);
+        _vertexBuffers.erase(_vertexBuffers.begin(), _vertexBuffers.begin() + previousCount);
+        _indexBuffer = std::move(indexBuffer);
+        _indirectBuffer = std::move(indirectBuffer);
+    }
+    _drawInfo = ia ? ia->getDrawInfo() : gfx::DrawInfo{};
 }
 
 } // namespace scene
