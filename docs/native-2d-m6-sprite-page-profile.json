@@ -1,0 +1,455 @@
+{
+  "before": "7e83734299",
+  "current": "4fcdb412a0",
+  "unit": "ms/frame",
+  "rounds": [
+    {
+      "i": 1,
+      "phase": "steady",
+      "before": 0.12595,
+      "current": 0.23895,
+      "gap": 0.11299999999999999,
+      "append": 0.14522968197879857,
+      "payload": 0.15521201413427566,
+      "restInProbedRun": 0.12901130742049466,
+      "rest": 0.09372031802120143,
+      "restDelta": -0.03222968197879858,
+      "probeDelta": 0.04125000000000001,
+      "clockNs": 57.1113074204947,
+      "samples": 2264
+    },
+    {
+      "i": 1,
+      "phase": "dirty",
+      "before": 0.14385,
+      "current": 0.2706,
+      "gap": 0.12675,
+      "append": 0.12968197879858656,
+      "payload": 0.1398409893992933,
+      "restInProbedRun": 0.1322642365631393,
+      "rest": 0.14091802120141345,
+      "restDelta": -0.0029319787985865597,
+      "probeDelta": -0.02410000000000001,
+      "clockNs": 43.15371024734982,
+      "samples": 2264
+    },
+    {
+      "i": 2,
+      "phase": "steady",
+      "before": 0.14125,
+      "current": 0.23935,
+      "gap": 0.09810000000000002,
+      "append": 0.12946113074204949,
+      "payload": 0.13710247349823323,
+      "restInProbedRun": 0.13039198437790592,
+      "rest": 0.10988886925795052,
+      "restDelta": -0.031361130742049464,
+      "probeDelta": 0.021699999999999997,
+      "clockNs": 54.1077738515901,
+      "samples": 2264
+    },
+    {
+      "i": 2,
+      "phase": "dirty",
+      "before": 0.1436,
+      "current": 0.2281,
+      "gap": 0.08449999999999999,
+      "append": 0.1271643109540636,
+      "payload": 0.1405035335689046,
+      "restInProbedRun": 0.15227564627115495,
+      "rest": 0.10093568904593639,
+      "restDelta": -0.04266431095406362,
+      "probeDelta": 0.08030000000000001,
+      "clockNs": 68.90459363957598,
+      "samples": 2264
+    },
+    {
+      "i": 3,
+      "phase": "steady",
+      "before": 0.1247,
+      "current": 0.2817,
+      "gap": 0.157,
+      "append": 0.1435070671378092,
+      "payload": 0.16219081272084804,
+      "restInProbedRun": 0.1341530965222243,
+      "rest": 0.1381929328621908,
+      "restDelta": 0.013492932862190804,
+      "probeDelta": 0.024550000000000016,
+      "clockNs": 56.31625441696113,
+      "samples": 2264
+    },
+    {
+      "i": 3,
+      "phase": "dirty",
+      "before": 0.13975,
+      "current": 0.27859999999999996,
+      "gap": 0.13884999999999995,
+      "append": 0.13113957597173145,
+      "payload": 0.1381625441696113,
+      "restInProbedRun": 0.1257278222056909,
+      "rest": 0.1474604240282685,
+      "restDelta": 0.007710424028268492,
+      "probeDelta": -0.048049999999999954,
+      "clockNs": 44.96466431095406,
+      "samples": 2264
+    },
+    {
+      "i": 4,
+      "phase": "steady",
+      "before": 0.0979,
+      "current": 0.18555,
+      "gap": 0.08764999999999999,
+      "append": 0.12632508833922262,
+      "payload": 0.1403268551236749,
+      "restInProbedRun": 0.11418861818858099,
+      "rest": 0.05922491166077737,
+      "restDelta": -0.03867508833922263,
+      "probeDelta": 0.05810000000000001,
+      "clockNs": 33.87809187279152,
+      "samples": 2264
+    },
+    {
+      "i": 4,
+      "phase": "dirty",
+      "before": 0.0885,
+      "current": 0.1527,
+      "gap": 0.06420000000000001,
+      "append": 0.10764134275618374,
+      "payload": 0.1230565371024735,
+      "restInProbedRun": 0.09164254747587462,
+      "rest": 0.04505865724381626,
+      "restDelta": -0.043441342756183735,
+      "probeDelta": 0.0398,
+      "clockNs": 32.72968197879859,
+      "samples": 2264
+    },
+    {
+      "i": 5,
+      "phase": "steady",
+      "before": 0.0939,
+      "current": 0.26815,
+      "gap": 0.17425000000000002,
+      "append": 0.16157243816254419,
+      "payload": 0.1514575971731449,
+      "restInProbedRun": 0.13916909057095034,
+      "rest": 0.10657756183745581,
+      "restDelta": 0.012677561837455817,
+      "probeDelta": 0.04039999999999999,
+      "clockNs": 68.59540636042402,
+      "samples": 2264
+    },
+    {
+      "i": 5,
+      "phase": "dirty",
+      "before": 0.09814999999999999,
+      "current": 0.2168,
+      "gap": 0.11865,
+      "append": 0.1265017667844523,
+      "payload": 0.13418727915194348,
+      "restInProbedRun": 0.13642788729774968,
+      "rest": 0.0902982332155477,
+      "restDelta": -0.007851766784452291,
+      "probeDelta": 0.05920000000000003,
+      "clockNs": 59.09893992932862,
+      "samples": 2264
+    },
+    {
+      "i": 6,
+      "phase": "steady",
+      "before": 0.11875,
+      "current": 0.2729,
+      "gap": 0.15414999999999998,
+      "append": 0.13043286219081274,
+      "payload": 0.14412544169611308,
+      "restInProbedRun": 0.12942112082325957,
+      "rest": 0.14246713780918724,
+      "restDelta": 0.023717137809187244,
+      "probeDelta": 0.016300000000000037,
+      "clockNs": 58.25971731448763,
+      "samples": 2264
+    },
+    {
+      "i": 6,
+      "phase": "dirty",
+      "before": 0.1459,
+      "current": 0.244,
+      "gap": 0.09809999999999999,
+      "append": 0.11303003533568903,
+      "payload": 0.12557420494699648,
+      "restInProbedRun": 0.12629062261070817,
+      "rest": 0.13096996466431096,
+      "restDelta": -0.01493003533568904,
+      "probeDelta": 0.006249999999999978,
+      "clockNs": 55.830388692579504,
+      "samples": 2264
+    }
+  ],
+  "summary": {
+    "steady": {
+      "before": {
+        "mean": 0.117075,
+        "min": 0.0939,
+        "max": 0.14125
+      },
+      "current": {
+        "mean": 0.24776666666666666,
+        "min": 0.18555,
+        "max": 0.2817
+      },
+      "gap": {
+        "mean": 0.13069166666666668,
+        "min": 0.08764999999999999,
+        "max": 0.17425000000000002
+      },
+      "append": {
+        "mean": 0.1394213780918728,
+        "min": 0.12632508833922262,
+        "max": 0.16157243816254419
+      },
+      "payload": {
+        "mean": 0.1484025323910483,
+        "min": 0.13710247349823323,
+        "max": 0.16219081272084804
+      },
+      "restInProbedRun": {
+        "mean": 0.12938920298390263,
+        "min": 0.11418861818858099,
+        "max": 0.13916909057095034
+      },
+      "rest": {
+        "mean": 0.10834528857479386,
+        "min": 0.05922491166077737,
+        "max": 0.14246713780918724
+      },
+      "restDelta": {
+        "mean": -0.008729711425206135,
+        "min": -0.03867508833922263,
+        "max": 0.023717137809187244
+      },
+      "probeDelta": {
+        "mean": 0.03371666666666668,
+        "min": 0.016300000000000037,
+        "max": 0.05810000000000001
+      },
+      "clockNs": {
+        "mean": 54.71142520612485,
+        "min": 33.87809187279152,
+        "max": 68.59540636042402
+      },
+      "appendShare": 1.0667962361171164,
+      "payloadShare": 1.1355164118424916
+    },
+    "dirty": {
+      "before": {
+        "mean": 0.12662500000000002,
+        "min": 0.0885,
+        "max": 0.1459
+      },
+      "current": {
+        "mean": 0.23179999999999998,
+        "min": 0.1527,
+        "max": 0.27859999999999996
+      },
+      "gap": {
+        "mean": 0.105175,
+        "min": 0.06420000000000001,
+        "max": 0.13884999999999995
+      },
+      "append": {
+        "mean": 0.12252650176678444,
+        "min": 0.10764134275618374,
+        "max": 0.13113957597173145
+      },
+      "payload": {
+        "mean": 0.13355418138987044,
+        "min": 0.1230565371024735,
+        "max": 0.1405035335689046
+      },
+      "restInProbedRun": {
+        "mean": 0.12743812707071958,
+        "min": 0.09164254747587462,
+        "max": 0.15227564627115495
+      },
+      "rest": {
+        "mean": 0.10927349823321554,
+        "min": 0.04505865724381626,
+        "max": 0.1474604240282685
+      },
+      "restDelta": {
+        "mean": -0.017351501766784457,
+        "min": -0.043441342756183735,
+        "max": 0.007710424028268492
+      },
+      "probeDelta": {
+        "mean": 0.01890000000000001,
+        "min": -0.048049999999999954,
+        "max": 0.08030000000000001
+      },
+      "clockNs": {
+        "mean": 50.780329799764424,
+        "min": 32.72968197879859,
+        "max": 68.90459363957598
+      },
+      "appendShare": 1.1649774353865883,
+      "payloadShare": 1.2698282043248912
+    }
+  },
+  "pairedCopy": {
+    "steady": {
+      "rounds": [
+        {
+          "old": {
+            "whole": 0.05061837455830389,
+            "payload": 0.060821554770318025
+          },
+          "current": {
+            "whole": 0.12022968197879857,
+            "payload": 0.1316696113074205
+          },
+          "wholeDelta": 0.06961130742049468,
+          "payloadDelta": 0.07084805653710247
+        },
+        {
+          "old": {
+            "whole": 0.04275618374558304,
+            "payload": 0.054726148409893996
+          },
+          "current": {
+            "whole": 0.13741166077738515,
+            "payload": 0.15132508833922262
+          },
+          "wholeDelta": 0.0946554770318021,
+          "payloadDelta": 0.09659893992932862
+        },
+        {
+          "old": {
+            "whole": 0.03679328621908127,
+            "payload": 0.05207597173144876
+          },
+          "current": {
+            "whole": 0.1347173144876325,
+            "payload": 0.14492049469964666
+          },
+          "wholeDelta": 0.09792402826855123,
+          "payloadDelta": 0.0928445229681979
+        },
+        {
+          "old": {
+            "whole": 0.05282685512367491,
+            "payload": 0.06863957597173145
+          },
+          "current": {
+            "whole": 0.14151943462897526,
+            "payload": 0.15419611307420497
+          },
+          "wholeDelta": 0.08869257950530035,
+          "payloadDelta": 0.08555653710247352
+        }
+      ],
+      "whole": 0.08772084805653708,
+      "payload": 0.08646201413427562,
+      "wholeFraction": 0.6712046015930911,
+      "payloadFraction": 0.6615725113889609
+    },
+    "dirty": {
+      "rounds": [
+        {
+          "old": {
+            "whole": 0.0463339222614841,
+            "payload": 0.05728798586572439
+          },
+          "current": {
+            "whole": 0.13096289752650175,
+            "payload": 0.1447879858657244
+          },
+          "wholeDelta": 0.08462897526501766,
+          "payloadDelta": 0.0875
+        },
+        {
+          "old": {
+            "whole": 0.043507067137809184,
+            "payload": 0.05384275618374558
+          },
+          "current": {
+            "whole": 0.15878975265017667,
+            "payload": 0.17513250883392226
+          },
+          "wholeDelta": 0.11528268551236748,
+          "payloadDelta": 0.12128975265017668
+        },
+        {
+          "old": {
+            "whole": 0.042888692579505304,
+            "payload": 0.060070671378091876
+          },
+          "current": {
+            "whole": 0.13246466431095408,
+            "payload": 0.14271201413427562
+          },
+          "wholeDelta": 0.08957597173144877,
+          "payloadDelta": 0.08264134275618373
+        },
+        {
+          "old": {
+            "whole": 0.047084805653710246,
+            "payload": 0.05631625441696113
+          },
+          "current": {
+            "whole": 0.1090106007067138,
+            "payload": 0.1221731448763251
+          },
+          "wholeDelta": 0.06192579505300355,
+          "payloadDelta": 0.06585689045936396
+        }
+      ],
+      "whole": 0.08785335689045937,
+      "payload": 0.0893219964664311,
+      "wholeFraction": 0.8353064596192951,
+      "payloadFraction": 0.8492702302489289
+    }
+  },
+  "platform": {
+    "os": "Windows",
+    "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+    "configuration": "Windows x64 Release"
+  },
+  "workload": {
+    "sprites": 1000,
+    "sharedTexture": "8x8 RGBA8888",
+    "steady": "no mutation",
+    "dirty": "rotate tint of 100 sprites per frame",
+    "warmupFrames": 30,
+    "framesPerPhasePerProcess": 120,
+    "drawCalls": 1,
+    "triangles": 2000,
+    "appendCallsPerFrame": 1000
+  },
+  "method": {
+    "order": [
+      "before current probe",
+      "probe current before",
+      "current before probe",
+      "probe before current",
+      "before probe current",
+      "current probe before"
+    ],
+    "copyComparisonOrder": [
+      "before current",
+      "current before",
+      "before current",
+      "current before"
+    ],
+    "outer": "Mean of six process medians for CPU Batcher2d::update. Both controls use the existing stage timers only.",
+    "sampling": "Modulo 53 rotating per call. Separate slots for whole function, payload section and adjacent empty clock reads. Each phase estimate = 1000 * (summed ns/sampled calls minus summed empty ns/empty calls).",
+    "rest": "rest = untimed-inside current update minus separately sampled append. restInProbedRun = median of per-frame instrumented update minus calibrated per-frame append estimate, averaged across rounds.",
+    "copyComparison": "Four supplementary pairs sample old fillIndexBuffers and its memcpy vs current append and its vertices.insert through index-rebase loop. Fractions divide the mean of the four local differences by the six-round outer gap. They are approximate, not counterfactual speedups."
+  },
+  "sha256": {
+    "before": "c668988036e443a574ff182bc65c3a00f99697f0731b5838d4ccc75f831a9f23",
+    "current": "bc7933d32af3020054f5e0cfd0b6fbdb7d45ffc6ecf56191ea88505f636637d6",
+    "probe": "2f4a9918d7afa11f55e55e9c96fb8cda2546b700fec42b417214dec639bf2ab7",
+    "old-probe": "5a47274fd5302e011223d26c5e20d0fd98b991db1172b3e3937035503c984101",
+    "new-probe": "2f4a9918d7afa11f55e55e9c96fb8cda2546b700fec42b417214dec639bf2ab7",
+    "workload": "fec0bc4b238959563a206c9dd87e0d7eb600d874e46e11526d78c3f496413e39"
+  }
+}
