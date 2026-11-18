@@ -142,7 +142,7 @@
 
 ### M6.5 性能、回退与最终 Gate
 
-- [ ] 固定候选版本、场景、硬件、构建模式、预热/采样方法，与 Web/迁移前基线同口径对照；覆盖 1000 Sprite、200 Label、50 Mask、RichText 及混合负载。
+- [x] 已固定 7e83734299 迁移前版本、7045a76a35 候选、硬件和构建模式；Windows Release 与 Web 完成五种负载三轮对照。每个场景预热 30 帧，稳态及 10% 变更态各采样 120 帧。[方法、环境和数据](./native-2d-m6-performance.md)。
 - [ ] 达成总计划 KPI：2D 组件准备/更新与合批 CPU 时间下降 ≥50%，每帧 JSB 调用下降 ≥70%，JS 堆峰值下降 ≥30%，GC 改善；native `Batcher2d` 成本必须纳入，不能以 JS update 直接返回作为收益。
 - [ ] 迁移组件稳态每帧 JSB 调用 0；属性变更、生命周期和用户显式 API 调用单独统计。常规壳 ≤300 行，Label/RichText ≤500 行（按总计划排除版权、纯类型、deprecated 转发）；超限先移除算法，不能仅压缩排版。
 - [ ] 扩展现有 `check-thin-shell.js` 等检查，覆盖全部迁移类和间接热路径；CI 执行 Web TS/Jest、native TS、native 构建与组件/场景回归。

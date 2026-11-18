@@ -1,9 +1,10 @@
 'use strict';
 const fs=require('fs'),path=require('path'),http=require('http');
 const { spawn }=require('child_process');
+const benchmark = process.argv.includes('--perf');
 const mode=process.argv.includes('--richtext')?'richtext':'graphics';
-const root=path.join(__dirname,`build/${mode}-gpu-project/build/web-mobile`);
-const output=path.join(__dirname,`build/${mode}-gpu-web`);
+const root=benchmark ? path.join(__dirname, 'build/perf-project-after/build/web-mobile') : path.join(__dirname,`build/${mode}-gpu-project/build/web-mobile`);
+const output=benchmark ? path.join(__dirname, 'build/perf-web') : path.join(__dirname,`build/${mode}-gpu-web`);
 const chrome=process.env.CC_GPU_CHROME||'C:/Program Files/Google/Chrome/Application/chrome.exe';
 if(!fs.existsSync(path.join(root,'index.html'))) throw new Error('Build the Web fixture first');
 fs.mkdirSync(output,{recursive:true});
@@ -42,7 +43,7 @@ const server=http.createServer(async(req,res)=>{
     await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
     const address=`http://127.0.0.1:${server.address().port}`;
     const profile=path.join(__dirname,`build/gpu-browser-${process.pid}`);
-    const browser=spawn(chrome,['--headless=new','--no-first-run','--no-default-browser-check','--ignore-gpu-blocklist','--js-flags=--expose-gc','--remote-debugging-port=0','--user-data-dir='+profile,address],{windowsHide:true,stdio:['ignore','ignore','pipe']});
+    const browser=spawn(chrome,['--headless=new','--no-first-run','--no-default-browser-check','--ignore-gpu-blocklist','--enable-precise-memory-info','--js-flags=--expose-gc','--remote-debugging-port=0','--user-data-dir='+profile,address],{windowsHide:true,stdio:['ignore','ignore','pipe']});
     browser.on('error',doneReject);
     browser.on('exit',(code,signal)=>doneReject(new Error(`Browser exited: ${code}/${signal}`)));
     let socket;
