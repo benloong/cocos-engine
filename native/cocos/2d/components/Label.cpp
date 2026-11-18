@@ -53,6 +53,20 @@ struct LetterAtlasEntry {
 };
 std::unordered_map<std::string, LetterAtlasEntry> gLetterAtlases;
 
+void ensureRasterTexture(IntrusivePtr<Texture2D> &texture, uint32_t width, uint32_t height) {
+    if (!texture) {
+        texture = new Texture2D();
+    }
+    if (!texture->getGFXTexture() || texture->getWidth() != width || texture->getHeight() != height) {
+        ITexture2DCreateInfo info;
+        info.width = width;
+        info.height = height;
+        info.format = PixelFormat::RGBA8888;
+        info.mipmapLevel = 1U;
+        texture->reset(info);
+    }
+}
+
 constexpr float BASELINE_RATIO = 0.26F;
 
 std::vector<std::string> splitUtf8(const std::string &text) {
@@ -470,13 +484,7 @@ void Label::rebuildLetterTexture() {
         }
     }
 
-    if (_texture == nullptr) { _texture = new Texture2D(); }
-    ITexture2DCreateInfo info;
-    info.width = outWidth;
-    info.height = outHeight;
-    info.format = PixelFormat::RGBA8888;
-    info.mipmapLevel = 1U;
-    _texture->reset(info);
+    ensureRasterTexture(_texture, outWidth, outHeight);
     _lastPixels = pixels;
     _texture->uploadData(pixels.data());
 
@@ -972,15 +980,7 @@ void Label::rebuildTexture() {
     });
     context.fetchData();
 
-    if (_texture == nullptr) {
-        _texture = new Texture2D();
-    }
-    ITexture2DCreateInfo info;
-    info.width = textureWidth;
-    info.height = textureHeight;
-    info.format = PixelFormat::RGBA8888;
-    info.mipmapLevel = 1U;
-    _texture->reset(info);
+    ensureRasterTexture(_texture, textureWidth, textureHeight);
     _lastPixelChecksum = 0U;
     _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
     _lastOpaquePixels = 0U;

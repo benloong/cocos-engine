@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**结论：NO-GO。** 当前运行时代码为 `cfe140f062`。Windows Release 混合负载 CPU 超出预算；Windows 自定义字体有三组图像超过 Web 像素容差。其余未完成项目列在下表。最终签收需要在同一候选上重跑必需的配置和场景。
+**结论：NO-GO。** 下表的三轮 CPU 采样版本为 `cfe140f062`，补充平面字形修复版本为 `53af40d18f`。Windows Release 混合负载 CPU 超出预算；Windows 自定义字体有三组图像超过 Web 像素容差。其余未完成项目列在下表。最终签收需要在同一候选上重跑必需的配置和场景。
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。
 

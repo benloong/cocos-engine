@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "ca24c973cfc825c392906b8f8146de6a15c715a59fe984d267aa410ce4951a8d"
+      "sha256": "0dbac3b301d81a45bf95e55145d0a3cce30370d28c3035654fd9fbe5f125df0e"
     },
     {
       "file": "native/cocos/2d/components/Label.h",

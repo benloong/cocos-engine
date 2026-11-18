@@ -35,6 +35,46 @@ class ClickReceiver extends Component {
     }
 }
 
+async function checkLabelTextureUpdates (parent: Node): Promise<void> {
+    const host = new Node('m6-label-texture-updates');
+    host.layer = parent.layer;
+    parent.addChild(host);
+    try {
+        const transform = host.addComponent(UITransform);
+        const label = host.addComponent(Label);
+        const backend = (label as any)._native;
+        if (!backend) return;
+        label.overflow = Label.Overflow.CLAMP;
+        label.fontSize = 16;
+        label.lineHeight = 20;
+        transform.setContentSize(100, 32);
+        const render = async (value: string) => {
+            label.string = value;
+            for (let i = 0; i < 2; ++i) {
+                await new Promise<void>(resolve => director.once(DirectorEvent.END_FRAME, () => resolve()));
+            }
+            const texture = backend.getRenderEntity().getStaticRenderDrawInfo(0).texture;
+            if (!texture || !backend.getOpaquePixels()) throw new Error('Missing Label texture update');
+            return { id: texture.objectID, checksum: backend.getPixelChecksum(), width: backend.getTextureWidth() };
+        };
+        for (const mode of [Label.CacheMode.NONE, Label.CacheMode.CHAR]) {
+            label.cacheMode = mode;
+            transform.setContentSize(100, 32);
+            const before = await render('AB');
+            const updated = await render('BA');
+            if (before.id !== updated.id || before.checksum === updated.checksum) {
+                throw new Error('Equal-size Label upload lost texture identity or pixels: ' + mode);
+            }
+            transform.setContentSize(160, 32);
+            const resized = await render('A longer string');
+            if (resized.width === updated.width || resized.id === updated.id) {
+                throw new Error('Resized Label texture did not reallocate: ' + mode);
+            }
+        }
+        console.log('M6_LABEL_TEXTURE_REUSE_PASS');
+    } finally { host.destroy(); }
+}
+
 async function checkRichTextEvents (parent: Node): Promise<string[]> {
     const host = new Node('m6-click-host'); host.layer = parent.layer; parent.addChild(host);
     host.addComponent(UITransform);
@@ -85,6 +125,7 @@ export class RichTextProbe {
         // All three probes borrow the same Camera. Wait for the previous target to be restored.
         await M4ExtraProbe.completion;
         await BitmapGpuProbe.run(parent);
+        await checkLabelTextureUpdates(parent);
         const clicks = await checkRichTextEvents(parent);
         console.log('M5_RICHTEXT_BEGIN');
         const node = new Node('M5RichText');
