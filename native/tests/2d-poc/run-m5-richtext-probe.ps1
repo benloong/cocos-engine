@@ -76,6 +76,12 @@ try {
         -not @($data.styles | Where-Object { $_.italic }).Count -or
         -not @($data.styles | Where-Object { $_.underline }).Count) { throw 'RichText segment styles missing' }
 
+    # System Arial, 40 px, synthetic italic. M5 accepted a 9.748 px GDI width difference.
+    $italic = @($data.segments | Where-Object text -CEQ 'Italic')
+    if ($italic.Count -ne 1 -or $null -eq $italic[0].w -or [Math]::Abs($italic[0].w - 90.748) -gt 9.749) {
+        throw 'M5 system Arial Italic segment exceeds its Windows layout tolerance'
+    }
+    Write-Host ("  system Arial Italic width={0}" -f $italic[0].w)
     Write-Host 'M5 RichText probe: PASS'
     Write-Host ("  segments={0}, labels={1}, sprites={2}" -f $data.children, $data.labels, $data.sprites)
     Write-Host ("  content={0}x{1}, colored={2}" -f $data.width, $data.height, $data.colored)

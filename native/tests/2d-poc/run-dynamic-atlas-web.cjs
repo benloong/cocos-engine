@@ -150,6 +150,12 @@ const server = http.createServer(async (req, res) => {
                 }
                 if (bitmap && text.startsWith('M5_RICHTEXT ')) {
                     const rich = JSON.parse(text.slice('M5_RICHTEXT '.length));
+                    const italic = rich.segments.filter(segment => segment.text === 'Italic');
+                    if (italic.length !== 1 || !Number.isFinite(italic[0].w) || Math.abs(italic[0].w - 90.748) > .01) {
+                        rejectDone(new Error('Web system Arial Italic width changed: ' + JSON.stringify(italic)));
+                        return;
+                    }
+                    console.log('Web system Arial Italic width=' + italic[0].w);
                     if (!bitmapReady || rich.native || !rich.queryMatches
                         || rich.jsLabelComponents !== rich.labels || rich.jsSpriteComponents !== rich.sprites
                         || rich.labels !== 9 || rich.sprites !== 1 || rich.children !== 10) {
