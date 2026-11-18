@@ -1,0 +1,1068 @@
+{
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13700KF",
+  "os": "Windows 11 Pro",
+  "release": "10.0.26300",
+  "arch": "x64",
+  "warmupFrames": 30,
+  "sampledFramesPerPhase": 120,
+  "rounds": 3,
+  "configs": {
+    "before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "vendor": "Imagination Technologies (Host: NVIDIA Corporation)",
+      "rawSha256": [
+        "cc79c5eb726f83a8321453836fc1ea1156dac6b0c84b4ebcc29462925e6033f1",
+        "c38220c5ef5ce3bcdffe82521ea260a14cda75079fd1cc6b94a1e622ae419c3f",
+        "03aacbd9803814fa42b628ea68ea251f4b2c761dbb70401937df46d5f0ad0da8"
+      ],
+      "measurements": {
+        "empty/steady": [
+          {
+            "cpuMs": 0.00700000000048567,
+            "jsbCalls": 67,
+            "peakJsBytes": 12445296,
+            "forcedGcMs": 4.190000000000509
+          },
+          {
+            "cpuMs": 0.006749999999348801,
+            "jsbCalls": 67,
+            "peakJsBytes": 12462888,
+            "forcedGcMs": 4.766999999999825
+          },
+          {
+            "cpuMs": 0.005950000000156433,
+            "jsbCalls": 67,
+            "peakJsBytes": 12460720,
+            "forcedGcMs": 4.155999999999949
+          }
+        ],
+        "empty/dirty": [
+          {
+            "cpuMs": 0.008199999999654392,
+            "jsbCalls": 67,
+            "peakJsBytes": 12671128,
+            "forcedGcMs": 10.07300000000032
+          },
+          {
+            "cpuMs": 0.00810000000010914,
+            "jsbCalls": 67,
+            "peakJsBytes": 12491456,
+            "forcedGcMs": 9.602000000000771
+          },
+          {
+            "cpuMs": 0.00780000000010914,
+            "jsbCalls": 67,
+            "peakJsBytes": 12585884,
+            "forcedGcMs": 5.238000000001193
+          }
+        ],
+        "sprites/steady": [
+          {
+            "cpuMs": 0.2261499999999054,
+            "jsbCalls": 67,
+            "peakJsBytes": 17739424,
+            "forcedGcMs": 5.566999999999098
+          },
+          {
+            "cpuMs": 0.21859999999899593,
+            "jsbCalls": 67,
+            "peakJsBytes": 17584820,
+            "forcedGcMs": 5.100000000000364
+          },
+          {
+            "cpuMs": 0.21535000000061116,
+            "jsbCalls": 67,
+            "peakJsBytes": 17664024,
+            "forcedGcMs": 5.218999999999141
+          }
+        ],
+        "sprites/dirty": [
+          {
+            "cpuMs": 0.2901000000000873,
+            "jsbCalls": 67,
+            "peakJsBytes": 17858360,
+            "forcedGcMs": 3.9310000000004948
+          },
+          {
+            "cpuMs": 0.35594999999842114,
+            "jsbCalls": 67,
+            "peakJsBytes": 17863436,
+            "forcedGcMs": 6.304999999998472
+          },
+          {
+            "cpuMs": 0.34650000000018916,
+            "jsbCalls": 67,
+            "peakJsBytes": 17863276,
+            "forcedGcMs": 3.6820000000006985
+          }
+        ],
+        "labels/steady": [
+          {
+            "cpuMs": 0.48475000000020374,
+            "jsbCalls": 67,
+            "peakJsBytes": 15547956,
+            "forcedGcMs": 8.961999999999534
+          },
+          {
+            "cpuMs": 0.5260000000008149,
+            "jsbCalls": 67,
+            "peakJsBytes": 15763364,
+            "forcedGcMs": 9.578999999997905
+          },
+          {
+            "cpuMs": 0.49715000000050935,
+            "jsbCalls": 67,
+            "peakJsBytes": 15576072,
+            "forcedGcMs": 4.117000000002008
+          }
+        ],
+        "labels/dirty": [
+          {
+            "cpuMs": 3.577900000002561,
+            "jsbCalls": 447,
+            "peakJsBytes": 19307320,
+            "forcedGcMs": 8.89799999999741
+          },
+          {
+            "cpuMs": 3.4872499999994764,
+            "jsbCalls": 447,
+            "peakJsBytes": 19197500,
+            "forcedGcMs": 5.842000000000553
+          },
+          {
+            "cpuMs": 3.9893999999989234,
+            "jsbCalls": 447,
+            "peakJsBytes": 19060204,
+            "forcedGcMs": 6.452000000001135
+          }
+        ],
+        "masks/steady": [
+          {
+            "cpuMs": 0.7807500000003056,
+            "jsbCalls": 67,
+            "peakJsBytes": 13842152,
+            "forcedGcMs": 7.665000000000873
+          },
+          {
+            "cpuMs": 0.7387000000003056,
+            "jsbCalls": 67,
+            "peakJsBytes": 13851036,
+            "forcedGcMs": 3.791000000001077
+          },
+          {
+            "cpuMs": 1.0098000000004075,
+            "jsbCalls": 67,
+            "peakJsBytes": 13840004,
+            "forcedGcMs": 8.09100000000035
+          }
+        ],
+        "masks/dirty": [
+          {
+            "cpuMs": 0.7457999999982247,
+            "jsbCalls": 72,
+            "peakJsBytes": 13950588,
+            "forcedGcMs": 3.9169999999976426
+          },
+          {
+            "cpuMs": 0.7317499999979191,
+            "jsbCalls": 72,
+            "peakJsBytes": 14003256,
+            "forcedGcMs": 4.332999999998719
+          },
+          {
+            "cpuMs": 1.2029500000014697,
+            "jsbCalls": 72,
+            "peakJsBytes": 13963860,
+            "forcedGcMs": 7.686000000001513
+          }
+        ],
+        "rich/steady": [
+          {
+            "cpuMs": 0.20245000000232832,
+            "jsbCalls": 67,
+            "peakJsBytes": 13938472,
+            "forcedGcMs": 4.322000000000116
+          },
+          {
+            "cpuMs": 0.22739999999879218,
+            "jsbCalls": 67,
+            "peakJsBytes": 13919208,
+            "forcedGcMs": 4.370999999999185
+          },
+          {
+            "cpuMs": 0.19775000000040746,
+            "jsbCalls": 67,
+            "peakJsBytes": 13920396,
+            "forcedGcMs": 8.479999999995925
+          }
+        ],
+        "rich/dirty": [
+          {
+            "cpuMs": 2.4381500000037835,
+            "jsbCalls": 491,
+            "peakJsBytes": 15774116,
+            "forcedGcMs": 3.90400000000227
+          },
+          {
+            "cpuMs": 2.4283500000028813,
+            "jsbCalls": 491,
+            "peakJsBytes": 14886372,
+            "forcedGcMs": 3.9570000000021537
+          },
+          {
+            "cpuMs": 4.692500000002241,
+            "jsbCalls": 491,
+            "peakJsBytes": 14696660,
+            "forcedGcMs": 9.694999999999709
+          }
+        ],
+        "mixed/steady": [
+          {
+            "cpuMs": 0.9709999999971769,
+            "jsbCalls": 67,
+            "peakJsBytes": 21949612,
+            "forcedGcMs": 6.562000000005355
+          },
+          {
+            "cpuMs": 1.0285500000004075,
+            "jsbCalls": 67,
+            "peakJsBytes": 22019844,
+            "forcedGcMs": 5.3070000000006985
+          },
+          {
+            "cpuMs": 1.880799999998894,
+            "jsbCalls": 67,
+            "peakJsBytes": 21997356,
+            "forcedGcMs": 5.696000000003551
+          }
+        ],
+        "mixed/dirty": [
+          {
+            "cpuMs": 4.400749999998341,
+            "jsbCalls": 876,
+            "peakJsBytes": 29851076,
+            "forcedGcMs": 7.9429999999993015
+          },
+          {
+            "cpuMs": 4.588099999997933,
+            "jsbCalls": 876,
+            "peakJsBytes": 29722536,
+            "forcedGcMs": 7.783000000003085
+          },
+          {
+            "cpuMs": 9.141649999996332,
+            "jsbCalls": 876,
+            "peakJsBytes": 29959496,
+            "forcedGcMs": 10.54500000000553
+          }
+        ]
+      },
+      "metrics": {
+        "empty/steady": {
+          "cpuMs": 0.006749999999348801,
+          "jsbCalls": 67,
+          "peakJsBytes": 12460720,
+          "forcedGcMs": 4.190000000000509
+        },
+        "empty/dirty": {
+          "cpuMs": 0.00810000000010914,
+          "jsbCalls": 67,
+          "peakJsBytes": 12585884,
+          "forcedGcMs": 9.602000000000771
+        },
+        "sprites/steady": {
+          "cpuMs": 0.21859999999899593,
+          "jsbCalls": 67,
+          "peakJsBytes": 17664024,
+          "forcedGcMs": 5.218999999999141
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.34650000000018916,
+          "jsbCalls": 67,
+          "peakJsBytes": 17863276,
+          "forcedGcMs": 3.9310000000004948
+        },
+        "labels/steady": {
+          "cpuMs": 0.49715000000050935,
+          "jsbCalls": 67,
+          "peakJsBytes": 15576072,
+          "forcedGcMs": 8.961999999999534
+        },
+        "labels/dirty": {
+          "cpuMs": 3.577900000002561,
+          "jsbCalls": 447,
+          "peakJsBytes": 19197500,
+          "forcedGcMs": 6.452000000001135
+        },
+        "masks/steady": {
+          "cpuMs": 0.7807500000003056,
+          "jsbCalls": 67,
+          "peakJsBytes": 13842152,
+          "forcedGcMs": 7.665000000000873
+        },
+        "masks/dirty": {
+          "cpuMs": 0.7457999999982247,
+          "jsbCalls": 72,
+          "peakJsBytes": 13963860,
+          "forcedGcMs": 4.332999999998719
+        },
+        "rich/steady": {
+          "cpuMs": 0.20245000000232832,
+          "jsbCalls": 67,
+          "peakJsBytes": 13920396,
+          "forcedGcMs": 4.370999999999185
+        },
+        "rich/dirty": {
+          "cpuMs": 2.4381500000037835,
+          "jsbCalls": 491,
+          "peakJsBytes": 14886372,
+          "forcedGcMs": 3.9570000000021537
+        },
+        "mixed/steady": {
+          "cpuMs": 1.0285500000004075,
+          "jsbCalls": 67,
+          "peakJsBytes": 21997356,
+          "forcedGcMs": 5.696000000003551
+        },
+        "mixed/dirty": {
+          "cpuMs": 4.588099999997933,
+          "jsbCalls": 876,
+          "peakJsBytes": 29851076,
+          "forcedGcMs": 7.9429999999993015
+        }
+      }
+    },
+    "after": {
+      "revision": "cfe140f062f0bcaa91367c6dfff352111eabf095",
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "vendor": "Imagination Technologies (Host: NVIDIA Corporation)",
+      "rawSha256": [
+        "4b0b9283b60af582c70ca8938e4d10d6f7df613ab57177b07b2f4d768dc5f020",
+        "dab5aea4ddc0f9de98b24048cad3e7ec9e0e62bd5b6aaae156999c041cd413c6",
+        "88c4d5cb2bcf799fecd0f2977a095755ef640a98089320bfdd3878eaaf4490d2"
+      ],
+      "measurements": {
+        "empty/steady": [
+          {
+            "cpuMs": 0.005400000000407454,
+            "jsbCalls": 67,
+            "peakJsBytes": 12058700,
+            "forcedGcMs": 2.701000000000022
+          },
+          {
+            "cpuMs": 0.005749999999850843,
+            "jsbCalls": 67,
+            "peakJsBytes": 11897044,
+            "forcedGcMs": 3.548999999999978
+          },
+          {
+            "cpuMs": 0.010199999999701686,
+            "jsbCalls": 67,
+            "peakJsBytes": 11916292,
+            "forcedGcMs": 4.967999999999847
+          }
+        ],
+        "empty/dirty": [
+          {
+            "cpuMs": 0.005100000000407454,
+            "jsbCalls": 67,
+            "peakJsBytes": 12269852,
+            "forcedGcMs": 2.1630000000004657
+          },
+          {
+            "cpuMs": 0.006450000000509317,
+            "jsbCalls": 67,
+            "peakJsBytes": 11963156,
+            "forcedGcMs": 3.475000000000364
+          },
+          {
+            "cpuMs": 0.01220000000010914,
+            "jsbCalls": 67,
+            "peakJsBytes": 11930744,
+            "forcedGcMs": 9.805999999998676
+          }
+        ],
+        "sprites/steady": [
+          {
+            "cpuMs": 0.38429999999985087,
+            "jsbCalls": 67,
+            "peakJsBytes": 15516832,
+            "forcedGcMs": 7.316000000000713
+          },
+          {
+            "cpuMs": 0.35650000000010185,
+            "jsbCalls": 67,
+            "peakJsBytes": 15411548,
+            "forcedGcMs": 2.9909999999999854
+          },
+          {
+            "cpuMs": 0.5272499999997017,
+            "jsbCalls": 67,
+            "peakJsBytes": 15394968,
+            "forcedGcMs": 4.47400000000016
+          }
+        ],
+        "sprites/dirty": [
+          {
+            "cpuMs": 0.4091999999996362,
+            "jsbCalls": 167,
+            "peakJsBytes": 15549256,
+            "forcedGcMs": 2.4760000000005675
+          },
+          {
+            "cpuMs": 0.47014999999984,
+            "jsbCalls": 167,
+            "peakJsBytes": 15574592,
+            "forcedGcMs": 2.558999999999287
+          },
+          {
+            "cpuMs": 0.6349000000000582,
+            "jsbCalls": 167,
+            "peakJsBytes": 15519004,
+            "forcedGcMs": 3.9679999999989377
+          }
+        ],
+        "labels/steady": [
+          {
+            "cpuMs": 0.30340000000020373,
+            "jsbCalls": 67,
+            "peakJsBytes": 13033420,
+            "forcedGcMs": 3.555000000000291
+          },
+          {
+            "cpuMs": 0.3163500000001018,
+            "jsbCalls": 67,
+            "peakJsBytes": 13071796,
+            "forcedGcMs": 3.6629999999986467
+          },
+          {
+            "cpuMs": 0.4836999999985885,
+            "jsbCalls": 67,
+            "peakJsBytes": 13077004,
+            "forcedGcMs": 4.00800000000163
+          }
+        ],
+        "labels/dirty": [
+          {
+            "cpuMs": 3.9145000000012518,
+            "jsbCalls": 87,
+            "peakJsBytes": 12840188,
+            "forcedGcMs": 2.143999999998414
+          },
+          {
+            "cpuMs": 3.7611000000007495,
+            "jsbCalls": 87,
+            "peakJsBytes": 12850824,
+            "forcedGcMs": 2.120999999999185
+          },
+          {
+            "cpuMs": 4.287550000000655,
+            "jsbCalls": 87,
+            "peakJsBytes": 12793376,
+            "forcedGcMs": 4.18999999999869
+          }
+        ],
+        "masks/steady": [
+          {
+            "cpuMs": 0.3059,
+            "jsbCalls": 67,
+            "peakJsBytes": 12518164,
+            "forcedGcMs": 2.495999999999185
+          },
+          {
+            "cpuMs": 0.3096000000002037,
+            "jsbCalls": 67,
+            "peakJsBytes": 12580200,
+            "forcedGcMs": 2.38300000000163
+          },
+          {
+            "cpuMs": 0.49279999999981083,
+            "jsbCalls": 67,
+            "peakJsBytes": 12472972,
+            "forcedGcMs": 3.7230000000017753
+          }
+        ],
+        "masks/dirty": [
+          {
+            "cpuMs": 0.3111999999981956,
+            "jsbCalls": 72,
+            "peakJsBytes": 12621528,
+            "forcedGcMs": 1.9609999999993306
+          },
+          {
+            "cpuMs": 0.3520000000007276,
+            "jsbCalls": 72,
+            "peakJsBytes": 12412596,
+            "forcedGcMs": 2.5689999999995052
+          },
+          {
+            "cpuMs": 0.6604000000015571,
+            "jsbCalls": 72,
+            "peakJsBytes": 12639064,
+            "forcedGcMs": 3.8919999999998254
+          }
+        ],
+        "rich/steady": [
+          {
+            "cpuMs": 0.11455000000020374,
+            "jsbCalls": 67,
+            "peakJsBytes": 12343688,
+            "forcedGcMs": 2.7809999999990396
+          },
+          {
+            "cpuMs": 0.1353500000003056,
+            "jsbCalls": 67,
+            "peakJsBytes": 12528792,
+            "forcedGcMs": 2.688000000001921
+          },
+          {
+            "cpuMs": 0.25460000000061117,
+            "jsbCalls": 67,
+            "peakJsBytes": 12286280,
+            "forcedGcMs": 3.849000000001979
+          }
+        ],
+        "rich/dirty": [
+          {
+            "cpuMs": 1.2973000000002184,
+            "jsbCalls": 71,
+            "peakJsBytes": 12564512,
+            "forcedGcMs": 2.102999999999156
+          },
+          {
+            "cpuMs": 1.6029499999990104,
+            "jsbCalls": 71,
+            "peakJsBytes": 12562120,
+            "forcedGcMs": 3.849999999998545
+          },
+          {
+            "cpuMs": 2.4873499999974973,
+            "jsbCalls": 71,
+            "peakJsBytes": 12479952,
+            "forcedGcMs": 3.4939999999987776
+          }
+        ],
+        "mixed/steady": [
+          {
+            "cpuMs": 1.0745500000002037,
+            "jsbCalls": 67,
+            "peakJsBytes": 16650484,
+            "forcedGcMs": 3.08100000000195
+          },
+          {
+            "cpuMs": 1.389199999998283,
+            "jsbCalls": 67,
+            "peakJsBytes": 16647740,
+            "forcedGcMs": 3.694999999999709
+          },
+          {
+            "cpuMs": 1.3166000000004074,
+            "jsbCalls": 67,
+            "peakJsBytes": 16807076,
+            "forcedGcMs": 4.677999999999884
+          }
+        ],
+        "mixed/dirty": [
+          {
+            "cpuMs": 5.631799999998734,
+            "jsbCalls": 196,
+            "peakJsBytes": 16947212,
+            "forcedGcMs": 3.2739999999976135
+          },
+          {
+            "cpuMs": 6.093299999999957,
+            "jsbCalls": 196,
+            "peakJsBytes": 16951268,
+            "forcedGcMs": 6.2850000000034925
+          },
+          {
+            "cpuMs": 6.194099999999768,
+            "jsbCalls": 196,
+            "peakJsBytes": 16952460,
+            "forcedGcMs": 3.966999999996915
+          }
+        ]
+      },
+      "metrics": {
+        "empty/steady": {
+          "cpuMs": 0.005749999999850843,
+          "jsbCalls": 67,
+          "peakJsBytes": 11916292,
+          "forcedGcMs": 3.548999999999978
+        },
+        "empty/dirty": {
+          "cpuMs": 0.006450000000509317,
+          "jsbCalls": 67,
+          "peakJsBytes": 11963156,
+          "forcedGcMs": 3.475000000000364
+        },
+        "sprites/steady": {
+          "cpuMs": 0.38429999999985087,
+          "jsbCalls": 67,
+          "peakJsBytes": 15411548,
+          "forcedGcMs": 4.47400000000016
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.47014999999984,
+          "jsbCalls": 167,
+          "peakJsBytes": 15549256,
+          "forcedGcMs": 2.558999999999287
+        },
+        "labels/steady": {
+          "cpuMs": 0.3163500000001018,
+          "jsbCalls": 67,
+          "peakJsBytes": 13071796,
+          "forcedGcMs": 3.6629999999986467
+        },
+        "labels/dirty": {
+          "cpuMs": 3.9145000000012518,
+          "jsbCalls": 87,
+          "peakJsBytes": 12840188,
+          "forcedGcMs": 2.143999999998414
+        },
+        "masks/steady": {
+          "cpuMs": 0.3096000000002037,
+          "jsbCalls": 67,
+          "peakJsBytes": 12518164,
+          "forcedGcMs": 2.495999999999185
+        },
+        "masks/dirty": {
+          "cpuMs": 0.3520000000007276,
+          "jsbCalls": 72,
+          "peakJsBytes": 12621528,
+          "forcedGcMs": 2.5689999999995052
+        },
+        "rich/steady": {
+          "cpuMs": 0.1353500000003056,
+          "jsbCalls": 67,
+          "peakJsBytes": 12343688,
+          "forcedGcMs": 2.7809999999990396
+        },
+        "rich/dirty": {
+          "cpuMs": 1.6029499999990104,
+          "jsbCalls": 71,
+          "peakJsBytes": 12562120,
+          "forcedGcMs": 3.4939999999987776
+        },
+        "mixed/steady": {
+          "cpuMs": 1.3166000000004074,
+          "jsbCalls": 67,
+          "peakJsBytes": 16650484,
+          "forcedGcMs": 3.694999999999709
+        },
+        "mixed/dirty": {
+          "cpuMs": 6.093299999999957,
+          "jsbCalls": 196,
+          "peakJsBytes": 16951268,
+          "forcedGcMs": 3.966999999996915
+        }
+      }
+    },
+    "web": {
+      "revision": "7045a76a35cd3d6c7281750e19745272f3abbf9a",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (NVIDIA)",
+      "rawSha256": [
+        "eb70f0b1a242edbb547d556135aa794ffc951afcffbdb70da7f8726373d80904",
+        "7e2c9381ef7c4e18b37b8c259786ab4df28f803340500b7d1c7b8a89ebcf596e",
+        "e5e173fed9f57c3a113bd13c0cbe2b4f686ed8fb508e13c8c8b8f49bac1866ce"
+      ],
+      "measurements": {
+        "empty/steady": [
+          {
+            "cpuMs": 0,
+            "jsbCalls": 0,
+            "peakJsBytes": 17645436,
+            "forcedGcMs": 4.299999982118607
+          },
+          {
+            "cpuMs": 0,
+            "jsbCalls": 0,
+            "peakJsBytes": 17304176,
+            "forcedGcMs": 3.5
+          },
+          {
+            "cpuMs": 0,
+            "jsbCalls": 0,
+            "peakJsBytes": 17257312,
+            "forcedGcMs": 4.5
+          }
+        ],
+        "empty/dirty": [
+          {
+            "cpuMs": 0,
+            "jsbCalls": 0,
+            "peakJsBytes": 16973944,
+            "forcedGcMs": 3.4000000059604645
+          },
+          {
+            "cpuMs": 0,
+            "jsbCalls": 0,
+            "peakJsBytes": 17007548,
+            "forcedGcMs": 4
+          },
+          {
+            "cpuMs": 0,
+            "jsbCalls": 0,
+            "peakJsBytes": 16950068,
+            "forcedGcMs": 4.0999999940395355
+          }
+        ],
+        "sprites/steady": [
+          {
+            "cpuMs": 0.30000001192092896,
+            "jsbCalls": 0,
+            "peakJsBytes": 24671694,
+            "forcedGcMs": 4.5
+          },
+          {
+            "cpuMs": 0.29999998211860657,
+            "jsbCalls": 0,
+            "peakJsBytes": 24677594,
+            "forcedGcMs": 6.800000011920929
+          },
+          {
+            "cpuMs": 0.30000001192092896,
+            "jsbCalls": 0,
+            "peakJsBytes": 24674602,
+            "forcedGcMs": 4.9000000059604645
+          }
+        ],
+        "sprites/dirty": [
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 26105318,
+            "forcedGcMs": 4.9000000059604645
+          },
+          {
+            "cpuMs": 0.30000001192092896,
+            "jsbCalls": 0,
+            "peakJsBytes": 26115514,
+            "forcedGcMs": 4.699999988079071
+          },
+          {
+            "cpuMs": 0.3999999761581421,
+            "jsbCalls": 0,
+            "peakJsBytes": 26112354,
+            "forcedGcMs": 5.0999999940395355
+          }
+        ],
+        "labels/steady": [
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 25826310,
+            "forcedGcMs": 6.199999988079071
+          },
+          {
+            "cpuMs": 0.5,
+            "jsbCalls": 0,
+            "peakJsBytes": 25822862,
+            "forcedGcMs": 6.0999999940395355
+          },
+          {
+            "cpuMs": 0.44999998807907104,
+            "jsbCalls": 0,
+            "peakJsBytes": 25801818,
+            "forcedGcMs": 5.699999988079071
+          }
+        ],
+        "labels/dirty": [
+          {
+            "cpuMs": 2.600000023841858,
+            "jsbCalls": 0,
+            "peakJsBytes": 30846440,
+            "forcedGcMs": 9.5
+          },
+          {
+            "cpuMs": 2.5999999940395355,
+            "jsbCalls": 0,
+            "peakJsBytes": 30856168,
+            "forcedGcMs": 10.199999988079071
+          },
+          {
+            "cpuMs": 2.699999988079071,
+            "jsbCalls": 0,
+            "peakJsBytes": 30839896,
+            "forcedGcMs": 10.099999994039536
+          }
+        ],
+        "masks/steady": [
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 29342737,
+            "forcedGcMs": 4.4000000059604645
+          },
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 29366769,
+            "forcedGcMs": 4.600000023841858
+          },
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 29367457,
+            "forcedGcMs": 4.9000000059604645
+          }
+        ],
+        "masks/dirty": [
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 29110729,
+            "forcedGcMs": 4.5999999940395355
+          },
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 29089009,
+            "forcedGcMs": 5.200000017881393
+          },
+          {
+            "cpuMs": 0.4000000059604645,
+            "jsbCalls": 0,
+            "peakJsBytes": 29115573,
+            "forcedGcMs": 6.5999999940395355
+          }
+        ],
+        "rich/steady": [
+          {
+            "cpuMs": 0.19999998807907104,
+            "jsbCalls": 0,
+            "peakJsBytes": 24129135,
+            "forcedGcMs": 7.0999999940395355
+          },
+          {
+            "cpuMs": 0.19999998807907104,
+            "jsbCalls": 0,
+            "peakJsBytes": 24147831,
+            "forcedGcMs": 7
+          },
+          {
+            "cpuMs": 0.19999998807907104,
+            "jsbCalls": 0,
+            "peakJsBytes": 24142131,
+            "forcedGcMs": 5.199999988079071
+          }
+        ],
+        "rich/dirty": [
+          {
+            "cpuMs": 1,
+            "jsbCalls": 0,
+            "peakJsBytes": 28542271,
+            "forcedGcMs": 10.300000011920929
+          },
+          {
+            "cpuMs": 1.0499999970197678,
+            "jsbCalls": 0,
+            "peakJsBytes": 28553887,
+            "forcedGcMs": 6
+          },
+          {
+            "cpuMs": 1.0999999940395355,
+            "jsbCalls": 0,
+            "peakJsBytes": 28552259,
+            "forcedGcMs": 5.5999999940395355
+          }
+        ],
+        "mixed/steady": [
+          {
+            "cpuMs": 1.0999999940395355,
+            "jsbCalls": 0,
+            "peakJsBytes": 36703971,
+            "forcedGcMs": 9.699999988079071
+          },
+          {
+            "cpuMs": 1,
+            "jsbCalls": 0,
+            "peakJsBytes": 36714231,
+            "forcedGcMs": 8.800000011920929
+          },
+          {
+            "cpuMs": 1.199999988079071,
+            "jsbCalls": 0,
+            "peakJsBytes": 36706167,
+            "forcedGcMs": 9
+          }
+        ],
+        "mixed/dirty": [
+          {
+            "cpuMs": 4.399999976158142,
+            "jsbCalls": 0,
+            "peakJsBytes": 38811875,
+            "forcedGcMs": 11.599999994039536
+          },
+          {
+            "cpuMs": 4.199999988079071,
+            "jsbCalls": 0,
+            "peakJsBytes": 38821863,
+            "forcedGcMs": 11
+          },
+          {
+            "cpuMs": 4.300000011920929,
+            "jsbCalls": 0,
+            "peakJsBytes": 38816359,
+            "forcedGcMs": 10.699999988079071
+          }
+        ]
+      },
+      "metrics": {
+        "empty/steady": {
+          "cpuMs": 0,
+          "jsbCalls": 0,
+          "peakJsBytes": 17304176,
+          "forcedGcMs": 4.299999982118607
+        },
+        "empty/dirty": {
+          "cpuMs": 0,
+          "jsbCalls": 0,
+          "peakJsBytes": 16973944,
+          "forcedGcMs": 4
+        },
+        "sprites/steady": {
+          "cpuMs": 0.30000001192092896,
+          "jsbCalls": 0,
+          "peakJsBytes": 24674602,
+          "forcedGcMs": 4.9000000059604645
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.3999999761581421,
+          "jsbCalls": 0,
+          "peakJsBytes": 26112354,
+          "forcedGcMs": 4.9000000059604645
+        },
+        "labels/steady": {
+          "cpuMs": 0.44999998807907104,
+          "jsbCalls": 0,
+          "peakJsBytes": 25822862,
+          "forcedGcMs": 6.0999999940395355
+        },
+        "labels/dirty": {
+          "cpuMs": 2.600000023841858,
+          "jsbCalls": 0,
+          "peakJsBytes": 30846440,
+          "forcedGcMs": 10.099999994039536
+        },
+        "masks/steady": {
+          "cpuMs": 0.4000000059604645,
+          "jsbCalls": 0,
+          "peakJsBytes": 29366769,
+          "forcedGcMs": 4.600000023841858
+        },
+        "masks/dirty": {
+          "cpuMs": 0.4000000059604645,
+          "jsbCalls": 0,
+          "peakJsBytes": 29110729,
+          "forcedGcMs": 5.200000017881393
+        },
+        "rich/steady": {
+          "cpuMs": 0.19999998807907104,
+          "jsbCalls": 0,
+          "peakJsBytes": 24142131,
+          "forcedGcMs": 7
+        },
+        "rich/dirty": {
+          "cpuMs": 1.0499999970197678,
+          "jsbCalls": 0,
+          "peakJsBytes": 28552259,
+          "forcedGcMs": 6
+        },
+        "mixed/steady": {
+          "cpuMs": 1.0999999940395355,
+          "jsbCalls": 0,
+          "peakJsBytes": 36706167,
+          "forcedGcMs": 9
+        },
+        "mixed/dirty": {
+          "cpuMs": 4.300000011920929,
+          "jsbCalls": 0,
+          "peakJsBytes": 38816359,
+          "forcedGcMs": 11
+        }
+      }
+    }
+  },
+  "reductionPercent": {
+    "empty/steady": {
+      "cpuMs": 14.814814808806398,
+      "jsbCalls": 0,
+      "peakJsBytes": 4.369153628361766,
+      "forcedGcMs": 15.298329355619412
+    },
+    "empty/dirty": {
+      "cpuMs": 20.37037036515543,
+      "jsbCalls": 0,
+      "peakJsBytes": 4.947828853340774,
+      "forcedGcMs": 63.80962299520845
+    },
+    "sprites/steady": {
+      "cpuMs": -75.80054894858921,
+      "jsbCalls": 0,
+      "peakJsBytes": 12.751771623498698,
+      "forcedGcMs": 14.274765280687951
+    },
+    "sprites/dirty": {
+      "cpuMs": -35.68542568530544,
+      "jsbCalls": -149.25373134328356,
+      "peakJsBytes": 12.954062849390002,
+      "forcedGcMs": 34.90206054441707
+    },
+    "labels/steady": {
+      "cpuMs": 36.36729357341291,
+      "jsbCalls": 0,
+      "peakJsBytes": 16.077712018793953,
+      "forcedGcMs": 59.12742691364833
+    },
+    "labels/dirty": {
+      "cpuMs": -9.407753151246535,
+      "jsbCalls": 80.53691275167785,
+      "peakJsBytes": 33.11531188956896,
+      "forcedGcMs": 66.7699938004024
+    },
+    "masks/steady": {
+      "cpuMs": 60.345821325637836,
+      "jsbCalls": 0,
+      "peakJsBytes": 9.564900024215884,
+      "forcedGcMs": 67.43639921723548
+    },
+    "masks/dirty": {
+      "cpuMs": 52.80235988179598,
+      "jsbCalls": 0,
+      "peakJsBytes": 9.61290073088673,
+      "forcedGcMs": 40.710823909525395
+    },
+    "rich/steady": {
+      "cpuMs": 33.143986170042496,
+      "jsbCalls": 0,
+      "peakJsBytes": 11.32660306502775,
+      "forcedGcMs": 36.37611530543221
+    },
+    "rich/dirty": {
+      "cpuMs": 34.25548058993405,
+      "jsbCalls": 85.5397148676171,
+      "peakJsBytes": 15.613287105817319,
+      "forcedGcMs": 11.700783421863125
+    },
+    "mixed/steady": {
+      "cpuMs": -28.005444557861626,
+      "jsbCalls": 0,
+      "peakJsBytes": 24.306884881983095,
+      "forcedGcMs": 35.12991573038262
+    },
+    "mixed/dirty": {
+      "cpuMs": -32.806608400050166,
+      "jsbCalls": 77.62557077625571,
+      "peakJsBytes": 43.213879459487494,
+      "forcedGcMs": 50.05665365734278
+    }
+  },
+  "mixedDirtyTargets": {
+    "cpu": false,
+    "jsb": true,
+    "peakJsHeap": true
+  }
+}

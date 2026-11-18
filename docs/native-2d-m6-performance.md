@@ -23,3 +23,18 @@ cmake --build "$poc/build/perf-bin-$key" -j 10
 ```
 
 运行 node native/tests/2d-poc/prepare-m6-perf.cjs after HTML5 生成 Web 对照。使用 run-m6-perf.ps1 -Target before、after 或 web 启动。按上述顺序将 Windows 的 m6-perf-before-results.json、m6-perf-after-results.json 和 Web 的 perf-web/manifest.json 复制到 build/m6-perf-formal-轮次-目标.json，最后运行 node native/tests/2d-poc/compare-m6-perf.cjs。
+
+## 原生 Sprite 合批后的三轮复测
+
+Windows Release 候选 `cfe140f062` 使用相同的测量点、预热及采样帧数。对照沿用首轮实验的三份迁移前 Windows 和三份 Web 原始记录。新候选的三轮运行另行采集，未与对照交错运行。每轮输入的 SHA256 和各负载的逐轮数据见[复测结果](./native-2d-m6-performance-pages.json)。
+
+| 混合负载，10% 变更/帧 | 迁移前 | 首个候选 | 合批后 |
+|---|---:|---:|---:|
+| 准备、更新及合批 CPU（ms） | 4.5881 | 7.8115 | 6.0933 |
+| 每帧 JSB 调用 | 876 | 196 | 196 |
+| JS 堆峰值（字节） | 29,851,076 | 16,938,372 | 16,951,268 |
+| 强制 GC（ms） | 7.943 | 4.206 | 3.967 |
+
+相对迁移前，CPU 时间增加 32.81%，JSB 调用减少 77.63%，JS 堆峰值减少 43.21%。CPU 达标上限为 2.29405 ms。单独测试 1000 个 Sprite 的变更帧，CPU 从首个候选的 1.8111 ms 降至 0.4702 ms，迁移前为 0.3465 ms。
+
+复现时将 CC_M6_PERF_CHECKOUT 指向 build/perf-after-cfe140f062，使用上文 after 构建和运行流程，将三轮结果依次保存为 build/m6-perf-pages-1.json 至 build/m6-perf-pages-3.json，再运行 `node native/tests/2d-poc/compare-m6-perf.cjs --candidate cfe140f062`。

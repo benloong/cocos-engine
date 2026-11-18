@@ -14,7 +14,7 @@ module.exports = {
         'external:(.*)': '<rootDir>/native/external/$1',
         '^pal/worker$': '<rootDir>/tests/mocks/pal-worker.js',
     },
-    modulePathIgnorePatterns: ['<rootDir>/native/tests/2d-poc/build/perf-(before|after)/'],
+    modulePathIgnorePatterns: ['<rootDir>/native/tests/2d-poc/build/perf-(before|after)(-[0-9a-f]+)?/'],
     transformIgnorePatterns: [
         // ignore everything in the node_modules EXCEPT for:
         // - @cocos/dragonbones-js

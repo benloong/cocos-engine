@@ -7,7 +7,10 @@ const { buildEngine } = require('@cocos/ccbuild');
 const key = process.argv[2];
 if (!['before', 'after'].includes(key)) throw new Error('Select before or after');
 const out = path.join(__dirname, 'build');
-const source = path.join(out, 'perf-' + key);
+const source = process.env.CC_M6_PERF_CHECKOUT ? path.resolve(process.env.CC_M6_PERF_CHECKOUT) : path.join(out, 'perf-' + key);
+if (path.dirname(source) !== out || !new RegExp('^perf-' + key + '(?:-[0-9a-f]+)?$').test(path.basename(source))) {
+    throw new Error('Expected an isolated measurement checkout under ' + out);
+}
 const project = path.join(out, 'perf-project-' + key);
 const windows = path.join(project, 'build/windows');
 const template = path.join(out, 'graphics-gpu-project');
