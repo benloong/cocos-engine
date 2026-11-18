@@ -112,7 +112,7 @@
 - [x] Windows Debug 应用 GPU 定向对照：独立相同场景/脚本经真实 Batcher、shader/local UBO、Camera、stencil 和 readPixels 捕获 40 例，Web/native 全通道差值 0；含大尺寸/缩放/3D 旋转、曲线/多路径、9 类描边、80000 顶点 Graphics/Mask、嵌套/inverted/空 Mask 与 alphaThreshold。修复 deprecated graphics→subComp、VERTEX alpha 和两端空嵌套 stencil 配对，见 [报告、结果与待办](./native-2d-m6.3-graphics-gpu.md)。该历史快照含当时未提交的 SpriteFrame native getter，未作为 M6 最终候选；getter 后续已移除，当前继续采用无 native property 方案。
 - [ ] 完成替换后的真实 GPU 绘制与缩放、大尺寸、复杂/多子路径像素回归；实际 Batcher/graphics shader/Camera/UBO 链路和混合场景须验证，buffer 上传通过不替代此门禁。
 - [x] Mask radius 与动态几何状态：半径归原生所有，圆角限幅/更新、尺寸/anchor 更新、rect→ellipse 已通过真实 GPU 对照；扩展夹具 48/48 图像全通道差值 0，见 [状态与命中报告](./native-2d-m6.4-mask-state-hit.md)。动态资产、完整混合场景和跨平台仍待验收。
-- [ ] 完成 lineJoin/lineCap/miterLimit、roundRect、ellipse、arc、曲线、填充/描边、clear 的场景/GPU 验收。几何对照和 JSB 参数桥接已补，实际像素仍待验收。
+- [x] Windows Debug、Release 与 Web 实际 GPU 验收通过。覆盖 9 种 lineCap/lineJoin 组合（miterLimit=2）、roundRect、ellipse、arc、曲线、填充、描边和 clear 后重绘。夹具逐项检查必需的非空图像，三端全部 74 组捕获无通道差异。[候选指纹与逐图结果](./native-2d-m6-windows-web-gpu-results.json)。
 - [ ] 对比逐 API JSB 与命令批量提交的 CPU、调用次数、分配和绘制成本；用数据选择接口。JS 允许纯命令收集，不允许路径算法/三角化。
 - [ ] 验证 Mask 四类形状、inverted、嵌套与 stencil 恢复、alphaThreshold、segments、尺寸和资产动态切换，补混合 Sprite/Label/Graphics 场景。
 - [ ] 复核 Graphics/Mask 的材质选择归属、stencil material 和所有权；补 draw call、合批、纹理上传量与性能报告。

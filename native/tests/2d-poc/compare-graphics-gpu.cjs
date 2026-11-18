@@ -33,6 +33,13 @@ const sanity={
     'mask-nested-empty':16800,'mask-multichunk':20000,
     'mask-alpha-0.2':12000,'mask-alpha-0.5':6000,'mask-alpha-0.8':0,
 };
+const geometryCases = ['fill-rect', 'curves', 'ellipse', 'arc', 'round-rect', 'clear-and-replace'];
+for (let cap = 0; cap < 3; cap++) {
+    for (let join = 0; join < 3; join++) geometryCases.push(`stroke-${cap}-${join}`);
+}
+for (const name of geometryCases) {
+    if (!a.captures.includes(name)) throw new Error('Missing graphics geometry capture: ' + name);
+}
 const results=[];
 for(const name of a.captures) {
     const actual=fs.readFileSync(path.join(native,name+'.rgba')),expected=fs.readFileSync(path.join(web,name+'.rgba'));
@@ -46,6 +53,7 @@ for(const name of a.captures) {
         if(different) pixels++;
         if(expected[i]||expected[i+1]||expected[i+2]) colored++;
     }
+    if (geometryCases.includes(name) && colored === 0) throw new Error('Empty geometry capture: ' + name);
     if(name in sanity && colored!==sanity[name]) throw new Error(`Web sanity failed for ${name}: ${colored} colored pixels, expected ${sanity[name]}`);
     results.push({name,max,pixels,channels,colored,pass:max<=1,
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
