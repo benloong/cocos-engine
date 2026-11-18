@@ -41,6 +41,7 @@
 #include "core/assets/AssetEnum.h"
 #include "core/assets/ImageAsset.h"
 #include "core/assets/Texture2D.h"
+#include "core/scene-graph/Node.h"
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
 #include "bindings/manual/jsb_platform.h"
@@ -159,14 +160,13 @@ float measureText(CanvasRenderingContext2D &context, const std::string &text) {
 Label::Label() {
     markRenderDirty();
     _renderer.setSizeMode(0); // Label layout owns dimensions, not the padded texture.
-    _renderer.getRenderEntity()->setPrepareListener(this);
 }
 
 Label::~Label() {
+    setUITransform(nullptr);
+    bindBitmapAtlas(nullptr);
+    if (_fontAsset) _fontAsset->off(_fontChanged);
     releaseLetterAtlas();
-    if (_renderer.getRenderEntity() != nullptr) {
-        _renderer.getRenderEntity()->setPrepareListener(nullptr);
-    }
 }
 void Label::releaseLetterAtlas() {
     if (!_letterAtlas) return;
@@ -179,15 +179,26 @@ void Label::releaseLetterAtlas() {
 
 void Label::setNode(Node *node) {
     _renderer.setNode(node);
-    if (_renderer.getRenderEntity() != nullptr) {
-        _renderer.getRenderEntity()->setPrepareListener(this);
-    }
     Component::setNode(node);
+    setUITransform(node ? static_cast<UITransform *>(node->getUIComponent(UITransform::TYPE_ID)) : nullptr);
     markRenderDirty();
 }
 
+void Label::onUITransformChanged() {
+    if (_node) setUITransform(static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)));
+}
+
 void Label::setUITransform(UITransform *transform) {
+    if (_transform == transform) return;
+    if (_transform) {
+        _transform->off(_layoutChanged);
+        _transform->off(_layoutDestroyed);
+    }
     _transform = transform;
+    if (transform) {
+        _layoutChanged = transform->on<UITransform::LayoutChanged>([this](UITransform *) { if (!_syncingContentSize) syncTransformSize(); });
+        _layoutDestroyed = transform->on<UITransform::LayoutDestroyed>([this](UITransform *) { _transform = nullptr; markRenderDirty(); });
+    }
     _renderer.setUITransform(transform);
     markRenderDirty();
 }
@@ -202,7 +213,9 @@ void Label::setString(const std::string &text) {
 
 void Label::setFontAsset(FontAsset *font) {
     if (_fontAsset == font) return;
+    if (_fontAsset) _fontAsset->off(_fontChanged);
     _fontAsset = font;
+    if (font) _fontChanged = font->on<FontAsset::FontChanged>([this](FontAsset *) { markRenderDirty(); });
     _fontAssetRevision = font ? font->getRevision() : 0;
     _glyphs.clear(); _glyphMap.clear(); _kerning.clear();
     applyFontAsset();
@@ -214,7 +227,7 @@ void Label::syncFontAsset() {
 }
 void Label::applyFontAsset() {
     _bitmapFont = _fontAsset && !_fontAsset->isReleased() ? dynamic_cast<BitmapFontAsset *>(_fontAsset.get()) : nullptr;
-    _bitmapAtlas = _bitmapFont ? _bitmapFont->getSpriteFrame() : nullptr;
+    bindBitmapAtlas(_bitmapFont ? _bitmapFont->getSpriteFrame() : nullptr);
     const float sourceSize = _bitmapFont ? _bitmapFont->getSourceFontSize() : -1.F;
     _bitmapLineHeight = _bitmapFont && (_bitmapFont->hasSourceFontSize() || sourceSize > 0) ? sourceSize : _lineHeight;
     updateFont(); clearRenderedData(); markRenderDirty();
@@ -222,8 +235,6 @@ void Label::applyFontAsset() {
 void Label::clearRenderedData() {
     _renderer.clearFrame();
     _bitmapDiagnosticsDirty = false; _renderedBitmapGlyphs = 0;
-    // The entity also drives Label's prepare callback. An empty frame must
-    // not disable that callback or later font/config changes cannot rebuild.
     _renderer.setEnabled(isEnabled());
     _frame = nullptr; _texture = nullptr;
     std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
@@ -363,14 +374,14 @@ void Label::setShadowOffset(float x, float y) {
 }
 void Label::setBitmapAtlas(SpriteFrame *atlas, float lineHeight) {
     if (_fontAsset) setFontAsset(nullptr);
-    _bitmapAtlas = atlas;
+    bindBitmapAtlas(atlas);
     _bitmapLineHeight = lineHeight;
     markRenderDirty();
 }
 
 void Label::clearBitmapFont() {
-    if (_bitmapFont) { _fontAsset = nullptr; _bitmapFont = nullptr; }
-    _bitmapAtlas = nullptr;
+    if (_bitmapFont) setFontAsset(nullptr);
+    bindBitmapAtlas(nullptr);
     _bitmapLineHeight = 0.0F;
     _kerning.clear();
     updateFont();
@@ -440,14 +451,12 @@ void Label::setEnabled(bool enabled) {
     _renderer.setEnabled(enabled);
 }
 
+void Label::updateRenderer() {
+    if (renderDirtyFlags()) prepareRenderEntity(getRenderEntity()->getOpacity());
+}
+
 void Label::prepareRenderEntity(float opacity) {
-    syncTransformSize();
-    syncFontAsset();
-    syncBitmapAtlas();
-    if (renderDirtyFlags() & GEOMETRY) {
-        rebuildTexture();
-    }
-    syncContentSize();
+    updateRenderData();
     _renderer.prepareRenderEntity(opacity);
 }
 
@@ -552,9 +561,25 @@ void Label::rebuildLetterTexture() {
     _renderer.setFrame(_frame);
     applyBitmapAtlas();
 }
+void Label::bindBitmapTexture(TextureBase *texture) {
+    if (texture == _observedAtlasTexture) return;
+    if (_observedAtlasTexture) _observedAtlasTexture->off(_atlasTextureChanged);
+    _observedAtlasTexture = texture;
+    if (texture) _atlasTextureChanged = texture->on<TextureBase::RenderDataChanged>([this](TextureBase *) { markRenderDirty(); });
+}
+
+void Label::bindBitmapAtlas(SpriteFrame *atlas) {
+    if (atlas == _bitmapAtlas) return;
+    if (_bitmapAtlas) _bitmapAtlas->off(_atlasChanged);
+    _bitmapAtlas = atlas;
+    if (atlas) _atlasChanged = atlas->on<SpriteFrame::FrameChanged>([this](SpriteFrame *) { markRenderDirty(); });
+    bindBitmapTexture(atlas ? atlas->getTexture() : nullptr);
+}
+
 void Label::syncBitmapAtlas() {
     if (!_bitmapAtlas) return;
     auto *texture = _bitmapAtlas->getTexture();
+    bindBitmapTexture(texture);
     const uint32_t width = texture ? texture->getWidth() : 0;
     const uint32_t height = texture ? texture->getHeight() : 0;
     const int32_t format = texture ? static_cast<int32_t>(texture->getPixelFormat()) : -1;
@@ -756,6 +781,7 @@ void Label::syncTransformSize() {
     if (std::fabs(size.x - _layoutWidth) > 0.001F || std::fabs(size.y - _layoutHeight) > 0.001F) markRenderDirty();
 }
 void Label::syncContentSize() {
+    _syncingContentSize = true;
     if (_transform && _overflow == 0) {
         _transform->setContentSize(_lastContentWidth, _lastContentHeight);
     } else if (_transform && _overflow == 3) {
@@ -766,6 +792,7 @@ void Label::syncContentSize() {
         const auto size = _transform->getContentSize();
         _layoutWidth = size.x; _layoutHeight = size.y;
     }
+    _syncingContentSize = false;
 }
 void Label::measureContent() {
     if (!_transform) return;

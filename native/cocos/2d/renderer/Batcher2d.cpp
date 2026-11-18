@@ -304,11 +304,6 @@ void Batcher2d::walk(Node* node, float parentOpacity, bool parentColorDirty) { /
     if (!node->isActiveInHierarchy()) {
         return;
     }
-    // RichText owns a group of child renderers, not this Node's RenderEntity.
-    // Prepare before reading children so it can coexist with a parent Sprite.
-    if (auto *richText = static_cast<RichText *>(node->getUIComponent(RichText::TYPE_ID))) {
-        richText->prepareRenderEntity(parentOpacity);
-    }
     bool breakWalk = false;
     auto* entity = static_cast<RenderEntity*>(node->getUserData());
 
@@ -324,15 +319,12 @@ void Batcher2d::walk(Node* node, float parentOpacity, bool parentColorDirty) { /
         if (!visible) {
             breakWalk = true;
         } else if (entity->isEnabled()) {
-            if (isCurrentColorDirty) {
-                entity->setOpacity(finalOpacity);
+            if (math::isNotEqualF(entity->getOpacity(), finalOpacity)) {
+                entity->updateInheritedOpacity(finalOpacity);
+                entity->setVBColorDirty(true);
+            } else if (isCurrentColorDirty) {
                 entity->setVBColorDirty(true);
             }
-
-            // Native 2D components generate their geometry here, before the
-            // batcher consumes the draw info. JS-driven entities have no
-            // callback and this is a no-op.
-            entity->prepare(finalOpacity);
 
             if (ENABLE_SORTING_2D && sorting2DCount > 0) {
                 if (entity->getIsMask()) {

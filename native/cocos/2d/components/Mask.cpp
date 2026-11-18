@@ -11,7 +11,7 @@
 
 namespace cc {
 Mask::Mask() { _sprite.setSizeMode(0); }
-Mask::~Mask() { setNode(nullptr); }
+Mask::~Mask() { setUITransform(nullptr); setNode(nullptr); }
 RenderEntity *Mask::getRenderEntity() const { return _type == 3 ? _sprite.getRenderEntity() : _graphics.getRenderEntity(); }
 void Mask::attach() {
     _sprite.setNode(nullptr);
@@ -21,7 +21,6 @@ void Mask::attach() {
     else
         _graphics.setNode(_node);
     auto *entity = getRenderEntity();
-    entity->setPrepareListener(this);
     entity->setMaskMode(_inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK);
     entity->setPriority(_priority);
     entity->setEnabled(_enabled);
@@ -29,25 +28,43 @@ void Mask::attach() {
 void Mask::setNode(Node *node) {
     Component::setNode(node);
     _shapeDirty = true;
+    markRenderDirty();
     attach();
 }
 void Mask::onDetach() {
+    UIRenderer::onDetach();
     _sprite.setNode(nullptr);
     _graphics.setNode(nullptr);
-    _transform=nullptr;
-    _sprite.setUITransform(nullptr);
-    _shapeDirty=true;
+    setUITransform(nullptr);
+    _shapeDirty = true;
+    markRenderDirty();
 }
 void Mask::setUITransform(UITransform *transform) {
+    if (_transform == transform) return;
+    if (_transform) {
+        _transform->off(_layoutChanged);
+        _transform->off(_layoutDestroyed);
+    }
     _transform = transform;
+    if (transform) {
+        _layoutChanged = transform->on<UITransform::LayoutChanged>([this](UITransform *) { markRenderDirty(); });
+        _layoutDestroyed = transform->on<UITransform::LayoutDestroyed>([this](UITransform *) {
+            _transform = nullptr;
+            _shapeDirty = true;
+            if (_type != 2) _graphics.clear();
+            markRenderDirty();
+        });
+    }
     _sprite.setUITransform(transform);
     _shapeDirty = true;
+    markRenderDirty();
     if(!transform && _type!=2) _graphics.clear();
 }
 void Mask::setType(int32_t type) {
     if (_type == type) return;
     _type = type;
     _shapeDirty = true;
+    markRenderDirty();
     _graphics.clear();
     _graphics.setUseGeometrySource(_type == 2);
     attach();
@@ -63,12 +80,14 @@ void Mask::setGraphics(Graphics *graphics) {
 void Mask::setSegments(uint32_t segments) {
     _segments = std::clamp(segments, 3U, 10000U);
     _shapeDirty = true;
+    markRenderDirty();
 }
 void Mask::setRadius(float radius) {
     radius = std::max(0.F, radius);
     if (_radius == radius) return;
     _radius = radius;
     _shapeDirty = true;
+    markRenderDirty();
 }
 bool Mask::isHitWorldPointXY(float x, float y) const {
     auto *transform = _node ? static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)) : nullptr;
@@ -123,8 +142,12 @@ void Mask::setPriority(int32_t value) {
     _sprite.setPriority(value);
     _graphics.setPriority(value);
 }
+void Mask::updateRenderer() {
+    if (renderDirtyFlags()) prepareRenderEntity(getRenderEntity()->getOpacity());
+}
+
 void Mask::prepareRenderEntity(float opacity) {
-    _node = getRenderEntity()->getNode();
+    clearRenderDirty();
     // Reacquire the non-owning slot before dereferencing, including after a
     // UITransform is replaced/destroyed or added later.
     auto *transform = _node ? static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)) : nullptr;

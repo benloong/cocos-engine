@@ -13,7 +13,7 @@ namespace cc {
 class UITransform;
 
 // Native path/mesh owner. Local vertices use the graphics shader and Node UBO.
-class Graphics final : public UIRenderer, public RenderEntity::IPrepareListener {
+class Graphics final : public UIRenderer {
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Graphics);
     Graphics();
@@ -51,7 +51,7 @@ public:
     void setMiterLimit(double value) { _geometry.miterLimit = value; }
     void setFillColor(const Color &color);
     void setStrokeColor(const Color &color);
-    void prepareRenderEntity(float opacity) override;
+    void prepareRenderEntity(float opacity);
     RenderEntity *getRenderEntity() const override { return _entity.get(); }
     uint64_t getRevision() const { return _revision; }
     uint32_t getVertexCount() const { return static_cast<uint32_t>(_geometry.getVertices().size()); }
@@ -66,6 +66,7 @@ protected:
     Material *getBuiltinMaterial() const override;
 
 private:
+    void updateRenderer() override;
     struct Chunk {
         std::vector<float> vertices;
         std::vector<uint16_t> indices;

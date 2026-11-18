@@ -57,7 +57,7 @@ uint32_t materialVariant(TextureBase *texture) {
 Sprite::Sprite() {
     markRenderDirty();
     _entity = new RenderEntity(RenderEntityType::STATIC);
-    _entity->setPrepareListener(this);
+    _entity->useSpriteVertexOpacity();
     _vertices.reserve(64U * VERTEX_STRIDE);
     _indices.reserve(128U);
 }
@@ -66,7 +66,6 @@ Sprite::~Sprite() {
     setUITransform(nullptr);
     bindFrame(nullptr);
     bindTexture(nullptr);
-    _entity->setPrepareListener(nullptr);
     _entity->setStaticDrawInfoSize(0); // Invalidate borrowed chunk pointers before their owner is destroyed.
     setNode(nullptr);
 }
@@ -370,6 +369,10 @@ void Sprite::setTrim(bool trim) {
     }
     _trim = trim;
     markRenderDirty();
+}
+
+void Sprite::updateRenderer() {
+    if (renderDirtyFlags()) prepare(_entity->getOpacity());
 }
 
 void Sprite::prepareRenderEntity(float opacity) {

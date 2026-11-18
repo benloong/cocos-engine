@@ -42,9 +42,9 @@ struct BitmapFontGlyph {
 };
 class BitmapFontAsset : public FontAsset {
 public:
-    void setSpriteFrame(SpriteFrame *value) { if (!_released) { _spriteFrame = value; ++_revision; } }
+    void setSpriteFrame(SpriteFrame *value) { if (!_released) { _spriteFrame = value; notifyFontChanged(); } }
     SpriteFrame *getSpriteFrame() const { return _spriteFrame.get(); }
-    void setFontSize(float value) { if (!_released && std::isfinite(value) && value != _fontSize) { _fontSize = value; ++_revision; } }
+    void setFontSize(float value) { if (!_released && std::isfinite(value) && value != _fontSize) { _fontSize = value; notifyFontChanged(); } }
     float getFontSize() const { return _fontSize; }
     // Config source size drives glyph scale; public fontSize remains serialized metadata.
     bool hasSourceFontSize() const { return _hasSourceFontSize; }

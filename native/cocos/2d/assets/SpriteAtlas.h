@@ -23,6 +23,10 @@ class TextureBase;
  * forwards named frames here for native ownership and texture access.
  */
 class SpriteAtlas final : public Asset {
+    IMPL_EVENT_TARGET(SpriteAtlas)
+    DECLARE_TARGET_EVENT_BEGIN(SpriteAtlas)
+    TARGET_EVENT_ARG0(AtlasChanged)
+    DECLARE_TARGET_EVENT_END()
 public:
     using Super = Asset;
 

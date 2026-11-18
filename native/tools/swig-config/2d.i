@@ -98,6 +98,9 @@
 %ignore cc::Batcher2d::handleMiddlewareDraw;
 %ignore cc::Batcher2d::handleSubNode;
 
+%ignore cc::RenderEntity::useSpriteVertexOpacity;
+%ignore cc::RenderEntity::updateInheritedOpacity;
+%ignore cc::Component::onUITransformChanged;
 %ignore cc::RenderEntity::getDynamicRenderDrawInfo;
 %ignore cc::RenderEntity::getDynamicRenderDrawInfos;
 %ignore cc::RenderEntity::getRenderEntityType;

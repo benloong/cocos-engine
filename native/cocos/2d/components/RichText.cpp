@@ -59,6 +59,13 @@ struct RichText::Segment {
     std::unique_ptr<Label> label;
     std::unique_ptr<Sprite> sprite;
     IntrusivePtr<SpriteFrame> frame;
+    SpriteFrame::FrameChanged::EventID frameChanged;
+    void bindFrame(SpriteFrame *value, RichText *owner) {
+        if (value == frame) return;
+        if (frame) frame->off(frameChanged);
+        frame = value;
+        if (value) frameChanged = value->on<SpriteFrame::FrameChanged>([owner](SpriteFrame *) { owner->markRenderDirty(); });
+    }
     uint32_t frameRevision{0};
     std::string handler;
     std::string param;
@@ -75,27 +82,48 @@ struct RichText::Segment {
             label->setHorizontalAlign(0); label->setOverflow(0); label->setEnableWrapText(false);
         }
     }
-    ~Segment() { node->removeFromParent(); }
+    ~Segment() { bindFrame(nullptr, nullptr); node->removeFromParent(); }
 };
 RichText::RichText() {
     _measureLabel = std::make_unique<Label>();
 }
 RichText::~RichText() {
+    observeTransform(nullptr);
+    if (_font) _font->off(_fontChanged);
+    if (_atlas) _atlas->off(_atlasChanged);
     Component::setNode(nullptr);
     clearSegments();
 }
-void RichText::onAttach() { _dirty = true; }
+void RichText::onAttach() {
+    _dirty = true;
+    _observedNode = _node;
+    _layerChanged = _node->on<Node::LayerChanged>([this](Node *, uint32_t) { markRenderDirty(); });
+}
 void RichText::onDetach() {
-    clearSegments(); _transform = nullptr;
+    UIRenderer::onDetach();
+    if (_observedNode) _observedNode->off(_layerChanged);
+    _observedNode = nullptr;
+    observeTransform(nullptr);
+    clearSegments();
 }
 void RichText::onEnable() {
+    UIRenderer::onEnable();
     for (auto &segment : _segments) { segment->node->setActive(true); segment->node->setActiveInHierarchy(true); }
     updateLayout();
 }
 void RichText::onDisable() {
+    UIRenderer::onDisable();
     for (auto &segment : _segments) { segment->node->setActive(false); segment->node->setActiveInHierarchy(false); }
 }
-void RichText::setUITransform(UITransform *transform) { _transform = transform; dirty(); }
+void RichText::observeTransform(UITransform *transform) {
+    if (transform == _transform) return;
+    if (_transform) { _transform->off(_layoutChanged); _transform->off(_layoutDestroyed); }
+    _transform = transform;
+    if (!transform) return;
+    _layoutChanged = transform->on<UITransform::LayoutChanged>([this](UITransform *) { if (!_updating) markRenderDirty(); });
+    _layoutDestroyed = transform->on<UITransform::LayoutDestroyed>([this](UITransform *) { _transform = nullptr; _dirty = true; markRenderDirty(); });
+}
+void RichText::setUITransform(UITransform *transform) { observeTransform(transform); dirty(); }
 void RichText::dirty() { _dirty = true; if (_node && _transform && _enabled && !_updating) updateLayout(); }
 void RichText::setString(const std::string &value) { if (_string != value) { _string = value; dirty(); } }
 void RichText::setFontSize(float value) { if (_options.fontSize != value) { _options.fontSize = value; dirty(); } }
@@ -106,11 +134,19 @@ void RichText::setVerticalAlign(int32_t value) { if (_verticalAlign != value) { 
 void RichText::setFontFamily(const std::string &value) { if (_family != value) { _family = value; dirty(); } }
 void RichText::setFontAsset(FontAsset *font) {
     if (_font == font) return;
+    if (_font) _font->off(_fontChanged);
+    if (font) _fontChanged = font->on<FontAsset::FontChanged>([this](FontAsset *) { markRenderDirty(); });
     _font = font; _measureLabel->setFontAsset(font);
     for (auto &segment : _segments) if (segment->label) segment->label->setFontAsset(font);
     dirty();
 }
-void RichText::setImageAtlas(SpriteAtlas *atlas) { if (_atlas != atlas) { _atlas = atlas; dirty(); } }
+void RichText::setImageAtlas(SpriteAtlas *atlas) {
+    if (_atlas == atlas) return;
+    if (_atlas) _atlas->off(_atlasChanged);
+    _atlas = atlas;
+    if (atlas) _atlasChanged = atlas->on<SpriteAtlas::AtlasChanged>([this](SpriteAtlas *) { markRenderDirty(); });
+    dirty();
+}
 void RichText::setCacheMode(int32_t value) { if (_cacheMode != value) { _cacheMode = value; dirty(); } }
 void RichText::setFontColorRGBA(float r, float g, float b, float a) {
     _fontColor = Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), static_cast<uint8_t>(a));
@@ -141,7 +177,7 @@ void RichText::recycle(std::unique_ptr<Segment> segment) {
     if (segment->label) {
         segment->label->setString(""); segment->label->setFontAsset(nullptr); segment->label->setCacheMode(0); segment->label->updateRenderData();
     } else segment->sprite->clearFrame();
-    segment->frame = nullptr; segment->handler.clear(); segment->param.clear();
+    segment->bindFrame(nullptr, this); segment->handler.clear(); segment->param.clear();
     auto &pool = segment->sprite ? _imagePool : _labelPool;
     if (pool.size() < (segment->sprite ? 10U : 20U)) pool.push_back(std::move(segment));
 }
@@ -158,7 +194,7 @@ void RichText::synchronizeDependencies() {
 void RichText::updateLayout() {
     if (!_node || !_enabled || _updating) return;
     auto *attached = static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID));
-    if (attached != _transform) { _transform = attached; _dirty = true; }
+    if (attached != _transform) { observeTransform(attached); _dirty = true; }
     if (!_transform) { if (!_segments.empty()) clearSegments(); return; }
     synchronizeDependencies(); if (!_dirty) return;
     _updating = true;
@@ -189,7 +225,7 @@ void RichText::updateLayout() {
         if (segment->label) {
             configureLabel(*segment->label, placement.spanIndex); segment->label->setString(placement.text);
         } else {
-            segment->frame = _atlas && style && style->src ? _atlas->getSpriteFrame(*style->src) : nullptr;
+            segment->bindFrame(_atlas && style && style->src ? _atlas->getSpriteFrame(*style->src) : nullptr, this);
             segment->frameRevision = segment->frame ? segment->frame->getRevision() : 0;
             segment->sprite->setFrame(segment->frame);
         }

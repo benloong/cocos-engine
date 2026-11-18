@@ -84,7 +84,7 @@ public:
 
 protected:
     virtual RenderEntity *getRenderEntity() const { return nullptr; }
-    virtual void updateRenderer();
+    virtual void updateRenderer() {}
     enum DirtyFlag : uint32_t { GEOMETRY = 1, COLOR = 2 };
     void markRenderDirty(uint32_t flags = GEOMETRY) {
         _pendingFlags |= flags;

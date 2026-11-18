@@ -27,16 +27,21 @@
 #include "core/assets/Asset.h"
 namespace cc {
 class FontAsset : public Asset {
+    IMPL_EVENT_TARGET(FontAsset)
+    DECLARE_TARGET_EVENT_BEGIN(FontAsset)
+    TARGET_EVENT_ARG0(FontChanged)
+    DECLARE_TARGET_EVENT_END()
 public:
     FontAsset();
     ~FontAsset() override = default;
     uint32_t getRevision() const { return _revision; }
     uint64_t getIdentity() const { return _identity; }
     bool isReleased() const { return _released; }
-    virtual void clearNativeData() { ++_revision; }
+    virtual void clearNativeData() { notifyFontChanged(); }
     bool destroy() override;
     void destruct() override;
 protected:
+    void notifyFontChanged() { ++_revision; emit<FontChanged>(); }
     uint32_t _revision{0};
     bool _released{false};
 private:

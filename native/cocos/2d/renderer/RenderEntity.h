@@ -165,23 +165,8 @@ public:
 
     inline void setMaskMode(MaskMode mode) { _entityAttrLayout.maskMode = static_cast<uint8_t>(mode); }
 
-    /**
-     * Lightweight owner interface used by native 2D components to generate
-     * geometry just before Batcher2d consumes the draw info. Keeping a raw
-     * listener pointer avoids a std::function per RenderEntity.
-     */
-    class IPrepareListener {
-    public:
-        virtual ~IPrepareListener() = default;
-        virtual void prepareRenderEntity(float opacity) = 0;
-    };
-
-    inline void setPrepareListener(IPrepareListener *listener) { _prepareListener = listener; }
-    inline void prepare(float opacity) {
-        if (_prepareListener != nullptr) {
-            _prepareListener->prepareRenderEntity(opacity);
-        }
-    }
+    void useSpriteVertexOpacity() { _spriteVertexOpacity = true; }
+    void updateInheritedOpacity(float opacity);
 
 private:
     CC_DISALLOW_COPY_MOVE_ASSIGN(RenderEntity);
@@ -208,7 +193,7 @@ private:
     uint8_t _paddings[1];
 
     float _opacity{1.0F};
-    IPrepareListener *_prepareListener{nullptr};
+    bool _spriteVertexOpacity{false};
 };
 
 #if defined(__x86_64__) || defined(__amd64__) || defined(__aarch64__)

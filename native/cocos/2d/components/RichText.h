@@ -24,7 +24,9 @@
 
 #pragma once
 #include "2d/framework/UIComponentType.h"
-#include "core/component/Component.h"
+#include "2d/framework/UIRenderer.h"
+#include "2d/framework/UITransform.h"
+#include "core/scene-graph/Node.h"
 #include "2d/renderer/RichTextLayout.h"
 #include "2d/assets/Font.h"
 #include "2d/assets/SpriteAtlas.h"
@@ -37,7 +39,7 @@ class Sprite;
 class UITransform;
 
 /** Native parser, layout and Label/Sprite segment ownership for RichText. */
-class RichText final : public Component {
+class RichText final : public UIRenderer {
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::RichText);
     RichText();
@@ -74,6 +76,15 @@ public:
 private:
     struct Segment;
     void dirty();
+    void updateRenderer() override { clearRenderDirty(); updateLayout(); }
+    void onUITransformChanged() override { markRenderDirty(); }
+    void observeTransform(UITransform *transform);
+    UITransform::LayoutChanged::EventID _layoutChanged;
+    UITransform::LayoutDestroyed::EventID _layoutDestroyed;
+    Node::LayerChanged::EventID _layerChanged;
+    Node *_observedNode{nullptr};
+    FontAsset::FontChanged::EventID _fontChanged;
+    SpriteAtlas::AtlasChanged::EventID _atlasChanged;
     void clearSegments();
     void configureLabel(Label &label, size_t spanIndex);
     void synchronizeDependencies();

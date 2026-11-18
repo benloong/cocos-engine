@@ -54,7 +54,7 @@ class UITransform;
  * UIRenderer owns color/material/priority; this class owns frame data,
  * geometry and the RenderEntity.
  */
-class Sprite final : public UIRenderer, public RenderEntity::IPrepareListener {
+class Sprite final : public UIRenderer {
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Sprite);
 
@@ -119,10 +119,11 @@ public:
 
     void setDirty() { markRenderDirty(); }
     void prepare(float opacity);
-    void prepareRenderEntity(float opacity) override;
+    void prepareRenderEntity(float opacity);
     void onWorldTransformDirty() override { markRenderDirty(); }
 
 private:
+    void updateRenderer() override;
     friend class Label;
     // Label owns layout; Sprite owns copied local quads and all submission buffers.
     void setLabelQuads(SpriteFrame *frame, std::vector<SpriteQuad> quads);

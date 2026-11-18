@@ -56,7 +56,7 @@ public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::UITransform);
 
     UITransform() = default;
-    ~UITransform() override { emit<LayoutDestroyed>(); }
+    ~UITransform() override { setNode(nullptr); emit<LayoutDestroyed>(); }
     explicit UITransform(Node *node);
 
     uint32_t getTypeId() const override { return TYPE_ID; }

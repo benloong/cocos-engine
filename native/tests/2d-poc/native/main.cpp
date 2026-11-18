@@ -342,45 +342,45 @@ void testBitmapGpuGeometry() {
     cc::IntrusivePtr<cc::Material> material(new cc::Material());
     cc::Label label; label.setNode(&node); label.setUITransform(&transform); label.setMaterial(material);
     label.setFontSize(4); label.setLineHeight(4); label.setFontAsset(font); label.setString("AA");
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     auto *entity = static_cast<cc::RenderEntity *>(node.getUserData());
     auto *draw = entity->getStaticRenderDrawInfo(0);
     check(draw && draw->getVbCount() == 8 && draw->getIbCount() == 12, "GPU bitmap submits one quad per glyph");
     check(draw && draw->getTexture() == source->getGFXTexture(), "GPU bitmap samples original atlas directly");
     check(label.getBitmapDiagnosticBuildCount() == 0, "Rendering bitmap geometry does not build a CPU image");
     if (draw) checkNear(draw->getVDataBuffer()[3], 3.F/8.F, "Bitmap glyph UV includes frame origin");
-    frame->setOffset(1, 0); frame->setOriginalSize(6, 6); label.prepareRenderEntity(1.F);
+    frame->setOffset(1, 0); frame->setOriginalSize(6, 6); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     draw = entity->getStaticRenderDrawInfo(0);
     checkNear(draw->getVDataBuffer()[3], 1.F/8.F, "Bitmap frame-only offset/original-size changes invalidate native UVs");
     checkNear(draw->getVDataBuffer()[4], 5.F/8.F, "Bitmap frame trim applies vertical source correction");
-    frame->setOriginalSize(4, 4); frame->setOffset(6, -1); frame->setRotated(true); label.prepareRenderEntity(1.F);
+    frame->setOriginalSize(4, 4); frame->setOffset(6, -1); frame->setRotated(true); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     draw = entity->getStaticRenderDrawInfo(0);
     checkNear(draw->getVDataBuffer()[3], .5F, "Rotated bitmap frame trim updates current texture coordinate");
     checkNear(draw->getVDataBuffer()[4], -.25F, "Rotated bitmap negative source origin follows Web mapping");
     checkNear(draw->getVDataBuffer()[19] - draw->getVDataBuffer()[1], 1.F, "Rotated bitmap trim updates physical glyph height");
-    frame->setRotated(false); frame->setOffset(0, 0); label.prepareRenderEntity(1.F);
+    frame->setRotated(false); frame->setOffset(0, 0); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     frame->setDynamicAtlasFrame(packed, 6, 7); label.updateRenderData();
     check(label.getAtlasTextureId() == reinterpret_cast<uint64_t>(packed.get()), "Explicit bitmap update observes frame packing before prepare");
-    label.prepareRenderEntity(1.F); draw = entity->getStaticRenderDrawInfo(0);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); draw = entity->getStaticRenderDrawInfo(0);
     check(draw && draw->getTexture() == packed->getGFXTexture(), "GPU-only dynamic atlas is consumed without image data");
     if (draw) checkNear(draw->getVDataBuffer()[3], 7.F/16.F, "Packed glyph UV uses current atlas origin/size");
-    frame->resetDynamicAtlasFrame(); label.updateRenderData(); label.prepareRenderEntity(1.F);
+    frame->resetDynamicAtlasFrame(); label.updateRenderData(); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     draw = entity->getStaticRenderDrawInfo(0);
     check(draw && draw->getTexture() == source->getGFXTexture(), "Bitmap reset restores original GPU texture");
-    source->create(32,16); pixels.resize(32 * 16 * 4, 255); source->uploadData(pixels.data()); label.prepareRenderEntity(1.F);
+    source->create(32,16); pixels.resize(32 * 16 * 4, 255); source->uploadData(pixels.data()); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     draw = entity->getStaticRenderDrawInfo(0);
     if (draw) checkNear(draw->getVDataBuffer()[3], 3.F/32.F, "Bitmap UV invalidates when the same texture is resized");
     const auto oldGpuId = source->getGFXTexture()->getObjectID();
-    source->create(32,16); source->uploadData(pixels.data()); label.prepareRenderEntity(1.F);
+    source->create(32,16); source->uploadData(pixels.data()); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     draw = entity->getStaticRenderDrawInfo(0);
     check(source->getGFXTexture()->getObjectID() != oldGpuId && draw->getTexture() == source->getGFXTexture(),
           "Same-sized bitmap texture recreation rebinds GPU identity");
     source->setWrapMode(cc::TextureBase::WrapMode::CLAMP_TO_EDGE, cc::TextureBase::WrapMode::CLAMP_TO_EDGE);
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(entity->getStaticRenderDrawInfo(0)->getSampler() == source->getGFXSampler(), "Bitmap sampler changes rebind without font reassignment");
     const std::string sourceConfig = R"({"fontSize":4,"fontDefDictionary":{"65":{"rect":{"x":1,"y":1,"width":2,"height":2},"xOffset":0,"yOffset":0,"xAdvance":2}}})";
     check(font->setConfigJson(sourceConfig), "Bitmap source-size config accepted");
-    font->setFontSize(64); label.prepareRenderEntity(1.F);
+    font->setFontSize(64); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(font->hasSourceFontSize() && font->getSourceFontSize() == 4 && font->getFontSize() == 64, "Bitmap source size stays independent of metadata size");
     for (const float metadata : {-1.F, 0.F, 64.F}) {
         font->setFontSize(metadata);
@@ -395,7 +395,7 @@ void testBitmapGpuGeometry() {
         auto emptyConfig = sourceConfig;
         emptyConfig.replace(emptyConfig.find(":4,"), 3, ":" + std::to_string(emptySource) + ",");
         check(font->setConfigJson(emptyConfig), "Nonpositive source-size data accepted without non-finite geometry");
-        label.prepareRenderEntity(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         const auto emptyMeasure = label.measureUnwrappedText("AA");
         checkNear(emptyMeasure.width, 0.F, "Nonpositive configured source size has empty measurement width");
         checkNear(emptyMeasure.height, 0.F, "Nonpositive configured source size has empty measurement height");
@@ -416,17 +416,23 @@ void testBitmapGpuGeometry() {
     checkNear(label.getContentWidth(), 20.F, "Explicit bitmap update observes transform resize before prepare");
     checkNear(label.getContentHeight(), 10.F, "Explicit bitmap update preserves new clamp height");
     label.setOverflow(0); label.setFontSize(4); label.setSpacingX(0); label.setLineHeight(4);
-    label.setString(std::string(17000, 'A')); label.prepareRenderEntity(1.F);
+    label.setString(std::string(17000, 'A')); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getRenderedBitmapGlyphCount() == 17000 && entity->getStaticDrawInfoSize() == 2, "Large bitmap text chunks all glyphs without truncating");
     check(entity->getStaticRenderDrawInfo(0)->getVbCount() == 65532 && entity->getStaticRenderDrawInfo(1)->getVbCount() == 2468,
           "Bitmap chunks respect 16-bit mesh-buffer limits");
     check(label.getBitmapDiagnosticBuildCount() == 0, "Large GPU-only bitmap text never allocates diagnostic pixels");
-    label.setString(std::string(70000, 'A')); label.prepareRenderEntity(1.F);
+    label.setString(std::string(70000, 'A')); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getRenderedBitmapGlyphCount() == 70000 && entity->getStaticDrawInfoSize() == 5,
           "Bitmap text exceeds inline DrawInfo slots without truncation");
     check(entity->getRenderDrawInfoAt(4) == entity->getStaticRenderDrawInfo(4), "Batcher indexed access reaches owned overflow DrawInfo");
     auto *overflow = entity->getStaticRenderDrawInfo(4);
-    label.setString(""); label.prepareRenderEntity(1.F);
+    entity->updateInheritedOpacity(.25F);
+    for (uint32_t i = 0; i < entity->getStaticDrawInfoSize(); ++i) {
+        auto *chunk = entity->getStaticRenderDrawInfo(i);
+        checkNear(chunk->getVDataBuffer()[(chunk->getVbCount() - 1) * chunk->getStride() + 8], .25F,
+                  "inherited alpha reaches the last vertex of every bitmap Label chunk");
+    }
+    label.setString(""); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(overflow->getMaterial() == nullptr && overflow->getTexture() == nullptr && overflow->getVDataBuffer() == nullptr,
           "Inactive overflow slots release resources and borrowed buffers");
     check(entity->getStaticDrawInfoSize() == 0 && label.getRenderedBitmapGlyphCount() == 0, "Empty bitmap text clears glyph submissions");
@@ -467,10 +473,10 @@ void testFrameConsumers() {
     auto *entity = static_cast<cc::RenderEntity *>(maskNode.getUserData());
     check(entity != nullptr, "sprite stencil has native entity");
     if (entity) {
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(entity->getStaticDrawInfoSize() == 1, "Mask consumes native SpriteFrame");
         frame->setRectWidth(1);
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[12], 0.5F, "Mask sees in-place frame rect mutation");
     }
 
@@ -666,7 +672,7 @@ void testFontAssets() {
     check(!label.isEnabled() && !fontEntity->isEnabled(), "font invalidation does not reactivate disabled Label");
     label.setEnabled(true);
     check(label.isEnabled() && fontEntity->isEnabled(), "Label re-enable restores Batcher prepare eligibility");
-    fontEntity->prepare(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 4, "LabelAtlas native glyph renders even in CHAR mode");
     const auto coverageChecksum = label.getPixelChecksum();
     label.setColorRGBA(128,64,32,128); label.prepareRenderEntity(128.F / 255.F);
@@ -988,7 +994,7 @@ void testRichTextRuntime() {
     check(rich.getSegmentCount() == 3 && node.getChildren().size() == 3, "native RichText owns native segment children");
     auto *segmentEntity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(0)->getUserData());
     check(segmentEntity->isEnabled(), "RichText font segment remains eligible for Batcher prepare");
-    if (segmentEntity->isEnabled()) segmentEntity->prepare(1.F);
+    if (segmentEntity->isEnabled()) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(rich.getSegmentLabel(0)->getOpaquePixels() > 0, "Batcher prepare renders native RichText font segment");
     check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
     check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
@@ -999,7 +1005,7 @@ void testRichTextRuntime() {
     for (uint32_t i = 0; i < rich.getSegmentCount(); ++i) {
         auto *entity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(i)->getUserData());
         check(entity != nullptr, "native RichText child has renderer");
-        if (entity) { entity->prepare(1.F); check(entity->getStaticDrawInfoSize() > 0, "native RichText submits segment draw info"); }
+        if (entity) { cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); check(entity->getStaticDrawInfoSize() > 0, "native RichText submits segment draw info"); }
     }
     if (rich.getSegmentLabel(0)) {
         const auto measured = rich.getSegmentLabel(0)->measureUnwrappedText("one");
@@ -1021,9 +1027,9 @@ void testRichTextRuntime() {
     rich.getSegmentSprite(0)->setSharedMaterial(nullptr, 0);
     node.setActiveInHierarchy(true);
     cc::Batcher2d batcher;
-    frame->setRectWidth(2); batcher.walk(&node, 1.F, false);
+    frame->setRectWidth(2); cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); batcher.walk(&node, 1.F, false);
     check(rich.getLayout().placements[0].width < imageWidth, "RichText follows native frame revision");
-    atlas->removeSpriteFrame("icon"); batcher.walk(&node, 1.F, false);
+    atlas->removeSpriteFrame("icon"); cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); batcher.walk(&node, 1.F, false);
     check(rich.getSegmentCount() == 0, "RichText follows atlas table revision");
     rich.setString("final"); rich.setNode(nullptr); rich.setImageAtlas(nullptr);
     check(node.getChildren().empty() && rich.getSegmentCount() == 0, "RichText detach releases active and pooled native children");
@@ -1031,10 +1037,10 @@ void testRichTextRuntime() {
     late.setString("late"); late.setNode(&lateNode);
     check(late.getSegmentCount() == 0, "RichText tolerates pending required transform");
     {
-        cc::UITransform lateUI(&lateNode); late.prepareRenderEntity(1.F);
+        cc::UITransform lateUI(&lateNode); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(late.getSegmentCount() == 1, "RichText resolves transform added after component load");
     }
-    late.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(late.getSegmentCount() == 0, "RichText drops stale non-owning transform and old segments");
     late.setNode(nullptr);
     std::printf("rich text runtime: PASS\n");
@@ -1092,7 +1098,7 @@ void testLayoutAndMaterials() {
     graphics.rect(0, 0, 4, 4); graphics.fill();
     auto *entity = static_cast<cc::RenderEntity *>(node.getUserData());
     if (entity) {
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(entity->getRenderDrawInfosSize() == 1 && entity->getRenderDrawInfoAt(0)->getMaterial() == builtin, "Graphics native draw uses builtin material");
     } else check(false, "Graphics has render entity");
     std::printf("layout/material ownership: PASS\n");
@@ -1138,25 +1144,41 @@ void testGraphicsMeshes() {
     graphics.setNode(nullptr);
 
     cc::Node maskNode("mask-geometry");cc::UITransform ui(&maskNode);ui.setContentSize(500,200);ui.setAnchorPoint(.25F,.75F);
-    cc::Mask mask;mask.setNode(&maskNode);mask.prepareRenderEntity(1);
+    cc::Mask mask;mask.setNode(&maskNode);cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask rectangle uses native graphics mesh");
     if(mask.getRenderEntity()->getRenderDrawInfosSize()) checkNear(mask.getRenderEntity()->getRenderDrawInfoAt(0)->getVDataBuffer()[0],-125,"Mask rectangle follows native anchor");
-    mask.setType(1);mask.setSegments(16);mask.prepareRenderEntity(1);
+    mask.setType(1);mask.setSegments(16);cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(mask.getRenderEntity()->getRenderDrawInfoAt(0)->getVbCount()==16,"Mask ellipse follows segments");
     mask.setType(2);
     {
-        cc::Graphics source;source.rect(0,0,20,40);source.fill();mask.setGraphics(&source);mask.prepareRenderEntity(1);
+        cc::Graphics source;source.rect(0,0,20,40);source.fill();mask.setGraphics(&source);cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask consumes Graphics directly without frame texture");
-        source.clear();mask.prepareRenderEntity(1);check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Mask observes source clear in native");
-        source.circle(0,0,10);source.fill();mask.prepareRenderEntity(1);
+        source.clear();cc::UIRendererManager::getInstance().updateAllDirtyRenderers();check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Mask observes source clear in native");
+        source.circle(0,0,10);source.fill();cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask observes new source geometry");
     }
-    mask.prepareRenderEntity(1);check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Graphics destruction invalidates non-owning consumers before geometry release");
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Graphics destruction invalidates non-owning consumers before geometry release");
     mask.setGraphics(nullptr);mask.setNode(nullptr);
+    {
+        cc::Node owner("replace-mask-transform");
+        cc::Mask shape;
+        shape.setNode(&owner);
+        {
+            cc::UITransform original(&owner);
+            cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+            check(shape.getRenderEntity()->getRenderDrawInfosSize() == 1, "late transform schedules Mask shape");
+        }
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(shape.getRenderEntity()->getRenderDrawInfosSize() == 0, "destroyed transform clears Mask shape");
+        cc::UITransform replacement(&owner);
+        replacement.setContentSize(18, 27);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(shape.getRenderEntity()->getRenderDrawInfosSize() == 1, "replacement transform rebuilds Mask shape");
+    }
     {
         auto orphan=std::make_unique<cc::Node>("orphan-mask");
         mask.setNode(orphan.get());orphan.reset();
-        mask.setType(1);mask.prepareRenderEntity(1);
+        mask.setType(1);cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(mask.getNode()==nullptr && mask.getRenderEntity()->getNode()==nullptr,"Node destruction clears Mask borrowed Node before later setters");
     }
     {
@@ -1294,7 +1316,7 @@ void testMaskHitLifecycle() {
     check(mask.isHitWorldPointXY(49,39), "custom stencil input uses UI bounds like Web");
     mask.setType(3);
     check(mask.isHitWorldPointXY(49,39), "sprite stencil input uses UI bounds like Web");
-    mask.setType(0); mask.setRadius(1000); mask.prepareRenderEntity(1);
+    mask.setType(0); mask.setRadius(1000); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(mask.getRenderEntity()->getRenderDrawInfoAt(0)->getVbCount()>4, "radius generates actual curved mask geometry");
     check(!mask.isHitWorldPointXY(49,39), "radius clamps to half the shortest dimension");
     outerUI.setContentSize(200,160); outerUI.setAnchorPoint(0,0);
@@ -1376,26 +1398,22 @@ void testRootRegistrationLifecycle() {
     cc::IntrusivePtr<cc::Node> a(new cc::Node("root-callback-a")), b(new cc::Node("root-callback-b")), c(new cc::Node("root-callback-c"));
     scene->addChild(a);scene->addChild(b);scene->addChild(c);scene->load();
     for(auto *node:{a.get(),b.get(),c.get()}) node->setActiveInHierarchy(true);
-    struct Listener final : cc::RenderEntity::IPrepareListener {
-        int calls{0};std::function<void()> callback;
-        void prepareRenderEntity(float) override {++calls;if(callback)callback();}
-    } la,lb,lc;
-    cc::IntrusivePtr<cc::RenderEntity> ea(new cc::RenderEntity(cc::RenderEntityType::DYNAMIC)),eb(new cc::RenderEntity(cc::RenderEntityType::DYNAMIC)),ec(new cc::RenderEntity(cc::RenderEntityType::DYNAMIC));
-    ea->setNode(a);eb->setNode(b);ec->setNode(c);
-    ea->setEnabled(true);eb->setEnabled(true);ec->setEnabled(true);
-    ea->setPrepareListener(&la);eb->setPrepareListener(&lb);ec->setPrepareListener(&lc);
-    batcher.addRootNode(a);batcher.addRootNode(b);
-    la.callback=[&](){batcher.removeRootNode(b);batcher.addRootNode(c);};
+    batcher.addRootNode(a); batcher.addRootNode(b);
+    a->_setLocalOpacity(.25F); b->_setLocalOpacity(.5F); c->_setLocalOpacity(.75F);
     batcher.fillBuffersAndMergeBatches();
-    check(la.calls==1 && lb.calls==0 && lc.calls==0,"root traversal tolerates callback removal and defers new registrations until next traversal");
-    la.callback=nullptr;
+    checkNear(a->_getFinalOpacity(), .25F, "registered root is traversed");
+    checkNear(b->_getFinalOpacity(), .5F, "second root is traversed");
+    batcher.removeRootNode(b); batcher.addRootNode(c);
+    b->_setLocalOpacity(.1F);
     batcher.fillBuffersAndMergeBatches();
-    check(la.calls==2 && lc.calls==1,"new root starts on the next traversal without duplicate callbacks");
+    checkNear(b->_getFinalOpacity(), .5F, "removed root is skipped");
+    checkNear(c->_getFinalOpacity(), .75F, "new root is traversed");
     cc::IntrusivePtr<cc::Scene> nextScene(new cc::Scene("root-next-scene"));nextScene->load();
     c->setParent(nextScene);c->setActiveInHierarchy(true);
     check(c->getScene()==nextScene.get(),"root reparenting updates the current Scene");
+    c->_setFinalOpacity(0.F);
     batcher.fillBuffersAndMergeBatches();
-    check(lc.calls==2,"root follows a Scene change on the next traversal");
+    checkNear(c->_getFinalOpacity(), .75F, "root follows a Scene change on the next traversal");
     c->setParent(nullptr);
     check(c->getScene()==nullptr,"detached root drops its previous Scene pointer");
     {
@@ -1404,8 +1422,6 @@ void testRootRegistrationLifecycle() {
         check(c->getParent()==nullptr && c->getScene()==nullptr,"surviving root drops a destroyed Scene owner");
     }
     batcher.syncRootNodesToNative({});
-    ea->setNode(nullptr);eb->setNode(nullptr);ec->setNode(nullptr);
-    ea->setPrepareListener(nullptr);eb->setPrepareListener(nullptr);ec->setPrepareListener(nullptr);
     std::printf("root registration lifecycle: PASS\n");
 }
 
@@ -2070,9 +2086,8 @@ void testSpritePrepare() {
     if (entity == nullptr) {
         return;
     }
-    // Batcher2d::walk() calls this exact entry point; exercise the callback
-    // instead of invoking Sprite::prepare() directly.
-    entity->prepare(1.F);
+    // The manager prepares draw information before the scene walk.
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(entity->getStaticDrawInfoSize() == 1, "sprite draw info count");
     if (entity->getStaticDrawInfoSize() != 1) {
         return;
@@ -2086,7 +2101,7 @@ void testSpritePrepare() {
         check(drawInfo->getTexture() == texture->getGFXTexture(), "sprite texture");
     }
 
-    // Use the traversal entry point throughout so a clean Sprite really skips prepare.
+    // Inspect the queue independently from the draw data produced by the manager.
     const auto pending = [](cc::Sprite *item) {
         const auto &manager = cc::UIRendererManager::pendingNativeRenderers();
         for (uint32_t i = 0; i < manager.getDirtyCount(); ++i) {
@@ -2109,7 +2124,6 @@ void testSpritePrepare() {
         shared->setRect(0, 0, 1, 1);
         peer.setFrame(shared);
         auto *peerEntity = peer.getRenderEntity();
-        peerEntity->prepare(1.F);
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         auto *draw = peerEntity->getStaticRenderDrawInfo(0);
         check(draw && draw->getVbCount() == 4 && !pending(&peer), "child starts with prepared quad");
@@ -2119,24 +2133,26 @@ void testSpritePrepare() {
         check(pending(&peer), "ancestor motion queues descendant geometry");
         child->setActiveInHierarchy(true);
         peer.setEnabled(true);
-        child->_setFinalOpacity(.5F);
+        parent->setActiveInHierarchy(true);
+        parent->_setLocalOpacity(.5F);
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        {
+            cc::Batcher2d batcher;
+            batcher.walk(parent, 1.F, false);
+        }
         check(!pending(&peer), "manager prepares the dirty Sprite before traversal");
         checkNear(draw->getVDataBuffer()[0], initialX + 17.F, "ancestor motion updates cached positions");
         checkNear(draw->getVDataBuffer()[8], .5F, "inherited opacity updates vertex alpha");
         texture->setFilters(cc::Filter::NEAREST, cc::Filter::NEAREST);
         check(pending(&peer) && pending(&sprite), "shared sampler queues both consumers");
-        peerEntity->prepare(.5F);
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(draw->getSampler() == texture->getGFXSampler(), "prepared draw binds replacement sampler");
         texture->create(2, 2, cc::Texture2D::PixelFormat::RGBA8888);
         check(pending(&peer) && pending(&sprite), "shared texture reset queues both consumers");
-        peerEntity->prepare(.5F);
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(draw->getTexture() == texture->getGFXTexture(), "prepared draw binds replacement texture view");
         checkNear(draw->getVDataBuffer()[12], .5F, "resized texture recomputes frame UV");
         peer.setFrame(texture, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2, false);
-        peerEntity->prepare(.5F);
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         shared->setRectWidth(.5F);
         check(!pending(&peer), "switching to a raw texture unsubscribes the old frame");
@@ -2167,9 +2183,9 @@ void testSpritePrepare() {
         sprite.setFillType(mode == 4 ? 2 : 0);
         mutableFrame->setFlipUVX(false);
         mutableFrame->setRectWidth(1.F);
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         mutableFrame->setRectWidth(0.5F);
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         otherSprite.prepare(1.F);
         auto *info = entity->getStaticRenderDrawInfo(0);
         check(info && info->getVbCount() > 0, "frame revision rebuilds all sprite modes");
@@ -2228,7 +2244,7 @@ void testSpritePrepare() {
     cc::RenderEntity *slicedEntity = slicedSprite.getRenderEntity();
     check(slicedEntity != nullptr, "sliced sprite render entity");
     if (slicedEntity != nullptr) {
-        slicedEntity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         cc::RenderDrawInfo *slicedDrawInfo = slicedEntity->getStaticRenderDrawInfo(0);
         check(slicedDrawInfo != nullptr, "sliced sprite draw info");
         if (slicedDrawInfo != nullptr) {
@@ -2252,7 +2268,7 @@ void testSpritePrepare() {
     cc::RenderEntity *filledEntity = filledSprite.getRenderEntity();
     check(filledEntity != nullptr, "filled sprite render entity");
     if (filledEntity != nullptr) {
-        filledEntity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         cc::RenderDrawInfo *filledDrawInfo = filledEntity->getStaticRenderDrawInfo(0);
         check(filledDrawInfo != nullptr, "filled sprite draw info");
         if (filledDrawInfo != nullptr) {
@@ -2273,7 +2289,7 @@ void testSpritePrepare() {
     cc::RenderEntity *tiledEntity = tiledSprite.getRenderEntity();
     check(tiledEntity != nullptr, "tiled sprite render entity");
     if (tiledEntity != nullptr) {
-        tiledEntity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         cc::RenderDrawInfo *tiledDrawInfo = tiledEntity->getStaticRenderDrawInfo(0);
         check(tiledDrawInfo != nullptr, "tiled sprite draw info");
         if (tiledDrawInfo != nullptr) {
@@ -2298,7 +2314,7 @@ void testSpritePrepare() {
     cc::RenderEntity *radialEntity = radialSprite.getRenderEntity();
     check(radialEntity != nullptr, "radial sprite render entity");
     if (radialEntity != nullptr) {
-        radialEntity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         cc::RenderDrawInfo *radialDrawInfo = radialEntity->getStaticRenderDrawInfo(0);
         check(radialDrawInfo != nullptr, "radial sprite draw info");
         if (radialDrawInfo != nullptr) {
@@ -2310,7 +2326,7 @@ void testSpritePrepare() {
     constexpr int kPrepareIterations = 10000;
     const auto start = std::chrono::steady_clock::now();    for (int i = 0; i < kPrepareIterations; ++i) {
         sprite.setDirty();
-        entity->prepare(1.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     }
     const auto elapsed = std::chrono::steady_clock::now() - start;
     const auto nanos = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
@@ -2390,8 +2406,8 @@ void testSpriteSceneBenchmark() {
     const auto start = std::chrono::steady_clock::now();
     for (auto &sprite : sprites) {
         sprite->setDirty();
-        sprite->getRenderEntity()->prepare(1.F);
     }
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     const auto elapsed = std::chrono::steady_clock::now() - start;
     const auto nanos = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
     std::printf("native sprite scene: %d sprites, %.1f us total, %.1f ns/sprite\n",

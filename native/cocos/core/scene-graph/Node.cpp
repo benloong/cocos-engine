@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #include "core/scene-graph/Node.h"
+#include "2d/framework/UIComponentType.h"
 #include <algorithm>
 #include "base/StringUtil.h"
 #include "core/component/Component.h"
@@ -112,6 +113,9 @@ void Node::addUIComponent(Component *component) {
     auto it = std::find(_uiComponents.begin(), _uiComponents.end(), component);
     if (it == _uiComponents.end()) {
         _uiComponents.push_back(component);
+        if (component->getTypeId() == static_cast<uint32_t>(UIComponentTypeId::UITransform)) {
+            for (auto *item : _uiComponents) item->onUITransformChanged();
+        }
     }
 }
 
@@ -119,6 +123,9 @@ void Node::removeUIComponent(Component *component) {
     auto it = std::find(_uiComponents.begin(), _uiComponents.end(), component);
     if (it != _uiComponents.end()) {
         _uiComponents.erase(it);
+        if (component->getTypeId() == static_cast<uint32_t>(UIComponentTypeId::UITransform)) {
+            for (auto *item : _uiComponents) item->onUITransformChanged();
+        }
     }
 }
 

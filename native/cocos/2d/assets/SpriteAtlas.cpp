@@ -17,6 +17,7 @@ void SpriteAtlas::addSpriteFrame(const ccstd::string &name, SpriteFrame *frame) 
     // A null value is still a named slot, matching the serialized JS map.
     _spriteFrames[name] = frame;
     ++_revision;
+    emit<AtlasChanged>();
 }
 
 SpriteFrame *SpriteAtlas::getSpriteFrame(const ccstd::string &name) const {
@@ -28,12 +29,14 @@ void SpriteAtlas::removeSpriteFrame(const ccstd::string &name) {
     _spriteFrames.erase(name);
     _frameNames.erase(std::remove(_frameNames.begin(), _frameNames.end(), name), _frameNames.end());
     ++_revision;
+    emit<AtlasChanged>();
 }
 
 void SpriteAtlas::clear() {
     _spriteFrames.clear();
     _frameNames.clear();
     ++_revision;
+    emit<AtlasChanged>();
 }
 
 void SpriteAtlas::setSpriteFrames(const ccstd::vector<ccstd::string> &names, const ccstd::vector<SpriteFrame *> &frames) {
@@ -49,6 +52,7 @@ void SpriteAtlas::setSpriteFrames(const ccstd::vector<ccstd::string> &names, con
     _spriteFrames.swap(replacement);
     _frameNames = names;
     ++_revision;
+    emit<AtlasChanged>();
 }
 
 void SpriteAtlas::setSpriteFrameOrder(const ccstd::vector<ccstd::string> &names) {

@@ -10,7 +10,7 @@ namespace cc {
 class UITransform;
 class SpriteFrame;
 
-class Mask final : public Component, public RenderEntity::IPrepareListener {
+class Mask final : public UIRenderer {
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Mask);
     Mask();
@@ -30,14 +30,18 @@ public:
     void setEnabled(bool enabled);
     void setMaterial(Material *material);
     void setPriority(int32_t priority);
-    void prepareRenderEntity(float opacity) override;
-    RenderEntity *getRenderEntity() const;
+    void prepareRenderEntity(float opacity);
+    RenderEntity *getRenderEntity() const override;
 
 private:
+    void updateRenderer() override;
+    void onUITransformChanged() override { markRenderDirty(); }
     void attach();
     Sprite _sprite;
     Graphics _graphics;
     UITransform *_transform{nullptr};
+    UITransform::LayoutChanged::EventID _layoutChanged;
+    UITransform::LayoutDestroyed::EventID _layoutDestroyed;
     IntrusivePtr<SpriteFrame> _frame;
     IntrusivePtr<Material> _material;
     int32_t _type{0};

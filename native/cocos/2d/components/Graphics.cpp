@@ -10,7 +10,6 @@
 namespace cc {
 Graphics::Graphics() : _entity(new RenderEntity(RenderEntityType::DYNAMIC)) {
     markRenderDirty();
-    _entity->setPrepareListener(this);
     _entity->setUseLocal(true);
     _entity->setFillColorType(FillColorType::VERTEX);
 }
@@ -18,7 +17,6 @@ Graphics::~Graphics() {
     setGeometrySource(nullptr);
     auto consumers = std::move(_consumers);
     for (auto *consumer : consumers) consumer->setGeometrySource(nullptr);
-    _entity->setPrepareListener(nullptr);
     setNode(nullptr);
     _entity->clearDynamicRenderDrawInfos();
 }
@@ -121,6 +119,10 @@ void Graphics::rebuildChunks() {
     }
     _chunks.resize(used);
 }
+void Graphics::updateRenderer() {
+    if (renderDirtyFlags()) prepareRenderEntity(getRenderEntity()->getOpacity());
+}
+
 void Graphics::prepareRenderEntity(float opacity) {
     if (renderDirtyFlags() & GEOMETRY) rebuildChunks();
     clearRenderDirty();

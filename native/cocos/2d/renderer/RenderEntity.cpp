@@ -80,6 +80,19 @@ void RenderEntity::clearStaticRenderDrawInfos() {
     _staticDrawInfoSize = 0;
 }
 
+void RenderEntity::updateInheritedOpacity(float opacity) {
+    _opacity = opacity;
+    if (!_spriteVertexOpacity) return;
+    // Sprite and bitmap Label chunks own float XYZ/UV/RGBA vertices.
+    for (uint32_t i = 0; i < getStaticDrawInfoSize(); ++i) {
+        auto *draw = getStaticRenderDrawInfo(i);
+        auto *vertices = draw->getVDataBuffer();
+        for (uint32_t v = 0; v < draw->getVbCount(); ++v) {
+            vertices[v * draw->getStride() + 8] = opacity;
+        }
+    }
+}
+
 void RenderEntity::setNode(Node* node) {
     if (_node) {
         _node->setUserData(nullptr);

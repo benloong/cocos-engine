@@ -52,7 +52,7 @@ class UITransform;
  * Texture2D, and submitted through an internal Sprite. The JS Label shell owns
  * serialization and forwards the public API.
  */
-class Label final : public UIRenderer, public RenderEntity::IPrepareListener {
+class Label final : public UIRenderer {
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Label);
 
@@ -129,15 +129,23 @@ public:
     void setPriority(int32_t priority);
     void setEnabled(bool enabled);
 
-    void prepareRenderEntity(float opacity) override;
+    void prepareRenderEntity(float opacity);
 
 private:
+    void updateRenderer() override;
     friend class RichText;
     std::array<double, 2> measureUnwrappedTextPrecise(const std::string &text);
     std::array<double, 2> getTextStyleExtent() const;
     void onMaterialChanged() override;
     void rebuildTexture();
+    void onUITransformChanged() override;
     void syncFontAsset();
+    void bindBitmapAtlas(SpriteFrame *atlas);
+    void bindBitmapTexture(TextureBase *texture);
+    FontAsset::FontChanged::EventID _fontChanged;
+    SpriteFrame::FrameChanged::EventID _atlasChanged;
+    TextureBase::RenderDataChanged::EventID _atlasTextureChanged;
+    IntrusivePtr<TextureBase> _observedAtlasTexture;
     void syncContentSize();
     void syncTransformSize();
     void applyFontAsset();
@@ -153,7 +161,10 @@ private:
     void applyBitmapAtlas();
 
     Sprite _renderer;
+    bool _syncingContentSize{false};
     UITransform *_transform{nullptr};
+    UITransform::LayoutChanged::EventID _layoutChanged;
+    UITransform::LayoutDestroyed::EventID _layoutDestroyed;
 
     std::string _string;
     std::string _font{"32px Arial"};

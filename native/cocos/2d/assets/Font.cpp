@@ -81,11 +81,11 @@ void TTFFont::refreshFontAlias() {
 }
 void TTFFont::setFontFamily(const std::string &value) {
     if (_released || value == _family) return;
-    _family = value; refreshFontAlias(); ++_revision;
+    _family = value; refreshFontAlias(); notifyFontChanged();
 }
 void TTFFont::setFontData(const std::vector<uint8_t> &bytes) {
     if (_released) return;
-    _bytes = bytes; _source.clear(); refreshFontAlias(); ++_revision;
+    _bytes = bytes; _source.clear(); refreshFontAlias(); notifyFontChanged();
 }
 bool TTFFont::loadFontData(const std::string &path) {
     auto *files = FileUtils::getInstance();
@@ -93,7 +93,7 @@ bool TTFFont::loadFontData(const std::string &path) {
     const auto data = files->getDataFromFile(path);
     if (data.isNull() || data.getSize() == 0) return false;
     _bytes.assign(data.getBytes(), data.getBytes() + data.getSize());
-    _source = path; refreshFontAlias(); ++_revision;
+    _source = path; refreshFontAlias(); notifyFontChanged();
     return true;
 }
 void TTFFont::clearNativeData() {
@@ -159,7 +159,7 @@ bool BitmapFontAsset::setConfigJson(const std::string &json) {
     }
     _glyphs.swap(glyphs); _glyphMap.swap(indices); _kerning.swap(kerning);
     _sourceFontSize = sourceSize; _hasSourceFontSize = hasSourceSize;
-    _configJson = json; ++_configRevision; ++_revision;
+    _configJson = json; ++_configRevision; notifyFontChanged();
     return true;
 }
 std::vector<float> BitmapFontAsset::getGlyphData() const {
