@@ -45,6 +45,7 @@ void UITransform::setContentSize(const Vec2 &size) {
         return;
     }
     _contentSize.set(size);
+    emit<LayoutChanged>();
     // Changes are published only on the main-thread mutation path, never polled.
     const auto callback = _sizeChangedCallback;
     if (callback) callback(size.x, size.y);
@@ -59,6 +60,7 @@ void UITransform::setAnchorPoint(const Vec2 &anchor) {
         return;
     }
     _anchorPoint.set(anchor);
+    emit<LayoutChanged>();
 }
 
 void UITransform::setAnchorPoint(float x, float y) {

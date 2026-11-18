@@ -2067,6 +2067,58 @@ void testSpritePrepare() {
         check(drawInfo->getTexture() == texture->getGFXTexture(), "sprite texture");
     }
 
+    // Use the traversal entry point throughout so a clean Sprite really skips prepare.
+    const auto pending = [](cc::Sprite *item) {
+        const auto &manager = cc::UIRendererManager::pendingNativeRenderers();
+        for (uint32_t i = 0; i < manager.getDirtyCount(); ++i) {
+            if (manager.getDirtyNativeRenderer(i) == item) return true;
+        }
+        return false;
+    };
+    {
+        cc::IntrusivePtr<cc::Node> parent(new cc::Node("sprite-ancestor"));
+        cc::IntrusivePtr<cc::Node> child(new cc::Node("sprite-child"));
+        child->setParent(parent);
+        cc::UITransform ui(child);
+        cc::Sprite peer;
+        peer.setNode(child);
+        peer.setUITransform(&ui);
+        peer.setMaterial(material);
+        peer.setSizeMode(0);
+        cc::IntrusivePtr<cc::SpriteFrame> shared(new cc::SpriteFrame());
+        shared->setTexture(texture);
+        shared->setRect(0, 0, 1, 1);
+        peer.setFrame(shared);
+        auto *peerEntity = peer.getRenderEntity();
+        peerEntity->prepare(1.F);
+        auto *draw = peerEntity->getStaticRenderDrawInfo(0);
+        check(draw && draw->getVbCount() == 4 && !pending(&peer), "child starts with prepared quad");
+        const float initialX = draw->getVDataBuffer()[0];
+        parent->setPosition(17.F, 0.F, 0.F);
+        child->getWorldMatrix(); // A different consumer can clear Node transform flags first.
+        check(pending(&peer), "ancestor motion queues descendant geometry");
+        peerEntity->prepare(.5F);
+        checkNear(draw->getVDataBuffer()[0], initialX + 17.F, "ancestor motion updates cached positions");
+        checkNear(draw->getVDataBuffer()[8], .5F, "inherited opacity updates vertex alpha");
+        texture->setFilters(cc::Filter::NEAREST, cc::Filter::NEAREST);
+        check(pending(&peer) && pending(&sprite), "shared sampler queues both consumers");
+        peerEntity->prepare(.5F);
+        entity->prepare(1.F);
+        check(draw->getSampler() == texture->getGFXSampler(), "prepared draw binds replacement sampler");
+        texture->create(2, 2, cc::Texture2D::PixelFormat::RGBA8888);
+        check(pending(&peer) && pending(&sprite), "shared texture reset queues both consumers");
+        peerEntity->prepare(.5F);
+        entity->prepare(1.F);
+        check(draw->getTexture() == texture->getGFXTexture(), "prepared draw binds replacement texture view");
+        checkNear(draw->getVDataBuffer()[12], .5F, "resized texture recomputes frame UV");
+        peer.setFrame(texture, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2, false);
+        peerEntity->prepare(.5F);
+        shared->setRectWidth(.5F);
+        check(!pending(&peer), "switching to a raw texture unsubscribes the old frame");
+        texture->create(1, 1, cc::Texture2D::PixelFormat::RGBA8888);
+        child->setParent(nullptr);
+    }
+
     // Mutating a shared native frame must invalidate idle sprites without
     // JS reassigning spriteFrame. Check real render buffers in all five modes.
     cc::IntrusivePtr<cc::SpriteFrame> mutableFrame(new cc::SpriteFrame());

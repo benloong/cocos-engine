@@ -130,7 +130,7 @@ void Mask::prepareRenderEntity(float opacity) {
     auto *transform = _node ? static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)) : nullptr;
     if (transform != _transform) setUITransform(transform);
     if (_type == 3) {
-        _sprite.prepare(opacity);
+        _sprite.prepareRenderEntity(opacity);
         return;
     }
     if (_type != 2 && transform) {

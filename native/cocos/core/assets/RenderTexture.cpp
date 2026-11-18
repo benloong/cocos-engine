@@ -86,6 +86,7 @@ bool RenderTexture::destroy() {
     if (_window != nullptr) {
         Root::getInstance()->destroyWindow(_window);
         _window = nullptr;
+        notifyRenderDataChanged();
     }
     return Super::destroy();
 }
@@ -99,6 +100,7 @@ void RenderTexture::resize(uint32_t width, uint32_t height) {
     if (_window != nullptr) {
         _window->resize(_width, _height);
     }
+    notifyRenderDataChanged();
     // emit(ccstd::string("resize"), _window); //TODO(xwx): not inherit form Eventify in Asset base class
 }
 
@@ -125,6 +127,7 @@ void RenderTexture::initWindow() {
     } else {
         _window = Root::getInstance()->createWindow(windowInfo);
     }
+    notifyRenderDataChanged();
 }
 
 void RenderTexture::initWindow(const IRenderTextureCreateInfo &info) {
@@ -158,6 +161,7 @@ void RenderTexture::initWindow(const IRenderTextureCreateInfo &info) {
     } else {
         _window = Root::getInstance()->createWindow(windowInfo);
     }
+    notifyRenderDataChanged();
 }
 
 void RenderTexture::initDefault(const ccstd::optional<ccstd::string> &uuid) {

@@ -36,6 +36,10 @@ namespace cc {
 
 // Native owns frame data. JS exposes serialization and live math views only.
 class SpriteFrame final : public Asset {
+    IMPL_EVENT_TARGET(SpriteFrame)
+    DECLARE_TARGET_EVENT_BEGIN(SpriteFrame)
+    TARGET_EVENT_ARG0(FrameChanged)
+    DECLARE_TARGET_EVENT_END()
 public:
     using Super = Asset;
     SpriteFrame() = default;
@@ -48,7 +52,7 @@ public:
         _originalTexture = nullptr;
         _originalX = _originalY = 0.F;
         _hasOriginal = false;
-        ++_revision;
+        frameChanged();
     }
     TextureBase *getTexture() const { return _texture.get(); }
     uint32_t getRevision() const { return _revision; }
@@ -64,7 +68,7 @@ public:
         _texture = texture;
         _data.x = x;
         _data.y = y;
-        ++_revision;
+        frameChanged();
     }
     void resetDynamicAtlasFrame() {
         if (!_hasOriginal) return;
@@ -73,7 +77,7 @@ public:
         _data.y = _originalY;
         _originalTexture = nullptr;
         _hasOriginal = false;
-        ++_revision;
+        frameChanged();
     }
     bool hasDynamicAtlasFrame() const { return _hasOriginal; }
     TextureBase *getOriginalTexture() const { return _originalTexture.get(); }
@@ -81,59 +85,59 @@ public:
     float getOriginalY() const { return _originalY; }
 
     void setRect(float x, float y, float width, float height) {
-        _data.x = x; _data.y = y; _data.width = width; _data.height = height; ++_revision;
+        _data.x = x; _data.y = y; _data.width = width; _data.height = height; frameChanged();
     }
     void setOriginalSize(float width, float height) {
-        _data.originalWidth = width; _data.originalHeight = height; ++_revision;
+        _data.originalWidth = width; _data.originalHeight = height; frameChanged();
     }
-    void setOffset(float x, float y) { _data.offsetX = x; _data.offsetY = y; ++_revision; }
+    void setOffset(float x, float y) { _data.offsetX = x; _data.offsetY = y; frameChanged(); }
     void setInsets(float left, float right, float top, float bottom) {
-        _data.insetLeft = left; _data.insetRight = right; _data.insetTop = top; _data.insetBottom = bottom; ++_revision;
+        _data.insetLeft = left; _data.insetRight = right; _data.insetTop = top; _data.insetBottom = bottom; frameChanged();
     }
     float getRectX() const { return _data.x; }
-    void setRectX(float value) { _data.x = value; ++_revision; }
+    void setRectX(float value) { _data.x = value; frameChanged(); }
     float getRectY() const { return _data.y; }
-    void setRectY(float value) { _data.y = value; ++_revision; }
+    void setRectY(float value) { _data.y = value; frameChanged(); }
     float getRectWidth() const { return _data.width; }
-    void setRectWidth(float value) { _data.width = value; ++_revision; }
+    void setRectWidth(float value) { _data.width = value; frameChanged(); }
     float getRectHeight() const { return _data.height; }
-    void setRectHeight(float value) { _data.height = value; ++_revision; }
+    void setRectHeight(float value) { _data.height = value; frameChanged(); }
     float getOriginalWidth() const { return _data.originalWidth; }
-    void setOriginalWidth(float value) { _data.originalWidth = value; ++_revision; }
+    void setOriginalWidth(float value) { _data.originalWidth = value; frameChanged(); }
     float getOriginalHeight() const { return _data.originalHeight; }
-    void setOriginalHeight(float value) { _data.originalHeight = value; ++_revision; }
+    void setOriginalHeight(float value) { _data.originalHeight = value; frameChanged(); }
     float getOffsetX() const { return _data.offsetX; }
-    void setOffsetX(float value) { _data.offsetX = value; ++_revision; }
+    void setOffsetX(float value) { _data.offsetX = value; frameChanged(); }
     float getOffsetY() const { return _data.offsetY; }
-    void setOffsetY(float value) { _data.offsetY = value; ++_revision; }
+    void setOffsetY(float value) { _data.offsetY = value; frameChanged(); }
     float getInsetLeft() const { return _data.insetLeft; }
-    void setInsetLeft(float value) { _data.insetLeft = value; ++_revision; }
+    void setInsetLeft(float value) { _data.insetLeft = value; frameChanged(); }
     float getInsetRight() const { return _data.insetRight; }
-    void setInsetRight(float value) { _data.insetRight = value; ++_revision; }
+    void setInsetRight(float value) { _data.insetRight = value; frameChanged(); }
     float getInsetTop() const { return _data.insetTop; }
-    void setInsetTop(float value) { _data.insetTop = value; ++_revision; }
+    void setInsetTop(float value) { _data.insetTop = value; frameChanged(); }
     float getInsetBottom() const { return _data.insetBottom; }
-    void setInsetBottom(float value) { _data.insetBottom = value; ++_revision; }
+    void setInsetBottom(float value) { _data.insetBottom = value; frameChanged(); }
     float getPixelsToUnit() const { return _data.pixelsToUnit; }
-    void setPixelsToUnit(float value) { _data.pixelsToUnit = value; ++_revision; }
+    void setPixelsToUnit(float value) { _data.pixelsToUnit = value; frameChanged(); }
     float getPivotX() const { return _data.pivotX; }
-    void setPivotX(float value) { _data.pivotX = value; ++_revision; }
+    void setPivotX(float value) { _data.pivotX = value; frameChanged(); }
     float getPivotY() const { return _data.pivotY; }
-    void setPivotY(float value) { _data.pivotY = value; ++_revision; }
+    void setPivotY(float value) { _data.pivotY = value; frameChanged(); }
     int32_t getMeshType() const { return _data.meshType; }
-    void setMeshType(int32_t value) { _data.meshType = value; ++_revision; }
+    void setMeshType(int32_t value) { _data.meshType = value; frameChanged(); }
     bool isRotated() const { return _data.rotated; }
-    void setRotated(bool value) { _data.rotated = value; ++_revision; }
+    void setRotated(bool value) { _data.rotated = value; frameChanged(); }
     bool getFlipUVX() const { return _data.flipUVX; }
-    void setFlipUVX(bool value) { _data.flipUVX = value; ++_revision; }
+    void setFlipUVX(bool value) { _data.flipUVX = value; frameChanged(); }
     bool getFlipUVY() const { return _data.flipUVY; }
-    void setFlipUVY(bool value) { _data.flipUVY = value; ++_revision; }
+    void setFlipUVY(bool value) { _data.flipUVY = value; frameChanged(); }
     bool getPackable() const { return _data.packable; }
-    void setPackable(bool value) { _data.packable = value; ++_revision; }
+    void setPackable(bool value) { _data.packable = value; frameChanged(); }
 
     const std::string &getAtlasUuid() const { return _atlasUuid; }
     void setAtlasUuid(const std::string &value) { _atlasUuid = value; }
-    void resetFrame(bool clearData) { if (clearData) { _data.resetGeometry(); ++_revision; } }
+    void resetFrame(bool clearData) { if (clearData) { _data.resetGeometry(); frameChanged(); } }
     void resetWithTexture(TextureBase *texture) {
         if (!isObjectValid(this, true)) return;
         _data.resetGeometry();
@@ -166,7 +170,7 @@ public:
     }
     void copyFrom(const SpriteFrame *other) {
         if (!other || other == this || !isObjectValid(this, true)) return;
-        _data = other->_data; _texture = other->_texture; _atlasUuid = other->_atlasUuid; ++_revision;
+        _data = other->_data; _texture = other->_texture; _atlasUuid = other->_atlasUuid; frameChanged();
         _originalTexture = other->_originalTexture;
         _originalX = other->_originalX; _originalY = other->_originalY;
         _hasOriginal = other->_hasOriginal;
@@ -195,10 +199,11 @@ protected:
     }
 
 private:
+    void frameChanged() { ++_revision; emit<FrameChanged>(); }
     bool assignTexture(TextureBase *texture) {
         if (!isObjectValid(this, true)) return false;
         _texture = texture;
-        ++_revision;
+        frameChanged();
         return true;
     }
 

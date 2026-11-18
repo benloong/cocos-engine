@@ -230,6 +230,7 @@ void SimpleTexture::setMipRangeInternal(uint32_t baseLevel, uint32_t maxLevel) {
 }
 
 void SimpleTexture::notifyTextureUpdated() {
+    notifyRenderDataChanged();
     emit<TextureUpdated>(getGFXTexture());
 }
 

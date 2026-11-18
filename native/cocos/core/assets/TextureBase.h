@@ -47,6 +47,7 @@ class Texture;
 class TextureBase : public Asset {
     IMPL_EVENT_TARGET(TextureBase)
     DECLARE_TARGET_EVENT_BEGIN(TextureBase)
+    TARGET_EVENT_ARG0(RenderDataChanged)
     TARGET_EVENT_ARG1(SamplerUpdated, cc::gfx::Sampler *)
     DECLARE_TARGET_EVENT_END()
 public:
@@ -101,8 +102,8 @@ public:
     }
 
     // Functions for TS deserialization.
-    inline void setWidth(uint32_t width) { _width = width; }
-    inline void setHeight(uint32_t height) { _height = height; }
+    inline void setWidth(uint32_t width) { if (_width != width) { _width = width; notifyRenderDataChanged(); } }
+    inline void setHeight(uint32_t height) { if (_height != height) { _height = height; notifyRenderDataChanged(); } }
 
     /**
      * @en Gets the id of the texture
@@ -220,6 +221,7 @@ protected:
 
     gfx::Format getGFXFormat() const;
 
+    void notifyRenderDataChanged() { emit<RenderDataChanged>(); }
     void setGFXFormat(const ccstd::optional<PixelFormat> &format);
 
 private:

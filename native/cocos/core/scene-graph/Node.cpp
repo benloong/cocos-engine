@@ -646,6 +646,7 @@ void Node::invalidateChildren(TransformBit dirtyBit) { // NOLINT(misc-no-recursi
     if (isValid() && !getIsSkipTransformUpdate() && (transformFlags & hasChangedFlags & curDirtyBit) != curDirtyBit) {
         _transformFlags = (transformFlags | curDirtyBit);
         setChangedFlags(hasChangedFlags | curDirtyBit);
+        for (auto *component : _uiComponents) component->onWorldTransformDirty();
 
         for (Node *child : getChildren()) {
             child->invalidateChildren(dirtyBit | TransformBit::POSITION);

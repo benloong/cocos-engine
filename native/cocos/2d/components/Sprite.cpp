@@ -37,7 +37,6 @@
 #include "math/Mat4.h"
 
 #include <cmath>
-#include <cstring>
 
 namespace cc {
 
@@ -64,6 +63,9 @@ Sprite::Sprite() {
 }
 
 Sprite::~Sprite() {
+    setUITransform(nullptr);
+    bindFrame(nullptr);
+    bindTexture(nullptr);
     _entity->setPrepareListener(nullptr);
     _entity->setStaticDrawInfoSize(0); // Invalidate borrowed chunk pointers before their owner is destroyed.
     setNode(nullptr);
@@ -85,7 +87,6 @@ void Sprite::setNode(Node *node) {
     }
 
     Component::setNode(node);
-    _hasTransformSnapshot = false;
 
     if (getNode() != nullptr && _entity != nullptr) {
         _entity->setNode(getNode());
@@ -94,7 +95,46 @@ void Sprite::setNode(Node *node) {
     markRenderDirty();
 }
 
-void Sprite::setFrame(TextureBase *texture,
+void Sprite::setUITransform(UITransform *transform) {
+    if (_transform == transform) return;
+    if (_transform) {
+        _transform->off(_layoutChanged);
+        _transform->off(_layoutDestroyed);
+    }
+    _transform = transform;
+    if (_transform) {
+        _layoutChanged = _transform->on<UITransform::LayoutChanged>([this](UITransform *) { markRenderDirty(); });
+        _layoutDestroyed = _transform->on<UITransform::LayoutDestroyed>([this](UITransform *) { _transform = nullptr; markRenderDirty(); });
+    }
+    markRenderDirty();
+    applySizeMode();
+}
+
+void Sprite::bindFrame(SpriteFrame *frame) {
+    if (_spriteFrame == frame) return;
+    if (_spriteFrame) _spriteFrame->off(_frameChanged);
+    _spriteFrame = frame;
+    if (frame) _frameChanged = frame->on<SpriteFrame::FrameChanged>([this](SpriteFrame *) { markRenderDirty(); });
+}
+
+void Sprite::bindTexture(TextureBase *texture) {
+    if (_texture == texture) return;
+    if (_texture) _texture->off(_textureChanged);
+    _texture = texture;
+    if (texture) _textureChanged = texture->on<TextureBase::RenderDataChanged>([this](TextureBase *) { markRenderDirty(); });
+}
+
+void Sprite::setFrame(TextureBase *texture, float rectX, float rectY, float rectWidth, float rectHeight,
+                      float originalWidth, float originalHeight, float offsetX, float offsetY,
+                      float textureWidth, float textureHeight, bool rotated) {
+    // Retain the texture before dropping a frame which may be its last owner.
+    bindTexture(texture);
+    bindFrame(nullptr);
+    applyFrame(texture, rectX, rectY, rectWidth, rectHeight, originalWidth, originalHeight,
+               offsetX, offsetY, textureWidth, textureHeight, rotated);
+}
+
+void Sprite::applyFrame(TextureBase *texture,
                       float rectX,
                       float rectY,
                       float rectWidth,
@@ -108,8 +148,7 @@ void Sprite::setFrame(TextureBase *texture,
                       bool rotated) {
     const auto variant = materialVariant(texture);
     if (_builtinVariant != variant) { _builtinVariant = variant; invalidateBuiltinMaterial(); }
-    _texture = texture;
-    _spriteFrame = nullptr;
+    bindTexture(texture);
     _frameRect.setRect(rectX, rectY, rectWidth, rectHeight);
     _originalSize.set(originalWidth, originalHeight);
     _offset.set(offsetX, offsetY);
@@ -134,17 +173,16 @@ void Sprite::setFrame(SpriteFrame *frame) {
         clearFrame();
         return;
     }
-    IntrusivePtr<SpriteFrame> retained(frame);
+    bindFrame(frame);
     TextureBase *texture = frame->getTexture();
     const float textureWidth = texture == nullptr ? 0.F : static_cast<float>(texture->getWidth());
     const float textureHeight = texture == nullptr ? 0.F : static_cast<float>(texture->getHeight());
-    setFrame(texture,
+    applyFrame(texture,
              frame->getRectX(), frame->getRectY(), frame->getRectWidth(), frame->getRectHeight(),
              frame->getOriginalWidth(), frame->getOriginalHeight(),
              frame->getOffsetX(), frame->getOffsetY(),
              textureWidth, textureHeight,
              frame->isRotated());
-    _spriteFrame = retained;
     _insetLeft = frame->getInsetLeft();
     _insetRight = frame->getInsetRight();
     _insetTop = frame->getInsetTop();
@@ -206,8 +244,8 @@ void Sprite::clearFrame() {
         _labelQuads.clear(); _labelChunks.clear();
     }
 
-    _spriteFrame = nullptr;
-    _texture = nullptr;
+    bindFrame(nullptr);
+    bindTexture(nullptr);
     _frameRect.setRect(0.F, 0.F, 0.F, 0.F);
     if (_entity != nullptr) {
         _entity->setStaticDrawInfoSize(0);
@@ -334,9 +372,13 @@ void Sprite::setTrim(bool trim) {
     markRenderDirty();
 }
 
+void Sprite::prepareRenderEntity(float opacity) {
+    if (std::fabs(opacity - _lastOpacity) > 1e-6F) markRenderDirty(COLOR);
+    if (renderDirtyFlags()) prepare(opacity);
+}
+
 void Sprite::prepare(float opacity) {
-    // Read native asset revisions before the idle early return. No JSB polling
-    // or second JS copy is needed when a shared frame changes in place.
+    if (!renderDirtyFlags() && std::fabs(opacity - _lastOpacity) <= 1e-6F) return;
     if (_spriteFrame) {
         const auto *texture = _spriteFrame->getTexture();
         const uint32_t width = texture == nullptr ? 0 : texture->getWidth();
@@ -345,28 +387,6 @@ void Sprite::prepare(float opacity) {
             || (texture ? static_cast<int32_t>(texture->getPixelFormat()) : -1) != _frameTextureFormat) {
             setFrame(_spriteFrame.get());
         }
-    }
-    auto *currentTexture = _texture ? _texture->getGFXTexture() : nullptr;
-    auto *currentSampler = _texture ? _texture->getGFXSampler() : nullptr;
-    const uint32_t textureId = currentTexture ? currentTexture->getObjectID() : 0;
-    const uint32_t samplerId = currentSampler ? currentSampler->getObjectID() : 0;
-    if (_gpuTextureSeen != currentTexture || _gpuTextureId != textureId || _gpuSamplerSeen != currentSampler || _gpuSamplerId != samplerId) {
-        _gpuTextureSeen = currentTexture; _gpuTextureId = textureId;
-        _gpuSamplerSeen = currentSampler; _gpuSamplerId = samplerId; markRenderDirty();
-    }
-    if (_node && _transform) {
-        const auto &world = _node->getWorldMatrix();
-        const auto &size = _transform->getContentSize();
-        const auto &anchor = _transform->getAnchorPoint();
-        if (!_hasTransformSnapshot || std::memcmp(world.m, _lastWorldMatrix.m, sizeof(world.m)) != 0
-            || size.x != _lastContentSize.x || size.y != _lastContentSize.y
-            || anchor.x != _lastAnchorPoint.x || anchor.y != _lastAnchorPoint.y) {
-            _lastWorldMatrix = world; _lastContentSize = size; _lastAnchorPoint = anchor;
-            _hasTransformSnapshot = true; markRenderDirty();
-        }
-    }
-    if (!renderDirtyFlags() && _lastOpacity >= 0.F && std::fabs(opacity - _lastOpacity) <= 1e-6F) {
-        return;
     }
     if (_node == nullptr || _transform == nullptr || _texture == nullptr || _entity == nullptr) {
         if (_entity != nullptr) _entity->setStaticDrawInfoSize(0);

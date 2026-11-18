@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #pragma once
+#include "core/event/Event.h"
 #include "2d/framework/UIComponentType.h"
 
 #include <cstdint>
@@ -46,10 +47,16 @@ namespace cc {
  * point conversion. Child aggregation and camera-aware hit tests are M1.
  */
 class UITransform final : public Component {
+    IMPL_EVENT_TARGET(UITransform)
+    DECLARE_TARGET_EVENT_BEGIN(UITransform)
+    TARGET_EVENT_ARG0(LayoutChanged)
+    TARGET_EVENT_ARG0(LayoutDestroyed)
+    DECLARE_TARGET_EVENT_END()
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::UITransform);
 
     UITransform() = default;
+    ~UITransform() override { emit<LayoutDestroyed>(); }
     explicit UITransform(Node *node);
 
     uint32_t getTypeId() const override { return TYPE_ID; }

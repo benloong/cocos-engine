@@ -448,7 +448,7 @@ void Label::prepareRenderEntity(float opacity) {
         rebuildTexture();
     }
     syncContentSize();
-    _renderer.prepare(opacity);
+    _renderer.prepareRenderEntity(opacity);
 }
 
 void Label::rebuildLetterTexture() {

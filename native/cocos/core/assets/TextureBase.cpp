@@ -165,6 +165,7 @@ gfx::Format TextureBase::getGFXFormat() const {
 
 void TextureBase::setGFXFormat(const ccstd::optional<PixelFormat> &format) {
     _format = format.has_value() ? format.value() : PixelFormat::RGBA8888;
+    notifyRenderDataChanged();
 }
 
 gfx::Format TextureBase::getGFXPixelFormat(PixelFormat format) {
@@ -188,6 +189,7 @@ bool TextureBase::isAlphaAtlas() const {
 
 void TextureBase::notifySamplerUpdated() {
     // emit(EventTypesToJS::TEXTURE_BASE_GFX_SAMPLER_UPDATED, _gfxSampler);
+    notifyRenderDataChanged();
     emit<SamplerUpdated>(_gfxSampler);
 }
 

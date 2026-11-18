@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "85e8fb551f7dd3d3bd359095cccfd820a3dd2675ab46717ce12c7195676f6388"
+      "sha256": "4d69d8e1bec9ac10baf73fd3382496e237db3b77b1b35183545d9b54f1473c19"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "5fa02390106ffb363d246d99a74d4dac7a94bc2771fdfa10a824754b438803df"
+      "sha256": "18bafd4e4843b11ccd51ec6b6df953c7ea86b17b4d9d90522fc4508696fb74ce"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -87,7 +87,7 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "1dfea5fcb581dd6cb801d9e06b69fb905968641c93f2e004d2a31ed77350d155"
+      "sha256": "70897fb37bdd0db0e6781dedbdfb4b080fceead11d03b8f2194fa6062e0f2ef4"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
@@ -103,11 +103,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "e7f18b5260c73c623d37ab3de7f1ce7414ef719fb4a995fbe87829e85f757b5b"
+      "sha256": "2f9937e14e569d933a8e5da4c6476bafe918f98d9acb2bce15999e44ed369a92"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "3f127b4faa8ea0224dd4465310f0727b703649ae71660126e4ccad1fd7ac7ccc"
+      "sha256": "12c0fd57a0fe7d93ff974ff8a6ebc875837ab443cb6811745fd5df1e590f6b47"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -143,11 +143,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
-      "sha256": "33fad257892495326029f68e8c21b096950f49444afd24ec9830f7db8f6264e2"
+      "sha256": "bbf2838434c287c4c13ff4cdf1654a92939ae43f1a89054ea22553496bfb628c"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.h",
-      "sha256": "f92e819f7a3bce345d9bcf62cea2bbbd9d3df60a6dbdd148a104ac064d989035"
+      "sha256": "ec6ef63bdf0161094c221eedb6f8006ab39f6611475459670b12a230a7d3ebbb"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.cpp",
@@ -295,7 +295,7 @@
     },
     {
       "file": "native/cocos/core/assets/SimpleTexture.cpp",
-      "sha256": "7e87e5243fb3f7001714f2191882dd37821fa4e7bc539250e89ad6514222e10e"
+      "sha256": "bed5b2184100536f202323dfff0a310b9ffb06bfa5f0acafdaf4ccd615d1ff00"
     },
     {
       "file": "native/cocos/core/component/Component.cpp",
@@ -303,11 +303,11 @@
     },
     {
       "file": "native/cocos/core/component/Component.h",
-      "sha256": "b03a05301437af2ff24ed1f56a614ffe8ef2f42a5577c3f6424fbe9e28d7d0b2"
+      "sha256": "ba0302f6034902b2aa7c82700e5923188f70b004427a2de7bd83c6b09ba65dec"
     },
     {
       "file": "native/cocos/core/scene-graph/Node.cpp",
-      "sha256": "ce4005f1aef3a55cb856be698bea99f47e73d24042671d41a0a730ad46fb59cd"
+      "sha256": "17bb4e73e0ba305c32111fea417bc207177d2978b2814eeaf0b2392970680f9f"
     },
     {
       "file": "native/cocos/core/scene-graph/Node.h",

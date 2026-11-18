@@ -53,6 +53,7 @@ public:
 
     virtual uint32_t getTypeId() const { return 0; }
 
+    virtual void onWorldTransformDirty() {}
     virtual void onAttach() {}
     virtual void onDetach() {}
     virtual void onEnable() {}

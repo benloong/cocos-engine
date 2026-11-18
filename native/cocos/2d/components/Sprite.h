@@ -28,6 +28,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "2d/assets/SpriteFrame.h"
+#include "2d/framework/UITransform.h"
 #include "2d/framework/UIRenderer.h"
 #include "2d/renderer/RenderEntity.h"
 #include "base/Ptr.h"
@@ -65,7 +67,7 @@ public:
     void onDetach() override;
     Node *getNode() const { return Component::getNode(); }
 
-    void setUITransform(UITransform *transform) { _transform = transform; _hasTransformSnapshot = false; markRenderDirty(); applySizeMode(); }
+    void setUITransform(UITransform *transform);
     UITransform *getUITransform() const { return _transform; }
 
     void setFrame(TextureBase *texture,
@@ -117,7 +119,8 @@ public:
 
     void setDirty() { markRenderDirty(); }
     void prepare(float opacity);
-    void prepareRenderEntity(float opacity) override { prepare(opacity); }
+    void prepareRenderEntity(float opacity) override;
+    void onWorldTransformDirty() override { markRenderDirty(); }
 
 private:
     friend class Label;
@@ -128,10 +131,15 @@ private:
         std::vector<float> vertices;
         std::vector<uint16_t> indices;
     };
-    gfx::Texture *_gpuTextureSeen{nullptr}; // borrowed identity; owned by _texture
-    gfx::Sampler *_gpuSamplerSeen{nullptr}; // borrowed identity; owned by texture/device
-    uint32_t _gpuTextureId{0};
-    uint32_t _gpuSamplerId{0};
+    void bindFrame(SpriteFrame *frame);
+    void bindTexture(TextureBase *texture);
+    void applyFrame(TextureBase *texture, float rectX, float rectY, float rectWidth, float rectHeight,
+                    float originalWidth, float originalHeight, float offsetX, float offsetY,
+                    float textureWidth, float textureHeight, bool rotated);
+    SpriteFrame::FrameChanged::EventID _frameChanged;
+    TextureBase::RenderDataChanged::EventID _textureChanged;
+    UITransform::LayoutChanged::EventID _layoutChanged;
+    UITransform::LayoutDestroyed::EventID _layoutDestroyed;
     bool _hasLabelQuads{false};
     std::vector<SpriteQuad> _labelQuads;
     std::vector<LabelMeshChunk> _labelChunks;
@@ -151,10 +159,6 @@ private:
     bool _trim{true};
     bool _grayscale{false};
     uint32_t _builtinVariant{0};
-    bool _hasTransformSnapshot{false};
-    Mat4 _lastWorldMatrix;
-    Vec2 _lastContentSize;
-    Vec2 _lastAnchorPoint;
     int32_t _type{0};
     int32_t _fillType{0};
     float _fillStart{0.F};
