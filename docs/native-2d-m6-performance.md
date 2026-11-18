@@ -38,3 +38,9 @@ Windows Release 候选 `cfe140f062` 使用相同的测量点、预热及采样�
 相对迁移前，CPU 时间增加 32.81%，JSB 调用减少 77.63%，JS 堆峰值减少 43.21%。CPU 达标上限为 2.29405 ms。单独测试 1000 个 Sprite 的变更帧，CPU 从首个候选的 1.8111 ms 降至 0.4702 ms，迁移前为 0.3465 ms。
 
 复现时将 CC_M6_PERF_CHECKOUT 指向 build/perf-after-cfe140f062，使用上文 after 构建和运行流程，将三轮结果依次保存为 build/m6-perf-pages-1.json 至 build/m6-perf-pages-3.json，再运行 `node native/tests/2d-poc/compare-m6-perf.cjs --candidate cfe140f062`。
+
+## 同尺寸 Label 纹理复用后的复测
+
+`dfd1b03028` 中，普通文本和 CHAR 缓存模式的同尺寸更新均保留 GFX 纹理，字形像素发生变化；尺寸变化时重新分配。Windows Debug/Release 均运行了设备身份断言。三轮 Windows Release 混合变更帧 CPU 中位数为 6.3762 ms，上一组为 6.0933 ms，迁移前为 4.5881 ms。该提交减少了已验证的纹理重建次数，本组数据没有显示混合 CPU 改善。
+
+每帧 JSB 为 196，堆峰值 16,949,796 字节，强制 GC 中位数 4.277 ms。迁移前与 Web 沿用三份冻结输入；新候选独立跑三轮。原始文件名为 m6-perf-dfd1b03028-1.json 至 -3.json，汇总命令为 `node native/tests/2d-poc/compare-m6-perf.cjs --candidate dfd1b03028`。[各轮与各负载数据](./native-2d-m6-performance-label.json)

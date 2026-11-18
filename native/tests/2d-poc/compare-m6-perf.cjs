@@ -10,6 +10,8 @@ const candidate = process.argv[3];
 if (process.argv.length > 2 && (process.argv.length !== 4 || process.argv[2] !== '--candidate' || !/^[0-9a-f]{7,40}$/.test(candidate))) {
     throw new Error('Usage: compare-m6-perf.cjs [--candidate commit]');
 }
+// The first frozen candidate used the original pages series file names.
+const series = candidate === 'cfe140f062' ? 'pages' : candidate;
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const digest = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const median = values => {
@@ -24,7 +26,7 @@ for (const target of ['before', 'after', 'web']) {
     const inputs = [];
     let renderer, vendor;
     for (const round of [1,2,3]) {
-        const file = path.join(out, candidate && target === 'after' ? 'm6-perf-pages-' + round + '.json' : 'm6-perf-formal-' + round + '-' + target + '.json');
+        const file = path.join(out, candidate && target === 'after' ? 'm6-perf-' + series + '-' + round + '.json' : 'm6-perf-formal-' + round + '-' + target + '.json');
         const run = read(file);
         if (run.backend !== (target === 'web' ? 'web' : 'native') ||
             JSON.stringify(run.cases.map(c => c.name + '/' + c.phase)) !== JSON.stringify(expected)) throw new Error('Invalid scenario set: ' + file);
@@ -56,5 +58,5 @@ const result = { cpu: os.cpus()[0].model, os: os.version(), release: os.release(
     sampledFramesPerPhase: 120, rounds: 3, configs, reductionPercent: change,
     mixedDirtyTargets: { cpu: mixed.cpuMs >= 50, jsb: mixed.jsbCalls >= 70, peakJsHeap: mixed.peakJsBytes >= 30 } };
 if (candidate && !configs.after.revision.startsWith(candidate)) throw new Error('Candidate worktree revision mismatch');
-fs.writeFileSync(path.join(out, candidate ? 'm6-perf-pages-comparison.json' : 'm6-perf-comparison.json'), JSON.stringify(result, null, 2) + '\n');
+fs.writeFileSync(path.join(out, candidate ? 'm6-perf-' + series + '-comparison.json' : 'm6-perf-comparison.json'), JSON.stringify(result, null, 2) + '\n');
 console.log(JSON.stringify({ mixed, mixedDirtyTargets: result.mixedDirtyTargets }));
