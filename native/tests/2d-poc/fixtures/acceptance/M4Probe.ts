@@ -344,18 +344,34 @@ export class M4Probe {
             }
         };
 
+        const stress = sys.isNative
+            ? native.fileUtils.isFileExist(native.fileUtils.getDefaultResourceRootPath() + 'm6-static-atlas-stress')
+            : new URLSearchParams(globalThis.location.search).has('static-atlas-stress');
+        const restoreCamera = (): void => {
+            for (const state of states) {
+                state.node.active = state.active;
+                state.node.setPosition(state.position);
+            }
+            camera.visibility = oldVisibility;
+            camera.orthoHeight = oldOrthoHeight;
+            camera.targetTexture = oldTarget;
+            renderTexture.destroy();
+            dynamicAtlasManager.enabled = autoPacking;
+        };
         let finish: () => void;
         this.completion = new Promise(resolve => { finish = resolve; });
         setTimeout(async () => {
             maskNode.active = false;
             try {
-                await verifyStaticAtlas(parent, captureLayer, renderTexture);
+                await verifyStaticAtlas(parent, captureLayer, renderTexture, stress);
             } catch (error) {
                 console.error('M6_STATIC_ATLAS_ERROR ' + String(error));
                 throw error;
             } finally {
-                maskNode.active = true;
+                if (stress) restoreCamera();
+                else maskNode.active = true;
             }
+            if (stress) return;
             await this.verifyAutomaticPacking(parent, frame);
             await verifyPacking(frame, sprite, 'Sprite', 'repeat');
             await verifyPacking(frame, sprite, 'Sprite', 'clamp');
@@ -402,16 +418,8 @@ export class M4Probe {
                                 textureHeight: renderTexture.height,
                                 opaque: readRed(),
                             })}`);
-                            for (const state of states) {
-                                state.node.active = state.active;
-                                state.node.setPosition(state.position);
-                            }
                             graphicsNode.destroy();
-                            camera.visibility = oldVisibility;
-                            camera.orthoHeight = oldOrthoHeight;
-                            camera.targetTexture = oldTarget;
-                            renderTexture.destroy();
-                            dynamicAtlasManager.enabled = autoPacking;
+                            restoreCamera();
                             finish();
                         }, 600);
                     }, 700);

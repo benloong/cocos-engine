@@ -4,12 +4,14 @@ const path = require('path');
 const http = require('http');
 const { spawn } = require('child_process');
 const bitmap = process.argv.includes('--bitmap');
+const stress = process.argv.includes('--static-atlas-stress');
+if (bitmap && stress) throw new Error('Select one atlas probe mode');
 const projectArg = process.argv.slice(2).find(arg => !arg.startsWith('--'));
 const root = path.resolve(projectArg || path.join(__dirname, '../../../../cocos-m1-test/build/web-mobile'));
-const output = path.join(__dirname, bitmap ? 'build/bitmap-web-captures' : 'build/atlas-web-captures');
+const output = path.join(__dirname, stress ? 'build/static-atlas-stress-web' : bitmap ? 'build/bitmap-web-captures' : 'build/atlas-web-captures');
 if (!fs.existsSync(path.join(root, 'index.html'))) throw new Error('Build the acceptance Web project first');
 fs.mkdirSync(output, { recursive: true });
-const logs = [], captures = new Set(), results = [];
+const logs = [], captures = new Set(), results = [], samples = [];
 let layoutMetrics = [];
 let fallbackPassed = false;
 let lifecyclePassed = false;
@@ -41,7 +43,11 @@ const server = http.createServer(async (req, res) => {
 (async () => {
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
-    const browser = spawn(chrome, ['--headless=new', '--no-first-run', '--no-default-browser-check', '--ignore-gpu-blocklist', '--remote-debugging-port=0', '--user-data-dir=' + path.join(__dirname, 'build/atlas-web-profile-' + process.pid), 'http://127.0.0.1:' + server.address().port], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
+    const browserArgs = ['--headless=new', '--no-first-run', '--no-default-browser-check', '--ignore-gpu-blocklist',
+        '--remote-debugging-port=0', '--user-data-dir=' + path.join(__dirname, 'build/atlas-web-profile-' + process.pid)];
+    if (stress) browserArgs.push('--js-flags=--expose-gc', '--enable-precise-memory-info', '--disable-background-timer-throttling');
+    browserArgs.push('http://127.0.0.1:' + server.address().port + (stress ? '/?static-atlas-stress=1' : ''));
+    const browser = spawn(chrome, browserArgs, { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
     browser.on('error', rejectDone);
     browser.on('exit', code => rejectDone(new Error('Browser exited: ' + code)));
     let socket;
@@ -63,6 +69,24 @@ const server = http.createServer(async (req, res) => {
                 if (text === 'M6_ATLAS_AUTOMATIC_PASS') automaticPassed = true;
                 if (text === 'M6_STATIC_ATLAS_PASS') staticAtlasPassed = true;
                 if (text.startsWith('M6_STATIC_ATLAS_ERROR ')) rejectDone(new Error(text));
+                if (stress) {
+                    if (text.startsWith('M6_STATIC_ATLAS_STRESS_SAMPLE ')) {
+                        const sample = JSON.parse(text.slice('M6_STATIC_ATLAS_STRESS_SAMPLE '.length));
+                        samples.push(sample);
+                        console.log(text);
+                    } else if (text.startsWith('M6_STATIC_ATLAS_STRESS_PASS ')) {
+                        const result = JSON.parse(text.slice('M6_STATIC_ATLAS_STRESS_PASS '.length));
+                        if (result.cycles !== 1000 || result.checkedAssets !== 5000 || result.pixelChecks !== 22
+                            || samples.length !== 11 || samples.some((sample, i) => sample.cycle !== i * 100
+                                || sample.wrappers !== (i === 0 ? 0 : 500) || !Number.isFinite(sample.jsHeapBytes) || sample.jsHeapBytes <= 0)) {
+                            rejectDone(new Error('Incomplete Web static atlas stress report'));
+                        } else {
+                            results.push(result);
+                            resolveDone();
+                        }
+                    }
+                    return;
+                }
                 if (!bitmap && text.startsWith('M6_DYNAMIC_ATLAS ')) {
                     const result = JSON.parse(text.slice(17)); results.push(result);
                     if (!result.state || !result.restored || (result.sampling === 'clamp' && !result.equal)) rejectDone(new Error('Web atlas state or framebuffer mismatch'));
@@ -81,7 +105,7 @@ const server = http.createServer(async (req, res) => {
             };
         } catch (error) { rejectDone(error); }
     });
-    const timeout = setTimeout(() => rejectDone(new Error('Web atlas capture timeout')), 90000);
-    try { await done; fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({ captures: [...captures].sort(), results, layoutMetrics }, null, 2) + '\n'); console.log('Web ' + (bitmap ? 'bitmap' : 'dynamic atlas') + ' captures: PASS (' + captures.size + ')'); }
+    const timeout = setTimeout(() => rejectDone(new Error('Web atlas capture timeout')), stress ? 600000 : 90000);
+    try { await done; fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify(stress ? { result: results[0], samples } : { captures: [...captures].sort(), results, layoutMetrics }, null, 2) + '\n'); console.log(stress ? 'Web static atlas: PASS (1000 cycles)' : 'Web ' + (bitmap ? 'bitmap' : 'dynamic atlas') + ' captures: PASS (' + captures.size + ')'); }
     finally { clearTimeout(timeout); socket?.close(); browser.kill(); server.close(); fs.writeFileSync(path.join(output, 'console.log'), logs.join('\n')); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

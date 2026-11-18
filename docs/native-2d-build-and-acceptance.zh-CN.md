@@ -271,6 +271,17 @@ JSB + Native 暂停运行时动态图集。Windows Debug 必须记录 `M6_ATLAS_
 
 Windows Debug 与 Web 均须记录 `M6_STATIC_ATLAS_PASS`。M4 先加载包含旧式 TexturePacker 图集引用的真实 Prefab，再显式加载同一 SpriteAtlas，检查依赖身份、旋转和裁剪数据、两个实例独立换帧、红绿 GPU 采样、Prefab 释放后独立持有的图集仍可访问，以及最终依赖移出缓存。该流程重复三次。Windows Debug 还须在保留图集 JS wrapper 和旧字典时验证帧末原生帧表为空，旧字典的迟到写入不能恢复条目。保留的 SpriteFrame wrapper 应在帧末归还纹理、清空原图和 UV，公开纹理赋值和迟到依赖回填均须保持空纹理。
 
+#### 静态图集资源压力
+
+在同一 Windows Debug 和 Web 构建上，另用千轮模式运行真实资源循环。常规场景门禁和压力模式均须通过，压力运行器依次启动。
+
+```powershell
+pwsh -NoProfile -File native/tests/2d-poc/run-m6-static-atlas-stress.ps1
+node native/tests/2d-poc/run-dynamic-atlas-web.cjs --static-atlas-stress
+```
+
+每轮从资源路径加载 plist 编译资产与 Prefab、实例化两个 Sprite、实际提交两种原图帧、销毁实例并归还资源。每端要求 5000 个资产引用和缓存断言、22 个 GPU 中心像素断言以及 11 个 GC 采样。Windows 记录 V8 wrapper 存活、进程私有字节和工作集；Web 记录 Chrome JS 堆与 wrapper 存活。Windows 进程私有字节同时包含脚本堆、原生分配和其他进程占用。两端在各自的 build/static-atlas-stress-* 目录写入 JSON 和完整原始日志。
+
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 
 M5 探针先运行 BitmapGpuProbe。Web 采集 BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，Windows Debug 采集原图/尝试启用后/重置后。两端各有 12 份固定 CENTER/CENTER、CLAMP、64×32 内容框的 RGBA，另有 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距、裁剪，以及带 padding 的非零帧原点、trim、offset 和旋转。Windows Debug 直接提交原生字形网格并检查实际源纹理绑定，CPU 诊断构建次数须为 0。70000 字形须分为 5 个 chunk，随后清空并检查引用。

@@ -1,9 +1,16 @@
 import {
-    Asset, assetManager, instantiate, isValid, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys, Texture2D,
+    Asset, assetManager, director, DirectorEvent, instantiate, isValid, Node, Prefab, RenderTexture, resources, Sprite, SpriteAtlas, SpriteFrame, sys, Texture2D,
 } from 'cc';
 
 const BASE = 'M6StaticAtlas/';
 const waitForRender = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 100));
+const nextFrame = (): Promise<void> => new Promise(resolve => director.once(DirectorEvent.END_FRAME, () => resolve()));
+
+async function waitForFrames (): Promise<void> {
+    // JS END_FRAME may precede the native render for that frame.
+    await nextFrame();
+    await nextFrame();
+}
 
 function load<T extends Asset> (name: string, type: new () => T): Promise<T> {
     return new Promise((resolve, reject) => {
@@ -19,13 +26,42 @@ function checkCenter (target: RenderTexture, channel: number): void {
     }
 }
 
-export async function verifyStaticAtlas (parent: Node, layer: number, target: RenderTexture): Promise<void> {
-    for (let cycle = 0; cycle < 3; cycle++) {
+export async function verifyStaticAtlas (parent: Node, layer: number, target: RenderTexture, stress = false): Promise<void> {
+    const cycles = stress ? 1000 : 3;
+    const render = stress ? waitForFrames : waitForRender;
+    const Weak = (globalThis as any).WeakRef as new (asset: Asset) => { deref(): Asset | undefined };
+    const wrappers: { deref(): Asset | undefined }[] = [];
+    let pixelChecks = 0;
+    let checkedAssets = 0;
+    async function sample (cycle: number): Promise<void> {
+        await nextFrame();
+        if (sys.isNative) sys.garbageCollect();
+        else (globalThis as any).gc();
+        await waitForFrames();
+        const memory = (globalThis as any).performance?.memory;
+        console.log('M6_STATIC_ATLAS_STRESS_SAMPLE ' + JSON.stringify({
+            cycle,
+            wrappers: wrappers.length,
+            liveWrappers: wrappers.reduce((total, ref) => total + Number(ref.deref() !== undefined), 0),
+            jsHeapBytes: memory?.usedJSHeapSize ?? null,
+        }));
+        wrappers.length = 0;
+    }
+    if (stress) {
+        if (!Weak || (!sys.isNative && typeof (globalThis as any).gc !== 'function')) {
+            throw new Error('Static atlas stress needs WeakRef and explicit GC');
+        }
+        await sample(0);
+    }
+    for (let cycle = 1; cycle <= cycles; cycle++) {
+        if (stress && cycle > 1 && (cycle - 1) % 100 === 0) await sample(cycle - 1);
         const prefab = await load('AtlasSprite', Prefab);
         let atlas: SpriteAtlas | null = null;
         let first: Node | null = null;
         let second: Node | null = null;
         const keys = [prefab.uuid];
+        const ownedAssets: Asset[] = [prefab];
+        const capture = !stress || cycle === 1 || cycle % 100 === 0;
         let previousMap: SpriteAtlas['spriteFrames'] | null = null;
         try {
             // The prefab loads both the atlas and a frame before the explicit atlas load.
@@ -47,6 +83,12 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
                 throw new Error('Native atlas table missed deserialized frames');
             }
             keys.push(atlas.uuid, left.uuid, right.uuid, texture.uuid);
+            if (stress) {
+                ownedAssets.push(atlas, left, right, texture);
+                if (new Set(keys).size !== ownedAssets.length || ownedAssets.some(asset => assetManager.assets.get(asset.uuid) !== asset)) {
+                    throw new Error('Static atlas dependencies were not present under distinct cache keys');
+                }
+            }
             previousMap = atlas.spriteFrames;
             first = instantiate(prefab);
             second = instantiate(prefab);
@@ -58,18 +100,18 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
             }
             first.layer = layer;
             parent.addChild(first);
-            await waitForRender();
-            checkCenter(target, 0);
+            await render();
+            if (capture) { checkCenter(target, 0); pixelChecks++; }
             sprite.changeSpriteFrameFromAtlas('right');
-            await waitForRender();
+            await render();
             if (sprite.spriteFrame !== right || sibling.spriteFrame !== left || left.original || right.original) {
                 throw new Error('Changing one prefab instance did not preserve the other instance and static frames');
             }
-            checkCenter(target, 1);
+            if (capture) { checkCenter(target, 1); pixelChecks++; }
             first.destroy();
             second.destroy();
             first = second = null;
-            await waitForRender();
+            await render();
 
             assetManager.releaseAsset(prefab);
             if (assetManager.assets.get(atlas.uuid) !== atlas || atlas.getSpriteFrame('left') !== left) {
@@ -81,7 +123,20 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
             assetManager.releaseAsset(prefab);
             atlas?.decRef();
         }
-        await waitForRender();
+        await render();
+        if (stress) {
+            for (let frame = 0; frame < 12 && ownedAssets.some(asset => asset.isValid); frame++) await nextFrame();
+            if (parent.children.some(node => node.name === 'AtlasSprite') || ownedAssets.some(asset => asset.isValid || asset.refCount !== 0)) {
+                throw new Error('Static atlas asset retained a reference or missed frame-end destruction');
+            }
+            for (const asset of ownedAssets) {
+                if (sys.isNative && (asset as Asset & { getAssetRefCount(): number }).getAssetRefCount() !== 0) {
+                    throw new Error('Native static atlas asset reference count did not return to zero');
+                }
+                wrappers.push(new Weak(asset));
+            }
+            checkedAssets += ownedAssets.length;
+        }
         if (keys.some(uuid => assetManager.assets.has(uuid))) throw new Error('Static atlas dependencies remained in the asset cache after release');
         if (sys.isNative && atlas && previousMap) {
             previousMap.late = null;
@@ -105,5 +160,10 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
             }
         }
     }
-    console.log('M6_STATIC_ATLAS_PASS');
+    if (stress) {
+        await sample(cycles);
+        console.log('M6_STATIC_ATLAS_STRESS_PASS ' + JSON.stringify({ cycles, checkedAssets, pixelChecks }));
+    } else {
+        console.log('M6_STATIC_ATLAS_PASS');
+    }
 }
