@@ -156,7 +156,7 @@ const server = http.createServer(async (req, res) => {
                         return;
                     }
                     console.log('Web system Arial Italic width=' + italic[0].w);
-                    if (!bitmapReady || rich.native || !rich.queryMatches
+                    if (!bitmapReady || rich.native || !rich.queryMatches || rich.clicks?.join(',') !== 'first,second,second'
                         || rich.jsLabelComponents !== rich.labels || rich.jsSpriteComponents !== rich.sprites
                         || rich.labels !== 9 || rich.sprites !== 1 || rich.children !== 10) {
                         rejectDone(new Error('Missing Web RichText segment components: ' + text));

@@ -67,6 +67,7 @@ try {
     $large = $largeLine[0].Line.Substring($largeLine[0].Line.IndexOf('M6_BITMAP_LARGE ') + 16) | ConvertFrom-Json
     if ($large.glyphs -ne 70000 -or $large.chunks -ne 5 -or $large.cleared -ne $true -or $large.diagnostics -ne 0) { throw 'Large bitmap GPU checks failed' }
     $data = $lines[0].Line.Substring($lines[0].Line.IndexOf('M5_RICHTEXT ') + 12) | ConvertFrom-Json
+    if (($data.clicks -join ',') -cne 'first,second,second') { throw 'RichText click dispatch or teardown failed' }
     if ($data.children -lt 1) { throw 'RichText produced no segments' }
     if ($data.labels -lt 1) { throw 'RichText produced no Label segments' }
     if ($data.colored -le 0) { throw 'RichText produced no colored pixels' }

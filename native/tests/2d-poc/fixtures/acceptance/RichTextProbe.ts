@@ -1,7 +1,13 @@
 import { M4ExtraProbe } from './M4ExtraProbe';
 import { BitmapGpuProbe } from './BitmapGpuProbe';
 import {
+    _decorator,
     Camera,
+    Component,
+    DirectorEvent,
+    EventTouch,
+    Touch,
+    view,
     Canvas,
     Color,
     director,
@@ -20,6 +26,56 @@ import {
     Vec3,
 } from 'cc';
 
+@_decorator.ccclass('M6RichTextClickReceiver')
+class ClickReceiver extends Component {
+    public calls: string[] = [];
+    public received (event: EventTouch, parameter: string): void {
+        if (event.type !== Node.EventType.TOUCH_END) throw new Error('Unexpected RichText click event');
+        this.calls.push(parameter);
+    }
+}
+
+async function checkRichTextEvents (parent: Node): Promise<string[]> {
+    const host = new Node('m6-click-host'); host.layer = parent.layer; parent.addChild(host);
+    host.addComponent(UITransform);
+    const receiver = host.addComponent(ClickReceiver);
+    const rich = host.addComponent(RichText);
+    const settle = (): Promise<void> => new Promise(resolve => director.once(DirectorEvent.END_FRAME, () => resolve()));
+    const update = async (param: string): Promise<Vec2> => {
+        rich.string = "<on click='received' param='" + param + "'>word</on>";
+        await settle();
+        const child = host.children[0];
+        const backend = (rich as any)._native;
+        if (backend) {
+            const local = new Vec3(backend.getSegmentLabel(0).getContentWidth() / 2, 0, 0);
+            const p = Vec3.transformMat4(new Vec3(), local, child.worldMatrix);
+            return new Vec2(p.x, p.y);
+        }
+        const rect = child.getComponent(UITransform)!.getBoundingBoxToWorld();
+        return new Vec2(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    };
+    const send = (point: Vec2, expected: boolean): void => {
+        const viewport = view.getViewportRect();
+        const touch = new Touch(viewport.x + point.x * view.getScaleX(), viewport.y + point.y * view.getScaleY());
+        const event = new EventTouch([touch], true, Node.EventType.TOUCH_END, [touch]); event.touch = touch;
+        host.dispatchEvent(event);
+        if (event.propagationStopped !== expected) throw new Error('Unexpected propagation for RichText click');
+    };
+    try {
+        const first = await update('first');
+        send(first, true); send(new Vec2(first.x - 1000, first.y), false);
+        rich.handleTouchEvent = false; send(first, false);
+        rich.handleTouchEvent = true;
+        const second = await update('second');
+        send(second, true);
+        rich.enabled = false; send(second, false);
+        rich.enabled = true; await settle(); send(second, true);
+        rich.destroy(); await settle(); await settle(); send(second, false);
+        if (receiver.calls.join(',') !== 'first,second,second') throw new Error('Unexpected click sequence ' + receiver.calls);
+        return receiver.calls;
+    } finally { host.destroy(); }
+}
+
 /** RichText GPU pixels and real segment data on both render backends. */
 export class RichTextProbe {
     public static run (parent: Node): void {
@@ -29,6 +85,7 @@ export class RichTextProbe {
         // All three probes borrow the same Camera. Wait for the previous target to be restored.
         await M4ExtraProbe.completion;
         await BitmapGpuProbe.run(parent);
+        const clicks = await checkRichTextEvents(parent);
         console.log('M5_RICHTEXT_BEGIN');
         const node = new Node('M5RichText');
         parent.addChild(node);
@@ -171,6 +228,7 @@ export class RichTextProbe {
                 jsLabelComponents: jsLabels.length,
                 jsSpriteComponents: jsSprites.length,
                 queryMatches,
+                clicks,
                 labels,
                 sprites,
                 width: transform.contentSize.width,
