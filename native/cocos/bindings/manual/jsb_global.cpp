@@ -487,6 +487,20 @@ static bool js_performance_now(se::State &s) { // NOLINT
 }
 SE_BIND_FUNC(js_performance_now)
 
+#if defined(RECORD_JSB_INVOKING) && SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_V8
+static bool jsb_clearInvocationRecords(se::State &) {
+    clearRecordJSBInvoke();
+    return true;
+}
+SE_BIND_FUNC(jsb_clearInvocationRecords)
+
+static bool jsb_printInvocationRecords(se::State &) {
+    printJSBInvoke();
+    return true;
+}
+SE_BIND_FUNC(jsb_printInvocationRecords)
+#endif
+
 namespace {
 struct ImageInfo {
     uint32_t length = 0;
@@ -1572,6 +1586,10 @@ bool jsb_register_global_variables(se::Object *global) { // NOLINT
     __jsbObj->defineFunction("copyTextToClipboard", _SE(JSB_copyTextToClipboard));
     __jsbObj->defineFunction("setPreferredFramesPerSecond", _SE(JSB_setPreferredFramesPerSecond));
     __jsbObj->defineFunction("destroyImage", _SE(js_destroyImage));
+#if defined(RECORD_JSB_INVOKING) && SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_V8
+    __jsbObj->defineFunction("clearInvocationRecords", _SE(jsb_clearInvocationRecords));
+    __jsbObj->defineFunction("printInvocationRecords", _SE(jsb_printInvocationRecords));
+#endif
 
 #if CC_USE_EDITBOX
     __jsbObj->defineFunction("showInputBox", _SE(JSB_showInputBox));
