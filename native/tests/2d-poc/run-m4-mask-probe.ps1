@@ -23,7 +23,10 @@ try {
     while ((Get-Date) -lt $deadline) {
         Start-Sleep -Milliseconds 500
         if (Test-Path $log) {
-            $lines = @(Get-Content $log | Select-String -Pattern 'M4_MASK_PIXEL ')
+            $contents = Get-Content $log
+            $atlasError = $contents | Select-String -SimpleMatch 'M6_STATIC_ATLAS_ERROR ' | Select-Object -First 1
+            if ($atlasError) { throw $atlasError.Line }
+            $lines = @($contents | Select-String -Pattern 'M4_MASK_PIXEL ')
             if ($lines.Count -ge 2) {
                 $extra = @(Get-Content $log | Select-String -Pattern 'M4_ELLIPSE_PIXEL |M4_SPRITE_PIXEL ')
                 $graphicsProbe = @(Get-Content $log | Select-String -Pattern 'M4_GRAPHICS ')
@@ -58,6 +61,9 @@ try {
     $graphics = $graphicsLines[0].Line.Substring($graphicsLines[0].Line.IndexOf('M4_GRAPHICS ') + 12) | ConvertFrom-Json
     if ($graphics.opaque -lt 6000 -or $graphics.opaque -gt 7000) { throw "Graphics opaque=$($graphics.opaque), expected ~6400" }
 
+    if (-not (Select-String -LiteralPath $log -SimpleMatch 'M6_STATIC_ATLAS_PASS' -Quiet)) {
+        throw 'Static atlas asset load/release probe missing'
+    }
     if (-not (Select-String -LiteralPath $log -SimpleMatch 'M6_ATLAS_NATIVE_DISABLED_PASS' -Quiet)) {
         throw 'Native dynamic atlas disable probe missing'
     }

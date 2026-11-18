@@ -23,6 +23,7 @@ import {
     Texture2D,
     UITransform,
 } from 'cc';
+import { verifyStaticAtlas } from './StaticAtlasProbe';
 
 /** M4 Mask + Graphics probe. */
 export class M4Probe {
@@ -346,6 +347,15 @@ export class M4Probe {
         let finish: () => void;
         this.completion = new Promise(resolve => { finish = resolve; });
         setTimeout(async () => {
+            maskNode.active = false;
+            try {
+                await verifyStaticAtlas(parent, captureLayer, renderTexture);
+            } catch (error) {
+                console.error('M6_STATIC_ATLAS_ERROR ' + String(error));
+                throw error;
+            } finally {
+                maskNode.active = true;
+            }
             await this.verifyAutomaticPacking(parent, frame);
             await verifyPacking(frame, sprite, 'Sprite', 'repeat');
             await verifyPacking(frame, sprite, 'Sprite', 'clamp');

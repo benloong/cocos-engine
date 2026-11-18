@@ -45,4 +45,14 @@ V8 探针只隔离 core/元数据模块并显式调用构造钩子；元数据�
 
 ## 4. 后续
 
-真实旧资产、完整异步资源加载、Prefab/场景、RichText imageAtlas 的场景回归，以及平台/内存/性能 Gate 继续按 [M6 计划](./native-2d-m6-plan.md) 执行。表同步定向通过不关闭这些项目。
+测试工程内的旧格式静态图集和 Prefab 已加入下方验收。其余旧项目场景、RichText imageAtlas、异步取消、长期生命周期、平台及性能继续按 [M6 计划](./native-2d-m6-plan.md) 执行。
+
+## 5. 真实资源和 Prefab
+
+验收工程由 CLI 导入 TexturePacker format 2 的 plist 和 32×16 PNG。Prefab 序列化字段引用图集和第一个 SpriteFrame 的资源 UUID。探针先按资源路径加载 Prefab，再加载同一图集，检查两个帧的身份、纹理、旋转、裁剪、偏移以及原生表条目数。
+
+每次实例化两个 Sprite。图集和初始帧共用，实例的组件和换帧状态独立。渲染到 M4 的隔离 Camera 目标，检查从红色原帧切换到绿色旋转帧后的中心像素。先销毁实例，再释放 Prefab，图集由显式引用继续持有。最后归还该引用并检查 Prefab、图集、两个帧和 Texture2D 均移出资源缓存。每端重复三轮，并要求 `M6_STATIC_ATLAS_PASS`。
+
+该结果覆盖文件导入、运行时依赖回填、GPU 采样和资源缓存生命周期。长期堆和 C++ 指针析构时机属于后续验收。
+
+Windows Debug 与 Web 的真实构建均记录通过。完整串行门禁和 39 项定向 Jest 通过，原有 100 组 Sprite/Mask 与位图字体 RGBA 对照逐字节一致。M5 用时 39.32 秒，预算 45 秒。
