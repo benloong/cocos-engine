@@ -123,7 +123,7 @@
 
 - [x] 原生命中基础链路：Mask.isHit 仅传世界坐标；原生计算圆角/椭圆/反向边界，UITransform 筛选 Camera windowId/layer/离屏并查询当前祖先 Mask。Windows Debug/Release 绑定及生命周期回归、真实场景 19/19 命中检查通过，含 disable/reparent/destroy；见状态与命中报告。完整事件/多 root/Camera/平台矩阵仍由下一项验收。
 - [ ] hit test：覆盖 Camera/坐标转换、旋转缩放、层级、多个 root、嵌套 Mask、启停与销毁；JS 可分发事件，几何命中使用 native。
-- [ ] RenderRoot2D：补多 root/多 Canvas/多 Camera、顺序、启停、重复注册、销毁/场景切换回归；Canvas/Camera/Widget/View 继续保留 JS，不迁移其功能。
+- [x] RenderRoot2D 在 Windows Debug、Release 和 Web 通过多 root/Canvas/Camera 回归。11 个注册状态断言覆盖重复启用、禁用、重排、销毁；场景切换 1000 次、4998 项循环断言通过。不同注册/优先级、目标切换和跨场景常驻 root 的 GPU 中心颜色按预期变化。比较器检查命名捕获均存在，再比对 256×256 RGBA。[状态序列与图像指纹](./native-2d-m6-windows-web-gpu-results.json)。
 - [x] RenderRoot2D 注册基础硬化：Node 销毁通知、Batcher 独占观察 link、遍历范围强引用快照、重复注册/排序/回调期间变更、跨 root batch/stencil 清理；Windows Debug/Release 与 1000 次 plain Node 注册/释放通过。单 Camera 下两个 root/Canvas 的启停/重排/销毁 GPU 对照通过，扩展夹具 58 图像差值 0、11 注册和 19 命中检查通过；见 [报告与剩余矩阵](./native-2d-m6.4-render-root-lifecycle.md)。不关闭上一项的真实场景/多 Camera/平台门禁。
 - [x] Windows Scene/多 Camera 定向矩阵：修复 Graphics 在 onLoad 前丢命令和从未激活实例的 backend 清理；普通 Debug/ASAN 与 Web 同快照 74 图像差值 0，1000 次实际 director 切换、动态纹理创建销毁与 4998 项循环断言通过。见 [报告与边界](./native-2d-m6.4-scene-matrix.md)；不是完整 asset-manager、泄漏、Release GPU 或平台验收。
 - [ ] 所有 native 组件/资产核对 attach/detach、Node 非 owning 槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。

@@ -26,6 +26,9 @@ const centers={
     'scene-cycle-500':[0,0,255,255],'scene-cycle-750':[0,0,255,255],
     'scene-cycle-1000':[0,0,255,255],'scene-final-empty':[0,0,0,255],
 };
+for (const name of Object.keys(centers)) {
+    if (!a.captures.includes(name)) throw new Error('Missing root or scene transition capture: ' + name);
+}
 const sanity={
     'fill-rect':6400,'large-local-coordinates':6400,'clear-and-replace':2400,
     'large-mesh-chunks':20000,'mask-rect':6400,'mask-inverted':46400,
