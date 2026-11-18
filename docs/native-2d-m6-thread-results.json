@@ -1,0 +1,56 @@
+{
+  "debug": {
+    "log": "20261118T085614646-9bc5b0e1.stdout.log",
+    "sha256": "ec364a854ae384d9ad9661f57b32b980817c1a93749a71f916250e0cd29eb820",
+    "exeSha256": "513a8a4189c0cd94bf2a2feb4623b9ba54c8ef6351199a1ad896a7743b53b4bc",
+    "markers": [
+      {
+        "line": 3,
+        "text": "16:56:15 [INFO]: GLES3 device initialized."
+      },
+      {
+        "line": 36,
+        "text": "16:56:16 [INFO]: Device thread detached."
+      },
+      {
+        "line": 92,
+        "text": "16:56:31 [DEBUG]: JS: M6_STATIC_ATLAS_PASS"
+      },
+      {
+        "line": 205,
+        "text": "16:56:53 [DEBUG]: JS: M6_BITMAP_GPU_READY"
+      },
+      {
+        "line": 212,
+        "text": "16:56:55 [DEBUG]: JS: M5_RICHTEXT"
+      }
+    ]
+  },
+  "release": {
+    "log": "20261118T085420250-e368bdbc.stdout.log",
+    "sha256": "0cd2997e7ad37b444e6869e15b4516fc419394f01023a40f337931fa879f4359",
+    "exeSha256": "71fa91c789a8ba3f2b30b0579e7320739ff72563b0b500dae3527d04ed3c7425",
+    "markers": [
+      {
+        "line": 2,
+        "text": "16:54:20 [INFO]: GLES3 device initialized."
+      },
+      {
+        "line": 22,
+        "text": "16:54:21 [INFO]: Device thread detached."
+      },
+      {
+        "line": 78,
+        "text": "16:54:35 [DEBUG]: JS: M6_STATIC_ATLAS_PASS"
+      },
+      {
+        "line": 191,
+        "text": "16:54:56 [DEBUG]: JS: M6_BITMAP_GPU_READY"
+      },
+      {
+        "line": 198,
+        "text": "16:54:57 [DEBUG]: JS: M5_RICHTEXT"
+      }
+    ]
+  }
+}
