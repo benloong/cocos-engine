@@ -978,8 +978,8 @@ void Label::rebuildTexture() {
     const float lineHeight = shrink && _fontSize > 0.F
         ? (_lineHeight > 0.F ? _lineHeight : _fontSize) * _actualFontSize / _fontSize
         : (_lineHeight > 0.F ? _lineHeight : _fontSize * 1.2F);
-    const float maxWidth = box.x > 0.F && _overflow != 0 ? box.x : 100000.F;
-    const auto lines = layoutLines(measureContext, _string, _wrap, maxWidth);
+    const bool wrap = _overflow == 3 || (_overflow != 0 && _wrap);
+    const auto lines = layoutLines(measureContext, _string, wrap, box.x);
 
     if (lines.empty()) {
         clearRenderedData();

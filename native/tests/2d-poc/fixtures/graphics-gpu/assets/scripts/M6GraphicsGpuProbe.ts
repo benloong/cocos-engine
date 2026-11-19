@@ -338,6 +338,18 @@ export class M6GraphicsGpuProbe extends Component {
         label.fontSize = 16;
         label.lineHeight = 20;
         label.enableWrapText = true;
+        label.overflow = Label.Overflow.RESIZE_HEIGHT;
+        label.string = 'AAAA AAAA AAAA AAAA';
+        transform.setContentSize(48, 80);
+        label.enableWrapText = true;
+        label.updateRenderData(true);
+        const wrappedHeight = transform.height;
+        label.enableWrapText = false;
+        label.updateRenderData(true);
+        if (transform.width !== 48 || wrappedHeight <= label.lineHeight * 2 || transform.height !== wrappedHeight) {
+            throw new Error('RESIZE_HEIGHT must wrap independently of enableWrapText');
+        }
+        label.enableWrapText = true;
         const labelLayout: { force: boolean; overflow: number; width: number; height: number }[] = [];
         for (const force of [false, true]) {
             for (const overflow of [Label.Overflow.CLAMP, Label.Overflow.SHRINK, Label.Overflow.RESIZE_HEIGHT, Label.Overflow.NONE]) {
