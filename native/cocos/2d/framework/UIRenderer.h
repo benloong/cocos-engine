@@ -73,6 +73,11 @@ public:
     Material *getSharedMaterial(uint32_t index = 0) const;
     uint32_t getSharedMaterialCount() const { return static_cast<uint32_t>(_materials.size()); }
     void resizeMaterials(uint32_t size);
+    // Array edits affect only the selected backing array, unlike explicit setters.
+    void writeMaterialSlot(bool shared, uint32_t index, Material *material);
+    void resizeMaterialArray(bool shared, uint32_t size);
+    Material *getMaterialInstanceSlot(uint32_t index) const;
+    uint32_t getMaterialInstanceCount() const { return static_cast<uint32_t>(_extraMaterialInstances.size()); }
 
     void setPriority(int32_t priority);
     int32_t getPriority() const { return _priority; }

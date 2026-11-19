@@ -23,7 +23,7 @@ test('Mask binds a disabled Graphics helper when its native backend becomes read
         setNode:jest.fn(),setPriority:jest.fn(),setEnabled:jest.fn(),setLineWidth:jest.fn(),
         setFillColor:jest.fn(),setStrokeColor:jest.fn(),setLineJoin:jest.fn(),setLineCap:jest.fn(),
         setMiterLimit:jest.fn(),setColorRGBA:jest.fn(),setMaterial:jest.fn(),setSharedMaterial:jest.fn(),
-        getSharedMaterialCount:()=>0,getSharedMaterial:()=>null,getRenderMaterial:()=>null,resizeMaterials:jest.fn(),
+        getMaterialInstanceCount: () => 0, getSharedMaterialCount:()=>0,getSharedMaterial:()=>null,getRenderMaterial:()=>null,resizeMaterials:jest.fn(),
     };
     (global as any).n2d.Graphics=jest.fn(()=>nativeGraphics);
     // Reproduce the ccbuild NATIVE override for this direct source test.

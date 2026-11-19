@@ -26,7 +26,7 @@
 
 | 章节 | 节点 | 尚缺证据或已知失败 |
 |---|---|---|
-| M6.1 | 组件 API | Label 其余入口、材质数组原地更新/重编译及延迟销毁 |
+| M6.1 | 组件 API | Label 其余入口、实际 shader 重编译回调及材质延迟销毁 |
 | M6.1 | 字体终态 | 平台句柄清理、复杂文本及严格字形对照 |
 | M6.1 | 复杂布局 | [补充平面 BMFont 标量已验证](./native-2d-m6-bitmap-unicode.json)，尚缺双向文本及 shaping、任意 mesh、packed 组合和配置更新。两行 Arial 在 NONE 模式下自然宽度为 Windows 79、Web 80.9453125，见 [Label 布局实测](./native-2d-m6-windows-web-gpu-results.json) |
 | M6.1 | 旧资产边界 | 异步取消、延迟依赖、克隆和跨场景生命周期 |

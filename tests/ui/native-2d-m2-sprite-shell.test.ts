@@ -23,6 +23,10 @@ const nativeSprite = {
         nativeShared[index] = material;
     }),
     getSharedMaterial: jest.fn((index) => nativeShared[index] ?? null),
+    getMaterialInstanceCount: jest.fn(() => nativeInstances.length),
+    getMaterialInstanceSlot: jest.fn((i) => nativeInstances[i] ?? null),
+    writeMaterialSlot: jest.fn((sharedSlot, i, value) => { (sharedSlot ? nativeShared : nativeInstances)[i] = value; }),
+    resizeMaterialArray: jest.fn((sharedSlot, size) => { (sharedSlot ? nativeShared : nativeInstances).length = size; }),
     getSharedMaterialCount: jest.fn(() => nativeShared.length),
     resizeMaterials: jest.fn((size) => { nativeShared.length = nativeInstances.length = size; }),
     getMaterialInstance: jest.fn((index) => {
@@ -256,4 +260,24 @@ test('shared array replacement, forced update and explicit null follow Web slots
     sprite.customMaterial = null;
     expect(sprite.getSharedMaterial(0)).toBe(builtinMaterial);
     sprite.onDestroy();
+});
+
+test('retained material views support pre-load edits and detach on destroy', () => {
+    const { Sprite } = require('../../cocos/2d/components/sprite.jsb');
+    const node = new Node('retained-materials'); node.addComponent(UITransform);
+    const sprite: any = node.addComponent(Sprite);
+    const first = new Material(), second = new Material();
+    sprite.sharedMaterials = [first];
+    const shared = sprite.sharedMaterials;
+    shared[0] = second;
+    sprite.onLoad();
+    expect(sprite.getSharedMaterial(0)).toBe(EDITOR ? first : second);
+    const instances = sprite.materials;
+    instances[0] = null;
+    expect(sprite.getRenderMaterial(0)).toBe(EDITOR ? first : second);
+    sprite.onDestroy();
+    nativeSprite.writeMaterialSlot.mockClear();
+    shared[0] = first;
+    instances[0] = second;
+    expect(nativeSprite.writeMaterialSlot).not.toHaveBeenCalled();
 });

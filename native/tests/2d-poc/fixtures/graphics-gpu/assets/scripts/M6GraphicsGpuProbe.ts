@@ -203,6 +203,35 @@ export class M6GraphicsGpuProbe extends Component {
         await capture('prefab-atlas-mesh-right');
         instance.destroy();
         await wait();
+        const alternate = new Material();
+        alternate.initialize({ effectAsset: effect });
+        for (const Type of [Sprite, Label, Graphics] as const) {
+            const ownerNode = node(canvas.node, 'material-array');
+            const owner = ownerNode.addComponent(Type as typeof Sprite);
+            owner.enabled = false;
+            owner.sharedMaterials = [material, alternate];
+            const shared = owner.sharedMaterials;
+            const instances = owner.materials;
+            const old = instances[1];
+            if (!old || old === alternate) throw new Error('Expected an independent material instance');
+            shared[1] = material;
+            if (owner.sharedMaterials !== shared || owner.getSharedMaterial(1) !== material || owner.getRenderMaterial(1) !== old) {
+                throw new Error('In-place shared material replacement discarded the existing instance');
+            }
+            shared.length = 1;
+            if (owner.getMaterialInstance(1) || owner.getRenderMaterial(1) !== old) throw new Error('Shared truncation changed the instance array');
+            shared.push(material);
+            instances[1] = null;
+            if (owner.getRenderMaterial(1) !== material) throw new Error('Cleared instance did not expose its shared material');
+            shared.splice(1, 1, alternate, material);
+            delete shared[1];
+            if (1 in owner.sharedMaterials || owner.getSharedMaterial(1) !== undefined || owner.getSharedMaterial(2) !== material) {
+                throw new Error('Material array splice/delete lost slot identity');
+            }
+            ownerNode.destroy();
+        }
+        await wait();
+        alternate.destroy();
         material.destroy();
         const labelNode = node(canvas.node, 'immediate-label-layout');
         const label = labelNode.addComponent(Label);

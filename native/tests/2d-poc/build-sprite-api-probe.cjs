@@ -57,7 +57,7 @@ function require(id){
 }
 jsb.Material.prototype._ctor=function(){};
 const materialExports={}; ((exports)=>{ ${materialShell} })(materialExports);
-const materialAPIExports={}; ((exports)=>{ ${materialAPIs} })(materialAPIExports);
+const materialAPIExports={}; ((exports,require)=>{ ${materialAPIs} })(materialAPIExports,id=>id==='internal:constants'?{EDITOR:false}:require(id));
 const exports={};
 ${source}
 const labelExports={}; ((exports)=>{ ${labelShell} })(labelExports);
@@ -87,6 +87,19 @@ const custom=new jsb.Material();sprite.customMaterial=custom;
 check(sprite.getSharedMaterial(0)===custom,'custom material binding');
 sprite.customMaterial=null;check(sprite.getSharedMaterial(0)===gray,'custom material clear');
 sprite.sharedMaterials=[custom,normal];
+const sharedView=sprite.sharedMaterials;
+const instanceView=sprite.materials;
+const originalSlot=instanceView[1];
+sharedView[1]=custom;
+check(sharedView===sprite.sharedMaterials&&sprite._native.getSharedMaterial(1)===custom&&sprite.getRenderMaterial(1)===originalSlot,'shared array writes preserve an existing instance');
+instanceView[1]=null;
+check(sprite._native.getRenderMaterial(1)===custom&&originalSlot.owner===null,'clearing an instance reveals its updated shared slot');
+sharedView.splice(1,1,normal,custom);
+check(sprite._native.getSharedMaterialCount()===3&&sprite._native.getSharedMaterial(2)===custom,'splice updates native shared storage');
+delete sharedView[2];
+check(!(2 in sprite.sharedMaterials)&&sprite._native.getSharedMaterial(2)===null,'deleted array element stays a hole');
+sharedView.length=2;
+check(sprite._native.getSharedMaterialCount()===2,'direct length assignment truncates the shared array');
 check(sprite.sharedMaterials.length===2&&sprite.sharedMaterials[1]===normal,'shared array native slots');
 const extra=sprite.materials[1];
 check(extra.parent===normal&&extra.owner===sprite,'array getter creates native owned instance');

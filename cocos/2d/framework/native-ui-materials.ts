@@ -39,6 +39,10 @@ type Owner = UIRenderer & {
 
 export function releaseNativeMaterialSlots (component: UIRenderer): void {
     const owner = component as Owner;
+    for (const slots of [owner._materials, owner._materialInstances]) {
+        const binding = materialViews.get(slots);
+        if (binding) binding.owner = null;
+    }
     for (const instance of owner._materialInstances as any[]) {
         if (instance && instance._owner === owner) instance._owner = null;
     }
@@ -49,22 +53,88 @@ export function releaseNativeMaterialSlots (component: UIRenderer): void {
 export function syncNativeMaterialSlots (component: UIRenderer): void {
     const owner = component as Owner;
     const count = owner._native.getSharedMaterialCount();
-    for (let i = 0; i < Math.max(count, owner._materialInstances.length); i++) {
-        const rendered = i < count ? owner._native.getRenderMaterial(i) : null;
-        const current = rendered?.parent ? rendered : null;
+    const instanceCount = owner._native.getMaterialInstanceCount();
+    for (let i = 0; i < Math.max(instanceCount, owner._materialInstances.length); i++) {
+        const current = i < instanceCount ? owner._native.getMaterialInstanceSlot(i) : null;
         const previous = owner._materialInstances[i] as any;
         if (previous && previous !== current && previous._owner === owner && previous._subModelIdx === i) {
             previous._owner = null;
         }
-        owner._materialInstances[i] = current;
+        if ((previous ?? null) !== current) owner._materialInstances[i] = current;
     }
-    owner._materialInstances.length = owner._materials.length = count;
+    owner._materialInstances.length = instanceCount;
+    owner._materials.length = count;
     for (let i = 0; i < count; i++) {
-        owner._materials[i] = owner._native.getSharedMaterial(i);
+        const material = owner._native.getSharedMaterial(i);
+        if ((owner._materials[i] ?? null) !== material) owner._materials[i] = material;
+    }
+    for (let i = 0; i < instanceCount; i++) {
         // An instance may occupy multiple slots. Retain its callback slot until that slot is replaced.
         const instance = owner._materialInstances[i] as any;
-        if (instance && !instance._owner) Object.assign(instance, { _owner: owner, _subModelIdx: i });
+        if (instance?.parent && !instance._owner) Object.assign(instance, { _owner: owner, _subModelIdx: i });
     }
+}
+
+type SlotBinding = { owner: Owner | null; view: (Material | null)[] };
+const materialViews = new WeakMap<(Material | null)[], SlotBinding>();
+
+function slotIndex (key: PropertyKey): number {
+    if (typeof key !== 'string') return -1;
+    const index = Number(key);
+    return Number.isInteger(index) && index >= 0 && index < 0xffffffff && String(index) === key ? index : -1;
+}
+
+function materialView (owner: Owner, shared: boolean): (Material | null)[] {
+    const slots = shared ? owner._materials : owner._materialInstances;
+    const existing = materialViews.get(slots);
+    if (existing) return existing.view;
+    const binding: SlotBinding = { owner, view: slots };
+    function detachRemovedInstances (removed: (Material | null)[]): void {
+        for (const value of removed) {
+            const instance = value as any;
+            if (!instance || !binding.owner || instance._owner !== binding.owner || slots[instance._subModelIdx] === instance) continue;
+            const alias = slots.indexOf(instance);
+            if (alias < 0) instance._owner = null;
+            else instance._subModelIdx = alias;
+        }
+    }
+    function write (key: PropertyKey): void {
+        const component = binding.owner;
+        if (!component?._native || slots !== (shared ? component._materials : component._materialInstances)) return;
+        if (key === 'length') {
+            component._native.resizeMaterialArray(shared, slots.length);
+        } else {
+            const index = slotIndex(key);
+            if (index >= 0) component._native.writeMaterialSlot(shared, index, slots[index] ?? null);
+        }
+    }
+    const view = new Proxy(slots, {
+        defineProperty (target, key, descriptor) {
+            const index = slotIndex(key);
+            let removed: (Material | null)[] = [];
+            if (!shared && index >= 0) removed = [target[index]];
+            if (!shared && key === 'length' && descriptor.value < target.length) removed = target.slice(descriptor.value);
+            if (!Reflect.defineProperty(target, key, descriptor)) return false;
+            write(key);
+            detachRemovedInstances(removed);
+            const instance = descriptor.value;
+            if (!shared && index >= 0 && instance?.parent && !instance._owner && binding.owner) {
+                Object.assign(instance, { _owner: binding.owner, _subModelIdx: index });
+            }
+            return true;
+        },
+        deleteProperty (target, key) {
+            const present = Object.prototype.hasOwnProperty.call(target, key);
+            const previous = present && !shared ? Reflect.get(target, key) : null;
+            if (!Reflect.deleteProperty(target, key)) return false;
+            if (present) write(key);
+            if (previous) detachRemovedInstances([previous]);
+            return true;
+        },
+    });
+    binding.view = view;
+    materialViews.set(slots, binding);
+    return view;
 }
 
 export function bindNativeMaterialSlots (component: UIRenderer): void {
@@ -74,7 +144,9 @@ export function bindNativeMaterialSlots (component: UIRenderer): void {
     for (let i = 0; i < shared.length; i++) {
         if (i === 0 && owner._customMaterial) continue;
         owner._native.setSharedMaterial(shared[i], i);
-        if (instances[i]) owner._native.setMaterialInstance(instances[i], i);
+    }
+    for (let i = 0; i < instances.length; i++) {
+        if (instances[i]) owner._native.writeMaterialSlot(false, i, instances[i]);
     }
     syncNativeMaterialSlots(component);
 }
@@ -94,11 +166,15 @@ export function patchNativeMaterialAPIs (Component: typeof UIRenderer): void {
     const base = Object.getPrototypeOf(proto);
     Object.assign(proto, {
         getSharedMaterial (this: Owner, index = 0): Material | null {
-            return this._native ? this._native.getSharedMaterial(index) : base.getSharedMaterial.call(this, index);
+            if (!this._native) return base.getSharedMaterial.call(this, index);
+            const material = this._native.getSharedMaterial(index);
+            if (material === null && index >= 0 && index < this._materials.length && this._materials[index] === undefined) return this._materials[index];
+            return material;
         },
         setSharedMaterial (this: Owner, material: Material | null, index: number, forceUpdate = false): void {
             if (!this._native) { base.setSharedMaterial.call(this, material, index, forceUpdate); return; }
             this._native.setSharedMaterial(material, index, forceUpdate);
+            this._materials[index] = material;
             syncNativeMaterialSlots(this);
         },
         getMaterialInstance (this: Owner, index = 0): MaterialInstance | null {
@@ -126,7 +202,7 @@ export function patchNativeMaterialAPIs (Component: typeof UIRenderer): void {
             configurable: true,
             get (this: Owner): (Material | null)[] {
                 if (this._native) syncNativeMaterialSlots(this);
-                return EDITOR ? this._materials.slice() : this._materials;
+                return EDITOR ? this._materials.slice() : materialView(this, true);
             },
             set (this: Owner, values: (Material | null)[]) {
                 const shared = values.slice();
@@ -140,8 +216,14 @@ export function patchNativeMaterialAPIs (Component: typeof UIRenderer): void {
             configurable: true,
             get (this: Owner): (Material | MaterialInstance | null)[] {
                 if (this._native) syncNativeMaterialSlots(this);
-                for (let i = 0; i < this._materials.length; i++) this.getMaterialInstance(i);
-                return this._materialInstances;
+                for (let i = 0; i < this._materials.length; i++) {
+                    if (!this._native) this._materialInstances[i] = this.getMaterialInstance(i);
+                    else if (this._materials[i]) this._native.getMaterialInstance(i);
+                    else this._native.writeMaterialSlot(false, i, null);
+                }
+                if (this._native) syncNativeMaterialSlots(this);
+                for (let i = 0; i < this._materials.length; i++) this._materialInstances[i] ??= null;
+                return materialView(this, false);
             },
             set (this: Owner, values: (Material | MaterialInstance | null)[]) {
                 const instances = values.slice();

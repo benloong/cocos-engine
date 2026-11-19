@@ -131,11 +131,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.cpp",
-      "sha256": "af675682ca522cf279041a2a35b4d399a0952c506022e95a5f19da0b985eb704"
+      "sha256": "4107cc1d941d5855574f1bf77d2c9d7e8ae34530d487875b479c0d28e60cf75d"
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "d07543f803c59dfd7cbe69708c9be21e510d8335d06dd6adf751f4183f2c8d12"
+      "sha256": "85a9199ad7ae043837c383f9af27d32d044045a4246a2069b6b21ed7ff1e614d"
     },
     {
       "file": "native/cocos/2d/framework/UIRendererManager.cpp",
@@ -15977,8 +15977,8 @@
     },
     {
       "file": "cocos/2d/framework/native-ui-materials.ts",
-      "sha256": "9b0c0f3c5d51d013b773f893b3eed0710b93bc0c013633f5431dbf70589c7bdf",
-      "printedCodeLines": 143,
+      "sha256": "fe74e70cc262060986a052dc682e5bf288babcd16a3feea4322b96a305f40657",
+      "printedCodeLines": 248,
       "runtimeImports": [
         "internal:constants",
         "../../core"
@@ -15987,68 +15987,93 @@
       "nativeCalls": [
         {
           "expression": "owner._native?.resizeMaterials",
-          "line": 45
+          "line": 49
         },
         {
           "expression": "owner._native.getSharedMaterialCount",
-          "line": 51
+          "line": 55
         },
         {
-          "expression": "owner._native.getRenderMaterial",
-          "line": 53
+          "expression": "owner._native.getMaterialInstanceCount",
+          "line": 56
+        },
+        {
+          "expression": "owner._native.getMaterialInstanceSlot",
+          "line": 58
         },
         {
           "expression": "owner._native.getSharedMaterial",
-          "line": 63
+          "line": 68
+        },
+        {
+          "expression": "component._native.resizeMaterialArray",
+          "line": 105
+        },
+        {
+          "expression": "component._native.writeMaterialSlot",
+          "line": 108
         },
         {
           "expression": "owner._native.setMaterial",
-          "line": 73
+          "line": 143
         },
         {
           "expression": "owner._native.setSharedMaterial",
-          "line": 76
+          "line": 146
         },
         {
-          "expression": "owner._native.setMaterialInstance",
-          "line": 77
+          "expression": "owner._native.writeMaterialSlot",
+          "line": 149
         },
         {
           "expression": "owner._native.resizeMaterials",
-          "line": 84
+          "line": 156
         },
         {
           "expression": "this._native.getSharedMaterial",
-          "line": 97
+          "line": 170
         },
         {
           "expression": "this._native.setSharedMaterial",
-          "line": 101
+          "line": 176
         },
         {
           "expression": "this._native.getMaterialInstance",
-          "line": 106
+          "line": 182
         },
         {
           "expression": "this._native.setMaterialInstance",
-          "line": 117
+          "line": 193
         },
         {
           "expression": "this._native.getRenderMaterial",
-          "line": 121
+          "line": 197
+        },
+        {
+          "expression": "this._native.getMaterialInstance",
+          "line": 221
+        },
+        {
+          "expression": "this._native.writeMaterialSlot",
+          "line": 222
         }
       ],
       "allocations": [],
       "loops": [
         42,
-        52,
-        62,
-        74,
-        134,
-        135,
-        143,
-        149,
-        150
+        46,
+        57,
+        67,
+        71,
+        93,
+        144,
+        148,
+        210,
+        211,
+        219,
+        225,
+        231,
+        232
       ]
     },
     {

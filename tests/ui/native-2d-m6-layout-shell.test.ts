@@ -7,7 +7,7 @@ const nativeGraphics = {
     setNode: jest.fn(), setUITransform: jest.fn(), setPriority: jest.fn(), setEnabled: jest.fn(),
     setLineWidth: jest.fn(), setFillColor: jest.fn(), setStrokeColor: jest.fn(), setMaterial: jest.fn(),
     setLineJoin: jest.fn(), setLineCap: jest.fn(), setMiterLimit: jest.fn(), setColorRGBA: jest.fn(),
-    getSharedMaterialCount: () => 0, getSharedMaterial: () => null, getRenderMaterial: () => null,
+    getMaterialInstanceCount: () => 0, getSharedMaterialCount: () => 0, getSharedMaterial: () => null, getRenderMaterial: () => null,
     setSharedMaterial: jest.fn(), setMaterialInstance: jest.fn(), resizeMaterials: jest.fn(),
     fillRect: jest.fn(), moveTo: jest.fn(), lineTo: jest.fn(), stroke: jest.fn(),
 };

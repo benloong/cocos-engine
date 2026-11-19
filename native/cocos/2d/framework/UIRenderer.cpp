@@ -96,11 +96,46 @@ void UIRenderer::setPriority(int32_t priority) {
     _priority = priority;
 }
 
+Material *UIRenderer::getMaterialInstanceSlot(uint32_t index) const {
+    if (index == 0) return _materialInstance.get();
+    return index < _extraMaterialInstances.size() ? _extraMaterialInstances[index].get() : nullptr;
+}
+
+void UIRenderer::writeMaterialSlot(bool shared, uint32_t index, Material *material) {
+    auto &slots = shared ? _materials : _extraMaterialInstances;
+    if (slots.size() <= index) slots.resize(static_cast<size_t>(index) + 1);
+    if (shared || index != 0) slots[index] = material;
+    if (index == 0) {
+        if (shared) {
+            _useBuiltinMaterial = false;
+            _material = material;
+        } else {
+            _materialInstance = material;
+        }
+        onMaterialChanged();
+        markRenderDirty();
+    }
+}
+
+void UIRenderer::resizeMaterialArray(bool shared, uint32_t size) {
+    auto &slots = shared ? _materials : _extraMaterialInstances;
+    slots.resize(size);
+    if (size == 0) {
+        if (shared) {
+            _useBuiltinMaterial = false;
+            _material = nullptr;
+        } else {
+            _materialInstance = nullptr;
+        }
+        onMaterialChanged();
+        markRenderDirty();
+    }
+}
+
 Material *UIRenderer::getMaterialInstance(uint32_t index) const {
-    if (index == 0 && _materialInstance) return _materialInstance.get();
-    if (index > 0 && index < _extraMaterialInstances.size() && _extraMaterialInstances[index]) return _extraMaterialInstances[index].get();
     auto *parent = getSharedMaterial(index);
     if (!parent) return nullptr;
+    if (auto *instance = getMaterialInstanceSlot(index)) return instance;
     if (index >= _extraMaterialInstances.size()) _extraMaterialInstances.resize(index + 1);
     auto &instance = index == 0 ? _materialInstance : _extraMaterialInstances[index];
     IMaterialInstanceInfo info; info.parent = parent; info.subModelIdx = index;
@@ -128,8 +163,7 @@ Material *UIRenderer::getBuiltinMaterial() const {
 }
 
 Material *UIRenderer::getRenderMaterial(uint32_t index) const {
-    if (index == 0 && _materialInstance) return _materialInstance.get();
-    if (index > 0 && index < _extraMaterialInstances.size() && _extraMaterialInstances[index]) return _extraMaterialInstances[index].get();
+    if (auto *instance = getMaterialInstanceSlot(index)) return instance;
     return getSharedMaterial(index);
 }
 
