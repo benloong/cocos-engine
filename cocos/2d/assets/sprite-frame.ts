@@ -25,6 +25,7 @@
  THE SOFTWARE.
 */
 
+import { cloneFrameVertices, deserializeFrameVertices, serializeFrameVertices, type IVertices, type IVerticesSerialize } from './sprite-frame-vertices';
 import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { ccclass } from 'cc.decorator';
 import { EDITOR, NODEJS, TEST, BUILD } from 'internal:constants';
@@ -60,25 +61,6 @@ enum MeshType {
 export interface IUV {
     u: number;
     v: number;
-}
-
-interface IVertices {
-    rawPosition: Vec3[]; // Original position of the vertex, pixel value
-    positions: number[]; // The position of the vertex after being affected by the attribute
-    indexes: number[]; // IB
-    uv: number[]; // Pixel uv value
-    nuv: number[]; // Normalized uv value
-    minPos: Vec3;
-    maxPos: Vec3;
-}
-
-interface IVerticesSerialize { // hack for format
-    rawPosition: number[];
-    indexes: number[];
-    uv: number[];
-    nuv: number[];
-    minPos: Vec3;
-    maxPos: Vec3;
 }
 
 interface ISpriteFramesSerializeData {
@@ -1212,23 +1194,6 @@ export class SpriteFrame extends Asset {
                 }
             }
 
-            let vertices;
-            if (this.vertices) {
-                const posArray = [];
-                for (let i = 0; i < this.vertices.rawPosition.length; i++) {
-                    const pos = this.vertices.rawPosition[i];
-                    vec3ToArray(posArray, pos, 3 * i);
-                }
-                vertices = {
-                    rawPosition: posArray,
-                    indexes: this.vertices.indexes,
-                    uv: this.vertices.uv,
-                    nuv: this.vertices.nuv,
-                    minPos: { x: this.vertices.minPos.x, y: this.vertices.minPos.y, z: this.vertices.minPos.z },
-                    maxPos: { x: this.vertices.maxPos.x, y: this.vertices.maxPos.y, z: this.vertices.maxPos.z },
-                };
-            }
-
             const serialize = {
                 name: this._name,
                 atlas: ctxForExporting ? undefined : this._atlasUuid,  // strip from json if exporting
@@ -1237,7 +1202,7 @@ export class SpriteFrame extends Asset {
                 originalSize,
                 rotated: this._rotated,
                 capInsets: this._capInsets,
-                vertices,
+                vertices: serializeFrameVertices(this.vertices),
                 texture: (!ctxForExporting && texture) || undefined,
                 packable: this._packable,
                 pixelsToUnit: this._pixelsToUnit,
@@ -1304,22 +1269,7 @@ export class SpriteFrame extends Asset {
 
         const vertices = data.vertices;
         if (vertices) {
-            if (!self.vertices) {
-                self.vertices = {
-                    rawPosition: [],
-                    positions: [],
-                    indexes: vertices.indexes,
-                    uv: vertices.uv,
-                    nuv: vertices.nuv,
-                    minPos: v3(vertices.minPos.x, vertices.minPos.y, vertices.minPos.z),
-                    maxPos: v3(vertices.maxPos.x, vertices.maxPos.y, vertices.maxPos.z),
-                };
-            }
-            self.vertices.rawPosition.length = 0;
-            const rawPosition = vertices.rawPosition;
-            for (let i = 0; i < rawPosition.length; i += 3) {
-                self.vertices.rawPosition.push(v3(rawPosition[i], rawPosition[i + 1], rawPosition[i + 2]));
-            }
+            self.vertices = deserializeFrameVertices(vertices, self.vertices);
             self._updateMeshVertices();
         }
     }
@@ -1331,16 +1281,7 @@ export class SpriteFrame extends Asset {
     public clone (): SpriteFrame {
         const self = this;
         const sp = new SpriteFrame();
-        const v = self.vertices;
-        sp.vertices = v ? {
-            rawPosition: v.rawPosition.slice(0),
-            positions: v.positions.slice(0),
-            indexes: v.indexes.slice(0),
-            uv: v.uv.slice(0),
-            nuv: v.nuv.slice(0),
-            minPos: v.minPos.clone(),
-            maxPos: v.maxPos.clone(),
-        } : null as any;
+        sp.vertices = cloneFrameVertices(self.vertices);
         sp.uv.splice(0, sp.uv.length, ...self.uv);
         sp.unbiasUV.splice(0, sp.unbiasUV.length, ...self.unbiasUV);
         sp.uvSliced.splice(0, sp.uvSliced.length, ...self.uvSliced);

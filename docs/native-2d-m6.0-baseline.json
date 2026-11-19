@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "4d69d8e1bec9ac10baf73fd3382496e237db3b77b1b35183545d9b54f1473c19"
+      "sha256": "7e1a22f50bc0b91d31d110e015044445560786533a5e8a73619711cb881025d7"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
@@ -403,6 +403,7 @@
       "cocos/2d/assets/index.ts",
       "cocos/2d/assets/label-atlas.jsb.ts",
       "cocos/2d/assets/sprite-atlas.jsb.ts",
+      "cocos/2d/assets/sprite-frame-vertices.ts",
       "cocos/2d/assets/sprite-frame.jsb.ts",
       "cocos/2d/assets/ttf-font.jsb.ts",
       "cocos/2d/components/deprecated.ts",
@@ -471,6 +472,7 @@
       "cocos/core/index.ts",
       "cocos/core/math/color.ts",
       "cocos/core/math/vec2.ts",
+      "cocos/core/math/vec3.ts",
       "cocos/game/director.ts",
       "cocos/game/index.ts",
       "cocos/gfx/base/define.ts",
@@ -2528,6 +2530,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
@@ -2569,6 +2572,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -4292,6 +4296,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/sprite.jsb.ts",
@@ -4337,6 +4342,7 @@
           "cocos/core/index.ts",
           "cocos/core/math/color.ts",
           "cocos/core/math/vec2.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -7291,6 +7297,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/label.jsb.ts",
@@ -7334,6 +7341,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -8572,6 +8580,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/graphics.jsb.ts",
@@ -8616,6 +8625,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -10067,6 +10077,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/graphics.jsb.ts",
@@ -10110,6 +10121,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -12012,6 +12024,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/label.jsb.ts",
@@ -12056,6 +12069,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -12447,6 +12461,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/label-outline.ts",
@@ -12491,6 +12506,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -12669,6 +12685,7 @@
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/label-shadow.ts",
@@ -12713,6 +12730,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
           "cocos/gfx/index.jsb.ts",
@@ -13058,6 +13076,7 @@
         "within2d": [
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
@@ -13068,6 +13087,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/gfx/index.jsb.ts",
           "cocos/native-binding/decorators.ts"
         ],
@@ -13112,6 +13132,7 @@
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
@@ -13122,6 +13143,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/gfx/index.jsb.ts",
           "cocos/native-binding/decorators.ts"
         ],
@@ -14197,6 +14219,7 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
@@ -14207,6 +14230,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/gfx/index.jsb.ts",
           "cocos/native-binding/decorators.ts"
         ],
@@ -14582,11 +14606,27 @@
       ]
     },
     {
+      "file": "cocos/2d/assets/sprite-frame-vertices.ts",
+      "sha256": "ba0072d68373bcb7c7693f91e07a477131c859de582b291abb7f865b2aa174d3",
+      "printedCodeLines": 61,
+      "runtimeImports": [
+        "../../core/math/vec3"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        52,
+        87
+      ]
+    },
+    {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "2659bd765c18403d477178dbcc64759959279b021c10ce5b3f6b0a12a6ff2055",
-      "printedCodeLines": 264,
+      "sha256": "5ab9a0b0c336673d60b6485d64dba06e6aeda56d2963e404f11d90a120b903f7",
+      "printedCodeLines": 272,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
+        "./sprite-frame-vertices",
         "../../core",
         "../../asset/assets/asset",
         "../../asset/assets/texture-base",
@@ -14598,19 +14638,20 @@
       "nativeCalls": [
         {
           "expression": "jsb.Asset.prototype._ctor.apply",
-          "line": 82
+          "line": 83
         }
       ],
       "allocations": [],
       "loops": [
-        69
+        70
       ]
     },
     {
       "file": "cocos/2d/assets/sprite-frame.ts",
-      "sha256": "53302796a237e88f8f2b9c975f715d50bb06203b8e54a941278da1e3c192efd0",
-      "printedCodeLines": 934,
+      "sha256": "56262ff57f5aaf802b203892e9db4440a183033fac9140ed335b79a897f1a33a",
+      "printedCodeLines": 878,
       "runtimeImports": [
+        "./sprite-frame-vertices",
         "../utils/dynamic-atlas/atlas",
         "cc.decorator",
         "internal:constants",
@@ -14629,13 +14670,11 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        981,
+        963,
+        965,
         983,
-        1001,
-        1003,
-        1218,
-        1320,
-        1541
+        985,
+        1482
       ]
     },
     {

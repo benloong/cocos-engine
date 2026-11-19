@@ -180,6 +180,18 @@ public:
         const auto uv = _data.calculateUV(static_cast<float>(_texture->getWidth()), static_cast<float>(_texture->getHeight()));
         return {uv.begin(), uv.end()};
     }
+    // Authored coordinates are in pixels. Pivot and pixelsToUnit affect XY only.
+    std::vector<double> transformMeshPositions(const std::vector<double> &raw) const {
+        std::vector<double> positions(raw);
+        const double units = 1.0 / _data.pixelsToUnit;
+        const double tx = (0.5 - _data.pivotX) * _data.width * units;
+        const double ty = (0.5 - _data.pivotY) * _data.height * units;
+        for (size_t i = 0; i + 2 < positions.size(); i += 3) {
+            positions[i] = raw[i] * units + tx;
+            positions[i + 1] = raw[i + 1] * units + ty;
+        }
+        return positions;
+    }
     std::vector<float> getTrimmedBorder() const {
         const float halfWidth = (_data.originalWidth - _data.width) * 0.5F;
         const float halfHeight = (_data.originalHeight - _data.height) * 0.5F;

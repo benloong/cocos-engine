@@ -90,6 +90,10 @@ check(sprite.sharedMaterials.length===0&&sprite.materials.length===0&&sprite.get
 sprite.customMaterial=null;
 check(sprite.getSharedMaterial(0)===gray,'custom clear explicitly restores builtin');
 const frame=new jsb.SpriteFrame();
+const polygon=new jsb.SpriteFrame();
+polygon.setRect(0,0,40,36);polygon.setPixelsToUnit(4);polygon.setPivotX(0.25);polygon.setPivotY(0.75);
+const positions=polygon.transformMeshPositions([-20,-18,1,20,-18,2,0,18,0]);
+check(JSON.stringify(positions)===JSON.stringify([-2.5,-6.75,1,7.5,-6.75,2,2.5,2.25,0]),'authored polygon pivot and scale');
 sprite.spriteFrame=frame;check(events===1,'frame without texture retained with editor event');
 const texture=new jsb.Texture2D();texture.create(4,4);frame.resetWithTexture(texture);
 sprite._native.prepare(1);check(transform.getWidth()===4,'late texture/frame update');

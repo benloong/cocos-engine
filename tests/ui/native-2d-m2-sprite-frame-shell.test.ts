@@ -1,4 +1,5 @@
 import { cclegacy, Rect, Size, Vec2 } from '../../cocos/core';
+import { SpriteFrame as WebSpriteFrame } from '../../cocos/2d/assets/sprite-frame';
 
 const defaults = {
     RectX: 0, RectY: 0, RectWidth: 0, RectHeight: 0,
@@ -57,6 +58,31 @@ proto.copyFrom = jest.fn(function (other) { this.data = { ...other.data }; this.
 proto.getUV = jest.fn(() => [0, 1, 1, 1, 0, 0, 1, 0]);
 proto.getSlicedUV = jest.fn(() => [0, 1, 0.25, 1, 0.75, 1, 1, 1]);
 const assetCtor = jest.fn();
+
+test('authored polygon vertices survive Web and native serialization and cloning', () => {
+    const vertices = {
+        rawPosition: [-20, -18, 1, 20, -18, 2, 0, 18, 0], indexes: [0, 2, 1],
+        uv: [0, 36, 40, 36, 20, 0], nuv: [0, 1, 1, 1, 0.5, 0],
+        minPos: { x: -20, y: -18, z: 0 }, maxPos: { x: 20, y: 18, z: 2 },
+    };
+    const data = { vertices, pixelsToUnit: 4, rect: new Rect(0, 0, 40, 36), pivot: new Vec2(0.25, 0.75) };
+    const positions = [-2.5, -6.75, 1, 7.5, -6.75, 2, 2.5, 2.25, 0];
+    proto.transformMeshPositions = jest.fn(() => positions.slice());
+    const frame = createFrame();
+    const web = new WebSpriteFrame();
+    web._deserialize(data, null);
+    frame._deserialize(data);
+    expect(proto.transformMeshPositions).toHaveBeenCalledWith(vertices.rawPosition);
+    expect(web.vertices!.positions).toEqual(positions);
+    expect(frame.vertices).toEqual(web.vertices);
+    expect(frame._serialize().vertices).toEqual(vertices);
+    const clone = frame.clone();
+    expect(clone.vertices).toEqual(web.clone().vertices);
+    clone.vertices.indexes.pop();
+    clone.vertices.minPos.x = 0;
+    expect(frame.vertices.indexes).toEqual([0, 2, 1]);
+    expect(frame.vertices.minPos.x).toBe(-20);
+});
 
 beforeAll(() => {
     (global as any).jsb = { Asset: { prototype: { _ctor: assetCtor } }, SpriteFrame: NativeFrame };

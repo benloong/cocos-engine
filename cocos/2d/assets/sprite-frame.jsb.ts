@@ -23,6 +23,7 @@
 */
 
 import { Atlas } from '../utils/dynamic-atlas/atlas';
+import { cloneFrameVertices, deserializeFrameVertices, serializeFrameVertices } from './sprite-frame-vertices';
 import { cclegacy, isValid, js, Rect, Size, Vec2, Vec4 } from '../../core';
 import '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
@@ -80,6 +81,7 @@ function nativeView<T extends object> (frame: any, view: T, fields: Record<strin
 
 spriteFrameProto._ctor = function () {
     jsb.Asset.prototype._ctor.apply(this, arguments);
+    this.vertices = null;
 };
 
 function detachReplacedTexture (frame: any, texture: TextureBase | null): void {
@@ -224,6 +226,7 @@ spriteFrameProto._onPreDestroy = function (): void {
 spriteFrameProto.clone = function (): SpriteFrame {
     const frame = new SpriteFrame();
     (frame as any).copyFrom(this);
+    frame.vertices = cloneFrameVertices(this.vertices);
     Atlas.trackClone(this, frame);
     return frame;
 };
@@ -247,6 +250,7 @@ spriteFrameProto._serialize = function (ctxForExporting?: any): any {
         pixelsToUnit: this.pixelsToUnit,
         pivot: { x: this.pivot.x, y: this.pivot.y },
         meshType: this.meshType,
+        vertices: serializeFrameVertices(this.vertices),
     };
 };
 
@@ -263,6 +267,10 @@ spriteFrameProto._deserialize = function (data: any, handle: any): void {
     this.pixelsToUnit = data.pixelsToUnit ?? 100;
     this.meshType = data.meshType ?? 0;
     this.pivot = data.pivot ?? new Vec2(0.5, 0.5);
+    if (data.vertices) {
+        this.vertices = deserializeFrameVertices(data.vertices, this.vertices);
+        this.vertices.positions = this.transformMeshPositions(data.vertices.rawPosition);
+    }
     if (data.capInsets) this.setInsets(data.capInsets[0], data.capInsets[2], data.capInsets[1], data.capInsets[3]);
     if (data.texture && handle?.result) {
         handle.result.push(this, '_textureSource', data.texture, js.getClassId(Texture2D));
