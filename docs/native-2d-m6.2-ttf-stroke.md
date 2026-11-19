@@ -81,3 +81,24 @@ Windows Debug、Release 和 Chrome 157 使用同一份 Thonburi.ttf，重复上�
 Windows 现在对小型、单轮廓、轴对齐矩形的直立合成粗体填充，在 LCD 滤波前以相交面积计算采样覆盖率。四个字号（12、24、36、48 px）各 64 个起点的 RGBA 与 Web 全部逐字节一致，改动前最大通道差依次为 9、14、13、69。I 和 O 的 64 组对照中，其余 60 组 Windows 图像哈希与原基线一致。可用上节的采集命令复核。[原始对照基线](./native-2d-m6-ttf-origins.json)
 
 同轮真实 RichText 应用的 Windows Debug 与 Release 逐图、逐布局一致。相对存档，粗体超差像素由 467 降至 448，嵌套样式由 573 降至 553，描边仍为 202。三组最大差分别为 20、47、30。其余九组通过，全部 12 组布局一致。本轮 Web 的 12 张图像与存档逐字节相同。夹具快照为 aaafbd43c198603707676d22b3e1534d173a96ca6513cbac93fd5f24ceca8433。[场景对照基线](./native-2d-m6-richtext-configurations.json)
+
+## 同一字形轮廓按绘制阶段重放
+
+真实 RichText 场景用 24 px 的白色 Atlas 叠加绿色描边。Windows 与 Web 的 202 个超差像素都在绿色通道。其中 192 个位置两端的红色通道均不超过 1，红蓝通道全图最大差为 1，alpha 完全相同。绿色差值（Windows 减 Web）范围为 −16 至 +30。该统计来自应用快照 `46e5a8a11398ab1a085bad4cc3a95af1b823a5c40e5ebbce55cbe790f9f12129`。
+
+独立测试绘制 Thonburi 的绿色 Atlas 123，笔宽 4 px、圆连接，覆盖 12、24、36、48 px 和常规、粗体、斜体。每个 Windows 配置分别采集 96 个可见字形，浏览器在横向四倍采样的透明 Canvas 上重放路径，再将 alpha 交回原生代码执行同一套滤波、预混合与逐字形合成。对照为 Chrome 的 strokeText。表中超差按原始 alpha 绝对差大于 1 统计，独立采集的 Windows Debug 和 Release 各阶段 RGBA 哈希均一致。[逐张数据与哈希](./native-2d-m6-stroke-replay.json)
+
+| 交给栅格器的输入 | 12 张图的超差像素合计 | 最大 alpha 差 | 24 px 常规超差像素 | 24 px 常规最大差 |
+|---|---:|---:|---:|---:|
+| 生产路径，Direct2D 扩张、展平、WIC 填充 | 5835 | 86 | 333 | 86 |
+| Direct2D 扩张并展平，Canvas 填充 | 5050 | 86 | 305 | 86 |
+| Direct2D 扩张，保留贝塞尔曲线，Canvas 填充 | 4872 | 86 | 297 | 86 |
+| DirectWrite 原始轮廓，Canvas 扩张并填充 | 40 | 40 | 0 | 1 |
+
+在这组输入上，把已扩张的轮廓交给同一浏览器填充仍有 4872 个超差像素。将描边扩张也交给浏览器后减少到 40 个。24 px 常规的 333 个超差像素全部进入容差。生产实现应优先核对笔宽偏移后曲线和圆连接的构造。其余 40 个像素中有 32 个在斜体，仍需单独定位。独立对照覆盖 7/12 张图；此实验保留生产实现，真实 RichText 严格像素仍为 9/12。
+
+在 `native/tests/2d-poc/native/out` 和 `out-release2` 分别构建 `cc2d_ttf_raster`、`cc2d_ttf_stroke_replay` 后执行下列命令。输出目录包含每一阶段的轮廓、alpha 掩码、RGBA 和带哈希的比较报告。
+
+```powershell
+node native/tests/2d-poc/compare-ttf-stroke-replay.cjs
+```

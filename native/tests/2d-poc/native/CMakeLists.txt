@@ -38,14 +38,22 @@ if(WIN32)
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs"
                 "${CMAKE_CURRENT_LIST_DIR}/../../../cocos/platform/win32/modules/DirectWriteFont.cpp"
         VERBATIM)
-    foreach(CC2D_VARIANT IN ITEMS geometry geometry_filtered design_units)
+    set(CC2D_STROKE_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/ttf-geometry/DirectWriteFont-stroke-replay.cpp")
+    add_custom_command(OUTPUT "${CC2D_STROKE_SOURCE}"
+        COMMAND "${CC2D_NODE_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs" "${CMAKE_CURRENT_BINARY_DIR}/ttf-geometry" --stroke-replay
+        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs"
+                "${CMAKE_CURRENT_LIST_DIR}/../../../cocos/platform/win32/modules/DirectWriteFont.cpp"
+        VERBATIM)
+    foreach(CC2D_VARIANT IN ITEMS geometry geometry_filtered design_units stroke_replay)
         if(CC2D_VARIANT STREQUAL design_units)
             set(variant_source "${CC2D_DESIGN_SOURCE}")
+        elseif(CC2D_VARIANT STREQUAL stroke_replay)
+            set(variant_source "${CC2D_STROKE_SOURCE}")
         else()
             set(variant_source "${CC2D_GEOMETRY_SOURCE}")
         endif()
         add_executable(cc2d_ttf_${CC2D_VARIANT} EXCLUDE_FROM_ALL ../test_ttf_raster.cpp "${variant_source}")
-        target_include_directories(cc2d_ttf_${CC2D_VARIANT} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../../cocos")
+        target_include_directories(cc2d_ttf_${CC2D_VARIANT} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../../cocos" "${CMAKE_CURRENT_LIST_DIR}/..")
         target_compile_definitions(cc2d_ttf_${CC2D_VARIANT} PRIVATE NOMINMAX CC2D_TTF_GEOMETRY_FILTERED=$<STREQUAL:${CC2D_VARIANT},geometry_filtered>)
         target_link_libraries(cc2d_ttf_${CC2D_VARIANT} PRIVATE dwrite d2d1 ole32 windowscodecs)
     endforeach()

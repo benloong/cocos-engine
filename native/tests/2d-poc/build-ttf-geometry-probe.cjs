@@ -43,11 +43,27 @@ if (designUnits) {
         }
         const float shear = italic`);
     source = '#include <cstdlib>\n' + source;
+} else if (process.argv[3] === '--stroke-replay') {
+    source = '#include "ttf-stroke-replay.h"\n' + source;
+    replaceOnce('hr = shape->Simplify', `static unsigned sequence = 0;
+        const auto stem = std::to_string(++sequence);
+        const char *replay = std::getenv("CC2D_STROKE_REPLAY");
+        if (!replay) {
+            if (lineWidth <= 0 || join != DirectWriteFont::StrokeJoin::ROUND) return E_INVALIDARG;
+            hr = stroke_replay::capture(stem + ".lines.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, 0, columns * scale, rows);
+            if (SUCCEEDED(hr)) hr = stroke_replay::capture(stem + ".widened.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, 0, columns * scale, rows);
+            if (SUCCEEDED(hr)) hr = stroke_replay::capture(stem + ".center.path", strokePath, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, thickness, columns * scale, rows);
+            if (FAILED(hr)) return hr;
+        }
+        hr = shape->Simplify`);
+    replaceOnce('mask.bounds = {std::max<LONG>', `if (replay && FAILED(stroke_replay::replaceAlpha(stem + "." + replay + ".alpha", pixels))) return E_FAIL;
+        mask.bounds = {std::max<LONG>`);
 } else {
     replaceOnce('constexpr bool SNAP_OUTLINE_EDGES = true;', 'constexpr bool SNAP_OUTLINE_EDGES = false;');
     replaceOnce('constexpr bool FILTER_OUTLINE_MASK = true;', 'constexpr bool FILTER_OUTLINE_MASK = CC2D_TTF_GEOMETRY_FILTERED != 0;');
 }
 fs.mkdirSync(output, { recursive: true });
-const file = path.join(output, designUnits ? 'DirectWriteFont-design-units.cpp' : 'DirectWriteFont-geometry.cpp');
+const variant = designUnits ? 'design-units' : process.argv[3] === '--stroke-replay' ? 'stroke-replay' : 'geometry';
+const file = path.join(output, 'DirectWriteFont-' + variant + '.cpp');
 fs.writeFileSync(file, source);
 console.log(file);
