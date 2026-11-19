@@ -83,9 +83,8 @@ export class BitmapGpuProbe {
                         const entity = backend.getRenderEntity();
                         if (entity.staticDrawInfoSize !== 1) throw new Error('Expected one bitmap draw');
                         const draw = entity.getStaticRenderDrawInfo(0);
-                        if (backend.getBitmapDiagnosticBuildCount() !== 0
-                            || draw.vbCount !== 8 || draw.ibCount !== 12
-                            || draw.texture !== frame.texture.getGFXTexture()) throw new Error('Bitmap is not sampling its current GPU atlas directly: ' + JSON.stringify({ stage, diagnostics: backend.getBitmapDiagnosticBuildCount(), draws: entity.staticDrawInfoSize, vertices: draw.vbCount, indices: draw.ibCount, textureMatches: draw.texture === frame.texture.getGFXTexture(), submittedId: draw.texture?.objectID, expectedId: frame.texture.getGFXTexture()?.objectID, submittedNull: draw.texture == null, expectedNull: frame.texture.getGFXTexture() == null }));
+                        if (draw.vbCount !== 8 || draw.ibCount !== 12
+                            || draw.texture !== frame.texture.getGFXTexture()) throw new Error('Bitmap is not sampling its current GPU atlas directly: ' + JSON.stringify({ stage, draws: entity.staticDrawInfoSize, vertices: draw.vbCount, indices: draw.ibCount, textureMatches: draw.texture === frame.texture.getGFXTexture(), submittedId: draw.texture?.objectID, expectedId: frame.texture.getGFXTexture()?.objectID, submittedNull: draw.texture == null, expectedNull: frame.texture.getGFXTexture() == null }));
                     }
                     const file = name + '-' + stage;
                     if (sys.isNative) {
@@ -172,8 +171,7 @@ export class BitmapGpuProbe {
                             || overflow.vbCount !== 17872 || overflow.ibCount !== 26808) throw new Error('Large bitmap GPU chunks truncated');
                         label.string = ''; await wait();
                         if (entity.staticDrawInfoSize !== 0 || overflow.texture || overflow.material) throw new Error('Bitmap clear retains submissions');
-                        if (backend.getBitmapDiagnosticBuildCount() !== 0) throw new Error('Large bitmap rendered through CPU diagnostic pixels');
-                        console.log('M6_BITMAP_LARGE ' + JSON.stringify({ glyphs: 70000, chunks: 5, cleared: true, diagnostics: 0 }));
+                        console.log('M6_BITMAP_LARGE ' + JSON.stringify({ glyphs: 70000, chunks: 5, cleared: true }));
                     }
                     checks.push({ name, gpuOnly: sys.isNative, quads: 2 });
                 } finally {

@@ -122,10 +122,8 @@ public:
     float getContentHeight() const { return _lastContentHeight; }
     float getTextureHeight() const { return _lastTextureHeight; }
     int32_t getLineCount() const { return _lastLineCount; }
-    // Optional legacy CPU diagnostics. Bitmap rendering does not call these.
-    uint32_t getOpaquePixels() const { ensureBitmapDiagnostics(); return _lastOpaquePixels; }
+    uint32_t getOpaquePixels() const { return _lastOpaquePixels; }
     RenderEntity *getRenderEntity() const override { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
-    uint32_t getBitmapDiagnosticBuildCount() const { return _bitmapDiagnosticBuilds; }
 
     void setColor(const Color &color);
     void setColorRGBA(float r, float g, float b, float a);
@@ -157,11 +155,7 @@ private:
     void applyFontAsset();
     void clearRenderedData();
     void rebuildBitmapTexture();
-    void rasterizeBitmapDiagnostics();
-    void ensureBitmapDiagnostics() const;
     void syncBitmapAtlas();
-    bool _bitmapDiagnosticsDirty{false};
-    uint32_t _bitmapDiagnosticBuilds{0};
     void rebuildLetterTexture();
     void applyBitmapAtlas();
 

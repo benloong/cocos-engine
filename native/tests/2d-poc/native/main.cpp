@@ -376,7 +376,6 @@ void testBitmapGpuGeometry() {
     auto *draw = entity->getStaticRenderDrawInfo(0);
     check(draw && draw->getVbCount() == 8 && draw->getIbCount() == 12, "GPU bitmap submits one quad per glyph");
     check(draw && draw->getTexture() == source->getGFXTexture(), "GPU bitmap samples original atlas directly");
-    check(label.getBitmapDiagnosticBuildCount() == 0, "Rendering bitmap geometry does not build a CPU image");
     if (draw) checkNear(draw->getVDataBuffer()[3], 3.F/8.F, "Bitmap glyph UV includes frame origin");
     frame->setOffset(1, 0); frame->setOriginalSize(6, 6); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     draw = entity->getStaticRenderDrawInfo(0);
@@ -460,7 +459,6 @@ void testBitmapGpuGeometry() {
     checkGlyphDraws(17000, 2);
     check(entity->getStaticRenderDrawInfo(0)->getVbCount() == 65532 && entity->getStaticRenderDrawInfo(1)->getVbCount() == 2468,
           "Bitmap chunks respect 16-bit mesh-buffer limits");
-    check(label.getBitmapDiagnosticBuildCount() == 0, "Large GPU-only bitmap text never allocates diagnostic pixels");
     label.setString(std::string(70000, 'A')); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkGlyphDraws(70000, 5);
     check(entity->getRenderDrawInfoAt(4) == entity->getStaticRenderDrawInfo(4), "Batcher indexed access reaches owned overflow DrawInfo");
@@ -499,7 +497,7 @@ void testFrameConsumers() {
     label.addGlyph(65, 0, 0, 2, 2, 0, 0, 2);
     label.setString("A");
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getOpaquePixels() == 4, "BMFont consumes native SpriteFrame texture");
+    check(submittedTexturePixels(label.getRenderEntity()) == pixels, "BMFont consumes native SpriteFrame texture");
 
     cc::Node maskNode("frame-mask");
     cc::UITransform maskTransform(&maskNode);
@@ -548,7 +546,7 @@ void testFrameConsumers() {
     transparentTexture->setImage(transparentImage);
     frame->setTexture(transparentTexture);
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getOpaquePixels() == 0, "BMFont sees shared frame texture replacement");
+    check(submittedTexturePixels(label.getRenderEntity()) == transparentPixels, "BMFont sees shared frame texture replacement");
 }
 
 void testFontAssets() {
@@ -734,7 +732,12 @@ void testFontAssets() {
     label.setEnabled(true);
     check(label.isEnabled() && fontEntity->isEnabled(), "Label re-enable restores Batcher prepare eligibility");
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getOpaquePixels() == 4, "LabelAtlas native glyph renders even in CHAR mode");
+    const auto submitsGlyph = [&]() {
+        if (fontEntity->getStaticDrawInfoSize() != 1) return false;
+        auto *draw = fontEntity->getStaticRenderDrawInfo(0);
+        return draw->getTexture() == texture->getGFXTexture() && draw->getVbCount() == 4 && draw->getIbCount() == 6;
+    };
+    check(submitsGlyph(), "LabelAtlas native glyph renders even in CHAR mode");
     const auto originalAtlas = submittedTexturePixels(fontEntity);
     label.setColorRGBA(128,64,32,128); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     node.setActiveInHierarchy(true);
@@ -754,17 +757,17 @@ void testFontAssets() {
     { cc::Label second; second.setFontAsset(font); check(font->getRefCount() == refs + 2, "labels share font ownership"); }
     check(font->getRefCount() == refs + 1, "Label destructor releases font");
     font->setConfigJson("null"); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getOpaquePixels() == 0 && label.getContentWidth() == 0, "config revision clears stale render data");
+    check(fontEntity->getStaticDrawInfoSize() == 0 && label.getContentWidth() == 0, "config revision clears stale render data");
     font->setConfigJson(config); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getOpaquePixels() == 4, "config replacement refreshes existing Label");
+    check(submitsGlyph(), "config replacement refreshes existing Label");
     font->setSpriteFrame(nullptr); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getOpaquePixels() == 0, "frame detach clears Label");
+    check(fontEntity->getStaticDrawInfoSize() == 0, "frame detach clears Label");
     font->setSpriteFrame(frame);
     for (int i = 0; i < 1000; ++i) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(nullptr); }
     check(font->getRefCount() == refs, "repeated switching releases font ownership");
     label.setFontAsset(font); font->destroy(); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(font->isReleased() && !font->getSpriteFrame() && !font->getGlyphCount(), "destroy releases bitmap data immediately");
-    check(label.getOpaquePixels() == 0, "destroyed font clears attached Label");
+    check(fontEntity->getStaticDrawInfoSize() == 0, "destroyed font clears attached Label");
     label.setFontAsset(nullptr);
     const auto frameRefs = frame->getRefCount();
     for (int kind = 0; kind < 2; ++kind) {
@@ -773,19 +776,19 @@ void testFontAssets() {
             cycle->setConfigJson(config); cycle->setFontSize(2); cycle->setSpriteFrame(frame);
             check(frame->getRefCount() == frameRefs + 1, "bitmap font owns one atlas reference");
             label.setFontAsset(cycle); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-            check(label.getOpaquePixels() == 4, "new font cycle renders shared atlas");
+            check(submitsGlyph(), "new font cycle renders shared atlas");
             cycle->clearNativeData(); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-            check(label.getOpaquePixels() == 0 && frame->getRefCount() == frameRefs, "clear releases atlas and stale pixels");
+            check(fontEntity->getStaticDrawInfoSize() == 0 && frame->getRefCount() == frameRefs, "clear releases atlas and stale pixels");
             cycle->setConfigJson(config); cycle->setFontSize(2); cycle->setSpriteFrame(frame);
             cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-            check(label.getOpaquePixels() == 4, "cleared font can reload native data");
+            check(submitsGlyph(), "cleared font can reload native data");
             cycle->destroy(); cc::CCObject::deferredDestroy();
             const auto releasedRevision = cycle->getRevision();
             cycle->setSpriteFrame(frame); cycle->setFontSize(20); cycle->setFntDataStr("late");
             check(!cycle->setConfigJson(config), "destroyed font rejects late config");
             cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
             check(cycle->getRevision() == releasedRevision && cycle->getFntDataStr().empty(), "late writes do not mutate released font");
-            check(label.getOpaquePixels() == 0 && frame->getRefCount() == frameRefs, "destroyed cycle releases shared atlas");
+            check(fontEntity->getStaticDrawInfoSize() == 0 && frame->getRefCount() == frameRefs, "destroyed cycle releases shared atlas");
             label.setFontAsset(nullptr);
             check(cycle->getRefCount() == 1, "Label unbind releases final consumer reference");
         }

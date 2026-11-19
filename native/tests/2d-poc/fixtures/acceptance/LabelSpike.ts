@@ -1,4 +1,4 @@
-import { BitmapFont, builtinResMgr, Camera, Canvas, Color, director, ImageAsset, Label, LabelOutline, LabelShadow, Material, Node, Rect, RenderTexture, resources, Size, SpriteFrame, Texture2D, UITransform, Vec2 } from 'cc';
+import { BitmapFont, builtinResMgr, Camera, Canvas, Color, director, DirectorEvent, ImageAsset, Label, LabelOutline, LabelShadow, Material, Node, Rect, RenderTexture, resources, Size, SpriteFrame, Texture2D, UITransform, Vec2 } from 'cc';
 
 declare const n2d: any;
 
@@ -90,7 +90,7 @@ export class LabelSpike {
                     textureWidth: native?.getTextureWidth?.(),
                     textureHeight: native?.getTextureHeight?.(),
                     lines: native?.getLineCount?.(),
-                    opaque: native?.getOpaquePixels?.(),
+                    samplesFontAtlas: !!draw?.texture && draw.texture === bitmapFont.spriteFrame?.texture.getGFXTexture(),
                 })}`);
             }, 500);
         }
@@ -128,9 +128,15 @@ export class LabelSpike {
                 })}`);
             }, 300);
         }
+        const bitmapNodes: Node[] = [];
+        const syntheticBitmap = parent.getChildByName('M3BitmapLabel');
+        if (syntheticBitmap) bitmapNodes.push(syntheticBitmap);
+        let finishLoadingBitmap: () => void;
+        const bitmapLoaded = new Promise<void>(resolve => { finishLoadingBitmap = resolve; });
         resources.load('M3BitmapFont/OpenSans-Bold', BitmapFont, (err, realFont) => {
             if (err || !realFont) {
                 console.log(`M3_REAL_BMFONT_ERROR ${String(err)}`);
+                finishLoadingBitmap();
                 return;
             }
             const realTexture: any = realFont.spriteFrame?.texture;
@@ -161,12 +167,16 @@ export class LabelSpike {
             realLabel.string = 'Hello BMFont';
             setTimeout(() => {
                 const native = (realLabel as any)._native;
+                const entity = native?.getRenderEntity();
+                const draw = entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0) : null;
                 console.log(`M3_REAL_BMFONT ${JSON.stringify({
                     textureWidth: native?.getTextureWidth?.(),
                     textureHeight: native?.getTextureHeight?.(),
                     lines: native?.getLineCount?.(),
-                    opaque: native?.getOpaquePixels?.(),
+                    vertices: draw?.vbCount, samplesFontAtlas: !!draw?.texture && draw.texture === realFont.spriteFrame?.texture.getGFXTexture(),
                 })}`);
+                if (native) bitmapNodes.push(realNode);
+                finishLoadingBitmap();
             }, 500);
         });
         const asciiCharNode = new Node('M3CharAscii');
@@ -300,7 +310,7 @@ export class LabelSpike {
         });
 
         setTimeout(() => {
-            LabelSpike.capture([warmCaptureNode, created[1], created[2], created[0], asciiCharNode]);
+            void bitmapLoaded.then(() => LabelSpike.capture([warmCaptureNode, created[1], created[2], created[0], asciiCharNode, ...bitmapNodes]));
         }, 1500);
     }
 
@@ -345,7 +355,7 @@ export class LabelSpike {
                 state.node.active = state.node === nodes[index] || state.node === camera.node;
             }
             nodes[index].setPosition(0, 0, 0);
-            setTimeout(() => {
+            director.once(DirectorEvent.END_FRAME, () => {
                 if (!warm.has(nodes[index])) {
                     warm.add(nodes[index]);
                     step(index);
@@ -376,7 +386,7 @@ export class LabelSpike {
                     console.log(`M3_LABEL_PIXEL_ERROR ${String(error)}`);
                 }
                 step(index + 1);
-            }, 800);
+            });
         };
         step(0);
     }

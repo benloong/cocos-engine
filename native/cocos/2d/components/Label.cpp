@@ -26,7 +26,6 @@
 
 #include <algorithm>
 #include <memory>
-#include <unordered_map>
 #include <cmath>
 #include <cstdio>
 #include <vector>
@@ -39,7 +38,6 @@
 #include "2d/renderer/DynamicAtlas.h"
 #include "2d/renderer/LetterAtlas.h"
 #include "core/assets/AssetEnum.h"
-#include "core/assets/ImageAsset.h"
 #include "core/assets/Texture2D.h"
 #include "core/scene-graph/Node.h"
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
@@ -280,7 +278,6 @@ void Label::applyFontAsset() {
 }
 void Label::clearRenderedData() {
     _renderer.clearFrame();
-    _bitmapDiagnosticsDirty = false;
     _renderer.setEnabled(isEnabled());
     _frame = nullptr; _texture = nullptr;
     std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0;
@@ -651,9 +648,6 @@ void Label::syncBitmapAtlas() {
         _bitmapWidthSeen = width; _bitmapHeightSeen = height; _bitmapFormatSeen = format; markRenderDirty();
     }
 }
-void Label::ensureBitmapDiagnostics() const {
-    if (_bitmapDiagnosticsDirty && _bitmapAtlas) const_cast<Label *>(this)->rasterizeBitmapDiagnostics();
-}
 void Label::rebuildBitmapTexture() {
     const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
     const auto &glyphMap = _bitmapFont ? _bitmapFont->getGlyphMap() : _glyphMap;
@@ -691,125 +685,11 @@ void Label::rebuildBitmapTexture() {
     _lastAtlasX = frame->getRectX(); _lastAtlasY = frame->getRectY();
     _lastAtlasWidth = frame->getRectWidth(); _lastAtlasHeight = frame->getRectHeight();
     _texture = nullptr;
-    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _bitmapDiagnosticsDirty = true;
+    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0;
     if (!_frame || _frame == _ttfFrame) _frame = new SpriteFrame();
     _frame->copyFrom(frame);
     _renderer.setColor(_color);
     _renderer.setLabelQuads(_frame, std::move(quads));
-}
-void Label::rasterizeBitmapDiagnostics() {
-    _bitmapDiagnosticsDirty = false; ++_bitmapDiagnosticBuilds;
-    const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
-    const auto &glyphMap = _bitmapFont ? _bitmapFont->getGlyphMap() : _glyphMap;
-    const auto &kerningMap = _bitmapFont ? _bitmapFont->getKerningMap() : _kerning;
-    auto *atlasTexture = dynamic_cast<Texture2D *>(_bitmapAtlas->hasDynamicAtlasFrame()
-        ? _bitmapAtlas->getOriginalTexture() : _bitmapAtlas->getTexture());
-    ImageAsset *image = atlasTexture != nullptr ? atlasTexture->getImage() : nullptr;
-    if (image == nullptr || image->getData() == nullptr || image->getWidth() == 0U || image->getHeight() == 0U) {
-        _lastPixels.clear(); _lastOpaquePixels = 0;
-        return;
-    }
-
-    const float lineHeight = _bitmapLineHeight > 0.0F ? _bitmapLineHeight : _fontSize;
-    const float maxWidth = _transform != nullptr && _transform->getContentSize().x > 0.0F
-        ? _transform->getContentSize().x
-        : 100000.0F;
-    const float baselineRatio = 0.26F;
-
-    std::vector<std::vector<size_t>> lines;
-    lines.emplace_back();
-    float lineWidth = 0.0F;
-    float contentWidth = 0.0F;
-
-    int32_t previousCode = -1;
-    for (const std::string &codepoint : splitUtf8(_string)) {
-        if (codepoint == "\n") {
-            contentWidth = std::max(contentWidth, lineWidth);
-            lines.emplace_back();
-            lineWidth = 0.0F;
-            previousCode = -1;
-            continue;
-        }
-        const int32_t code = utf8CodePoint(codepoint);
-        const auto found = glyphMap.find(code);
-        if (found == glyphMap.end()) {
-            continue;
-        }
-        const Glyph &glyph = glyphs[found->second];
-        float kerning = 0.0F;
-        if (previousCode >= 0) {
-            const auto kern = kerningMap.find((static_cast<uint64_t>(static_cast<uint32_t>(previousCode)) << 32U) | static_cast<uint32_t>(code));
-            if (kern != kerningMap.end()) { kerning = kern->second; }
-        }
-        if (_wrap && lineWidth + kerning + glyph.xAdvance > maxWidth && !lines.back().empty()) {
-            contentWidth = std::max(contentWidth, lineWidth);
-            lines.emplace_back();
-            lineWidth = 0.0F;
-        }
-        lines.back().push_back(found->second);
-        lineWidth += kerning + glyph.xAdvance;
-        previousCode = code;
-    }
-    contentWidth = std::max(contentWidth, lineWidth);
-
-    const float contentHeight = std::max((static_cast<float>(lines.size()) + baselineRatio) * lineHeight, 1.0F);
-    const uint32_t outWidth = static_cast<uint32_t>(std::ceil(std::max(contentWidth, 1.0F))) + 2U;
-    const uint32_t outHeight = static_cast<uint32_t>(std::ceil(contentHeight)) + 2U;
-    std::vector<uint8_t> pixels(static_cast<size_t>(outWidth) * outHeight * 4U, 0U);
-
-    const uint32_t atlasWidth = image->getWidth();
-    const uint32_t atlasHeight = image->getHeight();
-    const uint8_t *atlasData = image->getData();
-
-    for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex) {
-        float cursorX = 1.0F;
-        int32_t drawPreviousCode = -1;
-        const float lineTop = 1.0F + static_cast<float>(lineIndex) * lineHeight;
-        for (const size_t glyphIndex : lines[lineIndex]) {
-            const Glyph &glyph = glyphs[glyphIndex];
-            if (drawPreviousCode >= 0) {
-                const auto kern = kerningMap.find((static_cast<uint64_t>(static_cast<uint32_t>(drawPreviousCode)) << 32U) | static_cast<uint32_t>(glyph.code));
-                if (kern != kerningMap.end()) { cursorX += kern->second; }
-            }
-            const int32_t destX = static_cast<int32_t>(std::round(cursorX + glyph.offsetX));
-            const int32_t destY = static_cast<int32_t>(std::round(lineTop + glyph.offsetY));
-            const int32_t srcX = static_cast<int32_t>(std::round(glyph.u));
-            const int32_t srcY = static_cast<int32_t>(std::round(glyph.v));
-            const int32_t glyphW = static_cast<int32_t>(std::round(glyph.w));
-            const int32_t glyphH = static_cast<int32_t>(std::round(glyph.h));
-            for (int32_t y = 0; y < glyphH; ++y) {
-                const int32_t sy = srcY + y;
-                const int32_t dy = destY + y;
-                if (sy < 0 || sy >= static_cast<int32_t>(atlasHeight) || dy < 0 || dy >= static_cast<int32_t>(outHeight)) {
-                    continue;
-                }
-                for (int32_t x = 0; x < glyphW; ++x) {
-                    const int32_t sx = srcX + x;
-                    const int32_t dx = destX + x;
-                    if (sx < 0 || sx >= static_cast<int32_t>(atlasWidth) || dx < 0 || dx >= static_cast<int32_t>(outWidth)) {
-                        continue;
-                    }
-                    const size_t src = (static_cast<size_t>(sy) * atlasWidth + static_cast<size_t>(sx)) * 4U;
-                    const size_t dst = (static_cast<size_t>(dy) * outWidth + static_cast<size_t>(dx)) * 4U;
-                    const uint32_t alpha = atlasData[src + 3U];
-                    pixels[dst] = static_cast<uint8_t>(atlasData[src] * _color.r / 255U);
-                    pixels[dst + 1U] = static_cast<uint8_t>(atlasData[src + 1U] * _color.g / 255U);
-                    pixels[dst + 2U] = static_cast<uint8_t>(atlasData[src + 2U] * _color.b / 255U);
-                    pixels[dst + 3U] = static_cast<uint8_t>(alpha);
-                }
-            }
-            cursorX += glyph.xAdvance;
-            drawPreviousCode = glyph.code;
-        }
-    }
-
-    _lastPixels = pixels;
-    _lastOpaquePixels = 0U;
-    for (size_t i = 3; i < pixels.size(); i += 4U) {
-        if (pixels[i] > 0U) { ++_lastOpaquePixels; }
-    }
-
-
 }
 void Label::applyBitmapAtlas() {
     if (_cacheMode != 1 || _lastPixels.empty() || _lastTextureWidth <= 0.0F || _lastTextureHeight <= 0.0F) {
@@ -956,7 +836,6 @@ void Label::rebuildTexture() {
         if (_bitmapAtlas && !glyphs.empty()) rebuildBitmapTexture(); else clearRenderedData();
         return;
     }
-    _bitmapDiagnosticsDirty = false;
     _renderer.setColor(Color(255, 255, 255, _color.a));
     if (_fontAsset && _fontAsset->isReleased()) { clearRenderedData(); return; }
     if (_cacheMode == 2) { rebuildLetterTexture(); return; }

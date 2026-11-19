@@ -37,3 +37,6 @@ Label 通过 IntrusivePtr 持有字体、源帧及渲染帧；Sprite 拥有复�
 ## 2026-11-19 Label 纹理回读
 
 移除 `getPixelChecksum()` 后，Label 重绘时不再逐像素累加校验和。Windows Debug 和 Release 的原生回归从提交的纹理读取 RGBA，核对位图字形着色前后的图集内容、TTF 上传的 alpha 与独立 Canvas 栅格结果，以及 128 次重绘后的纹理内容。整应用在 NONE、CHAR 两种缓存模式下分别检查等尺寸换字后的纹理身份与像素变化，以及尺寸变化后的纹理替换。两种配置的 M3 Label 和 M5 RichText 入口通过，位图字体各 92 张图与同轮 Web 逐字节相等。
+## 2026-11-19 移除 BMFont 诊断光栅器
+
+移除原生 Label 中专供诊断的 BMFont CPU 光栅器、失效标记和 `getBitmapDiagnosticBuildCount()`。C++ 回归读取提交的图集纹理，验证共享帧替换、字形四边形以及资源释放后的空提交。M3 场景逐个隔离字体节点，在渲染完成后读取目标像素；Windows Debug/Release 的合成位图字体各有 960 个着色像素，旧资源 OpenSans-Bold 各有 3134 个。两种配置都验证了绘制使用字体自己的图集，70,000 个字形分为 5 块，M3 Label 与 M5 RichText 验收通过。每种配置的 12 张图集状态图和 80 张布局图与本轮 Web 逐字节相等。

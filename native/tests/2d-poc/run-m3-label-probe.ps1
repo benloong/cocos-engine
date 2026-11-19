@@ -18,7 +18,7 @@ try {
             $lines = @(Get-Content $log | Select-String -Pattern 'M3_SHELL_LABEL ')
             if ($lines.Count -ge 3) {
                 $pixelProbe = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
-                if ($pixelProbe.Count -ge 5) { break }
+                if ($pixelProbe.Count -ge 7) { break }
             }
         }
     }
@@ -44,7 +44,7 @@ try {
     $bitmapLines = @(Get-Content $log | Select-String -Pattern 'M3_BITMAP_LABEL ')
     if ($bitmapLines.Count -lt 1) { throw 'BMFont label missing' }
     $bitmap = $bitmapLines[0].Line.Substring($bitmapLines[0].Line.IndexOf('M3_BITMAP_LABEL ') + 16) | ConvertFrom-Json
-    if ($bitmap.textureWidth -le 0 -or $bitmap.opaque -le 0) { throw 'BMFont atlas path produced no pixels' }
+    if ($bitmap.textureWidth -le 0 -or -not $bitmap.samplesFontAtlas) { throw 'BMFont atlas path produced no pixels' }
     # Kerning GPU pixels are compared in the fixed M5 BitmapGpuProbe matrix.
     # This fixture now observes actual scaled layout and submissions, not a CPU texture-width proxy.
     if ($bitmap.width -ne 80 -or $bitmap.height -ne 20 -or $bitmap.actualFontSize -ne 16 -or
@@ -69,7 +69,7 @@ try {
     $realLines = @(Get-Content $log | Select-String -Pattern 'M3_REAL_BMFONT ')
     if ($realLines.Count -lt 1) { throw 'real BitmapFont label missing' }
     $realFont = $realLines[0].Line.Substring($realLines[0].Line.IndexOf('M3_REAL_BMFONT ') + 15) | ConvertFrom-Json
-    if ($realFont.textureWidth -le 0 -or $realFont.opaque -le 0) { throw 'real BitmapFont produced no pixels' }
+    if ($realFont.textureWidth -le 0 -or -not $realFont.samplesFontAtlas -or $realFont.vertices -le 0) { throw 'real BitmapFont produced no pixels' }
 
     $pixelLines = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
     $pixels = @{}
@@ -80,6 +80,9 @@ try {
     if (-not $pixels.ContainsKey('M3Label-english') -or $pixels['M3Label-english'].colored -le 0) { throw 'English GPU pixels missing' }
     if (-not $pixels.ContainsKey('M3Label-wrap') -or $pixels['M3Label-wrap'].colored -le 0) { throw 'wrap GPU pixels missing' }
     if (-not $pixels.ContainsKey('M3CharAscii') -or $pixels['M3CharAscii'].colored -le 0) { throw 'CHAR ASCII GPU pixels missing' }
+    foreach ($name in 'M3BitmapLabel','M3RealBitmapLabel') {
+        if (-not $pixels.ContainsKey($name) -or $pixels[$name].colored -le 0) { throw "$name has no visible GPU pixels" }
+    }
     $byName = @{}
     foreach ($entry in $entries) { $byName[$entry.name] = $entry }
 
@@ -94,8 +97,8 @@ try {
 
     Write-Host 'M3 Label probe: PASS'
     Write-Host ("  GPU english colored={0}, wrap colored={1}, cjk colored={2}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored, $pixels['M3Label-cjk'].colored)
-    Write-Host ("  BMFont {0}x{1}, opaque={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.opaque)
-    Write-Host ("  Real BMFont {0}x{1}, opaque={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.opaque)
+    Write-Host ("  BMFont {0}x{1}, samples font atlas={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.samplesFontAtlas)
+    Write-Host ("  Real BMFont {0}x{1}, samples font atlas={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.samplesFontAtlas)
     Write-Host ("  CHAR Label {0}x{1}, opaque={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $charLabel.opaque)
     Write-Host ("  CHAR ASCII {0}x{1}, opaque={2}, GPU colored={3}" -f $charAscii.textureWidth, $charAscii.textureHeight, $charAscii.opaque, $pixels['M3CharAscii'].colored)
     Write-Host ("  BITMAP atlas id={0}, a.x={1}, b.x={2}" -f $bitmapAtlas.a.id, $bitmapAtlas.a.x, $bitmapAtlas.b.x)

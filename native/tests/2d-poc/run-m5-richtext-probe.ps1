@@ -65,7 +65,7 @@ try {
     $largeLine = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LARGE ')
     if ($largeLine.Count -ne 1) { throw 'Large bitmap GPU completion missing' }
     $large = $largeLine[0].Line.Substring($largeLine[0].Line.IndexOf('M6_BITMAP_LARGE ') + 16) | ConvertFrom-Json
-    if ($large.glyphs -ne 70000 -or $large.chunks -ne 5 -or $large.cleared -ne $true -or $large.diagnostics -ne 0) { throw 'Large bitmap GPU checks failed' }
+    if ($large.glyphs -ne 70000 -or $large.chunks -ne 5 -or $large.cleared -ne $true) { throw 'Large bitmap GPU checks failed' }
     $data = $lines[0].Line.Substring($lines[0].Line.IndexOf('M5_RICHTEXT ') + 12) | ConvertFrom-Json
     if (($data.clicks -join ',') -cne 'first,second,second') { throw 'RichText click dispatch or teardown failed' }
     if ($data.children -lt 1) { throw 'RichText produced no segments' }
