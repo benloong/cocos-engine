@@ -129,6 +129,7 @@ private:
     std::string fontDescription(float size) const;
     float shrinkFontSize(float width, float height) const;
     void onUITransformChanged() override;
+    void onDetach() override;
     void syncFontAsset();
     void bindBitmapAtlas(SpriteFrame *atlas);
     void bindBitmapTexture(TextureBase *texture);

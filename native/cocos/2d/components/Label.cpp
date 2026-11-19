@@ -254,6 +254,11 @@ void Label::onUITransformChanged() {
     if (_node) setUITransform(static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)));
 }
 
+void Label::onDetach() {
+    UIRenderer::onDetach();
+    setUITransform(nullptr);
+}
+
 void Label::setUITransform(UITransform *transform) {
     if (_transform == transform) return;
     if (_transform) {

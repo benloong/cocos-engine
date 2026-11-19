@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "e5cdceb480ca50fbf73cb8c5bfe62a3b5b534d2537e5c03610798399d1d4ab74"
+      "sha256": "a152e50c554861a0e96278b0474c7656d7edf6a87b9bce6ca6f43b4e99080b0e"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "752a294a24ea0c1f5821fc38622b4201a69d23c96ca680bcfca23e749bb2d110"
+      "sha256": "86803d51db93ff00ad1214a1e5f542c6523c29435b2096d0b18a97e55318d868"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -103,11 +103,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "8e5c38f6b0626fddae7bd9639118d8eab64fd55691abf6098412fd7e5dce6804"
+      "sha256": "7ac15d3ebf11dd196f1d053aa4418783b0a21c936a98390ea41986982646b0a7"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "8c5ac995a27336e935a7709075467da4520422efe18c9e04c7ec68366b5d3985"
+      "sha256": "8ff2ac284e08cda93015a8ec214e802f889b244f3fb4a5815f5e3874f4ee608f"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",

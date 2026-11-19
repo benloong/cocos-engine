@@ -70,6 +70,7 @@ Sprite::~Sprite() {
     setNode(nullptr);
 }
 void Sprite::onDetach() {
+    setUITransform(nullptr);
     _entity->setStaticDrawInfoSize(0);
     markRenderDirty();
     _entity->setNode(nullptr);
@@ -90,11 +91,26 @@ void Sprite::setNode(Node *node) {
     if (getNode() != nullptr && _entity != nullptr) {
         _entity->setNode(getNode());
         _entity->setEnabled(isEnabled());
+        setUITransform(static_cast<UITransform *>(getNode()->getUIComponent(UITransform::TYPE_ID)));
     }
     markRenderDirty();
 }
 
 void Sprite::setUITransform(UITransform *transform) {
+    if (_transform == transform && !_sizeModePending) return;
+    bindUITransform(transform);
+    applySizeMode();
+}
+
+void Sprite::onUITransformChanged() {
+    auto *transform = static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID));
+    if (_transform == transform) return;
+    bindUITransform(transform);
+    // Size callbacks may edit the node's component list while it is notifying observers.
+    _sizeModePending = transform && _sizeMode != 0;
+}
+
+void Sprite::bindUITransform(UITransform *transform) {
     if (_transform == transform) return;
     if (_transform) {
         _transform->off(_layoutChanged);
@@ -106,7 +122,6 @@ void Sprite::setUITransform(UITransform *transform) {
         _layoutDestroyed = _transform->on<UITransform::LayoutDestroyed>([this](UITransform *) { _transform = nullptr; markRenderDirty(); });
     }
     markRenderDirty();
-    applySizeMode();
 }
 
 void Sprite::bindFrame(SpriteFrame *frame) {
@@ -337,6 +352,7 @@ void Sprite::setSizeMode(int32_t sizeMode) {
 }
 
 void Sprite::applySizeMode() {
+    _sizeModePending = false;
     if (_transform == nullptr) {
         return;
     }
@@ -374,6 +390,7 @@ void Sprite::updateRenderer() {
 }
 
 void Sprite::prepare(float opacity) {
+    if (_sizeModePending) applySizeMode();
     if (!renderDirtyFlags() && std::fabs(opacity - _lastOpacity) <= 1e-6F) return;
     if (_spriteFrame) {
         const auto *texture = _spriteFrame->getTexture();

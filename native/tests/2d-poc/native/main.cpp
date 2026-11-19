@@ -2412,6 +2412,49 @@ void testDirtyRenderers() {
     check(order == std::vector<int>{1, 3, 4, 2, 2}, "version advances and idle pass skips clean renderers");
 }
 
+void testRendererLayoutOwnership() {
+    cc::Sprite sprite;
+    cc::Node first("first-layout"), second("second-layout");
+    cc::UITransform original(&first);
+    sprite.setNode(&first);
+    sprite.setUITransform(&original);
+    sprite.setNode(&second);
+    check(sprite.getUITransform() == nullptr, "moving Sprite drops the old node layout");
+    sprite.setFrame(makeSquareFrame(nullptr, 17.F));
+    cc::UITransform replacement;
+    cc::UIOpacity opacity;
+    int callbacks = 0;
+    replacement.setSizeChangedCallback([&](float, float) {
+        ++callbacks;
+        opacity.setNode(&second);
+    });
+    replacement.setNode(&second);
+    check(sprite.getUITransform() == &replacement, "late layout attaches to Sprite");
+    check(callbacks == 0, "binding a late layout defers its resize callback");
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+    check(replacement.getWidth() == 17.F && callbacks == 1 && opacity.getNode() == &second,
+          "late layout applies Sprite size mode and permits component edits in its resize callback");
+    check(original.getWidth() == 100.F, "Sprite size mode leaves the former layout untouched");
+    replacement.detach();
+    check(sprite.getUITransform() == nullptr, "removing a live layout unbinds Sprite");
+    sprite.setNode(&first);
+    check(sprite.getUITransform() == &original, "moving back rebinds the current node layout");
+    cc::Label label;
+    {
+        cc::Node transient("transient-layout");
+        original.setNode(&transient);
+        sprite.setNode(&transient);
+        label.setNode(&transient);
+        label.setString("before");
+        label.updateRenderData();
+    }
+    check(sprite.getUITransform() == nullptr, "node destruction clears the surviving Sprite layout");
+    original.setContentSize(137.F, 43.F);
+    label.setString("after node destruction");
+    label.updateRenderData(true);
+    check(original.getWidth() == 137.F && original.getHeight() == 43.F, "detached Label cannot resize its former layout");
+}
+
 void testSpritePrepare() {
     cc::Node node("native-sprite");
     cc::UITransform transform(&node);
@@ -2899,6 +2942,7 @@ int main(int argc, char **argv) {
         std::printf("geometry done\n");
         std::fflush(stdout);
         testDirtyRenderers();
+        testRendererLayoutOwnership();
         testSpritePrepare();
         std::printf("sprite prepare done\n");
         std::fflush(stdout);

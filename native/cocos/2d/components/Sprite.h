@@ -111,6 +111,8 @@ public:
 
 private:
     friend class Mask;
+    void onUITransformChanged() override;
+    void bindUITransform(UITransform *transform);
     void updateRenderer() override;
     friend class Label;
     // Label owns layout; Sprite owns copied local quads and all submission buffers.
@@ -138,6 +140,7 @@ private:
     void applySizeMode();
 
     UITransform *_transform{nullptr};
+    bool _sizeModePending{false};
     IntrusivePtr<TextureBase> _texture;
 
     Rect _frameRect;
