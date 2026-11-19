@@ -18,7 +18,6 @@ public:
     void setNode(Node *node) override;
     uint32_t getTypeId() const override { return TYPE_ID; }
     void onDetach() override;
-    void setUITransform(UITransform *transform);
     void setType(int32_t type);
     void setSpriteFrame(SpriteFrame *frame);
     void setGraphics(Graphics *graphics);
@@ -33,6 +32,7 @@ public:
     RenderEntity *getRenderEntity() const override;
 
 private:
+    void setUITransform(UITransform *transform);
     void updateRenderer() override;
     void onUITransformChanged() override { markRenderDirty(); }
     void attach();

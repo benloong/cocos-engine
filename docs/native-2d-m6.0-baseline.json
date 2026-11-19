@@ -87,11 +87,11 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "516e4cb464cfdd69a11f22cfb946079acbce619d5a8919608abc37f398647baa"
+      "sha256": "a519996db82916eced0af9ca6aff248b4af3c20789ed89994163ed1471989ebd"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "9cf5177e5c6f1d9bbbeb6cde6c930fb6344668e540eb393d905507d2fec82cf0"
+      "sha256": "73f6ff1c95cf4f7915411709a9a793ca0eb5d787110423e87fa86691fa57016e"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
@@ -15404,8 +15404,8 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "79d3400b119f79243601f0533c4b1f467125d2f2bd23dbae4bd368be6df1faf9",
-      "printedCodeLines": 143,
+      "sha256": "0f626302de347167a98c911860a50aabf3b0c897febbb2cd51d6db804e64d28b",
+      "printedCodeLines": 139,
       "runtimeImports": [
         "cc.decorator",
         "../assets/sprite-frame",
@@ -15422,39 +15422,39 @@
           "line": 75
         },
         {
-          "expression": "this._native.setUITransform",
-          "line": 78
-        },
-        {
           "expression": "this._native.setType",
-          "line": 80
+          "line": 76
         },
         {
           "expression": "this._native.setSegments",
-          "line": 81
+          "line": 77
         },
         {
           "expression": "this._native.setRadius",
-          "line": 82
+          "line": 78
         },
         {
           "expression": "this._native.setInverted",
-          "line": 86
+          "line": 82
         },
         {
           "expression": "this._native.setAlphaThreshold",
-          "line": 87
+          "line": 83
         },
         {
           "expression": "this._native.setSpriteFrame",
-          "line": 89
+          "line": 85
         },
         {
           "expression": "this._native.setPriority",
-          "line": 91
+          "line": 87
         },
         {
           "expression": "this._native.setEnabled",
+          "line": 88
+        },
+        {
+          "expression": "this._native?.setEnabled",
           "line": 92
         },
         {
@@ -15462,44 +15462,40 @@
           "line": 96
         },
         {
-          "expression": "this._native?.setEnabled",
-          "line": 100
-        },
-        {
           "expression": "this._native.setEnabled",
-          "line": 106
+          "line": 102
         },
         {
           "expression": "this._native.setNode",
-          "line": 107
+          "line": 103
         },
         {
           "expression": "this._native?.setType",
-          "line": 121
+          "line": 117
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 131
+          "line": 127
         },
         {
           "expression": "this._native?.setSegments",
-          "line": 140
+          "line": 136
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 174
+          "line": 170
         },
         {
           "expression": "this._native?.setRadius",
-          "line": 183
+          "line": 179
         },
         {
           "expression": "this._native?.isHitWorldPointXY",
-          "line": 187
+          "line": 183
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 196
+          "line": 192
         }
       ],
       "allocations": [],

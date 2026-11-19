@@ -3,7 +3,6 @@ import { UITransform } from '../../cocos/2d/framework/ui-transform';
 
 const nativeMask = {
     setNode: jest.fn(),
-    setUITransform: jest.fn(),
     setMaterial: jest.fn(),
     setType: jest.fn(),
     setInverted: jest.fn(),

@@ -22,7 +22,7 @@ const probe = `
         }
     }
     const manager = n2d.UIRendererManager;
-    for (const component of [n2d.Sprite, n2d.Label]) {
+    for (const component of [n2d.Sprite, n2d.Label, n2d.Mask]) {
         if ('setUITransform' in component.prototype) throw Error('Layout ownership must follow the native node');
     }
     if (typeof manager.prototype.updateAllDirtyRenderers !== 'function' || 'updateAllDirtyRenderers' in manager) throw Error('Expected instance method');

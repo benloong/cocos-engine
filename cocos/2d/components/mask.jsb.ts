@@ -73,10 +73,6 @@ export class Mask extends Component {
     public onLoad (): void {
         this._native = new n2d.Mask();
         this._native.setNode(this.node);
-        const transform = this.node.getComponent(UITransform);
-        if (transform && (transform as any)._native) {
-            this._native.setUITransform((transform as any)._native);
-        }
         this._native.setType(this._type);
         this._native.setSegments(this._segments);
         this._native.setRadius(this._radius);

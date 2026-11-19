@@ -62,7 +62,6 @@ void Mask::setUITransform(UITransform *transform) {
             markRenderDirty();
         });
     }
-    _sprite.setUITransform(transform);
     _shapeDirty = true;
     markRenderDirty();
     if(!transform && _type!=2) _graphics.clear();

@@ -540,7 +540,6 @@ void testFrameConsumers() {
     const auto initialRefs = material->getRefCount();
     cc::Mask mask;
     mask.setNode(&maskNode);
-    mask.setUITransform(&maskTransform);
     mask.setAlphaThreshold(0.25F);
     check(material->getRefCount() == initialRefs, "geometry Mask does not retain the Sprite stencil material");
     mask.setType(3);
@@ -559,7 +558,6 @@ void testFrameConsumers() {
             cc::Mask peer;
             peer.setType(3);
             peer.setNode(&peerNode);
-            peer.setUITransform(&peerTransform);
             peer.setSpriteFrame(frame);
             peer.setAlphaThreshold(0.75F);
             cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
@@ -1551,6 +1549,17 @@ void testGraphicsMeshes() {
         replacement.setContentSize(18, 27);
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(shape.getRenderEntity()->getRenderDrawInfosSize() == 1, "replacement transform rebuilds Mask shape");
+        cc::Node nextOwner("new-mask-owner");
+        cc::UITransform nextLayout(&nextOwner);
+        nextLayout.setContentSize(40, 50);
+        shape.setNode(&nextOwner);
+        replacement.setContentSize(80, 90);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        auto *entity = shape.getRenderEntity();
+        check(entity->getRenderDrawInfosSize() == 1, "moving Mask rebuilds geometry on its new node");
+        if (entity->getRenderDrawInfosSize()) {
+            checkNear(entity->getRenderDrawInfoAt(0)->getVDataBuffer()[0], -20.F, "Mask uses its new layout after the former layout changes");
+        }
     }
     {
         auto orphan=std::make_unique<cc::Node>("orphan-mask");
