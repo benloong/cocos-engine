@@ -34,6 +34,7 @@ const nativeLabel = {
     setFont: jest.fn(),
     setFontAsset: jest.fn(),
     updateRenderData: jest.fn(),
+    setTTFContentWidth: jest.fn(),
     setFontSize: jest.fn(),
     setActualFontSize: jest.fn(),
     setIsBold: jest.fn(),

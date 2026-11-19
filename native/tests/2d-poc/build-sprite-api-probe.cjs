@@ -138,7 +138,11 @@ check(Object.getOwnPropertyDescriptor(center,'x').get===undefined&&center.x===0.
 const labelNode=new jsb.Node('label-material-shell');
 const labelTransform=new n2d.UITransform(labelNode);
 labelNode.getComponent=()=>({_native:labelTransform});
-const label=new labelExports.Label(); label.node=labelNode; label.onLoad();
+const label=new labelExports.Label(); label.node=labelNode;
+check(label.contentWidth===0,'Label contentWidth starts at zero');
+label.contentWidth=19.123456789;
+label.onLoad();
+check(label.contentWidth===19.123456789,'Label preserves pre-load contentWidth');
 const labelAssembler=assemblerExports.labelAssembler.getAssembler(label);
 label.string='native adapter';labelAssembler.updateRenderData(label);
 check(label._native.getContentWidth()>0,'native Label assembler builds text');

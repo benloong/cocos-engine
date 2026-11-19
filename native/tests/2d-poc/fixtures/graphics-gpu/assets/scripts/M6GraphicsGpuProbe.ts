@@ -118,6 +118,9 @@ export class M6GraphicsGpuProbe extends Component {
                 if (label.font !== font || label.useSystemFont || glyph.getComponent(UITransform)!.width !== 16) {
                     throw new Error('Assigning bitmap font failed to publish its glyph width immediately');
                 }
+                label.contentWidth = 7.125;
+                label.updateRenderData(true);
+                if (label.contentWidth !== 7.125) throw new Error('Bitmap font overwrote the TTF layout width');
                 const sibling = graphics(node(root, 'yellow'));
                 sibling.fillColor = new Color(255, 255, 0, 255); sibling.fillRect(70, -10, 20, 20);
                 return () => { setFrame(alphaFrame); };
@@ -301,6 +304,7 @@ export class M6GraphicsGpuProbe extends Component {
                 label.string = 'one line\nsecond line';
                 label.updateRenderData(force);
                 const { width, height } = transform;
+                if (label.contentWidth !== width) throw new Error('TTF contentWidth disagrees with the published layout');
                 labelLayout.push({ force, overflow, width, height });
                 const fixedWidth = overflow !== Label.Overflow.NONE;
                 const fixedHeight = overflow === Label.Overflow.CLAMP || overflow === Label.Overflow.SHRINK;
@@ -309,6 +313,16 @@ export class M6GraphicsGpuProbe extends Component {
                 }
             }
         }
+        label.contentWidth = -17.125;
+        label.updateRenderData();
+        if (label.contentWidth !== -17.125) throw new Error('Clean Label refresh overwrote contentWidth');
+        label.updateRenderData(true);
+        if (label.contentWidth !== transform.width) throw new Error('Forced TTF refresh did not publish contentWidth');
+        label.cacheMode = Label.CacheMode.CHAR;
+        label.contentWidth = 13.25;
+        label.updateRenderData(true);
+        if (label.contentWidth !== 13.25) throw new Error('CHAR cache overwrote the TTF layout width');
+        label.cacheMode = Label.CacheMode.NONE;
         const shrinkSizes: number[] = [];
         label.fontSize = 32;
         label.lineHeight = 40;

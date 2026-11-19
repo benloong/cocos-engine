@@ -938,6 +938,7 @@ void Label::rebuildTexture() {
     if (_cacheMode == 2) { rebuildLetterTexture(); return; }
 
     if (_string.empty() || _transform == nullptr) {
+        if (_transform) _ttfContentWidth = _overflow == 0 ? getTextStyleExtent()[0] : _transform->getContentSize().x;
         clearRenderedData();
         return;
     }
@@ -1109,6 +1110,7 @@ void Label::rebuildTexture() {
     _lastTextureWidth = static_cast<float>(textureWidth);
     _lastTextureHeight = static_cast<float>(textureHeight);
     _lastContentWidth = contentWidth;
+    _ttfContentWidth = _overflow == 0 ? contentWidth : box.x;
     _lastContentHeight = contentHeight;
     _lastLineCount = static_cast<int32_t>(lines.size());
     if (_frame == nullptr) {

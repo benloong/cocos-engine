@@ -140,9 +140,17 @@ export class Label extends UIRenderer {
     protected _underlineHeight = 2;
 
     private _native: any = null;
+    protected _contentWidth = 0;
+
+    get contentWidth (): number { return this._native?.getTTFContentWidth() ?? this._contentWidth; }
+    set contentWidth (width: number) {
+        this._contentWidth = width;
+        this._native?.setTTFContentWidth(width);
+    }
 
     public onLoad (): void {
         this._native = new n2d.Label();
+        this._native.setTTFContentWidth(this._contentWidth);
         this._native.setNode(this.node);
         const transform = this.node.getComponent(UITransform);
         if (transform && (transform as any)._native) {
