@@ -99,6 +99,7 @@
 - [x] SpriteFrame 帧末归还当前纹理和原图。C++ 与 JSB 的销毁队列共用清理入口，迟到依赖不能重新绑定。Debug/Release 各 1000 轮和 Windows Debug 真实资产释放、完整串行门禁及像素对照通过。见[验收报告](./native-2d-m6.1-sprite-frame.md#帧末归还纹理引用)。
 - [ ] 补其余旧资产和场景、异步取消与延迟依赖、clone、跨场景重复加载释放及长期生命周期。
   - [x] 旧静态图集 Prefab 的旋转帧克隆在原 Prefab、图集和原帧释放后继续渲染。运行时显式持有导入纹理，重新加载同一 Prefab 后，新节点解析到新图集并复用该纹理。Windows Debug、Release 和 Web 的中心像素依次为绿、绿、红、绿。销毁克隆并释放最后一个纹理引用后，纹理失效且缓存中已无该 UUID。[真实加载、回读与释放用例](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
+  - [x] 旧 Prefab 异步图集依赖。resources.preload 返回包含 Prefab 和图集文件的请求记录，两者尚未发布到资产缓存。在真实加载管线中暂停图集依赖两个帧末，第一次以取消错误结束，第二次对同一 Prefab UUID 放行。Windows Debug、Release 和 Web 均验证等待中及取消后无半成品进入缓存，重试解析到同一图集内的帧，切帧后中心像素由红变绿，释放后两个缓存键消失。此用例注入依赖阶段取消，传输层中止另行验收。[回归夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
 
 交付：资产 parity 报告和真实资源回归日志。prototype 改造本身不等于资产下沉验收完成。
 

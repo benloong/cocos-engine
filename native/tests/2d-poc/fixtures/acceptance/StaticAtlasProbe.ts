@@ -121,6 +121,64 @@ async function verifyCloneAfterReload (parent: Node, layer: number, target: Rend
     console.log('M6_STATIC_ATLAS_CLONE_RELOAD_PASS');
 }
 
+async function verifyDeferredAtlasLoad (parent: Node, layer: number, target: RenderTexture): Promise<void> {
+    const path = BASE + 'AtlasSprite';
+    const prefabId = resources.getInfoWithPath(path, Prefab)!.uuid;
+    const atlasId = resources.getInfoWithPath(BASE + 'colors', SpriteAtlas)!.uuid;
+    const cached = (): boolean => assetManager.assets.has(prefabId) || assetManager.assets.has(atlasId);
+    if (cached()) throw new Error('Deferred load needs an uncached prefab and atlas');
+    await new Promise<void>((resolve, reject) => resources.preload(path, Prefab, (err, items) => {
+        if (err) reject(err);
+        else if (![prefabId, atlasId].every(id => items.some(item => item.uuid === id && item.file))) {
+            reject(new Error('Preload did not fetch both prefab and atlas'));
+        } else resolve();
+    }));
+    if (cached()) throw new Error('Preload published a partially constructed asset');
+
+    const pipeline = assetManager.pipeline;
+    const cancelled = new Error('Static atlas dependency cancelled by fixture');
+    let pauses = 0;
+    // The normal pipeline expands UUIDs into RequestItems before loading their dependencies.
+    pipeline.insert((task, done) => {
+        task.output = task.input;
+        if (!task.input.some((item: { uuid: string; isNative: boolean }) => item.uuid === atlasId && !item.isNative)) { done(); return; }
+        const attempt = ++pauses;
+        void waitForFrames().then(() => {
+            if (cached()) done(new Error('Incomplete prefab or atlas visible during dependency load'));
+            else done(attempt === 1 ? cancelled : null);
+        }, done);
+    }, 1);
+    let prefab: Prefab | null = null;
+    let node: Node | null = null;
+    try {
+        try { prefab = await load('AtlasSprite', Prefab); }
+        catch (err) { if (err !== cancelled) throw err; }
+        if (prefab || pauses !== 1 || cached()) throw new Error('Cancelled dependency published an asset');
+        prefab = await load('AtlasSprite', Prefab);
+        node = instantiate(prefab);
+        const sprite = node.getComponent(Sprite)!;
+        if (Number(pauses) !== 2 || sprite.spriteAtlas !== assetManager.assets.get(atlasId)
+            || sprite.spriteFrame !== sprite.spriteAtlas?.getSpriteFrame('left')) {
+            throw new Error('Retry did not bind the imported frame and atlas');
+        }
+        node.layer = layer;
+        parent.addChild(node);
+        await waitForRender();
+        checkCenter(target, 0);
+        sprite.changeSpriteFrameFromAtlas('right');
+        await waitForRender();
+        checkCenter(target, 1);
+    } finally {
+        pipeline.remove(1);
+        node?.destroy();
+        await waitForFrames();
+        if (prefab) assetManager.releaseAsset(prefab);
+        await waitForFrames();
+    }
+    if (cached()) throw new Error('Retried assets remained cached after release');
+    console.log('M6_STATIC_ATLAS_DEFERRED_RETRY_PASS');
+}
+
 export async function verifyStaticAtlas (parent: Node, layer: number, target: RenderTexture, stress = false): Promise<void> {
     const cycles = stress ? 1000 : 3;
     const render = stress ? waitForFrames : waitForRender;
@@ -261,6 +319,7 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
         console.log('M6_STATIC_ATLAS_STRESS_PASS ' + JSON.stringify({ cycles, checkedAssets, pixelChecks }));
     } else {
         await verifyCloneAfterReload(parent, layer, target);
+        await verifyDeferredAtlasLoad(parent, layer, target);
         console.log('M6_STATIC_ATLAS_PASS');
     }
 }

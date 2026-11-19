@@ -29,7 +29,7 @@
 | M6.1 | 组件 API | Label 其余公开及兼容入口 |
 | M6.1 | 字体终态 | 平台句柄清理、复杂文本及严格字形对照 |
 | M6.1 | 复杂布局 | [补充平面 BMFont 标量已验证](./native-2d-m6-bitmap-unicode.json)，尚缺双向文本及 shaping、任意 mesh、packed 组合和配置更新。两行 Arial 在 NONE 模式下自然宽度为 Windows 79、Web 80.9453125，见 [Label 布局实测](./native-2d-m6-windows-web-gpu-results.json) |
-| M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。其余旧资产、异步取消、延迟依赖和跨场景生命周期仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
+| M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。传输层中止、其余旧资产和跨场景生命周期仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
 | M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期及三组失败字形 |
 | M6.2 | RichText 固定回归 | shadow、样式、布局、用户事件和销毁解绑的完整组合 |
 | M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
