@@ -73,3 +73,11 @@ Windows Debug、Release 和 Chrome 157 使用同一份 Thonburi.ttf，重复上�
 直立粗体的两种原生输出在四个字号下完全相同。48 px 整数起点的超差集中在图块第 18 行（从 0 起算），像素 (11, 18) 的原生 alpha 为 1，Web 为 70。下一步可以在这一条水平边分别核对扩张宽度、纵坐标取整和扫描覆盖率。该结果仅覆盖直立矩形；24 px 粗斜体已经表现出两种几何表示的差异。
 
 在 `native/tests/2d-poc/native/out` 和 `out-release2` 分别构建 `cc2d_ttf_raster`、`cc2d_ttf_design_units`，从仓库根运行 `node native/tests/2d-poc/compare-ttf-outline-inputs.cjs --capture`。[比较器](../native/tests/2d-poc/compare-ttf-outline-inputs.cjs)将浏览器版本、字体哈希、逐图哈希、超差像素数和整数起点的超差行写入 `native/tests/2d-poc/build/ttf-outline-inputs.json`。命令成功表示采集完整且 Windows 双配置一致，各图对 Web 的误差单列报告。
+
+## 直立矩形粗体的分数像素覆盖
+
+48 px 的常规 I 在 (12, 18) 使用显式 miter 描边。宽度 1.25、1.375、1.5、1.625、1.75 px 时，Windows 双配置与 Web 的 alpha 依次为 1、1、1、1、141。合成粗体的水平边位于 y = 18.9375，原有纵向取整丢失了它在第 18 行覆盖的 1/16 像素。
+
+Windows 现在对小型、单轮廓、轴对齐矩形的直立合成粗体填充，在 LCD 滤波前以相交面积计算采样覆盖率。四个字号（12、24、36、48 px）各 64 个起点的 RGBA 与 Web 全部逐字节一致，改动前最大通道差依次为 9、14、13、69。I 和 O 的 64 组对照中，其余 60 组 Windows 图像哈希与原基线一致。可用上节的采集命令复核。[原始对照基线](./native-2d-m6-ttf-origins.json)
+
+同轮真实 RichText 应用的 Windows Debug 与 Release 逐图、逐布局一致。相对存档，粗体超差像素由 467 降至 448，嵌套样式由 573 降至 553，描边仍为 202。三组最大差分别为 20、47、30。其余九组通过，全部 12 组布局一致。本轮 Web 的 12 张图像与存档逐字节相同。夹具快照为 aaafbd43c198603707676d22b3e1534d173a96ca6513cbac93fd5f24ceca8433。[场景对照基线](./native-2d-m6-richtext-configurations.json)

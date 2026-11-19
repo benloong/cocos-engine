@@ -10,6 +10,8 @@ const originGrid = sample === 'origin-stem' || sample === 'origin-curve';
 const width = originGrid ? 512 : 256, height = originGrid ? 512 : 128;
 const styleCount = originGrid ? 4 : 3;
 const mode = process.argv[4] || 'fill';
+const lineWidth = Number(process.argv[5] ?? 4);
+if (!Number.isFinite(lineWidth) || lineWidth <= 0 || (process.argv[5] && mode === 'fill')) throw new Error('Expected a positive stroke width for a stroke mode');
 const colors = { white: 'white', red: 'red', green: 'lime', gray: 'rgb(128,128,128)', black: 'black', 'half-white': 'rgba(255,255,255,0.5)' };
 const texts = { latin: 'Atlas 123', stems: 'I E L', rounds: 'O S C', combining: 'A\u0301tlas', thai: '\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22' };
 texts['origin-stem'] = 'I';
@@ -17,7 +19,7 @@ texts['origin-curve'] = 'O';
 if (!Object.hasOwn(colors, color) || !Object.hasOwn(texts, sample)) throw new Error('Unknown color or sample');
 if (!['fill', 'outline', 'stroke-round', 'stroke-miter', 'stroke-bevel'].includes(mode)) throw new Error('Unknown paint mode');
 const suffix = mode === 'fill' ? (color === 'white' && sample === 'latin' ? '' : '-' + color + '-' + sample) : '-' + color + '-' + sample + '-' + mode;
-const output = path.join(__dirname, 'build/ttf-raster-web' + suffix);
+const output = path.join(__dirname, 'build/ttf-raster-web' + suffix + (lineWidth === 4 ? '' : '-width-' + lineWidth));
 const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 fs.mkdirSync(output, { recursive: true });
 let complete, fail;
@@ -95,7 +97,7 @@ const server = http.createServer(async (req, res) => {
                     const x=tiles===1?4.5:8+col*64+col/8, y=tiles===1?size*.87+4:50+row*64+row/8;
                     ctx.fillStyle=${JSON.stringify(colors[color])};
                     if (${JSON.stringify(mode)}==='fill') { ctx.fillText(text,x,y); continue; }
-                    ctx.strokeStyle=${JSON.stringify(colors[color])}; ctx.lineWidth=4;
+                    ctx.strokeStyle=${JSON.stringify(colors[color])}; ctx.lineWidth=${lineWidth};
                     ctx.lineJoin=${JSON.stringify(mode === 'stroke-miter' ? 'miter' : mode === 'stroke-bevel' ? 'bevel' : 'round')};
                     ctx.strokeText(text,x,y);
                     if (${JSON.stringify(mode)}==='outline') { ctx.fillStyle='white'; ctx.fillText(text,x,y); }
@@ -103,7 +105,7 @@ const server = http.createServer(async (req, res) => {
                 cases.push({size,style,font:ctx.font,width:ctx.measureText(text).width});
                 await fetch('/'+size+'-'+style+'.rgba',{method:'POST',body:ctx.getImageData(0,0,canvas.width,canvas.height).data});
             }
-            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},aliasWidths,cases})});
+            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},lineWidth:${lineWidth},aliasWidths,cases})});
         })();</script>`);
     } catch (error) { res.writeHead(500); res.end(String(error)); fail(error); }
 });

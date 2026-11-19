@@ -1,13 +1,15 @@
 // Raw Canvas/DWrite comparison, independent of Cocos layout, GPU and sampling.
 #include "platform/win32/modules/DirectWriteFont.h"
 #include <filesystem>
+#include <cmath>
+#include <cstdlib>
 #include <fstream>
 #include <cstdio>
 #include <vector>
 #include <string>
 
 int main(int argc, char **argv) {
-    if (argc < 3 || argc > 6) { std::fprintf(stderr, "usage: ttf-raster font-path output-dir [color] [sample] [mode]\n"); return 2; }
+    if (argc < 3 || argc > 7) { std::fprintf(stderr, "usage: ttf-raster font-path output-dir [color] [sample] [mode] [stroke-width]\n"); return 2; }
     const std::string colorName = argc >= 4 ? argv[3] : "white";
     std::array<float, 4> color{1, 1, 1, 1};
     if (colorName == "red") color = {1, 0, 0, 1};
@@ -23,6 +25,12 @@ int main(int argc, char **argv) {
     if (text.empty()) return 2;
     const std::string mode = argc >= 6 ? argv[5] : "fill";
     if (mode != "fill" && mode != "outline" && mode != "stroke-round" && mode != "stroke-miter" && mode != "stroke-bevel") return 2;
+    float lineWidth = 4.F;
+    if (argc == 7) {
+        char *end = nullptr;
+        lineWidth = std::strtof(argv[6], &end);
+        if (mode == "fill" || *end || !std::isfinite(lineWidth) || lineWidth <= 0.F) return 2;
+    }
     std::filesystem::create_directories(argv[2]);
     const bool originGrid = sample == "origin-stem" || sample == "origin-curve";
     const unsigned width = originGrid ? 512 : 256, height = originGrid ? 512 : 128;
@@ -40,7 +48,7 @@ int main(int argc, char **argv) {
             } else {
                 const auto join = mode == "stroke-miter" ? cc::DirectWriteFont::StrokeJoin::MITER
                     : mode == "stroke-bevel" ? cc::DirectWriteFont::StrokeJoin::BEVEL : cc::DirectWriteFont::StrokeJoin::ROUND;
-                if (!font->stroke(text, x, y, 3, pixels.data(), width, height, color, 4, join)) return 4;
+                if (!font->stroke(text, x, y, 3, pixels.data(), width, height, color, lineWidth, join)) return 4;
                 if (mode == "outline" && !font->draw(text, x, y, 3, pixels.data(), width, height, {1, 1, 1, 1})) return 4;
             }
         }

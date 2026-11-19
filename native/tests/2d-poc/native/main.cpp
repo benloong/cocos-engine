@@ -1079,6 +1079,14 @@ void testTextStroke() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     cc::CanvasRenderingContext2D fallback(16, 16); fallback.setFont("24px Arial");
     check(!fallback.supportsTextStroke(), "GDI font does not advertise unsupported outline stroke");
+    auto bold = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 48, true, false);
+    std::vector<uint8_t> stem(64 * 64 * 4, 255);
+    for (size_t i = 3; i < stem.size(); i += 4) stem[i] = 1;
+    check(bold && bold->draw("I", 8, 50, 3, stem.data(), 64, 64, {1, 1, 1, 1}), "synthetic bold stem draws");
+    // The upper edge covers 1/16 pixel at this size. The Web Canvas fixture
+    // includes the alpha-1 background and the horizontal glyph mask filter.
+    check(stem[(18 * 64 + 11) * 4 + 3] == 70 && stem[(19 * 64 + 11) * 4 + 3] == 255,
+          "axis-aligned bold fill preserves partial top-edge coverage");
     auto face = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 96, false, false);
     std::vector<uint8_t> fill(128 * 128 * 4), narrow(fill.size()), wide(fill.size());
     check(face && face->draw("H", 10, 110, 3, fill.data(), 128, 128, {1, 1, 1, 1}), "stroke interior reference draws");

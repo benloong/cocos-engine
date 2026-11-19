@@ -96,7 +96,7 @@ constexpr bool FILTER_OUTLINE_MASK = true;
 
 class SnappedOutlineSink final : public ID2D1SimplifiedGeometrySink {
 public:
-    explicit SnappedOutlineSink(ID2D1SimplifiedGeometrySink *sink) : _sink(sink) {}
+    SnappedOutlineSink(ID2D1SimplifiedGeometrySink *sink, bool checkRectangle) : _sink(sink), _checkRectangle(checkRectangle) {}
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **out) override {
         if (!out) return E_POINTER;
         *out = nullptr;
@@ -107,20 +107,58 @@ public:
     ULONG STDMETHODCALLTYPE Release() override { const auto refs = --_refs; if (!refs) delete this; return refs; }
     void STDMETHODCALLTYPE SetFillMode(D2D1_FILL_MODE mode) override { _sink->SetFillMode(mode); }
     void STDMETHODCALLTYPE SetSegmentFlags(D2D1_PATH_SEGMENT flags) override { _sink->SetSegmentFlags(flags); }
-    void STDMETHODCALLTYPE BeginFigure(D2D1_POINT_2F point, D2D1_FIGURE_BEGIN type) override { _sink->BeginFigure(snap(point), type); }
+    void STDMETHODCALLTYPE BeginFigure(D2D1_POINT_2F point, D2D1_FIGURE_BEGIN type) override {
+        _checkRectangle &= !_started && type == D2D1_FIGURE_BEGIN_FILLED;
+        _started = true;
+        _first = _last = point;
+        _bounds = D2D1::RectF(point.x, point.y, point.x, point.y);
+        _sink->BeginFigure(snap(point), type);
+    }
     void STDMETHODCALLTYPE AddLines(const D2D1_POINT_2F *points, UINT count) override {
-        for (UINT i = 0; i < count; ++i) { const auto point = snap(points[i]); _sink->AddLines(&point, 1); }
+        for (UINT i = 0; i < count; ++i) { record(points[i]); const auto point = snap(points[i]); _sink->AddLines(&point, 1); }
     }
     void STDMETHODCALLTYPE AddBeziers(const D2D1_BEZIER_SEGMENT *, UINT) override { _invalid = true; }
-    void STDMETHODCALLTYPE EndFigure(D2D1_FIGURE_END type) override { _sink->EndFigure(type); }
+    void STDMETHODCALLTYPE EndFigure(D2D1_FIGURE_END type) override {
+        record(_first);
+        _checkRectangle &= type == D2D1_FIGURE_END_CLOSED;
+        _sink->EndFigure(type);
+    }
+    bool smallRectangle(D2D1_RECT_F &rect) const {
+        if (!_checkRectangle || _runs - (_firstDirection == _direction ? 1 : 0) != 4) return false;
+        rect = _bounds;
+        const float width = std::ceil(rect.right) - std::floor(rect.left);
+        const float height = std::ceil(rect.bottom) - std::floor(rect.top);
+        return width >= 3 && width <= 32 && std::ceil(width / 4) * 4 * height <= 1024;
+    }
     HRESULT STDMETHODCALLTYPE Close() override { return _invalid ? E_UNEXPECTED : S_OK; }
 private:
+    void record(D2D1_POINT_2F p) {
+        if (!_checkRectangle || (p.x == _last.x && p.y == _last.y)) return;
+        if (p.x != _last.x && p.y != _last.y) { _checkRectangle = false; return; }
+        const int direction = p.x == _last.x ? (p.y > _last.y ? 2 : -2) : (p.x > _last.x ? 1 : -1);
+        if (direction == -_direction) { _checkRectangle = false; return; }
+        if (direction != _direction) {
+            if (!_runs) _firstDirection = direction;
+            ++_runs;
+            _direction = direction;
+        }
+        _bounds.left = std::min(_bounds.left, p.x);
+        _bounds.top = std::min(_bounds.top, p.y);
+        _bounds.right = std::max(_bounds.right, p.x);
+        _bounds.bottom = std::max(_bounds.bottom, p.y);
+        _last = p;
+    }
+    D2D1_POINT_2F _first{}, _last{};
+    D2D1_RECT_F _bounds{};
+    int _runs{0}, _direction{0}, _firstDirection{0};
+    bool _started{false};
     static D2D1_POINT_2F snap(D2D1_POINT_2F point) {
         if (!SNAP_OUTLINE_EDGES) return point;
         return {std::trunc(point.x * 256.F) / 256.F, std::floor(std::trunc(point.y * 256.F) / 64.F + .5F) / 4.F};
     }
     std::atomic<ULONG> _refs{1};
     ID2D1SimplifiedGeometrySink *_sink; // synchronous borrow during Simplify
+    bool _checkRectangle;
     bool _invalid{false};
 };
 
@@ -207,29 +245,45 @@ public:
         if (SUCCEEDED(hr)) hr = sampled->Open(sink.out());
         if (FAILED(hr)) return hr;
         ComOwner<SnappedOutlineSink> adapter;
-        adapter.reset(new SnappedOutlineSink(sink.get()));
+        adapter.reset(new SnappedOutlineSink(sink.get(), SNAP_OUTLINE_EDGES && bold && !italic && lineWidth <= 0));
         const D2D1::Matrix3x2F transform(static_cast<float>(scale), 0, shear * scale, 1, (x - left) * scale, y - top);
         hr = shape->Simplify(D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get());
         if (SUCCEEDED(hr)) hr = adapter->Close();
         if (SUCCEEDED(hr)) hr = sink->Close();
+        D2D1_RECT_F rect{};
+        const bool useRectangleCoverage = adapter->smallRectangle(rect);
         adapter.reset(); sink.reset();
         if (FAILED(hr)) return hr;
-        ComOwner<IWICBitmap> bitmap;
-        hr = _wic->CreateBitmap(columns * scale, rows, GUID_WICPixelFormat32bppPBGRA, WICBitmapCacheOnLoad, bitmap.out());
-        ComOwner<ID2D1RenderTarget> target;
-        const auto propertiesTarget = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE,
-            D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
-        if (SUCCEEDED(hr)) hr = _factory->CreateWicBitmapRenderTarget(bitmap.get(), propertiesTarget, target.out());
-        ComOwner<ID2D1SolidColorBrush> brush;
-        if (SUCCEEDED(hr)) hr = target->CreateSolidColorBrush(D2D1::ColorF(1, 1, 1, 1), brush.out());
-        if (FAILED(hr)) return hr;
-        target->BeginDraw(); target->Clear(D2D1::ColorF(0, 0, 0, 0));
-        target->FillGeometry(sampled.get(), brush.get());
-        hr = target->EndDraw();
-        if (FAILED(hr)) return hr;
         std::vector<uint8_t> pixels(static_cast<size_t>(columns) * scale * rows * 4U);
-        hr = bitmap->CopyPixels(nullptr, columns * scale * 4U, static_cast<UINT>(pixels.size()), pixels.data());
-        if (FAILED(hr)) return hr;
+        if (useRectangleCoverage) {
+            // A small solid rectangle has exact fractional edge coverage before the LCD filter.
+            for (uint32_t row = 0; row < rows; ++row) {
+                const float dy = std::min(rect.bottom, row + 1.F) - std::max(rect.top, static_cast<float>(row));
+                if (dy <= 0) continue;
+                for (uint32_t col = 0; col < columns * scale; ++col) {
+                    const float dx = std::min(rect.right, col + 1.F) - std::max(rect.left, static_cast<float>(col));
+                    if (dx <= 0) continue;
+                    const auto alpha = static_cast<uint8_t>(dx * dy * 255.F);
+                    pixels[(static_cast<size_t>(row) * columns * scale + col) * 4 + 3] = alpha < 8 ? 0 : alpha > 247 ? 255 : alpha;
+                }
+            }
+        } else {
+            ComOwner<IWICBitmap> bitmap;
+            hr = _wic->CreateBitmap(columns * scale, rows, GUID_WICPixelFormat32bppPBGRA, WICBitmapCacheOnLoad, bitmap.out());
+            ComOwner<ID2D1RenderTarget> target;
+            const auto propertiesTarget = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE,
+                D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
+            if (SUCCEEDED(hr)) hr = _factory->CreateWicBitmapRenderTarget(bitmap.get(), propertiesTarget, target.out());
+            ComOwner<ID2D1SolidColorBrush> brush;
+            if (SUCCEEDED(hr)) hr = target->CreateSolidColorBrush(D2D1::ColorF(1, 1, 1, 1), brush.out());
+            if (FAILED(hr)) return hr;
+            target->BeginDraw(); target->Clear(D2D1::ColorF(0, 0, 0, 0));
+            target->FillGeometry(sampled.get(), brush.get());
+            hr = target->EndDraw();
+            if (FAILED(hr)) return hr;
+            hr = bitmap->CopyPixels(nullptr, columns * scale * 4U, static_cast<UINT>(pixels.size()), pixels.data());
+            if (FAILED(hr)) return hr;
+        }
         mask.bounds = {std::max<LONG>(0, left), top, std::min<LONG>(width, right), bottom};
         const auto maskWidth = static_cast<size_t>(mask.bounds.right - mask.bounds.left);
         mask.coverage.resize(maskWidth * rows);
