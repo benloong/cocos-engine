@@ -207,7 +207,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.cpp",
-      "sha256": "de6af5bb9b2c234ae83b7d4310eeb0d2311cfe2c4a0c84ec14a439c60296a50f"
+      "sha256": "c6b3876d4715695c01efdb3d683177a5f9c218b8c94a08883dc05cfb0c2fba2d"
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.h",

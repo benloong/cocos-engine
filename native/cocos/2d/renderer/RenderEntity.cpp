@@ -95,7 +95,7 @@ void RenderEntity::updateInheritedOpacity(float opacity) {
 }
 
 void RenderEntity::setNode(Node* node) {
-    if (_node) {
+    if (_node && _node->getUserData() == this) {
         _node->setUserData(nullptr);
     }
     _node = node;

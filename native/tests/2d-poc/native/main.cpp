@@ -2457,6 +2457,22 @@ void testDirtyRenderers() {
 }
 
 void testRendererLayoutOwnership() {
+    {
+        cc::Node shared("replaced-renderer"), next("moved-renderer");
+        cc::Graphics current;
+        {
+            cc::Sprite former;
+            former.setNode(&shared);
+            current.setNode(&shared);
+            check(shared.getUserData() == current.getRenderEntity(), "replacement renderer owns the active entity slot");
+            former.setNode(&next);
+            check(shared.getUserData() == current.getRenderEntity(), "moving an older renderer preserves the active entity");
+            check(next.getUserData() == former.getRenderEntity(), "moved renderer publishes its entity on the new node");
+        }
+        check(!next.getUserData(), "destroying the active renderer clears its entity slot");
+        current.setNode(nullptr);
+        check(!shared.getUserData(), "explicit detach clears the active entity slot");
+    }
     cc::Sprite sprite;
     cc::Node first("first-layout"), second("second-layout");
     cc::UITransform original(&first);

@@ -1,0 +1,53 @@
+{
+  "imageSetHashInput": "JSON array of [capture name, SHA-256 of native RGBA], in comparison report order",
+  "runs": {
+    "mask-layout": {
+      "Debug": {
+        "snapshot": "5e38ce56a5bf163b4cb6bf8769fcf86e1c7b59f7998174153193c62cff01bcb9",
+        "matchingImages": 88,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0"
+      },
+      "Release": {
+        "snapshot": "5e38ce56a5bf163b4cb6bf8769fcf86e1c7b59f7998174153193c62cff01bcb9",
+        "matchingImages": 88,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0"
+      }
+    },
+    "opacity-transfer": {
+      "Debug": {
+        "snapshot": "1af6d6451e1e6dcd8b324d518ab371d01fb272197385e17240253fd548b9faf5",
+        "matchingImages": 88,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0"
+      },
+      "Release": {
+        "snapshot": "1af6d6451e1e6dcd8b324d518ab371d01fb272197385e17240253fd548b9faf5",
+        "matchingImages": 88,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0"
+      }
+    },
+    "renderer-slot": {
+      "Debug": {
+        "snapshot": "67297cd3eb33e8b50b8ad6ce989b24f8efb191d13c3426f53b19a8357360ccd2",
+        "matchingImages": 88,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0"
+      },
+      "Release": {
+        "snapshot": "67297cd3eb33e8b50b8ad6ce989b24f8efb191d13c3426f53b19a8357360ccd2",
+        "matchingImages": 88,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0"
+      }
+    }
+  }
+}
