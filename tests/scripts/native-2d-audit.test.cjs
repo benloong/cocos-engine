@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { declaration, runtimeImports, inspect, build, shellHotPaths, isWebAssembler } = require('../../native/tests/2d-poc/audit-m6.cjs');
 
-test('UIOpacity rollback removes only its Windows override and preserves all Web overrides', async () => {
+test('component rollback removes only the selected Windows overrides and preserves Web overrides', async () => {
     const root = path.resolve(__dirname, '../..');
     const query = await require('@cocos/ccbuild').StatsQuery.create(root);
     function overrides (platform, flags) {
@@ -14,12 +14,19 @@ test('UIOpacity rollback removes only its Windows override and preserves all Web
         const buildTimeConstants = query.constantManager.genBuildTimeConstants({ mode, platform, flags });
         return query.evaluateModuleOverrides({ platform, mode, buildTimeConstants });
     }
-    const windows = overrides('WINDOWS', {});
-    const component = path.join(root, 'cocos/2d/components/ui-opacity.ts');
-    assert.equal(windows[component], path.join(root, 'cocos/2d/components/ui-opacity.jsb.ts'));
-    delete windows[component];
-    assert.deepEqual(overrides('WINDOWS', { USE_JS_UI_OPACITY: true }), windows);
-    assert.deepEqual(overrides('HTML5', { USE_JS_UI_OPACITY: true }), overrides('HTML5', {}));
+    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d' };
+    for (const selected of [['USE_JS_UI_OPACITY'], ['USE_JS_RENDER_ROOT_2D'], Object.keys(components)]) {
+        const windows = overrides('WINDOWS', {});
+        const flags = {};
+        for (const flag of selected) {
+            flags[flag] = true;
+            const base = path.join(root, 'cocos/2d', components[flag]);
+            assert.equal(windows[base + '.ts'], base + '.jsb.ts');
+            delete windows[base + '.ts'];
+        }
+        assert.deepEqual(overrides('WINDOWS', flags), windows);
+        assert.deepEqual(overrides('HTML5', flags), overrides('HTML5', {}));
+    }
 });
 
 test('native 2D owners do not use shared_ptr or weak_ptr', () => {

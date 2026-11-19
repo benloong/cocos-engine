@@ -336,6 +336,13 @@
             }
         },
         {
+            "test": "context.buildTimeConstants.NATIVE && !context.buildTimeConstants.USE_JS_RENDER_ROOT_2D",
+            "isVirtualModule": false,
+            "overrides": {
+                "cocos/2d/framework/render-root-2d.ts": "cocos/2d/framework/render-root-2d.jsb.ts"
+            }
+        },
+        {
             "test": "context.buildTimeConstants.NATIVE",
             "isVirtualModule": false,
             "overrides": {
@@ -366,7 +373,6 @@
                 "cocos/2d/components/rich-text.ts": "cocos/2d/components/rich-text.jsb.ts",
                 "cocos/2d/components/mask.ts": "cocos/2d/components/mask.jsb.ts",
                 "cocos/2d/components/graphics.ts": "cocos/2d/components/graphics.jsb.ts",
-                "cocos/2d/framework/render-root-2d.ts": "cocos/2d/framework/render-root-2d.jsb.ts",
                 "cocos/2d/assets/sprite-frame.ts": "cocos/2d/assets/sprite-frame.jsb.ts",
                 "cocos/2d/assets/sprite-atlas.ts": "cocos/2d/assets/sprite-atlas.jsb.ts",
                 "cocos/2d/assets/font.ts": "cocos/2d/assets/font.jsb.ts",
@@ -839,6 +845,12 @@
         },
         "USE_JS_UI_OPACITY": {
             "comment": "Use the JavaScript UIOpacity component on native platforms.",
+            "type": "boolean",
+            "value": false,
+            "internal": true
+        },
+        "USE_JS_RENDER_ROOT_2D": {
+            "comment": "Use JavaScript RenderRoot2D registration on native platforms.",
             "type": "boolean",
             "value": false,
             "internal": true

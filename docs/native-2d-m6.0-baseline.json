@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "70e97dbbfcbf42151edf9f852e203a3b81c4b7cd4d54bc704c46834e4b2bc285"
+      "sha256": "fd593504dd022f85470aeaacdc559a14106d1f9c9b11355e6643663a9ec0debe"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",

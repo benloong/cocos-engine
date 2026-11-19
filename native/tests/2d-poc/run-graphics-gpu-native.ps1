@@ -1,23 +1,37 @@
 param([string]$Exe = (Join-Path $PSScriptRoot 'build/gpu-win/native-2d-m6-gpu.exe'), [ValidateSet('graphics','richtext')][string]$Mode = 'graphics', [string]$FontHttpOrigin = '',
-    [ValidateSet('native','js')][string]$OpacityImplementation)
+    [ValidateSet('native','js')][string]$OpacityImplementation,
+    [ValidateSet('native','js')][string]$RootImplementation)
 $ErrorActionPreference = 'Stop'
 $exePath=(Resolve-Path -LiteralPath $Exe).Path
 $data=(Resolve-Path (Join-Path $PSScriptRoot "build/$Mode-gpu-project/build/windows/data")).Path
 $resources=Join-Path (Split-Path -Parent $exePath) 'Resources'
 & robocopy $data $resources /E /NFL /NDL /NJH /NJS /NP | Out-Null
 if($LASTEXITCODE -gt 7) { throw 'Resource copy failed' }
-if ($OpacityImplementation) {
-    if ($Mode -ne 'graphics') { throw 'Opacity rollback uses the graphics fixtures' }
-    if ($OpacityImplementation -eq 'js') {
-        $engine = (Resolve-Path (Join-Path $PSScriptRoot 'build/graphics-gpu-js-ui-opacity')).Path
+if ($OpacityImplementation -or $RootImplementation) {
+    if ($Mode -ne 'graphics' -or ($OpacityImplementation -and $RootImplementation)) { throw 'Select one component rollback for the graphics fixtures' }
+    if ($RootImplementation) {
+        $implementation = $RootImplementation
+        $component = 'render-root-2d'
+        $probeName = 'render-root-rollback-probe.js'
+        $install = 'installRootRollbackProbe'
+        $marker = 'M6_ROOT_RESULT'
+    } else {
+        $implementation = $OpacityImplementation
+        $component = 'ui-opacity'
+        $probeName = 'opacity-rollback-probe.js'
+        $install = 'installOpacityRollbackProbe'
+        $marker = 'M6_OPACITY_RESULT'
+    }
+    if ($implementation -eq 'js') {
+        $engine = (Resolve-Path (Join-Path $PSScriptRoot "build/graphics-gpu-js-$component")).Path
         & robocopy $engine (Join-Path $resources 'src/cocos-js') /E /NFL /NDL /NJH /NJS /NP | Out-Null
         if ($LASTEXITCODE -gt 7) { throw 'Rollback engine copy failed' }
     }
     $entry = [IO.File]::ReadAllText((Join-Path $data 'main.js'))
     $hook = 'return application.init(cc);'
     if ($entry.Split($hook, [StringSplitOptions]::None).Count -ne 2) { throw 'Missing unique application init hook' }
-    $probe = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'opacity-rollback-probe.js'))
-    [IO.File]::WriteAllText((Join-Path $resources 'main.js'), $entry.Replace($hook, "$probe`ninstallOpacityRollbackProbe(cc, '$OpacityImplementation');`n$hook"))
+    $probe = [IO.File]::ReadAllText((Join-Path $PSScriptRoot $probeName))
+    [IO.File]::WriteAllText((Join-Path $resources 'main.js'), $entry.Replace($hook, "$probe`n$install(cc, '$implementation');`n$hook"))
 }
 if($Mode -eq 'richtext') {
     if($FontHttpOrigin -notmatch '^http://127\.0\.0\.1:\d+$') { throw 'Run richtext with run-font-http-native.cjs to provide its HTTP fixture' }
@@ -47,7 +61,7 @@ try {
                 $after = $lifecycle.after | ConvertTo-Json -Compress
                 if($before -ne $after -or $lifecycle.cacheBefore -ne $lifecycle.cacheAfter) { throw 'Native font lifecycle did not restore its baseline' }
             }
-            if ($OpacityImplementation -and !(Select-String -LiteralPath $log -Pattern 'M6_OPACITY_RESULT' -Quiet)) { throw 'Missing opacity rollback result' }
+            if (($RootImplementation -or $OpacityImplementation) -and !(Select-String -LiteralPath $log -Pattern $marker -Quiet)) { throw "Missing rollback result: $marker" }
             Write-Output "M6_GPU_NATIVE_READY $($result.captures.Count)"
             exit 0
         }
