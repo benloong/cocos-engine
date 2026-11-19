@@ -119,6 +119,7 @@ private:
     void updateRenderer() override;
     friend class RichText;
     std::array<double, 2> measureUnwrappedTextPrecise(const std::string &text);
+    bool hasTextShadow() const;
     std::array<double, 2> getTextStyleExtent() const;
     void onMaterialChanged() override;
     void rebuildTexture();

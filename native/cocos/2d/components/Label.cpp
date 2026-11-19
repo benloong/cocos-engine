@@ -688,6 +688,10 @@ Size Label::measureUnwrappedText(const std::string &text) {
     const auto size = measureUnwrappedTextPrecise(text);
     return Size(static_cast<float>(size[0]), static_cast<float>(size[1]));
 }
+bool Label::hasTextShadow() const {
+    return _enableShadow && (_shadowBlur > 0.F || std::fabs(_shadowOffsetX) > 0.000001F || std::fabs(_shadowOffsetY) > 0.000001F);
+}
+
 std::array<double, 2> Label::getTextStyleExtent() const {
     if (_cacheMode == 2) return {};
     const double outline = _enableOutline ? std::max(_outlineWidth, 0.F) * 2.0 : 0.0;
@@ -764,7 +768,7 @@ float Label::shrinkFontSize(float width, float height) const {
     float longest = 0.F;
     for (const auto &line : paragraphs) longest = std::max(longest, measureText(measure, line));
     float padding = static_cast<float>(getTextStyleExtent()[0]);
-    if (_enableShadow) {
+    if (hasTextShadow()) {
         padding += std::max(0.F, _shadowBlur - _shadowOffsetX) + std::max(0.F, _shadowBlur + _shadowOffsetX);
     }
     const float scaleX = longest > 0.F ? (width - padding) / longest : 1.F;
@@ -830,11 +834,12 @@ void Label::rebuildTexture() {
     const auto styleExtent = getTextStyleExtent();
     const double naturalWidth = contentWidth + styleExtent[0];
     const float outlineMargin = _enableOutline ? std::max(_outlineWidth, 0.F) : 0.F;
+    const bool drawShadow = hasTextShadow();
     // The canvas reserves room for the shadow; the node keeps its text bounds.
-    const float shadowLeft = _enableShadow ? std::max(0.F, _shadowBlur - _shadowOffsetX) : 0.F;
-    const float shadowRight = _enableShadow ? std::max(0.F, _shadowBlur + _shadowOffsetX) : 0.F;
-    const float shadowTop = _enableShadow ? std::max(0.F, _shadowBlur + _shadowOffsetY) : 0.F;
-    const float shadowBottom = _enableShadow ? std::max(0.F, _shadowBlur - _shadowOffsetY) : 0.F;
+    const float shadowLeft = drawShadow ? std::max(0.F, _shadowBlur - _shadowOffsetX) : 0.F;
+    const float shadowRight = drawShadow ? std::max(0.F, _shadowBlur + _shadowOffsetX) : 0.F;
+    const float shadowTop = drawShadow ? std::max(0.F, _shadowBlur + _shadowOffsetY) : 0.F;
+    const float shadowBottom = drawShadow ? std::max(0.F, _shadowBlur - _shadowOffsetY) : 0.F;
     const float paddingWidth = static_cast<float>(styleExtent[0]) + shadowLeft + shadowRight;
     const float paddingHeight = static_cast<float>(styleExtent[1]) + shadowTop + shadowBottom;
     float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
@@ -885,7 +890,7 @@ void Label::rebuildTexture() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     LineRaster *cache = nullptr;
     LineRaster::Placement placement{};
-    if (!_fontAsset && !_enableOutline && !_enableShadow && !_isUnderline && lines.size() == 1 &&
+    if (!_fontAsset && !_enableOutline && !drawShadow && !_isUnderline && lines.size() == 1 &&
         _string.size() <= 256 && static_cast<uint64_t>(textureWidth) * textureHeight <= 16384) {
         const auto app = CC_CURRENT_APPLICATION();
         const auto engine = app ? app->getEngine() : nullptr;
@@ -915,7 +920,7 @@ void Label::rebuildTexture() {
                   static_cast<unsigned>(edgeColor.b));
     context.setFillStyle(fill);
     context.fillRect(0, 0, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
-    if (_enableShadow) {
+    if (drawShadow) {
         char shadow[64] = {0};
         std::snprintf(shadow, sizeof(shadow), "rgba(%u,%u,%u,%.3f)",
                       static_cast<unsigned>(_shadowColor.r),
@@ -944,7 +949,7 @@ void Label::rebuildTexture() {
             context.fillText(line, x + dx, lineY + dy, 0.0F);
         };
 
-        if (_enableShadow) {
+        if (drawShadow) {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
             const float shadowY = -_shadowOffsetY;
             // GDI has no Canvas shadow. A hard shadow is one translated glyph.

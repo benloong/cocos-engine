@@ -147,6 +147,7 @@
   - [x] RichText 动态换行后改成含未知 <shadow> 标签的双色文本。Windows Debug、Release 和 Web 都移除了旧行，保留内部红绿样式、段位置与尺寸。三端分别与无标签对照逐像素一致，跨端最大通道差为 0。实际 Label 阴影另行验收。[回归场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
   - [x] Windows 单行 Label 的零模糊阴影按 UI 坐标绘制一次。固定大小 96×96、24px Thonburi 字体的字母 I，分别偏移 (16,14) 和 (−16,−14)。GPU 回读按半覆盖阈值比较原阴影与平移后的字形。旧 Debug 正向有 98 个差异像素，修复后 Debug、Release 和 Web 两个方向各覆盖 30 个像素，差异均为 0。模糊、裁边及自动尺寸另行验收。[回归场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
   - [x] Windows 单行 Label 的非零模糊阴影采用 UI 偏移方向。对 24px Thonburi、模糊值 2、偏移 (16,14) 与 (−16,−14)，比较绿色阴影和移动后白色字形的 GPU 质心。旧 Windows 正向纵差 −28.078px，修复后两方向均为 −0.078px，Web 为 −0.119px。此项验证位置，模糊核形状和裁边仍待验收。[像素夹具](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
+  - [x] Label 的零效果阴影采用 TS 的启用条件。模糊为零且偏移为 (0,0) 或 (1e−6,−1e−6) 时，整张 GPU 回读与关闭阴影逐字节一致。修复前 Windows 在 (0,0) 时改变了 64 个像素。[场景用例](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
   - [x] TTF Label 阴影的画布尺寸、文字对齐和节点尺寸。四种溢出模式分别验证左上、居中、右下对齐及正负偏移。修复前 Windows Debug 的 24 张图每张有 981 至 1420 个差异像素。修复后 Windows Debug/Release 的节点尺寸、纹理尺寸及 24 张 RGBA 均与 Web 一致。覆盖单行、零模糊；非零模糊的轮廓仍待验收。[逐图数据](./native-2d-m6-label-shadow-layout.json)
 - [x] Windows GDI 合成斜体布局例外仅用于 M5 系统 Arial 40px 的单段 Italic。Web 基准 90.748px（舍入校验 ±0.01px），Windows 接受历史差值 9.748px 加 0.001px 舍入余量。实测 Windows Debug/Release 均为 89.50227px，Web 为 90.74836px。自定义 TTF、字形图像、事件与其他布局保持各自门限。[历史对照](./native-2d-m5-web-parity.md)
 

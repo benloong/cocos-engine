@@ -201,9 +201,24 @@ async function checkShadowOffsets (parent: Node, font: TTFFont, readPixels: () =
     label.horizontalAlign = 1;
     label.verticalAlign = 1;
     label.string = 'I';
-    label.enableShadow = true;
     label.shadowColor = new Color(0, 255, 0, 255);
     label.shadowBlur = 0;
+    label.enableShadow = false;
+    await wait();
+    const noShadow = readPixels();
+    if (!noShadow.some((value, index) => index % 4 === 0 && value > 127)) throw new Error('Missing shadow reference glyph');
+    label.enableShadow = true;
+    for (const offset of [new Vec2(0, 0), new Vec2(0.000001, -0.000001)]) {
+        label.shadowOffset = offset;
+        await wait();
+        const image = readPixels();
+        let changed = 0;
+        for (let i = 0; i < image.length; i += 4) {
+            if (image[i] !== noShadow[i] || image[i + 1] !== noShadow[i + 1]
+                || image[i + 2] !== noShadow[i + 2] || image[i + 3] !== noShadow[i + 3]) ++changed;
+        }
+        if (changed) throw new Error(`Inactive shadow at (${offset.x}, ${offset.y}) changed ${changed} pixels`);
+    }
     const coverage: number[] = [];
     const blurredShadowCenters: { sign: number; dx: number; dy: number }[] = [];
     for (const sign of [1, -1]) {
