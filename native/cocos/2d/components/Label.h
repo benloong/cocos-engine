@@ -142,6 +142,7 @@ private:
     void rebuildBitmapTexture();
     void syncBitmapAtlas();
     void rebuildLetterTexture();
+    double letterLayoutHeight(size_t lineCount) const;
 
     Sprite _renderer;
     bool _syncingContentSize{false};

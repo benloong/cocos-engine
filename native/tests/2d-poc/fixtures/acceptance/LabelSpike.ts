@@ -34,6 +34,24 @@ export class LabelSpike {
         ];
 
         console.log(`M3_NATIVE_LABEL_AVAILABLE ${JSON.stringify({ hasN2d: typeof n2d !== 'undefined', hasLabel: typeof n2d !== 'undefined' && !!n2d.Label })}`);
+        const charNode = new Node('M3CharLayout');
+        parent.addChild(charNode);
+        const charTransform = charNode.addComponent(UITransform);
+        charTransform.setContentSize(240, 40);
+        const charLabel = charNode.addComponent(Label);
+        charLabel.cacheMode = Label.CacheMode.CHAR;
+        charLabel.overflow = Label.Overflow.RESIZE_HEIGHT;
+        charLabel.fontSize = 32;
+        charLabel.lineHeight = 19.125;
+        charLabel.string = '甲\n乙';
+        charLabel.updateRenderData(true);
+        const plain = charTransform.height;
+        charLabel.enableOutline = true;
+        charLabel.outlineWidth = 1.5;
+        charLabel.updateRenderData(true);
+        const outlined = charTransform.height;
+        charNode.destroy();
+        console.log(`M3_CHAR_LAYOUT ${JSON.stringify({ plain, outlined })}`);
         if (typeof n2d !== 'undefined' && n2d.Label) {
             const atlas = new Texture2D();
             atlas.reset({ width: 64, height: 32, format: Texture2D.PixelFormat.RGBA8888 });

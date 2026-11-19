@@ -509,6 +509,12 @@ void Label::updateRenderer() {
     _renderer.updateRenderer();
 }
 
+double Label::letterLayoutHeight(size_t lineCount) const {
+    const double height = static_cast<double>(lineCount) * _lineHeight;
+    const double margin = _enableOutline ? std::max(0.F, _outlineWidth) : 0.F;
+    return std::round(height * 100.0) / 100.0 + 2.0 * margin;
+}
+
 void Label::rebuildLetterTexture() {
     LetterAtlas &atlas = acquireLetterAtlas();
     const uint32_t rgb = (static_cast<uint32_t>(_color.r) << 16U) | (_color.g << 8U) | _color.b;
@@ -546,9 +552,9 @@ void Label::rebuildLetterTexture() {
     }
     contentWidth = std::max(contentWidth, lineWidth);
 
-    const float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
+    const float contentHeight = static_cast<float>(letterLayoutHeight(lines.size()));
     const uint32_t outWidth = static_cast<uint32_t>(std::ceil(std::max(contentWidth, 1.0F))) + 2U;
-    const uint32_t outHeight = static_cast<uint32_t>(std::ceil(contentHeight)) + 2U;
+    const uint32_t outHeight = static_cast<uint32_t>(std::ceil(std::max(contentHeight, 1.0F))) + 2U;
     std::vector<uint8_t> pixels(static_cast<size_t>(outWidth) * outHeight * 4U, 0U);
     const uint8_t *atlasPixels = atlas.getData();
 
@@ -728,9 +734,10 @@ std::array<double, 2> Label::measureUnwrappedTextPrecise(const std::string &text
         else paragraph += symbol;
     }
     width = std::max(width, _cacheMode == 2 ? line : measureText(context, paragraph));
-    const float lineHeight = _lineHeight > 0.F ? _lineHeight : _fontSize * (_cacheMode == 2 ? 1.F : 1.2F);
+    if (_cacheMode == 2) return {width, letterLayoutHeight(lines)};
+    const float lineHeight = _lineHeight > 0.F ? _lineHeight : _fontSize * 1.2F;
     const auto extent = getTextStyleExtent();
-    return {std::max(width, _cacheMode == 2 ? 0.F : 1.F) + extent[0], std::max((lines + BASELINE_RATIO) * lineHeight, 1.F) + extent[1]};
+    return {std::max(width, 1.F) + extent[0], std::max((lines + BASELINE_RATIO) * lineHeight, 1.F) + extent[1]};
 }
 void Label::updateRenderData() {
     updateRenderData(false);

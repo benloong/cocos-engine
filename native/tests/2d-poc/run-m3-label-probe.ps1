@@ -31,12 +31,16 @@ try {
         $json | ConvertFrom-Json
     }
     $measure = @{}
+    $charLayoutLine = Select-String -LiteralPath $log -Pattern 'M3_CHAR_LAYOUT (.+)' | Select-Object -First 1
+    if (!$charLayoutLine) { throw 'missing multiline CHAR layout' }
+    $charLayout = $charLayoutLine.Matches[0].Groups[1].Value | ConvertFrom-Json
+    if ($charLayout.plain -ne 38.25 -or $charLayout.outlined -ne 41.25) { throw "multiline CHAR height mismatch: $charLayout" }
     foreach ($line in $measureLines) {
         $obj = $line.Line.Substring($line.Line.IndexOf('M3_LABEL_MEASURE ') + 17) | ConvertFrom-Json
         $measure[$obj.name] = $obj
     }
     # The English fixture has a 3 px outline on both sides of the text.
-    $expected = @{ english = @(240, 56.4); cjk = @(240, 50.4); wrap = @(220, 97.8) }
+    $expected = @{ english = @(240, 56.4); cjk = @(240, 40); wrap = @(220, 97.8) }
     foreach ($name in $expected.Keys) {
         if (-not $measure.ContainsKey($name)) { throw "missing measurement $name" }
         if ([math]::Abs($measure[$name].width - $expected[$name][0]) -gt 0.5) { throw "$name width parity failed" }

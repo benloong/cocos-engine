@@ -24,6 +24,8 @@ if (heapSnapshots) fs.rmSync(manifestPath, { force: true });
 const logs = [], captures = new Set(), results = [], samples = [];
 let layoutMetrics = [];
 let bitmapReady = false;
+let charLayoutPassed = false;
+let cjkLayoutPassed = false;
 let fallbackPassed = false;
 let lifecyclePassed = false;
 let automaticPassed = false;
@@ -107,6 +109,18 @@ const server = http.createServer(async (req, res) => {
                 if (message.method !== 'Runtime.consoleAPICalled') return;
                 const text = message.params.args.map(arg => arg.value ?? arg.description ?? '').join(' ');
                 logs.push(text);
+                if (bitmap && text.startsWith('M3_LABEL_MEASURE ')) {
+                    const { name, width, height } = JSON.parse(text.slice('M3_LABEL_MEASURE '.length));
+                    if (name === 'cjk') {
+                        if (width !== 240 || height !== 40) throw new Error(text);
+                        cjkLayoutPassed = true;
+                    }
+                }
+                if (bitmap && text.startsWith('M3_CHAR_LAYOUT ')) {
+                    const { plain, outlined } = JSON.parse(text.slice('M3_CHAR_LAYOUT '.length));
+                    if (plain !== 38.25 || outlined !== 41.25) throw new Error(text);
+                    charLayoutPassed = true;
+                }
                 if (text === 'M6_ATLAS_FALLBACK_PASS') fallbackPassed = true;
                 if (text === 'M6_ATLAS_LIFECYCLE_PASS') lifecyclePassed = true;
                 if (text === 'M6_ATLAS_AUTOMATIC_PASS') automaticPassed = true;
@@ -163,7 +177,7 @@ const server = http.createServer(async (req, res) => {
                         rejectDone(new Error('The trailing space must fit after Italic before Underline wraps'));
                         return;
                     }
-                    if (!bitmapReady || rich.native || !rich.queryMatches || rich.clicks?.join(',') !== 'first,second,second'
+                    if (!bitmapReady || !charLayoutPassed || !cjkLayoutPassed || rich.native || !rich.queryMatches || rich.clicks?.join(',') !== 'first,second,second'
                         || rich.jsLabelComponents !== rich.labels || rich.jsSpriteComponents !== rich.sprites
                         || rich.labels !== 9 || rich.sprites !== 1 || rich.children !== 10) {
                         rejectDone(new Error('Missing Web RichText segment components: ' + text));

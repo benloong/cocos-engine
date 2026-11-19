@@ -1627,6 +1627,15 @@ void testGraphicsMeshes() {
         check(countLabelCoverage(second)>0,"Releasing one CHAR Label preserves the other lease");
         for(int i=0;i<1000;++i) { second.setCacheMode(0);second.setCacheMode(2);cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); }
         check(countLabelCoverage(second)>0,"CHAR cache releases and reacquires the last lease across 1000 switches");
+        second.setLineHeight(19.12890625F);
+        second.setEnableOutline(true);
+        second.setOutlineWidth(1.5F);
+        second.setString("A\nB");
+        second.setOverflow(3);
+        secondUI.setWidth(240.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(secondUI.getHeight(), 41.26F, "CHAR rounds total line height before adding outline margins");
+        checkNear(second.measureUnwrappedText("A\nB").height, secondUI.getHeight(), "CHAR measurement matches rendered layout");
     }
     {
         auto orphan=std::make_unique<cc::Node>("orphan-graphics");
