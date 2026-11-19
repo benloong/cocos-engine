@@ -76,13 +76,13 @@ public:
 
         auto *obj = reinterpret_cast<Object *>(ptr);
         auto *nativeObj = obj->getPrivateData();
-        if (nativeObj == nullptr) {
+        if (nativeObj == nullptr && obj->_clearMappingInFinalizer) {
             // Not a JSB binding object
             return;
         }
 
         // Remove mapping
-        se::NativePtrToObjectMap::erase(nativeObj, obj);
+        if (nativeObj) se::NativePtrToObjectMap::erase(nativeObj, obj);
 
         // Invoke finalize callback
         if (obj->_finalizeCb != nullptr) {

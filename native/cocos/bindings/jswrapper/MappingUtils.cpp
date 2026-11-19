@@ -24,9 +24,22 @@
 ****************************************************************************/
 
 #include "MappingUtils.h"
+#include "bindings/jswrapper/SeApi.h"
 #include "base/memory/Memory.h"
 
 namespace se {
+
+// Keep the VM handle intact for normal finalization. The native owner may
+// itself be released from a GC callback, where creating VM handles is unsafe.
+void Object::invalidateBorrowedObject() {
+    CC_ASSERT(_privateObject && !_privateObject->isSharedPtr() && !_privateObject->isCCIntrusivePtr());
+    delete _privateObject;
+    _privateObject = nullptr;
+#if SCRIPT_ENGINE_TYPE != SCRIPT_ENGINE_SM
+    _privateData = nullptr;
+#endif
+    setClearMappingInFinalizer(false);
+}
 
 // NativePtrToObjectMap
 NativePtrToObjectMap::Map *NativePtrToObjectMap::__nativePtrToObjectMap = nullptr; // NOLINT

@@ -34,6 +34,7 @@
 
 namespace cc {
 namespace {
+void (*segmentDisposeCallback)(void *) = nullptr;
 Color literalColor(std::string value) {
     for (auto &ch : value) if (ch >= 'a' && ch <= 'z') ch -= 'a' - 'A';
     static const std::map<std::string, Color> names = {
@@ -82,8 +83,19 @@ struct RichText::Segment {
             label->setHorizontalAlign(0); label->setOverflow(0); label->setEnableWrapText(false);
         }
     }
-    ~Segment() { bindFrame(nullptr, nullptr); node->removeFromParent(); }
+    ~Segment() {
+        bindFrame(nullptr, nullptr);
+        node->removeFromParent();
+        if (segmentDisposeCallback) {
+            segmentDisposeCallback(transform.get());
+            if (label) segmentDisposeCallback(label.get());
+            if (sprite) segmentDisposeCallback(sprite.get());
+        }
+    }
 };
+void RichText::setSegmentDisposeCallback(void (*callback)(void *)) {
+    segmentDisposeCallback = callback;
+}
 RichText::RichText() {
     _measureLabel = std::make_unique<Label>();
 }

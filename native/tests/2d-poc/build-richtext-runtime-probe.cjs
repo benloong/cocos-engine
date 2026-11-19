@@ -59,11 +59,15 @@ const atlas=new jsb.SpriteAtlas(), frame=new jsb.SpriteFrame(), texture=new jsb.
 texture.create(4,2);frame.resetWithTexture(texture);atlas.addSpriteFrame('icon',frame);
 rich.imageAtlas=atlas;rich.string='<img src="icon"/>tail';
 check(native.getSegmentCount()===2&&native.getSegmentSprite(0).getType()===1,'actual shell native image and label');
+const heldImage=native.getSegmentSprite(0), heldTransform=heldImage.getUITransform(), heldLabel=native.getSegmentLabel(1);
+const independentLabel=new n2d.Label();
 atlas.removeSpriteFrame('icon');rendererManager.updateAllDirtyRenderers();
 check(native.getSegmentCount()===1&&native.getSegmentLabel(0),'late atlas removal updates native segment graph');
+check(__isObjectValid(heldImage)&&__isObjectValid(heldTransform)&&__isObjectValid(heldLabel),'pooled and active wrappers stay valid');
 atlas.addSpriteFrame('icon',frame);
 rich.string='<img src="icon" width=4 height=2 offset=0,-5 click="tap" param="first"/><img src="icon" width=4 height=2 offset=-4,-5 click="tap" param="second"/>';
 check(native.getHitSegments(1,1).length===2,'overlapping native clickable segments');
+check(native.getSegmentSprite(0)===heldImage||native.getSegmentSprite(1)===heldImage,'reused pooled image keeps wrapper identity');
 const params=[];
 node.getComponents=()=>[{enabledInHierarchy:true,tap(event,param){
  params.push(param);
@@ -71,6 +75,14 @@ node.getComponents=()=>[{enabledInHierarchy:true,tap(event,param){
 },replacement(){throw Error('new segment handler dispatched for old hit');}}];
 callback(event);
 check(params.join(',')==='first,second','native hit metadata survives callback-driven relayout');
+rich.string='<img src="icon"/>'.repeat(24);
+check(native.getSegmentCount()===24,'create 24 image segments');
+const images=Array.from({length:24},(_,i)=>native.getSegmentSprite(i));
+rich.string='<b>x</b><i>y</i>'.repeat(12);
+check(native.getSegmentCount()===24&&images.filter(image=>__isObjectValid(image)).length===10,'evicted image wrappers expire during relayout');
+const labels=Array.from({length:24},(_,i)=>native.getSegmentLabel(i));
+rich.string='';
+check(labels.filter(label=>__isObjectValid(label)).length===20,'evicted Label wrappers expire during relayout');
 for(const action of ['disable','touch-off','destroy']) {
  rich.handleTouchEvent=true;rich.onEnable();rich.string='<b click="tap">stop</b>';
  let first=0,second=0;
@@ -82,6 +94,12 @@ for(const action of ['disable','touch-off','destroy']) {
  check(first===1&&second===0&&event.propagationStopped&&!callback,'callback lifetime stops current and future dispatch: '+action);
 }
 check(rich._native===null&&native.getSegmentCount()===0,'destroy releases listener and all native segments');
+check(!__isObjectValid(heldLabel)&&!__isObjectValid(heldImage)&&!__isObjectValid(heldTransform),'destroy invalidates borrowed segment wrappers');
+check([...images,...labels].every(wrapper=>!__isObjectValid(wrapper)),'destroy invalidates all remaining pooled wrappers');
+check(__isObjectValid(independentLabel),'destroy preserves independent Label');
+const nextLabel=new n2d.Label();
+nextLabel.setString('new owner');
+check(nextLabel.getString()==='new owner'&&!__isObjectValid(heldLabel),'new Label is independent of retired wrappers');
 ui.detach();return 'OK';
 }catch(error){return String(error.stack||error);}})()`;
 fs.mkdirSync(path.dirname(output), { recursive: true }); fs.writeFileSync(output, script); console.log(output);

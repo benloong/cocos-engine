@@ -44,6 +44,10 @@ public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::RichText);
     RichText();
     ~RichText() override;
+#ifndef SWIG
+    // Called for components owned exclusively by a segment, just before their destruction.
+    static void setSegmentDisposeCallback(void (*callback)(void *));
+#endif
     uint32_t getTypeId() const override { return TYPE_ID; }
     void onAttach() override;
     void onDetach() override;

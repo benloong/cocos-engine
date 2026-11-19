@@ -278,6 +278,7 @@ public:
 
     void setPrivateObject(PrivateObjectBase *data);
     PrivateObjectBase *getPrivateObject() const;
+    void invalidateBorrowedObject();
 
     /**
      *  @brief Gets an object's private data.

@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #include "jsb_scene_manual.h"
+#include "2d/components/RichText.h"
 #include "application/ApplicationManager.h"
 #include "bindings/auto/jsb_gfx_auto.h"
 #include "bindings/auto/jsb_scene_auto.h"
@@ -821,6 +822,13 @@ SE_BIND_FUNC(js_assets_MaterialInstance_registerListeners) // NOLINT(readability
 
 bool register_all_scene_manual(se::Object *obj) // NOLINT(readability-identifier-naming)
 {
+    cc::RichText::setSegmentDisposeCallback([](void *component) {
+        if (!se::NativePtrToObjectMap::isValid()) return;
+        se::NativePtrToObjectMap::forEach(component, [](se::Object *wrapper) {
+            wrapper->invalidateBorrowedObject();
+        });
+        se::NativePtrToObjectMap::erase(component);
+    });
     // Get the ns
     se::Value nsVal;
     if (!obj->getProperty("ns", &nsVal)) {

@@ -118,6 +118,7 @@ public:
 
     void setPrivateObject(PrivateObjectBase *data);
     PrivateObjectBase *getPrivateObject() const;
+    void invalidateBorrowedObject();
 
     /**
      * @brief Get the underlying private data as std::shared_ptr

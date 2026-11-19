@@ -95,11 +95,11 @@
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
-      "sha256": "c83b098fcc5c07665c0a139231f0872af2422fc32c44d2f531f0c3c4740a0785"
+      "sha256": "7ce124f705444e9af818ba812912789968298031ea1f957d5278fd578d5d2b1b"
     },
     {
       "file": "native/cocos/2d/components/RichText.h",
-      "sha256": "b1df19b656e83c9eac95ac9c2f7c8084b14b15bbf4b018fa22af3adea41f75f5"
+      "sha256": "90521e126f63c255de228b6cb438d2a18d174182a35f61526e7164ae3288f5f4"
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
@@ -282,12 +282,40 @@
       "sha256": "6a91553002b4d9419bf256a634ef76217a2a2b422902d1dc16de73cc1e489142"
     },
     {
+      "file": "native/cocos/bindings/jswrapper/MappingUtils.cpp",
+      "sha256": "e8849199837f06b36ec1980889446b9c567c06563510600f05c2cce02bb79850"
+    },
+    {
+      "file": "native/cocos/bindings/jswrapper/jsvm/Object.h",
+      "sha256": "cf3101ac93dfb888940389ecdd96a10fba6d04de71ea955df7f53d9bf60a90f6"
+    },
+    {
+      "file": "native/cocos/bindings/jswrapper/napi/Object.h",
+      "sha256": "46e3ae14b4fe52414b9de06d9bdfd4db58e99aa1d5bc40703b09fa20fb7d198f"
+    },
+    {
+      "file": "native/cocos/bindings/jswrapper/sm/Object.h",
+      "sha256": "6341536f0f5da58b74fdf3b516fdc094d87020ad1d7cf0516d6a040e05576e9c"
+    },
+    {
+      "file": "native/cocos/bindings/jswrapper/v8/Object.cpp",
+      "sha256": "99af4fb4a5eaa98b27453609327c4863f1006f3f0cf9f926a3ac08bd79844e8f"
+    },
+    {
+      "file": "native/cocos/bindings/jswrapper/v8/Object.h",
+      "sha256": "24648bf4f8600bf930dbdd2a9a4885128b7db106332d548b74b1d7e8b5fafdcc"
+    },
+    {
       "file": "native/cocos/bindings/manual/jsb_platform.h",
       "sha256": "589bb714da1f2804c8b10de33616d9abc3fa6a4a46e298713349f3b9b28dffb6"
     },
     {
       "file": "native/cocos/bindings/manual/jsb_platform_win32.cpp",
       "sha256": "4d5ce67da3c0cf57d483460aa5c76139c6fd7e1c3574dfa2268bd45016e45a69"
+    },
+    {
+      "file": "native/cocos/bindings/manual/jsb_scene_manual.cpp",
+      "sha256": "0e7ad90d0642319e0539f7de4520616555683020a136146dd561bd4db883f347"
     },
     {
       "file": "native/cocos/core/Root.cpp",
