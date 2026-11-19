@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "7a38961a21fa27740f328261fc4d04d5f3fbfbeb19fa552c75b8d6a7c4882051"
+      "sha256": "4d1398e13d51eab82e6f1274d079fc6206fe113c95738f7629f8bc49aff62c54"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "f1ea9ffc7fca0583e2935db061b238243a988ea746a230cd13ed45934a4ead8e"
+      "sha256": "3ad9b0108e2697748a91f0785e7624008bf897c37024616397a571a78624ab74"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -6353,7 +6353,7 @@
             "static": false,
             "type": "void",
             "parameters": [
-              "_force = false"
+              "force = false"
             ],
             "default": null,
             "decorators": []
@@ -14965,7 +14965,7 @@
     },
     {
       "file": "cocos/2d/components/label.jsb.ts",
-      "sha256": "24881556fba0584bd184759923ea8b8e6fa47e43317e84a9b5416035cdb661cc",
+      "sha256": "6fe36f6189de783de8d6ec73cc9b0753e4b4f0f5088b9026b9f7c62599cb8b77",
       "printedCodeLines": 350,
       "runtimeImports": [
         "cc.decorator",
@@ -14991,7 +14991,7 @@
           "line": 149
         },
         {
-          "expression": "this._native?.measureContent",
+          "expression": "this._native?.updateRenderData",
           "line": 155
         },
         {

@@ -1,5 +1,5 @@
 {
-  "snapshot": "c75f5632ea462db83d4fce590517a4ccf4069f3640e6e69bf0c96d3fedb55519",
+  "snapshot": "d06463c72511e53c4aefb9e93a9b5526197a99af8230c305432162dae1973897",
   "width": 256,
   "height": 256,
   "environment": {
@@ -269,6 +269,108 @@
       "expected": true
     }
   ],
+  "labelLayout": {
+    "native": [
+      {
+        "force": false,
+        "overflow": 1,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": false,
+        "overflow": 2,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": false,
+        "overflow": 3,
+        "width": 72,
+        "height": 65.19999694824219
+      },
+      {
+        "force": false,
+        "overflow": 0,
+        "width": 79,
+        "height": 45.20000076293945
+      },
+      {
+        "force": true,
+        "overflow": 1,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": true,
+        "overflow": 2,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": true,
+        "overflow": 3,
+        "width": 72,
+        "height": 65.19999694824219
+      },
+      {
+        "force": true,
+        "overflow": 0,
+        "width": 79,
+        "height": 45.20000076293945
+      }
+    ],
+    "web": [
+      {
+        "force": false,
+        "overflow": 1,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": false,
+        "overflow": 2,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": false,
+        "overflow": 3,
+        "width": 72,
+        "height": 65.19999999999999
+      },
+      {
+        "force": false,
+        "overflow": 0,
+        "width": 80.9453125,
+        "height": 45.199999999999996
+      },
+      {
+        "force": true,
+        "overflow": 1,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": true,
+        "overflow": 2,
+        "width": 72,
+        "height": 80
+      },
+      {
+        "force": true,
+        "overflow": 3,
+        "width": 72,
+        "height": 65.19999999999999
+      },
+      {
+        "force": true,
+        "overflow": 0,
+        "width": 80.9453125,
+        "height": 45.199999999999996
+      }
+    ]
+  },
   "batchDrawCalls": {
     "native": {
       "sprite-batch-1": 1,
@@ -1136,14 +1238,14 @@
   "windows": [
     {
       "configuration": "Debug",
-      "executableSha256": "3f4e36274a523dc8bd0b8d515406e56bf1f9fd44014ec3fb975f08ac17044f41",
-      "manifestSha256": "52f40f93ff925284d2bac1a11747eed4fe81975dc5d1524e7eec258f632ea844",
+      "executableSha256": "2a173b5530432b7253643ab4393a043706bc45f8fe604a24b607cf4dc20e511b",
+      "manifestSha256": "53b12452e3eef6159ab90aaa651573c8f51223e65a429a4787847def75086e3b",
       "exactImages": 85
     },
     {
       "configuration": "Release",
-      "executableSha256": "b2278131f08a1d431166239379b9ed9991fce2d4fb1dbe15abdd41f114a51c86",
-      "manifestSha256": "52f40f93ff925284d2bac1a11747eed4fe81975dc5d1524e7eec258f632ea844",
+      "executableSha256": "dba3fbfd524d860574f8e67147be7db8ee84c95f88807b4969ec83086b69d628",
+      "manifestSha256": "53b12452e3eef6159ab90aaa651573c8f51223e65a429a4787847def75086e3b",
       "exactImages": 85
     }
   ]

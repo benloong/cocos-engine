@@ -204,6 +204,30 @@ export class M6GraphicsGpuProbe extends Component {
         instance.destroy();
         await wait();
         material.destroy();
+        const labelNode = node(canvas.node, 'immediate-label-layout');
+        const label = labelNode.addComponent(Label);
+        const transform = labelNode.getComponent(UITransform)!;
+        label.fontSize = 16;
+        label.lineHeight = 20;
+        label.enableWrapText = true;
+        const labelLayout: { force: boolean; overflow: number; width: number; height: number }[] = [];
+        for (const force of [false, true]) {
+            for (const overflow of [Label.Overflow.CLAMP, Label.Overflow.SHRINK, Label.Overflow.RESIZE_HEIGHT, Label.Overflow.NONE]) {
+                label.overflow = overflow;
+                transform.setContentSize(72, 80);
+                label.string = 'one line\nsecond line';
+                label.updateRenderData(force);
+                const { width, height } = transform;
+                labelLayout.push({ force, overflow, width, height });
+                const fixedWidth = overflow !== Label.Overflow.NONE;
+                const fixedHeight = overflow === Label.Overflow.CLAMP || overflow === Label.Overflow.SHRINK;
+                if (width <= 0 || height <= 0 || (width === 72) !== fixedWidth || (height === 80) !== fixedHeight) {
+                    throw new Error('Immediate Label layout failed: ' + JSON.stringify(labelLayout));
+                }
+            }
+        }
+        labelNode.destroy();
+        await wait();
         for (const item of cases) {
             const root = node(canvas.node, item.name);
             const update = item.draw(root);
@@ -315,7 +339,7 @@ export class M6GraphicsGpuProbe extends Component {
         const scenes = await runSceneMatrix(rt, capture);
         const device = director.root!.device;
         const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures,
-            scenes, roots, hits, batchDrawCalls, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            scenes, roots, hits, batchDrawCalls, labelLayout, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
         console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);

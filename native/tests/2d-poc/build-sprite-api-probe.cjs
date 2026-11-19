@@ -129,6 +129,18 @@ const label=new labelExports.Label(); label.node=labelNode; label.onLoad();
 const labelAssembler=assemblerExports.labelAssembler.getAssembler(label);
 label.string='native adapter';labelAssembler.updateRenderData(label);
 check(label._native.getContentWidth()>0,'native Label assembler builds text');
+label.enableWrapText=true;label.fontSize=16;label.lineHeight=20;
+for(const force of [false,true]){
+ for(const mode of [1,2,3,0]){
+    label.overflow=mode;labelTransform.setContentSizeXY(72,80);
+    label.string=['one line','second line'].join(String.fromCharCode(10));
+    label.updateRenderData(force);
+    const width=labelTransform.getWidth(),height=labelTransform.getHeight();
+    if(mode===1||mode===2)check(width===72&&height===80,'fixed Label bounds on immediate update');
+    if(mode===3)check(width===72&&height>0&&height!==80,'Label resize-height preserves width');
+    if(mode===0)check(width>0&&width!==72&&height>0&&height!==80,'unconstrained Label measures immediately');
+ }
+}
 label._color.r=96;labelAssembler.updateColor(label);
 labelAssembler.updateRenderData(label);
 check(label._native.getOpaquePixels()>0,'native Label still renders after assembler color update');

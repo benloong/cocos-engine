@@ -29,7 +29,7 @@ const nativeLabel = {
     setString: jest.fn(),
     setFont: jest.fn(),
     setFontAsset: jest.fn(),
-    measureContent: jest.fn(),
+    updateRenderData: jest.fn(),
     setFontSize: jest.fn(),
     setActualFontSize: jest.fn(),
     setIsBold: jest.fn(),
@@ -140,7 +140,9 @@ test('Label M3 shell attaches and forwards text properties', () => {
 
     expect(Object.prototype.hasOwnProperty.call(Label.prototype, 'lateUpdate')).toBe(false);
     label.updateRenderData();
-    expect(nativeLabel.measureContent).toHaveBeenCalledTimes(1);
+    expect(nativeLabel.updateRenderData).toHaveBeenLastCalledWith(false);
+    label.updateRenderData(true);
+    expect(nativeLabel.updateRenderData).toHaveBeenLastCalledWith(true);
     expect(nativeLabel.getContentHeight).not.toHaveBeenCalled();
 
     label.enableOutline = true;

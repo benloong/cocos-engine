@@ -12,8 +12,28 @@ if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set
 if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==10||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
 for (const backend of [a, b]) {
+    if (backend.labelLayout?.length !== 8) throw new Error('Incomplete immediate Label layout matrix on ' + backend.backend);
+    for (const force of [false, true]) {
+        for (const overflow of [0, 1, 2, 3]) {
+            const row = backend.labelLayout.find(x => x.force === force && x.overflow === overflow);
+            const fixedHeight = overflow === 1 || overflow === 2;
+            if (!row || !(row.width > 0 && row.height > 0) || (row.width === 72) !== (overflow !== 0) || (row.height === 80) !== fixedHeight) {
+                throw new Error('Unexpected immediate Label bounds: ' + JSON.stringify(row));
+            }
+            if (force) {
+                const ordinary = backend.labelLayout.find(x => !x.force && x.overflow === overflow);
+                if (ordinary.width !== row.width || ordinary.height !== row.height) throw new Error('Forced layout changed unchanged text bounds');
+            }
+        }
+    }
     if (backend.batchDrawCalls?.['sprite-batch-1'] !== 1 || backend.batchDrawCalls?.['sprite-batch-128'] !== 1) {
         throw new Error('Expected one draw call for one or 128 adjacent tinted sprites on ' + backend.backend);
+    }
+}
+for (const row of a.labelLayout) {
+    const web = b.labelLayout.find(x => x.force === row.force && x.overflow === row.overflow);
+    if (Math.abs(row.height - web.height) > 0.001 || (row.overflow !== 0 && row.width !== web.width)) {
+        throw new Error('Label wrap or fixed bounds differ across platforms: ' + JSON.stringify({native:row,web}));
     }
 }
 const centers={
@@ -89,7 +109,7 @@ for(const name of a.captures) {
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
 }
-const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
+const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
 fs.writeFileSync(path.join(__dirname,'build/graphics-gpu-comparison.json'),JSON.stringify(result,null,2));
 for(const row of results) console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: max=${row.max}, pixels=${row.pixels}, Web colored=${row.colored}`);
 if(!result.pass) process.exitCode=1;

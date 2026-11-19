@@ -110,6 +110,7 @@ public:
     void setShadowOffset(float x, float y);
     float getTextureWidth() const { return _lastTextureWidth; }
     void updateRenderData();
+    void updateRenderData(bool force);
     void measureContent();
     Size measureUnwrappedText(const std::string &text);
     float getContentWidth() const { return _lastContentWidth; }

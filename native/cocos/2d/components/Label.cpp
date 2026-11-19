@@ -843,6 +843,11 @@ std::array<double, 2> Label::measureUnwrappedTextPrecise(const std::string &text
     return {std::max(width, _cacheMode == 2 ? 0.F : 1.F) + extent[0], std::max((lines + BASELINE_RATIO) * lineHeight, 1.F) + extent[1]};
 }
 void Label::updateRenderData() {
+    updateRenderData(false);
+}
+
+void Label::updateRenderData(bool force) {
+    if (force) markRenderDirty();
     syncTransformSize();
     syncFontAsset();
     syncBitmapAtlas();

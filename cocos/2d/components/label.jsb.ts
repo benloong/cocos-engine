@@ -151,8 +151,8 @@ export class Label extends UIRenderer {
         this._syncAll();
     }
 
-    public updateRenderData (_force = false): void {
-        this._native?.measureContent();
+    public updateRenderData (force = false): void {
+        this._native?.updateRenderData(force);
     }
 
     public onEnable (): void {

@@ -44,6 +44,7 @@
 - [x] Sprite radial 与可变 fillCenter：归一化中心、角度方向、矩形边界三角形、rotated UV 和 flip 行为已修复；fillCenter 分量读写直接桥接 native，加载/克隆/销毁保持视图契约。3024 组实际 Web assembler 与 native CPU 几何对照、Windows Debug/Release 定向测试通过，见 [报告](./native-2d-m6.1-radial.md)。
 - [x] Sprite/Label 材质槽 API 与提交：补数组整体赋值/缩短/清空、加载前引用、forceUpdate、实例 owner 解绑；native 区分显式空槽和恢复内置材质，Label 实际 DrawInfo 跟随槽和实例变化。Windows Debug/Release、实际 JSB 与 Web 定向对照通过，见 [报告](./native-2d-m6.1-material-slots.md)。
 - [x] Label 的兼容 getter `_bmFontOriginalSize` 读取当前 BitmapFont 资产的字号，并覆盖未设置字体、字号修改和切换非位图字体的 Web/JSB 薄壳对照。见 [Label 回归](../tests/ui/native-2d-m3-label-shell.test.ts)。
+- [x] Label.updateRenderData(force) 保留布局约束。相同两行文本在 Windows Debug、Release 和 Web 下分别验证普通与强制刷新。CLAMP/SHRINK 保持 72×80，RESIZE_HEIGHT 保持宽度 72 并换行至高度 65.2，NONE 同步返回自然尺寸。NONE 的自然宽度 Windows 为 79、Web 为 80.9453125，字体度量差异仍在复杂布局中跟踪。[逐配置布局与像素回归](./native-2d-m6-windows-web-gpu-results.json)。
 - [ ] 完整组件 parity：Label 其余公开/兼容接口；材质数组原地修改/重编译回调与 Asset 延迟销毁语义，以及真实场景/Prefab 和资源管线继续验收。radial CPU 几何通过不替代 GPU 像素验收。
 
 - [x] SpriteFrame 基础数据/算法：quad/sliced UV 迁入 native；rotated、flip、insets、pivot、meshType、packable、clone/reset 与基础静态 API 已补实现，UV 对照与 Windows 定向回归通过，见 [报告](./native-2d-m6.1-sprite-frame.md)。
