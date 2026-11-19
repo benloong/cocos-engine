@@ -33,6 +33,11 @@ const ccdocument = ccwindow.document;
 
 type FontCallback = (err: Error | null, family?: string) => void;
 
+// The native DOM declarations omit the browser's CSS Font Loading API.
+interface LoadableFontFace {
+    load (): Promise<LoadableFontFace>;
+}
+
 interface IFontLoadHandle {
     fontDesc: string;
     refWidth: number;
@@ -129,10 +134,10 @@ export function loadFont (url: string, options: Record<string, any>, onComplete:
     if (useNativeCheck()) {
         // A fresh FontFace can reload the original URL after a failed document stylesheet fetch.
         const timeout = setTimeout(() => finish(false), _timeout);
-        const settle = (face?: FontFace): void => {
+        const settle = (face?: LoadableFontFace): void => {
             if (_fontFaces.get(fontFamilyName) !== callbacks) return;
             clearTimeout(timeout);
-            if (face) (ccdocument.fonts as FontFaceSet & { add (value: FontFace): void }).add(face);
+            if (face) (ccdocument as Document & { fonts: { add (value: LoadableFontFace): void } }).fonts.add(face);
             finish(!!face);
         };
         try {
