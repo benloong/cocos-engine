@@ -50,8 +50,23 @@ export class LabelSpike {
         charLabel.outlineWidth = 1.5;
         charLabel.updateRenderData(true);
         const outlined = charTransform.height;
+        charLabel.enableOutline = false;
+        charLabel.enableWrapText = false;
+        charTransform.width = 45;
+        charLabel.string = '甲乙';
+        charLabel.updateRenderData(true);
+        const wrapped = charTransform.height;
+        charLabel.overflow = Label.Overflow.NONE;
+        charLabel.enableWrapText = true;
+        charLabel.updateRenderData(true);
+        const natural = charTransform.height;
+        charLabel.overflow = Label.Overflow.RESIZE_HEIGHT;
+        charTransform.width = 35;
+        charLabel.string = '甲  \r\n乙';
+        charLabel.updateRenderData(true);
+        const trailingSpaces = charTransform.height;
         charNode.destroy();
-        console.log(`M3_CHAR_LAYOUT ${JSON.stringify({ plain, outlined })}`);
+        console.log(`M3_CHAR_LAYOUT ${JSON.stringify({ plain, outlined, wrapped, natural, trailingSpaces })}`);
         if (typeof n2d !== 'undefined' && n2d.Label) {
             const atlas = new Texture2D();
             atlas.reset({ width: 64, height: 32, format: Texture2D.PixelFormat.RGBA8888 });

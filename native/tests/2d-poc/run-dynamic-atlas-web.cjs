@@ -117,8 +117,9 @@ const server = http.createServer(async (req, res) => {
                     }
                 }
                 if (bitmap && text.startsWith('M3_CHAR_LAYOUT ')) {
-                    const { plain, outlined } = JSON.parse(text.slice('M3_CHAR_LAYOUT '.length));
+                    const { plain, outlined, wrapped, natural, trailingSpaces } = JSON.parse(text.slice('M3_CHAR_LAYOUT '.length));
                     if (plain !== 38.25 || outlined !== 41.25) throw new Error(text);
+                    if (wrapped !== 38.25 || Math.abs(natural - 19.13) > 0.00001 || trailingSpaces !== 38.25) throw new Error(text);
                     charLayoutPassed = true;
                 }
                 if (text === 'M6_ATLAS_FALLBACK_PASS') fallbackPassed = true;

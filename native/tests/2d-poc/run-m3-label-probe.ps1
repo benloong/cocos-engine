@@ -35,6 +35,7 @@ try {
     if (!$charLayoutLine) { throw 'missing multiline CHAR layout' }
     $charLayout = $charLayoutLine.Matches[0].Groups[1].Value | ConvertFrom-Json
     if ($charLayout.plain -ne 38.25 -or $charLayout.outlined -ne 41.25) { throw "multiline CHAR height mismatch: $charLayout" }
+    if ($charLayout.wrapped -ne 38.25 -or [math]::Abs($charLayout.natural - 19.13) -gt 0.00001 -or $charLayout.trailingSpaces -ne 38.25) { throw "CHAR wrapping mismatch: $charLayout" }
     foreach ($line in $measureLines) {
         $obj = $line.Line.Substring($line.Line.IndexOf('M3_LABEL_MEASURE ') + 17) | ConvertFrom-Json
         $measure[$obj.name] = $obj

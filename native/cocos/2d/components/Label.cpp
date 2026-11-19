@@ -523,9 +523,8 @@ void Label::rebuildLetterTexture() {
     auto &glyphs = atlas.getStyle(key);
 
     const float lineHeight = _lineHeight > 0.0F ? _lineHeight : _fontSize;
-    const float maxWidth = _overflow != 0 && _transform != nullptr && _transform->getContentSize().x > 0.0F
-        ? _transform->getContentSize().x
-        : 100000.0F;
+    const bool wrap = _overflow == 3 || (_overflow != 0 && _wrap);
+    const float maxWidth = wrap && _transform ? _transform->getContentSize().x : 0.F;
 
     std::vector<std::vector<LetterAtlas::Glyph>> lines;
     lines.emplace_back();
@@ -540,9 +539,10 @@ void Label::rebuildLetterTexture() {
             continue;
         }
         const int32_t code = utf8CodePoint(codepoint);
+        if (code == '\r') continue;
         const auto &glyph = atlas.getOrCreateGlyph(glyphs, code, _font, lineHeight, _color);
         if (!glyph.valid) continue;
-        if (_wrap && lineWidth + glyph.advance > maxWidth && !lines.back().empty()) {
+        if (maxWidth > 0.F && lineWidth > 0.F && lineWidth + glyph.advance > maxWidth && !bitmapUnicodeSpace(code)) {
             contentWidth = std::max(contentWidth, lineWidth);
             lines.emplace_back();
             lineWidth = 0.0F;

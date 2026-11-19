@@ -59,6 +59,7 @@
 - [x] Sprite 和 Label 的 JSB 壳继承 UIRenderer.color。编辑器改色在同步原生颜色后派发一次 COLOR_CHANGED，监听器收到独立副本；运行时改色和重复赋相同值的事件数均为 0。Web 类和 JSB 壳的编辑器/运行时契约由[定向测试](../tests/ui/native-2d-m3-label-shell.test.ts)覆盖，三端运行时赋值由[实际场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)覆盖。
 - [ ] 完整组件 parity：Label 其余公开/兼容接口，以及真实场景/Prefab 和资源管线继续验收。radial CPU 几何通过不替代 GPU 像素验收。
   - [x] CHAR 缓存的 RESIZE_HEIGHT 按行数和行高计算，并在两位小数取整后加上下描边。Windows Debug、Release 和 Web 的旧场景单行 CJK 高度为 40；行高 19.125 的双行文本在描边前后为 38.25、41.25。原生另核对分数行高下的未换行测量与实际布局高度。[三端回归](../native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts)
+  - [x] CHAR 缓存的窄容器换行与行尾空白。在 45 像素宽的旧场景 Label 中，关闭 enableWrapText 的 RESIZE_HEIGHT 仍将“甲乙”分为两行，切换到 NONE 并开启 enableWrapText 后回到一行。35 像素宽下，“甲”后的两个空格和 CRLF 只产生一次换行。Windows Debug、Release 和 Web 的三次高度分别为 38.25、19.13、38.25。旧 Windows Debug 实测为 19.13、19.13、57.38。[旧场景](../native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts)
   - [x] 原生栅格 Label 按 Web 的 overflow 决定是否自动换行。NONE 按显式换行分段，RESIZE_HEIGHT 即使关闭 enableWrapText 也按节点宽度换行。48 像素宽、多行文本在 Web 与 Windows Debug/Release 切换开关后均保持原有高度，85 张图像逐字节相同。[场景与像素对照](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Label 运行时字体切换：从位图字体切回系统字体会清空字体资产；再次关闭系统字体、向空槽写入 null 均保留空槽。显式重新指定 BitmapFont 后立即读取到单个 A 字形宽度 16，且混合遮罩场景中的绿色字形正常绘制。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 - [x] Label.contentWidth：实际 JSB 验证初值为 0，加载前写入的小数保留精度。Windows Debug、Release 和 Web 的 TTF 在四种 overflow 下发布各自的节点宽度，强制更新覆盖手动赋值；干净帧刷新、BMFont 和 CHAR 更新保留手动值。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
