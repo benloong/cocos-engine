@@ -331,7 +331,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "f7e69de7f76dc1abdc1b3504e246bcd9f9ca16078adf20ce83dff3c9530163ad"
+      "sha256": "16ff480c6442edc140157446106f90ec65c22ebfe82b8549eac718336007a128"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",

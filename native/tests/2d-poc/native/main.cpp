@@ -924,6 +924,17 @@ void testLabelRasterMapping() {
     check(label.getOpaquePixels() == 0, "whitespace prefill is not counted as visible text");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     {
+        cc::CanvasRenderingContext2D background(3, 1);
+        background.setFillStyle("rgba(23,77,138,0.004)");
+        background.fillRect(0, 0, 2, 1);
+        background.setFillStyle("rgb(41,87,149)");
+        background.fillRect(1, 0, 1, 1);
+        background.setCanvasBufferUpdatedCallback([](const cc::Data &data) {
+            const std::array<uint8_t, 12> expected{23, 77, 138, 1, 41, 87, 149, 255, 0, 0, 0, 0};
+            check(data.getSize() == expected.size() && std::equal(expected.begin(), expected.end(), data.getBytes()),
+                  "Canvas background retains straight RGBA on transparent pixels and opaque overwrite");
+        });
+        background.fetchData();
         cc::CanvasRenderingContext2D fractional(4, 4);
         fractional.setFillStyle("rgb(255,0,0)");
         uint8_t expected = 64;

@@ -1,5 +1,24 @@
 # Windows 和 Web 的 M6 性能对照
 
+## Windows Canvas 矩形填充
+
+栅格 Label 在新画布上用边缘色和 1/255 的透明度填充整块纹理。目标像素完全透明且矩形完整覆盖时，source-over 的 straight RGBA 等于源 RGBA；不透明源完整覆盖目标时同样成立。Win32 Canvas 在这两种情况下直接复制四个通道。其他情况沿用原先的覆盖率计算，包括小数边缘和半透明颜色叠加。
+
+在同一台 Windows 主机上，用 MSVC Release 编译前后两份填充函数。65,536 个固定种子的输入覆盖混合目标 alpha、正负矩形尺寸、裁剪、小数坐标和源透明度，输出全部逐字节一致。256 次 96×24 透明背景填充的中位数从 9.175 ms 降至 0.685 ms，含每次清零。另行比较位图读回实现时，256 次创建、绘字和读取在 GetDIBits 与 DIB section 两条路径上分别为 5.384、5.391 ms，因此本次保留原位图路径。
+
+Windows Debug/Release 的 native harness 均通过；1000 次 Canvas 生命周期循环前后的进程 GDI 句柄均为 16。三端 85 张常规图像逐字节一致。当前快照的 12 个 RichText 场景在两个 Windows 配置上与 Web 的布局均一致，各自图像哈希与上一节点相同，严格通过 9/12。
+
+Windows Release 迁移前、换行修正对照和本次候选采用相同的三轮交错测量。已迁移的两个程序复用相同 Label 对象文件、JS 包和计时工程，候选替换 Win32 Canvas 翻译单元。混合负载三轮均优于改动前；纯 Label 的首轮回退，三轮中位数仅改善 0.5%。9 张系统字体纹理在各轮优化前后与前一节点逐字节一致。[逐轮数据、图像及构建哈希](./native-2d-m6-canvas-fill-performance.json)
+
+| Windows 变更帧 | 迁移前 | 改动前 | 本次修改 |
+|---|---:|---:|---:|
+| 200 个 Label，总 CPU（ms） | 3.0597 | 2.8434 | 2.8289 |
+| 混合负载，总 CPU（ms） | 4.3008 | 4.8806 | 4.1284 |
+| 混合负载，dirty 更新（ms） | 1.9610 | 3.3985 | 2.7890 |
+| 混合负载，强制 GC（ms） | 7.271 | 8.420 | 4.547 |
+
+混合 CPU 较改动前下降 15.4%，较迁移前下降 4.0%，距 50% 目标仍差 1.9780 ms/帧。每轮的具体对照受进程间波动影响，不能将本次百分比与上一节点的百分比累加。
+
 ## Windows 栅格 Label 的换行模式
 
 系统字体和自定义 TTF 的 NONE 模式现在直接按显式换行分段，省去逐字拼接和候选行测宽。RESIZE_HEIGHT 始终按可用宽度换行，CLAMP 和 SHRINK 继续读取 enableWrapText。这与 Web ttfUtils 的模式选择一致。Windows Debug/Release 与 Web 的场景验证包含关闭 enableWrapText 后高度仍随行数增长的 RESIZE_HEIGHT 文本。

@@ -37,14 +37,18 @@ void fillRectWithColor(uint8_t *buf, uint32_t totalWidth, uint32_t totalHeight, 
     const float right = std::min(x + width, static_cast<float>(totalWidth));
     const float bottom = std::min(y + height, static_cast<float>(totalHeight));
     if (!(right > left && bottom > top)) return;
-    const uint8_t color[]{r, g, b};
+    const uint8_t color[]{r, g, b, a};
     for (uint32_t row = static_cast<uint32_t>(top); row < static_cast<uint32_t>(std::ceil(bottom)); ++row) {
         for (uint32_t column = static_cast<uint32_t>(left); column < static_cast<uint32_t>(std::ceil(right)); ++column) {
             const float coverX = std::min(right, column + 1.F) - std::max(left, static_cast<float>(column));
             const float coverY = std::min(bottom, row + 1.F) - std::max(top, static_cast<float>(row));
+            auto *pixel = buf + (static_cast<size_t>(row) * totalWidth + column) * 4;
+            if (coverX == 1.F && coverY == 1.F && (pixel[3] == 0 || a == 255)) {
+                std::copy_n(color, 4, pixel);
+                continue;
+            }
             const float sourceAlpha = a / 255.F * coverX * coverY;
             if (sourceAlpha <= 0) continue;
-            auto *pixel = buf + (static_cast<size_t>(row) * totalWidth + column) * 4;
             const float destAlpha = pixel[3] / 255.F;
             const float outAlpha = sourceAlpha + destAlpha * (1 - sourceAlpha);
             for (size_t channel = 0; channel < 3; ++channel) {

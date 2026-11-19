@@ -146,6 +146,7 @@
 - [x] Windows Scene/多 Camera 定向矩阵：修复 Graphics 在 onLoad 前丢命令和从未激活实例的 backend 清理；普通 Debug/ASAN 与 Web 同快照 74 图像差值 0，1000 次实际 director 切换、动态纹理创建销毁与 4998 项循环断言通过。见 [报告与边界](./native-2d-m6.4-scene-matrix.md)；不是完整 asset-manager、泄漏、Release GPU 或平台验收。
 - [x] CHAR 图集由使用它的 Label 通过 IntrusivePtr 持有。最后一个引用释放时同步清理原生查找指针，JSB 与 Web 共享独立的 LetterRenderTexture 类型。Debug/Release 验证双 Label 共享、释放一个后继续绘制和切换缓存 1000 次，两个配置各 85 张图像与 Web 完全一致。运行时依赖与所有权审计、测试工程 M0/M2/M3/M4/M5 和 SpriteFrame 回归通过。[当前 GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)
 - [ ] 所有 native 组件/资产核对 attach/detach、Node 非 owning 槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。
+  - Windows Debug 有一次旧 RichText 场景包在字体生命周期测试中超时，日志出现同一 cc::Label 已关联 RawRefPrivateObject、又尝试关联 SharedPtrPrivateObject。用当前源码快照重建后 Debug/Release 均完成 1000 轮。此现象仍需核对内部段销毁时 JSB 借用包装的失效时机。
 - [x] Windows Debug/Release 已确认 GLES3 设备线程实际分离，核对主线程 walk、上传快照、队列消费与分帧回收。场景切换、异步资源完成、禁用后销毁及 Web 对照见[线程边界与验收](./native-2d-m6-threads.md)。
 - [x] Windows M5 日志观测缺陷：真实 Kernel/Script 日志在 stdout 全缓冲子进程中可确定复现“调用已返回、退出前不可见”；Win32 显式刷新后 red/green 通过。唯一运行日志/二进制指纹/双时钟/CPU/退出码诊断已接入，完整文档串行验收一次通过，同一 app 连续 3 次 M5 在原 45 秒预算内无重试通过，见 [报告](./native-2d-m6.4-log-observability.md)。
 - [x] Windows 图集与 RichText 连续场景的帧内资源生命周期。离屏窗口销毁前清除依赖附件的管线帧缓冲，切换窗口刷新活动纹理。UI 批次持有采样视图和源纹理直至清理，帧末停止访问已上传的 DrawInfo。三次原始 ASan 报告分别定位到 framebuffer 析构、批次 reset 和 GLES3 纹理绑定。修复后原生引用计数回归、Windows Debug 串行门禁及 32 项定向 Jest 通过，100 组图像对既有 Web 基准差值为零。ASan M5 共四次通过（含连续三次），每次 9 个 Label、1 个 Sprite、8725 个着色像素。Debug 应用 SHA256 为 `5a3e867cf950618f42342b7f72dbcebe107ae733c649723be6e82204f462fb6d`，ASan 应用 SHA256 为 `decc3ca0c8af6d23c1c7df266706a07149c4e15a821b754879a68c3df84ecff7`。日志位于 `native/tests/2d-poc/build/m6-window-*.log` 和 `build/static-atlas-heap-gate/asan-m5-reports`。完整线程与平台矩阵继续验收。
@@ -164,6 +165,7 @@
 - [x] 已固定 7e83734299 迁移前版本、7045a76a35 候选、硬件和构建模式；Windows Release 与 Web 完成五种负载三轮对照。每个场景预热 30 帧，稳态及 10% 变更态各采样 120 帧。[方法、环境和数据](./native-2d-m6-performance.md)。
 - [x] Windows 文本行宽复用。Label 布局与绘制共享行宽，GDI 复用同一次测量，DirectWrite 左对齐省去定位测量。六轮混合变更帧从 4.2690 降至 3.6188 ms，系统字体和自定义字体在 Windows 的优化前后像素一致。[测量和回归](./native-2d-m6-text-width-reuse.json)
 - [ ] 达成总计划 KPI：2D 组件准备/更新与合批 CPU 时间下降 ≥50%，每帧 JSB 调用下降 ≥70%，JS 堆峰值下降 ≥30%，GC 改善；native `Batcher2d` 成本必须纳入，不能以 JS update 直接返回作为收益。
+  - [x] Win32 Canvas 在透明目标或不透明源完全覆盖时直接写入 RGBA。三轮混合变更帧中位数从 4.8806 降至 4.1284 ms，两个 Windows 配置通过像素与句柄回归。[测量结果](./native-2d-m6-canvas-fill-performance.json)
 - [x] 14 个原生 override 的物理行数预算已接入 M0 和 native-ts-build。计数保留空行、普通注释及包含运行时逻辑的行，排除版权头、纯类型声明和可确认的 deprecated 直接转发。最接近上限的是 SpriteFrame 298/300 和 Label 491/500；RichText 为 155/500。UIRenderer、LabelOutline、LabelShadow 是保留的 Web 实现，纳入 17 类依赖检查。扩展后的薄壳检查 27 项与 7 项审计测试在本机通过。
 - [x] Windows Debug/Release 各完成 14 组场景的创建、稳态、显式 API、同步变更、下一帧、禁用、启用和延迟销毁统计。224 个窗口逐个校验 V8 原生总数；两种配置的迁移类直接调用数逐格一致，稳态为 0，共享 manager 每帧 1 次。[逐组计数与覆盖边界](./native-2d-m6.0-windows-jsb-trace.md)
 - [x] 六种独立资产的创建、同步属性变更、destroy 与三帧延迟清理，在 Windows Debug/Release 共 48 个窗口通过 V8 总数校验；记录 TTF 数据释放、位图字体帧解绑和共享资源存活。[逐资产调用与边界](./native-2d-m6.0-windows-jsb-trace.md)
