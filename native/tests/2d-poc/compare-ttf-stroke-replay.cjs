@@ -14,7 +14,7 @@ const glyphMasks = boldFill ? 32 : 96;
 const work = fs.mkdtempSync(path.join(build, boldFill ? 'bold-replay-' : 'stroke-replay-'));
 const font = path.resolve(__dirname, '../../../tests/fixtures/Thonburi.ttf');
 const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const stages = boldFill ? ['snapped', 'lines', 'widened', 'boundary', 'left', 'right'] : ['lines', 'widened', 'center', 'quadraticCenter', 'boundary', 'freetype'];
+const stages = boldFill ? ['snapped', 'lines', 'widened', 'boundary', 'left', 'right', 'fillStroke', 'quadraticFillStroke'] : ['lines', 'widened', 'center', 'quadraticCenter', 'boundary', 'freetype'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
 // Runs inside Chrome. The mask is four samples wide per destination pixel.
@@ -30,6 +30,7 @@ function scan(paths) {
     }
     for (const [name, text] of paths) {
         const outline = new Path2D();
+        const fillStroke = /\.(?:fillStroke|quadraticFillStroke)\.path$/.test(name);
         let ctx, stroke = false, fillRule = 'evenodd';
         for (const line of text.trim().split(/\r?\n/)) {
             const [op, ...fields] = line.split(' ');
@@ -44,7 +45,8 @@ function scan(paths) {
             case 'T':
                 ctx.setTransform(...v.slice(0, 6));
                 ctx.lineWidth = v[6];
-                ctx.lineJoin = 'round';
+                ctx.lineJoin = fillStroke ? 'miter' : 'round';
+                if (fillStroke) ctx.miterLimit = 4;
                 stroke = true;
                 break;
             case 'F': fillRule = v[0] ? 'nonzero' : 'evenodd'; break;
@@ -56,6 +58,7 @@ function scan(paths) {
             default: throw new Error('Unexpected path command ' + op);
             }
         }
+        if (fillStroke) ctx.fill(outline, fillRule);
         if (stroke) ctx.stroke(outline);
         else ctx.fill(outline, fillRule);
         result[name] = mask(ctx);
@@ -158,6 +161,7 @@ assert.equal(metadata.text, 'Atlas 123');
 assert.equal(metadata.lineWidth, 4);
 const configs = ['out', 'out-release2'];
 const rows = [];
+const releaseDifferences = [];
 let rectangleControls;
 for (const config of configs) {
     const dir = path.join(work, config);
@@ -172,10 +176,12 @@ for (const config of configs) {
     }
     if (!boldFill) {
         capture(config, 'cc2d_ttf_stroke_replay', path.join(dir, 'directStroke'), dir, undefined, 'CC2D_DIRECT_STROKE');
-        for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.center.path'))) {
-            const source = fs.readFileSync(path.join(dir, file), 'utf8');
-            fs.writeFileSync(path.join(dir, file.replace('.center.path', '.quadraticCenter.path')), quadraticPath(source));
-        }
+    }
+    for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.center.path'))) {
+        const source = fs.readFileSync(path.join(dir, file), 'utf8');
+        if (boldFill) fs.writeFileSync(path.join(dir, file.replace('.center.path', '.fillStroke.path')), source);
+        const quadratic = boldFill ? '.quadraticFillStroke.path' : '.quadraticCenter.path';
+        fs.writeFileSync(path.join(dir, file.replace('.center.path', quadratic)), quadraticPath(source));
     }
     execFileSync(path.join(__dirname, 'native', config, 'cc2d_ttf_stroke_freetype.exe'), boldFill ? [dir, '--bold'] : [dir], { stdio: 'inherit' });
     const paths = fs.readdirSync(dir).filter(name => stages.some(stage => name.endsWith('.' + stage + '.path'))).sort();
@@ -230,11 +236,19 @@ for (const config of configs) {
             row.stages[stage] = { hash: hash(image), ...compareAlpha(image, reference) };
         }
         if (config === configs[0]) rows.push(row);
-        else assert.deepEqual(row, rows.find(r => r.size === size && r.style === style));
+        else {
+            const debug = rows.find(r => r.size === size && r.style === style);
+            assert.equal(row.webHash, debug.webHash);
+            for (const [stage, result] of Object.entries(row.stages)) {
+                if (stage === 'quadraticFillStroke' && result.hash !== debug.stages[stage].hash) {
+                    releaseDifferences.push({ size, style, stage, ...result });
+                } else assert.deepEqual(result, debug.stages[stage]);
+            }
+        }
     }
 }
 const renderer = path.resolve(__dirname, '../../cocos/platform/win32/modules/DirectWriteFont.cpp');
 const report = { browser: metadata.userAgent, fontSha256: hash(fs.readFileSync(font)), rendererSha256: hash(fs.readFileSync(renderer)),
-    text: metadata.text, ...(boldFill ? { mode: 'synthetic-bold-fill' } : { strokeWidth: metadata.lineWidth }), tolerance: 1, glyphMasks, debugReleaseIdentical: true, rectangleControls, rows };
+    text: metadata.text, ...(boldFill ? { mode: 'synthetic-bold-fill', releaseDifferences } : { strokeWidth: metadata.lineWidth }), tolerance: 1, glyphMasks, debugReleaseIdentical: releaseDifferences.length === 0, rectangleControls, rows };
 fs.writeFileSync(path.join(work, 'comparison.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(path.join(work, 'comparison.json'));

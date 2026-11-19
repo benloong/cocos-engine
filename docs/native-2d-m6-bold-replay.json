@@ -4,9 +4,19 @@
   "rendererSha256": "656c29a2e9fbc4eb490ab505e50942aea2093271ec3c86eaaf4602d2ef8734d6",
   "text": "Atlas 123",
   "mode": "synthetic-bold-fill",
+  "releaseDifferences": [
+    {
+      "size": 36,
+      "style": 1,
+      "stage": "quadraticFillStroke",
+      "hash": "1407f1250bf306d5758dc6d321ee39de3571c2f1f7c51e3716eb978d57b38955",
+      "pixels": 105,
+      "max": 20
+    }
+  ],
   "tolerance": 1,
   "glyphMasks": 32,
-  "debugReleaseIdentical": true,
+  "debugReleaseIdentical": false,
   "rectangleControls": [],
   "rows": [
     {
@@ -53,6 +63,16 @@
           "hash": "24b83afb7c9575116ac9b68af342f287cf3f7aaeac59a4d9bf48ea509bf9a1be",
           "pixels": 146,
           "max": 36
+        },
+        "fillStroke": {
+          "hash": "2726d1a19545f758269775672e27e5778fbe6c28d7f4e91b625b7aed639b7b29",
+          "pixels": 139,
+          "max": 39
+        },
+        "quadraticFillStroke": {
+          "hash": "470bc31287345b81b0294fdbceb6ceb3f8ce25ba5d10039244e6f94ace9ce4e0",
+          "pixels": 139,
+          "max": 39
         }
       }
     },
@@ -100,6 +120,16 @@
           "hash": "fea13129754900db875cf8becd03e4b948b51aa09208ee2f2c1e4abd1508a605",
           "pixels": 330,
           "max": 73
+        },
+        "fillStroke": {
+          "hash": "275196dec4d77f957f5484ec194142e700e37f1a3f50c87d79e4e0834ddb76fa",
+          "pixels": 150,
+          "max": 27
+        },
+        "quadraticFillStroke": {
+          "hash": "2435bb770f3ca75477b13cf28c4f5cf72496493e239971db59f88c5375635fbb",
+          "pixels": 152,
+          "max": 27
         }
       }
     },
@@ -147,6 +177,16 @@
           "hash": "26effd9d50ced6abb18a6cd2bad97b64d6b7eab15e2df4cedfb4ea87f1e2bd6a",
           "pixels": 435,
           "max": 90
+        },
+        "fillStroke": {
+          "hash": "0967a4e860e1c65b23fccbd209303742402d491ead334706858c10faa6ad99ac",
+          "pixels": 112,
+          "max": 22
+        },
+        "quadraticFillStroke": {
+          "hash": "caf2f605f054b7d432fb837b7e42dae877b72f01d87a6ce06586277d0f79d1f2",
+          "pixels": 104,
+          "max": 20
         }
       }
     },
@@ -194,6 +234,16 @@
           "hash": "3772ca19d26e44d167cc9af0591289e863ff9e2776feb97efe37231cdb37f465",
           "pixels": 488,
           "max": 68
+        },
+        "fillStroke": {
+          "hash": "1d7bb7ee115f1c7c7a960a69c25e4b5e8f7bc5ac5e258042b17a286535a8d785",
+          "pixels": 21,
+          "max": 9
+        },
+        "quadraticFillStroke": {
+          "hash": "57d2627c812ac34980b6b64887fe734a549d476e370202ad42289b313572d009",
+          "pixels": 12,
+          "max": 9
         }
       }
     }
