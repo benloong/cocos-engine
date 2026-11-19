@@ -1,5 +1,6 @@
 import { _decorator, BitmapFont, Camera, Canvas, Color, Component, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { runSceneMatrix } from './M6SceneMatrix';
+import { EffectAsset, instantiate, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
 
 const { ccclass } = _decorator;
@@ -176,6 +177,33 @@ export class M6GraphicsGpuProbe extends Component {
             console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);
             return;
         }
+        const prefab = await new Promise<Prefab>((resolve, reject) =>
+            resources.load('M6StaticAtlas/AtlasSprite', Prefab, (error, asset) => error ? reject(error) : resolve(asset)));
+        const effect = await new Promise<EffectAsset>((resolve, reject) =>
+            resources.load('AtlasMesh', EffectAsset, (error, asset) => error ? reject(error) : resolve(asset)));
+        const instance = instantiate(prefab);
+        const legacySprite = instance.getComponent(Sprite)!;
+        const left = legacySprite.spriteFrame!;
+        const right = legacySprite.spriteAtlas!.getSpriteFrame('right')!;
+        if (!right.rotated || right.texture !== left.texture || left.mesh || right.mesh) throw new Error('Unexpected imported atlas frames');
+        // Both renderers sample the imported sheet throughout this static atlas case.
+        left.packable = right.packable = false;
+        canvas.node.addChild(instance);
+        await capture('prefab-atlas-sprite');
+        legacySprite.enabled = false;
+        instance.setScale(400, 400, 1);
+        const material = new Material();
+        material.initialize({ effectAsset: effect });
+        const meshRenderer = instance.addComponent(SpriteRenderer);
+        meshRenderer.setSharedMaterial(material, 0);
+        meshRenderer.visibility = instance.layer;
+        meshRenderer.spriteFrame = left;
+        await capture('prefab-atlas-mesh-left');
+        meshRenderer.spriteFrame = right;
+        await capture('prefab-atlas-mesh-right');
+        instance.destroy();
+        await wait();
+        material.destroy();
         for (const item of cases) {
             const root = node(canvas.node, item.name);
             const update = item.draw(root);

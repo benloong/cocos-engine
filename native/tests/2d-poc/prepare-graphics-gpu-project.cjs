@@ -11,6 +11,14 @@ fs.mkdirSync(path.join(project,'build/windows/data'),{recursive:true});
 const assetsLink=path.join(project,'build/windows/assets');
 if(!fs.existsSync(assetsLink)) fs.symlinkSync(path.join(project,'build/windows/data'),assetsLink,'junction');
 fs.cpSync(fixture,project,{recursive:true});
+if (mode === 'graphics') {
+    const atlas = path.join(__dirname, 'fixtures/acceptance/resources/M6StaticAtlas');
+    const resources = path.join(project, 'assets/resources');
+    fs.mkdirSync(resources, {recursive:true});
+    fs.cpSync(atlas, path.join(resources, 'M6StaticAtlas'), {recursive:true});
+    fs.copyFileSync(atlas + '.meta', path.join(resources,'M6StaticAtlas.meta'));
+    fs.copyFileSync(path.join(root, 'editor/assets/effects/for2d/builtin-sprite-renderer.effect'), path.join(resources,'AtlasMesh.effect'));
+}
 // CLI keeps outputName from the supplied config even when --platform differs.
 // Use a separate Web config so building Web cannot replace Windows resources.
 const webConfig=JSON.parse(fs.readFileSync(path.join(project,'build-config.json'),'utf8'));

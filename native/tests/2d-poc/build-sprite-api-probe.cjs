@@ -14,6 +14,9 @@ const frameModules=['sprite-frame-vertices','sprite-frame.jsb'].map(name=>
     ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/assets',name+'.ts'),'utf8'),{
         compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
     }).outputText);
+const meshModule=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/3d/assets/mesh.jsb.ts'),'utf8'),{
+    compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
+}).outputText;
 const materialAPIs=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/framework/native-ui-materials.ts'),'utf8'),{
     compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
 }).outputText;
@@ -195,7 +198,12 @@ function frameRequire(id){
  if(id==='../../core/math/vec3')return {Vec3};
  if(id==='./sprite-frame-vertices')return vertexExports;
  if(id==='../utils/dynamic-atlas/atlas')return {Atlas:{releaseFrame(){},trackClone(){}}};
- if(id==='../../native-binding/decorators')return {patch_cc_SpriteFrame(){}};
+ if(id==='../../native-binding/decorators')return {patch_cc_SpriteFrame(){},patch_cc_Mesh(){}};
+ if(id==='../../3d/assets/mesh'){
+     const moduleExports={};
+     ((exports,require)=>{ ${meshModule} })(moduleExports,frameRequire);
+     return moduleExports;
+ }
  throw new Error(id);
 }
 jsb.Asset.prototype._ctor=function(){};
@@ -217,6 +225,7 @@ function equalArray(actual,expected){return JSON.stringify(Array.from(actual))==
 check(equalArray(mesh.readAttribute(0,'a_position'),expectedPositions),'mesh vertex buffer');
 check(equalArray(mesh.readAttribute(0,'a_texCoord'),[0.25,0.25,0.75,0.25,0.25,1,0.75,1]),'mesh UV buffer');
 check(equalArray(mesh.readIndices(0),[0,1,2,2,1,3]),'mesh index buffer');
+check(mesh.struct.vertexBundles.length===1,'2D entry loads public mesh wrapper');
 check(equalArray(vertices.uv,[1,4,3,4,1,1,3,1]),'mesh pixel UV');
 const meshMin=mesh.getMinPosition(),meshMax=mesh.getMaxPosition();
 check(meshMin!=null&&meshMax!=null,'native mesh exposes both bounds');

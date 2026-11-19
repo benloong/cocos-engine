@@ -457,6 +457,7 @@
       "cocos/2d/utils/text-utils.ts"
     ],
     "boundaries": [
+      "cocos/3d/assets/mesh.jsb.ts",
       "cocos/asset/asset-manager/downloader.ts",
       "cocos/asset/asset-manager/factory.ts",
       "cocos/asset/asset-manager/index.ts",
@@ -2563,6 +2564,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -4331,6 +4333,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -7332,6 +7335,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -8616,6 +8620,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -10112,6 +10117,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -12060,6 +12066,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -12497,6 +12504,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -12721,6 +12729,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -13081,6 +13090,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
@@ -13137,6 +13147,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
@@ -14224,6 +14235,7 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
+          "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
@@ -14622,13 +14634,14 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "031a41603acd2cb0cbd87ddddd5efb64ba39d5e7f139b8f28f7dc5b2a5d1f1cc",
-      "printedCodeLines": 320,
+      "sha256": "86ab869916d23c396a72290925d7721c0a6b0c519b7d5c2a45c29fee68da670d",
+      "printedCodeLines": 321,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
         "./sprite-frame-vertices",
         "../../core",
         "../../asset/assets/asset",
+        "../../3d/assets/mesh",
         "../../asset/assets/texture-base",
         "../../asset/assets/texture-2d",
         "../../asset/assets/image-asset",
@@ -14638,17 +14651,17 @@
       "nativeCalls": [
         {
           "expression": "jsb.Asset.prototype._ctor.apply",
-          "line": 83
+          "line": 84
         },
         {
           "expression": "jsb.MeshUtils.createMesh",
-          "line": 95
+          "line": 96
         }
       ],
       "allocations": [],
       "loops": [
-        70,
-        108
+        71,
+        109
       ]
     },
     {

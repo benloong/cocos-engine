@@ -26,6 +26,7 @@ import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { cloneFrameVertices, deserializeFrameVertices, serializeFrameVertices } from './sprite-frame-vertices';
 import { cclegacy, isValid, js, Rect, Size, Vec2, Vec3, Vec4 } from '../../core';
 import '../../asset/assets/asset';
+import '../../3d/assets/mesh';
 import { TextureBase } from '../../asset/assets/texture-base';
 import { Texture2D } from '../../asset/assets/texture-2d';
 import { ImageAsset, ImageSource } from '../../asset/assets/image-asset';

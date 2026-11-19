@@ -1,5 +1,5 @@
 {
-  "snapshot": "ea8addbd45157bb25fd7c05632611f2e0f2490c4592434448a7e19a41eb77d6f",
+  "snapshot": "c75f5632ea462db83d4fce590517a4ccf4069f3640e6e69bf0c96d3fedb55519",
   "width": 256,
   "height": 256,
   "environment": {
@@ -282,6 +282,36 @@
   "tolerance": 1,
   "pass": true,
   "results": [
+    {
+      "name": "prefab-atlas-sprite",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 1024,
+      "pass": true,
+      "nativeSha256": "e3c92d47e61b0a73e2f624014625ab7db7c5acc5a7ec6742c84f4c6b181a27f0",
+      "webSha256": "e3c92d47e61b0a73e2f624014625ab7db7c5acc5a7ec6742c84f4c6b181a27f0"
+    },
+    {
+      "name": "prefab-atlas-mesh-left",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 4096,
+      "pass": true,
+      "nativeSha256": "5d62282039c900698fc534749abf4881528bcaea702c7778cc20a8f72150e4fd",
+      "webSha256": "5d62282039c900698fc534749abf4881528bcaea702c7778cc20a8f72150e4fd"
+    },
+    {
+      "name": "prefab-atlas-mesh-right",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 1920,
+      "pass": true,
+      "nativeSha256": "51bcd1b989d64f10a635456e7ae0f05ede6f4e64bc0f95d154af6359f751e102",
+      "webSha256": "51bcd1b989d64f10a635456e7ae0f05ede6f4e64bc0f95d154af6359f751e102"
+    },
     {
       "name": "fill-rect",
       "max": 0,
@@ -1106,15 +1136,15 @@
   "windows": [
     {
       "configuration": "Debug",
-      "executableSha256": "5bea3089b091bfe6e6838f820736398aa483a25c02048c785a5cfbd1b65c289c",
-      "manifestSha256": "d533dfe5383c97384819018d9e7431d5be029ee0d5e7b34d053d71f907e2e720",
-      "exactImages": 82
+      "executableSha256": "3f4e36274a523dc8bd0b8d515406e56bf1f9fd44014ec3fb975f08ac17044f41",
+      "manifestSha256": "52f40f93ff925284d2bac1a11747eed4fe81975dc5d1524e7eec258f632ea844",
+      "exactImages": 85
     },
     {
       "configuration": "Release",
-      "executableSha256": "efbf480e8893bc94d879d0f8de7c146aec5be2fe93302d918c9cf15f5add8367",
-      "manifestSha256": "d533dfe5383c97384819018d9e7431d5be029ee0d5e7b34d053d71f907e2e720",
-      "exactImages": 82
+      "executableSha256": "b2278131f08a1d431166239379b9ed9991fce2d4fb1dbe15abdd41f114a51c86",
+      "manifestSha256": "52f40f93ff925284d2bac1a11747eed4fe81975dc5d1524e7eec258f632ea844",
+      "exactImages": 85
     }
   ]
 }
