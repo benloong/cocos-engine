@@ -1,6 +1,6 @@
 import { loadFont } from '../../cocos/2d/utils/font-loader';
 
-test('Web polling observes freshly loaded font metrics', () => {
+test('Web polling observes new font metrics and permits retry from the timeout callback', () => {
     jest.useFakeTimers();
     const callback = jest.fn();
     const createElement = document.createElement.bind(document);
@@ -38,6 +38,26 @@ test('Web polling observes freshly loaded font metrics', () => {
         expect(measuredFonts).toEqual(['40px "Web Family 3.0_LABEL"', '40px "Web Family 3.0_LABEL"']);
         expect(callback).toHaveBeenCalledTimes(1);
         expect(callback).toHaveBeenCalledWith(null, 'Web Family 3.0_LABEL');
+        expect(jest.getTimerCount()).toBe(0);
+        expect(preload.isConnected).toBe(false);
+
+        const retryURL = 'fonts/Retry.ttf';
+        const retry = jest.fn();
+        const waiter = jest.fn();
+        loaded = false;
+        loadFont(retryURL, {}, () => loadFont(retryURL, {}, retry));
+        const failedStyle = nodes.filter(node => node.tagName === 'STYLE').pop()!;
+        loadFont(retryURL, {}, waiter);
+        expect(waiter).not.toHaveBeenCalled();
+        jest.advanceTimersByTime(3100);
+        expect(failedStyle.isConnected).toBe(false);
+        expect(waiter).toHaveBeenCalledTimes(1);
+        expect(waiter).toHaveBeenCalledWith(null, 'Retry_LABEL');
+        expect(retry).not.toHaveBeenCalled();
+        loaded = true;
+        jest.advanceTimersByTime(100);
+        expect(retry).toHaveBeenCalledTimes(1);
+        expect(retry).toHaveBeenCalledWith(null, 'Retry_LABEL');
         expect(jest.getTimerCount()).toBe(0);
     } finally {
         create.mockRestore();

@@ -156,6 +156,9 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
 /** The real asset factory loads the same TTF bytes in both applications. */
 export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>): Promise<object> {
     const url = sys.isNative ? '__M6_GPU_FONT__' : '/m6-font.ttf';
+    const loadFont = (): Promise<TTFFont> => new Promise((resolve, reject) => {
+        assetManager.loadRemote<TTFFont>(url, { ext: '.ttf' }, (error, asset) => error ? reject(error) : resolve(asset!));
+    });
     if (!sys.isNative) {
         const controller = new AbortController();
         const partial = await fetch('/m6-cancel.ttf', { signal: controller.signal, cache: 'no-store' });
@@ -178,18 +181,25 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         if (Array.from(digest, value => value.toString(16).padStart(2, '0')).join('') !== '2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16') {
             throw new Error('Resumed Web font differs from the fixture');
         }
-        // Read the entire response: fetch resolves the headers before a truncated body rejects.
-        const response = await fetch(url, { cache: 'no-store' });
-        let truncated = false;
-        try { await response.arrayBuffer(); } catch { truncated = true; }
-        if (response.status !== 200 || !truncated || assetManager.assets.has(url)) {
-            throw new Error('Expected a truncated Web font response before loading the TTF');
-        }
+        const fallback = await loadFont();
+        const family = fallback._nativeAsset;
+        if (!family || !assetManager.assets.has(url)) throw new Error('Web did not cache the fallback font asset');
+        const context = document.createElement('canvas').getContext('2d')!;
+        context.font = '24px monospace';
+        const fallbackWidth = context.measureText('Atlas 123').width;
+        context.font = '24px "' + family + '", monospace';
+        if (context.measureText('Atlas 123').width !== fallbackWidth) throw new Error('Truncated Web font did not use the fallback');
+        assetManager.releaseAsset(fallback); await wait();
+        if (isValid(fallback) || assetManager.assets.has(url)) throw new Error('Web fallback font asset was retained');
     }
-    const font = await new Promise<TTFFont>((resolve, reject) => {
-        assetManager.loadRemote<TTFFont>(url, { ext: '.ttf' }, (error, asset) => error ? reject(error) : resolve(asset!));
-    });
+    const font = await loadFont();
     if (!font || !isValid(font) || !font._nativeAsset) throw new Error('TTF factory did not load an alias');
+    if (!sys.isNative) {
+        const context = document.createElement('canvas').getContext('2d')!;
+        context.font = '24px "' + font._nativeAsset + '", monospace';
+        const width = context.measureText('Atlas 123').width;
+        if (Math.abs(width - 95.9765625) > .001) throw new Error('Web retry still uses the fallback: ' + width);
+    }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
     const cases = [

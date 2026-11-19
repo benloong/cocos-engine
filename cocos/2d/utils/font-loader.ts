@@ -34,10 +34,9 @@ const ccdocument = ccwindow.document;
 type FontCallback = (err: Error | null, family?: string) => void;
 
 interface IFontLoadHandle {
-    fontFamilyName: string;
     fontDesc: string;
     refWidth: number;
-    onComplete: FontCallback;
+    onComplete: (loaded: boolean) => void;
     startTime: number;
 }
 
@@ -46,7 +45,8 @@ let _intervalId = -1;
 // letter symbol number CJK
 const _testString = 'BES bswy:->@123\u4E01\u3041\u1101';
 
-const _fontFaces = Object.create(null);
+// While loading, callers share one face. A null value denotes a loaded face.
+const _fontFaces = new Map<string, FontCallback[] | null>();
 
 const _loadingFonts: IFontLoadHandle[] = [];
 // 3 seconds timeout
@@ -78,17 +78,14 @@ const useNativeCheck = ((): () => boolean => {
 })();
 
 function checkFontLoaded (): void {
-    let allFontsLoaded = true;
     const now = Date.now();
 
     for (let i = _loadingFonts.length - 1; i >= 0; i--) {
         const fontLoadHandle = _loadingFonts[i];
-        const fontFamily = fontLoadHandle.fontFamilyName;
         // load timeout
         if (now - fontLoadHandle.startTime > _timeout) {
-            warnID(4933, fontFamily);
-            fontLoadHandle.onComplete(null, fontFamily);
             _loadingFonts.splice(i, 1);
+            fontLoadHandle.onComplete(false);
             continue;
         }
 
@@ -99,65 +96,51 @@ function checkFontLoaded (): void {
         // loaded successfully
         if (oldWidth !== newWidth) {
             _loadingFonts.splice(i, 1);
-            fontLoadHandle.onComplete(null, fontFamily);
-        } else {
-            allFontsLoaded = false;
+            fontLoadHandle.onComplete(true);
         }
     }
 
-    if (allFontsLoaded) {
+    if (!_loadingFonts.length) {
         clearInterval(_intervalId);
         _intervalId = -1;
     }
 }
 
-// refer to https://github.com/typekit/webfontloader/blob/master/src/core/nativefontwatchrunner.js
-function nativeCheckFontLoaded (start: number, font: string, fontDesc: string, callback: FontCallback): void {
-    const loader = new Promise<void>((resolve, reject) => {
-        const check = (): void => {
-            const now = Date.now();
-
-            if (now - start >= _timeout) {
-                reject();
-            } else {
-                (ccdocument as any).fonts.load(fontDesc).then((fonts) => {
-                    if (fonts.length >= 1) {
-                        resolve();
-                    } else {
-                        setTimeout(check, 100);
-                    }
-                }, () => {
-                    reject();
-                });
-            }
-        };
-
-        check();
-    });
-
-    let timeoutId: number | null = null;
-    const timer = new Promise((resolve, reject) => {
-        timeoutId = setTimeout(reject, _timeout);
-    });
-
-    Promise.race([timer, loader]).then(() => {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-            timeoutId = null;
-        }
-
-        callback(null, font);
-    }, () => {
-        warnID(4933, font);
-        callback(null, font);
-    });
-}
-
 export function loadFont (url: string, options: Record<string, any>, onComplete: FontCallback): void {
     const fontFamilyName = getFontFamily(url);
-    // Already loaded fonts
-    if (_fontFaces[fontFamilyName]) {
-        onComplete(null, fontFamilyName);
+    const existing = _fontFaces.get(fontFamilyName);
+    if (existing !== undefined) {
+        if (existing) existing.push(onComplete);
+        else onComplete(null, fontFamilyName);
+        return;
+    }
+
+    const callbacks = [onComplete];
+    _fontFaces.set(fontFamilyName, callbacks);
+    const finish = (loaded: boolean): void => {
+        if (loaded) {
+            _fontFaces.set(fontFamilyName, null);
+        } else {
+            _fontFaces.delete(fontFamilyName);
+            warnID(4933, fontFamilyName);
+        }
+        for (const callback of callbacks) callback(null, fontFamilyName);
+    };
+    if (useNativeCheck()) {
+        // A fresh FontFace can reload the original URL after a failed document stylesheet fetch.
+        const timeout = setTimeout(() => finish(false), _timeout);
+        const settle = (face?: FontFace): void => {
+            if (_fontFaces.get(fontFamilyName) !== callbacks) return;
+            clearTimeout(timeout);
+            if (face) (ccdocument.fonts as FontFaceSet & { add (value: FontFace): void }).add(face);
+            finish(!!face);
+        };
+        try {
+            const face = new ccwindow.FontFace(fontFamilyName, `url(${JSON.stringify(url)})`);
+            face.load().then(() => settle(face), () => settle());
+        } catch {
+            settle();
+        }
         return;
     }
 
@@ -190,25 +173,18 @@ export function loadFont (url: string, options: Record<string, any>, onComplete:
     divStyle.top = '-100px';
     ccdocument.body.appendChild(preloadDiv);
 
-    if (useNativeCheck()) {
-        nativeCheckFontLoaded(Date.now(), fontFamilyName, fontDesc, onComplete);
-    } else {
-        _canvasContext!.font = fontDesc;
-        const refWidth = _canvasContext!.measureText(_testString).width;
-        // Save loading font
-        const fontLoadHandle = {
-            fontFamilyName,
-            fontDesc,
-            refWidth,
-            onComplete,
-            startTime: Date.now(),
-        };
-        _loadingFonts.push(fontLoadHandle);
-        if (_intervalId === -1) {
-            _intervalId = setInterval(checkFontLoaded, 100);
-        }
-    }
-    _fontFaces[fontFamilyName] = fontStyle;
+    _canvasContext!.font = fontDesc;
+    _loadingFonts.push({
+        fontDesc,
+        refWidth: _canvasContext!.measureText(_testString).width,
+        startTime: Date.now(),
+        onComplete: (loaded: boolean): void => {
+            preloadDiv.parentNode?.removeChild(preloadDiv);
+            if (!loaded) fontStyle.parentNode?.removeChild(fontStyle);
+            finish(loaded);
+        },
+    });
+    if (_intervalId === -1) _intervalId = setInterval(checkFontLoaded, 100);
 }
 
 export function getFontFamily (fontHandle: string): string {

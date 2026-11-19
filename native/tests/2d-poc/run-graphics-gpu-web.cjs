@@ -76,5 +76,5 @@ const server=http.createServer(async(req,res)=>{
     });
     const timeout=setTimeout(()=>doneReject(new Error('Web capture timeout')),180000);
     try { const result=await done;if(interruptedFont && (interruptedFont.requests.interrupted !== 1 || interruptedFont.requests.complete !== 1 || interruptedFont.requests.cancelled !== 1 || interruptedFont.requests.resumed !== 1)) throw new Error('Unexpected Web font transfers: ' + JSON.stringify(interruptedFont.requests));console.log(`M6_GPU_WEB_READY ${result.captures.length}`); }
-    finally { clearTimeout(timeout);socket?.close();browser.kill();server.close();fs.writeFileSync(path.join(output,'console.log'),logs.join('\n')); }
+    finally { if (interruptedFont) console.log('M6_WEB_FONT_REQUESTS ' + JSON.stringify(interruptedFont.requests)); clearTimeout(timeout);socket?.close();browser.kill();server.close();fs.writeFileSync(path.join(output,'console.log'),logs.join('\n')); }
 })().catch(error=>{console.error(error);process.exitCode=1;});
