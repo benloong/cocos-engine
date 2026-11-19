@@ -2143,6 +2143,20 @@ void testSpritePrepare() {
         check(!pending(&peer), "manager prepares the dirty Sprite before traversal");
         checkNear(draw->getVDataBuffer()[0], initialX + 17.F, "ancestor motion updates cached positions");
         checkNear(draw->getVDataBuffer()[8], .5F, "inherited opacity updates vertex alpha");
+        peer.setColorRGBA(64, 128, 192, 255);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        for (uint32_t v = 0; v < draw->getVbCount(); ++v) {
+            const auto *rgba = draw->getVDataBuffer() + v * draw->getStride() + 5;
+            checkNear(rgba[0], 64.F / 255.F, "tint updates red on each vertex");
+            checkNear(rgba[1], 128.F / 255.F, "tint updates green on each vertex");
+            checkNear(rgba[2], 192.F / 255.F, "tint updates blue on each vertex");
+            checkNear(rgba[3], .5F, "tint preserves inherited alpha");
+        }
+        peer.setColorRGBA(255, 0, 0, 255);
+        parent->setPosition(23.F, 0.F, 0.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(draw->getVDataBuffer()[0], initialX + 23.F, "a pending tint cannot mask dirty geometry");
+        checkNear(draw->getVDataBuffer()[6], 0.F, "geometry rebuild applies concurrent tint");
         texture->setFilters(cc::Filter::NEAREST, cc::Filter::NEAREST);
         check(pending(&peer) && pending(&sprite), "shared sampler queues both consumers");
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();

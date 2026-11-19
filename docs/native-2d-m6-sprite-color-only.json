@@ -1,0 +1,233 @@
+{
+  "platform": "Windows x64 Release",
+  "before": "7e83734299",
+  "current": "af318a174c",
+  "candidate": "Sprite::updateRenderer COLOR-only path",
+  "stages": [
+    "setter",
+    "manager",
+    "batcherUpdate",
+    "upload",
+    "reset",
+    "measuredTotal"
+  ],
+  "unit": "ms/frame",
+  "warmup": 30,
+  "framesPerPhase": 120,
+  "order": [
+    "before current candidate",
+    "candidate current before",
+    "current before candidate",
+    "candidate before current",
+    "before candidate current",
+    "current candidate before"
+  ],
+  "rounds": {
+    "before": {
+      "steady": [
+        [0.001, 0.001, 0.1619, 0.0237, 0.0003, 0.189],
+        [0.001, 0.001, 0.1204, 0.02195, 0.0005, 0.1447],
+        [0.001, 0.001, 0.13425, 0.0279, 0.0004, 0.1665],
+        [0.001, 0.001, 0.12565, 0.02355, 0.0004, 0.15135],
+        [0.001, 0.001, 0.23245, 0.0278, 0.0006, 0.26445],
+        [0.001, 0.001, 0.13745, 0.0179, 0.0003, 0.15995]
+      ],
+      "dirty": [
+        [0.147, 0.002, 0.16765, 0.02945, 0.0003, 0.35245],
+        [0.0685, 0.001, 0.09365, 0.01505, 0.0003, 0.18665],
+        [0.098, 0.002, 0.1525, 0.0289, 0.0004, 0.2952],
+        [0.081, 0.001, 0.10195, 0.01565, 0.0003, 0.21585],
+        [0.1935, 0.003, 0.2008, 0.02465, 0.0006, 0.4363],
+        [0.096, 0.001, 0.1248, 0.01655, 0.0003, 0.24375]
+      ]
+    },
+    "current": {
+      "steady": [
+        [0.001, 0.003, 0.2133, 0.02125, 0.0005, 0.24155],
+        [0.001, 0.002, 0.16095, 0.01765, 0.0005, 0.18475],
+        [0.001, 0.002, 0.16035, 0.0208, 0.0006, 0.18435],
+        [0.001, 0.002, 0.16905, 0.0174, 0.0004, 0.19075],
+        [0.001, 0.003, 0.2477, 0.0221, 0.0004, 0.27545],
+        [0.001, 0.003, 0.1847, 0.0181, 0.0005, 0.2047]
+      ],
+      "dirty": [
+        [0.175, 0.063, 0.2446, 0.02825, 0.0006, 0.5236],
+        [0.104, 0.03, 0.15475, 0.01685, 0.0006, 0.30605],
+        [0.1045, 0.027, 0.13865, 0.0144, 0.0005, 0.28655],
+        [0.1465, 0.027, 0.17935, 0.01755, 0.0006, 0.39135],
+        [0.172, 0.034, 0.2135, 0.02, 0.0006, 0.4546],
+        [0.1415, 0.029, 0.205, 0.0182, 0.0005, 0.39995]
+      ]
+    },
+    "candidate": {
+      "steady": [
+        [0.001, 0.004, 0.23235, 0.03105, 0.0006, 0.27565],
+        [0.001, 0.003, 0.1844, 0.0258, 0.0009, 0.21615],
+        [0.001, 0.002, 0.13865, 0.0159, 0.00045, 0.15765],
+        [0.001, 0.002, 0.17145, 0.0191, 0.0006, 0.19545],
+        [0.001, 0.002, 0.16775, 0.0166, 0.0004, 0.18735],
+        [0.001, 0.004, 0.3121, 0.0259, 0.00055, 0.3454]
+      ],
+      "dirty": [
+        [0.1625, 0.017, 0.1921, 0.0194, 0.0006, 0.42575],
+        [0.1165, 0.011, 0.168, 0.0187, 0.0006, 0.3195],
+        [0.123, 0.011, 0.15915, 0.01865, 0.0007, 0.3268],
+        [0.1235, 0.011, 0.1616, 0.01785, 0.0007, 0.3208],
+        [0.1095, 0.0115, 0.15385, 0.0134, 0.0004, 0.2987],
+        [0.1765, 0.0195, 0.23495, 0.0213, 0.0006, 0.46145]
+      ]
+    }
+  },
+  "sha256": {
+    "before": {
+      "native-2d-m6-gpu.exe": "c668988036e443a574ff182bc65c3a00f99697f0731b5838d4ccc75f831a9f23",
+      "Resources/src/cocos-js/cc.js": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669",
+      "1.json": "4d90712231922c7cee12929d32e2ebec2a649eafe0c6f5dde08bd99d6924ae86",
+      "2.json": "58509e8388111f7258d9172c00cf962e2d3026a2b6e1e45d0d5ca4f2e0066f35",
+      "3.json": "40f08170431de8649816622d196245a01b7abe2f09de71824c47b1a3d4376828",
+      "4.json": "42864c299b3d600c7fe44298539e30333a57a624f22fadc1b61503ab4259afeb",
+      "5.json": "66e721d42525ba98b32fc88ef82efd6ce604b7ae1a3e59d5515c1081f8687f0d",
+      "6.json": "6df9645e1fa8fbcd243046ed086a66b6b04a898498e028dae56cf98e7f50be97"
+    },
+    "current": {
+      "native-2d-m6-gpu.exe": "1eeff61b7b4fc764bc94d41b36bbb9be99fba0adbcb7229c62a607057cd6e2cb",
+      "Resources/src/cocos-js/cc.js": "4f3ca364af504ecae034050614ced3299847a191895bf0fcea5aa92ed25a02e4",
+      "1.json": "36c5b9886c759d76b03814eb0639d01ca5c394ab4492767b964b851d64c12abe",
+      "2.json": "fe95f650c4f233ed97f2704b5962ab29048cc7c1f8b1297a0e5f71c3d843ce2f",
+      "3.json": "edacdd1a5a6f91c67842f3390410f275cfe6584ee6190e7181db5988944bbfb4",
+      "4.json": "7153c985d30a8c8769eff665f72c7c131dec298fb09b0558c94b0d8483372555",
+      "5.json": "d2a532d9cc4f0b25d63d9b48965963b70d1004d41850e2b44bdbd51e03be18ea",
+      "6.json": "b9d0a6f855a84d7d8a03d4424f49a0a3e1604194bf68cb3de412030d2af7b934"
+    },
+    "candidate": {
+      "native-2d-m6-gpu.exe": "56970d2fd7a046e8468000dc9ff0e9ea998b8a95ddb1488a7722c269f63843b6",
+      "Resources/src/cocos-js/cc.js": "4f3ca364af504ecae034050614ced3299847a191895bf0fcea5aa92ed25a02e4",
+      "1.json": "aa02c8680dc5490bc8c9aa63d62e26a8237bf6b13898103c4df61bdb4fd77558",
+      "2.json": "d7c8f05a08cdece5f9c330a4eb3757fcab5d341f5319af53cbd43da3ccb92ff7",
+      "3.json": "5a68465dffcc876beb7080a9d9bdb1ffe0818a620ab61c63f6dbb1ac83e1b105",
+      "4.json": "c3153fb5320984df90305bd67d444deeecbe54057ba71bc26cf7aa98c261dbfd",
+      "5.json": "fc140717438b272469916b15c6e117f8541fbf0140cdb40d848e8034e9d46cf3",
+      "6.json": "4b34ef13e08c23364827004d8e5bc3a88b482468eb63d978c91c4511598f02ff"
+    }
+  },
+  "summary": {
+    "steady": {
+      "before": [0.001, 0.001, 0.13585, 0.023625, 0.0004, 0.163225],
+      "current": [0.001, 0.0025, 0.176875, 0.01945, 0.0005, 0.197725],
+      "candidate": [0.001, 0.0025, 0.177925, 0.02245, 0.000575, 0.2058],
+      "vs_before": {
+        "delta": [0, 0.0015, 0.0549, -0.0003, 0.000225, 0.057775],
+        "faster": [0, 0, 1, 3, 1, 2]
+      },
+      "vs_current": {
+        "delta": [0, 0.0005, 0.010725, 0.00475, 0.000075, 0.01805],
+        "faster": [0, 1, 2, 2, 1, 2]
+      }
+    },
+    "dirty": {
+      "before": [0.097, 0.0015, 0.13865, 0.0206, 0.0003, 0.269475],
+      "current": [0.144, 0.0295, 0.192175, 0.017875, 0.0006, 0.39565],
+      "candidate": [0.12325, 0.01125, 0.1648, 0.018675, 0.0006, 0.3238],
+      "vs_before": {
+        "delta": [0.03375, 0.01, 0.04205, -0.003925, 0.0003, 0.089125],
+        "faster": [1, 0, 1, 3, 1, 1]
+      },
+      "vs_current": {
+        "delta": [0, -0.0175, -0.00225, 0.001075, 0.00005, -0.02855],
+        "faster": [3, 6, 3, 2, 1, 3]
+      }
+    }
+  },
+  "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+  "counters": {
+    "perFrame": {
+      "draws": 1,
+      "triangles": 2000
+    },
+    "dirty": {
+      "beforeChangePrepare": 100,
+      "candidatePrepare": 0,
+      "candidateVertexRanges": 100,
+      "candidateIndexWrites": 0
+    },
+    "steady": {
+      "candidatePrepare": 0,
+      "candidateVertexRanges": 0,
+      "candidateIndexWrites": 0
+    }
+  },
+  "pixels": {
+    "width": 256,
+    "height": 256,
+    "draws": [
+      [
+        "initial",
+        1,
+        6
+      ],
+      [
+        "steady",
+        1,
+        6
+      ],
+      [
+        "reorder",
+        1,
+        6
+      ],
+      [
+        "tint",
+        1,
+        6
+      ],
+      [
+        "opacity",
+        1,
+        6
+      ],
+      [
+        "radial",
+        1,
+        8
+      ],
+      [
+        "retopology",
+        1,
+        6
+      ],
+      [
+        "shifted-ranges",
+        1,
+        6
+      ],
+      [
+        "shorter",
+        1,
+        4
+      ],
+      [
+        "regrown",
+        1,
+        6
+      ],
+      [
+        "replacement",
+        1,
+        6
+      ]
+    ],
+    "hashes": {
+      "initial": "d8ebce389f454eec61164a19ad899503b148df3ee4e0e0e886fcd06b2d51ed50",
+      "steady": "d8ebce389f454eec61164a19ad899503b148df3ee4e0e0e886fcd06b2d51ed50",
+      "reorder": "39f05ee4a71d421bd77e60661e17c99734b77b2ef15fe026f98b071aa3215538",
+      "tint": "c7bb3924f2807f857d1977f80c47cfdde29bf865d968d477f85abe1a98ecbf60",
+      "opacity": "aed0e073e6f56ea85358dd9d22da61381b7604c088570bfa58c09cd7a273db8f",
+      "radial": "35f1d05194c6e56fc8e113bc5b9775d67404eb1d91cf566e4d7a1ccb28850f52",
+      "retopology": "e14a97dbda1fe31da4d90498f4e3b0ed67e045846c271e83f11f93d004b005e4",
+      "shifted-ranges": "0b943e1ac07baf2d0c51e38208cf002ac5d88fb62ff27d66af9850ef2df3e252",
+      "shorter": "098ae27d7c9b32cd8a0440438d4c5593b6a18c44d8de27a61db0a104548398e9",
+      "regrown": "0b943e1ac07baf2d0c51e38208cf002ac5d88fb62ff27d66af9850ef2df3e252",
+      "replacement": "2c7457fad7aed3c70368e2537b1417576725cbc1d82022eef500826006d78ae5"
+    }
+  }
+}

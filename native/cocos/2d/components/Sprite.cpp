@@ -372,7 +372,15 @@ void Sprite::setTrim(bool trim) {
 }
 
 void Sprite::updateRenderer() {
-    if (renderDirtyFlags()) prepare(_entity->getOpacity());
+    const auto dirty = renderDirtyFlags();
+    if (!dirty) return;
+    const float opacity = _entity->getOpacity();
+    if (dirty == COLOR) {
+        updateVertexColors(opacity);
+        clearRenderDirty();
+        return;
+    }
+    prepare(opacity);
 }
 
 void Sprite::prepareRenderEntity(float opacity) {
@@ -574,13 +582,8 @@ void Sprite::prepare(float opacity) {
 
     }
 
-    if (_entity->getStaticDrawInfoSize()) {
-        _entity->getStaticRenderDrawInfo(0)->markSpriteVerticesUpdated(renderDirtyFlags() & GEOMETRY);
-    }
-    clearRenderDirty();
     updateVertexColors(opacity);
-    _entity->setOpacity(opacity);
-    _lastOpacity = opacity;
+    clearRenderDirty();
 }
 
 void Sprite::setLabelQuads(SpriteFrame *frame, std::vector<SpriteQuad> quads) {
@@ -623,13 +626,8 @@ void Sprite::prepareLabelQuads(Material *material, float opacity) {
     }
     for (size_t i = 0; i < _labelChunks.size(); ++i) {
         auto &chunk = _labelChunks[i];
-        for (size_t at = 0; at < chunk.vertices.size(); at += VERTEX_STRIDE) {
-            chunk.vertices[at + 5] = _color.r / 255.F; chunk.vertices[at + 6] = _color.g / 255.F;
-            chunk.vertices[at + 7] = _color.b / 255.F; chunk.vertices[at + 8] = opacity;
-        }
         auto *draw = _entity->getStaticRenderDrawInfo(static_cast<uint32_t>(i));
         draw->setDrawInfoType(static_cast<uint32_t>(RenderDrawInfoType::COMP));
-        draw->markSpriteVerticesUpdated(renderDirtyFlags() & GEOMETRY);
         draw->_batchableSpriteMesh = !_material && !_materialInstance;
         draw->setIsMeshBuffer(true); draw->setStride(static_cast<uint8_t>(VERTEX_STRIDE));
         draw->setVbCount(static_cast<uint32_t>(chunk.vertices.size() / VERTEX_STRIDE));
@@ -638,27 +636,32 @@ void Sprite::prepareLabelQuads(Material *material, float opacity) {
         draw->setMaterial(material); draw->setTexture(_texture->getGFXTexture()); draw->setSampler(_texture->getGFXSampler()); draw->setDataHash(0);
     }
     _entity->setPriority(_priority); _entity->setColor(_color); _entity->setEnabled(isEnabled());
-    _entity->setFillColorType(FillColorType::VERTEX); _entity->setOpacity(opacity);
-    clearRenderDirty(); _lastOpacity = opacity;
+    _entity->setFillColorType(FillColorType::VERTEX);
+    updateVertexColors(opacity);
+    clearRenderDirty();
 }
 
 void Sprite::updateVertexColors(float opacity) {
-    if (_vertices.empty()) {
-        return;
+    const float red = _color.r / 255.F;
+    const float green = _color.g / 255.F;
+    const float blue = _color.b / 255.F;
+    const bool geometryChanged = renderDirtyFlags() & GEOMETRY;
+    const auto count = _entity->getStaticDrawInfoSize();
+    for (uint32_t i = 0; i < count; ++i) {
+        auto *draw = _entity->getStaticRenderDrawInfo(i);
+        auto *vertices = draw->getVDataBuffer();
+        const auto vertexCount = draw->getVbCount();
+        for (uint32_t v = 0; v < vertexCount; ++v) {
+            auto *rgba = vertices + v * VERTEX_STRIDE + 5;
+            rgba[0] = red;
+            rgba[1] = green;
+            rgba[2] = blue;
+            rgba[3] = opacity;
+        }
+        draw->markSpriteVerticesUpdated(geometryChanged);
     }
-
-    const float red = static_cast<float>(_color.r) / 255.F;
-    const float green = static_cast<float>(_color.g) / 255.F;
-    const float blue = static_cast<float>(_color.b) / 255.F;
-
-    const uint32_t vertexCount = static_cast<uint32_t>(_vertices.size() / VERTEX_STRIDE);
-    for (uint32_t i = 0; i < vertexCount; ++i) {
-        const uint32_t offset = i * VERTEX_STRIDE + 5;
-        _vertices[offset + 0] = red;
-        _vertices[offset + 1] = green;
-        _vertices[offset + 2] = blue;
-        _vertices[offset + 3] = opacity;
-    }
+    _entity->setOpacity(opacity);
+    _lastOpacity = opacity;
 }
 
 } // namespace cc
