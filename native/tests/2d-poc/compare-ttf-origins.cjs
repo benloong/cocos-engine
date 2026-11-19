@@ -25,6 +25,36 @@ function tile(pixels, row, col) {
     return alpha;
 }
 
+if (process.argv[2] === '--check-bold-stem') {
+    assert.equal(process.argv.length, 4, 'Pass the Windows raster executable');
+    const exe = path.resolve(process.argv[3]);
+    const native = path.join(path.dirname(exe), 'ttf-bold-stem');
+    execFileSync(exe, [font, native, 'white', 'origin-stem', 'fill'], { stdio: 'inherit' });
+    execFileSync(process.execPath, [path.join(__dirname, 'run-ttf-raster-web.cjs'), 'white', 'origin-stem', 'fill'], { stdio: 'inherit' });
+    const web = path.join(build, 'ttf-raster-web-white-origin-stem');
+    const browser = JSON.parse(fs.readFileSync(path.join(web, 'metadata.json')));
+    const fontSha256 = hash(fs.readFileSync(font));
+    assert.equal(browser.fontSha256, fontSha256);
+    assert.equal(browser.text, 'I');
+    const cases = [];
+    for (const size of [12, 24, 36, 48]) {
+        const file = size + '-1.rgba'; // Style 1 is upright synthetic bold.
+        const actual = fs.readFileSync(path.join(native, file)), reference = fs.readFileSync(path.join(web, file));
+        assert.equal(actual.length, 512 * 512 * 4);
+        assert.equal(reference.length, actual.length);
+        let passed = 0, maxAlpha = 0;
+        for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
+            const a = tile(actual, y, x), b = tile(reference, y, x);
+            if (a.equals(b)) passed++;
+            for (let i = 0; i < a.length; i++) maxAlpha = Math.max(maxAlpha, Math.abs(a[i] - b[i]));
+        }
+        cases.push({ size, passed, total: 64, maxAlpha, nativeSha256: hash(actual), webSha256: hash(reference) });
+    }
+    fs.writeFileSync(path.join(native, 'report.json'), JSON.stringify({ fontSha256, browser: browser.userAgent, cases }, null, 2) + '\n');
+    for (const row of cases) console.log(`Bold I at ${row.size}px: ${row.passed}/64 origins byte-identical, max alpha difference ${row.maxAlpha}`);
+    process.exit(cases.every(row => row.passed === row.total) ? 0 : 1);
+}
+
 const rows = [];
 let browser;
 for (const [sample, text] of [['origin-stem', 'I'], ['origin-curve', 'O']]) {

@@ -223,6 +223,7 @@
 - [ ] 扩展现有 `check-thin-shell.js` 等检查，覆盖全部迁移类和间接热路径；CI 执行 Web TS/Jest、native TS、native 构建与组件/场景回归。
   - [x] 已对 14 个迁移类逐一检查 native override、TS 帧方法和渲染数据分配。本机薄壳检查 57 项通过。在内存中的 SpriteAtlas 源码加入 `lateUpdate` 和 `new Float32Array` 后，两种违规均被检出。
   - [x] Windows Debug/Release 工作流加入 Chrome 同字体对照。正体和斜体 72 项在本机均通过，修复前程序触发其中 27 项失败。报告同时记录 36 项合成粗体结果，远程运行待验。
+  - [x] Windows CI 独立检查 Thonburi 合成粗体 I。四个字号各 64 个分数起点，本机 Debug 和 Release 各有 256 张字形与 Chrome 逐字节一致。关闭边缘量化和矩形覆盖处理的负例有 256 张不同，检查以失败退出。每种配置归档按字号的哈希、通过数及最大 alpha 差。[检查入口](../native/tests/2d-poc/compare-ttf-origins.cjs)
   - [x] SIMPLE Sprite 的[四边形对照](../native/tests/2d-poc/run-sprite-quad-parity.ps1)读取 Web assembler 实际写入的 UV 和索引区间，并按各端提交的索引栅格化。Windows Debug/Release 对 Web 各 13 项通过，100×100 图像逐像素一致。将 Web 索引全部置零会产生 10000 个差异像素；单独颠倒绕序或改变 UV，即使纯色图像相同也会判为失败。
   - native-ts-build 的 PR 检查已接入位图字体布局和径向 Sprite 的 C++/Web assembler 对照。本机运行同一对入口，2327 个布局和 3024 个几何用例通过；远程 CI 结果及 Windows 完整应用矩阵另行验收。
   - [x] [Windows PR 矩阵](../.github/workflows/native-ts-build.yml)分别构建 Debug/Release 引擎、生成 SWIG 绑定并运行[六组 JSB 用例](../native/tests/2d-poc/run-windows-jsb-probes.ps1)，覆盖 renderer manager、Sprite API、SpriteAtlas、字体资产、布局和 RichText。每次运行同时检查场景记录的节点挂接。两种配置均在本机从空目录编译通过，六组用例与 SIMPLE Sprite 对 Web 的 13 项检查全部通过。Web 全量检查通过 TypeScript 编译和 197 组 Jest（1467 项通过、8 项跳过、16 项待实现），native TS 编译通过。托管 runner 的执行结果与完整应用场景仍待签收。

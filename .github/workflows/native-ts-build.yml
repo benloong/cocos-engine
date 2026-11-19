@@ -123,3 +123,13 @@ jobs:
       with:
         name: ttf-shaping-${{ matrix.config }}
         path: ${{ env.BUILD_DIR }}/ttf-shaping/report.json
+    - name: Compare upright synthetic bold stems at fractional origins with Windows Chrome
+      id: bold-stem
+      if: "!cancelled() && steps.shaping.outcome != 'skipped'"
+      shell: pwsh
+      run: node native/tests/2d-poc/compare-ttf-origins.cjs --check-bold-stem "$env:BUILD_DIR/cc2d_ttf_raster.exe"
+    - uses: actions/upload-artifact@v4
+      if: "!cancelled() && steps.bold-stem.outcome != 'skipped'"
+      with:
+        name: ttf-bold-stem-${{ matrix.config }}
+        path: ${{ env.BUILD_DIR }}/ttf-bold-stem/report.json
