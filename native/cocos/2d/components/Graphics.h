@@ -52,9 +52,6 @@ public:
     void setFillColor(const Color &color);
     void setStrokeColor(const Color &color);
     RenderEntity *getRenderEntity() const override { return _entity.get(); }
-    uint64_t getRevision() const { return _revision; }
-    uint32_t getVertexCount() const { return static_cast<uint32_t>(_geometry.getVertices().size()); }
-    uint32_t getIndexCount() const { return static_cast<uint32_t>(_geometry.getIndices().size()); }
     // Source owns its geometry. Consumers borrow it, register with that owner,
     // and are invalidated synchronously before the owner is destroyed.
     void setGeometrySource(Graphics *source);
@@ -81,6 +78,5 @@ private:
     bool _useSource{false};
     IntrusivePtr<RenderEntity> _entity; // owning reference; Node::UserData also retains it while attached
     std::vector<std::unique_ptr<Chunk>> _chunks;
-    uint64_t _revision{0};
 };
 } // namespace cc

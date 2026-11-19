@@ -1274,9 +1274,11 @@ void testGraphicsMeshes() {
         auto *ia=draw->requestIA(cc::Root::getInstance()->getDevice());draw->uploadBuffers();
         check(ia->getVertexBuffers()[0]->getSize()==128 && ia->getVertexBuffers()[0]->getStride()==32,"Graphics uploads actual 8-float GPU vertices");
         check(ia->getIndexBuffer()->getSize()==12 && ia->getAttributes().back().name=="a_dist","Graphics GPU index data and distance attribute");
-        auto *vertices=draw->getVDataBuffer();auto revision=graphics.getRevision();
+        auto *vertices = draw->getVDataBuffer();
+        auto *indices = draw->getIDataBuffer();
         for(int i=0;i<1000;++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-        check(entity->getRenderDrawInfoAt(0)==draw && draw->getVDataBuffer()==vertices && graphics.getRevision()==revision,"Graphics idle prepare retains mesh/IA storage");
+        check(entity->getRenderDrawInfoAt(0) == draw && draw->getVDataBuffer() == vertices && draw->getIDataBuffer() == indices,
+              "Graphics idle prepare retains mesh/IA storage");
     }
     graphics.clear();
     check(entity->getRenderDrawInfosSize()==0,"Graphics clear drops draws and old GPU chunks");

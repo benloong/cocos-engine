@@ -56,7 +56,6 @@ Material *Graphics::getBuiltinMaterial() const {
 void Graphics::setFillColor(const Color &color) { _geometry.fillColor = {color.r / 255.F, color.g / 255.F, color.b / 255.F, color.a / 255.F}; }
 void Graphics::setStrokeColor(const Color &color) { _geometry.strokeColor = {color.r / 255.F, color.g / 255.F, color.b / 255.F, color.a / 255.F}; }
 void Graphics::geometryChanged() {
-    ++_revision;
     if (!_useSource) markRenderDirty();
     for (auto *consumer : _consumers) {
         if (consumer->_useSource) consumer->markRenderDirty();
