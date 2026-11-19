@@ -65,6 +65,62 @@ function verifyNativeAssetPrototypes (texture: Texture2D): void {
     }
 }
 
+async function verifyCloneAfterReload (parent: Node, layer: number, target: RenderTexture): Promise<void> {
+    const prefab = await load('AtlasSprite', Prefab);
+    const node = instantiate(prefab);
+    const sprite = node.getComponent(Sprite)!;
+    const atlas = sprite.spriteAtlas!;
+    const source = atlas.getSpriteFrame('right')!;
+    const clone = source.clone();
+    // The clone is created at runtime. Retain its imported texture across bundle dependency release.
+    const texture = source.texture.addRef();
+    const textureKey = texture.uuid;
+    let replacement: Prefab | null = null;
+    try {
+        node.layer = layer;
+        parent.addChild(node);
+        sprite.spriteAtlas = null;
+        sprite.spriteFrame = clone;
+        await waitForRender();
+        checkCenter(target, 1);
+        assetManager.releaseAsset(prefab);
+        await waitForFrames();
+        if (prefab.isValid || atlas.isValid || source.isValid || !clone.isValid || clone.texture !== texture
+            || assetManager.assets.get(textureKey) !== texture || !texture.isValid) {
+            throw new Error('Old prefab dependencies and retained clone texture have incorrect lifetimes');
+        }
+        checkCenter(target, 1);
+
+        replacement = await load('AtlasSprite', Prefab);
+        const second = instantiate(replacement);
+        try {
+            const other = second.getComponent(Sprite)!;
+            if (!other.spriteAtlas || other.spriteAtlas === atlas || other.spriteFrame?.texture !== texture
+                || other.spriteAtlas.getSpriteFrame('right') === source || sprite.spriteFrame !== clone) {
+                throw new Error('Reloaded prefab did not resolve fresh frames against the retained texture');
+            }
+            sprite.spriteFrame = other.spriteFrame;
+            await waitForRender();
+            checkCenter(target, 0);
+            sprite.spriteFrame = clone;
+            await waitForRender();
+            checkCenter(target, 1);
+        } finally { second.destroy(); }
+    } finally {
+        node.destroy();
+        await waitForFrames();
+        clone.destroy();
+        if (replacement) assetManager.releaseAsset(replacement);
+        if (prefab.isValid) assetManager.releaseAsset(prefab);
+        texture.decRef();
+        await waitForFrames();
+    }
+    if (clone.isValid || texture.isValid || assetManager.assets.has(textureKey)) {
+        throw new Error('Releasing the clone and its retained texture left an old atlas resource alive');
+    }
+    console.log('M6_STATIC_ATLAS_CLONE_RELOAD_PASS');
+}
+
 export async function verifyStaticAtlas (parent: Node, layer: number, target: RenderTexture, stress = false): Promise<void> {
     const cycles = stress ? 1000 : 3;
     const render = stress ? waitForFrames : waitForRender;
@@ -204,6 +260,7 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
         await sample(cycles);
         console.log('M6_STATIC_ATLAS_STRESS_PASS ' + JSON.stringify({ cycles, checkedAssets, pixelChecks }));
     } else {
+        await verifyCloneAfterReload(parent, layer, target);
         console.log('M6_STATIC_ATLAS_PASS');
     }
 }

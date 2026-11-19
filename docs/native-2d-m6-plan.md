@@ -98,6 +98,7 @@
 - [x] SpriteAtlas 帧末释放原生帧表：分别覆盖 C++ 和 JSB 销毁队列，拒绝迟到写入，Debug/Release 1000 轮引用计数复归。真实 Prefab 保留 wrapper 的释放断言和连续文档门禁通过。见[所有权验收](./native-2d-m6.1-sprite-atlas.md#6-原生帧引用随延迟销毁释放)。
 - [x] SpriteFrame 帧末归还当前纹理和原图。C++ 与 JSB 的销毁队列共用清理入口，迟到依赖不能重新绑定。Debug/Release 各 1000 轮和 Windows Debug 真实资产释放、完整串行门禁及像素对照通过。见[验收报告](./native-2d-m6.1-sprite-frame.md#帧末归还纹理引用)。
 - [ ] 补其余旧资产和场景、异步取消与延迟依赖、clone、跨场景重复加载释放及长期生命周期。
+  - [x] 旧静态图集 Prefab 的旋转帧克隆在原 Prefab、图集和原帧释放后继续渲染。运行时显式持有导入纹理，重新加载同一 Prefab 后，新节点解析到新图集并复用该纹理。Windows Debug、Release 和 Web 的中心像素依次为绿、绿、红、绿。销毁克隆并释放最后一个纹理引用后，纹理失效且缓存中已无该 UUID。[真实加载、回读与释放用例](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
 
 交付：资产 parity 报告和真实资源回归日志。prototype 改造本身不等于资产下沉验收完成。
 
