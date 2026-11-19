@@ -1,0 +1,1274 @@
+{
+  "productionBase": "11ee3ec933",
+  "migrationRevision": "7e83734299",
+  "perfCheckout": "3235a8d0de",
+  "orders": [
+    "mca",
+    "cam",
+    "amc"
+  ],
+  "workloadSha256": "2a05c12a55909098cb5481a184a0976ed6e357994cbb38c085a99f4d0bce2562",
+  "runtimeSourceSha256": "45a460853f12fb117f8a298c64797de7df6ac30fdf9723c09fe8b899ea31c70e",
+  "canvasHeaderSha256": "3a22fa2eea2eb69867cdae9864c5f3b096f12892f148aef5d123d19e8710a9c7",
+  "instrumentedLabelSha256": "970ae1109e03eebfad5e79febb018cb6afff867c7ffe1f2a0a3fdb3db8c6d468",
+  "runs": {
+    "m": {
+      "exeSha256": "3b2132fcb9638f05a6f399cb73ddfb6d1c716405aa60a2baa4f1a8437e3a05a5",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669",
+      "rounds": [
+        {
+          "sha256": "5cc97cc96c23c52248ec699260304ab6d274f850fd3128e2b3c472831f99a0cc",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.006549999999701685,
+              "dirtyMs": 0.001999999999497959,
+              "jsb": 67,
+              "peakHeap": 12533924,
+              "forcedGcMs": 3.3630000000002838
+            },
+            "empty/dirty": {
+              "cpuMs": 0.008199999999199644,
+              "dirtyMs": 0.001999999999497959,
+              "jsb": 67,
+              "peakHeap": 12740144,
+              "forcedGcMs": 4.981999999999971
+            },
+            "sprites/steady": {
+              "cpuMs": 0.22640000000040744,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 17697796,
+              "forcedGcMs": 4.513999999999214
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.2772499999989013,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 17988992,
+              "forcedGcMs": 4.010999999998603
+            },
+            "labels/steady": {
+              "cpuMs": 0.4371000000006112,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 15698504,
+              "forcedGcMs": 4.18500000000131
+            },
+            "labels/dirty": {
+              "cpuMs": 2.724749999997046,
+              "dirtyMs": 2.4475000000002183,
+              "jsb": 447,
+              "peakHeap": 19315440,
+              "forcedGcMs": 5.1820000000006985
+            },
+            "masks/steady": {
+              "cpuMs": 0.5501000000006112,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 13980804,
+              "forcedGcMs": 7.200999999997293
+            },
+            "masks/dirty": {
+              "cpuMs": 0.7190499999994324,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 72,
+              "peakHeap": 14101176,
+              "forcedGcMs": 4.49199999999837
+            },
+            "rich/steady": {
+              "cpuMs": 0.15989999999848659,
+              "dirtyMs": 0.0010000000020227162,
+              "jsb": 67,
+              "peakHeap": 14139080,
+              "forcedGcMs": 3.8870000000024447
+            },
+            "rich/dirty": {
+              "cpuMs": 1.6942999999950232,
+              "dirtyMs": 0.0030000000042491592,
+              "jsb": 491,
+              "peakHeap": 14880724,
+              "forcedGcMs": 4.605999999999767
+            },
+            "mixed/steady": {
+              "cpuMs": 1.1007500000006112,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 22231480,
+              "forcedGcMs": 7.194999999999709
+            },
+            "mixed/dirty": {
+              "cpuMs": 4.556299999999563,
+              "dirtyMs": 1.9575000000004366,
+              "jsb": 876,
+              "peakHeap": 29834504,
+              "forcedGcMs": 9.951999999997497
+            }
+          }
+        },
+        {
+          "sha256": "59c99a8b12df3eb0d365d6224d0a01b508117273fb7aec668ec9454dc28bd997",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.008000000000007276,
+              "dirtyMs": 0.00200000000018008,
+              "jsb": 67,
+              "peakHeap": 12707132,
+              "forcedGcMs": 5.335999999999331
+            },
+            "empty/dirty": {
+              "cpuMs": 0.00835000000010914,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 12786996,
+              "forcedGcMs": 4.264000000001033
+            },
+            "sprites/steady": {
+              "cpuMs": 0.21494999999980355,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 17699004,
+              "forcedGcMs": 9.28099999999904
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.3299000000008731,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 17957200,
+              "forcedGcMs": 9.56499999999869
+            },
+            "labels/steady": {
+              "cpuMs": 0.49909999999858845,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 15700132,
+              "forcedGcMs": 9.037000000000262
+            },
+            "labels/dirty": {
+              "cpuMs": 3.481550000000189,
+              "dirtyMs": 3.158499999999549,
+              "jsb": 447,
+              "peakHeap": 19123744,
+              "forcedGcMs": 7.6229999999995925
+            },
+            "masks/steady": {
+              "cpuMs": 0.7904500000005092,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 13982904,
+              "forcedGcMs": 3.8290000000015425
+            },
+            "masks/dirty": {
+              "cpuMs": 0.7878499999999272,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 72,
+              "peakHeap": 13904684,
+              "forcedGcMs": 3.2289999999993597
+            },
+            "rich/steady": {
+              "cpuMs": 0.22170000000243018,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 14066636,
+              "forcedGcMs": 8.311000000001513
+            },
+            "rich/dirty": {
+              "cpuMs": 1.6403500000033178,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 491,
+              "peakHeap": 14865448,
+              "forcedGcMs": 3.8360000000029686
+            },
+            "mixed/steady": {
+              "cpuMs": 1.009150000000815,
+              "dirtyMs": 0.001999999996769475,
+              "jsb": 67,
+              "peakHeap": 22113124,
+              "forcedGcMs": 11.239999999997963
+            },
+            "mixed/dirty": {
+              "cpuMs": 4.515449999999127,
+              "dirtyMs": 2.1195000000006985,
+              "jsb": 876,
+              "peakHeap": 29985892,
+              "forcedGcMs": 6.533999999999651
+            }
+          }
+        },
+        {
+          "sha256": "0139452bfee5aaa05fce79989b0919d705e1257ac092b1b8a3894bc6c4c07aa9",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.00555000000005457,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 12561448,
+              "forcedGcMs": 4.503000000000611
+            },
+            "empty/dirty": {
+              "cpuMs": 0.0050000000006111805,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 12607412,
+              "forcedGcMs": 3.6920000000009168
+            },
+            "sprites/steady": {
+              "cpuMs": 0.18650000000040745,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 17738884,
+              "forcedGcMs": 6.100000000000364
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.33059999999984724,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 18111880,
+              "forcedGcMs": 8.298999999999069
+            },
+            "labels/steady": {
+              "cpuMs": 0.5045499999987921,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 15595736,
+              "forcedGcMs": 9.192999999999302
+            },
+            "labels/dirty": {
+              "cpuMs": 3.0582500000011645,
+              "dirtyMs": 2.738499999999476,
+              "jsb": 447,
+              "peakHeap": 19346824,
+              "forcedGcMs": 7.190000000002328
+            },
+            "masks/steady": {
+              "cpuMs": 0.47900000000030557,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 67,
+              "peakHeap": 13987568,
+              "forcedGcMs": 3.808999999997468
+            },
+            "masks/dirty": {
+              "cpuMs": 0.5703000000011205,
+              "dirtyMs": 0.0010000000002037268,
+              "jsb": 72,
+              "peakHeap": 14098064,
+              "forcedGcMs": 3.8100000000013097
+            },
+            "rich/steady": {
+              "cpuMs": 0.19230000000040748,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 14045276,
+              "forcedGcMs": 5.578000000001339
+            },
+            "rich/dirty": {
+              "cpuMs": 1.7399999999984284,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 491,
+              "peakHeap": 14855308,
+              "forcedGcMs": 4.161000000000058
+            },
+            "mixed/steady": {
+              "cpuMs": 0.9853500000004074,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 67,
+              "peakHeap": 22168980,
+              "forcedGcMs": 5.7700000000040745
+            },
+            "mixed/dirty": {
+              "cpuMs": 4.334349999999302,
+              "dirtyMs": 1.944499999997788,
+              "jsb": 876,
+              "peakHeap": 30127576,
+              "forcedGcMs": 7.023000000001048
+            }
+          }
+        }
+      ],
+      "summary": {
+        "empty/steady": {
+          "cpuMs": 0.006549999999701685,
+          "dirtyMs": 0.001999999999497959,
+          "jsb": 67,
+          "peakHeap": 12561448,
+          "forcedGcMs": 4.503000000000611
+        },
+        "empty/dirty": {
+          "cpuMs": 0.008199999999199644,
+          "dirtyMs": 0.001999999999497959,
+          "jsb": 67,
+          "peakHeap": 12740144,
+          "forcedGcMs": 4.264000000001033
+        },
+        "sprites/steady": {
+          "cpuMs": 0.21494999999980355,
+          "dirtyMs": 0.0010000000002037268,
+          "jsb": 67,
+          "peakHeap": 17699004,
+          "forcedGcMs": 6.100000000000364
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.3299000000008731,
+          "dirtyMs": 0.0020000000004074536,
+          "jsb": 67,
+          "peakHeap": 17988992,
+          "forcedGcMs": 8.298999999999069
+        },
+        "labels/steady": {
+          "cpuMs": 0.49909999999858845,
+          "dirtyMs": 0.0020000000004074536,
+          "jsb": 67,
+          "peakHeap": 15698504,
+          "forcedGcMs": 9.037000000000262
+        },
+        "labels/dirty": {
+          "cpuMs": 3.0582500000011645,
+          "dirtyMs": 2.738499999999476,
+          "jsb": 447,
+          "peakHeap": 19315440,
+          "forcedGcMs": 7.190000000002328
+        },
+        "masks/steady": {
+          "cpuMs": 0.5501000000006112,
+          "dirtyMs": 0.0010000000002037268,
+          "jsb": 67,
+          "peakHeap": 13982904,
+          "forcedGcMs": 3.8290000000015425
+        },
+        "masks/dirty": {
+          "cpuMs": 0.7190499999994324,
+          "dirtyMs": 0.0010000000002037268,
+          "jsb": 72,
+          "peakHeap": 14098064,
+          "forcedGcMs": 3.8100000000013097
+        },
+        "rich/steady": {
+          "cpuMs": 0.19230000000040748,
+          "dirtyMs": 0.0020000000004074536,
+          "jsb": 67,
+          "peakHeap": 14066636,
+          "forcedGcMs": 5.578000000001339
+        },
+        "rich/dirty": {
+          "cpuMs": 1.6942999999950232,
+          "dirtyMs": 0.004000000000814907,
+          "jsb": 491,
+          "peakHeap": 14865448,
+          "forcedGcMs": 4.161000000000058
+        },
+        "mixed/steady": {
+          "cpuMs": 1.009150000000815,
+          "dirtyMs": 0.0020000000004074536,
+          "jsb": 67,
+          "peakHeap": 22168980,
+          "forcedGcMs": 7.194999999999709
+        },
+        "mixed/dirty": {
+          "cpuMs": 4.515449999999127,
+          "dirtyMs": 1.9575000000004366,
+          "jsb": 876,
+          "peakHeap": 29985892,
+          "forcedGcMs": 7.023000000001048
+        }
+      }
+    },
+    "c": {
+      "exeSha256": "3fad1c5139b3415bfe737783d9e2fca4a8ab367ff6c3ad9c8a265849af395323",
+      "engineSha256": "bb872b4380d870229bd5dea3ea2ab0263fec309152f38173107d79f07ef68d88",
+      "rounds": [
+        {
+          "sha256": "fc59d959fbc07075933be690246629d4b2382fe709d4001672a76592fba099f7",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.00925000000010914,
+              "dirtyMs": 0.003000000000156433,
+              "jsb": 68,
+              "peakHeap": 12061168,
+              "forcedGcMs": 6.390999999999622
+            },
+            "empty/dirty": {
+              "cpuMs": 0.009300000000007275,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 12261632,
+              "forcedGcMs": 3.9899999999997817
+            },
+            "sprites/steady": {
+              "cpuMs": 0.23760000000040743,
+              "dirtyMs": 0.002999999998792191,
+              "jsb": 68,
+              "peakHeap": 15555920,
+              "forcedGcMs": 3.769000000000233
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.3703000000002183,
+              "dirtyMs": 0.015000000000327418,
+              "jsb": 168,
+              "peakHeap": 15693420,
+              "forcedGcMs": 4.666000000001077
+            },
+            "labels/steady": {
+              "cpuMs": 0.41379999999889405,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 13273992,
+              "forcedGcMs": 5.21900000000096
+            },
+            "labels/dirty": {
+              "cpuMs": 2.9412999999986904,
+              "dirtyMs": 2.5230000000010477,
+              "jsb": 88,
+              "peakHeap": 13025220,
+              "forcedGcMs": 3.3070000000006985
+            },
+            "masks/steady": {
+              "cpuMs": 0.369850000000713,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 68,
+              "peakHeap": 12711364,
+              "forcedGcMs": 3.2030000000013388
+            },
+            "masks/dirty": {
+              "cpuMs": 0.4962500000000291,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 73,
+              "peakHeap": 12601192,
+              "forcedGcMs": 2.9840000000003783
+            },
+            "rich/steady": {
+              "cpuMs": 0.1685000000006112,
+              "dirtyMs": 0.0030000000042491592,
+              "jsb": 68,
+              "peakHeap": 12547144,
+              "forcedGcMs": 4.238000000004831
+            },
+            "rich/dirty": {
+              "cpuMs": 1.6186000000036962,
+              "dirtyMs": 1.0780000000013388,
+              "jsb": 72,
+              "peakHeap": 12785668,
+              "forcedGcMs": 2.791000000004715
+            },
+            "mixed/steady": {
+              "cpuMs": 0.9891999999988941,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 68,
+              "peakHeap": 16875756,
+              "forcedGcMs": 4.474000000001979
+            },
+            "mixed/dirty": {
+              "cpuMs": 4.217250000001863,
+              "dirtyMs": 2.790499999995518,
+              "jsb": 197,
+              "peakHeap": 16960924,
+              "forcedGcMs": 3.905000000006112
+            }
+          }
+        },
+        {
+          "sha256": "e7e3dbb5b2e2f5223f45357f695b35bc632434fb15918c7a2d2f72671f855135",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.009950000000211004,
+              "dirtyMs": 0.0039999999999054126,
+              "jsb": 68,
+              "peakHeap": 12061244,
+              "forcedGcMs": 6.278000000000247
+            },
+            "empty/dirty": {
+              "cpuMs": 0.009200000000563886,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 12188168,
+              "forcedGcMs": 5.992000000000189
+            },
+            "sprites/steady": {
+              "cpuMs": 0.29524999999950524,
+              "dirtyMs": 0.0039999999999054126,
+              "jsb": 68,
+              "peakHeap": 15579500,
+              "forcedGcMs": 4.106999999999971
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.40799999999935244,
+              "dirtyMs": 0.014999999999417923,
+              "jsb": 168,
+              "peakHeap": 15696160,
+              "forcedGcMs": 4.613999999999578
+            },
+            "labels/steady": {
+              "cpuMs": 0.4868000000008149,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 13252304,
+              "forcedGcMs": 5.47099999999773
+            },
+            "labels/dirty": {
+              "cpuMs": 3.4462500000023866,
+              "dirtyMs": 3.0935000000008586,
+              "jsb": 88,
+              "peakHeap": 12993640,
+              "forcedGcMs": 6.769000000000233
+            },
+            "masks/steady": {
+              "cpuMs": 0.610200000000815,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 12704064,
+              "forcedGcMs": 12.203000000001339
+            },
+            "masks/dirty": {
+              "cpuMs": 0.509000000000844,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 73,
+              "peakHeap": 12595884,
+              "forcedGcMs": 7.998999999999796
+            },
+            "rich/steady": {
+              "cpuMs": 0.17074999999889406,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 12508436,
+              "forcedGcMs": 5.081000000005588
+            },
+            "rich/dirty": {
+              "cpuMs": 1.0675000000003492,
+              "dirtyMs": 0.6715000000003783,
+              "jsb": 72,
+              "peakHeap": 12785008,
+              "forcedGcMs": 2.959000000002561
+            },
+            "mixed/steady": {
+              "cpuMs": 1.1995499999964783,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 68,
+              "peakHeap": 16835596,
+              "forcedGcMs": 5.366000000001804
+            },
+            "mixed/dirty": {
+              "cpuMs": 4.521849999995926,
+              "dirtyMs": 2.9575000000004366,
+              "jsb": 197,
+              "peakHeap": 17064772,
+              "forcedGcMs": 4.529999999998836
+            }
+          }
+        },
+        {
+          "sha256": "69fe523e9eea569ff5e7556f9cfeafcc12d50906c846d56b998bbf903064a0c9",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.011249999999959983,
+              "dirtyMs": 0.0039999999999054126,
+              "jsb": 68,
+              "peakHeap": 12095860,
+              "forcedGcMs": 8.700000000000728
+            },
+            "empty/dirty": {
+              "cpuMs": 0.008850000000109139,
+              "dirtyMs": 0.0029999999997016857,
+              "jsb": 68,
+              "peakHeap": 12140144,
+              "forcedGcMs": 4.445999999999913
+            },
+            "sprites/steady": {
+              "cpuMs": 0.24159999999889403,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 15439536,
+              "forcedGcMs": 5.730999999999767
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.36299999999953436,
+              "dirtyMs": 0.01300000000082946,
+              "jsb": 168,
+              "peakHeap": 15672740,
+              "forcedGcMs": 4.251000000000204
+            },
+            "labels/steady": {
+              "cpuMs": 0.41265000000081486,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 13336216,
+              "forcedGcMs": 10.873999999999796
+            },
+            "labels/dirty": {
+              "cpuMs": 2.960750000000102,
+              "dirtyMs": 2.588999999999942,
+              "jsb": 88,
+              "peakHeap": 13007592,
+              "forcedGcMs": 3.3220000000001164
+            },
+            "masks/steady": {
+              "cpuMs": 0.4956499999994034,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 12741892,
+              "forcedGcMs": 4.489999999997963
+            },
+            "masks/dirty": {
+              "cpuMs": 0.5130500000012514,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 73,
+              "peakHeap": 12751124,
+              "forcedGcMs": 3.238999999997759
+            },
+            "rich/steady": {
+              "cpuMs": 0.19979999999566353,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 68,
+              "peakHeap": 12508732,
+              "forcedGcMs": 7.063999999998487
+            },
+            "rich/dirty": {
+              "cpuMs": 1.1826500000034634,
+              "dirtyMs": 0.6684999999997672,
+              "jsb": 72,
+              "peakHeap": 12784456,
+              "forcedGcMs": 6.152999999998428
+            },
+            "mixed/steady": {
+              "cpuMs": 1.167999999993539,
+              "dirtyMs": 0.0030000000042491592,
+              "jsb": 68,
+              "peakHeap": 16943828,
+              "forcedGcMs": 8.618000000002212
+            },
+            "mixed/dirty": {
+              "cpuMs": 4.55629999999741,
+              "dirtyMs": 2.885999999998603,
+              "jsb": 197,
+              "peakHeap": 16992476,
+              "forcedGcMs": 4.216000000000349
+            }
+          }
+        }
+      ],
+      "summary": {
+        "empty/steady": {
+          "cpuMs": 0.009950000000211004,
+          "dirtyMs": 0.0039999999999054126,
+          "jsb": 68,
+          "peakHeap": 12061244,
+          "forcedGcMs": 6.390999999999622
+        },
+        "empty/dirty": {
+          "cpuMs": 0.009200000000563886,
+          "dirtyMs": 0.0030000000006111804,
+          "jsb": 68,
+          "peakHeap": 12188168,
+          "forcedGcMs": 4.445999999999913
+        },
+        "sprites/steady": {
+          "cpuMs": 0.24159999999889403,
+          "dirtyMs": 0.0030000000006111804,
+          "jsb": 68,
+          "peakHeap": 15555920,
+          "forcedGcMs": 4.106999999999971
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.3703000000002183,
+          "dirtyMs": 0.014999999999417923,
+          "jsb": 168,
+          "peakHeap": 15693420,
+          "forcedGcMs": 4.613999999999578
+        },
+        "labels/steady": {
+          "cpuMs": 0.41379999999889405,
+          "dirtyMs": 0.0030000000006111804,
+          "jsb": 68,
+          "peakHeap": 13273992,
+          "forcedGcMs": 5.47099999999773
+        },
+        "labels/dirty": {
+          "cpuMs": 2.960750000000102,
+          "dirtyMs": 2.588999999999942,
+          "jsb": 88,
+          "peakHeap": 13007592,
+          "forcedGcMs": 3.3220000000001164
+        },
+        "masks/steady": {
+          "cpuMs": 0.4956499999994034,
+          "dirtyMs": 0.0030000000006111804,
+          "jsb": 68,
+          "peakHeap": 12711364,
+          "forcedGcMs": 4.489999999997963
+        },
+        "masks/dirty": {
+          "cpuMs": 0.509000000000844,
+          "dirtyMs": 0.0030000000006111804,
+          "jsb": 73,
+          "peakHeap": 12601192,
+          "forcedGcMs": 3.238999999997759
+        },
+        "rich/steady": {
+          "cpuMs": 0.17074999999889406,
+          "dirtyMs": 0.0030000000042491592,
+          "jsb": 68,
+          "peakHeap": 12508732,
+          "forcedGcMs": 5.081000000005588
+        },
+        "rich/dirty": {
+          "cpuMs": 1.1826500000034634,
+          "dirtyMs": 0.6715000000003783,
+          "jsb": 72,
+          "peakHeap": 12785008,
+          "forcedGcMs": 2.959000000002561
+        },
+        "mixed/steady": {
+          "cpuMs": 1.167999999993539,
+          "dirtyMs": 0.0030000000042491592,
+          "jsb": 68,
+          "peakHeap": 16875756,
+          "forcedGcMs": 5.366000000001804
+        },
+        "mixed/dirty": {
+          "cpuMs": 4.521849999995926,
+          "dirtyMs": 2.885999999998603,
+          "jsb": 197,
+          "peakHeap": 16992476,
+          "forcedGcMs": 4.216000000000349
+        }
+      }
+    },
+    "a": {
+      "exeSha256": "9f1808efe42a9036f6c2fa56a0ac59de98fcff645471af7dd0389c83aa04f9f1",
+      "engineSha256": "bb872b4380d870229bd5dea3ea2ab0263fec309152f38173107d79f07ef68d88",
+      "rounds": [
+        {
+          "sha256": "349790a82c982f32cd403a6bc103973ea92590ebda7ad5812497f5aa92f5a6d9",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.007300000000132786,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 68,
+              "peakHeap": 12231368,
+              "forcedGcMs": 3.8969999999999345
+            },
+            "empty/dirty": {
+              "cpuMs": 0.008549999999654393,
+              "dirtyMs": 0.0029999999997016857,
+              "jsb": 68,
+              "peakHeap": 12329484,
+              "forcedGcMs": 2.8440000000009604
+            },
+            "sprites/steady": {
+              "cpuMs": 0.307800000000211,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 68,
+              "peakHeap": 15578364,
+              "forcedGcMs": 10.541000000001077
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.4538999999988722,
+              "dirtyMs": 0.01599999999962165,
+              "jsb": 168,
+              "peakHeap": 15689392,
+              "forcedGcMs": 4.647000000000844
+            },
+            "labels/steady": {
+              "cpuMs": 0.44215000000071303,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 13254040,
+              "forcedGcMs": 5.473999999998341
+            },
+            "labels/dirty": {
+              "cpuMs": 2.1922499999985154,
+              "dirtyMs": 1.8760000000002037,
+              "jsb": 88,
+              "peakHeap": 13000324,
+              "forcedGcMs": 3.9719999999979336
+            },
+            "masks/steady": {
+              "cpuMs": 0.5222500000006112,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 12699612,
+              "forcedGcMs": 8.444999999999709
+            },
+            "masks/dirty": {
+              "cpuMs": 0.4914499999998254,
+              "dirtyMs": 0.0029999999969732016,
+              "jsb": 73,
+              "peakHeap": 12834988,
+              "forcedGcMs": 2.8909999999996217
+            },
+            "rich/steady": {
+              "cpuMs": 0.20510000000101863,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 68,
+              "peakHeap": 12538548,
+              "forcedGcMs": 4.9060000000026776
+            },
+            "rich/dirty": {
+              "cpuMs": 1.1989499999993596,
+              "dirtyMs": 0.5519999999996799,
+              "jsb": 72,
+              "peakHeap": 12788540,
+              "forcedGcMs": 5.851999999998952
+            },
+            "mixed/steady": {
+              "cpuMs": 1.13885000000163,
+              "dirtyMs": 0.0030000000042491592,
+              "jsb": 68,
+              "peakHeap": 16862076,
+              "forcedGcMs": 4.897000000004482
+            },
+            "mixed/dirty": {
+              "cpuMs": 3.433649999998603,
+              "dirtyMs": 2.065500000000611,
+              "jsb": 197,
+              "peakHeap": 16997308,
+              "forcedGcMs": 4.676000000006752
+            }
+          }
+        },
+        {
+          "sha256": "09f2ed7d01110a798703082287518e473c9c87e23c436a1d94cd3b81b98bb516",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.010649999999858118,
+              "dirtyMs": 0.0039999999999054126,
+              "jsb": 68,
+              "peakHeap": 12104072,
+              "forcedGcMs": 4.7979999999997744
+            },
+            "empty/dirty": {
+              "cpuMs": 0.012200000000163708,
+              "dirtyMs": 0.004999999999199645,
+              "jsb": 68,
+              "peakHeap": 12142004,
+              "forcedGcMs": 4.34900000000016
+            },
+            "sprites/steady": {
+              "cpuMs": 0.30299999999940336,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 68,
+              "peakHeap": 15559040,
+              "forcedGcMs": 5.632000000001426
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.48160000000016734,
+              "dirtyMs": 0.019999999999527063,
+              "jsb": 168,
+              "peakHeap": 15586840,
+              "forcedGcMs": 5.852999999999156
+            },
+            "labels/steady": {
+              "cpuMs": 0.45155000000101864,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 13252812,
+              "forcedGcMs": 4.889999999999418
+            },
+            "labels/dirty": {
+              "cpuMs": 2.09730000000016,
+              "dirtyMs": 1.7779999999984284,
+              "jsb": 88,
+              "peakHeap": 13014484,
+              "forcedGcMs": 7.808000000000902
+            },
+            "masks/steady": {
+              "cpuMs": 0.5212000000007131,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 12669548,
+              "forcedGcMs": 8.135000000002037
+            },
+            "masks/dirty": {
+              "cpuMs": 0.5633999999998254,
+              "dirtyMs": 0.002999999998792191,
+              "jsb": 73,
+              "peakHeap": 12829064,
+              "forcedGcMs": 4.580000000001746
+            },
+            "rich/steady": {
+              "cpuMs": 0.23214999999930153,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 68,
+              "peakHeap": 12514040,
+              "forcedGcMs": 4.885000000002037
+            },
+            "rich/dirty": {
+              "cpuMs": 1.2705500000003784,
+              "dirtyMs": 0.6045000000012806,
+              "jsb": 72,
+              "peakHeap": 12782388,
+              "forcedGcMs": 4.8549999999959255
+            },
+            "mixed/steady": {
+              "cpuMs": 1.282799999999098,
+              "dirtyMs": 0.004000000000814907,
+              "jsb": 68,
+              "peakHeap": 16907660,
+              "forcedGcMs": 6.538999999997031
+            },
+            "mixed/dirty": {
+              "cpuMs": 4.0981499999960125,
+              "dirtyMs": 2.5639999999984866,
+              "jsb": 197,
+              "peakHeap": 17012988,
+              "forcedGcMs": 4.009999999994761
+            }
+          }
+        },
+        {
+          "sha256": "47485d6243fe3bdb631dc99119ed9079e27d0ac1f750e4c64e37415bae32fafe",
+          "metrics": {
+            "empty/steady": {
+              "cpuMs": 0.011549999999858118,
+              "dirtyMs": 0.004999999999427018,
+              "jsb": 68,
+              "peakHeap": 12064808,
+              "forcedGcMs": 4.246000000000095
+            },
+            "empty/dirty": {
+              "cpuMs": 0.013249999999356077,
+              "dirtyMs": 0.005000000000109139,
+              "jsb": 68,
+              "peakHeap": 12216964,
+              "forcedGcMs": 9.136000000000422
+            },
+            "sprites/steady": {
+              "cpuMs": 0.257700000000713,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 15569012,
+              "forcedGcMs": 7.7739999999994325
+            },
+            "sprites/dirty": {
+              "cpuMs": 0.41315000000040014,
+              "dirtyMs": 0.013999999999214197,
+              "jsb": 168,
+              "peakHeap": 15689220,
+              "forcedGcMs": 9.5
+            },
+            "labels/steady": {
+              "cpuMs": 0.40885000000091676,
+              "dirtyMs": 0.0030000000006111804,
+              "jsb": 68,
+              "peakHeap": 13249552,
+              "forcedGcMs": 4.844999999997526
+            },
+            "labels/dirty": {
+              "cpuMs": 2.2722999999997673,
+              "dirtyMs": 1.9130000000022847,
+              "jsb": 88,
+              "peakHeap": 13222080,
+              "forcedGcMs": 4.172999999998865
+            },
+            "masks/steady": {
+              "cpuMs": 0.4543999999987922,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 68,
+              "peakHeap": 12797628,
+              "forcedGcMs": 4.169999999998254
+            },
+            "masks/dirty": {
+              "cpuMs": 0.41025000000013095,
+              "dirtyMs": 0.0020000000004074536,
+              "jsb": 73,
+              "peakHeap": 12827340,
+              "forcedGcMs": 3.225000000002183
+            },
+            "rich/steady": {
+              "cpuMs": 0.1926000000008149,
+              "dirtyMs": 0.003999999998995918,
+              "jsb": 68,
+              "peakHeap": 12622212,
+              "forcedGcMs": 7.886999999995169
+            },
+            "rich/dirty": {
+              "cpuMs": 1.1942499999961291,
+              "dirtyMs": 0.5665000000008149,
+              "jsb": 72,
+              "peakHeap": 12788768,
+              "forcedGcMs": 8.800999999999476
+            },
+            "mixed/steady": {
+              "cpuMs": 1.2324499999986904,
+              "dirtyMs": 0.0029999999969732016,
+              "jsb": 68,
+              "peakHeap": 16942748,
+              "forcedGcMs": 7.650000000001455
+            },
+            "mixed/dirty": {
+              "cpuMs": 3.8502000000016876,
+              "dirtyMs": 2.2819999999992433,
+              "jsb": 197,
+              "peakHeap": 17079780,
+              "forcedGcMs": 4.582000000002154
+            }
+          }
+        }
+      ],
+      "summary": {
+        "empty/steady": {
+          "cpuMs": 0.010649999999858118,
+          "dirtyMs": 0.0039999999999054126,
+          "jsb": 68,
+          "peakHeap": 12104072,
+          "forcedGcMs": 4.246000000000095
+        },
+        "empty/dirty": {
+          "cpuMs": 0.012200000000163708,
+          "dirtyMs": 0.004999999999199645,
+          "jsb": 68,
+          "peakHeap": 12216964,
+          "forcedGcMs": 4.34900000000016
+        },
+        "sprites/steady": {
+          "cpuMs": 0.30299999999940336,
+          "dirtyMs": 0.004000000000814907,
+          "jsb": 68,
+          "peakHeap": 15569012,
+          "forcedGcMs": 7.7739999999994325
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.4538999999988722,
+          "dirtyMs": 0.01599999999962165,
+          "jsb": 168,
+          "peakHeap": 15689220,
+          "forcedGcMs": 5.852999999999156
+        },
+        "labels/steady": {
+          "cpuMs": 0.44215000000071303,
+          "dirtyMs": 0.0030000000006111804,
+          "jsb": 68,
+          "peakHeap": 13252812,
+          "forcedGcMs": 4.889999999999418
+        },
+        "labels/dirty": {
+          "cpuMs": 2.1922499999985154,
+          "dirtyMs": 1.8760000000002037,
+          "jsb": 88,
+          "peakHeap": 13014484,
+          "forcedGcMs": 4.172999999998865
+        },
+        "masks/steady": {
+          "cpuMs": 0.5212000000007131,
+          "dirtyMs": 0.0030000000006111804,
+          "jsb": 68,
+          "peakHeap": 12699612,
+          "forcedGcMs": 8.135000000002037
+        },
+        "masks/dirty": {
+          "cpuMs": 0.4914499999998254,
+          "dirtyMs": 0.0029999999969732016,
+          "jsb": 73,
+          "peakHeap": 12829064,
+          "forcedGcMs": 3.225000000002183
+        },
+        "rich/steady": {
+          "cpuMs": 0.20510000000101863,
+          "dirtyMs": 0.004000000000814907,
+          "jsb": 68,
+          "peakHeap": 12538548,
+          "forcedGcMs": 4.9060000000026776
+        },
+        "rich/dirty": {
+          "cpuMs": 1.1989499999993596,
+          "dirtyMs": 0.5665000000008149,
+          "jsb": 72,
+          "peakHeap": 12788540,
+          "forcedGcMs": 5.851999999998952
+        },
+        "mixed/steady": {
+          "cpuMs": 1.2324499999986904,
+          "dirtyMs": 0.0030000000042491592,
+          "jsb": 68,
+          "peakHeap": 16907660,
+          "forcedGcMs": 6.538999999997031
+        },
+        "mixed/dirty": {
+          "cpuMs": 3.8502000000016876,
+          "dirtyMs": 2.2819999999992433,
+          "jsb": 197,
+          "peakHeap": 17012988,
+          "forcedGcMs": 4.582000000002154
+        }
+      }
+    }
+  },
+  "systemFont": [
+    {
+      "alignment": 0,
+      "text": "AB",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "727820eef8f64660910279bf09824a2721ff6c0d7ea4080b41e3459bff629b1a"
+    },
+    {
+      "alignment": 0,
+      "text": "Wide line\ni",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "b84bbcf2cfd3887d7b5258de836488d8b006f36724f646b3f1fa142aca34ec75"
+    },
+    {
+      "alignment": 0,
+      "text": "Café 文",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "4ce57321f2b8bd9353338e737a0f4aed8bcebd6fd196be4738c0a3110675e964"
+    },
+    {
+      "alignment": 1,
+      "text": "AB",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "f32c97fea9397c78188d56ec62ed531c1090ecb8458217b5deac435cdc732976"
+    },
+    {
+      "alignment": 1,
+      "text": "Wide line\ni",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "9502ca42763bf7d1f20252720ac68e3658dd444133f8706daa8726a669dbc388"
+    },
+    {
+      "alignment": 1,
+      "text": "Café 文",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "3ceb8b293bea1a0ff542cba350c9a639535286776bac48923d0be669fb4bc2c8"
+    },
+    {
+      "alignment": 2,
+      "text": "AB",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "f5c99e3c16a49b99c9bc7be4d09511758beddbdf7b0dfc0758683e8d504990a9"
+    },
+    {
+      "alignment": 2,
+      "text": "Wide line\ni",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "5f35fb0fe8076f9c0a4dd03f57c2108ecc0fb24e3d94a28625c06ce2f4ef69f8"
+    },
+    {
+      "alignment": 2,
+      "text": "Café 文",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "9095091ccc963b30090dd09344826546450ec999344ad1a79f5d83c997da7fc4"
+    }
+  ],
+  "gpuSnapshot": "455c6e0658bbc158bd64e2f65a640dce67616f1fcc20f8b2da570ed2561b8ac0",
+  "exactImagesPerConfig": 85,
+  "customFont": {
+    "snapshot": "0361e91cfdf872562dc578ec07e379f3a2fcb50797e5f88cc10b0ef6e07d695d",
+    "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+    "results": [
+      {
+        "name": "text-basic",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+        "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87"
+      },
+      {
+        "name": "text-bold",
+        "layoutEqual": true,
+        "pass": false,
+        "max": 20,
+        "pixels": 467,
+        "nativeSha256": "0dd74ae6f769b10b63ffe14398329805b8efab6cc6c188aefee8d815ac4775d7",
+        "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9"
+      },
+      {
+        "name": "text-italic",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+        "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475"
+      },
+      {
+        "name": "text-underline",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 1,
+        "pixels": 0,
+        "nativeSha256": "200bf94693f41bb3e257cef10e3cd5be52b3959c29de780f216c34ebbaa0c961",
+        "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a"
+      },
+      {
+        "name": "text-outline",
+        "layoutEqual": true,
+        "pass": false,
+        "max": 30,
+        "pixels": 202,
+        "nativeSha256": "b149ca666d8f4e617e59c3c6e122bf603cd32e68fb2732f8024f10d9f2d3db61",
+        "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c"
+      },
+      {
+        "name": "text-nested",
+        "layoutEqual": true,
+        "pass": false,
+        "max": 47,
+        "pixels": 573,
+        "nativeSha256": "6edd9cc4c32ccbd760b54a5f508768a52fff74a2b1dbc463d77d7646bd27b09e",
+        "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3"
+      },
+      {
+        "name": "text-colors",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+        "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22"
+      },
+      {
+        "name": "text-wrap-left",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+        "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f"
+      },
+      {
+        "name": "text-wrap-center",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+        "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca"
+      },
+      {
+        "name": "text-wrap-right",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+        "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da"
+      },
+      {
+        "name": "text-multiline",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+        "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220"
+      },
+      {
+        "name": "text-unicode",
+        "layoutEqual": true,
+        "pass": true,
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+        "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9"
+      }
+    ]
+  }
+}

@@ -43,8 +43,10 @@ const timer = 'M6TtfTimer.h';
 if (labelStages) {
     if (key !== 'after' || process.argv[3] !== 'WINDOWS') throw new Error('TTF stage timings require the migrated Windows backend');
     fs.copyFileSync(path.join(__dirname, 'm6-ttf-timer.h'), path.join(source, 'native/cocos', timer));
+    const labelSource = execFileSync('git', ['-C', source, 'show', 'HEAD:' + labelFile], { encoding: 'utf8' });
+    const drawContext = 'auto &context = measurement.drawingContext(textureWidth, textureHeight);';
     const cuts = [
-        ['Layout', 'CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));'],
+        ['Layout', labelSource.includes(drawContext) ? drawContext : 'CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));'],
         ['CanvasSetup', 'const Color &edgeColor ='],
         ['Background', 'float textTop ='],
         ['Draw', 'cc::Data pixels;'],

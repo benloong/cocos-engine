@@ -39,6 +39,15 @@ class CC_DLL CanvasRenderingContext2D : public ICanvasRenderingContext2D {
 public:
     CanvasRenderingContext2D(float width, float height);
     ~CanvasRenderingContext2D() override;
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    // Replace the Win32 bitmap while keeping the DC and its selected font.
+    void resetBuffer(float width, float height) {
+        _width = width;
+        _height = height;
+        _isBufferSizeDirty = true;
+        recreateBufferIfNeeded();
+    }
+#endif
 
     // Rect
     void rect(float x, float y, float width, float height) override;

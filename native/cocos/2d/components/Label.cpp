@@ -70,9 +70,20 @@ public:
         }
     }
     ~TextMeasurement() {
-        if (_reusable) idle() = std::move(_slot);
+        if (_reusable) {
+            if (_usedForDrawing) {
+                _slot.context->setCanvasBufferUpdatedCallback(nullptr);
+                _slot.context->resetBuffer(1.F, 1.F);
+            }
+            idle() = std::move(_slot);
+        }
     }
     CanvasRenderingContext2D &context() { return *_slot.context; }
+    CanvasRenderingContext2D &drawingContext(uint32_t width, uint32_t height) {
+        _usedForDrawing = true;
+        _slot.context->resetBuffer(static_cast<float>(width), static_cast<float>(height));
+        return *_slot.context;
+    }
 
 private:
     struct Slot {
@@ -86,6 +97,7 @@ private:
     }
     Slot _slot;
     bool _reusable;
+    bool _usedForDrawing{false};
 };
 #endif
 
@@ -1011,8 +1023,12 @@ void Label::rebuildTexture() {
     const uint32_t textureWidth = std::max(static_cast<uint32_t>(canvasWidth), 1U);
     const uint32_t textureHeight = std::max(static_cast<uint32_t>(canvasHeight), 1U);
 
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    auto &context = measurement.drawingContext(textureWidth, textureHeight);
+#else
     CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));
     context.setFont(renderFont);
+#endif
     context.setTextBaseline("alphabetic");
     context.setTextAlign("left");
 

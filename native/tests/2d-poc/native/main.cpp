@@ -923,6 +923,27 @@ void testLabelRasterMapping() {
     label.setString(" "); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 0, "whitespace prefill is not counted as visible text");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    label.setOverflow(1);
+    label.setEnableWrapText(false);
+    ui.setContentSize(96, 40);
+    label.setString("Atlas 123");
+    label.updateRenderData(true);
+    const auto originalChecksum = label.getPixelChecksum();
+    const auto handlesBeforeRedraw = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+    bool redrawMatches = true;
+    for (int i = 0; i < 128; ++i) {
+        ui.setContentSize(i % 2 ? 96 : 120, 40);
+        label.setString(" ");
+        label.updateRenderData(true);
+        redrawMatches &= label.getOpaquePixels() == 0;
+        ui.setContentSize(96, 40);
+        label.setString("Atlas 123");
+        label.updateRenderData(true);
+        redrawMatches &= label.getPixelChecksum() == originalChecksum;
+    }
+    check(redrawMatches, "cached Windows font redraws same-size and resized surfaces without stale glyphs");
+    check(GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS) == handlesBeforeRedraw,
+          "reusing the font DC across redraws releases its raster bitmaps");
     {
         cc::CanvasRenderingContext2D background(3, 1);
         background.setFillStyle("rgba(23,77,138,0.004)");
