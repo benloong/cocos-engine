@@ -50,6 +50,7 @@
 - [x] Sprite、Label 和 Graphics 的实际 shader 重编译回调。场景为每个组件的第 1 号实例槽切换 `USE_TEXTURE`，检查材质 hash 变化和恢复、两次有效切换的 owner 回调参数，以及相同宏重复设置时的通知次数。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 - [x] Sprite、Label 和 Graphics 的材质生命周期。传回同一共享材质保留实例；强制刷新和替换共享材质立即清空旧实例的 passes。组件持有共享材质期间显式销毁，核对两次 destroy 的返回值、帧内严格与普通有效性、帧末失效及槽位引用身份。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 - [ ] 完整组件 parity：Label 其余公开/兼容接口，以及真实场景/Prefab 和资源管线继续验收。radial CPU 几何通过不替代 GPU 像素验收。
+- [x] Label 运行时字体切换：从位图字体切回系统字体会清空字体资产；再次关闭系统字体、向空槽写入 null 均保留空槽。显式重新指定 BitmapFont 后立即读取到单个 A 字形宽度 16，且混合遮罩场景中的绿色字形正常绘制。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 
 - [x] SpriteFrame 基础数据/算法：quad/sliced UV 迁入 native；rotated、flip、insets、pivot、meshType、packable、clone/reset 与基础静态 API 已补实现，UV 对照与 Windows 定向回归通过，见 [报告](./native-2d-m6.1-sprite-frame.md)。
 - [x] SpriteFrame 基础状态：rect/offset/originalSize/pivot 使用 native 可写视图；setter、分量修改、反序列化、克隆和 native 回读不再依赖 JS 权威镜像，Sprite/Mask/BMFont 有原生消费者联动测试。

@@ -24,6 +24,7 @@
 
 import { ccclass, displayOrder, executionOrder, help, menu, multiline, requireComponent, serializable, type } from 'cc.decorator';
 import type { Material } from '../../asset/assets';
+import { EDITOR } from 'internal:constants';
 import { Color, Vec2 } from '../../core';
 import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
@@ -116,6 +117,7 @@ export class Label extends UIRenderer {
 
     @serializable
     protected _font: any = null;
+    protected _userDefinedFont: Font | null = null;
     @serializable
     protected _enableOutline = false;
     @serializable
@@ -267,9 +269,12 @@ export class Label extends UIRenderer {
     }
 
     set font (value: any) {
+        if (this._font === value) return;
         this._font = value;
         this._isSystemFontUsed = !value;
+        if (EDITOR) this._userDefinedFont = value;
         this._syncFont();
+        this.updateRenderData(true);
     }
 
     get useSystemFont (): boolean {
@@ -277,7 +282,16 @@ export class Label extends UIRenderer {
     }
 
     set useSystemFont (value: boolean) {
-        this._isSystemFontUsed = value;
+        if (this._isSystemFontUsed === value) return;
+        if (EDITOR && !value && this._isSystemFontUsed && this._userDefinedFont) {
+            this.font = this._userDefinedFont;
+            return;
+        }
+        this._isSystemFontUsed = !!value;
+        if (value && this._font) {
+            this.font = null;
+            return;
+        }
         this._syncFont();
     }
 

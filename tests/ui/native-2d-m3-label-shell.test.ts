@@ -165,7 +165,10 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.useSystemFont = true;
     expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(null);
     label.useSystemFont = false;
-    expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(font);
+    expect(label.font).toBeNull();
+    expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(null);
+    label.font = null;
+    expect(label.useSystemFont).toBe(false);
     label.onDestroy();
     expect(nativeLabel.setFontAsset).toHaveBeenLastCalledWith(null);
     expect(nativeLabel.setBitmapAtlas).not.toHaveBeenCalled();

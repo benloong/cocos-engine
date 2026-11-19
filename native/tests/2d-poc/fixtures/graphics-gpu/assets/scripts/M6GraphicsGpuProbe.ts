@@ -109,6 +109,15 @@ export class M6GraphicsGpuProbe extends Component {
                 const glyph = node(n, 'green'); glyph.setPosition(24, 0);
                 const label = glyph.addComponent(Label); label.font = font;
                 label.fontSize = 16; label.lineHeight = 16; label.string = 'A'; label.color = new Color(0, 255, 0, 255);
+                label.useSystemFont = true;
+                if (label.font || !label.useSystemFont || label._bmFontOriginalSize !== -1) throw new Error('System font retained bitmap asset');
+                label.useSystemFont = false;
+                label.font = null;
+                if (label.font || label.useSystemFont) throw new Error('Empty font slot restored a previous font');
+                label.font = font;
+                if (label.font !== font || label.useSystemFont || glyph.getComponent(UITransform)!.width !== 16) {
+                    throw new Error('Assigning bitmap font failed to publish its glyph width immediately');
+                }
                 const sibling = graphics(node(root, 'yellow'));
                 sibling.fillColor = new Color(255, 255, 0, 255); sibling.fillRect(70, -10, 20, 20);
                 return () => { setFrame(alphaFrame); };
