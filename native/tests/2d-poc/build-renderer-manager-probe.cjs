@@ -15,6 +15,7 @@ const probe = `
         throw Error('Unknown manager import: ' + name);
     };
     ${compiled}
+    if ('getRootNodeAt' in n2d.Batcher2d.prototype) throw Error('Unexpected native root inspection API');
     for (const component of [n2d.Sprite, n2d.Label, n2d.Graphics, n2d.Mask, n2d.RichText]) {
         if ('prepareRenderEntity' in component.prototype || 'updateRenderer' in component.prototype) {
             throw Error('Unexpected component-level renderer update binding');
