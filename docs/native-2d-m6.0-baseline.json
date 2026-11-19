@@ -31,7 +31,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "6e171d244996fb6f9e48847144bef12d2d74e45ee524b95aad48063898efb915"
+      "sha256": "a6d72f34e62f9874b5f75c308489ddd9af4e8b5699b6aa1a531fda33831d74a3"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -291,11 +291,11 @@
     },
     {
       "file": "native/cocos/bindings/manual/jsb_platform.h",
-      "sha256": "5881468352d30e08c1043fd952453644cb3ebb5e622e14271615cbfe0dc81e0a"
+      "sha256": "c9f6a596e4158dbe523170697a7e7c87be3d6c10f0d51fe99a8c592c3c9a5361"
     },
     {
       "file": "native/cocos/bindings/manual/jsb_platform_win32.cpp",
-      "sha256": "ba0a3fe3f4918863afffd59bf3a2a56be0cabca4a6a188e487b29bb08deb8039"
+      "sha256": "48f13789f23525d208b178000b67951596570d5ed9a943469811e93972a5ca79"
     },
     {
       "file": "native/cocos/bindings/manual/jsb_scene_manual.cpp",

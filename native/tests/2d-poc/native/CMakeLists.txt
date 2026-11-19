@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CC_USE_SCRIPT_ENGINE ON)
+set(CC_2D_FONT_ALIAS_DIAGNOSTICS ON)
 set(USE_MODULES OFF)
 
 # Build the real engine static library and link a tiny console smoke test

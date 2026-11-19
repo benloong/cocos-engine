@@ -58,6 +58,10 @@
 #include "2d/renderer/RichTextLayout.h"
 #include "bindings/jswrapper/SeApi.h"
 #include "bindings/manual/jsb_platform.h"
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+size_t getFontAliasLeaseCount();
+size_t getFontAliasGroupCount();
+#endif
 #include "bindings/manual/jsb_global.h"
 #include "core/Root.h"
 #include "core/assets/Material.h"

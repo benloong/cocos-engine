@@ -172,6 +172,9 @@ export class M4Probe {
     }
 
     public static run (parent: Node): void {
+        if (sys.isNative && 'getFontAliasStats' in (globalThis as any).jsb) {
+            throw new Error('Production JSB exposes the font alias test probe');
+        }
         // A local manager owns these frames; Web auto packing must not preempt it.
         const autoPacking = dynamicAtlasManager.enabled;
         dynamicAtlasManager.enabled = false;

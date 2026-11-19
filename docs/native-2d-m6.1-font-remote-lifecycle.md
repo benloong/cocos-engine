@@ -6,7 +6,7 @@
 
 RichText GPU 应用在完成图像捕获后，使用真实 assetManager 连续加载同一仓库字体 1000 次，每轮检查 223404 个 native 字节，并再加载一次验证缓存返回同一资产。releaseAsset 后检查缓存条目移除、字体资产进入待销毁状态、native 字节归零、alias 注册数量恢复基线；最终等待后续帧，检查延迟销毁完成。该测试经过真实 downloader/parser/factory 路径，不再用直接 new TTFFont 循环替代资源加载证据；源是本地文件，未覆盖 HTTP 下载。
 
-Windows JSB 新增只读 getFontAliasStats，返回公共 alias、内部渲染 alias、lease 和来源 group 的数量。返回值是独立 JS 对象，不暴露路径或原生引用；只由验收夹具显式调用，没有接入生产每帧流程，也不改变所有权或引入 shared_ptr。
+Windows 专用字体验收构建通过 CC_2D_FONT_ALIAS_DIAGNOSTICS 启用只读 jsb.getFontAliasStats，记录公共 alias、内部渲染 alias、lease 和来源 group 数量。普通 Windows 应用在 Mask 场景中检查该属性缺席。RichText 工程准备脚本自动启用诊断；复用其他 GPU 验收工程运行字体测试时，需用 -DCC_2D_FONT_ALIAS_DIAGNOSTICS=ON 配置并重建该测试程序。
 
 同一应用还在 native 字节/alias 已取得后注入一次赋值异常，验证工厂销毁半成品、错误回调、缓存与记录恢复，再对同 URL 成功重试。随后加载真实缺失文件，验证错误回调而非返回空字体资产。runner 和比较器都要求新增生命周期结果，不能只用 12 张图像或旧 manifest 通过入口。
 

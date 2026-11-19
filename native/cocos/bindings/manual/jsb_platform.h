@@ -44,8 +44,6 @@ uint64_t retainFontFamilyAlias(const ccstd::string &family, const ccstd::string 
 void releaseFontFamilyAlias(uint64_t lease);
 const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontAssetFamilyNameMap();
 uint64_t getFontAliasRevision();
-size_t getFontAliasLeaseCount();
-size_t getFontAliasGroupCount();
 #endif
 #if CC_PLATFORM == CC_PLATFORM_OPENHARMONY
 const std::string defaultFontKey = "openharmony_system_font";

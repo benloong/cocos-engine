@@ -36,9 +36,9 @@ fs.writeFileSync(file,fs.readFileSync(file,'utf8').replace('__M6_GPU_OUTPUT__',n
 const rich=path.join(project,'assets/scripts/M6RichTextMatrix.ts');
 fs.writeFileSync(rich,fs.readFileSync(rich,'utf8').replace('__M6_GPU_FONT__',path.join(root,'tests/fixtures/Thonburi.ttf').replaceAll('\\','/')));
 const common=path.join(project,'native/engine/common');
-if(fs.existsSync(common)) {
-    fs.writeFileSync(path.join(common,'localCfg.cmake'),`set(COCOS_X_PATH "${root.replaceAll('\\','/')}/native")\n`);
-    const game=path.join(common,'Classes/Game.cpp');
-    if(fs.existsSync(game)) fs.writeFileSync(game,fs.readFileSync(game,'utf8').replace('"0.0.0.0"','"127.0.0.1"'));
-}
+fs.mkdirSync(common,{recursive:true});
+const diagnostics=mode==='richtext'?'set(CC_2D_FONT_ALIAS_DIAGNOSTICS ON)\n':'';
+fs.writeFileSync(path.join(common,'localCfg.cmake'),`set(COCOS_X_PATH "${root.replaceAll('\\','/')}/native")\n${diagnostics}`);
+const game=path.join(common,'Classes/Game.cpp');
+if(fs.existsSync(game)) fs.writeFileSync(game,fs.readFileSync(game,'utf8').replace('"0.0.0.0"','"127.0.0.1"'));
 console.log(JSON.stringify({project,nativeOutput,snapshot}));
