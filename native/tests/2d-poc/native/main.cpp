@@ -174,19 +174,19 @@ void testSpriteAtlas() {
     cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame());
     check(atlas != nullptr && frame != nullptr, "SpriteAtlas/frame allocated");
     atlas->addSpriteFrame("icon", frame);
-    check(atlas->getSpriteFrameCount() == 1, "SpriteAtlas count after add");
+    check(atlas->getSpriteFrameNames().size() == 1, "SpriteAtlas count after add");
     check(atlas->getSpriteFrame("icon") == frame, "SpriteAtlas lookup by name");
     atlas->removeSpriteFrame("icon");
-    check(atlas->getSpriteFrameCount() == 0, "SpriteAtlas count after remove");
+    check(atlas->getSpriteFrameNames().empty() && atlas->getSpriteFrame("icon") == nullptr, "SpriteAtlas count after remove");
     atlas->addSpriteFrame("icon", frame);
     atlas->clear();
-    check(atlas->getSpriteFrameCount() == 0, "SpriteAtlas count after clear");
+    check(atlas->getSpriteFrameNames().empty() && atlas->getSpriteFrame("icon") == nullptr, "SpriteAtlas count after clear");
     const auto retained = frame->getRefCount();
     cc::IntrusivePtr<cc::Texture2D> firstTexture(new cc::Texture2D());
     firstTexture->create(2, 2);
     frame->setTexture(firstTexture);
     atlas->setSpriteFrames({"hero", "empty"}, {frame.get(), nullptr});
-    check(atlas->getSpriteFrameCount() == 2, "SpriteAtlas retains null named slots");
+    check(atlas->getSpriteFrameNames().size() == 2, "SpriteAtlas retains null named slots");
     check(atlas->getTexture() == firstTexture, "SpriteAtlas first named slot chooses texture");
     check(frame->getRefCount() == retained + 1, "SpriteAtlas owns loaded frame");
     atlas->setSpriteFrameOrder({"empty", "hero"});
@@ -209,12 +209,12 @@ void testSpriteAtlas() {
               "SpriteAtlas keeps owned frames until deferred destruction");
         released->addSpriteFrame("late", frame);
         released->setSpriteFrames({"late"}, {frame.get()});
-        check(released->getSpriteFrameCount() == 2 && released->getSpriteFrame("frame") == frame,
+        check(released->getSpriteFrameNames().size() == 2 && released->getSpriteFrame("frame") == frame,
               "SpriteAtlas does not accept pending replacements");
         cc::CCObject::deferredDestroy();
         released->addSpriteFrame("late", frame);
         released->setSpriteFrameOrder({"late"});
-        check(!released->isValid() && released->getSpriteFrameCount() == 0
+        check(!released->isValid() && released->getSpriteFrame("alias") == nullptr
                   && released->getSpriteFrameNames().empty() && released->getTexture() == nullptr
                   && frame->getRefCount() == retained,
               "SpriteAtlas releases aliases and rejects late repopulation with a live owner");
@@ -2314,10 +2314,9 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    if (sf.getRectWidth() !== 0 || sf.getInsetLeft() !== 0) return 'frame reset';"
         "    var atlas = new jsb.SpriteAtlas();"
         "    atlas.addSpriteFrame('icon', sf);"
-        "    if (atlas.getSpriteFrameCount() !== 1) return 'unexpected atlas count';"
+        "    if (atlas.getSpriteFrameNames().join(',') !== 'icon') return 'unexpected atlas names';"
         "    if (!atlas.getSpriteFrame('icon')) return 'unexpected atlas lookup';"
         "    atlas.setSpriteFrames(['hero', 'empty'], [sf, null]);"
-        "    if (atlas.getSpriteFrameCount() !== 2) return 'atlas null slot count';"
         "    if (atlas.getSpriteFrameNames().join(',') !== 'hero,empty') return 'atlas names conversion';"
         "    if (atlas.getSpriteFrame('hero') !== sf) return 'atlas frame vector conversion';"
         "    if (atlas.getTexture() !== texture) return 'atlas first texture';"

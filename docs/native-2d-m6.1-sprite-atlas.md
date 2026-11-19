@@ -5,7 +5,7 @@
 ## 1. 实现
 
 - SpriteAtlas 仍直接导出 jsb.SpriteAtlas，通过 native-binding/decorators 注册元数据；没有恢复包装对象或 SpriteFrame.native。
-- spriteFrames accessor 返回独立的空原型 Proxy 字典；赋值、删除和数据属性 defineProperty 同步调用原生表接口。getSpriteFrame/getSpriteFrames 读取该映射，getTexture/getSpriteFrameCount 读取同步后的 native 表。
+- spriteFrames accessor 返回独立的空原型 Proxy 字典；赋值、删除和数据属性 defineProperty 同步调用原生表接口。getSpriteFrame/getSpriteFrames 读取该映射，getTexture 读取同步后的 native 表，getSpriteFrameNames 返回其有序帧名。
 - 整体替换通过 setSpriteFrames 一次提交名称/资产数组。C++ 先持有新引用再替换旧表，覆盖重命名、多名称共享同一 frame、null 与 clear；null 是保留名称的空槽位，也计入命名槽位数。
 - JS Object.keys 的顺序显式传给 native，含整数键优先规则。getTexture 与 Web 一样使用第一个可枚举槽位；首槽位为 null 或没有 texture 时返回 null，不跳到后面的有效纹理。
 - 反序列化先按文件顺序登记 null 槽位，再让 Details/asset-manager 对代理字典回填 frame。空 UUID 保留空槽位，不发起空依赖请求；依赖乱序完成不会改变名称顺序。

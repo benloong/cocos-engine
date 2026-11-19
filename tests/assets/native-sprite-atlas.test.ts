@@ -31,7 +31,6 @@ Object.assign(NativeAtlas.prototype, {
     setSpriteFrames: native.replace,
     getSpriteFrameNames () { return this.order.slice(); },
     setSpriteFrameOrder (names) { this.order = names.slice(); },
-    getSpriteFrameCount () { return this.frames.size; },
     getTexture () { return this.frames.get(this.order[0])?.texture ?? null; },
 });
 beforeAll(() => {
@@ -45,7 +44,7 @@ function createAtlas (): any {
 function frame (uuid = 'frame'): any { return new NativeFrame(uuid); }
 function expectNativeMatches (atlas): void {
     expect(atlas.getSpriteFrameNames()).toEqual(Object.keys(atlas.spriteFrames));
-    expect(atlas.getSpriteFrameCount()).toBe(Object.keys(atlas.spriteFrames).length);
+    expect(atlas.frames.size).toBe(Object.keys(atlas.spriteFrames).length);
     for (const key of Object.keys(atlas.spriteFrames)) expect(native.get.call(atlas, key)).toBe(atlas.spriteFrames[key]);
 }
 
@@ -82,7 +81,7 @@ test('whole map assignment, key writes, replacement, null and delete update nati
     expect(atlas.getSpriteFrame('icon')).toBe(second);
     expect(second.name).toBe('icon');
     atlas.removeSpriteFrame('icon');
-    expect(atlas.getSpriteFrameCount()).toBe(0);
+    expect(atlas.frames.size).toBe(0);
 });
 
 test('property definition, numeric ordering and dictionary-like names preserve Web lookup order', () => {
@@ -142,7 +141,7 @@ test('clear and replacing maps detach outstanding dependency writes', () => {
     const oldMap = atlas.spriteFrames;
     atlas.clear();
     pending[0][0][pending[0][1]] = frame('old-id');
-    expect(atlas.getSpriteFrameCount()).toBe(0);
+    expect(atlas.frames.size).toBe(0);
     atlas.spriteFrames = { icon: frame('new-id') };
     oldMap.hero = frame('late');
     delete oldMap.hero;

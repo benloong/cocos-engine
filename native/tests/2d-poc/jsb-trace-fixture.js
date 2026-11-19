@@ -192,7 +192,7 @@ function installM6JsbTrace (cc, fontPath) {
                 asset.spriteFrames.icon = frame;
                 return asset;
             }, asset => { asset.spriteFrames.icon = otherFrame; }, asset => asset.getSpriteFrame('icon') === otherFrame,
-            asset => asset.getSpriteFrameCount() === 0 && cc.isValid(otherFrame, true)],
+            asset => asset.getSpriteFrameNames().length === 0 && cc.isValid(otherFrame, true)],
         ];
         for (const [name, create, edit, verifyEdit, verifyRelease] of assetCases) {
             const begin = phase => {

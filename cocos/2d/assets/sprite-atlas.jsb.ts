@@ -125,7 +125,6 @@ spriteAtlasProto.getTexture = function (): TextureBase | null {
     this.spriteFrames;
     return nativeGetTexture.call(this);
 };
-// getSpriteFrameCount reads the synchronized native table directly.
 spriteAtlasProto.removeSpriteFrame = function (name: string): void {
     delete this.spriteFrames[name];
 };

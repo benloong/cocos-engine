@@ -40,7 +40,8 @@ const texture = new jsb.Texture2D(); texture.create(4, 4);
 first.setTexture(texture); first._uuid = 'first-id'; second._uuid = 'second-id';
 atlas.spriteFrames = { hero: first, empty: null };
 check(rawGet.call(atlas, 'hero') === first, 'map replacement conversion');
-check(atlas.getSpriteFrameCount() === 2, 'null slot');
+check(!('getSpriteFrameCount' in atlas), 'test count is absent from the binding');
+check(atlas.getSpriteFrameNames().join(',') === 'hero,empty', 'null slot');
 check(rawTexture.call(atlas) === texture, 'first texture');
 atlas.spriteFrames.hero = second;
 check(rawGet.call(atlas, 'hero') === second && rawTexture.call(atlas) === null, 'same-name replacement');
@@ -67,14 +68,14 @@ const data = atlas._serialize();
 check(data.spriteFrames.join(',') === 'hero,first-id,icon,second-id,empty,', 'serialized map');
 const pendingMap = dependencies[0][0];
 atlas.clear(); pendingMap.hero = second;
-check(atlas.getSpriteFrameCount() === 0, 'late callback after clear');
+check(atlas.getSpriteFrameNames().length === 0, 'late callback after clear');
 for (let i = 0; i < 1000; i++) {
     atlas.spriteFrames = { hero: first };
     atlas.addSpriteFrame('alias', first);
     atlas.spriteFrames.hero = null;
     atlas.clear();
 }
-check(atlas.getSpriteFrameCount() === 0, 'replace/clear stress');
+check(atlas.getSpriteFrameNames().length === 0, 'replace/clear stress');
 atlas.spriteFrames = { hero: first };
 Object.freeze(atlas.spriteFrames);
 check(!Reflect.set(atlas.spriteFrames, 'hero', null) && rawGet.call(atlas, 'hero') === first, 'frozen map rollback');
@@ -88,9 +89,9 @@ outstanding.hero = second;
 atlas.spriteFrames = { hero: second };
 atlas.addSpriteFrame('late', second);
 check(atlas.spriteFrames !== outstanding && atlas.getSpriteFrame('hero') === first
-    && rawGet.call(atlas, 'hero') === first && atlas.getSpriteFrameCount() === 1, 'pending atlas reads native state and rejects detached writes');
+    && rawGet.call(atlas, 'hero') === first && atlas.getSpriteFrameNames().join(',') === 'hero', 'pending atlas reads native state and rejects detached writes');
 jsb.CCObject.deferredDestroy();
-check(!isValid(atlas) && atlas.getSpriteFrameCount() === 0 && atlas.getTexture() === null, 'native deferred destruction clears the retained wrapper’s table');
+check(!isValid(atlas) && atlas.getSpriteFrameNames().length === 0 && atlas.getTexture() === null, 'native deferred destruction clears the retained wrapper’s table');
 return 'OK';
 `;
 fs.mkdirSync(path.dirname(output), { recursive: true });

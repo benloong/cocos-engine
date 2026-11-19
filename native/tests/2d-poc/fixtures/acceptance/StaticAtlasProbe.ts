@@ -232,7 +232,7 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
                 || right.offset.x !== 1 || right.offset.y !== -1) {
                 throw new Error('Static atlas frame dependencies or packed metadata were not restored');
             }
-            if (sys.isNative && (atlas as SpriteAtlas & { getSpriteFrameCount(): number }).getSpriteFrameCount() !== 2) {
+            if (sys.isNative && (atlas as SpriteAtlas & { getSpriteFrameNames(): string[] }).getSpriteFrameNames().length !== 2) {
                 throw new Error('Native atlas table missed deserialized frames');
             }
             if (sys.isNative && !stress && cycle === 1) verifyNativeAssetPrototypes(texture as Texture2D);
@@ -294,8 +294,8 @@ export async function verifyStaticAtlas (parent: Node, layer: number, target: Re
         if (keys.some(uuid => assetManager.assets.has(uuid))) throw new Error('Static atlas dependencies remained in the asset cache after release');
         if (sys.isNative && atlas && previousMap) {
             previousMap.late = null;
-            const nativeAtlas = atlas as SpriteAtlas & { getSpriteFrameCount(): number };
-            if (isValid(atlas) || nativeAtlas.getSpriteFrameCount() !== 0
+            const nativeAtlas = atlas as SpriteAtlas & { getSpriteFrameNames(): string[] };
+            if (isValid(atlas) || nativeAtlas.getSpriteFrameNames().length !== 0
                 || atlas.getSpriteFrames().length !== 0 || atlas.getTexture() !== null) {
                 throw new Error('Released static atlas still owns frames with its wrapper retained');
             }
