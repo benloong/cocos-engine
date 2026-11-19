@@ -46,6 +46,11 @@ jobs:
         ./native/tests/2d-poc/run-m6-richtext-parser-parity.ps1
         ./native/tests/2d-poc/run-m6-richtext-layout-parity.ps1
         ./native/tests/2d-poc/run-m6-graphics-geometry-parity.ps1
+    - name: Compare bitmap font layout and radial Sprite geometry with Web
+      shell: pwsh
+      run: |
+        ./native/tests/2d-poc/run-m6-bitmap-layout-parity.ps1
+        ./native/tests/2d-poc/run-m6-radial-parity.ps1
     - name: Verify RichText shell and native Node initialization
       run: node node_modules/jest/bin/jest.js --silent --runInBand --runTestsByPath tests/ui/native-2d-m6-richtext-shell.test.ts tests/scene-graph/native-node-constructor.test.ts tests/ui/richtext.test.ts
     - name: Verify font assets and nullable deserialization in both implementations

@@ -169,6 +169,7 @@
   - Label 的序列化访问器及字体、材质、CHAR 引用桥接在 TS；排版、几何、字形栅格化与上传由原生 Label 完成。RichText 在 TS 保存序列化数据和触摸监听，命中后先保存原生返回的回调名与参数，再遍历命中段与组件派发事件；解析、排版和命中测试由原生执行。两壳的逐帧渲染方法和渲染缓冲分配已纳入静态检查，33 项通过。Web RichText 和两个原生壳的 3 组 Jest 共 15 项通过。调用与配置证据见[组件](./native-2d-m6-jsb-lifecycle.json)、[资产](./native-2d-m6-jsb-assets.json)。本项覆盖薄壳约束，独立的组件行为与字体视觉门禁继续验收。
 - [x] 17 个迁移或保留类的 2D 运行时导入闭包已接入薄壳检查和现有 native-ts-build 测试。Windows Debug 部署包逐块匹配 SHA256，78 个 2D 模块中 55 个产生代码，Web Sprite、Label assembler 和 Graphics WebGL 实现均为 0 字节。公共 utils 入口仍导出 html-text-parser（13308 字节）和 text-utils（13330 字节），17 类的 2D 内部依赖链均未导入它们。部署 cc.js 为 `4702081743c4e25996b2815a2ba2266a510c68133e2e2ef260ca03e921b226d5`。源码检查 13 项与审计测试 6 项通过。闭包边界外的回流、实际每帧调用与完整 CI 仍待验证。
 - [ ] 扩展现有 `check-thin-shell.js` 等检查，覆盖全部迁移类和间接热路径；CI 执行 Web TS/Jest、native TS、native 构建与组件/场景回归。
+  - native-ts-build 的 PR 检查已接入位图字体布局和径向 Sprite 的 C++/Web assembler 对照。本机运行同一对入口，2327 个布局和 3024 个几何用例通过；远程 CI 结果及 Windows 完整应用矩阵另行验收。
 - [ ] 按组件/模块演练回退，验证 override、依赖资产、材质与旧场景可用；回退后记录行为与性能。
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
 
