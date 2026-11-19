@@ -2062,6 +2062,23 @@ void testUIOpacity() {
 
     opacity.setEnabled(true);
     checkNear(node._getLocalOpacity(), 128.F / 255.F, "UIOpacity enable reapplies");
+    cc::Node next("next-opacity-host");
+    opacity.setNode(&next);
+    checkNear(node._getLocalOpacity(), 1.F, "moving UIOpacity restores its previous host");
+    checkNear(next._getLocalOpacity(), 128.F / 255.F, "moving UIOpacity applies to its new host");
+    opacity.detach();
+    checkNear(next._getLocalOpacity(), 1.F, "detaching UIOpacity restores its host");
+    {
+        cc::UIOpacity temporary(&next);
+        temporary.setOpacity(64.F);
+    }
+    checkNear(next._getLocalOpacity(), 1.F, "destroying an attached UIOpacity restores its host");
+    check(!next.getUIComponent(cc::UIOpacity::TYPE_ID), "destroying UIOpacity clears the borrowed slot");
+    {
+        cc::Node temporaryHost("short-lived-opacity-host");
+        opacity.setNode(&temporaryHost);
+    }
+    check(!opacity.getNode(), "destroying the host clears the surviving UIOpacity link");
 }
 
 void testJsBindings(se::ScriptEngine *scriptEngine) {

@@ -39,6 +39,8 @@ public:
 
     UIOpacity() = default;
     explicit UIOpacity(Node *node);
+    ~UIOpacity() override;
+    void setNode(Node *node) override;
 
     uint32_t getTypeId() const override { return TYPE_ID; }
 
@@ -49,7 +51,6 @@ public:
 
     void onEnable() override;
     void onDisable() override;
-    void onDetach() override;
 
 private:
     void applyToNode();

@@ -32,6 +32,16 @@ UIOpacity::UIOpacity(Node *node) {
     setNode(node);
 }
 
+UIOpacity::~UIOpacity() {
+    setNode(nullptr);
+}
+
+void UIOpacity::setNode(Node *node) {
+    if (_node == node) return;
+    if (_node) _node->_setLocalOpacity(1.F);
+    Component::setNode(node);
+}
+
 void UIOpacity::setOpacity(float opacity) {
     if (opacity < 0.F) {
         opacity = 0.F;
@@ -50,12 +60,6 @@ void UIOpacity::onEnable() {
 }
 
 void UIOpacity::onDisable() {
-    if (_node != nullptr) {
-        _node->_setLocalOpacity(1.F);
-    }
-}
-
-void UIOpacity::onDetach() {
     if (_node != nullptr) {
         _node->_setLocalOpacity(1.F);
     }
