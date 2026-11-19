@@ -27,8 +27,6 @@
 #include "2d/framework/UIComponentType.h"
 
 #include <string>
-#include <unordered_map>
-#include <vector>
 
 #include "2d/components/Sprite.h"
 #include "2d/assets/BitmapFont.h"
@@ -94,12 +92,6 @@ public:
     float getAtlasY() const { return _lastAtlasY; }
     float getAtlasWidth() const { return _lastAtlasWidth; }
     float getAtlasHeight() const { return _lastAtlasHeight; }
-    void setBitmapAtlas(SpriteFrame *atlas, float lineHeight);
-    void clearBitmapFont();
-    void clearGlyphs();
-    void addGlyph(int32_t code, float u, float v, float w, float h, float offsetX, float offsetY, float xAdvance);
-    void clearKerning();
-    void addKerning(int32_t left, int32_t right, float amount);
     void setEnableOutline(bool enable);
     void setOutlineColor(const Color &color);
     void setOutlineWidth(float width);
@@ -202,7 +194,6 @@ private:
     float _lastAtlasWidth{0.0F};
     float _lastAtlasHeight{0.0F};
 
-    using Glyph = BitmapFontGlyph;
     IntrusivePtr<FontAsset> _fontAsset;
     BitmapFontAsset *_bitmapFont{nullptr}; // owned by _fontAsset
     uint32_t _fontAssetRevision{0};
@@ -216,9 +207,6 @@ private:
     uint32_t _bitmapHeightSeen{0};
     int32_t _bitmapFormatSeen{-1};
     float _bitmapLineHeight{0.0F};
-    std::vector<Glyph> _glyphs;
-    std::unordered_map<int32_t, size_t> _glyphMap;
-    std::unordered_map<uint64_t, float> _kerning;
 
     IntrusivePtr<Texture2D> _texture;
     IntrusivePtr<Texture2D> _ttfTexture;

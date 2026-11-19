@@ -261,7 +261,6 @@ void Label::setFontAsset(FontAsset *font) {
     _fontAsset = font;
     if (font) _fontChanged = font->on<FontAsset::FontChanged>([this](FontAsset *) { markRenderDirty(); });
     _fontAssetRevision = font ? font->getRevision() : 0;
-    _glyphs.clear(); _glyphMap.clear(); _kerning.clear();
     applyFontAsset();
 }
 void Label::syncFontAsset() {
@@ -416,47 +415,6 @@ void Label::setShadowOffset(float x, float y) {
     _shadowOffsetY = y;
     markRenderDirty();
 }
-void Label::setBitmapAtlas(SpriteFrame *atlas, float lineHeight) {
-    if (_fontAsset) setFontAsset(nullptr);
-    bindBitmapAtlas(atlas);
-    _bitmapLineHeight = lineHeight;
-    markRenderDirty();
-}
-
-void Label::clearBitmapFont() {
-    if (_bitmapFont) setFontAsset(nullptr);
-    bindBitmapAtlas(nullptr);
-    _bitmapLineHeight = 0.0F;
-    _kerning.clear();
-    updateFont();
-    clearRenderedData();
-    _glyphs.clear();
-    _glyphMap.clear();
-    markRenderDirty();
-}
-
-void Label::clearKerning() {
-    _kerning.clear();
-    markRenderDirty();
-}
-
-void Label::addKerning(int32_t left, int32_t right, float amount) {
-    _kerning[(static_cast<uint64_t>(static_cast<uint32_t>(left)) << 32U) | static_cast<uint32_t>(right)] = amount;
-    markRenderDirty();
-}
-
-void Label::clearGlyphs() {
-    _glyphs.clear();
-    _glyphMap.clear();
-    markRenderDirty();
-}
-
-void Label::addGlyph(int32_t code, float u, float v, float w, float h, float offsetX, float offsetY, float xAdvance) {
-    _glyphMap[code] = _glyphs.size();
-    _glyphs.push_back(Glyph{code, u, v, w, h, offsetX, offsetY, xAdvance});
-    markRenderDirty();
-}
-
 void Label::setCacheMode(int32_t mode) {
     if (_cacheMode == mode) { return; }
     if (_cacheMode == 2) {
@@ -643,14 +601,14 @@ void Label::syncBitmapAtlas() {
     }
 }
 void Label::rebuildBitmapTexture() {
-    const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
-    const auto &glyphMap = _bitmapFont ? _bitmapFont->getGlyphMap() : _glyphMap;
-    const auto &kerningMap = _bitmapFont ? _bitmapFont->getKerningMap() : _kerning;
+    const auto &glyphs = _bitmapFont->getGlyphs();
+    const auto &glyphMap = _bitmapFont->getGlyphMap();
+    const auto &kerningMap = _bitmapFont->getKerningMap();
     auto *texture = _bitmapAtlas->getTexture();
     if (!texture || !texture->getGFXTexture() || !texture->getWidth() || !texture->getHeight()) { clearRenderedData(); return; }
     BitmapLayoutOptions options;
     if (_transform) { options.width = _transform->getContentSize().x; options.height = _transform->getContentSize().y; }
-    options.fontSize = _fontSize; options.sourceFontSize = _bitmapFont ? _bitmapLineHeight : (_bitmapLineHeight > 0 ? _bitmapLineHeight : _fontSize);
+    options.fontSize = _fontSize; options.sourceFontSize = _bitmapLineHeight;
     options.lineHeight = _lineHeight; options.spacing = _spacingX; options.overflow = _overflow;
     options.horizontal = _hAlign; options.vertical = _vAlign; options.wrap = _wrap;
     std::vector<int32_t> text;
@@ -824,9 +782,8 @@ float Label::shrinkFontSize(float width, float height) const {
 void Label::rebuildTexture() {
     clearRenderDirty();
     _actualFontSize = _fontSize;
-    if (_bitmapFont || (_bitmapAtlas != nullptr && !_glyphs.empty())) {
-        const auto &glyphs = _bitmapFont ? _bitmapFont->getGlyphs() : _glyphs;
-        if (_bitmapAtlas && !glyphs.empty()) rebuildBitmapTexture(); else clearRenderedData();
+    if (_bitmapFont) {
+        if (_bitmapAtlas && !_bitmapFont->getGlyphs().empty()) rebuildBitmapTexture(); else clearRenderedData();
         return;
     }
     _renderer.setColor(Color(255, 255, 255, _color.a));

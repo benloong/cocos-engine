@@ -515,8 +515,11 @@ void testFrameConsumers() {
     label.setNode(&labelNode);
     label.setUITransform(&labelTransform);
     label.setMaterial(material);
-    label.setBitmapAtlas(frame, 2);
-    label.addGlyph(65, 0, 0, 2, 2, 0, 0, 2);
+    cc::IntrusivePtr<cc::BitmapFontAsset> font(new cc::BitmapFontAsset());
+    font->setFontSize(2);
+    check(font->setConfigJson(R"({"fontSize":2,"fontDefDictionary":{"65":{"rect":{"x":0,"y":0,"width":2,"height":2},"xOffset":0,"yOffset":0,"xAdvance":2}}})"), "BMFont frame consumer loads glyph configuration");
+    font->setSpriteFrame(frame);
+    label.setFontAsset(font);
     label.setString("A");
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(submittedTexturePixels(label.getRenderEntity()) == pixels, "BMFont consumes native SpriteFrame texture");

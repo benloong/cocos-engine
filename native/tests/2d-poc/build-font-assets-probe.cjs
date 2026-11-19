@@ -61,6 +61,9 @@ const font = new LabelAtlas();
 check(font instanceof BitmapFont && font instanceof Font, 'native font hierarchy');
 check(initialized === 4, 'Asset constructor hook: ' + initialized);
 const outlinedLabel = new n2d.Label();
+for (const method of ['setBitmapAtlas', 'clearBitmapFont', 'clearGlyphs', 'addGlyph', 'clearKerning', 'addKerning']) {
+    check(!(method in outlinedLabel), 'unexpected direct bitmap table binding: ' + method);
+}
 const outlinedNode = new jsb.Node('font-stroke-probe'), outlinedTransform = new n2d.UITransform(outlinedNode);
 outlinedLabel.setNode(outlinedNode); outlinedLabel.setUITransform(outlinedTransform);
 outlinedLabel.setFontAsset(ttf); outlinedLabel.setFontSize(24); outlinedLabel.setLineHeight(30); outlinedLabel.setString('Atlas 123');
