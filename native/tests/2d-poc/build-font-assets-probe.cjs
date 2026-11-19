@@ -68,10 +68,10 @@ const outlinedNode = new jsb.Node('font-stroke-probe'), outlinedTransform = new 
 outlinedLabel.setNode(outlinedNode);
 outlinedLabel.setFontAsset(ttf); outlinedLabel.setFontSize(24); outlinedLabel.setLineHeight(30); outlinedLabel.setString('Atlas 123');
 outlinedLabel.updateRenderData();
-check(Math.abs(outlinedLabel.getContentWidth() - 95.9765625) < 0.001, 'Label consumes the registered custom font: ' + outlinedLabel.getContentWidth());
+check(Math.abs(outlinedTransform.getWidth() - 95.9765625) < 0.001, 'Label consumes the registered custom font: ' + outlinedTransform.getWidth());
 const baseCoverage = readLabelCoverage(outlinedLabel);
 outlinedLabel.setEnableOutline(true); outlinedLabel.setOutlineWidth(3); outlinedLabel.updateRenderData();
-check(Math.abs(outlinedLabel.getContentWidth() - 101.9765625) < 0.001 && readLabelCoverage(outlinedLabel) > baseCoverage,
+check(Math.abs(outlinedTransform.getWidth() - 101.9765625) < 0.001 && readLabelCoverage(outlinedLabel) > baseCoverage,
     'Label renders a real native text stroke with preserved layout margins');
 outlinedLabel.setFontAsset(null);
 outlinedLabel.setNode(null);
@@ -115,11 +115,11 @@ for (let iteration = 0; iteration < 1000; iteration++) {
     sharedLabel.setFontAsset(second); sharedLabel.setFontSize(24); sharedLabel.setString('Atlas 123');
     first.destroy();
     sharedLabel.updateRenderData();
-    check(second.getFontDataSize() > 1000 && Math.abs(sharedLabel.getContentWidth() - 95.9765625) < 0.001 && readLabelCoverage(sharedLabel) > 0,
+    check(second.getFontDataSize() > 1000 && Math.abs(sharedLabel.getTTFContentWidth() - 95.9765625) < 0.001 && readLabelCoverage(sharedLabel) > 0,
         'destroying one actual JSB font preserves shared alias and native Label selection');
     second.clearNativeData(); second._nativeAsset = 'M6SharedFont_LABEL';
     sharedLabel.updateRenderData();
-    check(second.getFontDataSize() > 1000 && Math.abs(sharedLabel.getContentWidth() - 95.9765625) < 0.001 && readLabelCoverage(sharedLabel) > 0,
+    check(second.getFontDataSize() > 1000 && Math.abs(sharedLabel.getTTFContentWidth() - 95.9765625) < 0.001 && readLabelCoverage(sharedLabel) > 0,
         'cleared actual JSB font can reload its alias and source');
     second.destroy(); sharedLabel.setFontAsset(null);
     sharedLabel.setNode(null);

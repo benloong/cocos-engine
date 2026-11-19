@@ -94,7 +94,7 @@ async function checkRichTextEvents (parent: Node): Promise<string[]> {
         const child = host.children[0];
         const backend = (rich as any)._native;
         if (backend) {
-            const local = new Vec3(backend.getSegmentLabel(0).getContentWidth() / 2, 0, 0);
+            const local = new Vec3(backend.getSegmentLabel(0).getTTFContentWidth() / 2, 0, 0);
             const p = Vec3.transformMat4(new Vec3(), local, child.worldMatrix);
             return new Vec2(p.x, p.y);
         }
@@ -238,7 +238,7 @@ export class RichTextProbe {
             if (native && nativeLabels.length) {
                 const index = children.findIndex((_, i) => !!backend.getSegmentLabel(i));
                 const label = backend.getSegmentLabel(index);
-                const point = Vec3.transformMat4(new Vec3(), new Vec3(label.getContentWidth() / 2, 0, 0), children[index].worldMatrix);
+                const point = Vec3.transformMat4(new Vec3(), new Vec3(label.getTTFContentWidth() / 2, 0, 0), children[index].worldMatrix);
                 hit = backend.getHitSegments(point.x, point.y).includes(index);
                 miss = backend.getHitSegments(point.x - 1000, point.y - 1000).includes(index);
             } else if (hitSegment) {
@@ -257,7 +257,7 @@ export class RichTextProbe {
                 if (native) {
                     const label = backend.getSegmentLabel(i);
                     return { name: child.name, text: label?.getString() ?? '', x: child.position.x, y: child.position.y,
-                        w: label?.getContentWidth() ?? null, h: label?.getContentHeight() ?? null };
+                        w: label?.getTTFContentWidth() ?? null };
                 }
                 const label = child.getComponent(Label);
                 const t = child.getComponent(UITransform);
@@ -267,7 +267,6 @@ export class RichTextProbe {
                     x: child.position.x,
                     y: child.position.y,
                     w: t?.contentSize.width ?? 0,
-                    h: t?.contentSize.height ?? 0,
                 };
             });
             const result = {

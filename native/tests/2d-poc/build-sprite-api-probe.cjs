@@ -149,7 +149,7 @@ label.onLoad();
 check(label.contentWidth===19.123456789,'Label preserves pre-load contentWidth');
 const labelAssembler=assemblerExports.labelAssembler.getAssembler(label);
 label.string='native adapter';labelAssembler.updateRenderData(label);
-check(label._native.getContentWidth()>0,'native Label assembler builds text');
+check(labelTransform.getWidth()>0,'native Label assembler builds text');
 label.enableWrapText=true;label.fontSize=16;label.lineHeight=20;
 for(const force of [false,true]){
  for(const mode of [1,2,3,0]){

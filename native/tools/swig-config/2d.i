@@ -115,6 +115,8 @@
 %ignore cc::Sprite::setUITransform;
 %ignore cc::Sprite::getUITransform;
 %ignore cc::Label::setUITransform;
+%ignore cc::Label::getContentWidth;
+%ignore cc::Label::getContentHeight;
 %ignore cc::Label::measureUnwrappedText;
 %ignore cc::Graphics::getGeometry;
 %ignore cc::Graphics::setGeometrySource;
