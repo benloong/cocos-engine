@@ -35,6 +35,7 @@
 
 #include "base/Log.h"
 #include "bindings/manual/jsb_scene_manual.h"
+#include "bindings/auto/jsb_2d_auto.h"
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
 #include "scene/DrawBatch2D.h"
@@ -127,6 +128,27 @@ std::vector<uint8_t> submittedTexturePixels(cc::RenderEntity *entity) {
     cc::Root::getInstance()->getDevice()->copyTextureToBuffers(texture, &buffer, &region, 1);
     return rgba;
 }
+
+uint32_t countLabelCoverage(cc::Label &label) {
+    const auto pixels = submittedTexturePixels(label.getRenderEntity());
+    const uint8_t background = label.getCacheMode() == 2 ? 0 : 1;
+    uint32_t covered = 0;
+    for (size_t i = 3; i < pixels.size(); i += 4) {
+        if (pixels[i] > background) ++covered;
+    }
+    return covered;
+}
+
+bool readLabelCoverage(se::State &state) {
+    if (state.args().size() != 1 || !state.args()[0].isObject()) return false;
+    auto *object = state.args()[0].toObject();
+    if (object->_getClass() != __jsb_cc_Label_class) return false;
+    auto *label = static_cast<cc::Label *>(object->getPrivateData());
+    if (!label) return false;
+    state.rval().setUint32(countLabelCoverage(*label));
+    return true;
+}
+SE_BIND_FUNC(readLabelCoverage)
 
 void checkNear(float actual, float expected, const char *message) {
     if (std::fabs(actual - expected) > 1e-4F) {
@@ -1047,9 +1069,9 @@ void testLabelRasterMapping() {
     std::vector<uint8_t> actualAlpha;
     for (size_t i = 3; i < rgba.size(); i += 4) actualAlpha.push_back(rgba[i]);
     check(actualAlpha == expectedAlpha, "TTF raster follows Web alphabetic baseline and edge prefill");
-    check(label.getOpaquePixels() == covered, "TTF glyph coverage excludes invisible edge prefill");
+    check(countLabelCoverage(label) == covered, "TTF glyph coverage excludes invisible edge prefill");
     label.setString(" "); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getOpaquePixels() == 0, "whitespace prefill is not counted as visible text");
+    check(countLabelCoverage(label) == 0, "whitespace prefill is not counted as visible text");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     label.setOverflow(1);
     label.setEnableWrapText(false);
@@ -1063,7 +1085,7 @@ void testLabelRasterMapping() {
         ui.setContentSize(i % 2 ? 96 : 120, 40);
         label.setString(" ");
         label.updateRenderData(true);
-        redrawMatches &= label.getOpaquePixels() == 0;
+        redrawMatches &= countLabelCoverage(label) == 0;
         ui.setContentSize(96, 40);
         label.setString("Atlas 123");
         label.updateRenderData(true);
@@ -1180,7 +1202,7 @@ void testRichTextRuntime() {
     auto *segmentEntity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(0)->getUserData());
     check(segmentEntity->isEnabled(), "RichText font segment remains eligible for Batcher prepare");
     if (segmentEntity->isEnabled()) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(rich.getSegmentLabel(0)->getOpaquePixels() > 0, "Batcher prepare renders native RichText font segment");
+    check(countLabelCoverage(*rich.getSegmentLabel(0)) > 0, "Batcher prepare renders native RichText font segment");
     check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
     check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
     check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
@@ -1195,7 +1217,7 @@ void testRichTextRuntime() {
     if (rich.getSegmentLabel(0)) {
         const auto measured = rich.getSegmentLabel(0)->measureUnwrappedText("one");
         checkNear(measured.width, rich.getSegmentLabel(0)->getContentWidth(), "RichText measurement agrees with Label output");
-        check(rich.getSegmentLabel(0)->getOpaquePixels() > 0, "RichText text raster is visible");
+        check(countLabelCoverage(*rich.getSegmentLabel(0)) > 0, "RichText text raster is visible");
     }
     check(rich.getSegmentClickHandler(0) == "tap" && rich.getSegmentClickParam(0) == "hello", "native RichText stores click metadata");
     const auto &placement = rich.getLayout().placements[0];
@@ -1378,11 +1400,11 @@ void testGraphicsMeshes() {
         auto first=std::make_unique<cc::Label>();cc::Label second;
         first->setNode(&firstNode);first->setUITransform(&firstUI);second.setNode(&secondNode);second.setUITransform(&secondUI);
         for(auto *label:{first.get(),&second}) { label->setCacheMode(2);label->setFont("14px Arial");label->setFontSize(14);label->setLineHeight(18);label->setString("AB");cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); }
-        check(first->getOpaquePixels()>0 && second.getOpaquePixels()>0,"Two CHAR Labels acquire registry-owned atlas leases");
+        check(countLabelCoverage(*first)>0 && countLabelCoverage(second)>0,"Two CHAR Labels acquire registry-owned atlas leases");
         first.reset();second.setString("BA");cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-        check(second.getOpaquePixels()>0,"Releasing one CHAR Label preserves the other lease");
+        check(countLabelCoverage(second)>0,"Releasing one CHAR Label preserves the other lease");
         for(int i=0;i<1000;++i) { second.setCacheMode(0);second.setCacheMode(2);cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); }
-        check(second.getOpaquePixels()>0,"CHAR cache releases and reacquires the last lease across 1000 switches");
+        check(countLabelCoverage(second)>0,"CHAR cache releases and reacquires the last lease across 1000 switches");
     }
     {
         auto orphan=std::make_unique<cc::Node>("orphan-graphics");
@@ -1879,6 +1901,7 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
     check(register_all_scene(globalObject), "register_all_scene");
     check(register_all_scene_manual(globalObject), "register_all_scene_manual");
     check(register_all_native2d(globalObject), "register_all_native2d");
+    globalObject->defineFunction("readLabelCoverage", _SE(readLabelCoverage));
     check(register_platform_bindings(globalObject), "register_platform_bindings");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     se::Value namespaceValue, loadValue, family;

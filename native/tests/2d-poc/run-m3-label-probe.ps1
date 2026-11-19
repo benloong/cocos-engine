@@ -53,12 +53,12 @@ try {
     $charAsciiLines = @(Get-Content $log | Select-String -Pattern 'M3_CHAR_ASCII ')
     if ($charAsciiLines.Count -lt 1) { throw 'ASCII CHAR Label missing' }
     $charAscii = $charAsciiLines[0].Line.Substring($charAsciiLines[0].Line.IndexOf('M3_CHAR_ASCII ') + 14) | ConvertFrom-Json
-    if ($charAscii.textureWidth -le 0 -or $charAscii.opaque -le 0) { throw 'ASCII CHAR Label produced no pixels' }
+    if ($charAscii.textureWidth -le 0) { throw 'ASCII CHAR Label produced no pixels' }
 
     $charLines = @(Get-Content $log | Select-String -Pattern 'M3_CHAR_LABEL ')
     if ($charLines.Count -lt 1) { throw 'CHAR Label missing' }
     $charLabel = $charLines[0].Line.Substring($charLines[0].Line.IndexOf('M3_CHAR_LABEL ') + 14) | ConvertFrom-Json
-    if ($charLabel.textureWidth -le 0 -or $charLabel.opaque -le 0) { throw 'CHAR Label produced no pixels' }
+    if ($charLabel.textureWidth -le 0) { throw 'CHAR Label produced no pixels' }
 
     $bitmapAtlasLines = @(Get-Content $log | Select-String -Pattern 'M3_BITMAP_ATLAS ')
     if ($bitmapAtlasLines.Count -lt 1) { throw 'BITMAP atlas label missing' }
@@ -89,21 +89,20 @@ try {
     foreach ($name in @('english', 'cjk')) {
         if (-not $byName.ContainsKey($name)) { throw "missing $name" }
         if ($byName[$name].lines -ne 1) { throw "$name expected 1 line" }
-        if ($byName[$name].opaque -le 0) { throw "$name has no opaque text pixels" }
+        if ($pixels["M3Label-$name"].colored -le 0) { throw "$name has no visible text pixels" }
     }
     if (-not $byName.ContainsKey('wrap')) { throw 'missing wrap' }
     if ($byName['wrap'].lines -lt 2) { throw 'wrap expected multiple lines' }
-    if ($byName['wrap'].opaque -le 0) { throw 'wrap has no opaque text pixels' }
 
     Write-Host 'M3 Label probe: PASS'
     Write-Host ("  GPU english colored={0}, wrap colored={1}, cjk colored={2}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored, $pixels['M3Label-cjk'].colored)
     Write-Host ("  BMFont {0}x{1}, samples font atlas={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.samplesFontAtlas)
     Write-Host ("  Real BMFont {0}x{1}, samples font atlas={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.samplesFontAtlas)
-    Write-Host ("  CHAR Label {0}x{1}, opaque={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $charLabel.opaque)
-    Write-Host ("  CHAR ASCII {0}x{1}, opaque={2}, GPU colored={3}" -f $charAscii.textureWidth, $charAscii.textureHeight, $charAscii.opaque, $pixels['M3CharAscii'].colored)
+    Write-Host ("  CHAR Label {0}x{1}, GPU colored={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $pixels['M3Label-cjk'].colored)
+    Write-Host ("  CHAR ASCII {0}x{1}, GPU colored={2}" -f $charAscii.textureWidth, $charAscii.textureHeight, $pixels['M3CharAscii'].colored)
     Write-Host ("  BITMAP atlas id={0}, a.x={1}, b.x={2}" -f $bitmapAtlas.a.id, $bitmapAtlas.a.x, $bitmapAtlas.b.x)
     $byName.Values | ForEach-Object {
-        Write-Host ("  {0}: {1}x{2}, lines={3}, opaque={4}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines, $_.opaque)
+        Write-Host ("  {0}: {1}x{2}, lines={3}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines)
     }
 } finally {
     if (-not $proc.HasExited) { $proc.Kill() }

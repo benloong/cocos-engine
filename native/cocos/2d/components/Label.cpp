@@ -280,7 +280,6 @@ void Label::clearRenderedData() {
     _renderer.clearFrame();
     _renderer.setEnabled(isEnabled());
     _frame = nullptr; _texture = nullptr;
-    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0;
     _lastContentWidth = _lastContentHeight = _lastTextureWidth = _lastTextureHeight = 0;
     _actualFontSize = 0.F;
     _lastLineCount = 0;
@@ -597,7 +596,6 @@ void Label::rebuildLetterTexture() {
     }
 
     ensureRasterTexture(_texture, outWidth, outHeight);
-    _lastPixels = pixels;
     _texture->uploadData(pixels.data());
 
     if (_frame == nullptr) { _frame = new SpriteFrame(); }
@@ -612,13 +610,9 @@ void Label::rebuildLetterTexture() {
     _lastLineCount = static_cast<int32_t>(lines.size());
     _lastContentWidth = contentWidth;
     _lastContentHeight = contentHeight;
-    _lastOpaquePixels = 0U;
-    for (size_t i = 3; i < pixels.size(); i += 4U) {
-        if (pixels[i] > 0U) { ++_lastOpaquePixels; }
-    }
 
     _renderer.setFrame(_frame);
-    applyBitmapAtlas();
+    applyBitmapAtlas(pixels.data());
 }
 void Label::bindBitmapTexture(TextureBase *texture) {
     if (texture == _observedAtlasTexture) return;
@@ -685,20 +679,19 @@ void Label::rebuildBitmapTexture() {
     _lastAtlasX = frame->getRectX(); _lastAtlasY = frame->getRectY();
     _lastAtlasWidth = frame->getRectWidth(); _lastAtlasHeight = frame->getRectHeight();
     _texture = nullptr;
-    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0;
     if (!_frame || _frame == _ttfFrame) _frame = new SpriteFrame();
     _frame->copyFrom(frame);
     _renderer.setColor(_color);
     _renderer.setLabelQuads(_frame, std::move(quads));
 }
-void Label::applyBitmapAtlas() {
-    if (_cacheMode != 1 || _lastPixels.empty() || _lastTextureWidth <= 0.0F || _lastTextureHeight <= 0.0F) {
+void Label::applyBitmapAtlas(const uint8_t *pixels) {
+    if (_cacheMode != 1 || pixels == nullptr || _lastTextureWidth <= 0.0F || _lastTextureHeight <= 0.0F) {
         return;
     }
     Rect region;
     if (!DynamicAtlas::get().add(static_cast<uint32_t>(_lastTextureWidth),
                                  static_cast<uint32_t>(_lastTextureHeight),
-                                 _lastPixels.data(), region)) {
+                                 pixels, region)) {
         return;
     }
     if (_frame == nullptr) { _frame = new SpriteFrame(); }
@@ -1009,14 +1002,7 @@ void Label::rebuildTexture() {
     _frame = _ttfFrame;
     ensureRasterTexture(_texture, textureWidth, textureHeight);
     _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
-    _lastOpaquePixels = 0U;
     const uint8_t *bytes = pixels.getBytes();
-    for (uint32_t i = 0; i + 3U < pixels.getSize(); i += 4U) {
-        if (bytes[i + 3U] > 1U) {
-            ++_lastOpaquePixels;
-        }
-    }
-    _lastPixels.assign(bytes, bytes + pixels.getSize());
     _texture->uploadData(bytes);
 
     _lastTextureWidth = static_cast<float>(textureWidth);
@@ -1032,7 +1018,7 @@ void Label::rebuildTexture() {
     _frame->setRotated(false);
 
     _renderer.setFrame(_frame);
-    applyBitmapAtlas();
+    applyBitmapAtlas(bytes);
 }
 
 } // namespace cc

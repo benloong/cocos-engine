@@ -163,7 +163,7 @@ for(const force of [false,true]){
 }
 label._color.r=96;labelAssembler.updateColor(label);
 labelAssembler.updateRenderData(label);
-check(label._native.getOpaquePixels()>0,'native Label still renders after assembler color update');
+check(readLabelCoverage(label._native)>0,'native Label still renders after assembler color update');
 label.sharedMaterials=[custom,normal];
 const labelInstances=label.materials;
 check(labelInstances.length===2&&labelInstances[0].parent===custom&&labelInstances[1].owner===label,'Label actual shell native material slots');

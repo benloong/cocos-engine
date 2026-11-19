@@ -122,7 +122,6 @@ public:
     float getContentHeight() const { return _lastContentHeight; }
     float getTextureHeight() const { return _lastTextureHeight; }
     int32_t getLineCount() const { return _lastLineCount; }
-    uint32_t getOpaquePixels() const { return _lastOpaquePixels; }
     RenderEntity *getRenderEntity() const override { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
 
     void setColor(const Color &color);
@@ -157,7 +156,7 @@ private:
     void rebuildBitmapTexture();
     void syncBitmapAtlas();
     void rebuildLetterTexture();
-    void applyBitmapAtlas();
+    void applyBitmapAtlas(const uint8_t *pixels);
 
     Sprite _renderer;
     bool _syncingContentSize{false};
@@ -197,8 +196,6 @@ private:
     float _lastContentWidth{0.0F};
     double _ttfContentWidth{0.0};
     float _lastContentHeight{0.0F};
-    uint32_t _lastOpaquePixels{0};
-    std::vector<uint8_t> _lastPixels;
     uint64_t _lastAtlasTextureId{0};
     float _lastAtlasX{0.0F};
     float _lastAtlasY{0.0F};

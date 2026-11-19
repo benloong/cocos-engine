@@ -195,7 +195,6 @@ export class LabelSpike {
                 textureWidth: native?.getTextureWidth?.(),
                 textureHeight: native?.getTextureHeight?.(),
                 lines: native?.getLineCount?.(),
-                opaque: native?.getOpaquePixels?.(),
             })}`);
         }, 700);
         const bitmapNodeA = new Node('M3BitmapAtlasA');
@@ -284,7 +283,6 @@ export class LabelSpike {
                         textureWidth: nativeLabel.getTextureWidth(),
                         textureHeight: nativeLabel.getTextureHeight(),
                         lines: nativeLabel.getLineCount(),
-                        opaque: nativeLabel.getOpaquePixels(),
                     })}`);
                 }
                 console.log(`M3_SHELL_LABEL ${JSON.stringify({
@@ -292,7 +290,6 @@ export class LabelSpike {
                         textureWidth: nativeLabel.getTextureWidth(),
                         textureHeight: nativeLabel.getTextureHeight(),
                         lines: nativeLabel.getLineCount(),
-                        opaque: nativeLabel.getOpaquePixels(),
                     })}`);
                 }
                 const size = node.getComponent(UITransform)?.contentSize;

@@ -40,3 +40,8 @@ Label 通过 IntrusivePtr 持有字体、源帧及渲染帧；Sprite 拥有复�
 ## 2026-11-19 移除 BMFont 诊断光栅器
 
 移除原生 Label 中专供诊断的 BMFont CPU 光栅器、失效标记和 `getBitmapDiagnosticBuildCount()`。C++ 回归读取提交的图集纹理，验证共享帧替换、字形四边形以及资源释放后的空提交。M3 场景逐个隔离字体节点，在渲染完成后读取目标像素；Windows Debug/Release 的合成位图字体各有 960 个着色像素，旧资源 OpenSans-Bold 各有 3134 个。两种配置都验证了绘制使用字体自己的图集，70,000 个字形分为 5 块，M3 Label 与 M5 RichText 验收通过。每种配置的 12 张图集状态图和 80 张布局图与本轮 Web 逐字节相等。
+## 2026-11-19 TTF 与 CHAR 覆盖像素回读
+
+引擎的 Label 已删除 `getOpaquePixels()`、重绘后的逐像素计数，以及专为后续图集提交暂存的整张 RGBA 副本。BITMAP 缓存将当前栅格缓冲直接交给图集；图集在调用返回前复制所需像素。独立测试程序和整应用均从提交的纹理回读，覆盖空格背景、下划线、描边和 RichText 内部段。
+
+Windows Debug 和 Release 的布局、字体资产、Sprite API 三组 JSB 探针以及 M3 Label、M5 RichText 全部通过。每种配置的 92 张位图字体图像与同轮 Web 逐字节相等。两种配置的 RichText 均有 12/12 项布局一致、9/12 项通过严格像素阈值；粗体、描边、嵌套样式的差异与清理前一致。
