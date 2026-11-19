@@ -25,7 +25,7 @@ try {
         if((Test-Path -LiteralPath $manifest) -and (Get-Item -LiteralPath $manifest).LastWriteTimeUtc -gt $started) {
             $result=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
             if($result.backend -ne 'native') { throw 'Invalid native backend' }
-            if($Mode -eq 'graphics' -and ($result.captures.Count -ne 80 -or $result.hits.Count -ne 22 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000)) { throw 'Invalid native capture manifest' }
+            if($Mode -eq 'graphics' -and ($result.captures.Count -ne 82 -or $result.hits.Count -ne 22 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000)) { throw 'Invalid native capture manifest' }
             if($Mode -eq 'richtext') {
                 $lifecycle = $result.text.lifecycle
                 if($result.captures.Count -ne 12 -or $result.text.loaded -ne $true -or $result.text.released -ne $true -or $lifecycle.cycles -ne 1000 -or $lifecycle.cacheHits -ne 1000 -or $lifecycle.bytesPerLoad -ne 223404 -or $lifecycle.assignmentFailureRolledBack -ne $true -or $lifecycle.retrySucceeded -ne $true -or $lifecycle.missingRejected -ne $true -or $lifecycle.deferredDestroyFinished -ne $true) { throw 'Invalid native RichText manifest' }

@@ -465,10 +465,13 @@ void testFrameConsumers() {
 
     cc::Node maskNode("frame-mask");
     cc::UITransform maskTransform(&maskNode);
+    cc::BuiltinResMgr::getInstance()->addAsset("ui-alpha-test-material", material);
+    const auto initialRefs = material->getRefCount();
     cc::Mask mask;
     mask.setNode(&maskNode);
     mask.setUITransform(&maskTransform);
-    mask.setMaterial(material);
+    mask.setAlphaThreshold(0.25F);
+    check(material->getRefCount() == initialRefs, "geometry Mask does not retain the Sprite stencil material");
     mask.setType(3);
     mask.setSpriteFrame(frame);
     auto *entity = static_cast<cc::RenderEntity *>(maskNode.getUserData());
@@ -476,6 +479,25 @@ void testFrameConsumers() {
     if (entity) {
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(entity->getStaticDrawInfoSize() == 1, "Mask consumes native SpriteFrame");
+        auto *instance = entity->getStaticRenderDrawInfo(0)->getMaterial();
+        check(instance && instance->getParent() == material, "Sprite stencil draws with an instance of the native alpha-test material");
+        const auto activeRefs = material->getRefCount();
+        {
+            cc::Node peerNode("peer-mask");
+            cc::UITransform peerTransform(&peerNode);
+            cc::Mask peer;
+            peer.setType(3);
+            peer.setNode(&peerNode);
+            peer.setUITransform(&peerTransform);
+            peer.setSpriteFrame(frame);
+            peer.setAlphaThreshold(0.75F);
+            cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+            auto *peerEntity = peer.getRenderEntity();
+            auto *peerInstance = peerEntity->getStaticDrawInfoSize() ? peerEntity->getStaticRenderDrawInfo(0)->getMaterial() : nullptr;
+            check(peerInstance && peerInstance != instance && peerInstance->getParent() == material,
+                  "two Sprite stencils isolate per-Mask uniforms and share their parent");
+        }
+        check(material->getRefCount() == activeRefs, "destroying a peer Mask releases its stencil material references");
         frame->setRectWidth(1);
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         checkNear(entity->getStaticRenderDrawInfo(0)->getVDataBuffer()[12], 0.5F, "Mask sees in-place frame rect mutation");

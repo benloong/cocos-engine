@@ -116,7 +116,8 @@
 - [x] Windows Debug、Release 与 Web 实际 GPU 验收通过。覆盖 9 种 lineCap/lineJoin 组合（miterLimit=2）、roundRect、ellipse、arc、曲线、填充、描边和 clear 后重绘。夹具逐项检查必需的非空图像，三端全部 74 组捕获无通道差异。[候选指纹与逐图结果](./native-2d-m6-windows-web-gpu-results.json)。
 - [ ] 对比逐 API JSB 与命令批量提交的 CPU、调用次数、分配和绘制成本；用数据选择接口。JS 允许纯命令收集，不允许路径算法/三角化。
 - [x] Windows Debug/Release、Web 验证四类 Mask、反转、嵌套和 stencil 恢复、阈值、尺寸与资产切换。椭圆从 4 段改为 64 段，着色面积从 8000 增至 12560；混合场景从不透明帧换为左右透明度不同的帧，着色面积从 12400 降至 6400，后继 Graphics 保持黄色。[逐图结果](./native-2d-m6-windows-web-gpu-results.json)
-- [ ] 复核 Graphics/Mask 的材质选择归属、stencil material 和所有权；补 draw call、合批、纹理上传量与性能报告。
+- [x] Graphics 在原生端选择内置绘制材质。Mask 在挂接 Sprite stencil 时选择内置 alpha-test 材质，各实例持有独立阈值。两个 Mask 共享一张纹理并交换阈值，Windows Debug/Release 与 Web 逐像素一致，销毁其中一个 Mask 后材质引用数恢复。[GPU 对照](./native-2d-m6-windows-web-gpu-results.json)
+- [ ] 补齐 Graphics/Mask 的 draw call、合批、纹理上传量与性能报告。
 
 交付：M4.3 补充报告、像素对照与性能结论。兼容光栅化基础通过不等于本项完成。
 

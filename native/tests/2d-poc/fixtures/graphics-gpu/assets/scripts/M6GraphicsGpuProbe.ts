@@ -113,6 +113,24 @@ export class M6GraphicsGpuProbe extends Component {
                 return () => { setFrame(alphaFrame); };
             } },
         ];
+        cases.push({ name: 'mask-independent-thresholds', draw: root => {
+            const makeStencil = (x: number, threshold: number): Mask => {
+                const { n, m } = mask(root, 80, 80, Mask.Type.SPRITE_STENCIL);
+                n.setPosition(x, 0);
+                if (sys.isNative) (m as any).spriteFrame = alphaFrame;
+                else {
+                    const sprite = m.subComp as Sprite;
+                    sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+                    sprite.spriteFrame = alphaFrame;
+                }
+                m.alphaThreshold = threshold;
+                red(n);
+                return m;
+            };
+            const left = makeStencil(-64, .2);
+            const right = makeStencil(64, .8);
+            return () => { left.alphaThreshold = .8; right.alphaThreshold = .2; };
+        } });
         for (const threshold of [.2, .5, .8]) cases.push({ name: `mask-alpha-${threshold}`, draw: root => {
             const { n, m } = mask(root, 120, 100, 3);
             if (sys.isNative) (m as any).spriteFrame = alphaFrame;

@@ -8,6 +8,7 @@
 #include "2d/assets/SpriteFrame.h"
 #include "2d/framework/UITransform.h"
 #include "core/assets/Material.h"
+#include "core/builtin/BuiltinResMgr.h"
 
 namespace cc {
 Mask::Mask() { _sprite.setSizeMode(0); }
@@ -16,10 +17,16 @@ RenderEntity *Mask::getRenderEntity() const { return _type == 3 ? _sprite.getRen
 void Mask::attach() {
     _sprite.setNode(nullptr);
     _graphics.setNode(nullptr);
-    if (_type == 3)
+    if (_type == 3) {
+        if (_node && !_material) {
+            auto *resources = BuiltinResMgr::getInstance();
+            auto *stencil = resources ? resources->get<Material>("ui-alpha-test-material") : nullptr;
+            if (stencil) setMaterial(stencil);
+        }
         _sprite.setNode(_node);
-    else
+    } else {
         _graphics.setNode(_node);
+    }
     auto *entity = getRenderEntity();
     entity->setMaskMode(_inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK);
     entity->setPriority(_priority);

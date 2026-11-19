@@ -1,5 +1,5 @@
 {
-  "snapshot": "e2c8f9091d62452ce8e405edb4cf4ebc591b8c4efc4ca3807ea65c8c661b350b",
+  "snapshot": "ea8addbd45157bb25fd7c05632611f2e0f2490c4592434448a7e19a41eb77d6f",
   "width": 256,
   "height": 256,
   "environment": {
@@ -683,6 +683,26 @@
       "webSha256": "8ccab45440c18795c0de0fdf33d07d99db7ef317bc3b2034407d19139b3fdfe6"
     },
     {
+      "name": "mask-independent-thresholds",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "5117cfd953f24ea777a0ea2636aa6d94764cd4ef574007563c0a23495d60c0c7",
+      "webSha256": "5117cfd953f24ea777a0ea2636aa6d94764cd4ef574007563c0a23495d60c0c7"
+    },
+    {
+      "name": "mask-independent-thresholds-updated",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 6400,
+      "pass": true,
+      "nativeSha256": "4024f7419d2cab0ebafb27f15674ef09e244b594791c0bdc68cf4868d17ab4b9",
+      "webSha256": "4024f7419d2cab0ebafb27f15674ef09e244b594791c0bdc68cf4868d17ab4b9"
+    },
+    {
       "name": "mask-alpha-0.2",
       "max": 0,
       "pixels": 0,
@@ -1081,6 +1101,20 @@
       "pass": true,
       "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
       "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    }
+  ],
+  "windows": [
+    {
+      "configuration": "Debug",
+      "executableSha256": "5bea3089b091bfe6e6838f820736398aa483a25c02048c785a5cfbd1b65c289c",
+      "manifestSha256": "d533dfe5383c97384819018d9e7431d5be029ee0d5e7b34d053d71f907e2e720",
+      "exactImages": 82
+    },
+    {
+      "configuration": "Release",
+      "executableSha256": "efbf480e8893bc94d879d0f8de7c146aec5be2fe93302d918c9cf15f5add8367",
+      "manifestSha256": "d533dfe5383c97384819018d9e7431d5be029ee0d5e7b34d053d71f907e2e720",
+      "exactImages": 82
     }
   ]
 }

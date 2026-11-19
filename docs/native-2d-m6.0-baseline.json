@@ -87,7 +87,7 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "8525aa6ebb14cf5c31b7b6bf98f5d6e322bf5b2444311c079e6b45f2bb200b3d"
+      "sha256": "516e4cb464cfdd69a11f22cfb946079acbce619d5a8919608abc37f398647baa"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
@@ -456,7 +456,6 @@
       "cocos/2d/utils/text-utils.ts"
     ],
     "boundaries": [
-      "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
       "cocos/asset/asset-manager/downloader.ts",
       "cocos/asset/asset-manager/factory.ts",
       "cocos/asset/asset-manager/index.ts",
@@ -8608,7 +8607,6 @@
           "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
-          "cocos/asset/asset-manager/builtin-res-mgr.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
@@ -15185,12 +15183,10 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "2744be4f9e29520f3679e7f2d701a982a060c46409a619a33f8260ad0ae8c297",
-      "printedCodeLines": 149,
+      "sha256": "79d3400b119f79243601f0533c4b1f467125d2f2bd23dbae4bd368be6df1faf9",
+      "printedCodeLines": 143,
       "runtimeImports": [
         "cc.decorator",
-        "../../asset/asset-manager/builtin-res-mgr",
-        "../../asset/assets",
         "../assets/sprite-frame",
         "../../scene-graph/component",
         "../../scene-graph/node",
@@ -15202,91 +15198,87 @@
       "nativeCalls": [
         {
           "expression": "this._native.setNode",
-          "line": 77
+          "line": 75
         },
         {
           "expression": "this._native.setUITransform",
-          "line": 80
-        },
-        {
-          "expression": "this._native.setMaterial",
-          "line": 84
+          "line": 78
         },
         {
           "expression": "this._native.setType",
-          "line": 86
+          "line": 80
         },
         {
           "expression": "this._native.setSegments",
-          "line": 87
+          "line": 81
         },
         {
           "expression": "this._native.setRadius",
-          "line": 88
+          "line": 82
         },
         {
           "expression": "this._native.setInverted",
-          "line": 92
+          "line": 86
         },
         {
           "expression": "this._native.setAlphaThreshold",
-          "line": 93
+          "line": 87
         },
         {
           "expression": "this._native.setSpriteFrame",
-          "line": 95
+          "line": 89
         },
         {
           "expression": "this._native.setPriority",
-          "line": 97
+          "line": 91
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 98
+          "line": 92
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 102
+          "line": 96
         },
         {
           "expression": "this._native?.setEnabled",
+          "line": 100
+        },
+        {
+          "expression": "this._native.setEnabled",
           "line": 106
         },
         {
-          "expression": "this._native.setEnabled",
-          "line": 112
-        },
-        {
           "expression": "this._native.setNode",
-          "line": 113
+          "line": 107
         },
         {
           "expression": "this._native?.setType",
-          "line": 127
+          "line": 121
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 137
+          "line": 131
         },
         {
           "expression": "this._native?.setSegments",
-          "line": 146
+          "line": 140
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 180
+          "line": 174
         },
         {
           "expression": "this._native?.setRadius",
-          "line": 189
+          "line": 183
         },
         {
           "expression": "this._native?.isHitWorldPointXY",
-          "line": 193
+          "line": 187
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 202
+          "line": 196
         }
       ],
       "allocations": [],

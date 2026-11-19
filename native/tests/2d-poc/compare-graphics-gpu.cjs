@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==80) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==82) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==80) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==82) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -43,6 +43,7 @@ const sanity={
     'mask-ellipse-segments':8000,'mask-ellipse-segments-updated':12560,
     'mask-mixed-frame':12400,'mask-mixed-frame-updated':6400,
     'mask-alpha-0.2':12000,'mask-alpha-0.5':6000,'mask-alpha-0.8':0,
+    'mask-independent-thresholds':6400,'mask-independent-thresholds-updated':6400,
 };
 const geometryCases = ['fill-rect', 'curves', 'ellipse', 'arc', 'round-rect', 'clear-and-replace'];
 for (let cap = 0; cap < 3; cap++) {
@@ -65,6 +66,12 @@ for(const name of a.captures) {
             if (rgb.some((channel, i) => expected[offset + i] !== channel)) {
                 throw new Error('Mixed scene sample mismatch at x=' + x + ' in ' + name);
             }
+        }
+    }
+    if (name.startsWith('mask-independent-thresholds')) {
+        for (const x of [-84, -44, 44, 84]) {
+            const red = (x < 0) !== name.endsWith('-updated') ? 255 : 0;
+            if (expected[(128 * 256 + 128 + x) * 4] !== red) throw new Error('Stencil threshold mismatch: ' + name + ' at x=' + x);
         }
     }
     let max=0,channels=0,pixels=0,colored=0;

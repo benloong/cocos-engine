@@ -23,8 +23,6 @@
 */
 
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
-import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
-import { Material } from '../../asset/assets';
 import { SpriteFrame } from '../assets/sprite-frame';
 import { Component } from '../../scene-graph/component';
 import { Node } from '../../scene-graph/node';
@@ -78,10 +76,6 @@ export class Mask extends Component {
         const transform = this.node.getComponent(UITransform);
         if (transform && (transform as any)._native) {
             this._native.setUITransform((transform as any)._native);
-        }
-        const material = builtinResMgr.get<Material>('ui-alpha-test-material');
-        if (material) {
-            this._native.setMaterial(material);
         }
         this._native.setType(this._type);
         this._native.setSegments(this._segments);
