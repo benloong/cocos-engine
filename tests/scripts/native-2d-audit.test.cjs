@@ -35,11 +35,14 @@ test('type-only imports are excluded while side effects and runtime reexports ar
         import type {A} from './type-a';
         import {type B} from './type-b';
         export type {C} from './type-c';
+        export {type F} from './type-f';
+        import {} from './empty-side-effect';
         import './side-effect';
         import {type D, E} from './mixed';
         export {X} from './runtime';
+        async function load() { return import('./lazy'); }
     `,ts.ScriptTarget.Latest,true);
-    assert.deepEqual(runtimeImports(source), ['./side-effect','./mixed','./runtime']);
+    assert.deepEqual(runtimeImports(source), ['./empty-side-effect','./side-effect','./mixed','./runtime','./lazy']);
 });
 
 test('frame and buffer findings use syntax rather than comments or strings', () => {

@@ -71,43 +71,43 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
-      "sha256": "891bb6e45c657e58be101548edca4e508673a3d8af8d705f4c7425d4ec265e28"
+      "sha256": "1c72f77f086811967fb34522cd0ece3b47520a76755de2cabcb7b3227a319cc1"
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "e4b26a7a1815ac3a944c34a8af7ba1d36244dd6425a1d3e6dca00fbbda8522c5"
+      "sha256": "cadebc94f1d6717b379cafbc72e1de5c71be4bef75ab3246bb1f5e59ed57366d"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "1acdb52bb14131e9d2b441c2f24142e4dda0c85e9088c8d685e3acc09fc52565"
+      "sha256": "7a38961a21fa27740f328261fc4d04d5f3fbfbeb19fa552c75b8d6a7c4882051"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "436760453a05652a901cfe3a159532cffe056aa91b58605c2d50499491364751"
+      "sha256": "f1ea9ffc7fca0583e2935db061b238243a988ea746a230cd13ed45934a4ead8e"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "bc6eafeaa824288699f0a9a03cd2ae941548c7fefb074b66ea2baf9cb1fe6482"
+      "sha256": "8525aa6ebb14cf5c31b7b6bf98f5d6e322bf5b2444311c079e6b45f2bb200b3d"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "33566ee81bc4ac30ef6ca76104cde1cc983ca574a3a0644722bae9634f329cda"
+      "sha256": "9cf5177e5c6f1d9bbbeb6cde6c930fb6344668e540eb393d905507d2fec82cf0"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
-      "sha256": "c3d0e230a4c3bba109575cfc4d444e2e9b15e7b7f9a4493c93240a3a1e8b64c5"
+      "sha256": "c83b098fcc5c07665c0a139231f0872af2422fc32c44d2f531f0c3c4740a0785"
     },
     {
       "file": "native/cocos/2d/components/RichText.h",
-      "sha256": "76c65c53437384b4ea534de5eb360d753d380728454b6eab83b8f558ab5c0ee1"
+      "sha256": "b1df19b656e83c9eac95ac9c2f7c8084b14b15bbf4b018fa22af3adea41f75f5"
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "fd369d7e7b3a0c1ae24ad52de072a1279528793922e4aae31e558eb6bcd43a99"
+      "sha256": "4f14873fdfbdae8309857583bafbc6fd990af0e6d9921b786bee173572ed8601"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "87d2bce44b994a1a37c452735315444ad55c00470831b155c29cb27e56ade91e"
+      "sha256": "37275b1aa7ccd30b0fc77ac477152b1ba59a9a984326a6d02c569fd091d12077"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -179,11 +179,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "8502452d272d69a609ca9bd16ef36f308fc26236a031e907ebe2c740f91d8c26"
+      "sha256": "a6c8ed5d54d34c6ffad476b2b19d753cd283f7482675b2d4377e971aeb9fef40"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
-      "sha256": "477f82afb1c7526902a8fd1002d6638d786c49dada5cebedb6e18566033e2de4"
+      "sha256": "42993d94cffb7bcbe8992796e6fc844edf0f264ac016fd2921a6cd536659f927"
     },
     {
       "file": "native/cocos/2d/renderer/BitmapFontLayout.h",
@@ -207,15 +207,15 @@
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.cpp",
-      "sha256": "7c077a92158a897255a0e676079fd7d1d491b12c074111c9c7fe23f9b6f813e1"
+      "sha256": "1a27ccecfc07f415c07ae9747236adb02d4384e84ea1d613d406e0946e936603"
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.h",
-      "sha256": "c0a4c7431972cf73d78f674a1ce55e1abc15d159a3dc2883b7504722545a22f4"
+      "sha256": "cfba9370de0c3a2ade604f4e958474e3d2b45af5777ba37c5d71c4760b55a6bb"
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.cpp",
-      "sha256": "1806ba49fd428faa3557ce300432bf896fff854cd1224ad6444c9e92915fad0d"
+      "sha256": "de6af5bb9b2c234ae83b7d4310eeb0d2311cfe2c4a0c84ec14a439c60296a50f"
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.h",
@@ -16307,7 +16307,6 @@
         "./assets",
         "./framework",
         "./components",
-        "./renderer/render-data",
         "./renderer/base",
         "./renderer/deprecated",
         "./utils"

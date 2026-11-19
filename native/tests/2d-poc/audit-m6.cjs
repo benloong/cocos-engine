@@ -60,14 +60,25 @@ function declaration(file, text, name) {
     };
 }
 function runtimeImports(source) {
-    return source.statements.flatMap(node => {
+    const imports = source.statements.flatMap(node => {
         if (!ts.isImportDeclaration(node) && !ts.isExportDeclaration(node)) return [];
         if (!node.moduleSpecifier || !ts.isStringLiteral(node.moduleSpecifier) || node.isTypeOnly || node.importClause?.isTypeOnly) return [];
         const clause = node.importClause;
         if (clause && !clause.name && clause.namedBindings && ts.isNamedImports(clause.namedBindings)
-            && clause.namedBindings.elements.every(e => e.isTypeOnly)) return [];
+            && clause.namedBindings.elements.length && clause.namedBindings.elements.every(e => e.isTypeOnly)) return [];
+        if (node.exportClause && ts.isNamedExports(node.exportClause) && node.exportClause.elements.length
+            && node.exportClause.elements.every(e => e.isTypeOnly)) return [];
         return [node.moduleSpecifier.text];
     });
+    function visit(node) {
+        if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword
+            && node.arguments.length && ts.isStringLiteralLike(node.arguments[0])) {
+            imports.push(node.arguments[0].text);
+        }
+        ts.forEachChild(node, visit);
+    }
+    visit(source);
+    return [...new Set(imports)];
 }
 function inspect(file, text) {
     const source = parse(file,text);
