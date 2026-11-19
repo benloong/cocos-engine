@@ -113,6 +113,7 @@
 %ignore cc::RichText::getLayout;
 %ignore cc::Sprite::prepare;
 %ignore cc::Sprite::setUITransform;
+%ignore cc::Sprite::getUITransform;
 %ignore cc::Label::setUITransform;
 %ignore cc::Label::measureUnwrappedText;
 %ignore cc::Graphics::getGeometry;

@@ -64,11 +64,12 @@ const atlas=new jsb.SpriteAtlas(), frame=new jsb.SpriteFrame(), texture=new jsb.
 texture.create(4,2);frame.resetWithTexture(texture);atlas.addSpriteFrame('icon',frame);
 rich.imageAtlas=atlas;rich.string='<img src="icon"/>tail';
 check(native.getSegmentCount()===2&&native.getSegmentSprite(0).getType()===1,'actual shell native image and label');
-const heldImage=native.getSegmentSprite(0), heldTransform=heldImage.getUITransform(), heldLabel=native.getSegmentLabel(1);
+const heldImage=native.getSegmentSprite(0), heldLabel=native.getSegmentLabel(1);
+check(!('getUITransform' in heldImage),'Sprite JSB hides its borrowed layout');
 const independentLabel=new n2d.Label();
 atlas.removeSpriteFrame('icon');rendererManager.updateAllDirtyRenderers();
 check(native.getSegmentCount()===1&&native.getSegmentLabel(0),'late atlas removal updates native segment graph');
-check(__isObjectValid(heldImage)&&__isObjectValid(heldTransform)&&__isObjectValid(heldLabel),'pooled and active wrappers stay valid');
+check(__isObjectValid(heldImage)&&__isObjectValid(heldLabel),'pooled and active wrappers stay valid');
 atlas.addSpriteFrame('icon',frame);
 rich.string='<img src="icon" width=4 height=2 offset=0,-5 click="tap" param="first"/><img src="icon" width=4 height=2 offset=-4,-5 click="tap" param="second"/>';
 check(native.getHitSegments(1,1).length===2,'overlapping native clickable segments');
@@ -99,7 +100,7 @@ for(const action of ['disable','touch-off','destroy']) {
  check(first===1&&second===0&&event.propagationStopped&&!callback,'callback lifetime stops current and future dispatch: '+action);
 }
 check(rich._native===null&&native.getSegmentCount()===0,'destroy releases listener and all native segments');
-check(!__isObjectValid(heldLabel)&&!__isObjectValid(heldImage)&&!__isObjectValid(heldTransform),'destroy invalidates borrowed segment wrappers');
+check(!__isObjectValid(heldLabel)&&!__isObjectValid(heldImage),'destroy invalidates borrowed segment wrappers');
 check([...images,...labels].every(wrapper=>!__isObjectValid(wrapper)),'destroy invalidates all remaining pooled wrappers');
 check(__isObjectValid(independentLabel),'destroy preserves independent Label');
 const nextLabel=new n2d.Label();

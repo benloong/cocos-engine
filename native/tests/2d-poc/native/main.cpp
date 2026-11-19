@@ -1357,6 +1357,10 @@ void testRichTextRuntime() {
     check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
     check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
     check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
+    se::Value imageLayout;
+    auto *transform = rich.getSegmentSprite(1)->getUITransform();
+    const bool hasWrapper = transform && nativevalue_to_se(transform, imageLayout, nullptr) && imageLayout.isObject();
+    check(hasWrapper, "wrap the image segment layout");
     auto *first = rich.getSegmentNode(0);
     rich.getSegmentLabel(0)->setString("idle marker");
     for (int i = 0; i < 1000; ++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
@@ -1381,6 +1385,7 @@ void testRichTextRuntime() {
     check(rich.getSegmentCount() == 3 && rich.getSegmentLabel(0)->getString() == "one", "disabled RichText defers layout");
     rich.setEnabled(true);
     check(rich.getSegmentCount() == 1 && rich.getSegmentNode(0) == first && rich.getSegmentLabel(0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
+    if (hasWrapper) check(imageLayout.toObject()->getPrivateData() == transform, "pooled image layout wrapper stays valid");
     check(frame->getRefCount() == frameRefs, "recycled image releases frame and texture references");
     rich.setFontAsset(nullptr); check(font->getRefCount() == fontRefs, "RichText clears font references including measurement cache");
     rich.setString("<img src=\"icon\"/>");
@@ -1394,6 +1399,7 @@ void testRichTextRuntime() {
     check(rich.getSegmentCount() == 0, "RichText follows atlas table revision");
     rich.setString("final"); rich.setNode(nullptr); rich.setImageAtlas(nullptr);
     check(node.getChildren().empty() && rich.getSegmentCount() == 0, "RichText detach releases active and pooled native children");
+    if (hasWrapper) check(!imageLayout.toObject()->getPrivateData(), "detaching RichText invalidates the borrowed layout wrapper");
     cc::Node lateNode("rich-text-late-transform"); cc::RichText late;
     late.setString("late"); late.setNode(&lateNode);
     check(late.getSegmentCount() == 0, "RichText tolerates pending required transform");
@@ -2915,7 +2921,6 @@ int main(int argc, char **argv) {
         testGraphicsMeshes();
         testMaskHitLifecycle();
         testRootRegistrationLifecycle();
-        testRichTextRuntime();
         testSpriteApiAndMaterials();
         std::printf("sprite atlas done\n");
         std::fflush(stdout);
@@ -2930,6 +2935,7 @@ int main(int argc, char **argv) {
         std::fflush(stdout);
         try {
             testJsBindings(scriptEngine);
+            testRichTextRuntime();
         } catch (const std::exception &error) {
             ++gFailures;
             std::printf("FAIL: JSB binding test exception: %s\n", error.what());
