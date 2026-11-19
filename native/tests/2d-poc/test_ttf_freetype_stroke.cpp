@@ -45,11 +45,11 @@ struct Writer {
         auto &w = *static_cast<Writer *>(context); w.out << 'C'; w.point(p); w.point(q); w.point(r); w.out << '\n'; return 0;
     }
 };
-void widen(FT_Library library, FT_Stroker stroker, const std::filesystem::path &path) {
+void widen(FT_Library library, FT_Stroker stroker, const std::filesystem::path &path, bool bold, FT_StrokerBorder border) {
     std::ifstream input(path);
     auto output = path;
     output.replace_extension(); // N.center
-    output.replace_extension(".freetype.path");
+    output.replace_extension(bold ? (border == FT_STROKER_BORDER_LEFT ? ".left.path" : ".right.path") : ".freetype.path");
     std::ofstream out(output);
     out << std::setprecision(12);
     Writer writer{out};
@@ -60,7 +60,8 @@ void widen(FT_Library library, FT_Stroker stroker, const std::filesystem::path &
         !(input >> op >> writer.a >> writer.b >> writer.c >> writer.d >> writer.x >> writer.y >> thickness) || op != 'T' ||
         !(input >> op >> rule) || op != 'F') throw std::runtime_error("Invalid path header");
     out << "S " << width << ' ' << height << "\nF 1\n";
-    FT_Stroker_Set(stroker, std::lround(thickness * UNITS / 2), FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 1L << 16);
+    FT_Stroker_Set(stroker, std::lround(thickness * UNITS / 2), FT_STROKER_LINECAP_ROUND,
+                   bold ? FT_STROKER_LINEJOIN_MITER_FIXED : FT_STROKER_LINEJOIN_ROUND, (bold ? 4L : 1L) << 16);
     while (input >> op) {
         if (op == 'E') {
             int closed{};
@@ -78,11 +79,12 @@ void widen(FT_Library library, FT_Stroker stroker, const std::filesystem::path &
         } else throw std::runtime_error("Unexpected outline command");
     }
     FT_UInt points{}, contours{};
-    check(FT_Stroker_GetCounts(stroker, &points, &contours));
+    check(bold ? FT_Stroker_GetBorderCounts(stroker, border, &points, &contours) : FT_Stroker_GetCounts(stroker, &points, &contours));
     FT_Outline outline{};
     check(FT_Outline_New(library, points, contours, &outline));
     outline.n_points = outline.n_contours = 0;
-    FT_Stroker_Export(stroker, &outline);
+    if (bold) FT_Stroker_ExportBorder(stroker, border, &outline);
+    else FT_Stroker_Export(stroker, &outline);
     const FT_Outline_Funcs functions{Writer::move, Writer::line, Writer::quad, Writer::cubic, 0, 0};
     const auto error = FT_Outline_Decompose(&outline, &functions, &writer);
     FT_Outline_Done(library, &outline);
@@ -93,7 +95,8 @@ void widen(FT_Library library, FT_Stroker stroker, const std::filesystem::path &
 } // namespace
 
 int main(int argc, char **argv) {
-    if (argc != 2) return 2;
+    const bool bold = argc == 3 && std::string(argv[2]) == "--bold";
+    if (argc != 2 && !bold) return 2;
     FT_Library library{};
     FT_Stroker stroker{};
     int result = 0;
@@ -101,7 +104,9 @@ int main(int argc, char **argv) {
         check(FT_Init_FreeType(&library));
         check(FT_Stroker_New(library, &stroker));
         for (const auto &entry : std::filesystem::directory_iterator(argv[1])) {
-            if (entry.path().stem().extension() == ".center" && entry.path().extension() == ".path") widen(library, stroker, entry.path());
+            if (entry.path().stem().extension() != ".center" || entry.path().extension() != ".path") continue;
+            widen(library, stroker, entry.path(), bold, FT_STROKER_BORDER_LEFT);
+            if (bold) widen(library, stroker, entry.path(), true, FT_STROKER_BORDER_RIGHT);
         }
     } catch (const std::exception &error) {
         std::cerr << error.what() << '\n'; result = 1;

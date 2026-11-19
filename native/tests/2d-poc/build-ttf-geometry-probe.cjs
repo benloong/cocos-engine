@@ -64,13 +64,19 @@ if (designUnits) {
         const auto stem = std::to_string(++sequence);
         const char *replay = std::getenv("CC2D_STROKE_REPLAY");
         if (!replay) {
-            if (lineWidth <= 0 || join != DirectWriteFont::StrokeJoin::ROUND) return E_INVALIDARG;
+            if (lineWidth <= 0 ? !bold : join != DirectWriteFont::StrokeJoin::ROUND) return E_INVALIDARG;
             hr = stroke_replay::capture(stem + ".lines.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, 0, columns * scale, rows);
             if (SUCCEEDED(hr)) hr = stroke_replay::capture(stem + ".widened.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, 0, columns * scale, rows);
             if (SUCCEEDED(hr)) hr = stroke_replay::capture(stem + ".center.path", strokePath, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, thickness, columns * scale, rows);
             if (FAILED(hr)) return hr;
         }
         hr = shape->Simplify`);
+    replaceOnce('std::vector<uint8_t> pixels(', `if (!replay && lineWidth == 0) {
+            hr = stroke_replay::capture(stem + ".snapped.path", sampled.get(), D2D1::Matrix3x2F::Identity(),
+                D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, 0, columns * scale, rows);
+            if (FAILED(hr)) return hr;
+        }
+        std::vector<uint8_t> pixels(`);
     replaceOnce('mask.bounds = {std::max<LONG>', `if (replay && FAILED(stroke_replay::replaceAlpha(stem + "." + replay + ".alpha", pixels))) return E_FAIL;
         mask.bounds = {std::max<LONG>`);
 } else {

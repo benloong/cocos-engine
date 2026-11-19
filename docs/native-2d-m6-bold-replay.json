@@ -1,0 +1,201 @@
+{
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+  "rendererSha256": "656c29a2e9fbc4eb490ab505e50942aea2093271ec3c86eaaf4602d2ef8734d6",
+  "text": "Atlas 123",
+  "mode": "synthetic-bold-fill",
+  "tolerance": 1,
+  "glyphMasks": 32,
+  "debugReleaseIdentical": true,
+  "rectangleControls": [],
+  "rows": [
+    {
+      "size": 12,
+      "style": 1,
+      "webHash": "5790b2d2df99ec46d32d02749fb032374ac3e3c7217f0ba9c636036558e8d46c",
+      "stages": {
+        "production": {
+          "hash": "b29e8a1851c7b885b4090bc827fc61c9377c24e2130b7ad5488654fd90d1c484",
+          "pixels": 200,
+          "max": 42
+        },
+        "boundaryNative": {
+          "hash": "b29e8a1851c7b885b4090bc827fc61c9377c24e2130b7ad5488654fd90d1c484",
+          "pixels": 200,
+          "max": 42
+        },
+        "snapped": {
+          "hash": "7584164f52fe48f63ded494212a8d0b988da4e6bc89c8ca22408a8f2057524ea",
+          "pixels": 175,
+          "max": 42
+        },
+        "lines": {
+          "hash": "abae88af32bcef817d4afacd5ddaf1db2eee4b22282d3913ffd2115ac688d509",
+          "pixels": 171,
+          "max": 42
+        },
+        "widened": {
+          "hash": "abae88af32bcef817d4afacd5ddaf1db2eee4b22282d3913ffd2115ac688d509",
+          "pixels": 171,
+          "max": 42
+        },
+        "boundary": {
+          "hash": "abae88af32bcef817d4afacd5ddaf1db2eee4b22282d3913ffd2115ac688d509",
+          "pixels": 171,
+          "max": 42
+        },
+        "left": {
+          "hash": "c46bc110e5087936371a8c3e9b25f1dedf227f2854759fbe80523b01392477e7",
+          "pixels": 340,
+          "max": 214
+        },
+        "right": {
+          "hash": "24b83afb7c9575116ac9b68af342f287cf3f7aaeac59a4d9bf48ea509bf9a1be",
+          "pixels": 146,
+          "max": 36
+        }
+      }
+    },
+    {
+      "size": 24,
+      "style": 1,
+      "webHash": "9acbd0fb919ebf77052a62b9635b83253385b1c64af09fd07ddb544aa2159329",
+      "stages": {
+        "production": {
+          "hash": "b4cb2c5ffa3747bd388cc3e7129e32a2c9a1f255aa4302b1eba2bed268f33239",
+          "pixels": 391,
+          "max": 35
+        },
+        "boundaryNative": {
+          "hash": "b4cb2c5ffa3747bd388cc3e7129e32a2c9a1f255aa4302b1eba2bed268f33239",
+          "pixels": 391,
+          "max": 35
+        },
+        "snapped": {
+          "hash": "677bd8643d2e3c1caf73ecd9ec34f78a1ad27682b2ed7c59799c6505a97df11a",
+          "pixels": 350,
+          "max": 36
+        },
+        "lines": {
+          "hash": "5281deb5998577bec4f756df5a980102030f243d7174f76ca7575f43d66a35eb",
+          "pixels": 324,
+          "max": 36
+        },
+        "widened": {
+          "hash": "5281deb5998577bec4f756df5a980102030f243d7174f76ca7575f43d66a35eb",
+          "pixels": 324,
+          "max": 36
+        },
+        "boundary": {
+          "hash": "5281deb5998577bec4f756df5a980102030f243d7174f76ca7575f43d66a35eb",
+          "pixels": 324,
+          "max": 36
+        },
+        "left": {
+          "hash": "00d41d3c9ec2530f72245eb9d6492297357b7b1f34c81e2e4219f01d16b30148",
+          "pixels": 1006,
+          "max": 254
+        },
+        "right": {
+          "hash": "fea13129754900db875cf8becd03e4b948b51aa09208ee2f2c1e4abd1508a605",
+          "pixels": 330,
+          "max": 73
+        }
+      }
+    },
+    {
+      "size": 36,
+      "style": 1,
+      "webHash": "727f4249ca2c66b10a93c235e8e0359e0dd8ca801cb1aabaae72fa3d93ea374c",
+      "stages": {
+        "production": {
+          "hash": "57364310abadc4089c17eb81d0e24f8f4347331a6be7ec1866e21e2c03342cec",
+          "pixels": 625,
+          "max": 57
+        },
+        "boundaryNative": {
+          "hash": "57364310abadc4089c17eb81d0e24f8f4347331a6be7ec1866e21e2c03342cec",
+          "pixels": 625,
+          "max": 57
+        },
+        "snapped": {
+          "hash": "21da9d57c4e6d436ddc475ff18e881b3519afee7f9b83422b0bfed767bffbf30",
+          "pixels": 547,
+          "max": 57
+        },
+        "lines": {
+          "hash": "fea421fd7c9ac3152606b1012fc426c757502d17b314f1a01a9d38bd76fca7f4",
+          "pixels": 535,
+          "max": 57
+        },
+        "widened": {
+          "hash": "fea421fd7c9ac3152606b1012fc426c757502d17b314f1a01a9d38bd76fca7f4",
+          "pixels": 535,
+          "max": 57
+        },
+        "boundary": {
+          "hash": "fea421fd7c9ac3152606b1012fc426c757502d17b314f1a01a9d38bd76fca7f4",
+          "pixels": 535,
+          "max": 57
+        },
+        "left": {
+          "hash": "2326ce9fae0b1387726bfa94e356af62b0a9f745f2f9c90bbab224d3593d9697",
+          "pixels": 1847,
+          "max": 254
+        },
+        "right": {
+          "hash": "26effd9d50ced6abb18a6cd2bad97b64d6b7eab15e2df4cedfb4ea87f1e2bd6a",
+          "pixels": 435,
+          "max": 90
+        }
+      }
+    },
+    {
+      "size": 48,
+      "style": 1,
+      "webHash": "92162da5288493b0f348c92eb043f664a1a85b7488d27575f9c2d12ac175a6a9",
+      "stages": {
+        "production": {
+          "hash": "675c4a7376a3ac2594c1119eb9512f7a9cf3ad5971baa1cb2e3f4dad10b2f38b",
+          "pixels": 736,
+          "max": 50
+        },
+        "boundaryNative": {
+          "hash": "675c4a7376a3ac2594c1119eb9512f7a9cf3ad5971baa1cb2e3f4dad10b2f38b",
+          "pixels": 736,
+          "max": 50
+        },
+        "snapped": {
+          "hash": "6424ca716d5b6210ddf0abd716eeb154a4691c857ea3246c867411cce078c849",
+          "pixels": 629,
+          "max": 50
+        },
+        "lines": {
+          "hash": "45320e520c84205f3812cef76aeda2b63689dc7d423eb5091311895077d00322",
+          "pixels": 623,
+          "max": 50
+        },
+        "widened": {
+          "hash": "45320e520c84205f3812cef76aeda2b63689dc7d423eb5091311895077d00322",
+          "pixels": 623,
+          "max": 50
+        },
+        "boundary": {
+          "hash": "45320e520c84205f3812cef76aeda2b63689dc7d423eb5091311895077d00322",
+          "pixels": 623,
+          "max": 50
+        },
+        "left": {
+          "hash": "49ecd4ba8e769555df33fa008be17ef1eb8e68d4ee9f42826d05e75890ea8a46",
+          "pixels": 2839,
+          "max": 254
+        },
+        "right": {
+          "hash": "3772ca19d26e44d167cc9af0591289e863ff9e2776feb97efe37231cdb37f465",
+          "pixels": 488,
+          "max": 68
+        }
+      }
+    }
+  ]
+}

@@ -30,3 +30,18 @@ COM lease 先于其他成员声明，使其后创建的 COM 对象先释放。Co
 数值见 [结果](./native-2d-m6.2-ttf-bold-results.json)，日志位于忽略目录 build/ttf-outline-*。复现沿用 [原始画布](./native-2d-m6.2-ttf-preblend.md#复现与限制)、[诊断目标](./native-2d-m6.2-ttf-outline-probe.md#所有权与复现) 及 [完整应用入口](./native-2d-m6.2-richtext-gpu.md#复现)。应用脚本经 CLI 重建，对应平台完整特性引擎 JS 复用此前验证产物；本轮没有 JS 生产源码变化。
 
 真正描边、粗体/嵌套边缘、灰色 RGB 取整、RTL/sideways、其他字体/平台、性能和完整资源生命周期门禁仍未关闭。未重跑 Graphics 74 例。工作区既有 SpriteFrame.native 改动未纳入提交，此快照不作为 M6 最终候选版本。
+
+## 同一字形轮廓的分阶段对照
+
+用 Thonburi 的绿色合成粗体绘制 `Atlas 123`，分别捕获 12、24、36、48 px 的 32 个可见字形。将量化后的线段和量化前的扩张轮廓分别交给 Chrome 填充，再将掩码送回同一个 Windows 滤波及合成流程。参照图像来自 Chrome 的 `fillText`。表中每格为 alpha 差值大于 1 的像素数及最大差值。
+
+| 掩码来源 | 12 px | 24 px | 36 px | 48 px |
+|---|---:|---:|---:|---:|
+| Windows 生产路径 | 200 / 42 | 391 / 35 | 625 / 57 | 736 / 50 |
+| Chrome 填充已量化线段 | 175 / 42 | 350 / 36 | 547 / 57 | 629 / 50 |
+| Chrome 填充量化前的扩张轮廓 | 171 / 42 | 324 / 36 | 535 / 57 | 623 / 50 |
+| FreeType 右侧边界，Chrome 填充 | 146 / 36 | 330 / 73 | 435 / 90 | 488 / 68 |
+
+对该字体，FreeType 使用同一笔宽及 miter limit 4 生成左右边界，左侧边界在四个字号的最大差值为 214–254。右侧边界在 36 px 将超差像素从 625 减为 435，但最大差值从 57 增至 90。两种 Windows 配置的各阶段图像哈希完全一致。量化前的线段、扩张区域和去除内部边界的轮廓在 Chrome 中得到相同图像。剩余偏差不能仅归因于 Windows 的最终掩码采样，现有证据也不足以在生产路径采用 FreeType 替换。
+
+用 `node native/tests/2d-poc/compare-ttf-stroke-replay.cjs --bold` 复现。先在 Windows 两个配置中构建与描边重放相同的三个测试目标。[逐图哈希、字体与渲染器版本](./native-2d-m6-bold-replay.json)

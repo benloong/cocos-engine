@@ -8,10 +8,13 @@ const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 
 const build = path.join(__dirname, 'build');
-const work = fs.mkdtempSync(path.join(build, 'stroke-replay-'));
+const boldFill = process.argv[2] === '--bold';
+const mode = boldFill ? 'fill' : 'stroke-round';
+const glyphMasks = boldFill ? 32 : 96;
+const work = fs.mkdtempSync(path.join(build, boldFill ? 'bold-replay-' : 'stroke-replay-'));
 const font = path.resolve(__dirname, '../../../tests/fixtures/Thonburi.ttf');
 const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const stages = ['lines', 'widened', 'center', 'quadraticCenter', 'boundary', 'freetype'];
+const stages = boldFill ? ['snapped', 'lines', 'widened', 'boundary', 'left', 'right'] : ['lines', 'widened', 'center', 'quadraticCenter', 'boundary', 'freetype'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
 // Runs inside Chrome. The mask is four samples wide per destination pixel.
@@ -107,7 +110,7 @@ function capture(config, binary, output, cwd, stage, variant) {
     if (variant) env[variant] = '1';
     if (stage) env.CC2D_STROKE_REPLAY = stage;
     execFileSync(path.join(__dirname, 'native', config, binary + '.exe'),
-        [font, output, 'green', 'latin', 'stroke-round'], { cwd, env, stdio: 'inherit' });
+        [font, output, 'green', 'latin', mode], { cwd, env, stdio: 'inherit' });
 }
 
 function compareAlpha(actual, reference) {
@@ -145,8 +148,8 @@ function quadraticPath(text) {
     }).join('\n');
 }
 
-execFileSync(process.execPath, [path.join(__dirname, 'run-ttf-raster-web.cjs'), 'green', 'latin', 'stroke-round'], { stdio: 'inherit' });
-const web = path.join(build, 'ttf-raster-web-green-latin-stroke-round');
+execFileSync(process.execPath, [path.join(__dirname, 'run-ttf-raster-web.cjs'), 'green', 'latin', mode], { stdio: 'inherit' });
+const web = path.join(build, 'ttf-raster-web-green-latin' + (boldFill ? '' : '-stroke-round'));
 const metadata = JSON.parse(fs.readFileSync(path.join(web, 'metadata.json')));
 assert.equal(metadata.cases.length, 12);
 assert.equal(metadata.text, 'Atlas 123');
@@ -165,14 +168,16 @@ for (const config of configs) {
     for (const file of fs.readdirSync(outlined).filter(file => file.endsWith('.widened.path'))) {
         fs.copyFileSync(path.join(outlined, file), path.join(dir, file.replace('.widened.path', '.boundary.path')));
     }
-    capture(config, 'cc2d_ttf_stroke_replay', path.join(dir, 'directStroke'), dir, undefined, 'CC2D_DIRECT_STROKE');
-    for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.center.path'))) {
-        const source = fs.readFileSync(path.join(dir, file), 'utf8');
-        fs.writeFileSync(path.join(dir, file.replace('.center.path', '.quadraticCenter.path')), quadraticPath(source));
+    if (!boldFill) {
+        capture(config, 'cc2d_ttf_stroke_replay', path.join(dir, 'directStroke'), dir, undefined, 'CC2D_DIRECT_STROKE');
+        for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.center.path'))) {
+            const source = fs.readFileSync(path.join(dir, file), 'utf8');
+            fs.writeFileSync(path.join(dir, file.replace('.center.path', '.quadraticCenter.path')), quadraticPath(source));
+        }
     }
-    execFileSync(path.join(__dirname, 'native', config, 'cc2d_ttf_stroke_freetype.exe'), [dir], { stdio: 'inherit' });
-    const paths = fs.readdirSync(dir).filter(name => name.endsWith('.path')).sort();
-    assert.equal(paths.length, 96 * stages.length);
+    execFileSync(path.join(__dirname, 'native', config, 'cc2d_ttf_stroke_freetype.exe'), boldFill ? [dir, '--bold'] : [dir], { stdio: 'inherit' });
+    const paths = fs.readdirSync(dir).filter(name => stages.some(stage => name.endsWith('.' + stage + '.path'))).sort();
+    for (const stage of stages) assert.equal(paths.filter(name => name.endsWith('.' + stage + '.path')).length, glyphMasks);
     const inputs = paths.map(name => [name, fs.readFileSync(path.join(dir, name), 'utf8')]);
     const page = path.join(dir, 'paths.html');
     fs.writeFileSync(page, '<pre></pre><script>(' + scan + ')(' + JSON.stringify(inputs) + ');</script>');
@@ -200,7 +205,7 @@ for (const config of configs) {
         assert.equal(row.arc.max, 0, 'Rounded rectangle does not reproduce the captured stroke: ' + name);
         return row;
     });
-    assert.equal(controls.length, 8);
+    assert.equal(controls.length, boldFill ? 0 : 8);
     if (rectangleControls) assert.deepEqual(controls, rectangleControls);
     else rectangleControls = controls;
     for (const [name, data] of inputs) {
@@ -215,8 +220,10 @@ for (const config of configs) {
         const reference = fs.readFileSync(path.join(web, file));
         const production = fs.readFileSync(path.join(dir, 'production', file));
         assert.ok(production.equals(fs.readFileSync(path.join(dir, 'baseline', file))));
+        if (boldFill && style !== 1) continue;
         const row = { size, style, webHash: hash(reference), stages: {} };
-        for (const stage of ['production', 'boundaryNative', 'directStroke', ...stages]) {
+        const nativeStages = boldFill ? ['production', 'boundaryNative'] : ['production', 'boundaryNative', 'directStroke'];
+        for (const stage of [...nativeStages, ...stages]) {
             const image = fs.readFileSync(path.join(dir, stage, file));
             row.stages[stage] = { hash: hash(image), ...compareAlpha(image, reference) };
         }
@@ -226,6 +233,6 @@ for (const config of configs) {
 }
 const renderer = path.resolve(__dirname, '../../cocos/platform/win32/modules/DirectWriteFont.cpp');
 const report = { browser: metadata.userAgent, fontSha256: hash(fs.readFileSync(font)), rendererSha256: hash(fs.readFileSync(renderer)),
-    text: metadata.text, strokeWidth: metadata.lineWidth, tolerance: 1, glyphMasks: 96, debugReleaseIdentical: true, rectangleControls, rows };
+    text: metadata.text, ...(boldFill ? { mode: 'synthetic-bold-fill' } : { strokeWidth: metadata.lineWidth }), tolerance: 1, glyphMasks, debugReleaseIdentical: true, rectangleControls, rows };
 fs.writeFileSync(path.join(work, 'comparison.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(path.join(work, 'comparison.json'));
