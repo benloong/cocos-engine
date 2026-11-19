@@ -1636,6 +1636,30 @@ void testGraphicsMeshes() {
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         checkNear(secondUI.getHeight(), 41.26F, "CHAR rounds total line height before adding outline margins");
         checkNear(second.measureUnwrappedText("A\nB").height, secondUI.getHeight(), "CHAR measurement matches rendered layout");
+        second.setEnableOutline(false);
+        second.setOverflow(0);
+        second.setString("AAA");
+        second.updateRenderData();
+        const float naturalWidth = secondUI.getWidth();
+        for (const float spacing : {4.5F, -3.F, 0.F}) {
+            second.setSpacingX(spacing);
+            second.updateRenderData();
+            checkNear(secondUI.getWidth(), naturalWidth + 2.F * spacing, "CHAR inserts spacing between glyphs only");
+            checkNear(second.measureUnwrappedText("AAA\r\nA").width, secondUI.getWidth(), "CHAR measurement and layout apply identical spacing");
+        }
+        second.setString("A");
+        second.updateRenderData();
+        const auto single = submittedTexturePixels(second.getRenderEntity());
+        second.setSpacingX(-secondUI.getWidth());
+        second.setString("AA");
+        second.updateRenderData();
+        const auto overlap = submittedTexturePixels(second.getRenderEntity());
+        bool layersMatch = !single.empty() && overlap.size() == single.size();
+        for (size_t i = 3; layersMatch && i < single.size(); i += 4) {
+            const unsigned alpha = single[i];
+            layersMatch = overlap[i] == alpha + ((255U - alpha) * alpha + 127U) / 255U;
+        }
+        check(layersMatch, "Negative CHAR spacing composites the two glyph masks at the same position");
     }
     {
         auto orphan=std::make_unique<cc::Node>("orphan-graphics");

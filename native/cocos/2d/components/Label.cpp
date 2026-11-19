@@ -136,6 +136,9 @@ void ensureRasterTexture(IntrusivePtr<Texture2D> &texture, uint32_t width, uint3
 }
 
 constexpr float BASELINE_RATIO = 0.26F;
+double roundLetterMetric(double value) {
+    return std::round(value * 100.0) / 100.0;
+}
 
 std::vector<std::string> splitUtf8(const std::string &text) {
     std::vector<std::string> out;
@@ -512,7 +515,7 @@ void Label::updateRenderer() {
 double Label::letterLayoutHeight(size_t lineCount) const {
     const double height = static_cast<double>(lineCount) * _lineHeight;
     const double margin = _enableOutline ? std::max(0.F, _outlineWidth) : 0.F;
-    return std::round(height * 100.0) / 100.0 + 2.0 * margin;
+    return roundLetterMetric(height) + 2.0 * margin;
 }
 
 void Label::rebuildLetterTexture() {
@@ -528,38 +531,39 @@ void Label::rebuildLetterTexture() {
 
     std::vector<std::vector<LetterAtlas::Glyph>> lines;
     lines.emplace_back();
-    float lineWidth = 0.0F;
-    float contentWidth = 0.0F;
+    double nextX = 0.0;
+    double contentWidth = 0.0;
 
     for (const std::string &codepoint : splitUtf8(_string)) {
         if (codepoint == "\n") {
-            contentWidth = std::max(contentWidth, lineWidth);
             lines.emplace_back();
-            lineWidth = 0.0F;
+            nextX = 0.0;
             continue;
         }
         const int32_t code = utf8CodePoint(codepoint);
         if (code == '\r') continue;
         const auto &glyph = atlas.getOrCreateGlyph(glyphs, code, _font, lineHeight, _color);
         if (!glyph.valid) continue;
-        if (maxWidth > 0.F && lineWidth > 0.F && lineWidth + glyph.advance > maxWidth && !bitmapUnicodeSpace(code)) {
-            contentWidth = std::max(contentWidth, lineWidth);
+        const double advance = roundLetterMetric(glyph.advance);
+        if (maxWidth > 0.F && nextX > 0.0 && nextX + advance > maxWidth && !bitmapUnicodeSpace(code)) {
             lines.emplace_back();
-            lineWidth = 0.0F;
+            nextX = 0.0;
         }
         lines.back().push_back(glyph);
-        lineWidth += glyph.advance;
+        const double right = nextX + advance;
+        contentWidth = std::max(contentWidth, right);
+        nextX = right + _spacingX;
     }
-    contentWidth = std::max(contentWidth, lineWidth);
+    contentWidth = roundLetterMetric(contentWidth);
 
     const float contentHeight = static_cast<float>(letterLayoutHeight(lines.size()));
-    const uint32_t outWidth = static_cast<uint32_t>(std::ceil(std::max(contentWidth, 1.0F))) + 2U;
+    const uint32_t outWidth = static_cast<uint32_t>(std::ceil(std::max(contentWidth, 1.0))) + 2U;
     const uint32_t outHeight = static_cast<uint32_t>(std::ceil(std::max(contentHeight, 1.0F))) + 2U;
     std::vector<uint8_t> pixels(static_cast<size_t>(outWidth) * outHeight * 4U, 0U);
     const uint8_t *atlasPixels = atlas.getData();
 
     for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex) {
-        float cursorX = 1.0F;
+        double cursorX = 1.0;
         const float lineTop = 1.0F + static_cast<float>(lineIndex) * lineHeight;
         for (const LetterAtlas::Glyph &glyph : lines[lineIndex]) {
             if (glyph.width > 1 && glyph.height > 1) {
@@ -577,11 +581,11 @@ void Label::rebuildLetterTexture() {
                         pixels[dst] = static_cast<uint8_t>(255U * _color.r / 255U);
                         pixels[dst + 1U] = static_cast<uint8_t>(255U * _color.g / 255U);
                         pixels[dst + 2U] = static_cast<uint8_t>(255U * _color.b / 255U);
-                        pixels[dst + 3U] = static_cast<uint8_t>(alpha);
+                        pixels[dst + 3U] = static_cast<uint8_t>(alpha + ((255U - alpha) * pixels[dst + 3U] + 127U) / 255U);
                     }
                 }
             }
-            cursorX += glyph.advance;
+            cursorX += roundLetterMetric(glyph.advance) + _spacingX;
         }
     }
 
@@ -595,7 +599,7 @@ void Label::rebuildLetterTexture() {
     _frame->setOffset(0.0F, 0.0F);
     _frame->setRotated(false);
 
-    _lastContentWidth = contentWidth;
+    _lastContentWidth = static_cast<float>(contentWidth);
     _lastContentHeight = contentHeight;
 
     _renderer.setFrame(_frame);
@@ -724,17 +728,29 @@ std::array<double, 2> Label::measureUnwrappedTextPrecise(const std::string &text
     CanvasRenderingContext2D context(1.F, 1.F);
     context.setFont(_font);
 #endif
-    float width = 0.F, line = 0.F; uint32_t lines = 1;
+    if (_cacheMode == 2) {
+        double width = 0.0, nextX = 0.0;
+        uint32_t lines = 1;
+        for (const auto &symbol : splitUtf8(text)) {
+            if (symbol == "\n") { nextX = 0.0; ++lines; }
+            else if (symbol != "\r") {
+                const double right = nextX + roundLetterMetric(measureText(context, symbol));
+                width = std::max(width, right);
+                nextX = right + _spacingX;
+            }
+        }
+        return {roundLetterMetric(width), letterLayoutHeight(lines)};
+    }
+    float width = 0.F;
+    uint32_t lines = 1;
     std::string paragraph;
     for (const auto &symbol : splitUtf8(text)) {
         if (symbol == "\n") {
-            width = std::max(width, _cacheMode == 2 ? line : measureText(context, paragraph));
-            line = 0.F; paragraph.clear(); ++lines;
-        } else if (_cacheMode == 2) line += measureText(context, symbol);
-        else paragraph += symbol;
+            width = std::max(width, measureText(context, paragraph));
+            paragraph.clear(); ++lines;
+        } else paragraph += symbol;
     }
-    width = std::max(width, _cacheMode == 2 ? line : measureText(context, paragraph));
-    if (_cacheMode == 2) return {width, letterLayoutHeight(lines)};
+    width = std::max(width, measureText(context, paragraph));
     const float lineHeight = _lineHeight > 0.F ? _lineHeight : _fontSize * 1.2F;
     const auto extent = getTextStyleExtent();
     return {std::max(width, 1.F) + extent[0], std::max((lines + BASELINE_RATIO) * lineHeight, 1.F) + extent[1]};

@@ -65,6 +65,27 @@ export class LabelSpike {
         charLabel.string = '甲  \r\n乙';
         charLabel.updateRenderData(true);
         const trailingSpaces = charTransform.height;
+        charLabel.overflow = Label.Overflow.NONE;
+        charLabel.string = '甲甲甲';
+        const widths: number[] = [];
+        for (const spacing of [0, 4.5, -3, 0]) {
+            charLabel.spacingX = spacing;
+            charLabel.updateRenderData(true);
+            widths.push(charTransform.width);
+        }
+        charLabel.overflow = Label.Overflow.RESIZE_HEIGHT;
+        charTransform.width = widths[0] + 1;
+        const heights: number[] = [];
+        for (const spacing of [0, 4.5, -3]) {
+            charLabel.spacingX = spacing;
+            charLabel.updateRenderData(true);
+            heights.push(charTransform.height);
+        }
+        if (Math.abs(widths[1] - widths[0] - 9) > 0.001 || Math.abs(widths[2] - widths[0] + 6) > 0.001
+            || widths[3] !== widths[0] || heights.some((h, i) => Math.abs(h - (i === 1 ? 38.25 : 19.13)) > 0.001)) {
+            throw new Error(`CHAR spacing mismatch: ${JSON.stringify({ widths, heights })}`);
+        }
+        console.log(`M3_CHAR_SPACING ${JSON.stringify({ widths, heights })}`);
         charNode.destroy();
         console.log(`M3_CHAR_LAYOUT ${JSON.stringify({ plain, outlined, wrapped, natural, trailingSpaces })}`);
         if (typeof n2d !== 'undefined' && n2d.Label) {
