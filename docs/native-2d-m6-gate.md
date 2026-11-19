@@ -39,6 +39,6 @@
 | M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期及三组失败字形。[同一轮廓重放](./native-2d-m6.2-ttf-stroke.md#同一字形轮廓按绘制阶段重放)已将独立绿色描边的主要误差定位至轮廓扩张。8 个矩形的圆弧填充可逐字节重现浏览器画笔，三次贝塞尔圆角累计 308 个采样点超差。生产路径仍待修复 |
 | M6.2 | RichText 固定回归 | shadow、样式、布局、用户事件和销毁解绑的完整组合 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
-| M6.5 | CI | [PR 工作流](../.github/workflows/native-ts-build.yml)已配置 Windows Debug/Release 的六组真实 JSB 检查、场景记录和 SIMPLE Sprite 对 Web 的几何对照。工作流还构建 Windows、Web 各九种 Release 功能组合，检查组件导出和已移除的 PoC 入口，并归档导出清单与 bundle 哈希。仍缺远程运行记录、完整应用场景矩阵及其余间接热路径的证据 |
+| M6.5 | CI | [PR 工作流](../.github/workflows/native-ts-build.yml)已配置 Windows Debug/Release 的六组真实 JSB 检查、场景记录和 SIMPLE Sprite 对 Web 的几何对照。两个 Windows 配置均已接入 Chrome 字形对照并归档 108 项结果。正体和斜体在本机通过 72/72，合成粗体通过 0/36。工作流还构建 Windows、Web 各九种 Release 功能组合，检查组件导出和已移除的 PoC 入口，并归档导出清单与 bundle 哈希。仍缺远程运行记录、完整应用场景矩阵及其余间接热路径的证据 |
 | M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md) 和 [RichText](./native-2d-m6-richtext-rollback.md) 回退与恢复。其余模块与真实旧项目的场景、资产、材质及性能仍待验证 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

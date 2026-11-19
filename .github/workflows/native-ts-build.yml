@@ -99,7 +99,7 @@ jobs:
         for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VS_PATH=%%i"
         call "%VS_PATH%\VC\Auxiliary\Build\vcvars64.bat" || exit /b 1
         cmake -S native/tests/2d-poc/native -B "%BUILD_DIR%" -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.config }} || exit /b 1
-        cmake --build "%BUILD_DIR%" --target cc2d_native_poc --parallel 2
+        cmake --build "%BUILD_DIR%" --target cc2d_native_poc cc2d_ttf_raster --parallel 2
     - name: Run component and scene regressions with generated bindings
       shell: pwsh
       run: ./native/tests/2d-poc/run-windows-jsb-probes.ps1 -Executable "$env:BUILD_DIR/cc2d_native_poc.exe"
@@ -114,3 +114,12 @@ jobs:
         path: |
           native/tests/2d-poc/out/*sprite-quad*
           native/tests/2d-poc/out/web-native-sprite-report.json
+    - name: Compare normal and italic shaped text with Windows Chrome
+      id: shaping
+      shell: pwsh
+      run: node native/tests/2d-poc/run-ttf-shaping.cjs "$env:BUILD_DIR/cc2d_ttf_raster.exe"
+    - uses: actions/upload-artifact@v4
+      if: "!cancelled() && steps.shaping.outcome != 'skipped'"
+      with:
+        name: ttf-shaping-${{ matrix.config }}
+        path: ${{ env.BUILD_DIR }}/ttf-shaping/report.json
