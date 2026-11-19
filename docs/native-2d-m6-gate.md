@@ -11,7 +11,7 @@
 | Graphics 命令提交 | Windows Debug/Release 与 Web 像素对照。Release 的 256 个闭合路径从逐调用改用复用缓冲，提交耗时中位数从 581.7 降至 349.1 µs，批次和绘制次数均为 1 | [接口选择与分配实测](./native-2d-m6.3-graphics-commands.md) |
 | 混合负载 CPU | Windows Release 六轮交错运行。迁移前 3.5258 ms，优化前 4.2690 ms，行宽复用后 3.6188 ms | [方法与版本](./native-2d-m6-performance.md)、[六轮数据](./native-2d-m6-text-width-reuse.json) |
 | JSB、堆峰值与 GC | 同一负载下 JSB 876→197，堆峰值下降 43.41%，强制 GC 5.0900→3.6915 ms | [六轮数据](./native-2d-m6-text-width-reuse.json) |
-| 稳态组件 JSB | Windows，13 组组件及资产消费者与空 Canvas 对照，各采样 60 帧 | [逐方法计数与对照](./native-2d-m6.0-windows-jsb-trace.md) |
+| 薄壳与稳态 JSB | 14 个 override 均在行数预算内；17 类检查 2D 内部间接导入。Label 与 RichText 的布局、栅格化及命中计算在原生执行。Windows 双配置每组 60 帧的组件直接调用均为 0，共享 manager 每帧 1 次。同步变更、显式调用和销毁分别计数 | [组件与节点生命周期](./native-2d-m6-jsb-lifecycle.json)、[六种独立资产](./native-2d-m6-jsb-assets.json)、[逐项计划](./native-2d-m6-plan.md) |
 | Graphics/Mask 材质与提交成本 | Windows Debug、Release 和 Web。32 个矩形在一个 Graphics 中为 1 次 draw，分属 32 个 Graphics 时为 32 次；单层和双层 Mask 分别为 3 次和 5 次。共享纹理完成首次上传后，三个测量阶段均为 0 字节重复上传 | [材质隔离与图像](./native-2d-m6-windows-web-gpu-results.json)、[CPU、批次与上传](./native-2d-m6.3-graphics-cost.md) |
 | 图形与事件 | Windows Debug 和 Release 各 85 张图像与 Web 逐字节一致，覆盖旧图集 Prefab、SpriteRenderer 生成网格和两个 Sprite stencil 独立交换阈值。场景矩阵同时检查合批、跨根节点命中与场景切换。此前 ASan 覆盖 80 张 | [GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json) |
 | 定制 TTF | Windows Debug/Release、ASan 对 Web，布局 12/12，严格字形图像 9/12。粗体、描边、嵌套样式最大通道差分别为 20、30、47 | [逐图和配置数据](./native-2d-m6-richtext-configurations.json) |
@@ -35,7 +35,6 @@
 | M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
 | M6.5 | 性能 KPI | 混合变更帧 CPU 比迁移前高 2.64%。dirty 更新阶段增加 0.9460 ms，属性写入节省 0.8405 ms |
-| M6.5 | 薄壳约束 | 14 个原生 override 均在物理行数预算内。[14 组场景在 Windows Debug/Release 的变更和节点生命周期调用数](./native-2d-m6-jsb-lifecycle.json)已分阶段记录。[六种独立资产的创建、属性变更与销毁调用](./native-2d-m6-jsb-assets.json)已复测。Label/RichText 的逻辑与转发边界仍待复核 |
 | M6.5 | CI | 全部迁移类、间接热路径与组件/场景回归的 CI 证据 |
 | M6.5 | 回退 | 分模块回退后的旧场景行为、资产、材质与性能 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

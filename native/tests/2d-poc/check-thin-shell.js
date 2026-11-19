@@ -85,6 +85,13 @@ function main () {
 
     const { build, shellHotPaths } = require('./audit-m6.cjs');
     const report = build();
+    for (const name of ['Label', 'RichText']) {
+        const shell = report.classes.find(component => component.name === name);
+        const findings = report.files.find(file => file.file === shell.runtime);
+        check(shell.overridden, name + ' must use its native override');
+        check(!findings.frameMethods.length, shell.runtime + ' implements a frame method: ' + JSON.stringify(findings.frameMethods));
+        check(!findings.allocations.length, shell.runtime + ' creates rendering data: ' + JSON.stringify(findings.allocations));
+    }
     const { shellSizes } = require('./measure-shell-lines.cjs');
     for (const { name, file, counted, limit } of shellSizes(report)) {
         check(counted <= limit, file + ' has ' + counted + ' lines, limit ' + limit);
