@@ -117,6 +117,7 @@
 - [x] Windows 合成粗体轮廓下沉：regular shaping + 扩张/union、边缘量化/FIR，移除 bold face 替换；新增局部 mask 裁剪、STA lease 和 1000 次实际绘制释放回归，Debug/Release、实际 JSB、49 项 Jest、ASAN 应用通过。完整应用仍 9/12，bold 差值降至 20、nested 降至 47；剩余边缘及描边继续验收，见 [实现与边界](./native-2d-m6.2-ttf-bold.md)。
 - [x] Windows 自定义字体真实描边：Canvas strokeText + round/miter/bevel 接入，Label 按后端能力使用轮廓描边；空心内部、裁剪、线宽/默认值、STA 与重复释放测试通过。GPU outline 差值 122→30，但严格图像仍 9/12，原始描边 0/72；视觉门禁保持未通过，见 [实现、证据与边界](./native-2d-m6.2-ttf-stroke.md)。
 - [x] 斜体描边顺序修复：先斜切字形再 Widen，保留笔宽/圆角；72 例 Debug/Release 字节一致，24 个斜体用例最大差值全部下降，其他 48 例字节不变。native/实际 JSB 与静态回归通过；原始严格对照仍 0/72，未重跑完整 GPU/ASAN，见 [证据](./native-2d-m6.2-ttf-italic-stroke.md)。
+- [x] 单字形亚像素起点对照。Windows Debug、Release 和 Chrome 在 64 组中对起点的分组全部一致。48 个超差组合在整数起点仍能复现，关闭轮廓点量化后严格通过数仍为 1024/4096。[方法与逐组记录](./native-2d-m6.2-ttf-stroke.md#单字形起点与轮廓覆盖)
 - [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
 - [x] Windows GDI 合成斜体布局例外仅用于 M5 系统 Arial 40px 的单段 Italic。Web 基准 90.748px（舍入校验 ±0.01px），Windows 接受历史差值 9.748px 加 0.001px 舍入余量。实测 Windows Debug/Release 均为 89.50227px，Web 为 90.74836px。自定义 TTF、字形图像、事件与其他布局保持各自门限。[历史对照](./native-2d-m5-web-parity.md)

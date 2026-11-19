@@ -36,3 +36,23 @@ Canvas 增加默认返回 false 的 supportsTextStroke 能力查询，Windows �
 Windows Debug 与 Release 在 108 例中逐字节相同。两者与 Web 的 RGB 最大误差均为 0。普通和斜体填充的 24 例全部通过，粗体填充的 12 例全部超差。仅画描边的 36 例已全部超差，说明白色轮廓的差异在叠加填充及 GPU 采样前就已出现。这个实验仍不能区分轮廓扩张误差和栅格采样误差，也不能外推到其他字色。
 
 复现时先在 native/tests/2d-poc/native 下的 out 和 out-release2 构建 cc2d_ttf_raster，然后在仓库根运行 `node native/tests/2d-poc/compare-ttf-contours.cjs --capture`。不带参数可重新比较已有捕获。逐例 SHA256、误差、浏览器版本和字体哈希写入 native/tests/2d-poc/build/font-contour-report.json。比较器记录每例是否超差，命令成功仅表示数据完整并且两个 Windows 配置一致。
+
+## 单字形起点与轮廓覆盖
+
+在同一份 Thonburi 字体中单独绘制 I 和 O。每个字形各用 12、24、36、48 px 与常规、粗体、斜体、粗斜体四种样式，分别做白色填充和 4 px 圆角描边。每个组合的 64 个起点覆盖横纵方向 0 至 7/8 像素的全部配对。比较时仅去掉图块的整数平移，检查边界没有触墨，并对整块 RGBA 使用原容差 1。[逐组合像素误差、原点误差和捕获哈希](./native-2d-m6-ttf-origins.json)
+
+| 单字形场景 | 严格通过位置数 | 最大通道差 |
+|---|---:|---:|
+| 常规和斜体填充 | 1024 / 1024 | 0 |
+| 粗体和粗斜体填充 | 0 / 1024 | 81 |
+| 四种样式圆角描边 | 0 / 2048 | 93 |
+
+Windows Debug 与 Release 的 64 张原始图集逐字节相同。Windows 与 Chrome 在每个组合都把相同的起点分为相同的 10 组，同组内平移后的覆盖图完全一致。全部 48 个超差组合在整数起点也超差。由此可以在单字形、整数起点直接复现，排查不必依赖字间距、嵌套布局或 GPU 采样。
+
+另用现有 Release 诊断程序保留横向滤波，关闭轮廓点量化。4096 个位置的严格通过数仍为 1024。I 的描边最大误差从 54 升至 102，O 从 93 降至 89。这个开关不能消除超差；目前仍需区分轮廓扩张和抗锯齿覆盖计算。
+
+复现时在 Debug 构建 `cc2d_ttf_raster`，在 Release 构建 `cc2d_ttf_raster` 和 `cc2d_ttf_geometry_filtered`，然后执行下列命令。两个构建目录相对于 `native/tests/2d-poc`，也可传入绝对路径。程序在 `build/ttf-origin-report.json` 记录逐组结果。
+
+```powershell
+node native/tests/2d-poc/compare-ttf-origins.cjs --capture build/fontsize-clean-Debug build/fontsize-clean-Release
+```

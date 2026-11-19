@@ -6,9 +6,14 @@ const http = require('http');
 const { spawn } = require('child_process');
 const color = process.argv[2] || 'white';
 const sample = process.argv[3] || 'latin';
+const originGrid = sample === 'origin-stem' || sample === 'origin-curve';
+const width = originGrid ? 512 : 256, height = originGrid ? 512 : 128;
+const styleCount = originGrid ? 4 : 3;
 const mode = process.argv[4] || 'fill';
 const colors = { white: 'white', red: 'red', green: 'lime', gray: 'rgb(128,128,128)', black: 'black', 'half-white': 'rgba(255,255,255,0.5)' };
 const texts = { latin: 'Atlas 123', stems: 'I E L', rounds: 'O S C', combining: 'A\u0301tlas', thai: '\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22' };
+texts['origin-stem'] = 'I';
+texts['origin-curve'] = 'O';
 if (!Object.hasOwn(colors, color) || !Object.hasOwn(texts, sample)) throw new Error('Unknown color or sample');
 if (!['fill', 'outline', 'stroke-round', 'stroke-miter', 'stroke-bevel'].includes(mode)) throw new Error('Unknown paint mode');
 const suffix = mode === 'fill' ? (color === 'white' && sample === 'latin' ? '' : '-' + color + '-' + sample) : '-' + color + '-' + sample + '-' + mode;
@@ -34,18 +39,19 @@ const server = http.createServer(async (req, res) => {
                     chunks.push(chunk);
                 }
                 const metadata = JSON.parse(Buffer.concat(chunks).toString());
-                if (received.size !== 12 || metadata.cases.length !== 12) throw new Error('Incomplete raw matrix');
+                if (received.size !== 4 * styleCount || metadata.cases.length !== received.size) throw new Error('Incomplete raw matrix');
                 fs.writeFileSync(path.join(output, 'metadata.json'), JSON.stringify(metadata, null, 2));
                 res.end('OK'); complete(); return;
             }
-            if (!/^\/(12|24|36|48)-[012]\.rgba$/.test(req.url)) throw new Error('Invalid capture name');
+            const capture = /^\/(12|24|36|48)-([0-3])\.rgba$/.exec(req.url);
+            if (!capture || Number(capture[2]) >= styleCount) throw new Error('Invalid capture name');
             const chunks = []; let length = 0;
             for await (const chunk of req) {
                 length += chunk.length;
-                if (length > 256 * 128 * 4) throw new Error('Capture too large');
+                if (length > width * height * 4) throw new Error('Capture too large');
                 chunks.push(chunk);
             }
-            if (length !== 256 * 128 * 4) throw new Error('Invalid capture length');
+            if (length !== width * height * 4) throw new Error('Invalid capture length');
             fs.writeFileSync(path.join(output, req.url.slice(1)), Buffer.concat(chunks));
             res.end('OK');
             received.add(req.url);
@@ -57,22 +63,24 @@ const server = http.createServer(async (req, res) => {
             const face = new FontFace('M6Raw', 'url(/font.ttf)');
             document.fonts.add(await face.load());
             const cases=[], text=${JSON.stringify(texts[sample])};
-            for (const size of [12,24,36,48]) for (let style=0; style<3; style++) {
-                const canvas = document.createElement('canvas'); canvas.width=256; canvas.height=128;
+            for (const size of [12,24,36,48]) for (let style=0; style<${styleCount}; style++) {
+                const canvas = document.createElement('canvas'); canvas.width=${width}; canvas.height=${height};
                 const ctx=canvas.getContext('2d');
-                ctx.font=(style===1?'bold ':style===2?'italic ':'')+size+'px M6Raw';
+                ctx.font=['','bold ','italic ','bold italic '][style]+size+'px M6Raw';
                 ctx.textBaseline='alphabetic'; ctx.textAlign='left';
-                ctx.fillStyle='rgba(255,255,255,0.004)'; ctx.fillRect(0,0,256,128);
-                ctx.fillStyle=${JSON.stringify(colors[color])};
-                if (${JSON.stringify(mode)}==='fill') ctx.fillText(text,4.5,size*.87+4);
-                else {
+                ctx.fillStyle='rgba(255,255,255,0.004)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+                const tiles=${originGrid ? 8 : 1};
+                for(let row=0; row<tiles; row++) for(let col=0; col<tiles; col++) {
+                    const x=tiles===1?4.5:8+col*64+col/8, y=tiles===1?size*.87+4:50+row*64+row/8;
+                    ctx.fillStyle=${JSON.stringify(colors[color])};
+                    if (${JSON.stringify(mode)}==='fill') { ctx.fillText(text,x,y); continue; }
                     ctx.strokeStyle=${JSON.stringify(colors[color])}; ctx.lineWidth=4;
                     ctx.lineJoin=${JSON.stringify(mode === 'stroke-miter' ? 'miter' : mode === 'stroke-bevel' ? 'bevel' : 'round')};
-                    ctx.strokeText(text,4.5,size*.87+4);
-                    if (${JSON.stringify(mode)}==='outline') { ctx.fillStyle='white'; ctx.fillText(text,4.5,size*.87+4); }
+                    ctx.strokeText(text,x,y);
+                    if (${JSON.stringify(mode)}==='outline') { ctx.fillStyle='white'; ctx.fillText(text,x,y); }
                 }
                 cases.push({size,style,font:ctx.font,width:ctx.measureText(text).width});
-                await fetch('/'+size+'-'+style+'.rgba',{method:'POST',body:ctx.getImageData(0,0,256,128).data});
+                await fetch('/'+size+'-'+style+'.rgba',{method:'POST',body:ctx.getImageData(0,0,canvas.width,canvas.height).data});
             }
             await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},cases})});
         })();</script>`);
@@ -86,6 +94,6 @@ const server = http.createServer(async (req, res) => {
     browser.on('error', fail);
     browser.on('exit', (code, signal) => fail(new Error('Chrome exited: ' + code + '/' + signal)));
     const timeout = setTimeout(() => fail(new Error('Raw Canvas capture timeout')), 60000);
-    try { await done; console.log('TTF Web raw raster: 12 captures'); }
+    try { await done; console.log('TTF Web raw raster:', received.size, 'captures'); }
     finally { clearTimeout(timeout); browser.kill(); server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
