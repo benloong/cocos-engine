@@ -2,18 +2,18 @@ import { instantiate, Size, Vec2 } from '../../exports/base';
 import { Node } from '../../cocos/scene-graph/node';
 import { getClassById } from '../../cocos/core/utils/js-typed';
 import { deserialize } from '../../cocos/serialization/deserialize';
-import { NativeSpritePoc, NativeUITransformPoc } from '../../exports/native-2d-poc';
+import { Sprite, UITransform } from '../../exports/2d';
 
-test('PoC classes resolve by serialized class id', function () {
-    expect(getClassById('cc.NativeUITransformPoc')).toBe(NativeUITransformPoc);
-    expect(getClassById('cc.NativeSpritePoc')).toBe(NativeSpritePoc);
+test('UI classes resolve by serialized class id', function () {
+    expect(getClassById('cc.UITransform')).toBe(UITransform);
+    expect(getClassById('cc.Sprite')).toBe(Sprite);
 });
 
-test('NativeUITransformPoc is a registered component', function () {
-    const node = new Node('poc-transform');
-    const transform = node.addComponent(NativeUITransformPoc);
+test('UITransform is a registered component', function () {
+    const node = new Node('ui-transform');
+    const transform = node.addComponent(UITransform);
 
-    expect(node.getComponent(NativeUITransformPoc)).toBe(transform);
+    expect(node.getComponent(UITransform)).toBe(transform);
     expect(transform.contentSize).toEqual(new Size(100, 100));
     expect(transform.anchorPoint).toEqual(new Vec2(0.5, 0.5));
 
@@ -23,39 +23,39 @@ test('NativeUITransformPoc is a registered component', function () {
     expect(transform.anchorPoint).toEqual(new Vec2(0.25, 0.75));
 });
 
-test('NativeUITransformPoc deserializes from a scene record', function () {
+test('UITransform deserializes from a scene record', function () {
     const data = [{
-        __type__: 'cc.NativeUITransformPoc',
+        __type__: 'cc.UITransform',
         _contentSize: { __type__: 'cc.Size', width: 64, height: 32 },
         _anchorPoint: { __type__: 'cc.Vec2', x: 0, y: 1 },
     }];
     const transform = deserialize(data, undefined, {
         classFinder: (id: string) => getClassById(id) as any,
-    }) as NativeUITransformPoc;
+    }) as UITransform;
 
-    expect(transform).toBeInstanceOf(NativeUITransformPoc);
+    expect(transform).toBeInstanceOf(UITransform);
     expect(transform.contentSize).toEqual(new Size(64, 32));
     expect(transform.anchorPoint).toEqual(new Vec2(0, 1));
 });
 
-test('NativeUITransformPoc survives instantiate()', function () {
-    const node = new Node('poc-clone');
-    const transform = node.addComponent(NativeUITransformPoc);
+test('UITransform survives instantiate()', function () {
+    const node = new Node('ui-clone');
+    const transform = node.addComponent(UITransform);
     transform.contentSize = new Size(64, 32);
     transform.anchorPoint = new Vec2(0, 1);
 
     const clone = instantiate(node);
-    const clonedTransform = clone.getComponent(NativeUITransformPoc);
+    const clonedTransform = clone.getComponent(UITransform);
     expect(clonedTransform).not.toBeNull();
     expect(clonedTransform!.contentSize).toEqual(new Size(64, 32));
     expect(clonedTransform!.anchorPoint).toEqual(new Vec2(0, 1));
 });
 
-test('NativeSpritePoc is a registered component', function () {
-    const node = new Node('poc-sprite');
-    const sprite = node.addComponent(NativeSpritePoc);
+test('Sprite is a registered component', function () {
+    const node = new Node('ui-sprite');
+    const sprite = node.addComponent(Sprite);
 
-    expect(node.getComponent(NativeSpritePoc)).toBe(sprite);
+    expect(node.getComponent(Sprite)).toBe(sprite);
     expect(sprite.spriteFrame).toBeNull();
     expect(sprite.trim).toBe(true);
 });

@@ -129,4 +129,4 @@ and load `http://127.0.0.1:8130/native/tests/2d-poc/web/index.html`; it reaches
 
 Native scene deserialization/`getComponent` through the engine JS runtime and
 Web/native pixel capture are still open; the smaller Web-side registration and
-`instantiate()` checks live in `tests/ui/native-2d-poc.test.ts`.
+`instantiate()` checks live in `tests/ui/ui-component-registration.test.ts`.

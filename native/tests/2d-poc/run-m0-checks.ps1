@@ -129,14 +129,14 @@ if (Test-Path $tsc) {
 
 $jest = Join-Path $nodeModules '.bin/jest.cmd'
 if (Test-Path $jest) {
-    Write-Host '== Jest (UI + PoC registration) =='
+    Write-Host '== Jest (UI component registration) =='
     $oldNodeOptions = $env:NODE_OPTIONS
     $env:NODE_OPTIONS = '--expose-gc'
     try {
         & $jest --config (Join-Path $repoRoot 'jest.config.js') --runInBand `
             'tests/ui/ui-transform.test.ts' `
             'tests/ui/sprite.test.ts' `
-            'tests/ui/native-2d-poc.test.ts' `
+            'tests/ui/ui-component-registration.test.ts' `
             'tests/ui/native-2d-m1-shell.test.ts' `
             'tests/ui/native-2d-poc-bench.test.ts' `
             'tests/ui/native-2d-m2-sprite-shell.test.ts' `

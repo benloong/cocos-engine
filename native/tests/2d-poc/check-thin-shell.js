@@ -25,27 +25,7 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-
-const FILE = path.join(__dirname, '../../../cocos/2d/poc/native-2d-poc.jsb.ts');
-const MAX_CODE_LINES = 200;
-
-const FORBIDDEN_PATTERNS = [
-    { pattern: /from ['"][^'"]*assembler[^'"]*['"]/, message: 'must not import assembler' },
-    { pattern: /from ['"][^'"]*text-[^'"]*['"]/, message: 'must not import text layout' },
-    { pattern: /from ['"][^'"]*geometry[^'"]*['"]/i, message: 'must not import geometry' },
-    { pattern: /\bupdate\s*\(/, message: 'must not implement update()' },
-    { pattern: /\blateUpdate\s*\(/, message: 'must not implement lateUpdate()' },
-    { pattern: /\b_render\s*\(/, message: 'must not implement _render()' },
-    { pattern: /\blineTo\s*\(/, message: 'must not build paths' },
-    { pattern: /\bJSB\b/, message: 'must not branch on JSB inside the shell' },
-];
-
 function main () {
-    const source = fs.readFileSync(FILE, 'utf8');
-    const lines = source.split(/\r?\n/);
-
     let checks = 0;
     let failures = 0;
     const check = (condition, message) => {
@@ -56,36 +36,9 @@ function main () {
         }
     };
 
-    let inBlockComment = false;
-    let codeLines = 0;
-    for (const line of lines) {
-        const text = line.trim();
-        if (text === '') continue;
-        if (text.startsWith('/*')) inBlockComment = true;
-        if (inBlockComment) {
-            if (text.includes('*/')) inBlockComment = false;
-            continue;
-        }
-        if (text.startsWith('//')) continue;
-        codeLines++;
-    }
-    check(codeLines <= MAX_CODE_LINES, `shell has ${codeLines} code lines (max ${MAX_CODE_LINES}, ${lines.length} total)`);
-    console.log(`shell: ${codeLines} code lines, ${lines.length} total lines`);
-
-    for (const item of FORBIDDEN_PATTERNS) {
-        check(!item.pattern.test(source), item.message);
-    }
-
-    // The shell may only define lifecycle forwarding, serialization accessors
-    // and public-API pass-through. Per-frame entry points are forbidden above;
-    // this also guards against accidental geometry state in JS.
-    check(!/_renderData\b/.test(source), 'must not keep JS RenderData state');
-    check(!/new\s+RenderData\b/.test(source), 'must not allocate JS RenderData');
-    check(!/byteLength|Float32Array|Uint16Array/.test(source), 'must not build vertex buffers in JS');
-
     const { build, shellHotPaths } = require('./audit-m6.cjs');
     const report = build();
-    for (const name of ['Label', 'RichText']) {
+    for (const name of ['UITransform', 'Sprite', 'Label', 'RichText']) {
         const shell = report.classes.find(component => component.name === name);
         const findings = report.files.find(file => file.file === shell.runtime);
         check(shell.overridden, name + ' must use its native override');
