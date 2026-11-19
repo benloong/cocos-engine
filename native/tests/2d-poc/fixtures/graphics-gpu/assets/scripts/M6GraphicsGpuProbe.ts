@@ -498,6 +498,27 @@ export class M6GraphicsGpuProbe extends Component {
             const expectedSize = blur > 2 ? 31 : 32;
             if (label.actualFontSize !== expectedSize) throw new Error(`Fractional blur ${blur}: expected ${expectedSize}, got ${label.actualFontSize}`);
         }
+        label.enableShadow = false;
+        const step = 1 / 2048;
+        for (const offset of [step, -step, step]) {
+            transform.setContentSize(naturalWidth + offset, 100);
+            label.updateRenderData(false);
+            const expected = offset < 0 ? 31 : 32;
+            if (label.actualFontSize !== expected) throw new Error(`Container width delta ${offset}: expected ${expected}, got ${label.actualFontSize}`);
+        }
+        label.overflow = Label.Overflow.RESIZE_HEIGHT;
+        label.enableWrapText = true;
+        label.updateRenderData(false);
+        const singleHeight = transform.height;
+        for (const offset of [-step, step]) {
+            transform.setContentSize(naturalWidth + offset, transform.height);
+            label.updateRenderData(false);
+            const expected = singleHeight + (offset < 0 ? label.lineHeight : 0);
+            if (Math.abs(transform.height - expected) > 0.0001) throw new Error(`Wrap width delta ${offset}: expected height ${expected}, got ${transform.height}`);
+        }
+        label.lineHeight += step;
+        label.updateRenderData(false);
+        if (transform.height <= singleHeight + step / 2) throw new Error('RESIZE_HEIGHT dropped a fractional line-height change');
         labelNode.destroy();
         await wait();
         if (isValid(freshFrame) || isValid(freshTexture)) throw new Error('Destroyed Label retained valid TTF assets');

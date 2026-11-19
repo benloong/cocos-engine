@@ -661,15 +661,14 @@ void Label::rebuildBitmapTexture() {
 void Label::syncTransformSize() {
     if (!_transform) return;
     const auto size = _transform->getContentSize();
-    if (std::fabs(size.x - _layoutWidth) > 0.001F || std::fabs(size.y - _layoutHeight) > 0.001F) markRenderDirty();
+    if (size.x != _layoutWidth || size.y != _layoutHeight) markRenderDirty();
 }
 void Label::syncContentSize() {
     _syncingContentSize = true;
     if (_transform && _overflow == 0) {
         _transform->setContentSize(_lastContentWidth, _lastContentHeight);
     } else if (_transform && _overflow == 3) {
-        const auto size = _transform->getContentSize();
-        if (std::fabs(size.y - _lastContentHeight) > 0.001F) _transform->setContentSize(size.x, _lastContentHeight);
+        _transform->setHeight(_lastContentHeight);
     }
     if (_transform) {
         const auto size = _transform->getContentSize();

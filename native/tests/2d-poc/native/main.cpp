@@ -1160,6 +1160,26 @@ void testLabelStyleExtents() {
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         checkNear(label.getActualFontSize(), blur > 2.F ? 23.F : 24.F, "fractional blur crosses the unwrapped SHRINK boundary");
     }
+    label.setEnableShadow(false);
+    label.setString("MMMM");
+    const float width = label.measureUnwrappedText("MMMM").width;
+    constexpr float STEP = 1.F / 2048;
+    for (float offset : {STEP, -STEP, STEP}) {
+        ui.setContentSize(width + offset, 100.F);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(label.getActualFontSize(), offset < 0 ? 23.F : 24.F, "container width crossing SHRINK boundary");
+    }
+    label.setOverflow(3); label.setEnableWrapText(true);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+    const float singleHeight = ui.getContentSize().y;
+    for (float offset : {-STEP, STEP}) {
+        ui.setContentSize(width + offset, ui.getContentSize().y);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(ui.getContentSize().y, singleHeight + (offset < 0 ? 30.F : 0.F), "container width crossing wrap boundary");
+    }
+    label.setLineHeight(30.F + STEP);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+    checkNear(ui.getContentSize().y, label.getContentHeight(), "RESIZE_HEIGHT publishes the fractional height");
     std::printf("label style extents: PASS\n");
 }
 
