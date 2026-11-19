@@ -132,7 +132,8 @@ const frame = new jsb.SpriteFrame(), texture = new jsb.Texture2D(); texture.crea
 let rejected = false;
 try { font.fntConfig = []; } catch (error) { rejected = error instanceof TypeError; }
 check(rejected, 'invalid configuration rejected');
-check(font.getGlyphCount() === 1 && font.getKerning(65, 65) === -1, 'native parsed config');
+check(!('getGlyphCount' in font), 'glyph count test helper is absent from the binding');
+check(font.getGlyphData().length === 8 && font.getKerning(65, 65) === -1, 'native parsed config');
 check(font.fontDefDictionary.texture === texture && font.fontDefDictionary.getLetter('65').w === 2, 'deprecated view reads native');
 font.fntConfig.fontDefDictionary[65].xAdvance = 3; font.onLoaded();
 check(font.getGlyphData()[7] === 3, 'onLoaded commits edited serialization view');
@@ -195,7 +196,7 @@ for (const FontClass of [BitmapFont, LabelAtlas]) {
         const view = cycle.fontDefDictionary;
         label.setFontAsset(cycle);
         cycle.clearNativeData();
-        check(!cycle._atlasView && !cycle.spriteFrame && cycle.getGlyphCount() === 0, 'clear drops all font owned data');
+        check(!cycle._atlasView && !cycle.spriteFrame && cycle.getGlyphData().length === 0, 'clear drops all font owned data');
         check(view.texture === texture, 'old compatibility view does not destroy shared texture');
         cycle.spriteFrame = frame; cycle.fntConfig = config;
         cycle.destroy();
@@ -205,7 +206,7 @@ for (const FontClass of [BitmapFont, LabelAtlas]) {
     }
 }
 font.clearNativeData();
-check(font.spriteFrame === null && font.fntConfig === null && font.getGlyphCount() === 0, 'bitmap release');
+check(font.spriteFrame === null && font.fntConfig === null && font.getGlyphData().length === 0, 'bitmap release');
 font.spriteFrame = frame; font.fntConfig = config; font.fontDefDictionary;
 font.destroy();
 check(font.isReleased() && !font._atlasView && !font.spriteFrame, 'destroy drops native and JS compatibility refs');
@@ -213,7 +214,7 @@ font.spriteFrame = frame;
 check(!font.spriteFrame && !font.setConfigJson(JSON.stringify(config)), 'released bitmap rejects late dependency and config writes');
 check(font.fntConfig === null, 'released bitmap config view stays empty');
 font.onLoaded();
-check(font.getGlyphCount() === 0, 'late bitmap onLoaded does not recommit a released config view');
+check(font.getGlyphData().length === 0, 'late bitmap onLoaded does not recommit a released config view');
 ttf.initDefault(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === 'Arial', 'TTF default resets data');
 ttf.destroy(); check(ttf.getFontDataSize() === 0 && ttf._nativeAsset === null, 'TTF destroy releases bytes');
 const ttfReleasedRevision = ttf.getRevision();

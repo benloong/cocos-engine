@@ -88,6 +88,7 @@
 - [x] 删除原生 Label 仅供测试使用的 getTextureWidth、getTextureHeight、getLineCount 及三个缓存字段。Windows Debug/Release 的 JSB 探针检查三个方法均不存在。Windows 应用从提交纹理读取尺寸，离屏像素测得英文、中文单行和换行文本的可见高度分别为 32、29、83 px，同时核对 UITransform 的实际尺寸。
 - [x] 生产导出清理：原 M0 的两个 PoC 组件及模块入口已删除。Windows 绑定已移除字体别名统计函数和测试编译开关。C++ 测试检查私有计数，Mask 和 RichText 应用夹具检查 JSB 上没有该导出。见 [验收配置](./native-2d-m6.1-font-remote-lifecycle.md)。
   [功能裁剪测试](../native/tests/2d-poc/check-m6-feature-matrix.cjs) 同时检查可用模块列表和生成的 `cc.js`。模块列表不得包含 `native-2d-poc`，Windows 与 Web 各九种组合均须排除 `NativeUITransformPoc` 和 `NativeSpritePoc`。
+  BitmapFont 的测试计数方法已从 C++ 和 JSB 删除。Windows Debug/Release 的字体探针直接检查生产路径读取的字形数据，并验证 JSB 实例上没有 `getGlyphCount`。[字体绑定回归](../native/tests/2d-poc/build-font-assets-probe.cjs)
   RichText 的测试专用方法 `getSegmentNode` 和 `getSegmentCount` 已从 C++ 与 JSB 移除。验收通过父节点查询段节点，用实际子节点数逐段核对 Label 或 Sprite，并检查末段之后的索引越界。[Windows JSB 回归](../native/tests/2d-poc/build-richtext-runtime-probe.cjs)
 - [x] Sprite 的原生几何准备收为 C++ 入口。Windows 双配置的 JSB 验收确认 Sprite 对象没有 prepare 方法，帧纹理迟到和 assembler 标脏后经 UIRendererManager.updateAllDirtyRenderers 刷新。独立 C++ 几何测试仍可直接测量准备耗时。该候选 Windows Debug/Release 各 88 张图像均与 Web 逐字节相等。
 - [x] Web 引擎断流时返回回退字体资产，释放后同 URL 可恢复真实字形。Chrome 实测重试宽度从 108 恢复到 95.9765625 px，服务端记录一次完整 GET。[HTTP 验收记录](./native-2d-m6.1-font-http.md)

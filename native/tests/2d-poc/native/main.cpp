@@ -779,7 +779,7 @@ void testFontAssets() {
     font->setConfigJson(config);
     const auto revision = font->getRevision();
     const auto configRevision = font->getConfigRevision();
-    check(!font->setConfigJson("{bad") && font->getRevision() == revision && font->getGlyphCount() == 1, "invalid config atomic");
+    check(!font->setConfigJson("{bad") && font->getRevision() == revision && font->getGlyphs().size() == 1, "invalid config atomic");
     check(font->getConfigRevision() == configRevision, "failed parse preserves config revision");
     for (int kind = 0; kind < 2; ++kind) {
         cc::IntrusivePtr<cc::BitmapFontAsset> validated(kind == 0 ? new cc::BitmapFontAsset() : new cc::LabelAtlas());
@@ -806,7 +806,7 @@ void testFontAssets() {
             check(!validated->setConfigJson(invalid), "unsafe bitmap numeric data rejected");
             check(validated->getRevision() == before && validated->getConfigRevision() == configBefore,
                   "invalid bitmap data preserves both revisions");
-            check(validated->getConfigJson() == config && validated->getGlyphCount() == 1
+            check(validated->getConfigJson() == config && validated->getGlyphs().size() == 1
                       && validated->getKerning(65, 65) == -1.F, "invalid bitmap data preserves complete native state");
         }
     }
@@ -878,7 +878,7 @@ void testFontAssets() {
     for (int i = 0; i < 1000; ++i) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(nullptr); }
     check(font->getRefCount() == refs, "repeated switching releases font ownership");
     label.setFontAsset(font); font->destroy(); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(font->isReleased() && !font->getSpriteFrame() && !font->getGlyphCount(), "destroy releases bitmap data immediately");
+    check(font->isReleased() && !font->getSpriteFrame() && font->getGlyphs().empty(), "destroy releases bitmap data immediately");
     check(fontEntity->getStaticDrawInfoSize() == 0, "destroyed font clears attached Label");
     label.setFontAsset(nullptr);
     const auto frameRefs = frame->getRefCount();

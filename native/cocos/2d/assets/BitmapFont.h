@@ -55,7 +55,6 @@ public:
     const std::string &getConfigJson() const { return _configJson; }
     uint32_t getConfigRevision() const { return _configRevision; }
     std::vector<float> getGlyphData() const;
-    uint32_t getGlyphCount() const { return static_cast<uint32_t>(_glyphs.size()); }
     float getKerning(int32_t left, int32_t right) const;
     const std::vector<BitmapFontGlyph> &getGlyphs() const { return _glyphs; }
     const std::unordered_map<int32_t, size_t> &getGlyphMap() const { return _glyphMap; }
