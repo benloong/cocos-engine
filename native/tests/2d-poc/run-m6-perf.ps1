@@ -1,8 +1,9 @@
-param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory, [switch]$TextWidthProbe)
+param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory, [switch]$TextWidthProbe, [ValidatePattern('^[0-9a-f]{10}$')][string]$ProjectRevision)
 $ErrorActionPreference = 'Stop'
 $dir = Join-Path $PSScriptRoot 'build'
 $key = if ($Target -eq 'web') { 'after' } else { $Target }
-$project = Join-Path $dir "perf-project-$key/build"
+$projectName = if ($ProjectRevision) { "perf-project-$key-$ProjectRevision" } else { "perf-project-$key" }
+$project = Join-Path $dir "$projectName/build"
 $fixture = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'm6-perf-workloads.js'))
 if ($Target -eq 'web') {
     $file = Join-Path $project 'web-mobile/index.js'
@@ -24,7 +25,7 @@ $entry = [IO.File]::ReadAllText($original)
 if ($entry.Split($hook, [StringSplitOptions]::None).Count -ne 2) { throw 'Cannot identify unique benchmark entry' }
 [IO.File]::WriteAllText($file, $entry.Replace($hook, $fixture + [Environment]::NewLine + $install + $hook))
 if ($Target -eq 'web') {
-    node (Join-Path $PSScriptRoot 'run-graphics-gpu-web.cjs') --perf
+    node (Join-Path $PSScriptRoot 'run-graphics-gpu-web.cjs') --perf "--project=$projectName"
     exit $LASTEXITCODE
 }
 $log = Join-Path $dir "m6-perf-$key.log"

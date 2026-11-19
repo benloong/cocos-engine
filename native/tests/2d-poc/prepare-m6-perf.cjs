@@ -11,10 +11,11 @@ const source = process.env.CC_M6_PERF_CHECKOUT ? path.resolve(process.env.CC_M6_
 if (path.dirname(source) !== out || !new RegExp('^perf-' + key + '(?:-[0-9a-f]+)?$').test(path.basename(source))) {
     throw new Error('Expected an isolated measurement checkout under ' + out);
 }
-const project = path.join(out, 'perf-project-' + key);
+const revision = execFileSync('git', ['-C', source, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+const projectSuffix = process.argv.includes('--isolated-project') ? '-' + revision.slice(0, 10) : '';
+const project = path.join(out, 'perf-project-' + key + projectSuffix);
 const windows = path.join(project, 'build/windows');
 const template = path.join(out, 'graphics-gpu-project');
-const revision = execFileSync('git', ['-C', source, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 if (path.resolve(execFileSync('git', ['-C', source, 'rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim()) !== source) {
     throw new Error('Expected a dedicated benchmark checkout');
 }
