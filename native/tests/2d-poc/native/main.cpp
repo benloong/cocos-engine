@@ -248,7 +248,9 @@ void testSpriteFrameData() {
     checkNear(border[0], 13, "native trimmed left border");
     checkNear(border[3], -13, "native trimmed top border");
     cc::IntrusivePtr<cc::SpriteFrame> copy(new cc::SpriteFrame());
+    const auto flipRevision = frame->getRevision();
     frame->setFlipUVX(true);
+    check(frame->getRevision() != flipRevision, "frame flip updates revision");
     frame->setPivotX(0.25F);
     frame->setPackable(false);
     frame->setAtlasUuid("atlas");
@@ -2359,9 +2361,8 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
         "    if (sf.getRectWidth() !== 1 || clone.getRectWidth() !== 7) return 'frame copy shares data';"
         "    if (sf.getInsetTop() !== 3) return 'frame inset order';"
         "    if (sf.getPixelsToUnit() !== 100 || sf.getPivotX() !== 0.5) return 'frame defaults';"
-        "    var revision = sf.getRevision();"
         "    sf.setFlipUVX(true);"
-        "    if (!sf.getFlipUVX() || sf.getRevision() === revision) return 'frame flip revision';"
+        "    if (!sf.getFlipUVX()) return 'frame flip';"
         "    if (sf.getUV().length !== 0) return 'missing texture UV';"
         "    var texture = new jsb.Texture2D();"
         "    texture.create(128, 256);"

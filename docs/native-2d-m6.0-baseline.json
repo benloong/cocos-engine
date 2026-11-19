@@ -379,7 +379,7 @@
     },
     {
       "file": "native/tools/swig-config/assets.i",
-      "sha256": "3175573ed90b4322f0004f0d917d979cc30954a2e0b2171e9e4119915d2ac63b"
+      "sha256": "935ab1e6d92e97e10d518509efd94a82eab2df3533a537ab3060d5e003446b76"
     },
     {
       "file": "scripts/compile-native-ts.js",

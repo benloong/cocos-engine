@@ -31,9 +31,8 @@ function check(value, message) { if (!value) throw new Error(message); }
 const probe = `
 const { SpriteAtlas } = exports;
 const atlas = new SpriteAtlas();
-// This console harness has raw SWIG constructors, not the full runtime's
-// JSB constructor hook, so invoke that hook explicitly.
-atlas._ctor();
+// The standalone harness may have constructed a native atlas before loading this shell.
+if (initialized === 0) atlas._ctor();
 check(initialized === 1, 'Asset constructor');
 const first = new jsb.SpriteFrame(), second = new jsb.SpriteFrame();
 const texture = new jsb.Texture2D(); texture.create(4, 4);
@@ -41,6 +40,7 @@ first.setTexture(texture); first._uuid = 'first-id'; second._uuid = 'second-id';
 atlas.spriteFrames = { hero: first, empty: null };
 check(rawGet.call(atlas, 'hero') === first, 'map replacement conversion');
 check(!('getSpriteFrameCount' in atlas), 'test count is absent from the binding');
+check(!('getRevision' in atlas) && !('getRevision' in first), 'native sprite asset revisions are private');
 check(atlas.getSpriteFrameNames().join(',') === 'hero,empty', 'null slot');
 check(rawTexture.call(atlas) === texture, 'first texture');
 atlas.spriteFrames.hero = second;

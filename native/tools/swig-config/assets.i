@@ -252,7 +252,9 @@
 %include "core/assets/ImageAsset.h"
 %include "core/assets/SceneAsset.h"
 %include "core/assets/TextAsset.h"
+%ignore cc::SpriteFrame::getRevision;
 %include "2d/assets/SpriteFrame.h"
+%ignore cc::SpriteAtlas::getRevision;
 %include "2d/assets/SpriteAtlas.h"
 %ignore cc::FontAsset::getIdentity;
 %include "2d/assets/Font.h"
