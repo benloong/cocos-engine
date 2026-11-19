@@ -299,16 +299,23 @@ node native/tests/2d-poc/compare-static-atlas-heap.cjs native/tests/2d-poc/build
 
 ### 7.9 BitmapFont / LabelAtlas GPU 图集消费者
 
-M5 探针先运行 BitmapGpuProbe。Web 采集 BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，Windows Debug 采集原图/尝试启用后/重置后。两端各有 12 份固定 CENTER/CENTER、CLAMP、64×32 内容框的 RGBA，另有 76 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距、裁剪，以及带 padding 的非零帧原点、trim、offset 和旋转。Windows Debug 直接提交原生字形网格并检查实际源纹理绑定，CPU 诊断构建次数须为 0。70000 字形须分为 5 个 chunk，随后清空并检查引用。
+M5 探针先运行 BitmapGpuProbe。Web 采集 BitmapFont/LabelAtlas × 普通/旋转帧 × 原图/打包/恢复，Windows Debug 和 Release 采集原图/尝试启用后/重置后。各端有 12 份固定 CENTER/CENTER、CLAMP、64×32 内容框的 RGBA，另有 80 份布局捕获，覆盖九种对齐组合、字号缩放、spacing、词换行、四种 overflow、行距、裁剪，以及带 padding 的非零帧原点、trim、offset 和旋转。Windows 直接提交原生字形网格并检查实际源纹理绑定，CPU 诊断构建次数须为 0。70000 字形须分为 5 个 chunk，随后清空并检查引用。
 
 ```powershell
 node native/tests/2d-poc/run-dynamic-atlas-web.cjs --bitmap
-pwsh -NoProfile -File native/tests/2d-poc/run-m5-richtext-probe.ps1
-node native/tests/2d-poc/compare-bitmap-gpu.cjs
-node native/tests/2d-poc/compare-bitmap-layout.cjs
+if ($LASTEXITCODE) { throw 'Web 采集失败' }
+$project = (Resolve-Path ../cocos-m1-test).Path
+foreach ($config in 'Debug', 'Release') {
+    pwsh -NoProfile -File native/tests/2d-poc/run-m5-richtext-probe.ps1 -AppExe "$project/build/windows/proj/$config/cocos-m1-test.exe"
+    if ($LASTEXITCODE) { throw "$config 采集失败" }
+    node native/tests/2d-poc/compare-bitmap-gpu.cjs $project $config
+    if ($LASTEXITCODE) { throw "$config 图集像素对照失败" }
+    node native/tests/2d-poc/compare-bitmap-layout.cjs $project $config
+    if ($LASTEXITCODE) { throw "$config 布局对照失败" }
+}
 ```
 
-每份图像必须为 256×256 RGBA。Web 打包/恢复与 Web 原图逐字节相同，Windows Debug 三个状态也须逐字节相同。比较 Windows Debug 三个状态与 Web 原图和双端 76 份布局，通道容差 1。完成标记、字形数、实际 GPU 纹理绑定、大字形分块和清空检查均须通过。布局对照还要求 76 组内容尺寸、actualFontSize、字形数及记录的帧状态相同（数值容差 0.0001）。M0 已加入 run-m6-bitmap-layout-parity.ps1，执行 2307 组实际 Web TextProcessing、BmfontUtils 与原生布局及四顶点位置和 UV 对照；可传 NativeExecutables 追加其他编译器的同一夹具。
+每份图像必须为 256×256 RGBA。Web 打包/恢复与 Web 原图逐字节相同，Windows 各配置的三个状态也须逐字节相同。与 Web 对照的通道容差为 1。完成标记、字形数、实际 GPU 纹理绑定、大字形分块和清空检查均须通过。比较器从所选配置的 `m6-bitmap-captures` 目录读取 RGBA 和 `layout-metrics.json`，核对 80 组内容尺寸、actualFontSize、字形数及记录的帧状态，数值容差为 0.0001。M0 另运行 run-m6-bitmap-layout-parity.ps1，对照实际 Web TextProcessing、BmfontUtils 与原生布局及四顶点位置和 UV。
 
 ## 8. 完整验收顺序
 

@@ -62,7 +62,6 @@ try {
         $_.Line.Substring($_.Line.IndexOf('M6_BITMAP_LAYOUT ') + 17) | ConvertFrom-Json
     })
     if ($bitmap.layoutCaptures -ne 80 -or $layoutMetrics.Count -ne 80 -or @($layoutMetrics.name | Select-Object -Unique).Count -ne 80) { throw 'Bitmap layout captures missing' }
-    $layoutMetrics | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'build/bitmap-native-layout-metrics.json') -Encoding utf8
     $largeLine = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LARGE ')
     if ($largeLine.Count -ne 1) { throw 'Large bitmap GPU completion missing' }
     $large = $largeLine[0].Line.Substring($largeLine[0].Line.IndexOf('M6_BITMAP_LARGE ') + 16) | ConvertFrom-Json
@@ -102,6 +101,8 @@ try {
     if ($Implementation -eq 'js' -and ($data.jsLabelComponents -ne $data.labels -or $data.jsSpriteComponents -ne $data.sprites)) {
         throw 'JS RichText segment queries did not return their renderers'
     }
+    $captureDirectory = Join-Path (Split-Path -Parent (Resolve-Path -LiteralPath $AppExe)) 'm6-bitmap-captures'
+    $layoutMetrics | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $captureDirectory 'layout-metrics.json') -Encoding utf8
     $passed = $true
     Write-Host 'M5 RichText probe: PASS'
 } catch {

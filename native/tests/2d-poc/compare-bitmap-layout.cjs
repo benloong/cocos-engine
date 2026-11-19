@@ -5,15 +5,15 @@ const configuration = process.argv[3] || 'Debug';
 if (!['Debug', 'Release'].includes(configuration)) throw new Error('Expected Debug or Release');
 const read=p=>JSON.parse(fs.readFileSync(p,'utf8').replace(/^\uFEFF/,''));
 const web=read(path.join(__dirname,'build/bitmap-web-captures/manifest.json')).layoutMetrics;
-const metricsFile = configuration === 'Release' ? 'bitmap-native-release-layout-metrics.json' : 'bitmap-native-layout-metrics.json';
-const native = read(path.join(__dirname, 'build', metricsFile));
+const nativeCaptures = path.join(project, 'build/windows/proj', configuration, 'm6-bitmap-captures');
+const native = read(path.join(nativeCaptures, 'layout-metrics.json'));
 if(web.length!==80||native.length!==80)throw Error('Expected 80 layout captures on each backend');
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');const captures=[];
 for(let i=0;i<web.length;i++){
  const w=web[i],n=native[i];if(w.name!==n.name||w.frameProfile!==n.frameProfile)throw Error('Layout names differ');
  for(const key of ['width','height','actualFontSize','glyphs','sourceFontSize','metadataFontSize','rectX','rectY','originalWidth','originalHeight','offsetX','offsetY'])if(!Number.isFinite(n[key])||Math.abs(w[key]-n[key])>.0001)throw Error(w.name+' '+key+': native '+n[key]+', Web '+w[key]);
  const expected=fs.readFileSync(path.join(__dirname,'build/bitmap-web-captures',w.name+'.rgba'));
- const actual=fs.readFileSync(path.join(project,'build/windows/proj',configuration,'m6-bitmap-captures',n.name+'.rgba'));
+ const actual=fs.readFileSync(path.join(nativeCaptures,n.name+'.rgba'));
  if(expected.length!==262144||actual.length!==262144)throw Error('Invalid RGBA size');
  let maxDifference=0,differingChannels=0;for(let at=0;at<actual.length;at++){const delta=Math.abs(actual[at]-expected[at]);maxDifference=Math.max(maxDifference,delta);if(delta)differingChannels++;}
  captures.push({...n,maxDifference,differingChannels,nativeSha256:hash(actual),webSha256:hash(expected)});
