@@ -17,7 +17,8 @@ int main(int argc, char **argv) {
     else if (colorName == "half-white") color[3] = .5F;
     else if (colorName != "white") return 2;
     const std::string sample = argc >= 5 ? argv[4] : "latin";
-    const std::string text = sample == "combining" ? u8"A\u0301tlas" : sample == "thai" ? u8"\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22" : sample == "latin" ? "Atlas 123" : "";
+    const std::string text = sample == "combining" ? u8"A\u0301tlas" : sample == "thai" ? u8"\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22"
+        : sample == "stems" ? "I E L" : sample == "rounds" ? "O S C" : sample == "latin" ? "Atlas 123" : "";
     if (text.empty()) return 2;
     const std::string mode = argc >= 6 ? argv[5] : "fill";
     if (mode != "fill" && mode != "outline" && mode != "stroke-round" && mode != "stroke-miter" && mode != "stroke-bevel") return 2;

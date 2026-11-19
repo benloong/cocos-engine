@@ -22,3 +22,17 @@ Canvas 增加默认返回 false 的 supportsTextStroke 能力查询，Windows �
 原始数据见 [结果](./native-2d-m6.2-ttf-stroke-results.json)。复现沿用 [Canvas 对照](./native-2d-m6.2-ttf-preblend.md) 和 [完整 GPU 应用](./native-2d-m6.2-richtext-gpu.md#复现)。原始工具新增末尾 mode 参数：stroke-round、stroke-miter、stroke-bevel、outline；Web runner 使用相同 mode。日志为 build/ttf-stroke-*。
 
 剩余：轮廓扩张/栅格覆盖差异、粗体描边、灰色 RGB、RTL/sideways、其他字体/平台、性能和完整资源生命周期。未重跑 Graphics 74 例；已有 SpriteFrame.native 改动仍未纳入提交，此节点不作为 M6 最终候选验收。
+
+## 2026-11-19 Windows 与 Web 原始字形对照
+
+使用同一份 Thonburi.ttf、白字、256×128 缓冲，比较 12、24、36、48 px 的 normal、bold、italic。每格共 12 例。通过要求为所有 RGBA 通道逐像素绝对误差 ≤1。下表括号内是该组最大 alpha 误差。
+
+| 文本 | 填充通过数 | 圆角描边通过数 | 描边后填充通过数 |
+|---|---:|---:|---:|
+| Atlas 123 | 8（74） | 0（86） | 0（86） |
+| I E L | 8（69） | 0（55） | 0（55） |
+| O S C | 8（73） | 0（93） | 0（93） |
+
+Windows Debug 与 Release 在 108 例中逐字节相同。两者与 Web 的 RGB 最大误差均为 0。普通和斜体填充的 24 例全部通过，粗体填充的 12 例全部超差。仅画描边的 36 例已全部超差，说明白色轮廓的差异在叠加填充及 GPU 采样前就已出现。这个实验仍不能区分轮廓扩张误差和栅格采样误差，也不能外推到其他字色。
+
+复现时先在 native/tests/2d-poc/native 下的 out 和 out-release2 构建 cc2d_ttf_raster，然后在仓库根运行 `node native/tests/2d-poc/compare-ttf-contours.cjs --capture`。不带参数可重新比较已有捕获。逐例 SHA256、误差、浏览器版本和字体哈希写入 native/tests/2d-poc/build/font-contour-report.json。比较器记录每例是否超差，命令成功仅表示数据完整并且两个 Windows 配置一致。
