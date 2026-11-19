@@ -459,7 +459,7 @@ void testFrameConsumers() {
     label.setBitmapAtlas(frame, 2);
     label.addGlyph(65, 0, 0, 2, 2, 0, 0, 2);
     label.setString("A");
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 4, "BMFont consumes native SpriteFrame texture");
 
     cc::Node maskNode("frame-mask");
@@ -486,7 +486,7 @@ void testFrameConsumers() {
     cc::IntrusivePtr<cc::Texture2D> transparentTexture(new cc::Texture2D());
     transparentTexture->setImage(transparentImage);
     frame->setTexture(transparentTexture);
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 0, "BMFont sees shared frame texture replacement");
 }
 
@@ -664,7 +664,7 @@ void testFontAssets() {
     label.setNode(&node); label.setUITransform(&transform); label.setMaterial(material);
     label.setFontSize(2); label.setLineHeight(2); label.setString("A"); label.setCacheMode(2);
     const auto refs = font->getRefCount();
-    label.setFontAsset(font); label.prepareRenderEntity(1.F);
+    label.setFontAsset(font); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     auto *fontEntity = static_cast<cc::RenderEntity *>(node.getUserData());
     check(fontEntity->isEnabled(), "font invalidation preserves Label prepare eligibility");
     label.setEnabled(false);
@@ -675,7 +675,9 @@ void testFontAssets() {
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 4, "LabelAtlas native glyph renders even in CHAR mode");
     const auto coverageChecksum = label.getPixelChecksum();
-    label.setColorRGBA(128,64,32,128); label.prepareRenderEntity(128.F / 255.F);
+    label.setColorRGBA(128,64,32,128); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+    node.setActiveInHierarchy(true);
+    cc::Batcher2d().walk(&node, 1.F, false);
     auto *labelDraw = static_cast<cc::RenderEntity *>(node.getUserData())->getStaticRenderDrawInfo(0);
     const auto *labelVertices = labelDraw->getVDataBuffer();
     check(labelVertices != nullptr, "Label has submitted vertex data");
@@ -685,21 +687,21 @@ void testFontAssets() {
         checkNear(labelVertices[8], 128.F / 255.F, "Label submitted opacity is applied once");
     }
     check(label.getPixelChecksum() == coverageChecksum, "Label texture coverage does not bake component alpha");
-    label.setColorRGBA(255,255,255,255); label.prepareRenderEntity(1.F);
+    label.setColorRGBA(255,255,255,255); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.measureUnwrappedText("A").width, label.getContentWidth(), "bitmap measurement uses native glyph table");
     check(font->getRefCount() == refs + 1, "Label retains font asset");
     { cc::Label second; second.setFontAsset(font); check(font->getRefCount() == refs + 2, "labels share font ownership"); }
     check(font->getRefCount() == refs + 1, "Label destructor releases font");
-    font->setConfigJson("null"); label.prepareRenderEntity(1.F);
+    font->setConfigJson("null"); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 0 && label.getContentWidth() == 0, "config revision clears stale render data");
-    font->setConfigJson(config); label.prepareRenderEntity(1.F);
+    font->setConfigJson(config); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 4, "config replacement refreshes existing Label");
-    font->setSpriteFrame(nullptr); label.prepareRenderEntity(1.F);
+    font->setSpriteFrame(nullptr); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 0, "frame detach clears Label");
     font->setSpriteFrame(frame);
     for (int i = 0; i < 1000; ++i) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(nullptr); }
     check(font->getRefCount() == refs, "repeated switching releases font ownership");
-    label.setFontAsset(font); font->destroy(); label.prepareRenderEntity(1.F);
+    label.setFontAsset(font); font->destroy(); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(font->isReleased() && !font->getSpriteFrame() && !font->getGlyphCount(), "destroy releases bitmap data immediately");
     check(label.getOpaquePixels() == 0, "destroyed font clears attached Label");
     label.setFontAsset(nullptr);
@@ -709,18 +711,18 @@ void testFontAssets() {
             cc::IntrusivePtr<cc::BitmapFontAsset> cycle(kind == 0 ? new cc::BitmapFontAsset() : new cc::LabelAtlas());
             cycle->setConfigJson(config); cycle->setFontSize(2); cycle->setSpriteFrame(frame);
             check(frame->getRefCount() == frameRefs + 1, "bitmap font owns one atlas reference");
-            label.setFontAsset(cycle); label.prepareRenderEntity(1.F);
+            label.setFontAsset(cycle); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
             check(label.getOpaquePixels() == 4, "new font cycle renders shared atlas");
-            cycle->clearNativeData(); label.prepareRenderEntity(1.F);
+            cycle->clearNativeData(); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
             check(label.getOpaquePixels() == 0 && frame->getRefCount() == frameRefs, "clear releases atlas and stale pixels");
             cycle->setConfigJson(config); cycle->setFontSize(2); cycle->setSpriteFrame(frame);
-            label.prepareRenderEntity(1.F);
+            cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
             check(label.getOpaquePixels() == 4, "cleared font can reload native data");
             cycle->destroy(); cc::CCObject::deferredDestroy();
             const auto releasedRevision = cycle->getRevision();
             cycle->setSpriteFrame(frame); cycle->setFontSize(20); cycle->setFntDataStr("late");
             check(!cycle->setConfigJson(config), "destroyed font rejects late config");
-            label.prepareRenderEntity(1.F);
+            cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
             check(cycle->getRevision() == releasedRevision && cycle->getFntDataStr().empty(), "late writes do not mutate released font");
             check(label.getOpaquePixels() == 0 && frame->getRefCount() == frameRefs, "destroyed cycle releases shared atlas");
             label.setFontAsset(nullptr);
@@ -847,24 +849,24 @@ void testLabelStyleExtents() {
     label.setIsItalic(true);
     const auto italic = label.measureUnwrappedText("Atlas 123");
     checkNear(italic.width - italicGlyphWidth, 5.101357474F, "TTF italic reserves Web 12-degree overhang");
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), italic.width, "italic Label raster layout agrees with RichText measurement");
     label.setEnableOutline(true); label.setOutlineWidth(2);
     const auto combined = label.measureUnwrappedText("Atlas 123");
     checkNear(combined.width - italic.width, 4.F, "outline extends both horizontal edges");
     checkNear(combined.height - italic.height, 4.F, "outline extends both vertical edges");
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), combined.width, "outlined Label width agrees with measurement");
     checkNear(label.getContentHeight(), combined.height, "outlined Label height agrees with measurement");
-    label.setEnableOutline(false); label.setIsItalic(false); label.prepareRenderEntity(1.F);
+    label.setEnableOutline(false); label.setIsItalic(false); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), label.measureUnwrappedText("Atlas 123").width, "style removal clears previous extent");
     label.setEnableWrapText(true);
     for (int i = 0; i < 3; ++i) {
-        label.setEnableOutline(true); label.prepareRenderEntity(1.F);
+        label.setEnableOutline(true); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         checkNear(label.getContentWidth(), label.measureUnwrappedText("Atlas 123").width, "auto width does not accumulate outline extent");
-        label.setEnableOutline(false); label.prepareRenderEntity(1.F);
+        label.setEnableOutline(false); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     }
-    label.setString("A"); label.prepareRenderEntity(1.F);
+    label.setString("A"); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), label.measureUnwrappedText("A").width, "Overflow NONE shrinks with wrap flag enabled");
     std::printf("label style extents: PASS\n");
 }
@@ -874,7 +876,7 @@ void testLabelRasterMapping() {
     cc::Label label; label.setNode(&node); label.setUITransform(&ui);
     cc::IntrusivePtr<cc::Material> material(new cc::Material()); label.setMaterial(material);
     label.setFontSize(24); label.setLineHeight(30); label.setString("Atlas 123");
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     const auto width = static_cast<uint32_t>(label.getContentWidth());
     const auto height = static_cast<uint32_t>(label.getContentHeight());
     check(label.getTextureWidth() == width && label.getTextureHeight() == height, "TTF canvas uses Web integer dimensions without extra border");
@@ -895,7 +897,7 @@ void testLabelRasterMapping() {
     reference.fetchData();
     check(label.getPixelChecksum() == checksum, "TTF raster follows Web alphabetic baseline and edge prefill");
     check(label.getOpaquePixels() == covered, "TTF glyph coverage excludes invisible edge prefill");
-    label.setString(" "); label.prepareRenderEntity(1.F);
+    label.setString(" "); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 0, "whitespace prefill is not counted as visible text");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     {
@@ -1000,7 +1002,7 @@ void testRichTextRuntime() {
     check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
     check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
     const auto revision = rich.getLayoutRevision(); auto *first = rich.getSegmentNode(0);
-    for (int i = 0; i < 1000; ++i) rich.prepareRenderEntity(1.F);
+    for (int i = 0; i < 1000; ++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(rich.getLayoutRevision() == revision && rich.getSegmentNode(0) == first, "idle RichText performs no layout or segment churn");
     for (uint32_t i = 0; i < rich.getSegmentCount(); ++i) {
         auto *entity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(i)->getUserData());
@@ -1073,16 +1075,16 @@ void testLayoutAndMaterials() {
     label.setNode(&labelNode); label.setUITransform(&labelUI);
     label.setFontSize(16); label.setLineHeight(20); label.setString("material");
     auto *labelEntity = static_cast<cc::RenderEntity *>(labelNode.getUserData());
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(labelEntity && labelEntity->getStaticDrawInfoSize() == 1
           && labelEntity->getStaticRenderDrawInfo(0)->getMaterial() == custom, "Label submits custom slot material");
     cc::IntrusivePtr<cc::Material> labelInstance(label.getMaterialInstance(0));
-    label.prepareRenderEntity(1.F);
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(labelEntity && labelEntity->getStaticDrawInfoSize() == 1
           && labelEntity->getStaticRenderDrawInfo(0)->getMaterial() == labelInstance, "Label submits actual native instance");
-    label.setSharedMaterial(nullptr, 0); label.prepareRenderEntity(1.F);
+    label.setSharedMaterial(nullptr, 0); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(labelEntity && labelEntity->getStaticDrawInfoSize() == 0, "explicit empty Label slot clears old draw info");
-    label.setMaterial(nullptr); label.prepareRenderEntity(1.F);
+    label.setMaterial(nullptr); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(labelEntity && labelEntity->getStaticDrawInfoSize() == 1
           && labelEntity->getStaticRenderDrawInfo(0)->getMaterial() == builtin, "Label custom clear restores builtin submission");
     label.setSharedMaterial(custom, 2);
@@ -1090,7 +1092,7 @@ void testLayoutAndMaterials() {
     check(label.getSharedMaterialCount() == 3, "secondary Label slots have native array extent");
     label.resizeMaterials(1);
     check(label.getSharedMaterialCount() == 1 && custom->getRefCount() < retainedRefs, "shrinking Label slots releases shared references");
-    label.resizeMaterials(0); label.prepareRenderEntity(1.F);
+    label.resizeMaterials(0); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(labelEntity && labelEntity->getStaticDrawInfoSize() == 0, "empty Label array clears renderer");
     label.setNode(nullptr); label.setUITransform(nullptr);
     cc::Node node("graphics-default-material"); cc::UITransform ui(&node);
@@ -1108,7 +1110,11 @@ void testGraphicsMeshes() {
     cc::Node node("graphics-gpu");
     cc::Graphics graphics; graphics.setNode(&node);
     graphics.setFillColor(cc::Color(200,40,20,128));
-    graphics.rect(-700,-300,1400,600);graphics.fill();graphics.prepareRenderEntity(.5F);
+    graphics.rect(-700,-300,1400,600);graphics.fill();
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+    node.setActiveInHierarchy(true);
+    node._setLocalOpacity(.5F);
+    cc::Batcher2d().walk(&node, 1.F, false);
     auto *entity=graphics.getRenderEntity();
     check(entity->getUseLocal() && entity->getRenderTransform()==&node,"Graphics uses Node local UBO rather than baking world positions");
     check(entity->getRenderDrawInfosSize()==1,"Graphics exposes one native mesh chunk");
@@ -1123,13 +1129,13 @@ void testGraphicsMeshes() {
         check(ia->getVertexBuffers()[0]->getSize()==128 && ia->getVertexBuffers()[0]->getStride()==32,"Graphics uploads actual 8-float GPU vertices");
         check(ia->getIndexBuffer()->getSize()==12 && ia->getAttributes().back().name=="a_dist","Graphics GPU index data and distance attribute");
         auto *vertices=draw->getVDataBuffer();auto revision=graphics.getRevision();
-        for(int i=0;i<1000;++i) graphics.prepareRenderEntity(.5F);
+        for(int i=0;i<1000;++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(entity->getRenderDrawInfoAt(0)==draw && draw->getVDataBuffer()==vertices && graphics.getRevision()==revision,"Graphics idle prepare retains mesh/IA storage");
     }
     graphics.clear();
     check(entity->getRenderDrawInfosSize()==0,"Graphics clear drops draws and old GPU chunks");
     for(int i=0;i<20000;++i) graphics.rect(i*2,0,1,1);
-    graphics.fill();graphics.prepareRenderEntity(1);
+    graphics.fill();cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(entity->getRenderDrawInfosSize()==2,"Graphics splits meshes above 65535 vertices");
     uint32_t indices=0;
     for(uint32_t k=0;k<entity->getRenderDrawInfosSize();++k) {
@@ -1186,11 +1192,11 @@ void testGraphicsMeshes() {
         cc::UITransform firstUI(&firstNode),secondUI(&secondNode);
         auto first=std::make_unique<cc::Label>();cc::Label second;
         first->setNode(&firstNode);first->setUITransform(&firstUI);second.setNode(&secondNode);second.setUITransform(&secondUI);
-        for(auto *label:{first.get(),&second}) { label->setCacheMode(2);label->setFont("14px Arial");label->setFontSize(14);label->setLineHeight(18);label->setString("AB");label->prepareRenderEntity(1); }
+        for(auto *label:{first.get(),&second}) { label->setCacheMode(2);label->setFont("14px Arial");label->setFontSize(14);label->setLineHeight(18);label->setString("AB");cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); }
         check(first->getOpaquePixels()>0 && second.getOpaquePixels()>0,"Two CHAR Labels acquire registry-owned atlas leases");
-        first.reset();second.setString("BA");second.prepareRenderEntity(1);
+        first.reset();second.setString("BA");cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(second.getOpaquePixels()>0,"Releasing one CHAR Label preserves the other lease");
-        for(int i=0;i<1000;++i) { second.setCacheMode(0);second.setCacheMode(2);second.prepareRenderEntity(1); }
+        for(int i=0;i<1000;++i) { second.setCacheMode(0);second.setCacheMode(2);cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); }
         check(second.getOpaquePixels()>0,"CHAR cache releases and reacquires the last lease across 1000 switches");
     }
     {

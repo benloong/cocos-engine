@@ -59,6 +59,7 @@ const assemblerExports={}; ((exports)=>{ ${assemblerShell} })(assemblerExports);
 const graphicsExports={}; ((exports)=>{ ${graphicsShell} })(graphicsExports);
 function check(value,message){if(!value)throw new Error(message);}
 check(exports.Sprite.Assembler===assemblerExports.spriteAssembler&&labelExports.Label.Assembler===assemblerExports.labelAssembler,'native assembler manager registration');
+const rendererManager = new n2d.UIRendererManager();
 const node=new jsb.Node('sprite-api-shell');
 const transform=new n2d.UITransform(node); let events=0;
 node.getComponent=()=>({_native:transform}); node.emit=()=>{events++;};
@@ -147,13 +148,13 @@ graphics.moveTo(-400,-100);graphics.lineTo(400,-100);graphics.lineTo(400,200);gr
 check(graphics._native.getVertexCount()>4&&graphics._native.getIndexCount()>6,'actual Graphics shell builds native stroke mesh');
 const maskNode=new jsb.Node('graphics-stencil-shell');const maskUI=new n2d.UITransform(maskNode);
 const mask=new n2d.Mask();mask.setNode(maskNode);mask.setType(2);graphics._setMask(mask);
-graphics._native.prepareRenderEntity(1);mask.prepareRenderEntity(1);
+rendererManager.updateAllDirtyRenderers();
 check(mask.getRenderEntity().getRenderDrawInfosSize()===1,'native Mask reads shell geometry without texture');
-graphics.clear();mask.prepareRenderEntity(1);
+graphics.clear();rendererManager.updateAllDirtyRenderers();
 check(mask.getRenderEntity().getRenderDrawInfosSize()===0,'native Mask follows clear without JS polling');
-graphics.fillRect(-700,-400,1400,800);mask.prepareRenderEntity(1);
+graphics.fillRect(-700,-400,1400,800);rendererManager.updateAllDirtyRenderers();
 check(mask.getRenderEntity().getRenderDrawInfosSize()===1,'native Mask follows geometry replacement');
-graphics.onDestroy();mask.prepareRenderEntity(1);
+graphics.onDestroy();rendererManager.updateAllDirtyRenderers();
 check(mask.getRenderEntity().getRenderDrawInfosSize()===0,'Graphics shell destroy unbinds source');
 mask.setType(0);mask.setRadius(20);maskUI.setContentSizeXY(100,80);
 check(mask.isHitWorldPointXY(0,0)&&!mask.isHitWorldPointXY(49,39),'native rounded Mask hit bindings');

@@ -15,6 +15,11 @@ const probe = `
         throw Error('Unknown manager import: ' + name);
     };
     ${compiled}
+    for (const component of [n2d.Sprite, n2d.Label, n2d.Graphics, n2d.Mask, n2d.RichText]) {
+        if ('prepareRenderEntity' in component.prototype || 'updateRenderer' in component.prototype) {
+            throw Error('Unexpected component-level renderer update binding');
+        }
+    }
     const manager = n2d.UIRendererManager;
     if (typeof manager.prototype.updateAllDirtyRenderers !== 'function' || 'updateAllDirtyRenderers' in manager) throw Error('Expected instance method');
     for (const name of ['addRenderer', 'removeRenderer', 'markDirtyRenderer', 'takeDirtyRenderers', 'getDirtyCount']) {

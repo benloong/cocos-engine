@@ -452,12 +452,9 @@ void Label::setEnabled(bool enabled) {
 }
 
 void Label::updateRenderer() {
-    if (renderDirtyFlags()) prepareRenderEntity(getRenderEntity()->getOpacity());
-}
-
-void Label::prepareRenderEntity(float opacity) {
+    if (!renderDirtyFlags()) return;
     updateRenderData();
-    _renderer.prepareRenderEntity(opacity);
+    _renderer.updateRenderer();
 }
 
 void Label::rebuildLetterTexture() {

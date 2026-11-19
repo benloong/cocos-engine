@@ -30,7 +30,6 @@ public:
     void setEnabled(bool enabled);
     void setMaterial(Material *material);
     void setPriority(int32_t priority);
-    void prepareRenderEntity(float opacity);
     RenderEntity *getRenderEntity() const override;
 
 private:

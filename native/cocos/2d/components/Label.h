@@ -129,7 +129,6 @@ public:
     void setPriority(int32_t priority);
     void setEnabled(bool enabled);
 
-    void prepareRenderEntity(float opacity);
 
 private:
     void updateRenderer() override;

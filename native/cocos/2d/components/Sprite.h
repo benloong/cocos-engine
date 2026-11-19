@@ -119,10 +119,10 @@ public:
 
     void setDirty() { markRenderDirty(); }
     void prepare(float opacity);
-    void prepareRenderEntity(float opacity);
     void onWorldTransformDirty() override { markRenderDirty(); }
 
 private:
+    friend class Mask;
     void updateRenderer() override;
     friend class Label;
     // Label owns layout; Sprite owns copied local quads and all submission buffers.

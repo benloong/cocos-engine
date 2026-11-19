@@ -120,10 +120,7 @@ void Graphics::rebuildChunks() {
     _chunks.resize(used);
 }
 void Graphics::updateRenderer() {
-    if (renderDirtyFlags()) prepareRenderEntity(getRenderEntity()->getOpacity());
-}
-
-void Graphics::prepareRenderEntity(float opacity) {
+    if (!renderDirtyFlags()) return;
     if (renderDirtyFlags() & GEOMETRY) rebuildChunks();
     clearRenderDirty();
     _entity->clearDynamicRenderDrawInfos();
@@ -144,6 +141,5 @@ void Graphics::prepareRenderEntity(float opacity) {
         draw.setDataHash(0);
         if (material) _entity->addDynamicRenderDrawInfo(&draw);
     }
-    _entity->setOpacity(opacity);
 }
 } // namespace cc

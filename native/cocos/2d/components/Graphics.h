@@ -51,7 +51,6 @@ public:
     void setMiterLimit(double value) { _geometry.miterLimit = value; }
     void setFillColor(const Color &color);
     void setStrokeColor(const Color &color);
-    void prepareRenderEntity(float opacity);
     RenderEntity *getRenderEntity() const override { return _entity.get(); }
     uint64_t getRevision() const { return _revision; }
     uint32_t getVertexCount() const { return static_cast<uint32_t>(_geometry.getVertices().size()); }
@@ -66,6 +65,7 @@ protected:
     Material *getBuiltinMaterial() const override;
 
 private:
+    friend class Mask;
     void updateRenderer() override;
     struct Chunk {
         std::vector<float> vertices;

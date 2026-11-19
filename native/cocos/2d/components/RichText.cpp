@@ -246,7 +246,6 @@ void RichText::updateLayout() {
     _transform->setContentSize(static_cast<float>(_layout.width), static_cast<float>(_layout.height));
     _updating = false;
 }
-void RichText::prepareRenderEntity(float /*opacity*/) { updateLayout(); }
 uint32_t RichText::getSegmentCount() const { return static_cast<uint32_t>(_segments.size()); }
 Node *RichText::getSegmentNode(uint32_t index) const { return index < _segments.size() ? _segments[index]->node.get() : nullptr; }
 Label *RichText::getSegmentLabel(uint32_t index) const { return index < _segments.size() ? _segments[index]->label.get() : nullptr; }

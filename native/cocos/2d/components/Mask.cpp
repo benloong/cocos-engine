@@ -143,17 +143,14 @@ void Mask::setPriority(int32_t value) {
     _graphics.setPriority(value);
 }
 void Mask::updateRenderer() {
-    if (renderDirtyFlags()) prepareRenderEntity(getRenderEntity()->getOpacity());
-}
-
-void Mask::prepareRenderEntity(float opacity) {
+    if (!renderDirtyFlags()) return;
     clearRenderDirty();
     // Reacquire the non-owning slot before dereferencing, including after a
     // UITransform is replaced/destroyed or added later.
     auto *transform = _node ? static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)) : nullptr;
     if (transform != _transform) setUITransform(transform);
     if (_type == 3) {
-        _sprite.prepareRenderEntity(opacity);
+        _sprite.updateRenderer();
         return;
     }
     if (_type != 2 && transform) {
@@ -185,6 +182,6 @@ void Mask::prepareRenderEntity(float opacity) {
             _shapeDirty = false;
         }
     }
-    _graphics.prepareRenderEntity(opacity);
+    _graphics.updateRenderer();
 }
 } // namespace cc

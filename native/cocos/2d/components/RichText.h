@@ -63,7 +63,6 @@ public:
     void setCacheMode(int32_t value);
     void setFontColorRGBA(float r, float g, float b, float a);
     void updateLayout();
-    void prepareRenderEntity(float opacity);
     uint32_t getSegmentCount() const;
     Node *getSegmentNode(uint32_t index) const;
     Label *getSegmentLabel(uint32_t index) const;

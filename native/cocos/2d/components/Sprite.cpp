@@ -383,11 +383,6 @@ void Sprite::updateRenderer() {
     prepare(opacity);
 }
 
-void Sprite::prepareRenderEntity(float opacity) {
-    if (std::fabs(opacity - _lastOpacity) > 1e-6F) markRenderDirty(COLOR);
-    if (renderDirtyFlags()) prepare(opacity);
-}
-
 void Sprite::prepare(float opacity) {
     if (!renderDirtyFlags() && std::fabs(opacity - _lastOpacity) <= 1e-6F) return;
     if (_spriteFrame) {
