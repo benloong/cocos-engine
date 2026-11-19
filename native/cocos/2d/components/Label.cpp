@@ -89,8 +89,6 @@ private:
 };
 #endif
 
-std::weak_ptr<LetterAtlas> gLetterAtlas;
-
 void ensureRasterTexture(IntrusivePtr<Texture2D> &texture, uint32_t width, uint32_t height) {
     if (!texture) {
         texture = new Texture2D();
@@ -199,8 +197,7 @@ Label::~Label() {
 
 LetterAtlas &Label::acquireLetterAtlas() {
     if (!_letterAtlas) {
-        _letterAtlas = gLetterAtlas.lock();
-        if (!_letterAtlas) gLetterAtlas = _letterAtlas = std::make_shared<LetterAtlas>();
+        _letterAtlas = LetterAtlas::acquire();
     }
     return *_letterAtlas;
 }

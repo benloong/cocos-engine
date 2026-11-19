@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "9ed8b1df0aa3968b05b8fed03e39e7c9947ef014416f2216b96f024422aac3fc"
+      "sha256": "d82f23801927ffeadd4fde58aabe89bd906acc74f6326232c4f2de37df0423e5"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "9deee8b154f4dbd5a5db78d3c33f69bdfa167fb4050b02746bd565d2199a4e1d"
+      "sha256": "9e89ddd38c86e1ba3ed3dcf0c9abbed5947146813fe5e6671718a5478a34577b"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -199,11 +199,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/LetterAtlas.cpp",
-      "sha256": "9815be29003159866aa2b1333695ef36b762a91e7ce633c65e41951b7e9bb05e"
+      "sha256": "d29d9d09f130a8019c6a1b45b16c65cb1b66f03bdb2953c3b3e5bd827f166e12"
     },
     {
       "file": "native/cocos/2d/renderer/LetterAtlas.h",
-      "sha256": "5341b98e9c3e8fd301bb4b4c95d2bba07f08aacfc16acfd123c50612f773843d"
+      "sha256": "459d5960b60438fe3e3be3f4ebc8fc89233cf3cbc2a01bce5cf0e8b1a4651801"
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.cpp",
@@ -397,12 +397,12 @@
     "within2d": [
       "cocos/2d/assembler/graphics/types.ts",
       "cocos/2d/assembler/index.jsb.ts",
-      "cocos/2d/assembler/label/font-utils.ts",
       "cocos/2d/assembler/utils.ts",
       "cocos/2d/assets/bitmap-font.jsb.ts",
       "cocos/2d/assets/font.jsb.ts",
       "cocos/2d/assets/index.ts",
       "cocos/2d/assets/label-atlas.jsb.ts",
+      "cocos/2d/assets/letter-render-texture.ts",
       "cocos/2d/assets/sprite-atlas.jsb.ts",
       "cocos/2d/assets/sprite-frame-vertices.ts",
       "cocos/2d/assets/sprite-frame.jsb.ts",
@@ -7415,12 +7415,12 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/label/font-utils.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
+          "cocos/2d/assets/letter-render-texture.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
@@ -7454,14 +7454,11 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts",
-          "cocos/2d/utils/font-family.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
@@ -7469,7 +7466,6 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
-          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -7499,12 +7495,10 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
-        "cocos/2d/assembler/label/font-utils.ts",
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
@@ -12152,12 +12146,12 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/label/font-utils.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
+          "cocos/2d/assets/letter-render-texture.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
@@ -12192,14 +12186,11 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts",
-          "cocos/2d/utils/font-family.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
@@ -12207,7 +12198,6 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
-          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -12237,12 +12227,10 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
-        "cocos/2d/assembler/label/font-utils.ts",
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
@@ -12597,12 +12585,12 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/label/font-utils.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
+          "cocos/2d/assets/letter-render-texture.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
@@ -12637,14 +12625,11 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts",
-          "cocos/2d/utils/font-family.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
@@ -12652,7 +12637,6 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
-          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -12682,12 +12666,10 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
-        "cocos/2d/assembler/label/font-utils.ts",
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
@@ -12829,12 +12811,12 @@
       },
       "imports": {
         "within2d": [
-          "cocos/2d/assembler/label/font-utils.ts",
           "cocos/2d/assembler/utils.ts",
           "cocos/2d/assets/bitmap-font.jsb.ts",
           "cocos/2d/assets/font.jsb.ts",
           "cocos/2d/assets/index.ts",
           "cocos/2d/assets/label-atlas.jsb.ts",
+          "cocos/2d/assets/letter-render-texture.ts",
           "cocos/2d/assets/sprite-atlas.jsb.ts",
           "cocos/2d/assets/sprite-frame-vertices.ts",
           "cocos/2d/assets/sprite-frame.jsb.ts",
@@ -12869,14 +12851,11 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts",
-          "cocos/2d/utils/font-family.ts",
-          "cocos/2d/utils/text-utils.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
           "cocos/asset/asset-manager/index.ts",
-          "cocos/asset/asset-manager/utilities.ts",
           "cocos/asset/assets/asset-enum.ts",
           "cocos/asset/assets/asset.jsb.ts",
           "cocos/asset/assets/image-asset.jsb.ts",
@@ -12884,7 +12863,6 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
-          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -12914,12 +12892,10 @@
         ],
         "unresolved": [
           "cc.decorator",
-          "internal:constants",
-          "pal/minigame"
+          "internal:constants"
         ]
       },
       "runtimeFindings": [
-        "cocos/2d/assembler/label/font-utils.ts",
         "cocos/2d/assembler/utils.ts",
         "cocos/2d/components/ui-mesh-renderer.ts",
         "cocos/2d/components/ui-static-batch.ts",
@@ -14573,33 +14549,6 @@
       "loops": []
     },
     {
-      "file": "cocos/2d/assembler/label/font-utils.ts",
-      "sha256": "4faf9bf9f83938a1c2b6ac5f0b77e48e3028d064cdcf5491bf7926c5eaef5168",
-      "printedCodeLines": 322,
-      "runtimeImports": [
-        "internal:constants",
-        "../../assets/bitmap-font",
-        "../../../core",
-        "../../../asset/assets",
-        "../../../asset/assets/asset-enum",
-        "../../../gfx",
-        "../../utils/text-utils",
-        "../../../game/director",
-        "../../../core/global-exports",
-        "../../../asset/assets/texture-base",
-        "../../utils/font-family"
-      ],
-      "frameMethods": [
-        {
-          "name": "update",
-          "line": 350
-        }
-      ],
-      "nativeCalls": [],
-      "allocations": [],
-      "loops": []
-    },
-    {
       "file": "cocos/2d/assembler/utils.ts",
       "sha256": "637aab32c8fa928812322fbed80d2da5ed2200683b866a0caf5734b1456d0940",
       "printedCodeLines": 91,
@@ -14743,6 +14692,21 @@
         "cc.decorator",
         "./bitmap-font",
         "../../core"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
+      "file": "cocos/2d/assets/letter-render-texture.ts",
+      "sha256": "8cf5fca96a6188239c7316e8a7f27276dc92d099abe24f865b785a0662f19f32",
+      "printedCodeLines": 31,
+      "runtimeImports": [
+        "../../asset/assets",
+        "../../asset/assets/asset-enum",
+        "../../core",
+        "../../gfx"
       ],
       "frameMethods": [],
       "nativeCalls": [],
@@ -15141,7 +15105,7 @@
     },
     {
       "file": "cocos/2d/components/label.jsb.ts",
-      "sha256": "87d8fb386e4bd3ef6162767adb2dd182050d767304ad02decc4a4a8f9e2e868e",
+      "sha256": "8d90394858a275cd6bc92dfe3a9767411f5edf14fbb7012a5529ad9e4ae86bd8",
       "printedCodeLines": 417,
       "runtimeImports": [
         "cc.decorator",
@@ -15152,7 +15116,7 @@
         "../framework/native-ui-materials",
         "../assets/font",
         "../assets/bitmap-font",
-        "../assembler/label/font-utils"
+        "../assets/letter-render-texture"
       ],
       "frameMethods": [],
       "nativeCalls": [

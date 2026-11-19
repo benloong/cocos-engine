@@ -27,7 +27,6 @@
 #include "2d/framework/UIComponentType.h"
 
 #include <string>
-#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -221,7 +220,7 @@ private:
     BitmapFontAsset *_bitmapFont{nullptr}; // owned by _fontAsset
     uint32_t _fontAssetRevision{0};
     LetterAtlas &acquireLetterAtlas();
-    std::shared_ptr<LetterAtlas> _letterAtlas;
+    IntrusivePtr<LetterAtlas> _letterAtlas;
 
     IntrusivePtr<SpriteFrame> _bitmapAtlas;
     uint32_t _bitmapAtlasRevision{0};

@@ -29,6 +29,7 @@
 #include <unordered_map>
 #include <vector>
 #include "base/Ptr.h"
+#include "base/RefCounted.h"
 #include "math/Color.h"
 
 namespace cc {
@@ -41,7 +42,7 @@ class Texture2D;
  * into a CPU RGBA atlas. Label consumes the alpha channel and applies its own
  * color while composing the final text texture.
  */
-class LetterAtlas final {
+class LetterAtlas final : public RefCounted {
 public:
     struct Glyph {
         int32_t code{0};
@@ -58,8 +59,8 @@ public:
     static constexpr int32_t ATLAS_WIDTH = 1024;
     static constexpr int32_t ATLAS_HEIGHT = 1024;
 
-    LetterAtlas();
-    ~LetterAtlas();
+    static IntrusivePtr<LetterAtlas> acquire();
+    ~LetterAtlas() override;
 
     using GlyphMap = std::unordered_map<int32_t, Glyph>;
     GlyphMap &getStyle(const std::string &key) { return _styles[key]; }
@@ -71,6 +72,7 @@ public:
     int32_t getHeight() const { return ATLAS_HEIGHT; }
 
 private:
+    LetterAtlas();
     std::vector<uint8_t> _pixels;
     std::unordered_map<std::string, GlyphMap> _styles;
     IntrusivePtr<Texture2D> _texture;

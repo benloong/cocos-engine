@@ -25,14 +25,16 @@
 import { JSB } from 'internal:constants';
 import { FontAtlas, FontLetterDefinition } from '../../assets/bitmap-font';
 import { Color, macro, warnID } from '../../../core';
-import { ImageAsset, Texture2D } from '../../../asset/assets';
-import { PixelFormat } from '../../../asset/assets/asset-enum';
+import { ImageAsset } from '../../../asset/assets';
+import { LetterRenderTexture } from '../../assets/letter-render-texture';
 import { BufferTextureCopy } from '../../../gfx';
 import { safeMeasureText, BASELINE_RATIO, MIDDLE_RATIO, getBaselineOffset, getSymbolCodeAt } from '../../utils/text-utils';
 import { director, DirectorEvent } from '../../../game/director';
 import { ccwindow } from '../../../core/global-exports';
 import { TextureBase } from '../../../asset/assets/texture-base';
 import { buildFontDesc, CssFontFamily, DEFAULT_FONT_FAMILY } from '../../utils/font-family';
+
+export { LetterRenderTexture };
 
 export interface ISharedLabelData {
     canvas: HTMLCanvasElement;
@@ -214,52 +216,6 @@ class LetterTexture {
 
         // this.texture.handleLoadedTexture();
         // (this.image as Texture2D).updateImage();
-    }
-}
-
-export class LetterRenderTexture extends Texture2D {
-    /**
-     * @en
-     * Init the render texture with size.
-     * @zh
-     * 初始化 render texture。
-     * @param [width]
-     * @param [height]
-     * @param [string]
-     */
-    public initWithSize (width: number, height: number, format: number = PixelFormat.RGBA8888): void {
-        this.reset({
-            width,
-            height,
-            format,
-        });
-    }
-
-    /**
-     * @en Draw a texture to the specified position
-     * @zh 将指定的图片渲染到指定的位置上。
-     * @param {Texture2D} image
-     * @param {Number} x
-     * @param {Number} y
-     */
-    public drawTextureAt (image: ImageAsset, x: number, y: number): void {
-        const gfxTexture = this.getGFXTexture();
-        if (!image || !gfxTexture) {
-            return;
-        }
-
-        const gfxDevice = this._getGFXDevice();
-        if (!gfxDevice) {
-            warnID(16363);
-            return;
-        }
-
-        const region = new BufferTextureCopy();
-        region.texOffset.x = x;
-        region.texOffset.y = y;
-        region.texExtent.width = image.width;
-        region.texExtent.height = image.height;
-        gfxDevice.copyTexImagesToTexture([image.data as HTMLCanvasElement], gfxTexture, [region]);
     }
 }
 

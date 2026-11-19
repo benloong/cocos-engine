@@ -36,6 +36,9 @@ namespace cc {
 
 namespace {
 
+// Labels own the atlas. The last release clears this render-thread lookup.
+LetterAtlas *activeAtlas = nullptr;
+
 std::string codepointToUtf8(int32_t code) {
     std::string out;
     if (code < 0x80) {
@@ -60,7 +63,14 @@ std::string codepointToUtf8(int32_t code) {
 
 LetterAtlas::LetterAtlas() : _pixels(static_cast<size_t>(ATLAS_WIDTH) * ATLAS_HEIGHT * 4U, 0U) {}
 
-LetterAtlas::~LetterAtlas() = default;
+IntrusivePtr<LetterAtlas> LetterAtlas::acquire() {
+    if (!activeAtlas) activeAtlas = new LetterAtlas();
+    return activeAtlas;
+}
+
+LetterAtlas::~LetterAtlas() {
+    activeAtlas = nullptr;
+}
 
 Texture2D *LetterAtlas::getTexture() const {
     return _texture && _texture->getGFXTexture() ? _texture.get() : nullptr;

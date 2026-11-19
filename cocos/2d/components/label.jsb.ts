@@ -33,7 +33,7 @@ import { Font } from '../assets/font';
 import { BitmapFont } from '../assets/bitmap-font';
 import type { FontAtlas } from '../assets/bitmap-font';
 import type { SpriteFrame } from '../assets/sprite-frame';
-import { LetterRenderTexture } from '../assembler/label/font-utils';
+import { LetterRenderTexture } from '../assets/letter-render-texture';
 
 declare const n2d: any;
 
