@@ -248,6 +248,8 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         { name: 'text-wrap-right', value: 'Atlas 123 Atlas 456', width: 120, align: 2 },
         { name: 'text-multiline', value: 'Atlas<br/><size=18>123</size>' },
         { name: 'text-unicode', value: 'ไทย Á 123' },
+        { name: 'text-shadow-tag', value: '<shadow color=#0000ff blur=4><color=#ff0000>Red</color></shadow><color=#00ff00>Green</color>',
+            initial: '<size=36>Before<br/>edit</size>' },
     ];
     const metrics: object[] = [];
     const raster: object[] = [];
@@ -256,7 +258,15 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         const ui = node.addComponent(UITransform); ui.setAnchorPoint(0.5, 0.5);
         const rich = node.addComponent(RichText); rich.font = font; rich.fontSize = 24; rich.lineHeight = 30;
         rich.fontColor = new Color(255, 255, 255, 255); rich.maxWidth = item.width ?? 0;
-        rich.horizontalAlign = item.align ?? 0; rich.string = item.value;
+        rich.horizontalAlign = item.align ?? 0;
+        if (item.initial) {
+            rich.string = item.initial;
+            await wait();
+            if (node.children.length !== 2 || node.children[0].position.y === node.children[1].position.y) {
+                throw new Error('Expected two visible lines before the RichText edit');
+            }
+        }
+        rich.string = item.value;
         const backend = (rich as any)._native;
         const expectNative = sys.isNative && !(globalThis as any).__m6JsRichText;
         if (!!backend !== expectNative) throw new Error('Unexpected RichText implementation');
