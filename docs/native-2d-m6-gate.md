@@ -29,6 +29,8 @@
 
 ## 尚需签收的节点
 
+旧场景的 CJK Label 使用 CHAR 缓存和 RESIZE_HEIGHT。相同的五个字符在 Web 实测为 240×40，在 Windows Debug 和 Release 实测为 240×50.4。M3 脚本中的 CJK 断言检查 Windows 历史尺寸，仍有 10.4 像素的跨端高度差。同场景的英文 Label 使用 3 像素描边，三端高度一致，为 56.4 像素。[场景设置](../native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts)
+
 编号采用计划章节；同一行中的不同验收条件均须满足。各已验收子项、夹具及历史版本记录见[逐项计划](./native-2d-m6-plan.md)。
 
 | 章节 | 节点 | 尚缺证据或已知失败 |

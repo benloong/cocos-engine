@@ -35,7 +35,8 @@ try {
         $obj = $line.Line.Substring($line.Line.IndexOf('M3_LABEL_MEASURE ') + 17) | ConvertFrom-Json
         $measure[$obj.name] = $obj
     }
-    $expected = @{ english = @(240, 50.4); cjk = @(240, 50.4); wrap = @(220, 97.8) }
+    # The English fixture has a 3 px outline on both sides of the text.
+    $expected = @{ english = @(240, 56.4); cjk = @(240, 50.4); wrap = @(220, 97.8) }
     foreach ($name in $expected.Keys) {
         if (-not $measure.ContainsKey($name)) { throw "missing measurement $name" }
         if ([math]::Abs($measure[$name].width - $expected[$name][0]) -gt 0.5) { throw "$name width parity failed" }
