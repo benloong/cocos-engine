@@ -167,7 +167,7 @@
 - [x] RenderRoot2D 注册基础硬化：Node 销毁通知、Batcher 独占观察 link、遍历范围强引用快照、重复注册/排序/回调期间变更、跨 root batch/stencil 清理；Windows Debug/Release 与 1000 次 plain Node 注册/释放通过。单 Camera 下两个 root/Canvas 的启停/重排/销毁 GPU 对照通过，扩展夹具 58 图像差值 0、11 注册和 19 命中检查通过；见 [报告与剩余矩阵](./native-2d-m6.4-render-root-lifecycle.md)。不关闭上一项的真实场景/多 Camera/平台门禁。
 - [x] Windows Scene/多 Camera 定向矩阵：修复 Graphics 在 onLoad 前丢命令和从未激活实例的 backend 清理；普通 Debug/ASAN 与 Web 同快照 74 图像差值 0，1000 次实际 director 切换、动态纹理创建销毁与 4998 项循环断言通过。见 [报告与边界](./native-2d-m6.4-scene-matrix.md)；不是完整 asset-manager、泄漏、Release GPU 或平台验收。
 - [x] CHAR 图集由使用它的 Label 通过 IntrusivePtr 持有。最后一个引用释放时同步清理原生查找指针，JSB 与 Web 共享独立的 LetterRenderTexture 类型。Debug/Release 验证双 Label 共享、释放一个后继续绘制和切换缓存 1000 次，两个配置各 85 张图像与 Web 完全一致。运行时依赖与所有权审计、测试工程 M0/M2/M3/M4/M5 和 SpriteFrame 回归通过。[当前 GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)
-- [ ] 所有 native 组件/资产核对 attach/detach、Node 非 owning 槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。
+- [x] 已按 17 类清单核对 attach/detach、Node 借用槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。Windows Debug、Release、ASan Debug 在同一源码快照完成千轮场景切换，各 88 张图与 Web 逐字节一致。[逐类核对](./native-2d-m6.4-ownership.md)、[配置和产物指纹](./native-2d-m6.4-ownership-results.json)
   - [x] 宿主析构时按挂载顺序从当前组件列表逐个解绑。回调迁移的组件在新节点保留有效的双向关联。原先的快照会重复通知已迁出的组件，导致透明度设置失效。[原生回归](../native/tests/2d-poc/native/main.cpp)
   - [x] UITransform 的尺寸回调随宿主销毁释放。迁移到另一个存活节点仍能收到尺寸通知；原节点先析构时，独立存活的布局对象再次改尺寸不会通知旧宿主。Windows Debug/Release 检查闭包对象存活数、回调次数和 JSB 布局推送。[所有权回归](../native/tests/2d-poc/native/main.cpp)、[JSB 探针](../native/tests/2d-poc/build-layout-probe.cjs)
   - [x] CHAR Label 在宿主先销毁时归还共享字形图集引用。双配置核对持有、析构宿主、重新挂载、显式解绑，以及在分离状态主动取纹理后再次解绑的引用计数。[原生回归](../native/tests/2d-poc/native/main.cpp)

@@ -1,0 +1,64 @@
+{
+  "classes": [
+    "UITransform",
+    "UIRenderer",
+    "RenderRoot2D",
+    "Sprite",
+    "Label",
+    "Mask",
+    "Graphics",
+    "RichText",
+    "UIOpacity",
+    "LabelOutline",
+    "LabelShadow",
+    "Font",
+    "TTFFont",
+    "BitmapFont",
+    "LabelAtlas",
+    "SpriteFrame",
+    "SpriteAtlas"
+  ],
+  "probes": [
+    "renderer-manager",
+    "sprite-api",
+    "sprite-atlas",
+    "font-assets",
+    "layout",
+    "richtext-runtime"
+  ],
+  "runs": [
+    {
+      "config": "Debug",
+      "snapshot": "9ebb7cf3616088f0a01f9cb3c291a9d7440c5d2fc4ba404497a5c301bb904bb6",
+      "appSha256": "90e7a7d6683f73e95ff34806fa6bbadadef7ca2c62d4341ea2c8efea16dc2462",
+      "images": 88,
+      "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0",
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "nativeTestSha256": "7c5cd26110a992c62ade6d01984f198d053e05e8d2cffd374102c3ee7d3d6899",
+      "jsbProbesPassed": 6
+    },
+    {
+      "config": "Release",
+      "snapshot": "9ebb7cf3616088f0a01f9cb3c291a9d7440c5d2fc4ba404497a5c301bb904bb6",
+      "appSha256": "c72ef49b7a06a94a8bb369dc5649050df52db9babdd9002f0ed97c60096d6fdd",
+      "images": 88,
+      "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0",
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "nativeTestSha256": "a1f57fabc4ff14ee7c2e253d0aa73c9b4459b2191fe4c5fefbad959d060889ed",
+      "jsbProbesPassed": 6
+    },
+    {
+      "config": "ASan Debug",
+      "snapshot": "9ebb7cf3616088f0a01f9cb3c291a9d7440c5d2fc4ba404497a5c301bb904bb6",
+      "appSha256": "92160b43330792a6ac2186a1af5e4900c215eb48a561ff064c6d39e463855d04",
+      "images": 88,
+      "imageSetSha256": "6b0889e5618d7a231f5029d8b0f63f54f6809c349f520814089a19d994e26ae0",
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "asanOptions": "halt_on_error=1",
+      "stderrBytes": 0
+    }
+  ]
+}

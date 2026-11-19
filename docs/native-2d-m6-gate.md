@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**NO-GO。** Windows Release 固定混合变更帧已达到约定的 CPU、JSB、JS 堆和 GC 指标。Windows 自定义字体仍有三组图像超过 Web 像素容差，组件兼容、所有权、CI 和旧项目回退等节点仍待签收。最终签收须在同一候选重跑必需配置和场景。
+**NO-GO。** Windows Release 固定混合变更帧已达到约定的 CPU、JSB、JS 堆和 GC 指标。Windows 自定义字体仍有三组图像超过 Web 像素容差，组件兼容、CI 和旧项目回退等节点仍待签收。最终签收须在同一候选重跑必需配置和场景。
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。
 
@@ -8,6 +8,7 @@
 
 | 项目 | 配置和结果 | 证据 |
 |---|---|---|
+| M6.4 所有权 | 已核对 17 类的组件挂接、资源借用与回调。Windows 双配置各通过 6 组 JSB 探针，Debug、Release、ASan Debug 各完成 1000 次场景切换和 88 张 Web 像素对照。 | [逐类记录](./native-2d-m6.4-ownership.md)、[快照和二进制哈希](./native-2d-m6.4-ownership-results.json) |
 | Graphics 命令提交 | Windows Debug/Release 与 Web 像素对照。Release 的 256 个闭合路径从逐调用改用复用缓冲，提交耗时中位数从 581.7 降至 349.1 µs，批次和绘制次数均为 1 | [接口选择与分配实测](./native-2d-m6.3-graphics-commands.md) |
 | 混合负载 CPU | Windows Release 六轮交错，混合变更帧从迁移前 6.8325 降至 2.6102 ms/帧，下降 61.8%。逐对五轮达到 50%，另一轮为 49.56%。同轮改动前为 3.4167 ms/帧。不同文本零命中时，独立进程中位数变慢 1.3182 ms，同进程交替复测的配对差为 −0.0441 ms。 | [六轮逐项数据](./native-2d-m6-line-raster-performance.json) |
 | JSB、堆峰值与 GC | 同组混合变更帧 JSB 为 876 → 197 次/帧，JS 堆峰值为 30,109,940 → 17,110,074 字节，强制 GC 为 6.5685 → 4.6475 ms。每轮每场景每阶段测量一次强制 GC。 | [同轮数据](./native-2d-m6-line-raster-performance.json) |
@@ -32,7 +33,6 @@
 | M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一旧 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。Windows 下载器已验证排队与传输中取消、失败时保留旧文件、清除不可续传的半文件和 Range 续传。Web 已验证 fetch 主动取消及续传。Web 引擎首次断流时返回回退字体，释放后同 URL 已成功重载并测得原字体宽度。其余旧资产仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
 | M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期及三组失败字形。[同一轮廓重放](./native-2d-m6.2-ttf-stroke.md#同一字形轮廓按绘制阶段重放)已将独立绿色描边的主要误差定位至轮廓扩张。8 个矩形的圆弧填充可逐字节重现浏览器画笔，三次贝塞尔圆角累计 308 个采样点超差。生产路径仍待修复 |
 | M6.2 | RichText 固定回归 | shadow、样式、布局、用户事件和销毁解绑的完整组合 |
-| M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
 | M6.5 | CI | [PR 工作流](../.github/workflows/native-ts-build.yml)已配置 Windows Debug/Release 的六组真实 JSB 检查、场景记录和 SIMPLE Sprite 对 Web 的几何对照。工作流还构建 Windows、Web 各九种 Release 功能组合，检查组件导出和已移除的 PoC 入口，并归档导出清单与 bundle 哈希。仍缺远程运行记录、完整应用场景矩阵及其余间接热路径的证据 |
 | M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md) 和 [RichText](./native-2d-m6-richtext-rollback.md) 回退与恢复。其余模块与真实旧项目的场景、资产、材质及性能仍待验证 |
