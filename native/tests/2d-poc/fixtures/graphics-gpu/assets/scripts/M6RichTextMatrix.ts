@@ -228,6 +228,40 @@ async function checkHardShadow (parent: Node, font: TTFFont, readPixels: () => U
     return coverage;
 }
 
+async function captureShadowLayout (parent: Node, font: TTFFont, capture: (name: string) => Promise<void>): Promise<object[]> {
+    const node = new Node('shadow-layout');
+    parent.addChild(node);
+    node.layer = parent.layer;
+    const ui = node.addComponent(UITransform);
+    const label = node.addComponent(Label);
+    label.font = font;
+    label.fontSize = 24;
+    label.lineHeight = 30;
+    label.enableShadow = true;
+    label.shadowBlur = 0;
+    label.shadowColor = new Color(255, 255, 255, 255);
+    label.string = 'Atlas';
+    const metrics: object[] = [];
+    for (const overflow of [Label.Overflow.NONE, Label.Overflow.CLAMP, Label.Overflow.SHRINK, Label.Overflow.RESIZE_HEIGHT]) {
+        label.overflow = overflow;
+        if (overflow !== Label.Overflow.NONE) ui.setContentSize(96, 72);
+        for (const align of [0, 1, 2]) {
+            label.horizontalAlign = align;
+            label.verticalAlign = align;
+            for (const sign of [1, -1]) {
+                label.shadowOffset = new Vec2(16 * sign, 14 * sign);
+                const name = `label-shadow-${overflow}-${align}-${sign > 0 ? 'positive' : 'negative'}`;
+                await capture(name);
+                const texture = label.ttfSpriteFrame!.texture!;
+                metrics.push({ name, width: ui.width, height: ui.height, textureWidth: texture.width, textureHeight: texture.height });
+            }
+        }
+    }
+    node.destroy();
+    await wait();
+    return metrics;
+}
+
 /** The real asset factory loads the same TTF bytes in both applications. */
 export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>, readPixels: () => Uint8Array): Promise<object> {
     const url = sys.isNative ? '__M6_GPU_FONT__' : '/m6-font.ttf';
@@ -343,10 +377,11 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
             segments: node.children.map(child => ({ name: child.name, x: child.position.x, y: child.position.y })) });
         node.destroy(); await wait();
     }
+    const shadowLayout = await captureShadowLayout(parent, font, capture);
     assetManager.releaseAsset(font); await wait();
     const released = !isValid(font);
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
-    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, hardShadowCoverage };
+    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, hardShadowCoverage, shadowLayout };
 }

@@ -8,17 +8,18 @@ const a=read(nativeDir),b=read(webDir);
 const lifecycle=a.text?.lifecycle;
 if(!lifecycle?.http?.interrupted||!lifecycle.http.loaded||!lifecycle.http.cachePathResolved||!lifecycle.http.released||!lifecycle.http.cacheRemoved||!lifecycle.http.missingRejected||!lifecycle.http.failedFilesRemoved||!lifecycle.http.cancelledAndResumed||lifecycle.http.bytes!==223404)throw Error('Incomplete HTTP font lifecycle evidence');
 if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||!Number.isInteger(lifecycle.cacheBefore)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
-const expected=['text-basic','text-bold','text-italic','text-underline','text-outline','text-nested','text-colors','text-wrap-left','text-wrap-center','text-wrap-right','text-multiline','text-unicode','text-shadow-tag'];
+const { richTextNames, shadowNames, captures } = require('./richtext-gpu-cases.cjs');
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 for(const value of [a,b]) {
+    if (JSON.stringify(value.text.shadowLayout?.map(row=>row.name)) !== JSON.stringify(shadowNames)) throw Error('Incomplete Label shadow layouts');
     const coverage = value.text.hardShadowCoverage;
     if (!Array.isArray(coverage) || coverage.length !== 2 || coverage.some(count => !Number.isInteger(count) || count <= 0)) {
         throw Error('Missing positive and negative hard shadow GPU checks: ' + value.backend);
     }
-    if(value.width!==256||value.height!==256||JSON.stringify(value.captures)!==JSON.stringify(expected)||!value.text.loaded||!value.text.released||JSON.stringify(value.text.metrics.map(x=>x.name))!==JSON.stringify(expected))throw Error('Incomplete RichText capture/font lifecycle evidence');
+    if(value.width!==256||value.height!==256||JSON.stringify(value.captures)!==JSON.stringify(captures)||!value.text.loaded||!value.text.released||JSON.stringify(value.text.metrics.map(x=>x.name))!==JSON.stringify(richTextNames))throw Error('Incomplete RichText capture/font lifecycle evidence');
 }
 if(a.text.nativeBytes!==223404||b.text.nativeBytes!==null)throw Error('Unexpected TTF source size');
-if(a.text.raster?.length!==expected.length||a.text.raster.some((row,index)=>row.name!==expected[index]||row.labels.length!==a.text.metrics[index].segments.length||row.labels.some(label=>!(label.opaque>0&&label.width>0&&label.height>0))))throw Error('Native Batcher did not prepare every visible text segment');
+if(a.text.raster?.length!==richTextNames.length||a.text.raster.some((row,index)=>row.name!==richTextNames[index]||row.labels.length!==a.text.metrics[index].segments.length||row.labels.some(label=>!(label.opaque>0&&label.width>0&&label.height>0))))throw Error('Native Batcher did not prepare every visible text segment');
 const rows=[];
 // Web RichText treats shadow as an unknown tag and retains the nested color spans.
 for (const [dir,manifest] of [[nativeDir,a],[webDir,b]]) {
@@ -30,8 +31,10 @@ for (const [dir,manifest] of [[nativeDir,a],[webDir,b]]) {
     }
 }
 const canonical=value=>typeof value==='number'?Math.fround(value):Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).map(([key,item])=>[key,canonical(item)])):value;
-for(let n=0;n<expected.length;n++) {
-    const name=expected[n],actual=fs.readFileSync(path.join(nativeDir,name+'.rgba')),reference=fs.readFileSync(path.join(webDir,name+'.rgba'));
+const nativeMetrics = a.text.metrics.concat(a.text.shadowLayout);
+const webMetrics = b.text.metrics.concat(b.text.shadowLayout);
+for(let n=0;n<captures.length;n++) {
+    const name=captures[n],actual=fs.readFileSync(path.join(nativeDir,name+'.rgba')),reference=fs.readFileSync(path.join(webDir,name+'.rgba'));
     if(actual.length!==256*256*4||reference.length!==actual.length)throw Error('Invalid RGBA dimensions');
     let max=0,pixels=0,webColored=0,nativeColored=0;
     for(let i=0;i<actual.length;i+=4) {
@@ -42,9 +45,9 @@ for(let n=0;n<expected.length;n++) {
         if(reference[i]||reference[i+1]||reference[i+2])webColored++;
     }
     if(!webColored)throw Error(`Empty Web reference: ${name}`);
-    const layoutEqual=JSON.stringify(canonical(a.text.metrics[n]))===JSON.stringify(canonical(b.text.metrics[n]));
+    const layoutEqual=JSON.stringify(canonical(nativeMetrics[n]))===JSON.stringify(canonical(webMetrics[n]));
     rows.push({name,max,pixels,webColored,nativeColored,layoutEqual,pass:max<=1&&layoutEqual,
-        native:a.text.metrics[n],web:b.text.metrics[n],
+        native:nativeMetrics[n],web:webMetrics[n],
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),webSha256:crypto.createHash('sha256').update(reference).digest('hex')});
 }
 const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},pass:rows.every(x=>x.pass),results:rows};

@@ -830,31 +830,36 @@ void Label::rebuildTexture() {
     const auto styleExtent = getTextStyleExtent();
     const double naturalWidth = contentWidth + styleExtent[0];
     const float outlineMargin = _enableOutline ? std::max(_outlineWidth, 0.F) : 0.F;
+    // The canvas reserves room for the shadow; the node keeps its text bounds.
+    const float shadowLeft = _enableShadow ? std::max(0.F, _shadowBlur - _shadowOffsetX) : 0.F;
+    const float shadowRight = _enableShadow ? std::max(0.F, _shadowBlur + _shadowOffsetX) : 0.F;
+    const float shadowTop = _enableShadow ? std::max(0.F, _shadowBlur + _shadowOffsetY) : 0.F;
+    const float shadowBottom = _enableShadow ? std::max(0.F, _shadowBlur - _shadowOffsetY) : 0.F;
+    const float paddingWidth = static_cast<float>(styleExtent[0]) + shadowLeft + shadowRight;
+    const float paddingHeight = static_cast<float>(styleExtent[1]) + shadowTop + shadowBottom;
     float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
-    if (_overflow == 0) {
-        contentWidth = static_cast<float>(naturalWidth);
-        contentHeight = static_cast<float>(contentHeight + styleExtent[1]);
-    }
-    const float canvasWidth = shrink ? std::max(0.F, box.x) : contentWidth;
-    float canvasHeight = contentHeight;
-    if (shrink || (_overflow == 1 && box.y > 0.F)) canvasHeight = std::max(0.F, box.y);
+    if (_overflow == 0) contentWidth = static_cast<float>(naturalWidth);
+    const bool autoHeight = _overflow == 0 || _overflow == 3;
+    if (autoHeight) contentHeight = static_cast<float>(contentHeight + styleExtent[1]);
+    const float canvasWidth = _overflow == 0 ? contentWidth + shadowLeft + shadowRight : std::max(0.F, box.x);
+    const float canvasHeight = autoHeight ? contentHeight + shadowTop + shadowBottom : std::max(0.F, box.y);
     const uint32_t textureWidth = std::max(static_cast<uint32_t>(canvasWidth), 1U);
     const uint32_t textureHeight = std::max(static_cast<uint32_t>(canvasHeight), 1U);
 
     float textTop = static_cast<float>(rasterFontSize * (1.0 - 0.26 / 2.0));
     if (_vAlign != 0) {
-        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + rasterFontSize - canvasHeight;
+        float blank = lineHeight * static_cast<float>(lines.size() - 1) + paddingHeight + rasterFontSize - canvasHeight;
         if (_vAlign == 2) blank += static_cast<float>(rasterFontSize * 0.26 / 2.0);
         textTop -= _vAlign == 1 ? blank / 2.F : blank;
     }
-    textTop += outlineMargin;
+    textTop += outlineMargin + shadowTop;
 
     const auto lineX = [&](float lineWidth) {
-        float x = outlineMargin;
+        float x = outlineMargin + shadowLeft;
         if (_hAlign == 1) {
-            x = (canvasWidth - static_cast<float>(styleExtent[0]) - lineWidth) * 0.5F + outlineMargin;
+            x = (canvasWidth - paddingWidth - lineWidth) * 0.5F + outlineMargin + shadowLeft;
         } else if (_hAlign == 2) {
-            x = canvasWidth - lineWidth - static_cast<float>(styleExtent[0]) + outlineMargin;
+            x = canvasWidth - lineWidth - paddingWidth + outlineMargin + shadowLeft;
         }
         return x;
     };

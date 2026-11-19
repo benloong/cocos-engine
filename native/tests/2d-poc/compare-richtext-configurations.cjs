@@ -11,8 +11,7 @@ const reference = reports[0];
 const cases = report => report.results.map(({ name, nativeSha256, webSha256, layoutEqual, max, pixels, pass }) =>
     ({ name, nativeSha256, webSha256, layoutEqual, max, pixels, pass }));
 
-assert.equal(reference.results.length, 12);
-assert.equal(new Set(reference.results.map(row => row.name)).size, 12);
+assert.deepEqual(reference.results.map(row => row.name), require('./richtext-gpu-cases.cjs').captures);
 for (const report of reports) {
     assert.equal(report.snapshot, reference.snapshot);
     assert.equal(report.font.sha256, reference.font.sha256);
