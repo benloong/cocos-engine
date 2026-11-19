@@ -67,7 +67,6 @@ public:
     void setCacheMode(int32_t value);
     void setFontColorRGBA(float r, float g, float b, float a);
     void updateLayout();
-    uint32_t getSegmentCount() const;
     Label *getSegmentLabel(uint32_t index) const;
     Sprite *getSegmentSprite(uint32_t index) const;
     std::string getSegmentClickHandler(uint32_t index) const;

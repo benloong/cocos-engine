@@ -1353,7 +1353,7 @@ void testRichTextRuntime() {
     rich.setString("<b click=\"tap\" param=\"hello\">one</b><img src=\"icon\" width=12 height=10/><br/>two");
     rich.setNode(&node); rich.setUITransform(&ui);
     check(node.getUserData() == parentEntity, "RichText group preserves an existing parent renderer");
-    check(rich.getSegmentCount() == 3 && node.getChildren().size() == 3, "native RichText owns native segment children");
+    check(node.getChildren().size() == 3, "native RichText owns native segment children");
     auto *segmentEntity = static_cast<cc::RenderEntity *>(node.getChildren()[0]->getUserData());
     check(segmentEntity->isEnabled(), "RichText font segment remains eligible for Batcher prepare");
     if (segmentEntity->isEnabled()) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
@@ -1370,7 +1370,7 @@ void testRichTextRuntime() {
     for (int i = 0; i < 1000; ++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(node.getChildren()[0].get() == first && rich.getSegmentLabel(0)->getString() == "idle marker", "idle RichText preserves segment identity and content");
     rich.getSegmentLabel(0)->setString("one");
-    for (uint32_t i = 0; i < rich.getSegmentCount(); ++i) {
+    for (uint32_t i = 0; i < node.getChildren().size(); ++i) {
         auto *entity = static_cast<cc::RenderEntity *>(node.getChildren()[i]->getUserData());
         check(entity != nullptr, "native RichText child has renderer");
         if (entity) { cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); check(entity->getStaticDrawInfoSize() > 0, "native RichText submits segment draw info"); }
@@ -1386,9 +1386,9 @@ void testRichTextRuntime() {
     check(hits.size() == 1 && hits[0] == 0 && rich.getHitSegments(-1000,-1000).empty(), "native RichText hit and miss use segment geometry");
     rich.setEnabled(false); check(!first->isActive() && rich.getHitSegments(1,1).empty(), "disabled RichText hides children and ignores hits");
     rich.setString("changed");
-    check(rich.getSegmentCount() == 3 && rich.getSegmentLabel(0)->getString() == "one", "disabled RichText defers layout");
+    check(node.getChildren().size() == 3 && rich.getSegmentLabel(0)->getString() == "one", "disabled RichText defers layout");
     rich.setEnabled(true);
-    check(rich.getSegmentCount() == 1 && node.getChildren()[0].get() == first && rich.getSegmentLabel(0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
+    check(node.getChildren().size() == 1 && node.getChildren()[0].get() == first && rich.getSegmentLabel(0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
     if (hasWrapper) check(imageLayout.toObject()->getPrivateData() == transform, "pooled image layout wrapper stays valid");
     check(frame->getRefCount() == frameRefs, "recycled image releases frame and texture references");
     rich.setFontAsset(nullptr); check(font->getRefCount() == fontRefs, "RichText clears font references including measurement cache");
@@ -1400,19 +1400,19 @@ void testRichTextRuntime() {
     frame->setRectWidth(2); cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); batcher.walk(&node, 1.F, false);
     check(rich.getLayout().placements[0].width < imageWidth, "RichText follows native frame revision");
     atlas->removeSpriteFrame("icon"); cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); batcher.walk(&node, 1.F, false);
-    check(rich.getSegmentCount() == 0, "RichText follows atlas table revision");
+    check(node.getChildren().empty(), "RichText follows atlas table revision");
     rich.setString("final"); rich.setNode(nullptr); rich.setImageAtlas(nullptr);
-    check(node.getChildren().empty() && rich.getSegmentCount() == 0, "RichText detach releases active and pooled native children");
+    check(node.getChildren().empty() && !rich.getSegmentLabel(0) && !rich.getSegmentSprite(0), "RichText detach releases active and pooled native children");
     if (hasWrapper) check(!imageLayout.toObject()->getPrivateData(), "detaching RichText invalidates the borrowed layout wrapper");
     cc::Node lateNode("rich-text-late-transform"); cc::RichText late;
     late.setString("late"); late.setNode(&lateNode);
-    check(late.getSegmentCount() == 0, "RichText tolerates pending required transform");
+    check(lateNode.getChildren().empty(), "RichText tolerates pending required transform");
     {
         cc::UITransform lateUI(&lateNode); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-        check(late.getSegmentCount() == 1, "RichText resolves transform added after component load");
+        check(lateNode.getChildren().size() == 1, "RichText resolves transform added after component load");
     }
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(late.getSegmentCount() == 0, "RichText drops stale non-owning transform and old segments");
+    check(lateNode.getChildren().empty(), "RichText drops stale non-owning transform and old segments");
     late.setNode(nullptr);
     std::printf("rich text runtime: PASS\n");
 }

@@ -42,7 +42,12 @@ node.getComponents=()=>[{enabledInHierarchy:true,tap(event,param){check(param===
 const rich = new exports.RichText(); rich.node=node; rich.string='<b click="tap" param="arg">hit</b>';
 rich.onLoad(); rich.onEnable();
 const native = rich._native;
-check(cclegacy.RichText===exports.RichText&&native.getSegmentCount()===1,'actual shell creates native segment');
+function hasSegments(count) {
+    for(let i=0;i<count;i++) if(!native.getSegmentLabel(i)&&!native.getSegmentSprite(i))return false;
+    return !native.getSegmentLabel(count)&&!native.getSegmentSprite(count);
+}
+check(!('getSegmentCount' in native),'test-only segment count absent from JSB');
+check(cclegacy.RichText===exports.RichText&&hasSegments(1),'actual shell creates native segment');
 check(!('getLayoutRevision' in native),'layout test counter absent from JSB');
 check(!('getSegmentNode' in native),'test-only segment node lookup absent from JSB');
 const first=node.getChildByName('RICHTEXT_CHILD'), previousPushes=pushes;
@@ -65,12 +70,12 @@ rich.useSystemFont=true;rich.useSystemFont=false;check(rich.font===font,'editor 
 const atlas=new jsb.SpriteAtlas(), frame=new jsb.SpriteFrame(), texture=new jsb.Texture2D();
 texture.create(4,2);frame.resetWithTexture(texture);atlas.addSpriteFrame('icon',frame);
 rich.imageAtlas=atlas;rich.string='<img src="icon"/>tail';
-check(native.getSegmentCount()===2&&native.getSegmentSprite(0).getType()===1,'actual shell native image and label');
+check(hasSegments(2)&&native.getSegmentSprite(0).getType()===1,'actual shell native image and label');
 const heldImage=native.getSegmentSprite(0), heldLabel=native.getSegmentLabel(1);
 check(!('getUITransform' in heldImage),'Sprite JSB hides its borrowed layout');
 const independentLabel=new n2d.Label();
 atlas.removeSpriteFrame('icon');rendererManager.updateAllDirtyRenderers();
-check(native.getSegmentCount()===1&&native.getSegmentLabel(0),'late atlas removal updates native segment graph');
+check(hasSegments(1)&&native.getSegmentLabel(0),'late atlas removal updates native segment graph');
 check(__isObjectValid(heldImage)&&__isObjectValid(heldLabel),'pooled and active wrappers stay valid');
 atlas.addSpriteFrame('icon',frame);
 rich.string='<img src="icon" width=4 height=2 offset=0,-5 click="tap" param="first"/><img src="icon" width=4 height=2 offset=-4,-5 click="tap" param="second"/>';
@@ -84,10 +89,10 @@ node.getComponents=()=>[{enabledInHierarchy:true,tap(event,param){
 callback(event);
 check(params.join(',')==='first,second','native hit metadata survives callback-driven relayout');
 rich.string='<img src="icon"/>'.repeat(24);
-check(native.getSegmentCount()===24,'create 24 image segments');
+check(hasSegments(24),'create 24 image segments');
 const images=Array.from({length:24},(_,i)=>native.getSegmentSprite(i));
 rich.string='<b>x</b><i>y</i>'.repeat(12);
-check(native.getSegmentCount()===24&&images.filter(image=>__isObjectValid(image)).length===10,'evicted image wrappers expire during relayout');
+check(hasSegments(24)&&images.filter(image=>__isObjectValid(image)).length===10,'evicted image wrappers expire during relayout');
 const labels=Array.from({length:24},(_,i)=>native.getSegmentLabel(i));
 rich.string='';
 check(labels.filter(label=>__isObjectValid(label)).length===20,'evicted Label wrappers expire during relayout');
@@ -101,7 +106,7 @@ for(const action of ['disable','touch-off','destroy']) {
  event.propagationStopped=false;callback(event);
  check(first===1&&second===0&&event.propagationStopped&&!callback,'callback lifetime stops current and future dispatch: '+action);
 }
-check(rich._native===null&&native.getSegmentCount()===0,'destroy releases listener and all native segments');
+check(rich._native===null&&hasSegments(0),'destroy releases listener and all native segments');
 check(!__isObjectValid(heldLabel)&&!__isObjectValid(heldImage),'destroy invalidates borrowed segment wrappers');
 check([...images,...labels].every(wrapper=>!__isObjectValid(wrapper)),'destroy invalidates all remaining pooled wrappers');
 check(__isObjectValid(independentLabel),'destroy preserves independent Label');

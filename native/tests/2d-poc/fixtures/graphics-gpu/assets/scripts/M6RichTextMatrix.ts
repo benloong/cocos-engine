@@ -263,7 +263,9 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         await capture(item.name);
         if (sys.isNative) {
             const labels = [];
-            if (backend && backend.getSegmentCount() !== node.children.length) throw new Error('RichText child count differs from native segment count');
+            if (backend && (backend.getSegmentLabel(node.children.length) || backend.getSegmentSprite(node.children.length))) {
+                throw new Error('Native RichText has a segment without a child node');
+            }
             for (let i = 0; i < node.children.length; ++i) {
                 const label = backend ? backend.getSegmentLabel(i) : (node.children[i].getComponent(Label) as any)?._native;
                 if (!label) throw new Error(`Missing native Label in ${item.name}/${i}`);

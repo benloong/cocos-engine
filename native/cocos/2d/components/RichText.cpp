@@ -258,7 +258,6 @@ void RichText::updateLayout() {
     _transform->setContentSize(static_cast<float>(_layout.width), static_cast<float>(_layout.height));
     _updating = false;
 }
-uint32_t RichText::getSegmentCount() const { return static_cast<uint32_t>(_segments.size()); }
 Label *RichText::getSegmentLabel(uint32_t index) const { return index < _segments.size() ? _segments[index]->label.get() : nullptr; }
 Sprite *RichText::getSegmentSprite(uint32_t index) const { return index < _segments.size() ? _segments[index]->sprite.get() : nullptr; }
 std::string RichText::getSegmentClickHandler(uint32_t index) const { return index < _segments.size() ? _segments[index]->handler : ""; }
