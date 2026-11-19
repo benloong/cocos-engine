@@ -111,6 +111,7 @@
 %ignore cc::RenderEntity::getVBColorDirty;
 %ignore cc::RenderEntity::setVBColorDirty;
 %ignore cc::RichText::getLayout;
+%ignore cc::Sprite::prepare;
 %ignore cc::Label::measureUnwrappedText;
 %ignore cc::Graphics::getGeometry;
 %ignore cc::Graphics::setGeometrySource;

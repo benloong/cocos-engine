@@ -81,6 +81,7 @@
 - [x] Windows 本地 TTFFont 真实资源循环：Debug 普通/ASAN 应用各 1000 次 loadRemote/releaseAsset 与缓存身份检查，逐轮字节/alias/缓存恢复、失败回滚与同 URL 重试、缺失源拒绝和最终延迟销毁通过；当前源码完整引擎 JS 重建，图像仍 9/12。长期 heap、HTTP/bundle、BMFont/LabelAtlas 与跨平台仍待验收，见 [证据](./native-2d-m6.1-font-remote-lifecycle.md)。
 - [x] HTTP 字体缓存来源修复：保留资产 URL，onLoaded 从已下载缓存/临时文件读取 native 字节；缓存换源与 released 回调测试通过。按统一文档构建测试工程并执行基础门禁，旧 M4/M5 探针迁移到真实 GPU/原生段观测；历史 HTTP/ASAN 补充证据及 HTTPS、取消、半文件、无主 alias 等剩余边界见 [报告](./native-2d-m6.1-font-http.md)。
 - [x] 生产导出清理：原 M0 的两个 PoC 组件及模块入口已删除。Windows 普通应用由场景检查字体别名统计入口缺席；原生字体验收工程单独启用该诊断。见 [验收配置](./native-2d-m6.1-font-remote-lifecycle.md)。
+- [x] Sprite 的原生几何准备收为 C++ 入口。Windows 双配置的 JSB 验收确认 Sprite 对象没有 prepare 方法，帧纹理迟到和 assembler 标脏后经 UIRendererManager.updateAllDirtyRenderers 刷新。独立 C++ 几何测试仍可直接测量准备耗时。该候选 Windows Debug/Release 各 88 张图像均与 Web 逐字节相等。
 - [x] HTTP 字体部分响应后断线：Windows Debug/Release 各一次 loadRemote 拒绝，缓存与别名计数恢复；同 URL 取得 223404 字节并实际绘字，测量宽度 95.9765625。Web 首次 fetch 读取失败，随后同 URL 经 loadRemote 完成 12 张截图。每个平台记录一次断流、一次完整传输。布局 12/12，严格像素仍为 9/12。见 [HTTP 验收记录](./native-2d-m6.1-font-http.md)。
 - [x] 字体数据边界补充：BitmapFont/LabelAtlas 拒绝溢出 float、非法 glyph/kerning 与重复字形，失败保留 native 数据、版本和 JS 编辑视图；TTFFont 销毁后 initDefault 不再改写状态。Windows Debug/Release native 与实际 JSB 定向回归通过，见 [字体资产报告](./native-2d-m6.1-font-assets.md)。
 - [x] 字体字号入口复核：BitmapFont/LabelAtlas 忽略非有限字号及 JSB float 溢出，保留默认/零/小数语义；重复赋值、销毁后迟到赋值保持版本稳定。Windows Debug/Release native 与实际 JSB、7 个 Jest suite（68 项）通过，见字体资产报告。
