@@ -12,6 +12,13 @@ if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set
 if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==10||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
 for (const backend of [a, b]) {
+    const sizes = backend.shrinkSizes;
+    if (sizes?.length !== 8 || !sizes.every(Number.isInteger)
+        || sizes[0] !== 8 || sizes[1] !== 32 || sizes[2] !== 8
+        || sizes[3] !== 8 || sizes[4] !== 33 || sizes[5] !== 8
+        || sizes[6] <= 0 || sizes[6] >= 32 || sizes[7] !== 32) {
+        throw new Error('Unexpected Label shrink/restore sizes: ' + JSON.stringify(sizes));
+    }
     if (backend.labelLayout?.length !== 8) throw new Error('Incomplete immediate Label layout matrix on ' + backend.backend);
     for (const force of [false, true]) {
         for (const overflow of [0, 1, 2, 3]) {
@@ -36,6 +43,7 @@ for (const row of a.labelLayout) {
         throw new Error('Label wrap or fixed bounds differ across platforms: ' + JSON.stringify({native:row,web}));
     }
 }
+if (!a.shrinkSizes.every((size,index) => size === b.shrinkSizes[index])) throw new Error('Windows and Web resolve different SHRINK font sizes');
 const centers={
     'prefab-atlas-sprite':[255,0,0,255],'prefab-atlas-mesh-left':[255,0,0,255],'prefab-atlas-mesh-right':[0,255,0,255],
     'root-order-registration':[64,0,128,255],'root-order-reordered':[128,0,64,255],
@@ -109,7 +117,7 @@ for(const name of a.captures) {
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
 }
-const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
+const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},shrinkSizes:{native:a.shrinkSizes,web:b.shrinkSizes},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
 fs.writeFileSync(path.join(__dirname,'build/graphics-gpu-comparison.json'),JSON.stringify(result,null,2));
 for(const row of results) console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: max=${row.max}, pixels=${row.pixels}, Web colored=${row.colored}`);
 if(!result.pass) process.exitCode=1;

@@ -138,6 +138,8 @@ private:
     std::array<double, 2> getTextStyleExtent() const;
     void onMaterialChanged() override;
     void rebuildTexture();
+    std::string fontDescription(float size) const;
+    float shrinkFontSize(float width, float height) const;
     void onUITransformChanged() override;
     void syncFontAsset();
     void bindBitmapAtlas(SpriteFrame *atlas);

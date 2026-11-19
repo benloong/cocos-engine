@@ -226,6 +226,27 @@ export class M6GraphicsGpuProbe extends Component {
                 }
             }
         }
+        const shrinkSizes: number[] = [];
+        label.fontSize = 32;
+        label.lineHeight = 40;
+        label.overflow = Label.Overflow.SHRINK;
+        label.string = 'I\nI';
+        for (const wrap of [false, true]) {
+            label.enableWrapText = wrap;
+            for (const height of [20, 100, 20]) {
+                transform.setContentSize(120, height);
+                label.updateRenderData(true);
+                if (label.fontSize !== 32 || transform.width !== 120 || transform.height !== height) throw new Error('SHRINK mutated requested size');
+                shrinkSizes.push(label.actualFontSize);
+            }
+        }
+        label.enableWrapText = false;
+        label.string = 'MMMM';
+        for (const width of [26, 200]) {
+            transform.setContentSize(width, 100);
+            label.updateRenderData(true);
+            shrinkSizes.push(label.actualFontSize);
+        }
         labelNode.destroy();
         await wait();
         for (const item of cases) {
@@ -339,7 +360,7 @@ export class M6GraphicsGpuProbe extends Component {
         const scenes = await runSceneMatrix(rt, capture);
         const device = director.root!.device;
         const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures,
-            scenes, roots, hits, batchDrawCalls, labelLayout, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            scenes, roots, hits, batchDrawCalls, labelLayout, shrinkSizes, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
         console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);

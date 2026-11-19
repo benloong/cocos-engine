@@ -155,6 +155,39 @@ float measureText(CanvasRenderingContext2D &context, const std::string &text) {
     return context.measureText(text).width;
 }
 
+std::vector<std::string> layoutLines(CanvasRenderingContext2D &context, const std::string &text, bool wrap, float maxWidth) {
+    std::vector<std::string> lines;
+    size_t start = 0;
+    while (start <= text.size()) {
+        const size_t end = text.find('\n', start);
+        const std::string paragraph = text.substr(start, end == std::string::npos ? std::string::npos : end - start);
+        if (paragraph.empty()) {
+            lines.emplace_back();
+        } else if (!wrap) {
+            lines.push_back(paragraph);
+        } else {
+            std::string current;
+            for (const std::string &codepoint : splitUtf8(paragraph)) {
+                const std::string candidate = current + codepoint;
+                if (!current.empty() && measureText(context, candidate) > maxWidth) {
+                    lines.push_back(current);
+                    current = codepoint;
+                } else {
+                    current = candidate;
+                }
+            }
+            if (!current.empty()) {
+                lines.push_back(current);
+            }
+        }
+        if (end == std::string::npos) {
+            break;
+        }
+        start = end + 1;
+    }
+    return lines;
+}
+
 } // namespace
 
 Label::Label() {
@@ -259,19 +292,23 @@ void Label::setFont(const std::string &font) {
     markRenderDirty();
 }
 
-void Label::updateFont() {
+std::string Label::fontDescription(float size) const {
     std::string font;
     if (_isBold) { font += "bold "; }
     if (_isItalic) { font += "italic "; }
-    font += std::to_string(static_cast<int>(_fontSize)) + "px ";
+    font += std::to_string(static_cast<int>(size)) + "px ";
     auto *ttf = dynamic_cast<TTFFont *>(_fontAsset.get());
     if (ttf && !ttf->isReleased() && !ttf->getFontFamily().empty()) {
         font += '\"';
         for (char c : ttf->getRenderFontFamily()) { if (c == '\\' || c == '\"') font += '\\'; font += c; }
         font += '\"';
     } else font += _fontFamily;
+    return font;
+}
+
+void Label::updateFont() {
     releaseLetterAtlas();
-    _font = font;
+    _font = fontDescription(_fontSize);
 }
 
 void Label::setFontSize(float size) {
@@ -857,6 +894,35 @@ void Label::updateRenderData(bool force) {
     syncContentSize();
 }
 
+float Label::shrinkFontSize(float width, float height) const {
+    if (width < 0.F || height < 0.F) return _fontSize;
+    const float lineHeight = _lineHeight > 0.F ? _lineHeight : _fontSize;
+    CanvasRenderingContext2D measure(1.F, 1.F);
+    if (_wrap) {
+        int low = 0;
+        int high = static_cast<int>(_fontSize + 1.F);
+        while (low < high) {
+            const int size = low + (high - low + 1) / 2;
+            measure.setFont(fontDescription(static_cast<float>(size)));
+            const auto lines = layoutLines(measure, _string, true, width);
+            if (lines.size() * lineHeight * size / _fontSize > height) high = size - 1;
+            else low = size;
+        }
+        return static_cast<float>(std::max(1, low));
+    }
+    measure.setFont(_font);
+    const auto paragraphs = layoutLines(measure, _string, false, width);
+    float longest = 0.F;
+    for (const auto &line : paragraphs) longest = std::max(longest, measureText(measure, line));
+    float padding = static_cast<float>(getTextStyleExtent()[0]);
+    if (_enableShadow) {
+        padding += std::max(0.F, _shadowBlur - _shadowOffsetX) + std::max(0.F, _shadowBlur + _shadowOffsetX);
+    }
+    const float scaleX = longest > 0.F ? (width - padding) / longest : 1.F;
+    const float scaleY = height / (paragraphs.size() * lineHeight);
+    return std::floor(_fontSize * std::clamp(std::min(scaleX, scaleY), 0.F, 1.F));
+}
+
 void Label::rebuildTexture() {
     clearRenderDirty();
     _actualFontSize = _fontSize;
@@ -876,49 +942,24 @@ void Label::rebuildTexture() {
         return;
     }
 
+    const auto box = _transform->getContentSize();
+    const bool shrink = _overflow == 2;
+    if (shrink && _fontSize > 0.F) _actualFontSize = shrinkFontSize(box.x, box.y);
+    std::string resizedFont;
+    if (_actualFontSize != _fontSize) resizedFont = fontDescription(_actualFontSize);
+    const auto &renderFont = resizedFont.empty() ? _font : resizedFont;
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
-    TextMeasurement measurement(_font);
+    TextMeasurement measurement(renderFont);
     auto &measureContext = measurement.context();
 #else
     CanvasRenderingContext2D measureContext(1.F, 1.F);
-    measureContext.setFont(_font);
+    measureContext.setFont(renderFont);
 #endif
-
-    const float lineHeight = _lineHeight > 0.0F ? _lineHeight : _fontSize * 1.2F;
-    float maxWidth = _transform->getContentSize().x;
-    if (maxWidth <= 0.0F || _overflow == 0) {
-        maxWidth = 100000.0F;
-    }
-
-    std::vector<std::string> lines;
-    size_t start = 0;
-    while (start <= _string.size()) {
-        const size_t end = _string.find('\n', start);
-        const std::string paragraph = _string.substr(start, end == std::string::npos ? std::string::npos : end - start);
-        if (paragraph.empty()) {
-            lines.emplace_back();
-        } else if (!_wrap) {
-            lines.push_back(paragraph);
-        } else {
-            std::string current;
-            for (const std::string &codepoint : splitUtf8(paragraph)) {
-                const std::string candidate = current + codepoint;
-                if (!current.empty() && measureText(measureContext, candidate) > maxWidth) {
-                    lines.push_back(current);
-                    current = codepoint;
-                } else {
-                    current = candidate;
-                }
-            }
-            if (!current.empty()) {
-                lines.push_back(current);
-            }
-        }
-        if (end == std::string::npos) {
-            break;
-        }
-        start = end + 1;
-    }
+    const float lineHeight = shrink && _fontSize > 0.F
+        ? (_lineHeight > 0.F ? _lineHeight : _fontSize) * _actualFontSize / _fontSize
+        : (_lineHeight > 0.F ? _lineHeight : _fontSize * 1.2F);
+    const float maxWidth = box.x > 0.F && _overflow != 0 ? box.x : 100000.F;
+    const auto lines = layoutLines(measureContext, _string, _wrap, maxWidth);
 
     if (lines.empty()) {
         clearRenderedData();
@@ -941,24 +982,14 @@ void Label::rebuildTexture() {
         contentWidth = static_cast<float>(contentWidth + styleExtent[0]);
         contentHeight = static_cast<float>(contentHeight + styleExtent[1]);
     }
-    if (_overflow == 2 && _transform->getContentSize().y > 0.0F
-        && contentHeight > _transform->getContentSize().y + 0.5F && _fontSize > 4.0F) {
-        _fontSize *= 0.9F;
-        updateFont();
-        markRenderDirty();
-        rebuildTexture();
-        return;
-    }
-    const float canvasWidth = contentWidth;
+    const float canvasWidth = shrink ? std::max(0.F, box.x) : contentWidth;
     float canvasHeight = contentHeight;
-    if (_overflow == 1 && _transform->getContentSize().y > 0.0F) {
-        canvasHeight = _transform->getContentSize().y;
-    }
+    if (shrink || (_overflow == 1 && box.y > 0.F)) canvasHeight = std::max(0.F, box.y);
     const uint32_t textureWidth = std::max(static_cast<uint32_t>(canvasWidth), 1U);
     const uint32_t textureHeight = std::max(static_cast<uint32_t>(canvasHeight), 1U);
 
     CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));
-    context.setFont(_font);
+    context.setFont(renderFont);
     context.setTextBaseline("alphabetic");
     context.setTextAlign("left");
 
@@ -983,10 +1014,10 @@ void Label::rebuildTexture() {
         context.setShadowOffsetY(_shadowOffsetY);
     }
 
-    float textTop = static_cast<float>(_fontSize * (1.0 - 0.26 / 2.0));
+    float textTop = static_cast<float>(_actualFontSize * (1.0 - 0.26 / 2.0));
     if (_vAlign != 0) {
-        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + _fontSize - canvasHeight;
-        if (_vAlign == 2) blank += static_cast<float>(_fontSize * 0.26 / 2.0);
+        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + _actualFontSize - canvasHeight;
+        if (_vAlign == 2) blank += static_cast<float>(_actualFontSize * 0.26 / 2.0);
         textTop -= _vAlign == 1 ? blank / 2.F : blank;
     }
     textTop += outlineMargin;
@@ -1052,7 +1083,7 @@ void Label::rebuildTexture() {
         context.setFillStyle(fillColor);
         context.fillText(line, x, lineY, 0.0F);
         if (_isUnderline) {
-            context.fillRect(x, lineY + _fontSize / 8.F, lineWidth, std::max(_underlineHeight, 0.F));
+            context.fillRect(x, lineY + _actualFontSize / 8.F, lineWidth, std::max(_underlineHeight, 0.F));
         }
     }
     cc::Data pixels;
