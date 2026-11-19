@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**NO-GO。** 完整候选 `211c790b7d` 的 Windows Release 混合变更帧为 4.0039 ms，同轮迁移前为 4.3553 ms，50% 目标为 ≤2.1777 ms。Windows 自定义字体仍有三组图像超过 Web 像素容差。最终签收需要在同一候选上重跑必需的配置和场景。
+**NO-GO。** Windows Release 候选 290d535223 的混合变更帧从迁移前的 4.7116 降至 3.4639 ms，下降 26.5%。50% 门槛为 2.3558 ms，尚差 1.1081 ms/帧。Windows 自定义字体仍有三组图像超过 Web 像素容差。最终签收需要在同一候选重跑必需配置和场景。
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。
 
@@ -9,8 +9,8 @@
 | 项目 | 配置和结果 | 证据 |
 |---|---|---|
 | Graphics 命令提交 | Windows Debug/Release 与 Web 像素对照。Release 的 256 个闭合路径从逐调用改用复用缓冲，提交耗时中位数从 581.7 降至 349.1 µs，批次和绘制次数均为 1 | [接口选择与分配实测](./native-2d-m6.3-graphics-commands.md) |
-| 混合负载 CPU | Windows Release 三轮交错运行。迁移前 4.3553 ms，上轮隔离对照 3.4645 ms，完整候选 4.0039 ms | [分段分析](./native-2d-m6-performance.md)、[三轮数据](./native-2d-m6-full-candidate-performance.json) |
-| JSB、堆峰值与 GC | 混合变更帧 JSB 876→197，JS 堆峰值 30,136,828→17,068,924 字节，强制 GC 7.412→6.385 ms。独立 Sprite 改色场景的强制 GC 升至 12.106 ms | [完整候选数据](./native-2d-m6-full-candidate-performance.json) |
+| 混合负载 CPU | Windows Release 六轮交错运行。混合变更帧从迁移前的 4.7116 降至 3.4639 ms，下降 26.5%。50% 门槛为 2.3558 ms，尚差 1.1081 ms/帧。 | [六轮逐项数据](./native-2d-m6-label-coverage-performance.json) |
+| JSB、堆峰值与 GC | 混合变更帧的 JSB 为 876 → 197 次/帧，JS 堆峰值为 30,048,820 → 17,041,052 字节，强制 GC 为 8.5000 → 6.2855 ms。每轮每场景每个阶段只执行一次强制 GC。 | [六轮逐项数据](./native-2d-m6-label-coverage-performance.json) |
 | 薄壳与稳态 JSB | 14 个 override 均在行数预算内；17 类检查 2D 内部间接导入。Label 与 RichText 的布局、栅格化及命中计算在原生执行。Windows 双配置每组 60 帧的组件直接调用均为 0，共享 manager 每帧 1 次。同步变更、显式调用和销毁分别计数 | [组件与节点生命周期](./native-2d-m6-jsb-lifecycle.json)、[六种独立资产](./native-2d-m6-jsb-assets.json)、[逐项计划](./native-2d-m6-plan.md) |
 | Graphics/Mask 材质与提交成本 | Windows Debug、Release 和 Web。32 个矩形在一个 Graphics 中为 1 次 draw，分属 32 个 Graphics 时为 32 次；单层和双层 Mask 分别为 3 次和 5 次。共享纹理完成首次上传后，三个测量阶段均为 0 字节重复上传 | [材质隔离与图像](./native-2d-m6-windows-web-gpu-results.json)、[CPU、批次与上传](./native-2d-m6.3-graphics-cost.md) |
 | 图形与事件 | Windows Debug 和 Release 各 85 张图像与 Web 逐字节一致，覆盖旧图集 Prefab、SpriteRenderer 生成网格和两个 Sprite stencil 独立交换阈值。场景矩阵同时检查合批、跨根节点命中与场景切换。此前 ASan 覆盖 80 张 | [GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json) |
@@ -34,7 +34,7 @@
 | M6.2 | RichText 固定回归 | shadow、样式、布局、用户事件和销毁解绑的完整组合 |
 | M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
-| M6.5 | 性能 KPI | 完整候选混合变更帧 CPU 较迁移前下降 8.1%，距离 50% 目标仍差 1.8262 ms/帧 |
+| M6.5 | 性能 KPI | 混合变更帧从迁移前的 4.7116 降至 3.4639 ms，下降 26.5%。50% 门槛为 2.3558 ms，尚差 1.1081 ms/帧。 |
 | M6.5 | CI | [PR 工作流](../.github/workflows/native-ts-build.yml)已配置 Windows Debug/Release 的六组真实 JSB 检查、场景记录和 SIMPLE Sprite 对 Web 的几何对照。仍缺远程运行记录、完整应用场景矩阵及其余间接热路径的证据 |
 | M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md) 和 [RenderRoot2D](./native-2d-m6-render-root-rollback.md) 回退与恢复。其余模块与真实旧项目的场景、资产、材质及性能仍待验证 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |
