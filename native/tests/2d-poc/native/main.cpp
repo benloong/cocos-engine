@@ -1660,6 +1660,19 @@ void testGraphicsMeshes() {
             layersMatch = overlap[i] == alpha + ((255U - alpha) * alpha + 127U) / 255U;
         }
         check(layersMatch, "Negative CHAR spacing composites the two glyph masks at the same position");
+        second.setFontSize(32);
+        second.setLineHeight(32);
+        second.setSpacingX(0);
+        second.setOverflow(3);
+        secondUI.setWidth(86);
+        second.setString("AA AA AA");
+        second.updateRenderData();
+        const auto softBreaks = submittedTexturePixels(second.getRenderEntity());
+        checkNear(secondUI.getHeight(), 96.F, "CHAR moves a whole word onto the following line");
+        second.setString("AA \nAA \nAA");
+        second.updateRenderData();
+        check(!softBreaks.empty() && softBreaks == submittedTexturePixels(second.getRenderEntity()),
+              "CHAR soft word breaks place each glyph at the explicit line-break position");
     }
     {
         auto orphan=std::make_unique<cc::Node>("orphan-graphics");

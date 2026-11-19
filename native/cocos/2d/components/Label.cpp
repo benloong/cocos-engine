@@ -529,31 +529,48 @@ void Label::rebuildLetterTexture() {
     const bool wrap = _overflow == 3 || (_overflow != 0 && _wrap);
     const float maxWidth = wrap && _transform ? _transform->getContentSize().x : 0.F;
 
-    std::vector<std::vector<LetterAtlas::Glyph>> lines;
+    std::vector<std::vector<const LetterAtlas::Glyph *>> lines;
     lines.emplace_back();
     double nextX = 0.0;
     double contentWidth = 0.0;
+    std::vector<const LetterAtlas::Glyph *> word;
+    double wordAdvance = 0.0;
+    double wordRight = 0.0;
+    auto finishWord = [&](bool canWrap) {
+        if (word.empty()) return;
+        if (canWrap && maxWidth > 0.F && nextX > 0.0 && nextX + wordRight > maxWidth) {
+            lines.emplace_back();
+            nextX = 0.0;
+        }
+        lines.back().insert(lines.back().end(), word.begin(), word.end());
+        contentWidth = std::max(contentWidth, nextX + wordRight);
+        nextX += wordAdvance;
+        word.clear();
+        wordAdvance = wordRight = 0.0;
+    };
 
     for (const std::string &codepoint : splitUtf8(_string)) {
         if (codepoint == "\n") {
+            finishWord(true);
             lines.emplace_back();
             nextX = 0.0;
             continue;
         }
         const int32_t code = utf8CodePoint(codepoint);
-        if (code == '\r') continue;
+        if (code == '\r') { finishWord(true); continue; }
         const auto &glyph = atlas.getOrCreateGlyph(glyphs, code, _font, lineHeight, _color);
-        if (!glyph.valid) continue;
+        if (!glyph.valid) { finishWord(true); continue; }
         const double advance = roundLetterMetric(glyph.advance);
-        if (maxWidth > 0.F && nextX > 0.0 && nextX + advance > maxWidth && !bitmapUnicodeSpace(code)) {
-            lines.emplace_back();
-            nextX = 0.0;
-        }
-        lines.back().push_back(glyph);
-        const double right = nextX + advance;
-        contentWidth = std::max(contentWidth, right);
-        nextX = right + _spacingX;
+        const bool space = bitmapUnicodeSpace(code);
+        const bool separate = space || bitmapUnicodeCJK(code) || maxWidth <= 0.F;
+        if (separate || (maxWidth > 0.F && wordAdvance + advance > maxWidth)) finishWord(true);
+        word.push_back(&glyph);
+        const double right = wordAdvance + advance;
+        wordRight = std::max(wordRight, right);
+        wordAdvance = right + _spacingX;
+        if (separate) finishWord(!space);
     }
+    finishWord(true);
     contentWidth = roundLetterMetric(contentWidth);
 
     const float contentHeight = static_cast<float>(letterLayoutHeight(lines.size()));
@@ -565,7 +582,8 @@ void Label::rebuildLetterTexture() {
     for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex) {
         double cursorX = 1.0;
         const float lineTop = 1.0F + static_cast<float>(lineIndex) * lineHeight;
-        for (const LetterAtlas::Glyph &glyph : lines[lineIndex]) {
+        for (const auto *letter : lines[lineIndex]) {
+            const auto &glyph = *letter;
             if (glyph.width > 1 && glyph.height > 1) {
                 const int32_t destX = static_cast<int32_t>(std::round(cursorX + glyph.offsetX));
                 const int32_t destY = static_cast<int32_t>(std::round(lineTop + glyph.offsetY));

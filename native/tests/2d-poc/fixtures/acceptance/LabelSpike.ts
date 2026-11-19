@@ -86,6 +86,20 @@ export class LabelSpike {
             throw new Error(`CHAR spacing mismatch: ${JSON.stringify({ widths, heights })}`);
         }
         console.log(`M3_CHAR_SPACING ${JSON.stringify({ widths, heights })}`);
+        charLabel.spacingX = 0;
+        charLabel.lineHeight = 32;
+        charTransform.width = 86;
+        const wordHeights: number[] = [];
+        for (const text of ['AA AA AA', 'AAAAAA', 'AA\nAA\nAA', 'AA AA AA']) {
+            charLabel.string = text;
+            charLabel.updateRenderData(true);
+            wordHeights.push(charTransform.height);
+        }
+        charTransform.width = 105;
+        charLabel.updateRenderData(true);
+        wordHeights.push(charTransform.height);
+        if (wordHeights.join(',') !== '96,64,96,96,64') throw new Error(`CHAR word wrap mismatch: ${wordHeights}`);
+        console.log(`M3_CHAR_WORD_WRAP ${JSON.stringify(wordHeights)}`);
         charNode.destroy();
         console.log(`M3_CHAR_LAYOUT ${JSON.stringify({ plain, outlined, wrapped, natural, trailingSpaces })}`);
         if (typeof n2d !== 'undefined' && n2d.Label) {
