@@ -24,6 +24,8 @@ if(WIN32)
     target_link_libraries(cc2d_font_resource PRIVATE dwrite gdi32 user32)
     add_executable(cc2d_ttf_raster ../test_ttf_raster.cpp)
     target_link_libraries(cc2d_ttf_raster PRIVATE cocos_engine)
+    add_executable(cc2d_ttf_stroke_freetype EXCLUDE_FROM_ALL ../test_ttf_freetype_stroke.cpp)
+    target_link_libraries(cc2d_ttf_stroke_freetype PRIVATE cocos_engine)
     # Build outline diagnostics from source copies to keep test switches out of the engine.
     find_program(CC2D_NODE_EXECUTABLE NAMES node REQUIRED)
     set(CC2D_GEOMETRY_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/ttf-geometry/DirectWriteFont-geometry.cpp")

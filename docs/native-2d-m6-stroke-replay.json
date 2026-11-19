@@ -7,6 +7,96 @@
   "tolerance": 1,
   "glyphMasks": 96,
   "debugReleaseIdentical": true,
+  "rectangleControls": [
+    {
+      "glyph": "11.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 44,
+        "max": 56
+      }
+    },
+    {
+      "glyph": "27.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 32,
+        "max": 51
+      }
+    },
+    {
+      "glyph": "3.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 33,
+        "max": 72
+      }
+    },
+    {
+      "glyph": "35.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 42,
+        "max": 29
+      }
+    },
+    {
+      "glyph": "51.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 37,
+        "max": 72
+      }
+    },
+    {
+      "glyph": "59.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 46,
+        "max": 29
+      }
+    },
+    {
+      "glyph": "75.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 31,
+        "max": 56
+      }
+    },
+    {
+      "glyph": "83.center.path",
+      "arc": {
+        "count": 0,
+        "max": 0
+      },
+      "cubic": {
+        "count": 43,
+        "max": 30
+      }
+    }
+  ],
   "rows": [
     {
       "size": 12,
@@ -17,6 +107,16 @@
           "hash": "712126c26fc1701d8796bcc84953822f92f904e987c58f3901dc9aa9909d2cf9",
           "pixels": 154,
           "max": 43
+        },
+        "boundaryNative": {
+          "hash": "e7c9b0e065b715b8ed12db42b9b6b1d6e4c52c9e94f4045357739d59f11c4c98",
+          "pixels": 156,
+          "max": 43
+        },
+        "directStroke": {
+          "hash": "a268398065b4f652d7d44571ce63e5d80266c2e265376e534e4a6164e346678c",
+          "pixels": 144,
+          "max": 38
         },
         "lines": {
           "hash": "fd8edf9f56cad10e4065ee55ece253434fb6a235139d7f7f03b6273658dcf7af",
@@ -32,6 +132,21 @@
           "hash": "3104e2899c6b110870e874539d18a53c8409548c6691e1e29aa97924e312fa23",
           "pixels": 4,
           "max": 8
+        },
+        "quadraticCenter": {
+          "hash": "3104e2899c6b110870e874539d18a53c8409548c6691e1e29aa97924e312fa23",
+          "pixels": 4,
+          "max": 8
+        },
+        "boundary": {
+          "hash": "1c6192b32667f65af880ba53380b4df0a6945a5f1ee9ae566ec439efbb80a593",
+          "pixels": 143,
+          "max": 50
+        },
+        "freetype": {
+          "hash": "0f4817e65febacc2be953962d33576a550fa644191a6c9ddf856c086abf90dbe",
+          "pixels": 135,
+          "max": 55
         }
       }
     },
@@ -44,6 +159,16 @@
           "hash": "0c4f0c23b335987d55815b824b7255aca36401e36c7059c355c306a86ccf7608",
           "pixels": 161,
           "max": 34
+        },
+        "boundaryNative": {
+          "hash": "b75a27611c26c6a907855831ba9dcf1f538f65de725782020c9ec7a2cc048dab",
+          "pixels": 163,
+          "max": 34
+        },
+        "directStroke": {
+          "hash": "7749f553670e6de07cea71b5c1c6197b92fe5ef90c05995c1fb56f65393af760",
+          "pixels": 167,
+          "max": 43
         },
         "lines": {
           "hash": "323bc21428693a938cb90078c1e63d5bdbe9da7c5eb1d9c51ee457584af14541",
@@ -59,6 +184,21 @@
           "hash": "a10f54949bd8ec5f8241cc15ee83e26cfc2b0df8bc133b08cf34ef04c669faae",
           "pixels": 0,
           "max": 0
+        },
+        "quadraticCenter": {
+          "hash": "a10f54949bd8ec5f8241cc15ee83e26cfc2b0df8bc133b08cf34ef04c669faae",
+          "pixels": 0,
+          "max": 0
+        },
+        "boundary": {
+          "hash": "84062abeec0204c85d539af5fe798830658ec9935f1ace1a0da29a2aece78bfa",
+          "pixels": 147,
+          "max": 34
+        },
+        "freetype": {
+          "hash": "54bbd9342b274b7e792aa7065eda80b15c6807f3cbdb891f015be435fbb39ad5",
+          "pixels": 148,
+          "max": 65
         }
       }
     },
@@ -71,6 +211,16 @@
           "hash": "6b6822c22575666294a106c61a52b3945dc89c2454644dee1e0e660d78c3c6c3",
           "pixels": 128,
           "max": 40
+        },
+        "boundaryNative": {
+          "hash": "8e77430da099455c5fec1d71040141ca1a02f53518df1aefcb8d01755d192b8c",
+          "pixels": 132,
+          "max": 40
+        },
+        "directStroke": {
+          "hash": "d231d3e8fbe2239335f9d02252ca4d77ddf9aaa5e3459df991138230b30b8554",
+          "pixels": 145,
+          "max": 47
         },
         "lines": {
           "hash": "ebd57960f293a918a94b79c31a591997f948c96d000cb0caff38b74c67890f40",
@@ -86,6 +236,21 @@
           "hash": "0d6daf1e83a7f562cc08abcb2e5c9095f9aec83c6249f732e62ebb783f0447f6",
           "pixels": 0,
           "max": 0
+        },
+        "quadraticCenter": {
+          "hash": "0d6daf1e83a7f562cc08abcb2e5c9095f9aec83c6249f732e62ebb783f0447f6",
+          "pixels": 0,
+          "max": 0
+        },
+        "boundary": {
+          "hash": "3fd0efa2562f6c7825aabe02561da7272de0ca11bc703edeca8271af41203065",
+          "pixels": 125,
+          "max": 41
+        },
+        "freetype": {
+          "hash": "fb88a4132fd6a945fd6717159dabffe8b042833166478d9a840991c43c0b7dfa",
+          "pixels": 121,
+          "max": 32
         }
       }
     },
@@ -98,6 +263,16 @@
           "hash": "74539c1feb02fe3111e9802ef3fe074d0997482127178af006c822de135d662e",
           "pixels": 333,
           "max": 86
+        },
+        "boundaryNative": {
+          "hash": "0b22f352f5df388d95797db4a1b9a59a1be63e9eee1acb6eb46859bce9b7464d",
+          "pixels": 337,
+          "max": 86
+        },
+        "directStroke": {
+          "hash": "469560fdc20524b863acd7ce31715192f709f54eb62c7054316457ec8dd58d3e",
+          "pixels": 385,
+          "max": 71
         },
         "lines": {
           "hash": "f58007fa996897679529a051e50332e160c79eb8acd615a36bb4d6bc5c673c04",
@@ -113,6 +288,21 @@
           "hash": "3805a8831c82754a7cad5f159ca174ca9c3d2ff6dd6a33787325da9e63249bfe",
           "pixels": 0,
           "max": 1
+        },
+        "quadraticCenter": {
+          "hash": "dfddcc52ef5091f7b849f963c05692041cb1935ce1410fe4ddbc9e0b0984e04a",
+          "pixels": 0,
+          "max": 1
+        },
+        "boundary": {
+          "hash": "6f2aba3b0cd7a114eb36516d9cc9fa3dbb327f80d79d5111a508198ec9f7308a",
+          "pixels": 302,
+          "max": 86
+        },
+        "freetype": {
+          "hash": "a2366362b6ebe3e64bcd16e213df2284ce51f3166d0abfe37c3435ebde3bd9c6",
+          "pixels": 315,
+          "max": 142
         }
       }
     },
@@ -125,6 +315,16 @@
           "hash": "3c2ed12beea97b2d4f860758989de28a75a2d665a4dacf716255c4f554c2bb2b",
           "pixels": 351,
           "max": 56
+        },
+        "boundaryNative": {
+          "hash": "cba6ec0d5887c55256b0d6b41600753525fc1072091e2c516c390fbbc887a96e",
+          "pixels": 352,
+          "max": 56
+        },
+        "directStroke": {
+          "hash": "808d25cbee1ba2d561bc6235f8511c727fd294112998b2774387fc6535621ef4",
+          "pixels": 374,
+          "max": 59
         },
         "lines": {
           "hash": "757b29e36cde9eee2abfc08abb5a2e6b1f76b020c9f28902883b8e91d8dc4da8",
@@ -140,6 +340,21 @@
           "hash": "a999e8db1be72d376936f352768758f9197458fedab156dddaa2ce4f7a7418ee",
           "pixels": 0,
           "max": 1
+        },
+        "quadraticCenter": {
+          "hash": "f4b88dfbb16ebb7275ec7cf47503a91ee79740ef5d8108e91c71dc2541b90ed5",
+          "pixels": 0,
+          "max": 1
+        },
+        "boundary": {
+          "hash": "44bad52184aeec82695ba54e744e4c78bc6d0c5e36ae5a45e8be70c35fd26b55",
+          "pixels": 306,
+          "max": 57
+        },
+        "freetype": {
+          "hash": "4255f6da82e2c9a5ab2434faf8f189e11e4c187e75a1618861dab9271e4f892e",
+          "pixels": 343,
+          "max": 139
         }
       }
     },
@@ -152,6 +367,16 @@
           "hash": "e70c3f61077bff355e3821faa356a03a6b43a5137e7359653caa124b7cd5a032",
           "pixels": 348,
           "max": 83
+        },
+        "boundaryNative": {
+          "hash": "d5ed041dea558f5cfbf48fefaa66ab647fa260f1a1e33026ef3841dcb9e3a27b",
+          "pixels": 353,
+          "max": 83
+        },
+        "directStroke": {
+          "hash": "76d603299849f07849e3fa1c1c6dd6a5f2a5488e2fb76822fe69bd3016547f91",
+          "pixels": 427,
+          "max": 69
         },
         "lines": {
           "hash": "8190c181119b5fc8c8a54feefc5e180cbcf8b15dc3b2c5e24658c77c2fdde8f9",
@@ -167,6 +392,21 @@
           "hash": "14de37e37a396aa52429381bff94fc477502fb5d116b63c66144ad5745ad8b94",
           "pixels": 1,
           "max": 3
+        },
+        "quadraticCenter": {
+          "hash": "04ef246f3535c5bab407c5fc1d7e47de4e12b34ab6f7d45addde6d9ea2adab3b",
+          "pixels": 1,
+          "max": 3
+        },
+        "boundary": {
+          "hash": "10e50a1f68d5c53e191b8ce4e8d722e8a58adaad5457bbd4022e82e12f6a42b7",
+          "pixels": 307,
+          "max": 82
+        },
+        "freetype": {
+          "hash": "f6f207c805e729ed909d0bf5ad7fbf82275e0e5f29bc198a03f3459c481802b7",
+          "pixels": 308,
+          "max": 78
         }
       }
     },
@@ -179,6 +419,16 @@
           "hash": "c3cb1a8e61eb8be957b475ef3122c4c290c458aca4be5b62e4190937c7781890",
           "pixels": 615,
           "max": 54
+        },
+        "boundaryNative": {
+          "hash": "8045fbc04f1f06c5f776e0a92bea6e7084ce03ffb5b9f754fdd5fe06e63946fa",
+          "pixels": 620,
+          "max": 54
+        },
+        "directStroke": {
+          "hash": "cc008e84f4970761f22128251b4165162e71accfac14a94687dafa267885a5dc",
+          "pixels": 675,
+          "max": 50
         },
         "lines": {
           "hash": "9a7f9bc72fa54502c059bebd99d6314d0a34b9a31f1315248e0ac379625e8c28",
@@ -194,6 +444,21 @@
           "hash": "2aa835bb7e2f24505d93387c96a8e479466101540a667116f9be58c528816ec4",
           "pixels": 0,
           "max": 1
+        },
+        "quadraticCenter": {
+          "hash": "33ec118cd91d2e517df1b1a1719c6c9a41bc2caa9e73a2e4cdd7f9983bda994b",
+          "pixels": 0,
+          "max": 0
+        },
+        "boundary": {
+          "hash": "5a94e61bbac81b22ae7c132c2350d4a0c1e4d99cc43ce855c3c558470e5562cf",
+          "pixels": 539,
+          "max": 56
+        },
+        "freetype": {
+          "hash": "437f46e31ddf58518c3c673917a30b85cfabdcc90240708d3f29f48c05e2ad9c",
+          "pixels": 517,
+          "max": 52
         }
       }
     },
@@ -206,6 +471,16 @@
           "hash": "cd862bd2cd46b379865d666e1998a377e16e13184a919932b6b297e9ca438e43",
           "pixels": 570,
           "max": 66
+        },
+        "boundaryNative": {
+          "hash": "56e9ca42fa7406101e323a7b917396fdb6e057436172d9cfca47f9685c32e255",
+          "pixels": 582,
+          "max": 66
+        },
+        "directStroke": {
+          "hash": "d5298a9f478625fe3f6ff8b6ff923ec35d35c6ee1c660174d0a0d108c397ca4c",
+          "pixels": 643,
+          "max": 59
         },
         "lines": {
           "hash": "e82d3333b81fbef9568688a9053ae0d1ccf649c4db0103065dc9ff8ad5aaba87",
@@ -221,6 +496,21 @@
           "hash": "1c3962a989cd10adfb5b5fc62f13f339882f5517b2b8c5ef1592498d13f04279",
           "pixels": 0,
           "max": 1
+        },
+        "quadraticCenter": {
+          "hash": "8d11c4d8352358999a88603dcc6513e9a79f2f07b982addb58eff063d824be18",
+          "pixels": 0,
+          "max": 1
+        },
+        "boundary": {
+          "hash": "3bcf0ee8e1ed4f806ff1365809b7efd933a1252456c87a715cf1df1fb4a5bd9e",
+          "pixels": 475,
+          "max": 66
+        },
+        "freetype": {
+          "hash": "78eb5567d3c79f82d0744a98431140c2364072b9c0f1eb4beb2b16d8ef070588",
+          "pixels": 471,
+          "max": 76
         }
       }
     },
@@ -233,6 +523,16 @@
           "hash": "fd22b018b7158383037e5c0fbf7c6027139511ea7878116ea8dc31f9ccaa0839",
           "pixels": 643,
           "max": 47
+        },
+        "boundaryNative": {
+          "hash": "14528b3642f22de36aa3c32f40c40cb7efd1b3f01c04ac7b0f45e686e288beb2",
+          "pixels": 671,
+          "max": 47
+        },
+        "directStroke": {
+          "hash": "f20ac2ab580e4ee320336dca0f7405c0dde8fd02bbe772e296762452a50f2464",
+          "pixels": 721,
+          "max": 52
         },
         "lines": {
           "hash": "bd9070699041e084edb6da7bfc867896c82c085e1c0cb37822001fb753fd7dc3",
@@ -248,6 +548,21 @@
           "hash": "4490925b49d4b3c4c23e6bd320a10e3d4b469b540da37b51b9222e5dcc0b0d95",
           "pixels": 8,
           "max": 34
+        },
+        "quadraticCenter": {
+          "hash": "4490925b49d4b3c4c23e6bd320a10e3d4b469b540da37b51b9222e5dcc0b0d95",
+          "pixels": 8,
+          "max": 34
+        },
+        "boundary": {
+          "hash": "c8327e8ed372b0958fd2479a1f1b38b0f9a15f585d7541a7926fc1e1fa53e26b",
+          "pixels": 533,
+          "max": 46
+        },
+        "freetype": {
+          "hash": "4c62c1f2ebf900baa2070ea4e35ef0161e12aa7d0d30c7490096a42af0525f0c",
+          "pixels": 555,
+          "max": 81
         }
       }
     },
@@ -260,6 +575,16 @@
           "hash": "fdb7eb360aeaf7f50f1548bd4d68d3a9ce4dce7c49688556692cebbcb4dc01a4",
           "pixels": 849,
           "max": 61
+        },
+        "boundaryNative": {
+          "hash": "67acc1d0cf2b1e25536634e26c4ac72f5844eecb6824f88567a196d0b69f912f",
+          "pixels": 866,
+          "max": 61
+        },
+        "directStroke": {
+          "hash": "c4fda84848fa4fef4001eb0acdbd796f4c7edb7e90524baf6b5ab1ef0c0f7c11",
+          "pixels": 902,
+          "max": 67
         },
         "lines": {
           "hash": "ffe75f3b363ce8c5ca5edf391f245f51ef6a5d3e0f5cdd6483d5e982ad6a8470",
@@ -275,6 +600,21 @@
           "hash": "ab0f14f81615ea393fcf4b3b90513e1fc1dc3997ce587ab40f516077aa6c7392",
           "pixels": 0,
           "max": 1
+        },
+        "quadraticCenter": {
+          "hash": "ab0f14f81615ea393fcf4b3b90513e1fc1dc3997ce587ab40f516077aa6c7392",
+          "pixels": 0,
+          "max": 1
+        },
+        "boundary": {
+          "hash": "452de157dbcf729f4e322c9fe8295c2d18e3f622f6bf4d268789c69d07ecc294",
+          "pixels": 745,
+          "max": 60
+        },
+        "freetype": {
+          "hash": "bebff0aa276f4e516eb2618cc2f593c7120509aa48c84931cfe3867a51b9c5d2",
+          "pixels": 744,
+          "max": 73
         }
       }
     },
@@ -287,6 +627,16 @@
           "hash": "49ef498dcc43a9a65a4d636a3b64ca095a7a279ebb2356a1c6afb9e695660971",
           "pixels": 815,
           "max": 69
+        },
+        "boundaryNative": {
+          "hash": "212313ab0844fc56b564a4988739367c7f5c3a27dc0fa0c24d77715869dd7cdf",
+          "pixels": 827,
+          "max": 69
+        },
+        "directStroke": {
+          "hash": "33d5ce647aa0ddaa2420e7ae88e63700b8992b3ccff4f0a50a8d2303a9202620",
+          "pixels": 849,
+          "max": 61
         },
         "lines": {
           "hash": "c3d3494e78bb5dae83ea43f2a2d6a69210baade13058373ec6e123caca24494a",
@@ -302,6 +652,21 @@
           "hash": "eed1d1d72aa077e54317ddc316d6d8ec1a964e93de26ecd76d5b9b04fe2fd973",
           "pixels": 4,
           "max": 3
+        },
+        "quadraticCenter": {
+          "hash": "eed1d1d72aa077e54317ddc316d6d8ec1a964e93de26ecd76d5b9b04fe2fd973",
+          "pixels": 4,
+          "max": 3
+        },
+        "boundary": {
+          "hash": "bbaf2bb6e8e137fb724ba6d3fd439bf90eed536ee62cf5046f4082cb8a66ec6c",
+          "pixels": 683,
+          "max": 69
+        },
+        "freetype": {
+          "hash": "3cd3c280ac7d3b6869b71feda6cdb76ff3090782b881984350eb870ace865ca0",
+          "pixels": 650,
+          "max": 64
         }
       }
     },
@@ -314,6 +679,16 @@
           "hash": "6ee020240c7458eadac72af3a97e471bf2218f329723a20c1560eb921e9e3192",
           "pixels": 868,
           "max": 65
+        },
+        "boundaryNative": {
+          "hash": "b1a108a5955aba7a3f131b24a63ca19d621a15a7ee328e9d017a923cb5d78e97",
+          "pixels": 880,
+          "max": 65
+        },
+        "directStroke": {
+          "hash": "34931d6c25328188aaf5b3bd3dc622b68c4f18f71ada7bbec51694e9a7eecb78",
+          "pixels": 1008,
+          "max": 58
         },
         "lines": {
           "hash": "f6d9e3b4183eb0b89be38746985111fcead99a1c93ce174be1572545fb96065c",
@@ -329,6 +704,21 @@
           "hash": "06cb39a3060c3efbabba887f461544b1906fbf964bd14ecbf3233584f5758b3c",
           "pixels": 23,
           "max": 40
+        },
+        "quadraticCenter": {
+          "hash": "7ccf7be0d40ecf7b509f9719dad578faeb75abe1bf6acab57ea41bf70aed33a9",
+          "pixels": 23,
+          "max": 40
+        },
+        "boundary": {
+          "hash": "c587cba680891a3312d2032db7e2dff2e8d25cdc240f500ed7452bb31a7f0425",
+          "pixels": 788,
+          "max": 63
+        },
+        "freetype": {
+          "hash": "d8c2f95844f4f4760bff149ece385d75ee0abf46ddc674df690e7807bb36090e",
+          "pixels": 804,
+          "max": 81
         }
       }
     }

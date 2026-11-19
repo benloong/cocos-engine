@@ -45,6 +45,21 @@ if (designUnits) {
     source = '#include <cstdlib>\n' + source;
 } else if (process.argv[3] === '--stroke-replay') {
     source = '#include "ttf-stroke-replay.h"\n' + source;
+    replaceOnce('target->FillGeometry(sampled.get(), brush.get());', `if (std::getenv("CC2D_DIRECT_STROKE")) {
+                target->SetTransform(transform);
+                target->DrawGeometry(strokePath, brush.get(), thickness, style.get());
+            } else target->FillGeometry(sampled.get(), brush.get());`);
+    replaceOnce('const float shear = italic', `ComOwner<ID2D1PathGeometry> boundary;
+        if (std::getenv("CC2D_STROKE_BOUNDARY")) {
+            hr = _factory->CreatePathGeometry(boundary.out());
+            if (SUCCEEDED(hr)) hr = boundary->Open(sink.out());
+            if (SUCCEEDED(hr)) hr = shape->Outline(nullptr, .01F, sink.get());
+            if (SUCCEEDED(hr)) hr = sink->Close();
+            sink.reset();
+            if (FAILED(hr)) return hr;
+            shape = boundary.get();
+        }
+        const float shear = italic`);
     replaceOnce('hr = shape->Simplify', `static unsigned sequence = 0;
         const auto stem = std::to_string(++sequence);
         const char *replay = std::getenv("CC2D_STROKE_REPLAY");
