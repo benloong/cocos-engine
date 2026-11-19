@@ -183,6 +183,7 @@
   - [x] Windows Label 用测量上下文直接绘字。Debug/Release 通过重复重绘、GDI 句柄与图像回归。Release 混合变更帧从改动前的 4.5218 降至 3.8502 ms，同轮迁移前为 4.5154 ms。[测量方法及各负载结果](./native-2d-m6-performance.md)
   - [x] 从完整候选 `211c790b7d` 重建 Windows Release，与迁移前和绘字隔离版本三轮交错对跑。Web 同版本完成 12 组负载。混合变更帧为 4.0039 ms，较迁移前下降 8.1%，CPU 门禁仍开放。[分段与逐轮证据](./native-2d-m6-performance.md)
   - [x] 六轮交错比较迁移前、移除 Label 覆盖扫描前后。混合变更帧从迁移前的 4.7116 降至 3.4639 ms，下降 26.5%。50% 门槛为 2.3558 ms，尚差 1.1081 ms/帧。[六轮逐项数据](./native-2d-m6-label-coverage-performance.json)
+  - [x] 在 2df0c7bfd9 复测迁移前和当前 Windows Release，加入当前版本的分段计时构建。六种启动顺序下，混合变更帧均有 24 次字体栅格化。绘字占栅格化耗时的 53%–57%，布局占 27%–30%；普通计时 CPU 降幅为 26.5%，50% Gate 仍未通过。[数据与计时边界](./native-2d-m6-performance.md#当前候选的字体准备耗时)
 - [x] 14 个原生 override 的物理行数预算已接入 M0 和 native-ts-build。计数保留空行、普通注释及包含运行时逻辑的行，排除版权头、纯类型声明和可确认的 deprecated 直接转发。最接近上限的是 SpriteFrame 298/300 和 Label 491/500；RichText 为 155/500。UIRenderer、LabelOutline、LabelShadow 是保留的 Web 实现，纳入 17 类依赖检查。扩展后的薄壳检查 27 项与 7 项审计测试在本机通过。
 - [x] Windows Debug/Release 各完成 14 组场景的创建、稳态、显式 API、同步变更、下一帧、禁用、启用和延迟销毁统计。224 个窗口逐个校验 V8 原生总数；两种配置的迁移类直接调用数逐格一致，稳态为 0，共享 manager 每帧 1 次。[逐组计数与覆盖边界](./native-2d-m6.0-windows-jsb-trace.md)
 - [x] 六种独立资产的创建、同步属性变更、destroy 与三帧延迟清理，在 Windows Debug/Release 共 48 个窗口通过 V8 总数校验；记录 TTF 数据释放、位图字体帧解绑和共享资源存活。[逐资产调用与边界](./native-2d-m6.0-windows-jsb-trace.md)
