@@ -34,8 +34,6 @@ public:
     void setFontFamily(const std::string &value);
     const std::string &getRenderFontFamily() const { return _renderFamily.empty() ? _family : _renderFamily; }
     bool loadFontData(const std::string &path);
-    void setFontData(const std::vector<uint8_t> &bytes);
-    const std::vector<uint8_t> &getFontData() const { return _bytes; }
     uint32_t getFontDataSize() const { return static_cast<uint32_t>(_bytes.size()); }
     const std::string &getSourcePath() const { return _source; }
     void clearNativeData() override;

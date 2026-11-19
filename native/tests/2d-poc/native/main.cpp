@@ -765,10 +765,11 @@ void testFontAssets() {
     std::printf("DirectWrite handles: %lu -> %lu\n", fontHandlesBefore, fontHandlesAfter);
 #endif
     cc::IntrusivePtr<cc::TTFFont> ttf(new cc::TTFFont());
-    std::vector<uint8_t> bytes{1, 2, 3};
-    ttf->setFontData(bytes); bytes[0] = 9;
-    check(ttf->getFontData()[0] == 1, "TTF owns copied bytes");
-    check(!ttf->loadFontData("missing-font.ttf") && ttf->getFontDataSize() == 3, "TTF failed load preserves data");
+    check(ttf->loadFontData(CC2D_FONT_FIXTURE), "TTF loads the font fixture");
+    const auto byteCount = ttf->getFontDataSize();
+    check(byteCount == std::filesystem::file_size(CC2D_FONT_FIXTURE), "TTF owns all bytes read from disk");
+    check(!ttf->loadFontData("missing-font.ttf") && ttf->getFontDataSize() == byteCount
+              && ttf->getSourcePath() == CC2D_FONT_FIXTURE, "TTF failed load preserves data and source");
     ttf->setFontFamily("Test Family");
     cc::IntrusivePtr<cc::LabelAtlas> font(new cc::LabelAtlas());
     const std::string config = R"({"fontDefDictionary":{"65":{"rect":{"x":0,"y":0,"width":2,"height":2},"xAdvance":2}},"kerningDict":{"4259905":-1}})";
@@ -907,17 +908,19 @@ void testFontAssets() {
     }
     for (int i = 0; i < 1000; ++i) {
         cc::IntrusivePtr<cc::TTFFont> cycle(new cc::TTFFont());
-        cycle->setFontData(bytes); cycle->setFontFamily("Cycle Family");
+        check(cycle->loadFontData(CC2D_FONT_FIXTURE), "cycle loads font from disk");
+        cycle->setFontFamily("Cycle Family");
         label.setFontAsset(cycle);
         check(cycle->getRefCount() == 2, "Label retains TTF during cycle");
         cycle->clearNativeData();
         check(cycle->getFontDataSize() == 0 && cycle->getFontFamily().empty(), "TTF clear releases bytes and alias");
-        cycle->setFontData(bytes); cycle->setFontFamily("Reloaded Family");
+        check(cycle->loadFontData(CC2D_FONT_FIXTURE) && cycle->getFontDataSize() == byteCount, "cleared font reloads from disk");
+        cycle->setFontFamily("Reloaded Family");
         cycle->destroy(); cc::CCObject::deferredDestroy();
         const auto releasedRevision = cycle->getRevision();
-        cycle->setFontData(bytes); cycle->setFontFamily("Late Family");
+        cycle->setFontFamily("Late Family");
         cycle->initDefault(ccstd::optional<ccstd::string>("late-default"));
-        check(!cycle->loadFontData("missing-font.ttf") && cycle->getRevision() == releasedRevision, "released TTF rejects reload");
+        check(!cycle->loadFontData(CC2D_FONT_FIXTURE) && cycle->getRevision() == releasedRevision, "released TTF rejects reload");
         check(cycle->getFontDataSize() == 0 && cycle->getFontFamily().empty(), "late TTF writes cannot resurrect data");
         label.setFontAsset(nullptr);
         check(cycle->getRefCount() == 1, "Label unbind releases TTF reference");

@@ -83,10 +83,6 @@ void TTFFont::setFontFamily(const std::string &value) {
     if (_released || value == _family) return;
     _family = value; refreshFontAlias(); notifyFontChanged();
 }
-void TTFFont::setFontData(const std::vector<uint8_t> &bytes) {
-    if (_released) return;
-    _bytes = bytes; _source.clear(); refreshFontAlias(); notifyFontChanged();
-}
 bool TTFFont::loadFontData(const std::string &path) {
     auto *files = FileUtils::getInstance();
     if (_released || path.empty() || !files || !files->isFileExist(path)) return false;

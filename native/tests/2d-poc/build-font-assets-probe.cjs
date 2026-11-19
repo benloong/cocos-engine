@@ -52,6 +52,7 @@ for (const FontClass of [BitmapFont, LabelAtlas]) {
     check(sized.fontSize === -1 && sized.getRevision() === releasedRevision, 'late font size cannot restore released data');
 }
 const ttf = new TTFFont();
+check(!('getFontData' in ttf) && !('setFontData' in ttf), 'raw TTF byte test accessors are absent from JSB');
 ttf._nativeUrl = ${JSON.stringify(path.join(repo, 'tests/fixtures/Thonburi.ttf').replaceAll('\\', '/'))};
 ttf._nativeAsset = 'Thonburi_LABEL';
 check(jsb.loadFont('Thonburi_LABEL', "url('" + ttf._nativeUrl + "')") === 'Thonburi_LABEL', 'real platform font alias registration');
