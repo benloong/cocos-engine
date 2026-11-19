@@ -2,6 +2,12 @@ import { BitmapFont, builtinResMgr, Camera, Canvas, Color, director, DirectorEve
 
 declare const n2d: any;
 
+function submittedTextureSize (label: any): { textureWidth: number; textureHeight: number } {
+    const entity = label?.getRenderEntity();
+    const texture = entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0).texture : null;
+    return { textureWidth: texture?.width ?? 0, textureHeight: texture?.height ?? 0 };
+}
+
 interface LabelCase {
     name: string;
     text: string;
@@ -83,9 +89,7 @@ export class LabelSpike {
                 console.log(`M3_BITMAP_LABEL ${JSON.stringify({
                     width: bitmapTransform.width, height: bitmapTransform.height, actualFontSize: bitmapLabel.actualFontSize,
                     glyphs: draw ? draw.vbCount / 4 : undefined, vertices: draw?.vbCount, indices: draw?.ibCount,
-                    textureWidth: native?.getTextureWidth?.(),
-                    textureHeight: native?.getTextureHeight?.(),
-                    lines: native?.getLineCount?.(),
+                    ...submittedTextureSize(native),
                     samplesFontAtlas: !!draw?.texture && draw.texture === bitmapFont.spriteFrame?.texture.getGFXTexture(),
                 })}`);
             }, 500);
@@ -113,13 +117,9 @@ export class LabelSpike {
             nativeLabel.setPriority(1);
             nativeLabel.setEnabled(true);
             setTimeout(() => {
-                console.log('M3_NATIVE_LABEL_GETTERS', nativeLabel.getTextureWidth(), nativeLabel.getTextureHeight(), nativeLabel.getLineCount());
                 console.log(`M3_NATIVE_LABEL ${JSON.stringify({
                     contentSize: nativeTransform.contentSize,
-                    hasWidthGetter: typeof nativeLabel.getTextureWidth,
-                    textureWidth: nativeLabel.getTextureWidth(),
-                    textureHeight: nativeLabel.getTextureHeight(),
-                    lines: nativeLabel.getLineCount(),
+                    ...submittedTextureSize(nativeLabel),
                 })}`);
             }, 300);
         }
@@ -165,9 +165,7 @@ export class LabelSpike {
                 const entity = native?.getRenderEntity();
                 const draw = entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0) : null;
                 console.log(`M3_REAL_BMFONT ${JSON.stringify({
-                    textureWidth: native?.getTextureWidth?.(),
-                    textureHeight: native?.getTextureHeight?.(),
-                    lines: native?.getLineCount?.(),
+                    ...submittedTextureSize(native),
                     vertices: draw?.vbCount, samplesFontAtlas: !!draw?.texture && draw.texture === realFont.spriteFrame?.texture.getGFXTexture(),
                 })}`);
                 if (native) bitmapNodes.push(realNode);
@@ -187,9 +185,7 @@ export class LabelSpike {
         setTimeout(() => {
             const native = (asciiCharLabel as any)._native;
             console.log(`M3_CHAR_ASCII ${JSON.stringify({
-                textureWidth: native?.getTextureWidth?.(),
-                textureHeight: native?.getTextureHeight?.(),
-                lines: native?.getLineCount?.(),
+                ...submittedTextureSize(native),
             })}`);
         }, 700);
         const bitmapNodeA = new Node('M3BitmapAtlasA');
@@ -271,16 +267,12 @@ export class LabelSpike {
                 if (nativeLabel) {
                     if (item.name === 'cjk') {
                     console.log(`M3_CHAR_LABEL ${JSON.stringify({
-                        textureWidth: nativeLabel.getTextureWidth(),
-                        textureHeight: nativeLabel.getTextureHeight(),
-                        lines: nativeLabel.getLineCount(),
+                        ...submittedTextureSize(nativeLabel),
                     })}`);
                 }
                 console.log(`M3_SHELL_LABEL ${JSON.stringify({
                         name: item.name,
-                        textureWidth: nativeLabel.getTextureWidth(),
-                        textureHeight: nativeLabel.getTextureHeight(),
-                        lines: nativeLabel.getLineCount(),
+                        ...submittedTextureSize(nativeLabel),
                     })}`);
                 }
                 const size = node.getComponent(UITransform)?.contentSize;
@@ -353,12 +345,19 @@ export class LabelSpike {
                     const pixels = renderTexture.readPixels();
                     let nonzero = 0;
                     let colored = 0;
+                    let firstInkRow = renderTexture.height;
+                    let lastInkRow = -1;
                     let checksum = 0;
                     if (pixels) {
                         for (let i = 0; i < pixels.length; i += 4) {
                             const r = pixels[i]; const g = pixels[i + 1]; const b = pixels[i + 2]; const a = pixels[i + 3];
                             if (a > 0) { nonzero++; }
-                            if (a > 0 && (r > 8 || g > 8 || b > 8)) { colored++; }
+                            if (a > 0 && (r > 8 || g > 8 || b > 8)) {
+                                ++colored;
+                                const row = Math.floor(i / (4 * renderTexture.width));
+                                firstInkRow = Math.min(firstInkRow, row);
+                                lastInkRow = row;
+                            }
                             checksum = (checksum + r + g + b + a) >>> 0;
                         }
                     }
@@ -368,6 +367,7 @@ export class LabelSpike {
                         height: renderTexture.height,
                         nonzero,
                         colored,
+                        inkHeight: Math.max(lastInkRow - firstInkRow + 1, 0),
                         checksum,
                     })}`);
                 } catch (error) {

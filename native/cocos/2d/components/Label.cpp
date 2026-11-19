@@ -306,9 +306,8 @@ void Label::clearRenderedData() {
     _renderer.clearFrame();
     _renderer.setEnabled(isEnabled());
     _frame = nullptr; _texture = nullptr;
-    _lastContentWidth = _lastContentHeight = _lastTextureWidth = _lastTextureHeight = 0;
+    _lastContentWidth = _lastContentHeight = 0;
     _actualFontSize = 0.F;
-    _lastLineCount = 0;
 }
 
 void Label::setFont(const std::string &font) {
@@ -588,9 +587,6 @@ void Label::rebuildLetterTexture() {
     _frame->setOffset(0.0F, 0.0F);
     _frame->setRotated(false);
 
-    _lastTextureWidth = static_cast<float>(outWidth);
-    _lastTextureHeight = static_cast<float>(outHeight);
-    _lastLineCount = static_cast<int32_t>(lines.size());
     _lastContentWidth = contentWidth;
     _lastContentHeight = contentHeight;
 
@@ -655,8 +651,6 @@ void Label::rebuildBitmapTexture() {
         quads.emplace_back(quad);
     }
     _lastContentWidth = static_cast<float>(layout.width); _lastContentHeight = static_cast<float>(layout.height);
-    _lastTextureWidth = std::ceil(_lastContentWidth) + 2; _lastTextureHeight = std::ceil(_lastContentHeight) + 2;
-    _lastLineCount = static_cast<int32_t>(layout.lineWidths.size());
     _texture = nullptr;
     if (!_frame || _frame == _ttfFrame) _frame = new SpriteFrame();
     _frame->copyFrom(frame);
@@ -868,12 +862,9 @@ void Label::rebuildTexture() {
         _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
         _texture->uploadData(data.getBytes());
 
-        _lastTextureWidth = static_cast<float>(textureWidth);
-        _lastTextureHeight = static_cast<float>(textureHeight);
         _lastContentWidth = contentWidth;
         _ttfContentWidth = _overflow == 0 ? contentWidth : box.x;
         _lastContentHeight = contentHeight;
-        _lastLineCount = static_cast<int32_t>(lines.size());
         _frame->setTexture(_texture);
         _frame->setRect(0.0F, 0.0F, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
         _frame->setOriginalSize(static_cast<float>(textureWidth), static_cast<float>(textureHeight));

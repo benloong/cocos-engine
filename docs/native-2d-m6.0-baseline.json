@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "a152e50c554861a0e96278b0474c7656d7edf6a87b9bce6ca6f43b4e99080b0e"
+      "sha256": "d7476c999ac5e98aaeec308ad75620306e0ac0215fc8445e5a152ffb653020c1"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "86803d51db93ff00ad1214a1e5f542c6523c29435b2096d0b18a97e55318d868"
+      "sha256": "d3197b2e3680f39d66db17ed2ae3ca085c96718d8951af8106df12447702c742"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",

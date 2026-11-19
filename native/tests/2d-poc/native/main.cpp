@@ -1199,8 +1199,9 @@ void testLabelRasterMapping() {
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     const auto width = static_cast<uint32_t>(label.getContentWidth());
     const auto height = static_cast<uint32_t>(label.getContentHeight());
-    check(label.getTextureWidth() == width && label.getTextureHeight() == height, "TTF canvas uses Web integer dimensions without extra border");
     auto *entity = static_cast<cc::RenderEntity *>(node.getUserData());
+    auto *texture = entity->getStaticRenderDrawInfo(0)->getTexture();
+    check(texture && texture->getWidth() == width && texture->getHeight() == height, "Submitted TTF texture uses Web integer canvas dimensions");
     auto *sampler = entity->getStaticRenderDrawInfo(0)->getSampler();
     check(sampler && sampler->getInfo().addressU == cc::gfx::Address::CLAMP && sampler->getInfo().addressV == cc::gfx::Address::CLAMP, "TTF sampler clamps canvas borders like Web");
     cc::CanvasRenderingContext2D reference(static_cast<float>(width), static_cast<float>(height));

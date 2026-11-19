@@ -89,11 +89,11 @@ try {
 
     foreach ($name in @('english', 'cjk')) {
         if (-not $byName.ContainsKey($name)) { throw "missing $name" }
-        if ($byName[$name].lines -ne 1) { throw "$name expected 1 line" }
+        if ($pixels["M3Label-$name"].inkHeight -gt $measure[$name].lineHeight) { throw "$name expected 1 line" }
         if ($pixels["M3Label-$name"].colored -le 0) { throw "$name has no visible text pixels" }
     }
     if (-not $byName.ContainsKey('wrap')) { throw 'missing wrap' }
-    if ($byName['wrap'].lines -lt 2) { throw 'wrap expected multiple lines' }
+    if ($pixels['M3Label-wrap'].inkHeight -le $measure['wrap'].lineHeight) { throw 'wrap expected multiple lines' }
 
     Write-Host 'M3 Label probe: PASS'
     Write-Host ("  GPU english colored={0}, wrap colored={1}, cjk colored={2}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored, $pixels['M3Label-cjk'].colored)
@@ -103,7 +103,7 @@ try {
     Write-Host ("  CHAR ASCII {0}x{1}, GPU colored={2}" -f $charAscii.textureWidth, $charAscii.textureHeight, $pixels['M3CharAscii'].colored)
     Write-Host '  BITMAP Labels sample distinct full-size source textures'
     $byName.Values | ForEach-Object {
-        Write-Host ("  {0}: {1}x{2}, lines={3}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines)
+        Write-Host ("  {0}: {1}x{2}, visible height={3}" -f $_.name, $_.textureWidth, $_.textureHeight, $pixels["M3Label-$($_.name)"].inkHeight)
     }
 } finally {
     if (-not $proc.HasExited) { $proc.Kill() }

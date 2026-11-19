@@ -2,10 +2,12 @@ import { assetManager, director, gfx, Color, isValid, Label, Node, RichText, sys
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
-function submittedTextCoverage (label: any): number {
+function submittedTextTexture (label: any): gfx.Texture | null {
     const entity = label.getRenderEntity();
-    if (!entity.staticDrawInfoSize) return 0;
-    const texture = entity.getStaticRenderDrawInfo(0).texture;
+    return entity.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0).texture : null;
+}
+
+function submittedTextCoverage (texture: gfx.Texture | null): number {
     if (!texture) return 0;
     const pixels = new Uint8Array(texture.width * texture.height * 4);
     const region = new gfx.BufferTextureCopy();
@@ -135,7 +137,7 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     label.useSystemFont = false; label.font = httpFont; label.fontSize = 24; label.string = 'Atlas 123';
     await wait();
     const width = ui.width;
-    if (Math.abs(width - 95.9765625) > 0.001 || !submittedTextCoverage((label as any)._native)) throw new Error('HTTP font fallback or empty rendering');
+    if (Math.abs(width - 95.9765625) > 0.001 || !submittedTextCoverage(submittedTextTexture((label as any)._native))) throw new Error('HTTP font fallback or empty rendering');
     node.destroy(); await wait();
     release(httpFont, httpUrl);
     cache.removeCache(httpUrl); await wait();
@@ -219,9 +221,10 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
             const labels = [];
             for (let i = 0; i < backend.getSegmentCount(); ++i) {
                 const label = backend.getSegmentLabel(i);
-                const opaque = submittedTextCoverage(label);
-                if (!opaque) throw new Error(`Batcher did not prepare visible text: ${item.name}/${i}`);
-                labels.push({ opaque, width: label.getTextureWidth(), height: label.getTextureHeight() });
+                const texture = submittedTextTexture(label);
+                const opaque = submittedTextCoverage(texture);
+                if (!texture || !opaque) throw new Error(`Batcher did not prepare visible text: ${item.name}/${i}`);
+                labels.push({ opaque, width: texture.width, height: texture.height });
             }
             raster.push({ name: item.name, labels });
         } else {

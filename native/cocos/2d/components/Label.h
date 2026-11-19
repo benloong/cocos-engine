@@ -94,7 +94,6 @@ public:
     void setShadowColor(const Color &color);
     void setShadowBlur(float blur);
     void setShadowOffset(float x, float y);
-    float getTextureWidth() const { return _lastTextureWidth; }
     SpriteFrame *getTTFSpriteFrame() const { return _ttfFrame.get(); }
     Texture2D *getLetterTexture();
     void setLetterTexture(Texture2D *texture);
@@ -107,8 +106,6 @@ public:
     double getTTFContentWidth() const { return _ttfContentWidth; }
     void setTTFContentWidth(double width) { _ttfContentWidth = width; }
     float getContentHeight() const { return _lastContentHeight; }
-    float getTextureHeight() const { return _lastTextureHeight; }
-    int32_t getLineCount() const { return _lastLineCount; }
     RenderEntity *getRenderEntity() const override { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
 
     void setColor(const Color &color);
@@ -177,9 +174,6 @@ private:
     float _shadowOffsetY{0.0F};
     float _layoutWidth{-1.F};
     float _layoutHeight{-1.F};
-    float _lastTextureWidth{0.0F};
-    float _lastTextureHeight{0.0F};
-    int32_t _lastLineCount{0};
     float _lastContentWidth{0.0F};
     double _ttfContentWidth{0.0};
     float _lastContentHeight{0.0F};
