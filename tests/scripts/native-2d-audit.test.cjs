@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const ts = require('typescript');
 const fs = require('node:fs');
 const path = require('node:path');
-const { declaration, runtimeImports, inspect, build } = require('../../native/tests/2d-poc/audit-m6.cjs');
+const { declaration, runtimeImports, inspect, build, shellHotPaths, isWebAssembler } = require('../../native/tests/2d-poc/audit-m6.cjs');
 
 test('native 2D owners do not use shared_ptr or weak_ptr', () => {
     const root=path.resolve(__dirname,'../..');
@@ -57,6 +57,7 @@ test('frame and buffer findings use syntax rather than comments or strings', () 
 
 test('current runtime gaps remain visible instead of being called a passing gate', () => {
     const report=build();
+    assert.deepEqual(shellHotPaths(report), []);
     const label=report.classes.find(c=>c.name==='Label');
     assert.equal(label.overridden,true);
     assert.ok(report.limitations.some(s=>s.includes('not measured')));
@@ -65,4 +66,14 @@ test('current runtime gaps remain visible instead of being called a passing gate
     for(const c of report.classes) assert.ok(c.imports.within2d.includes(c.runtime));
     assert.ok(report.entrypointImports.within2d.includes('cocos/2d/assembler/index.jsb.ts'));
     assert.deepEqual(report.entrypointImports.within2d.filter(file => /\/assembler\/(label|sprite)\//.test(file)), []);
+});
+
+test('native shell closures reject Web layout and tessellation while allowing the native Graphics bridge', () => {
+    const paths = ['assembler/sprite/tiled.ts', 'assembler/label/font-utils.ts', 'assembler/graphics/webgl/earcut.ts',
+        'utils/html-text-parser.ts', 'utils/text-utils.ts', 'assembler/graphics/types.ts', 'assembler/graphics/index.jsb.ts']
+        .map(file => 'cocos/2d/' + file);
+    const report = { classes: [{ name: 'Label', imports: { within2d: paths } }] };
+    assert.deepEqual(shellHotPaths(report), paths.slice(0, 5).map(file => ({component: 'Label', file})));
+    assert.equal(isWebAssembler('C:/engine/' + paths[2]), true);
+    assert.equal(isWebAssembler('C:/engine/' + paths[6]), false);
 });

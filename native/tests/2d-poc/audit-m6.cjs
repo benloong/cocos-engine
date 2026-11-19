@@ -96,6 +96,23 @@ function inspect(file, text) {
     walk(source);
     return {printedCodeLines:code, runtimeImports:runtimeImports(source), frameMethods, nativeCalls, allocations, loops};
 }
+// Rollup reports absolute paths, while source closures use repository-relative paths.
+function isWebAssembler(file) {
+    return /(?:^|\/)cocos\/2d\/assembler\/(?:label\/|sprite\/|graphics\/(?:webgl\/|helper\.ts$|index\.ts$))/.test(file);
+}
+
+function shellHotPaths(report) {
+    const findings = [];
+    for (const component of report.classes) {
+        for (const file of component.imports.within2d) {
+            if (isWebAssembler(file) || /\/utils\/(?:html-text-parser|text-utils)\.ts$/.test(file)) {
+                findings.push({ component: component.name, file });
+            }
+        }
+    }
+    return findings;
+}
+
 function build(root = ROOT) {
     const read = file => fs.readFileSync(path.join(root,file),'utf8').replace(/\r\n/g,'\n');
     const config = JSON.parse(read('cc.config.json'));
@@ -175,4 +192,4 @@ if (require.main === module) {
     for (const c of report.classes) console.log(`${c.name}: ${c.overridden?'override':'Web runtime'}, ${c.comparison.missingSerializedDeclarations.length} missing serialized declarations, ${c.comparison.notDeclaredInShell.length} undeclared public APIs`);
     console.log(`${report.classes.length} classes, ${report.files.length} source files; this is an audit baseline, not a passing parity gate.`);
 }
-module.exports={build, declaration, runtimeImports, inspect, SCOPE, OUTPUT};
+module.exports={isWebAssembler, shellHotPaths, build, declaration, runtimeImports, inspect, SCOPE, OUTPUT};

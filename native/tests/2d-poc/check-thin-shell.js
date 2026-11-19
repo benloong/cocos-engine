@@ -83,6 +83,11 @@ function main () {
     check(!/new\s+RenderData\b/.test(source), 'must not allocate JS RenderData');
     check(!/byteLength|Float32Array|Uint16Array/.test(source), 'must not build vertex buffers in JS');
 
+    const { build, shellHotPaths } = require('./audit-m6.cjs');
+    const report = build();
+    const hotPaths = shellHotPaths(report);
+    check(!hotPaths.length, hotPaths.map(({ component, file }) => component + ' imports ' + file).join('\n'));
+    console.log('Checked transitive 2D runtime imports for ' + report.classes.length + ' classes.');
     console.log(`${checks} checks, ${failures} failures`);
     process.exit(failures === 0 ? 0 : 1);
 }

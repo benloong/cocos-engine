@@ -161,6 +161,7 @@
 - [x] Windows 文本行宽复用。Label 布局与绘制共享行宽，GDI 复用同一次测量，DirectWrite 左对齐省去定位测量。六轮混合变更帧从 4.2690 降至 3.6188 ms，系统字体和自定义字体在 Windows 的优化前后像素一致。[测量和回归](./native-2d-m6-text-width-reuse.json)
 - [ ] 达成总计划 KPI：2D 组件准备/更新与合批 CPU 时间下降 ≥50%，每帧 JSB 调用下降 ≥70%，JS 堆峰值下降 ≥30%，GC 改善；native `Batcher2d` 成本必须纳入，不能以 JS update 直接返回作为收益。
 - [ ] 迁移组件稳态每帧 JSB 调用 0；属性变更、生命周期和用户显式 API 调用单独统计。常规壳 ≤300 行，Label/RichText ≤500 行（按总计划排除版权、纯类型、deprecated 转发）；超限先移除算法，不能仅压缩排版。
+- [x] 17 个迁移或保留类的 2D 运行时导入闭包已接入薄壳检查和现有 native-ts-build 测试。Windows Debug 部署包逐块匹配 SHA256，78 个 2D 模块中 55 个产生代码，Web Sprite、Label assembler 和 Graphics WebGL 实现均为 0 字节。公共 utils 入口仍导出 html-text-parser（13308 字节）和 text-utils（13330 字节），17 类的 2D 内部依赖链均未导入它们。部署 cc.js 为 `4702081743c4e25996b2815a2ba2266a510c68133e2e2ef260ca03e921b226d5`。源码检查 13 项与审计测试 6 项通过。闭包边界外的回流、实际每帧调用与完整 CI 仍待验证。
 - [ ] 扩展现有 `check-thin-shell.js` 等检查，覆盖全部迁移类和间接热路径；CI 执行 Web TS/Jest、native TS、native 构建与组件/场景回归。
 - [ ] 按组件/模块演练回退，验证 override、依赖资产、材质与旧场景可用；回退后记录行为与性能。
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
