@@ -63,8 +63,9 @@ try {
     $bitmapAtlasLines = @(Get-Content $log | Select-String -Pattern 'M3_BITMAP_ATLAS ')
     if ($bitmapAtlasLines.Count -lt 1) { throw 'BITMAP atlas label missing' }
     $bitmapAtlas = $bitmapAtlasLines[0].Line.Substring($bitmapAtlasLines[0].Line.IndexOf('M3_BITMAP_ATLAS ') + 16) | ConvertFrom-Json
-    if ($bitmapAtlas.a.id -ne $bitmapAtlas.b.id) { throw 'BITMAP labels do not share an atlas texture' }
-    if ($bitmapAtlas.a.w -le 0 -or $bitmapAtlas.b.w -le 0 -or $bitmapAtlas.a.x -eq $bitmapAtlas.b.x) { throw 'BITMAP atlas regions invalid' }
+    if (!$bitmapAtlas.drawsOwnTexture -or !$bitmapAtlas.distinctTextures -or !$bitmapAtlas.fullFrames) {
+        throw 'BITMAP Labels must draw their own full raster textures when native atlas packing is disabled'
+    }
 
     $realLines = @(Get-Content $log | Select-String -Pattern 'M3_REAL_BMFONT ')
     if ($realLines.Count -lt 1) { throw 'real BitmapFont label missing' }
@@ -100,7 +101,7 @@ try {
     Write-Host ("  Real BMFont {0}x{1}, samples font atlas={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.samplesFontAtlas)
     Write-Host ("  CHAR Label {0}x{1}, GPU colored={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $pixels['M3Label-cjk'].colored)
     Write-Host ("  CHAR ASCII {0}x{1}, GPU colored={2}" -f $charAscii.textureWidth, $charAscii.textureHeight, $pixels['M3CharAscii'].colored)
-    Write-Host ("  BITMAP atlas id={0}, a.x={1}, b.x={2}" -f $bitmapAtlas.a.id, $bitmapAtlas.a.x, $bitmapAtlas.b.x)
+    Write-Host '  BITMAP Labels sample distinct full-size source textures'
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, lines={3}" -f $_.name, $_.textureWidth, $_.textureHeight, $_.lines)
     }

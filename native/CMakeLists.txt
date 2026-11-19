@@ -2111,8 +2111,6 @@ cocos_source_files(
     cocos/2d/geometry/GraphicsEarcut.cpp
     cocos/2d/renderer/LetterAtlas.h
     cocos/2d/renderer/LetterAtlas.cpp
-    cocos/2d/renderer/DynamicAtlas.h
-    cocos/2d/renderer/DynamicAtlas.cpp
     cocos/2d/framework/UITransformMath.h
     cocos/2d/framework/UITransformMath.cpp
     cocos/2d/framework/UITransform.h

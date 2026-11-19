@@ -31,7 +31,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "c685201dcb8b362733694f64c2167429a96d51cdfc356233aea3087949336041"
+      "sha256": "6e171d244996fb6f9e48847144bef12d2d74e45ee524b95aad48063898efb915"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "b49619e8975c7238a04b2f043aee36c44f348306534053b289cc4e486f0c0f3e"
+      "sha256": "9e2d680d37a392c2e6046d6d2652b97f14b4364d841e9ac7108c32661f0f67ba"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "257550ca04228b5dcac3dbe6888701ea396ee41137dae2cff7af5a23cf5ec5d2"
+      "sha256": "752a294a24ea0c1f5821fc38622b4201a69d23c96ca680bcfca23e749bb2d110"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -188,14 +188,6 @@
     {
       "file": "native/cocos/2d/renderer/BitmapFontLayout.h",
       "sha256": "9c88e3daef7da737e9a9ac7b5dbd1682f160e24b506ee0e5cfa5f8f32ec07ceb"
-    },
-    {
-      "file": "native/cocos/2d/renderer/DynamicAtlas.cpp",
-      "sha256": "638bd96b0b8c875787e61cbd5e4299db9d9590074768111ebec6f25d4ee36d75"
-    },
-    {
-      "file": "native/cocos/2d/renderer/DynamicAtlas.h",
-      "sha256": "8a988b201aed483caddb763919eb940a145f63370b23fa16ec86e1459d08c660"
     },
     {
       "file": "native/cocos/2d/renderer/LetterAtlas.cpp",

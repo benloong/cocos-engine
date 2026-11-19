@@ -31,6 +31,52 @@ export class BitmapGpuProbe {
         const checks: any[] = [];
         const layoutMetrics: any[] = [];
         try {
+            const nodes = ['first', 'second'].map((text, i) => {
+                const node = new Node('M6Raster-' + text);
+                parent.addChild(node);
+                node.setPosition(0, i ? 32 : -32, 0);
+                node.addComponent(UITransform);
+                const label = node.addComponent(Label);
+                label.cacheMode = Label.CacheMode.BITMAP;
+                label.fontSize = 24;
+                label.color = i ? Color.GREEN : Color.RED;
+                label.string = text;
+                return node;
+            });
+            try {
+                await wait();
+                const labels = nodes.map(node => node.getComponent(Label)!);
+                const frames = labels.map(label => label.ttfSpriteFrame!);
+                const sources = frames.map(frame => frame.texture);
+                if (!sources[0] || !sources[1] || sources[0] === sources[1] || frames.some(frame => frame.original)) {
+                    throw new Error('Disabled atlas must preserve distinct BITMAP Label rasters');
+                }
+                const before = rt.readPixels();
+                if (!before || !before.some((v, i) => i % 4 === 0 && v > 128 && before[i + 1] < 64)
+                    || !before.some((v, i) => i % 4 === 1 && v > 128 && before[i - 1] < 64)) {
+                    throw new Error('Missing red or green BITMAP glyphs');
+                }
+                dynamicAtlasManager.enabled = true;
+                labels.forEach(label => label.updateRenderData(true));
+                await wait();
+                if (sys.isNative) {
+                    if (dynamicAtlasManager.enabled || frames.some((frame, i) => frame.original || frame.texture !== sources[i])) {
+                        throw new Error('Native BITMAP redraw changed the source texture');
+                    }
+                } else if (!dynamicAtlasManager.enabled || frames[0].texture !== frames[1].texture
+                    || frames.some((frame, i) => frame.original?._texture !== sources[i])) {
+                    throw new Error('Enabled Web atlas did not pack both BITMAP Label rasters');
+                }
+                const after = rt.readPixels();
+                if (!after || after.length !== before.length || after.some((v, i) => Math.abs(v - before[i]) > 1)) {
+                    throw new Error('BITMAP Label redraw changed glyph pixels');
+                }
+            } finally {
+                nodes.forEach(node => node.destroy());
+                await wait();
+                dynamicAtlasManager.enabled = false;
+            }
+            console.log('M6_BITMAP_LABEL_CACHE_PASS');
             for (const kind of ['bitmap', 'atlas']) for (const rotated of [false, true]) {
                 const width = rotated ? 32 : 48, height = rotated ? 48 : 32;
                 const pixels = new Uint8Array(width * height * 4);

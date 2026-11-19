@@ -410,7 +410,6 @@ void testBitmapGpuGeometry() {
     checkNear(draw->getVDataBuffer()[19] - draw->getVDataBuffer()[1], 1.F, "Rotated bitmap trim updates physical glyph height");
     frame->setRotated(false); frame->setOffset(0, 0); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     frame->setDynamicAtlasFrame(packed, 6, 7); label.updateRenderData();
-    check(label.getAtlasTextureId() == reinterpret_cast<uint64_t>(packed.get()), "Explicit bitmap update observes frame packing before prepare");
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); draw = entity->getStaticRenderDrawInfo(0);
     check(draw && draw->getTexture() == packed->getGFXTexture(), "GPU-only dynamic atlas is consumed without image data");
     if (draw) checkNear(draw->getVDataBuffer()[3], 7.F/16.F, "Packed glyph UV uses current atlas origin/size");

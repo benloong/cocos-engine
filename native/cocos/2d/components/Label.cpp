@@ -35,7 +35,6 @@
 #include "2d/renderer/BitmapFontLayout.h"
 #include "2d/assets/TTFFont.h"
 #include "2d/framework/UITransform.h"
-#include "2d/renderer/DynamicAtlas.h"
 #include "2d/renderer/LetterAtlas.h"
 #include "core/assets/AssetEnum.h"
 #include "core/assets/Texture2D.h"
@@ -282,8 +281,6 @@ void Label::clearRenderedData() {
     _lastContentWidth = _lastContentHeight = _lastTextureWidth = _lastTextureHeight = 0;
     _actualFontSize = 0.F;
     _lastLineCount = 0;
-    _lastAtlasTextureId = 0;
-    _lastAtlasX = _lastAtlasY = _lastAtlasWidth = _lastAtlasHeight = 0;
 }
 
 void Label::setFont(const std::string &font) {
@@ -570,7 +567,6 @@ void Label::rebuildLetterTexture() {
     _lastContentHeight = contentHeight;
 
     _renderer.setFrame(_frame);
-    applyBitmapAtlas(pixels.data());
 }
 void Label::bindBitmapTexture(TextureBase *texture) {
     if (texture == _observedAtlasTexture) return;
@@ -633,37 +629,11 @@ void Label::rebuildBitmapTexture() {
     _lastContentWidth = static_cast<float>(layout.width); _lastContentHeight = static_cast<float>(layout.height);
     _lastTextureWidth = std::ceil(_lastContentWidth) + 2; _lastTextureHeight = std::ceil(_lastContentHeight) + 2;
     _lastLineCount = static_cast<int32_t>(layout.lineWidths.size());
-    _lastAtlasTextureId = reinterpret_cast<uint64_t>(texture);
-    _lastAtlasX = frame->getRectX(); _lastAtlasY = frame->getRectY();
-    _lastAtlasWidth = frame->getRectWidth(); _lastAtlasHeight = frame->getRectHeight();
     _texture = nullptr;
     if (!_frame || _frame == _ttfFrame) _frame = new SpriteFrame();
     _frame->copyFrom(frame);
     _renderer.setColor(_color);
     _renderer.setLabelQuads(_frame, std::move(quads));
-}
-void Label::applyBitmapAtlas(const uint8_t *pixels) {
-    if (_cacheMode != 1 || pixels == nullptr || _lastTextureWidth <= 0.0F || _lastTextureHeight <= 0.0F) {
-        return;
-    }
-    Rect region;
-    if (!DynamicAtlas::get().add(static_cast<uint32_t>(_lastTextureWidth),
-                                 static_cast<uint32_t>(_lastTextureHeight),
-                                 pixels, region)) {
-        return;
-    }
-    if (_frame == nullptr) { _frame = new SpriteFrame(); }
-    _frame->setTexture(DynamicAtlas::get().getTexture());
-    _frame->setRect(region.x, region.y, region.width, region.height);
-    _frame->setOriginalSize(region.width, region.height);
-    _frame->setOffset(0.0F, 0.0F);
-    _frame->setRotated(false);
-    _lastAtlasTextureId = DynamicAtlas::get().getTextureId();
-    _lastAtlasX = region.x;
-    _lastAtlasY = region.y;
-    _lastAtlasWidth = region.width;
-    _lastAtlasHeight = region.height;
-    _renderer.setFrame(_frame);
 }
 void Label::syncTransformSize() {
     if (!_transform) return;
@@ -975,7 +945,6 @@ void Label::rebuildTexture() {
     _frame->setRotated(false);
 
     _renderer.setFrame(_frame);
-    applyBitmapAtlas(bytes);
 }
 
 } // namespace cc

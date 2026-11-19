@@ -87,11 +87,6 @@ public:
     void setSpacingX(float spacing);
     void setCacheMode(int32_t mode);
     int32_t getCacheMode() const { return _cacheMode; }
-    uint64_t getAtlasTextureId() const { return _lastAtlasTextureId; }
-    float getAtlasX() const { return _lastAtlasX; }
-    float getAtlasY() const { return _lastAtlasY; }
-    float getAtlasWidth() const { return _lastAtlasWidth; }
-    float getAtlasHeight() const { return _lastAtlasHeight; }
     void setEnableOutline(bool enable);
     void setOutlineColor(const Color &color);
     void setOutlineWidth(float width);
@@ -148,7 +143,6 @@ private:
     void rebuildBitmapTexture();
     void syncBitmapAtlas();
     void rebuildLetterTexture();
-    void applyBitmapAtlas(const uint8_t *pixels);
 
     Sprite _renderer;
     bool _syncingContentSize{false};
@@ -188,11 +182,6 @@ private:
     float _lastContentWidth{0.0F};
     double _ttfContentWidth{0.0};
     float _lastContentHeight{0.0F};
-    uint64_t _lastAtlasTextureId{0};
-    float _lastAtlasX{0.0F};
-    float _lastAtlasY{0.0F};
-    float _lastAtlasWidth{0.0F};
-    float _lastAtlasHeight{0.0F};
 
     IntrusivePtr<FontAsset> _fontAsset;
     BitmapFontAsset *_bitmapFont{nullptr}; // owned by _fontAsset

@@ -214,11 +214,17 @@ export class LabelSpike {
         bitmapLabelB.string = 'Atlas B';
 
         setTimeout(() => {
-            const nativeA = (bitmapLabelA as any)._native;
-            const nativeB = (bitmapLabelB as any)._native;
+            const source = [bitmapLabelA, bitmapLabelB].map(label => label.ttfSpriteFrame);
+            const submitted = [bitmapLabelA, bitmapLabelB].map(label => {
+                const entity = (label as any)._native?.getRenderEntity();
+                return entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0).texture : null;
+            });
             console.log(`M3_BITMAP_ATLAS ${JSON.stringify({
-                a: { id: String(nativeA?.getAtlasTextureId?.()), w: nativeA?.getAtlasWidth?.(), x: nativeA?.getAtlasX?.(), y: nativeA?.getAtlasY?.() },
-                b: { id: String(nativeB?.getAtlasTextureId?.()), w: nativeB?.getAtlasWidth?.(), x: nativeB?.getAtlasX?.(), y: nativeB?.getAtlasY?.() },
+                drawsOwnTexture: source.every((frame, i) => !!submitted[i] && submitted[i] === frame?.texture.getGFXTexture()),
+                distinctTextures: !!submitted[0] && submitted[0] !== submitted[1],
+                fullFrames: source.every(frame => frame && !frame.original && frame.rect.x === 0 && frame.rect.y === 0
+                    && frame.rect.width > 0 && frame.rect.height > 0
+                    && frame.rect.width === frame.texture.width && frame.rect.height === frame.texture.height),
             })}`);
         }, 800);
         const warmCaptureNode = new Node('M3Warm');

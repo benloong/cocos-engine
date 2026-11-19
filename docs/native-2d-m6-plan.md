@@ -93,6 +93,7 @@
 - [x] 原生组件事件触发自动合图曾在 Windows Debug 与 Web 通过。该实现是禁用前的历史基线，见[触发报告](./native-2d-m6.1-atlas-automatic.md)。
 - [x] JSB + Native 暂停运行时动态图集。Windows Debug 验证显式启用、插入、打包和重置均保持原图，Web 自动打包与恢复通过。完整门禁、37 项定向 Jest 和 100 组像素对照通过，见[验收记录](./native-2d-m6.1-atlas-automatic.md#jsb--native-暂停运行时合图)。
 - [x] 2026-11-18 确认运行时动态合图终态。JSB + Native 保持禁用，组件和 manager 的显式启用、插入、打包、重置均维持原图；Web 保持启用能力。Windows Debug 完整工程与 Web 重建实测通过，覆盖 Web 回退、自动打包、共享帧恢复及 Sprite/Mask、BitmapFont/LabelAtlas 共 100 组原始像素对照。旧的 Native 自动打包记录留作历史基线。
+  - [x] 系统字体 Label 的 CacheMode.BITMAP 遵循同一平台开关。96c37f626f 的 Windows 双 Label 用例在 manager 关闭时仍读到共享纹理。移除独立原生图集后，Windows Debug/Release 实际提交各自的完整源纹理，显式开启 manager 和重绘均保留源纹理。Web 关闭时使用两张源纹理，开启后两帧进入同一图集并保留各自原图。三端重绘前后的红绿字形最大通道差均在 1 以内，两种 Windows 配置各有 92 组位图字体图像与 Web 逐字节相同。[跨平台场景](../native/tests/2d-poc/fixtures/acceptance/BitmapGpuProbe.ts)、[提交纹理检查](../native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts)。
 - [x] 旧格式静态图集和 Prefab：Windows Debug/Web 实际加载 TexturePacker plist、PNG 和序列化 Prefab，通过三个加载释放循环、两个独立实例、红绿 GPU 换帧、缓存清理和独立图集持有检查。见[验收报告](./native-2d-m6.1-sprite-atlas.md#5-真实资源和-prefab)。
 - [x] SpriteAtlas 帧末释放原生帧表：分别覆盖 C++ 和 JSB 销毁队列，拒绝迟到写入，Debug/Release 1000 轮引用计数复归。真实 Prefab 保留 wrapper 的释放断言和连续文档门禁通过。见[所有权验收](./native-2d-m6.1-sprite-atlas.md#6-原生帧引用随延迟销毁释放)。
 - [x] SpriteFrame 帧末归还当前纹理和原图。C++ 与 JSB 的销毁队列共用清理入口，迟到依赖不能重新绑定。Debug/Release 各 1000 轮和 Windows Debug 真实资产释放、完整串行门禁及像素对照通过。见[验收报告](./native-2d-m6.1-sprite-frame.md#帧末归还纹理引用)。
