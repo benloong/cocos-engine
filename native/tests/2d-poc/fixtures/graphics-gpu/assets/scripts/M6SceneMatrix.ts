@@ -1,4 +1,4 @@
-import { Camera, Color, Director, director, Graphics, isValid, Layers, native, Node, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
+import { Camera, Color, Director, director, Graphics, instantiate, isValid, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
 
 type Check = { name: string; actual: boolean | number; expected: boolean | number };
 const nextFrame = (): Promise<void> => new Promise(resolve => director.once(Director.EVENT_AFTER_DRAW, resolve));
@@ -108,5 +108,46 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
     check('final-frame-destroyed', isValid(previous!.frame), false);
     check('final-texture-destroyed', isValid(previous!.texture), false);
     await capture('scene-final-empty');
+    const prefab = await new Promise<Prefab>((resolve, reject) =>
+        resources.load('M6StaticAtlas/AtlasSprite', Prefab, (err, asset) => err ? reject(err) : resolve(asset)));
+    prefab.addRef();
+    const openPrefabScene = (name: string): Sprite => {
+        const scene = new Scene(name);
+        const instance = instantiate(prefab);
+        instance.layer = layer;
+        root(scene, 'atlas-root', layer).addChild(instance);
+        camera(scene, 'atlas-camera', layer, 0, 7, rt);
+        director.runSceneImmediate(scene);
+        return instance.getComponent(Sprite)!;
+    };
+    const first = openPrefabScene('m6-atlas-first');
+    const firstNode = first.node;
+    const atlas = first.spriteAtlas!;
+    const left = first.spriteFrame!;
+    const right = atlas.getSpriteFrame('right')!;
+    const texture = left.texture;
+    const assets = [prefab, atlas, left, right, texture];
+    const ids = assets.map(asset => asset.uuid);
+    await capture('scene-atlas-first');
+    const second = openPrefabScene('m6-atlas-second');
+    await nextFrame();
+    check('atlas-first-node-destroyed', isValid(firstNode), false);
+    check('atlas-first-sprite-destroyed', isValid(first), false);
+    check('atlas-assets-retained', assets.every((asset, i) => isValid(asset) && assetManager.assets.get(ids[i]) === asset), true);
+    check('atlas-frame-rebound', second.spriteAtlas === atlas && second.spriteFrame === left, true);
+    second.changeSpriteFrameFromAtlas('right');
+    check('atlas-rotated-frame-selected', second.spriteFrame === right && right.rotated && right.texture === texture, true);
+    await capture('scene-atlas-second');
+    const last = new Scene('m6-atlas-unloaded');
+    camera(last, 'unloaded-camera', layer, 0, 7, rt);
+    director.runSceneImmediate(last);
+    await nextFrame();
+    check('atlas-second-sprite-destroyed', isValid(second), false);
+    prefab.decRef();
+    await nextFrame(); await nextFrame();
+    check('atlas-all-assets-released', assets.every(asset => !isValid(asset)), true);
+    check('atlas-all-cache-keys-released', ids.every(id => !assetManager.assets.has(id)), true);
+    check('atlas-final-root-count', rootCount(), 0);
+    await capture('scene-atlas-unloaded');
     return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks };
 }

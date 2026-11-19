@@ -1,5 +1,5 @@
 {
-  "snapshot": "b3a2d2c3e0d3e25b868c8941ce97049056e65dc60f1e8d9012d883f3f464847d",
+  "snapshot": "7058ba8fb10459abc0422232d94fac16fc8e801e471e133d4075780a730deb9c",
   "width": 256,
   "height": 256,
   "environment": {
@@ -97,6 +97,51 @@
         "name": "final-texture-destroyed",
         "actual": false,
         "expected": false
+      },
+      {
+        "name": "atlas-first-node-destroyed",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "atlas-first-sprite-destroyed",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "atlas-assets-retained",
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "atlas-frame-rebound",
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "atlas-rotated-frame-selected",
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "atlas-second-sprite-destroyed",
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "atlas-all-assets-released",
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "atlas-all-cache-keys-released",
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "atlas-final-root-count",
+        "actual": 0,
+        "expected": 0
       }
     ]
   },
@@ -1255,20 +1300,50 @@
       "pass": true,
       "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
       "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    },
+    {
+      "name": "scene-atlas-first",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 1024,
+      "pass": true,
+      "nativeSha256": "e3c92d47e61b0a73e2f624014625ab7db7c5acc5a7ec6742c84f4c6b181a27f0",
+      "webSha256": "e3c92d47e61b0a73e2f624014625ab7db7c5acc5a7ec6742c84f4c6b181a27f0"
+    },
+    {
+      "name": "scene-atlas-second",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 1024,
+      "pass": true,
+      "nativeSha256": "eb19fb4f921ff0aa6bd31936661953d90b0963ec979f9c5cab202ebd0ba4986e",
+      "webSha256": "eb19fb4f921ff0aa6bd31936661953d90b0963ec979f9c5cab202ebd0ba4986e"
+    },
+    {
+      "name": "scene-atlas-unloaded",
+      "max": 0,
+      "pixels": 0,
+      "channels": 0,
+      "colored": 0,
+      "pass": true,
+      "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+      "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
     }
   ],
   "windows": [
     {
       "configuration": "Debug",
-      "executableSha256": "0073f57a2af45d9f9e186bd16a60fc2f37fdb068ddad69a69f8501bdfe30d0fa",
-      "manifestSha256": "5e6df0be4bc7cf287b496874a503cbff20564e66d195f237effc2afda2ea670c",
-      "exactImages": 85
+      "executableSha256": "a5d7790ded18f14e0044f37387aa1ad2690f235cf29018edbf06af638f4851e3",
+      "manifestSha256": "817a36751b72f643e080f2bc5b158869bcb775b7418c386da49f675671c153f5",
+      "exactImages": 88
     },
     {
       "configuration": "Release",
-      "executableSha256": "1282d7e0047023efaa3f0e7f4fbbeeeadc3943547729387d5642907682659106",
-      "manifestSha256": "5e6df0be4bc7cf287b496874a503cbff20564e66d195f237effc2afda2ea670c",
-      "exactImages": 85
+      "executableSha256": "f4081c2e7dd96d8d4a3e37ff69c9db5a911efefcbe564719a5b4ae9040777a19",
+      "manifestSha256": "817a36751b72f643e080f2bc5b158869bcb775b7418c386da49f675671c153f5",
+      "exactImages": 88
     }
   ]
 }
