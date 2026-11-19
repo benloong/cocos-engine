@@ -1,6 +1,6 @@
 import { _decorator, BitmapFont, Camera, Canvas, Color, Component, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { runSceneMatrix } from './M6SceneMatrix';
-import { EffectAsset, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
+import { EffectAsset, gfx, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
 
 const { ccclass } = _decorator;
@@ -111,6 +111,7 @@ export class M6GraphicsGpuProbe extends Component {
                 const systemFrame = label.ttfSpriteFrame;
                 const systemTexture = systemFrame?.texture;
                 label.font = font;
+                if (label.spriteFrame !== font.spriteFrame) throw new Error('Bitmap Label did not expose the assigned sprite frame');
                 if (!systemTexture || label.ttfSpriteFrame !== systemFrame || systemFrame?.texture !== systemTexture) {
                     throw new Error('Bitmap font replaced the retained TTF sprite frame or its texture');
                 }
@@ -306,6 +307,7 @@ export class M6GraphicsGpuProbe extends Component {
         const labelNode = node(canvas.node, 'immediate-label-layout');
         const label = labelNode.addComponent(Label);
         const ttfFrame = label.ttfSpriteFrame;
+        if (label.spriteFrame !== ttfFrame) throw new Error('System Label spriteFrame differs from its TTF frame');
         if (!(ttfFrame instanceof SpriteFrame) || !ttfFrame.texture) throw new Error('Enabled Label has no TTF sprite frame');
         const transform = labelNode.getComponent(UITransform)!;
         label.fontSize = 16;
@@ -338,7 +340,31 @@ export class M6GraphicsGpuProbe extends Component {
         label.contentWidth = 13.25;
         label.updateRenderData(true);
         if (label.contentWidth !== 13.25) throw new Error('CHAR cache overwrote the TTF layout width');
+        const atlasTexture = label.spriteFrame as unknown as Texture2D;
+        if (!(atlasTexture instanceof Texture2D) || atlasTexture.width !== 1024 || atlasTexture.height !== 1024) {
+            throw new Error('Invalid CHAR atlas texture');
+        }
+        const peerNode = node(canvas.node, 'char-atlas-peer');
+        const peer = peerNode.addComponent(Label);
+        peer.fontSize = 28;
+        peer.color = new Color(0, 255, 0, 255);
+        peer.string = 'Q';
+        peer.cacheMode = Label.CacheMode.CHAR;
+        peer.updateRenderData(true);
+        if (peer.spriteFrame !== atlasTexture) throw new Error('CHAR Labels with different styles did not share a texture');
+        const region = new gfx.BufferTextureCopy();
+        region.texExtent.width = atlasTexture.width;
+        region.texExtent.height = atlasTexture.height;
+        const atlasPixels = new Uint8Array(atlasTexture.width * atlasTexture.height * 4);
+        director.root!.device.copyTextureToBuffers(atlasTexture.getGFXTexture()!, [atlasPixels], [region]);
+        let green = 0;
+        for (let i = 0; i < atlasPixels.length; i += 4) {
+            if (atlasPixels[i] < 10 && atlasPixels[i + 1] > 200 && atlasPixels[i + 2] < 10 && atlasPixels[i + 3] > 128) green++;
+        }
+        if (!green) throw new Error('Shared GPU texture lacks the second Label glyph');
         label.cacheMode = Label.CacheMode.NONE;
+        if (!isValid(atlasTexture, true) || peer.spriteFrame !== atlasTexture) throw new Error('One Label leaving CHAR invalidated its peer');
+        peerNode.destroy();
         const freshFrame = label.ttfSpriteFrame;
         if (!freshFrame?.texture || freshFrame === ttfFrame) throw new Error('Leaving CHAR did not replace the TTF sprite frame');
         const freshTexture = freshFrame.texture;

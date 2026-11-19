@@ -110,6 +110,8 @@ public:
     void setShadowOffset(float x, float y);
     float getTextureWidth() const { return _lastTextureWidth; }
     SpriteFrame *getTTFSpriteFrame() const { return _ttfFrame.get(); }
+    Texture2D *getLetterTexture();
+    void setLetterTexture(Texture2D *texture);
     void destroyTTFSpriteFrame();
     void updateRenderData();
     void updateRenderData(bool force);
@@ -218,9 +220,8 @@ private:
     IntrusivePtr<FontAsset> _fontAsset;
     BitmapFontAsset *_bitmapFont{nullptr}; // owned by _fontAsset
     uint32_t _fontAssetRevision{0};
-    void releaseLetterAtlas();
-    LetterAtlas *_letterAtlas{nullptr}; // borrowed from registry while this Label holds a lease
-    std::string _letterAtlasKey;
+    LetterAtlas &acquireLetterAtlas();
+    std::shared_ptr<LetterAtlas> _letterAtlas;
 
     IntrusivePtr<SpriteFrame> _bitmapAtlas;
     uint32_t _bitmapAtlasRevision{0};

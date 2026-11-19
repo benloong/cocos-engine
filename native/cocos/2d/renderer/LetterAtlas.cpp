@@ -28,6 +28,8 @@
 #include <cmath>
 
 #include "base/Data.h"
+#include "core/assets/Texture2D.h"
+#include "renderer/gfx-base/GFXDevice.h"
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
 
 namespace cc {
@@ -60,23 +62,32 @@ LetterAtlas::LetterAtlas() : _pixels(static_cast<size_t>(ATLAS_WIDTH) * ATLAS_HE
 
 LetterAtlas::~LetterAtlas() = default;
 
-const LetterAtlas::Glyph *LetterAtlas::getGlyph(int32_t code) const {
-    const auto found = _glyphs.find(code);
-    return found == _glyphs.end() ? nullptr : &found->second;
+Texture2D *LetterAtlas::getTexture() const {
+    return _texture && _texture->getGFXTexture() ? _texture.get() : nullptr;
 }
 
-bool LetterAtlas::ensureGlyph(int32_t code, const std::string &font, float lineHeight) {
-    const auto existing = _glyphs.find(code);
-    if (existing != _glyphs.end()) {
-        return existing->second.valid;
-    }
+void LetterAtlas::setTexture(Texture2D *texture) {
+    if (getTexture() || !texture) return;
+    _texture = texture;
+    ITexture2DCreateInfo info;
+    info.width = ATLAS_WIDTH;
+    info.height = ATLAS_HEIGHT;
+    info.format = PixelFormat::RGBA8888;
+    info.mipmapLevel = 1U;
+    _texture->reset(info);
+    _texture->uploadData(_pixels.data());
+}
+
+const LetterAtlas::Glyph &LetterAtlas::getOrCreateGlyph(GlyphMap &glyphs, int32_t code, const std::string &font, float lineHeight, const Color &color) {
+    const auto entry = glyphs.try_emplace(code);
+    Glyph &glyph = entry.first->second;
+    if (!entry.second) return glyph;
 
     CanvasRenderingContext2D measureContext(1.0F, 1.0F);
     measureContext.setFont(font);
     const std::string glyphText = codepointToUtf8(code);
     const float advance = measureContext.measureText(glyphText).width;
 
-    Glyph glyph;
     glyph.code = code;
     glyph.advance = advance;
     glyph.valid = true;
@@ -84,8 +95,7 @@ bool LetterAtlas::ensureGlyph(int32_t code, const std::string &font, float lineH
     if (code == ' ' || code == '\t') {
         glyph.width = 1;
         glyph.height = 1;
-        _glyphs[code] = glyph;
-        return true;
+        return glyph;
     }
 
     const int32_t glyphWidth = std::max(2, static_cast<int32_t>(std::ceil(advance)) + 2);
@@ -95,10 +105,9 @@ bool LetterAtlas::ensureGlyph(int32_t code, const std::string &font, float lineH
         _cursorY += _rowHeight + 1;
         _rowHeight = 0;
     }
-    if (_cursorY + glyphHeight >= ATLAS_HEIGHT) {
+    if (glyphWidth >= ATLAS_WIDTH || _cursorY + glyphHeight >= ATLAS_HEIGHT) {
         glyph.valid = false;
-        _glyphs[code] = glyph;
-        return false;
+        return glyph;
     }
     glyph.x = _cursorX;
     glyph.y = _cursorY;
@@ -119,8 +128,7 @@ bool LetterAtlas::ensureGlyph(int32_t code, const std::string &font, float lineH
     context.fetchData();
     if (pixels.getBytes() == nullptr || pixels.getSize() < static_cast<uint32_t>(glyphWidth * glyphHeight * 4)) {
         glyph.valid = false;
-        _glyphs[code] = glyph;
-        return false;
+        return glyph;
     }
 
     const uint8_t *source = pixels.getBytes();
@@ -128,15 +136,24 @@ bool LetterAtlas::ensureGlyph(int32_t code, const std::string &font, float lineH
         for (int32_t x = 0; x < glyphWidth; ++x) {
             const size_t src = (static_cast<size_t>(y) * glyphWidth + x) * 4U;
             const size_t dst = (static_cast<size_t>(glyph.y + y) * ATLAS_WIDTH + (glyph.x + x)) * 4U;
-            _pixels[dst] = 255U;
-            _pixels[dst + 1U] = 255U;
-            _pixels[dst + 2U] = 255U;
+            _pixels[dst] = color.r;
+            _pixels[dst + 1U] = color.g;
+            _pixels[dst + 2U] = color.b;
             _pixels[dst + 3U] = source[src + 3U];
         }
     }
 
-    _glyphs[code] = glyph;
-    return true;
+    if (_texture && _texture->getGFXTexture()) {
+        gfx::BufferTextureCopy region;
+        region.buffStride = ATLAS_WIDTH;
+        region.texOffset.x = glyph.x;
+        region.texOffset.y = glyph.y;
+        region.texExtent.width = glyphWidth;
+        region.texExtent.height = glyphHeight;
+        const uint8_t *buffers[]{_pixels.data() + (glyph.y * ATLAS_WIDTH + glyph.x) * 4};
+        gfx::Device::getInstance()->copyBuffersToTexture(buffers, _texture->getGFXTexture(), &region, 1);
+    }
+    return glyph;
 }
 
 } // namespace cc

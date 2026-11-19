@@ -28,8 +28,11 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "base/Ptr.h"
+#include "math/Color.h"
 
 namespace cc {
+class Texture2D;
 
 /**
  * Native CHAR-cache glyph atlas.
@@ -58,15 +61,19 @@ public:
     LetterAtlas();
     ~LetterAtlas();
 
-    bool ensureGlyph(int32_t code, const std::string &font, float lineHeight);
-    const Glyph *getGlyph(int32_t code) const;
+    using GlyphMap = std::unordered_map<int32_t, Glyph>;
+    GlyphMap &getStyle(const std::string &key) { return _styles[key]; }
+    const Glyph &getOrCreateGlyph(GlyphMap &glyphs, int32_t code, const std::string &font, float lineHeight, const Color &color);
+    Texture2D *getTexture() const;
+    void setTexture(Texture2D *texture);
     const uint8_t *getData() const { return _pixels.data(); }
     int32_t getWidth() const { return ATLAS_WIDTH; }
     int32_t getHeight() const { return ATLAS_HEIGHT; }
 
 private:
     std::vector<uint8_t> _pixels;
-    std::unordered_map<int32_t, Glyph> _glyphs;
+    std::unordered_map<std::string, GlyphMap> _styles;
+    IntrusivePtr<Texture2D> _texture;
     int32_t _cursorX{0};
     int32_t _cursorY{0};
     int32_t _rowHeight{0};

@@ -89,11 +89,7 @@ private:
 };
 #endif
 
-struct LetterAtlasEntry {
-    std::unique_ptr<LetterAtlas> atlas; // registry owns each live cache
-    uint32_t users{0}; // active Label leases; last release erases the owner
-};
-std::unordered_map<std::string, LetterAtlasEntry> gLetterAtlases;
+std::weak_ptr<LetterAtlas> gLetterAtlas;
 
 void ensureRasterTexture(IntrusivePtr<Texture2D> &texture, uint32_t width, uint32_t height) {
     if (!texture) {
@@ -199,18 +195,26 @@ Label::~Label() {
     setUITransform(nullptr);
     bindBitmapAtlas(nullptr);
     if (_fontAsset) _fontAsset->off(_fontChanged);
-    releaseLetterAtlas();
 }
-void Label::releaseLetterAtlas() {
-    if (!_letterAtlas) return;
-    auto found=gLetterAtlases.find(_letterAtlasKey);
-    CC_ASSERT(found!=gLetterAtlases.end() && found->second.atlas.get()==_letterAtlas && found->second.users>0);
-    _letterAtlas=nullptr;
-    if(--found->second.users==0) gLetterAtlases.erase(found);
-    _letterAtlasKey.clear();
+
+LetterAtlas &Label::acquireLetterAtlas() {
+    if (!_letterAtlas) {
+        _letterAtlas = gLetterAtlas.lock();
+        if (!_letterAtlas) gLetterAtlas = _letterAtlas = std::make_shared<LetterAtlas>();
+    }
+    return *_letterAtlas;
+}
+
+Texture2D *Label::getLetterTexture() {
+    return _cacheMode == 2 ? acquireLetterAtlas().getTexture() : nullptr;
+}
+
+void Label::setLetterTexture(Texture2D *texture) {
+    if (_cacheMode == 2) acquireLetterAtlas().setTexture(texture);
 }
 
 void Label::setNode(Node *node) {
+    if (!node) _letterAtlas.reset();
     _renderer.setNode(node);
     Component::setNode(node);
     setUITransform(node ? static_cast<UITransform *>(node->getUIComponent(UITransform::TYPE_ID)) : nullptr);
@@ -307,7 +311,6 @@ std::string Label::fontDescription(float size) const {
 }
 
 void Label::updateFont() {
-    releaseLetterAtlas();
     _font = fontDescription(_fontSize);
 }
 
@@ -325,7 +328,6 @@ void Label::setLineHeight(float height) {
         return;
     }
     _lineHeight = height;
-    releaseLetterAtlas();
     if (_bitmapFont && _bitmapFont->getFontSize() <= 0) _bitmapLineHeight = height;
     markRenderDirty();
 }
@@ -461,7 +463,7 @@ void Label::setCacheMode(int32_t mode) {
         _texture = nullptr;
     }
     _cacheMode = mode;
-    if (mode != 2) releaseLetterAtlas();
+    if (mode != 2) _letterAtlas.reset();
     markRenderDirty();
 }
 
@@ -519,15 +521,11 @@ void Label::updateRenderer() {
 }
 
 void Label::rebuildLetterTexture() {
-    if (!_letterAtlas) {
-        const std::string key = _font + ":" + std::to_string(_lineHeight) + (_fontAsset ? ":" + std::to_string(_fontAsset->getIdentity()) + ":" + std::to_string(_fontAssetRevision) : "");
-        auto &cached = gLetterAtlases[key];
-        if (!cached.atlas) cached.atlas=std::make_unique<LetterAtlas>();
-        ++cached.users;
-        _letterAtlas=cached.atlas.get();
-        _letterAtlasKey=key;
-    }
-    LetterAtlas &atlas = *_letterAtlas;
+    LetterAtlas &atlas = acquireLetterAtlas();
+    const uint32_t rgb = (static_cast<uint32_t>(_color.r) << 16U) | (_color.g << 8U) | _color.b;
+    const auto key = _font + ":" + std::to_string(_lineHeight) + ":" + std::to_string(rgb)
+        + (_fontAsset ? ":" + std::to_string(_fontAsset->getIdentity()) + ":" + std::to_string(_fontAssetRevision) : "");
+    auto &glyphs = atlas.getStyle(key);
 
     const float lineHeight = _lineHeight > 0.0F ? _lineHeight : _fontSize;
     const float maxWidth = _overflow != 0 && _transform != nullptr && _transform->getContentSize().x > 0.0F
@@ -547,16 +545,15 @@ void Label::rebuildLetterTexture() {
             continue;
         }
         const int32_t code = utf8CodePoint(codepoint);
-        if (!atlas.ensureGlyph(code, _font, lineHeight)) { continue; }
-        const LetterAtlas::Glyph *glyph = atlas.getGlyph(code);
-        if (glyph == nullptr) { continue; }
-        if (_wrap && lineWidth + glyph->advance > maxWidth && !lines.back().empty()) {
+        const auto &glyph = atlas.getOrCreateGlyph(glyphs, code, _font, lineHeight, _color);
+        if (!glyph.valid) continue;
+        if (_wrap && lineWidth + glyph.advance > maxWidth && !lines.back().empty()) {
             contentWidth = std::max(contentWidth, lineWidth);
             lines.emplace_back();
             lineWidth = 0.0F;
         }
-        lines.back().push_back(*glyph);
-        lineWidth += glyph->advance;
+        lines.back().push_back(glyph);
+        lineWidth += glyph.advance;
     }
     contentWidth = std::max(contentWidth, lineWidth);
 

@@ -57,6 +57,7 @@ const nativeLabel = {
     setShadowBlur: jest.fn(),
     setShadowOffset: jest.fn(),
     setCacheMode: jest.fn(),
+    getLetterTexture: jest.fn(() => ({ addRef: jest.fn(), decRef: jest.fn(), destroy: jest.fn(), refCount: 0 })),
     setBitmapAtlas: jest.fn(),
     clearGlyphs: jest.fn(),
     clearKerning: jest.fn(),

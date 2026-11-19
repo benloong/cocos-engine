@@ -43,6 +43,7 @@ function require(id){
  if(id==='../../core')return {cclegacy,ccenum:()=>{},warnID:()=>{},Color,Vec2};
  if(id==='../assets/font')return {Font:jsb.Font};
  if(id==='../assets/bitmap-font')return {BitmapFont:jsb.BitmapFont};
+ if(id==='../assembler/label/font-utils')return {LetterRenderTexture:jsb.Texture2D};
  if(id==='../../core/math/vec2')return {Vec2};
  if(id==='../../core/math/color')return {Color};
  if(id==='../assets/sprite-frame')return {SpriteFrame:jsb.SpriteFrame};

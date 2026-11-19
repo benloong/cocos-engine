@@ -33,6 +33,7 @@ import { Font } from '../assets/font';
 import { BitmapFont } from '../assets/bitmap-font';
 import type { FontAtlas } from '../assets/bitmap-font';
 import type { SpriteFrame } from '../assets/sprite-frame';
+import { LetterRenderTexture } from '../assembler/label/font-utils';
 
 declare const n2d: any;
 
@@ -127,6 +128,32 @@ export class Label extends UIRenderer {
     set fontAtlas (value: FontAtlas | null) { this._fontAtlas = value; }
 
     get ttfSpriteFrame (): SpriteFrame | null { return this._native?.getTTFSpriteFrame() ?? null; }
+
+    private _letterTexture: LetterRenderTexture | null = null;
+
+    get spriteFrame (): SpriteFrame | LetterRenderTexture | null {
+        if (this._font instanceof BitmapFont) return this._font.spriteFrame;
+        return this._cacheMode === CacheMode.CHAR ? this._letterTexture : this.ttfSpriteFrame;
+    }
+
+    private _acquireLetterTexture (): void {
+        if (!this._native || this._letterTexture || this._cacheMode !== CacheMode.CHAR || this._font instanceof BitmapFont) return;
+        let texture: LetterRenderTexture = this._native.getLetterTexture();
+        if (!texture) {
+            texture = new LetterRenderTexture();
+            this._native.setLetterTexture(texture);
+        }
+        texture.addRef();
+        this._letterTexture = texture;
+    }
+
+    private _releaseLetterTexture (): void {
+        const texture = this._letterTexture;
+        if (!texture) return;
+        this._letterTexture = null;
+        texture.decRef(false);
+        if (texture.refCount === 0) texture.destroy();
+    }
     @serializable
     protected _enableOutline = false;
     @serializable
@@ -176,6 +203,7 @@ export class Label extends UIRenderer {
 
     public onEnable (): void {
         this._native?.setEnabled(true);
+        this._acquireLetterTexture();
     }
 
     public onDisable (): void {
@@ -183,6 +211,7 @@ export class Label extends UIRenderer {
     }
 
     public onDestroy (): void {
+        this._releaseLetterTexture();
         releaseNativeMaterialSlots(this);
         if (this._native) {
             this._native.setEnabled(false);
@@ -294,6 +323,7 @@ export class Label extends UIRenderer {
         if (EDITOR) this._userDefinedFont = value;
         this._syncFont();
         this.updateRenderData(true);
+        this._acquireLetterTexture();
     }
 
     get useSystemFont (): boolean {
@@ -382,9 +412,11 @@ export class Label extends UIRenderer {
 
     set cacheMode (value: CacheMode) {
         if (this._cacheMode === value) return;
+        this._releaseLetterTexture();
         this._cacheMode = value;
         this._native?.setCacheMode(value);
         this.updateRenderData(true);
+        this._acquireLetterTexture();
     }
 
     get color (): Readonly<Color> {
