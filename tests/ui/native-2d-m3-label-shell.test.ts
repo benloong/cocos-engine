@@ -1,6 +1,7 @@
 import { Node } from '../../cocos/scene-graph/node';
 import { UITransform } from '../../cocos/2d/framework/ui-transform';
 import { Font } from '../../cocos/2d/assets/font';
+import { BitmapFont } from '../../cocos/2d/assets/bitmap-font';
 import { Label as WebLabel } from '../../cocos/2d/components/label';
 import { deserialize, Details } from '../../cocos/serialization/deserialize';
 import { instantiate } from '../../exports/base';
@@ -63,6 +64,23 @@ beforeAll(() => {
 });
 
 beforeEach(() => { jest.clearAllMocks(); shared = []; instances = []; });
+
+test('Label reports the original bitmap font size as its assigned asset changes', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    for (const Component of [WebLabel, Label]) {
+        const label = new Component();
+        if (Component === WebLabel) jest.spyOn(label, 'updateRenderData').mockImplementation(() => {});
+        const bitmap = new BitmapFont();
+        expect(label._bmFontOriginalSize).toBe(-1);
+        bitmap.fontSize = 18;
+        label.font = bitmap;
+        expect(label._bmFontOriginalSize).toBe(18);
+        bitmap.fontSize = 32;
+        expect(label._bmFontOriginalSize).toBe(32);
+        label.font = new Font();
+        expect(label._bmFontOriginalSize).toBe(-1);
+    }
+});
 
 test('Label binds serialized material slots and releases instance owners on destruction', () => {
     const { Label } = require('../../cocos/2d/components/label.jsb');

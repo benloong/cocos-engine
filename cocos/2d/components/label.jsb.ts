@@ -29,6 +29,7 @@ import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
 import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterialSlots, syncNativeMaterialSlots } from '../framework/native-ui-materials';
 import { Font } from '../assets/font';
+import { BitmapFont } from '../assets/bitmap-font';
 
 declare const n2d: any;
 
@@ -258,6 +259,11 @@ export class Label extends UIRenderer {
     @type(Font)
     get font (): any {
         return this._font;
+    }
+
+    /** @deprecated Use BitmapFont.fontSize directly. */
+    get _bmFontOriginalSize (): number {
+        return this._font instanceof BitmapFont ? this._font.fontSize : -1;
     }
 
     set font (value: any) {
