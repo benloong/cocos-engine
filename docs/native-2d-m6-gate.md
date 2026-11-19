@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**结论：NO-GO。** 下表的三轮 最新 CPU 采样版本为 `dfd1b03028`，补充平面字形修复版本为 `53af40d18f`。Windows Release 混合负载 CPU 超出预算；Windows 自定义字体有三组图像超过 Web 像素容差。其余未完成项目列在下表。最终签收需要在同一候选上重跑必需的配置和场景。
+**NO-GO。** 最新三轮 CPU 对照使用候选 `3235a8d0de` 和迁移前 `7e83734299`。Windows Release 混合负载 CPU 超出预算，Windows 自定义字体有三组图像超过 Web 像素容差。最终签收需要在同一候选上重跑必需的配置和场景。
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。
 
@@ -9,8 +9,8 @@
 | 项目 | 配置和结果 | 证据 |
 |---|---|---|
 | Graphics 命令提交 | Windows Debug/Release 与 Web 像素对照。Release 的 256 个闭合路径从逐调用改用复用缓冲，提交耗时中位数从 581.7 降至 349.1 µs，批次和绘制次数均为 1 | [接口选择与分配实测](./native-2d-m6.3-graphics-commands.md) |
-| 混合负载 CPU | Windows Release 三轮。迁移前 4.5881 ms，候选 6.3762 ms，目标 ≤2.2941 ms，失败 | [方法与版本](./native-2d-m6-performance.md)、[逐负载数据](./native-2d-m6-performance-label.json) |
-| JSB、堆峰值与 GC | 同一负载下 JSB 876→196，堆峰值下降 43.22%，强制 GC 7.943→4.277 ms | [三轮数据](./native-2d-m6-performance-label.json) |
+| 混合负载 CPU | Windows Release 三轮交错运行。迁移前 3.7263 ms，候选 4.3847 ms，目标 ≤1.8632 ms，失败 | [方法与版本](./native-2d-m6-performance.md)、[逐负载数据](./native-2d-m6-performance-3235a8d0de.json) |
+| JSB、堆峰值与 GC | 同一负载下 JSB 876→197，堆峰值下降 43.15%，强制 GC 5.094→3.655 ms | [三轮数据](./native-2d-m6-performance-3235a8d0de.json) |
 | 稳态组件 JSB | Windows，13 组组件及资产消费者与空 Canvas 对照，各采样 60 帧 | [逐方法计数与对照](./native-2d-m6.0-windows-jsb-trace.md) |
 | Graphics/Mask 材质与提交成本 | Windows Debug、Release 和 Web。32 个矩形在一个 Graphics 中为 1 次 draw，分属 32 个 Graphics 时为 32 次；单层和双层 Mask 分别为 3 次和 5 次。共享纹理完成首次上传后，三个测量阶段均为 0 字节重复上传 | [材质隔离与图像](./native-2d-m6-windows-web-gpu-results.json)、[CPU、批次与上传](./native-2d-m6.3-graphics-cost.md) |
 | 图形与事件 | Windows Debug 和 Release 各 85 张图像与 Web 逐字节一致，覆盖旧图集 Prefab、SpriteRenderer 生成网格和两个 Sprite stencil 独立交换阈值。场景矩阵同时检查合批、跨根节点命中与场景切换。此前 ASan 覆盖 80 张 | [GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json) |
@@ -34,7 +34,7 @@
 | M6.2 | RichText 固定回归 | shadow、样式、布局、用户事件和销毁解绑的完整组合 |
 | M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
-| M6.5 | 性能 KPI | 混合变更负载比迁移前慢 38.97% |
+| M6.5 | 性能 KPI | 混合变更帧 CPU 比迁移前高 17.67%。dirty 更新阶段增加 1.5770 ms，属性写入节省 0.9275 ms |
 | M6.5 | 薄壳约束 | 全类行数与排除规则、变更和生命周期调用统计 |
 | M6.5 | CI | 全部迁移类、间接热路径与组件/场景回归的 CI 证据 |
 | M6.5 | 回退 | 分模块回退后的旧场景行为、资产、材质与性能 |

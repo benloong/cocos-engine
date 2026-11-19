@@ -1,5 +1,24 @@
 # Windows 和 Web 的 M6 性能对照
 
+## 当前混合负载，Windows Release 和 Web
+
+候选 `3235a8d0de` 与迁移前 `7e83734299` 在同一 Windows 主机运行。每轮分别启动迁移前 Windows、候选 Windows 和候选 Web，三轮轮换启动顺序。每次启动采集六个场景，分别预热 30 帧，再采稳态和 10% 变更态各 120 帧。以下数值先取每次运行的帧中位数，再取三轮中位数。各阶段独立取中位数，合计来自每帧三项之和。[逐轮数据、构建与采样文件哈希](./native-2d-m6-performance-3235a8d0de.json)
+
+| 混合变更帧，ms/帧 | 迁移前 Windows | 候选 Windows | 候选 Web |
+|---|---:|---:|---:|
+| 属性写入 | 1.1835 | 0.2560 | 0.6000 |
+| updateAllDirtyRenderers | 1.7700 | 3.3470 | 0.9000 |
+| Batcher update、uploadBuffers、reset | 0.7556 | 0.7645 | 0.6000 |
+| 已测 CPU 合计 | 3.7263 | 4.3847 | 2.2000 |
+
+Windows 混合变更帧 CPU 增加 17.67%，距离下降 50% 的门槛还差 2.5215 ms/帧。单项场景中，200 个 Label 每帧轮换 20 个文本，dirty 更新从 2.2545 增至 2.8235 ms。40 个 RichText 每帧轮换 4 个样式，setter 从 2.1880 降至 0.3010 ms，dirty 更新从 0.0050 增至 1.1625 ms，合计从 2.2948 降至 1.5580 ms。分段显示部分文本处理已移到 dirty 更新，精确到布局、栅格化和纹理上传的归因仍需在该阶段内计时。
+
+本轮每帧 JSB 调用从 876 降至 197。JS 堆峰值从 30,028,224 降至 17,069,964 字节，强制 GC 从 5.094 降至 3.655 ms。三端使用同一负载脚本并保留每帧三项耗时，采样数组也占用 JS 堆。Web 为独立参考，门槛按同轮 Windows 迁移前结果计算。
+
+复现沿用下文构建流程，候选 CMake 输出使用 `perf-bin-3235a8d0de`，启动时通过 `run-m6-perf.ps1 -Target after -BinaryDirectory` 指定该目录。运行顺序和每轮输入哈希见数据文件。将各次输出保存为 `build/m6-perf-paired-3235a8d0de-轮次-目标.json` 后执行 `node native/tests/2d-poc/compare-m6-perf.cjs --paired 3235a8d0de`。汇总会逐帧校验三个耗时分项与合计。
+
+## 首轮测量
+
 迁移前取总计划提交 7e83734299，候选取 7045a76a35。硬件为 Core i7-13700KF 和 GeForce RTX 4080，Windows 显卡驱动 32.0.16.1088，Chrome 157.0.8103.78。Windows 两端均使用 x64 MSVC Release，引擎 JS 的 DEBUG 为 false。[三轮逐场景数据与原始文件哈希](./native-2d-m6-performance.json)
 
 每个后端在一次启动中依次运行空 Canvas、1000 Sprite、200 Label、50 Mask、40 RichText、以上全部组件混合。每个场景预热 30 帧，分别采集稳态与变更态各 120 个实际 END_FRAME。变更态每帧轮换 10% 的对象，切换精灵颜色、文本、遮罩反转或富文本样式。三轮各自独立启动应用，按 before/after/web、web/before/after、after/web/before 顺序运行。

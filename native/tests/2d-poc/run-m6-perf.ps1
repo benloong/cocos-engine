@@ -1,4 +1,4 @@
-param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target)
+param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory)
 $ErrorActionPreference = 'Stop'
 $dir = Join-Path $PSScriptRoot 'build'
 $key = if ($Target -eq 'web') { 'after' } else { $Target }
@@ -10,7 +10,7 @@ if ($Target -eq 'web') {
     $hook = 'return application.init(engine);'
     $install = 'installM6Perf(engine, null);'
 } else {
-    $bin = Join-Path $dir "perf-bin-$key"
+    $bin = if ($BinaryDirectory) { (Resolve-Path -LiteralPath $BinaryDirectory).Path } else { Join-Path $dir "perf-bin-$key" }
     $exe = (Resolve-Path (Join-Path $bin 'native-2d-m6-gpu.exe')).Path
     & robocopy "$project/windows/data" "$bin/Resources" /E /NFL /NDL /NJH /NJS /NP | Out-Null
     if ($LASTEXITCODE -gt 7) { throw 'Resource staging failed' }

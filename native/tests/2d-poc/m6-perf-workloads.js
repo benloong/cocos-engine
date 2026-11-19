@@ -55,6 +55,7 @@ function installM6Perf (cc, output) {
             gc();
             for (const phase of ['steady', 'dirty']) {
                 const samples = [];
+                const stages = [];
                 let setterMs = 0, index = 0;
                 const change = () => {
                     const start = performance.now();
@@ -73,10 +74,11 @@ function installM6Perf (cc, output) {
                         : [globalThis.__m6BatchMs * 1e6, 0, performance.memory.usedJSHeapSize];
                     if (![ns, bindings, heap, globalThis.__m6PrepareMs].every(Number.isFinite) || !heap) throw new Error('Invalid timing or heap sample');
                     samples.push([setterMs + globalThis.__m6PrepareMs + ns / 1e6, bindings, heap]);
+                    stages.push([setterMs, globalThis.__m6PrepareMs, ns / 1e6]);
                 }
                 director.off(E.BEFORE_DRAW, change);
                 const start = performance.now(); gc(); const forcedGcMs = performance.now() - start;
-                cases.push({ name, phase, count, samples, forcedGcMs });
+                cases.push({ name, phase, count, samples, stages, forcedGcMs });
                 console.log('M6_PERF_PHASE ' + name + '/' + phase);
             }
             root.destroy(); await nextFrame(); await nextFrame(); gc();
