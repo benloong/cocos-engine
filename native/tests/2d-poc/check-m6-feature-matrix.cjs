@@ -5,7 +5,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const ts = require('typescript');
 const { spawnSync } = require('node:child_process');
-const { buildEngine } = require('@cocos/ccbuild');
+const { buildEngine, StatsQuery } = require('@cocos/ccbuild');
 
 const root = path.resolve(__dirname, '../../..');
 const output = path.join(__dirname, 'build/feature-matrix');
@@ -43,6 +43,9 @@ async function buildVariant (platform, bits) {
     if (!Object.hasOwn(result.chunkDepGraph, 'cc.js')) throw new Error('Missing engine entry');
     const file = path.join(out, 'cc.js');
     const names = emittedExports(file);
+    for (const name of ['NativeUITransformPoc', 'NativeSpritePoc']) {
+        if (names.has(name)) throw new Error(platform + '/' + bits + ' exports retired M0 component ' + name);
+    }
     const exposed = publicNames.filter(name => names.has(name));
     for (const [index, name] of publicNames.entries()) {
         if (names.has(name) !== selected.includes(features[index])) throw new Error(platform + '/' + bits + ' unexpected export state: ' + name);
@@ -52,6 +55,8 @@ async function buildVariant (platform, bits) {
 }
 
 async function main () {
+    const query = await StatsQuery.create(root);
+    if (query.getFeatureUnits().includes('native-2d-poc')) throw new Error('Retired M0 export entry is available');
     if (process.argv[2]) return buildVariant(process.argv[2], Number(process.argv[3]));
     const results = [];
     for (const platform of ['WINDOWS', 'HTML5']) {
