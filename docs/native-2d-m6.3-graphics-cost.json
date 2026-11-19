@@ -1,0 +1,1227 @@
+{
+  "framesPerWindow": 48,
+  "trials": 3,
+  "targets": {
+    "WindowsDebug": {
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "artifactSha256": "3f12e309e7808673835ae4147e37a1723dd9afac379439ee64d304079db5f8b1",
+      "rawSha256": "0a97e9a09b0588620cda786e679e7a8b3d74f740e329c03bcdad83bde104fbe3",
+      "controlBytes": 4096,
+      "rows": [
+        {
+          "name": "empty",
+          "phase": "setup",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            16.6,
+            34.4,
+            19.4
+          ],
+          "editUsPerFrame": [
+            786,
+            922,
+            489
+          ]
+        },
+        {
+          "name": "empty",
+          "phase": "steady",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            30.279,
+            27.988,
+            27.529
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "empty",
+          "phase": "dirty",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            25.125,
+            27.265,
+            30.831
+          ],
+          "editUsPerFrame": [
+            4.875,
+            3.708,
+            4.375
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "setup",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            561.9,
+            664.2,
+            316
+          ],
+          "editUsPerFrame": [
+            2460,
+            1083,
+            1488
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "steady",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            166.904,
+            186.715,
+            147.819
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "dirty",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            560.746,
+            574.279,
+            573.517
+          ],
+          "editUsPerFrame": [
+            448.417,
+            348.583,
+            336.187
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "setup",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            5132.4,
+            4667.9,
+            5128.1
+          ],
+          "editUsPerFrame": [
+            37535,
+            21280,
+            21184
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "steady",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            597.227,
+            577.277,
+            647.758
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "dirty",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            5692.735,
+            5881.781,
+            6605.394
+          ],
+          "editUsPerFrame": [
+            2189.896,
+            1950.104,
+            1512.979
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            1663.4,
+            502.2,
+            586.5
+          ],
+          "editUsPerFrame": [
+            3163,
+            2282,
+            2812
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            348.462,
+            404.817,
+            391
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            393.781,
+            442.883,
+            436.646
+          ],
+          "editUsPerFrame": [
+            27.604,
+            15.937,
+            14.729
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            983.6,
+            959.9,
+            539.5
+          ],
+          "editUsPerFrame": [
+            2932,
+            1530,
+            1804
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            373.473,
+            367.229,
+            443.14
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            393.752,
+            389.967,
+            451.269
+          ],
+          "editUsPerFrame": [
+            19.833,
+            13.479,
+            14.854
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            1400,
+            501.9,
+            2504.9
+          ],
+          "editUsPerFrame": [
+            3438,
+            2365,
+            2310
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            384.073,
+            410.363,
+            395.908
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            349.971,
+            429.719,
+            417.727
+          ],
+          "editUsPerFrame": [
+            22.021,
+            20.687,
+            15.667
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "setup",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            805.8,
+            982.5,
+            1817
+          ],
+          "editUsPerFrame": [
+            2424,
+            3500,
+            3529
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "steady",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            449.96,
+            496.235,
+            531.098
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            466.563,
+            496.029,
+            480.708
+          ],
+          "editUsPerFrame": [
+            22.521,
+            21.771,
+            14.708
+          ]
+        }
+      ]
+    },
+    "WindowsRelease": {
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "artifactSha256": "a3a1a4edcc188b2cae8015ca03dba0f4dff64317fdb4e2f3bde0664864133faa",
+      "rawSha256": "bceacfca165db47ab8e73380bd4f729557d1da3ccf3de567e69f4a4c6348720d",
+      "controlBytes": 4096,
+      "rows": [
+        {
+          "name": "empty",
+          "phase": "setup",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            3,
+            4.7,
+            3.2
+          ],
+          "editUsPerFrame": [
+            513,
+            114,
+            116
+          ]
+        },
+        {
+          "name": "empty",
+          "phase": "steady",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            3.458,
+            4.927,
+            3.767
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "empty",
+          "phase": "dirty",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            3.892,
+            4.606,
+            4.671
+          ],
+          "editUsPerFrame": [
+            0.833,
+            1.354,
+            1.125
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "setup",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            81.3,
+            49.4,
+            33.4
+          ],
+          "editUsPerFrame": [
+            443,
+            227,
+            392
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "steady",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            26.788,
+            31.8,
+            30.069
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "dirty",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            41.521,
+            50.65,
+            40.098
+          ],
+          "editUsPerFrame": [
+            57.729,
+            58.5,
+            82.479
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "setup",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            464.7,
+            302.4,
+            145.3
+          ],
+          "editUsPerFrame": [
+            3226,
+            1139,
+            1242
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "steady",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            96.577,
+            111.331,
+            111.969
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "dirty",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            200.342,
+            205.046,
+            197.79
+          ],
+          "editUsPerFrame": [
+            183.646,
+            220.979,
+            174.875
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            266.9,
+            93.5,
+            72.5
+          ],
+          "editUsPerFrame": [
+            748,
+            294,
+            318
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            101.317,
+            111.481,
+            99.458
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            102.456,
+            114.171,
+            70.869
+          ],
+          "editUsPerFrame": [
+            7.563,
+            5.083,
+            4.542
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            123.9,
+            58.3,
+            55.1
+          ],
+          "editUsPerFrame": [
+            1414,
+            270,
+            564
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            105.967,
+            119.946,
+            116.848
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            92.344,
+            115.367,
+            110.098
+          ],
+          "editUsPerFrame": [
+            6.979,
+            5.604,
+            6.083
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            55.4,
+            177.5,
+            54
+          ],
+          "editUsPerFrame": [
+            379,
+            1072,
+            341
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            96.348,
+            106.077,
+            123.263
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            101.504,
+            119.844,
+            124.775
+          ],
+          "editUsPerFrame": [
+            6.75,
+            7.896,
+            6.042
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "setup",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            163.1,
+            80.4,
+            204.1
+          ],
+          "editUsPerFrame": [
+            662,
+            311,
+            323
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "steady",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            121.104,
+            125.435,
+            132.052
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            121.963,
+            118.412,
+            86.267
+          ],
+          "editUsPerFrame": [
+            7.229,
+            8.542,
+            4.688
+          ]
+        }
+      ]
+    },
+    "Web": {
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "artifactSha256": "489c97e63b8058c383184233bdc076bc9f9f183db61eaf1c78a8b17d7b2d53e4",
+      "rawSha256": "b81f4b480abe671ea53738d1c7322189c35d31a535e0c9c0478b770c3f5b4408",
+      "controlBytes": 4096,
+      "rows": [
+        {
+          "name": "empty",
+          "phase": "setup",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            0,
+            0,
+            0
+          ],
+          "editUsPerFrame": [
+            400,
+            100,
+            100
+          ]
+        },
+        {
+          "name": "empty",
+          "phase": "steady",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            12.5,
+            6.25,
+            2.083
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "empty",
+          "phase": "dirty",
+          "batchesPerFrame": 0,
+          "drawsPerFrame": 0,
+          "trianglesPerFrame": 0,
+          "coloredPixels": 0,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            10.417,
+            0,
+            6.25
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            4.167
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "setup",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            1700,
+            100,
+            100
+          ],
+          "editUsPerFrame": [
+            2000,
+            200,
+            200
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "steady",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            56.25,
+            14.583,
+            16.667
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "graphics-one-component",
+          "phase": "dirty",
+          "batchesPerFrame": 1,
+          "drawsPerFrame": 1,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            87.5,
+            47.917,
+            50
+          ],
+          "editUsPerFrame": [
+            75,
+            54.167,
+            62.5
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "setup",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            2900,
+            1400,
+            1500
+          ],
+          "editUsPerFrame": [
+            3300,
+            2800,
+            2200
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "steady",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            156.25,
+            129.167,
+            112.5
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "graphics-32-components",
+          "phase": "dirty",
+          "batchesPerFrame": 32,
+          "drawsPerFrame": 32,
+          "trianglesPerFrame": 64,
+          "coloredPixels": 2048,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            283.333,
+            293.75,
+            235.417
+          ],
+          "editUsPerFrame": [
+            397.917,
+            412.5,
+            362.5
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            1100,
+            200,
+            200
+          ],
+          "editUsPerFrame": [
+            2100,
+            600,
+            500
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            104.167,
+            47.917,
+            41.667
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "rect-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            110.417,
+            43.75,
+            35.417
+          ],
+          "editUsPerFrame": [
+            4.167,
+            0,
+            2.083
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            400,
+            100,
+            200
+          ],
+          "editUsPerFrame": [
+            1400,
+            600,
+            400
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            104.167,
+            52.083,
+            27.083
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "ellipse-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 66,
+          "coloredPixels": 5024,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            95.833,
+            50,
+            35.417
+          ],
+          "editUsPerFrame": [
+            4.167,
+            2.083,
+            0
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "setup",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            400,
+            100,
+            200
+          ],
+          "editUsPerFrame": [
+            1000,
+            600,
+            500
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "steady",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            58.333,
+            45.833,
+            31.25
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "sprite-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 3,
+          "drawsPerFrame": 3,
+          "trianglesPerFrame": 6,
+          "coloredPixels": 6400,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            54.167,
+            27.083,
+            35.417
+          ],
+          "editUsPerFrame": [
+            2.083,
+            4.167,
+            4.167
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "setup",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            300,
+            300,
+            700
+          ],
+          "editUsPerFrame": [
+            600,
+            500,
+            500
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "steady",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            83.333,
+            41.667,
+            58.333
+          ],
+          "editUsPerFrame": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "nested-mask",
+          "phase": "dirty",
+          "batchesPerFrame": 5,
+          "drawsPerFrame": 5,
+          "trianglesPerFrame": 10,
+          "coloredPixels": 3600,
+          "uploadBytesPerWindow": 0,
+          "batchUpdateUsPerFrame": [
+            100,
+            79.167,
+            29.167
+          ],
+          "editUsPerFrame": [
+            2.083,
+            6.25,
+            4.167
+          ]
+        }
+      ]
+    }
+  }
+}
