@@ -7,7 +7,7 @@
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
-      "sha256": "f1e1823f2a3517b16e076513e94c8aa6a9edf1b09a94ed753d961bbf11427f10"
+      "sha256": "f0c07a0cde7c5784b543df51ea970f5c6ecb9a6d1fa2c20cbe9260a1c804c2af"
     },
     {
       "file": "cocos/asset/asset-manager/factory.ts",
@@ -35,11 +35,11 @@
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
-      "sha256": "50f0c7e27e5583082886e693601fa1bd654e605c512152c28bb98f4ad2a641b0"
+      "sha256": "f0d0ab14bf5e73fde9ab08de18a451332d515ad321f17c04a28f9355b365962e"
     },
     {
       "file": "native/cocos/2d/assets/Font.cpp",
-      "sha256": "a1fbaee28206b53e5d3b01f7b9da579696cdbdcc10218f43882161c5368e6dcb"
+      "sha256": "d7d1b2b41f25618d8f734917ca72c5e09c774d5886e416b4ceef911d14b47a99"
     },
     {
       "file": "native/cocos/2d/assets/Font.h",
@@ -55,7 +55,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteAtlas.h",
-      "sha256": "60f3864374aa82f74c5269e9cb55546d06ec8d51e995617bdc8c6fbb4f171e61"
+      "sha256": "524a993cf93952af4622defbe5bb755b07b1976391d57e19c49ff88043ce4991"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
@@ -67,7 +67,7 @@
     },
     {
       "file": "native/cocos/2d/assets/TTFFont.h",
-      "sha256": "023a0f8bcd12faf13a756ce3fe0524948e508fab7609341b977d9a8d0ff53991"
+      "sha256": "4f67a62765ea98315d10a3be4d6e31d74d2e6ee2236dd8edda838f1dd473ec34"
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
@@ -79,11 +79,11 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "32fbb913b7dd9aaab2e768cd020731f6ccc9c9023e32a54d5932e10f1bd15f9f"
+      "sha256": "f679bf1b31c877323ecf08fad2558981ec7ff5d06446a3ce812a394a41759811"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "d3197b2e3680f39d66db17ed2ae3ca085c96718d8951af8106df12447702c742"
+      "sha256": "a34f4a750c983235dee5f59cb34f71e29cbbea7fad7553628c0ddb8369327f0a"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -179,11 +179,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "a6c8ed5d54d34c6ffad476b2b19d753cd283f7482675b2d4377e971aeb9fef40"
+      "sha256": "052303328b77c8276e6bc5f27bbf7ae892f0617ad97f7b1543504c388eb9f637"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
-      "sha256": "42993d94cffb7bcbe8992796e6fc844edf0f264ac016fd2921a6cd536659f927"
+      "sha256": "dde814f1a9e395cb11f276716c56687b512a000684f89231c23f6794520cd8db"
     },
     {
       "file": "native/cocos/2d/renderer/BitmapFontLayout.h",
@@ -359,7 +359,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
-      "sha256": "8cfdf075f976e47f122769fa061eedf453ad17563ebf28bc4310837f8ac4b265"
+      "sha256": "656c29a2e9fbc4eb490ab505e50942aea2093271ec3c86eaaf4602d2ef8734d6"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
@@ -375,11 +375,11 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "0d6aedaafc86e9d03004cddd290deb9804026d1d0c4f5823e640020bfbaea96a"
+      "sha256": "eaf852f442cf928942270015419478e74dce94cea427902adb9630d85475dc6a"
     },
     {
       "file": "native/tools/swig-config/assets.i",
-      "sha256": "2165fb80b9cb629cf3bc165abba4a3e0deaffd49f7685e7f4b2b9befb5beedc7"
+      "sha256": "3175573ed90b4322f0004f0d917d979cc30954a2e0b2171e9e4119915d2ac63b"
     },
     {
       "file": "scripts/compile-native-ts.js",
@@ -14716,7 +14716,7 @@
     },
     {
       "file": "cocos/2d/assets/sprite-atlas.jsb.ts",
-      "sha256": "fa990e4f9e565cc2910a5a68ef7886ca9372bf2045e4d866a8cd6c5526f0a73c",
+      "sha256": "cad874debd0e90c554fc8474da5c2cd407cc016e54199bcf2de2f695cfc8798e",
       "printedCodeLines": 162,
       "runtimeImports": [
         "../../core",
@@ -14733,9 +14733,9 @@
       "allocations": [],
       "loops": [
         84,
-        138,
-        155,
-        157
+        137,
+        154,
+        156
       ]
     },
     {
@@ -14838,8 +14838,8 @@
     },
     {
       "file": "cocos/2d/assets/ttf-font.jsb.ts",
-      "sha256": "d6476c8f5204cc592377973f485f16ec8840e6e664f22e93a9a0a7d9ffa7211b",
-      "printedCodeLines": 37,
+      "sha256": "d9e6854e8afd87b26aea63c9652c5413aa0ca25679abdc1647c564b322cc27ae",
+      "printedCodeLines": 44,
       "runtimeImports": [
         "../../core",
         "./font",
@@ -17030,8 +17030,8 @@
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
-      "sha256": "f1e1823f2a3517b16e076513e94c8aa6a9edf1b09a94ed753d961bbf11427f10",
-      "printedCodeLines": 198,
+      "sha256": "f0c07a0cde7c5784b543df51ea970f5c6ecb9a6d1fa2c20cbe9260a1c804c2af",
+      "printedCodeLines": 203,
       "runtimeImports": [
         "../../core",
         "./font-family",
@@ -17044,8 +17044,8 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        83,
-        127
+        88,
+        132
       ]
     },
     {

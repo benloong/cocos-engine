@@ -39,19 +39,27 @@ Object.defineProperties(proto, {
     _nativeAsset: { configurable: true,
         get (): string | null { return this._fontFamily; },
         set (value: string | null) {
-            if (this.isReleased()) return;
-            this.setFontFamily(value || 'Arial'); this.onLoaded();
+            loadFontSource(this, value || 'Arial');
         } },
     _nativeDep: { configurable: true,
         get () { return { uuid: this._uuid, __nativeName__: this._native, ext: path.extname(this._native ?? ''), __isNative__: true }; } },
 });
-proto.onLoaded = function () {
-    if (this.isReleased()) return;
-    const url = this.nativeUrl;
+function loadFontSource (font: any, family: string): void {
+    if (font.isReleased()) return;
+    const url = font.nativeUrl;
     const cacheManager = cclegacy.assetManager?.cacheManager;
     const source = /^https?:\/\//i.test(url)
         ? cacheManager?.getCache(url) || cacheManager?.getTemp?.(url) || url
         : url;
-    if (source && (this.getSourcePath() !== source || !this.getFontDataSize()) && !this.loadFontData(source)) warnID(4933, source);
+    const hasData = font.getFontDataSize() > 0;
+    if (source && (!hasData || font.getSourcePath() !== source)) {
+        if (font.loadFontData(source, family)) return;
+        warnID(4933, source);
+        if (hasData) return;
+    }
+    font.setFontFamily(family);
+}
+proto.onLoaded = function () {
+    loadFontSource(this, this.getFontFamily());
 };
 patch_cc_TTFFont({ TTFFont });

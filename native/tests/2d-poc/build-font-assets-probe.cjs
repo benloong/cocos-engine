@@ -72,6 +72,23 @@ outlinedLabel.setFontAsset(ttf); outlinedLabel.setFontSize(24); outlinedLabel.se
 outlinedLabel.updateRenderData();
 check(Math.abs(outlinedTransform.getWidth() - 95.9765625) < 0.001, 'Label consumes the registered custom font: ' + outlinedTransform.getWidth());
 const baseCoverage = readLabelCoverage(outlinedLabel);
+const originalPath = ttf.getSourcePath(), originalSize = ttf.getFontDataSize(), originalRevision = ttf.getRevision();
+ttf._nativeUrl = originalPath + '.missing';
+ttf._nativeAsset = 'Replacement_LABEL';
+check(ttf.getRevision() === originalRevision && ttf._nativeAsset === 'Thonburi_LABEL'
+    && ttf.getSourcePath() === originalPath && ttf.getFontDataSize() === originalSize,
+    'unreadable replacement preserves the loaded font and its alias');
+outlinedLabel.updateRenderData();
+check(Math.abs(outlinedTransform.getWidth() - 95.9765625) < 0.001 && readLabelCoverage(outlinedLabel) === baseCoverage,
+    'attached Label retains metrics and glyph coverage after a failed replacement');
+ttf._nativeUrl = ${JSON.stringify(path.resolve(repo, 'editor/assets/default_fonts/builtin-freetype/OpenSans-Regular.ttf').replaceAll('\\', '/'))};
+ttf._nativeAsset = 'Replacement_LABEL';
+outlinedLabel.updateRenderData();
+check(ttf.getRevision() === originalRevision + 1 && ttf.getSourcePath() === ttf._nativeUrl
+    && ttf._nativeAsset === 'Replacement_LABEL' && Math.abs(outlinedTransform.getWidth() - 101.9296875) < 0.001,
+    'retry publishes the new font once and refreshes the attached Label');
+ttf._nativeUrl = originalPath;
+ttf._nativeAsset = 'Thonburi_LABEL';
 outlinedLabel.setEnableOutline(true); outlinedLabel.setOutlineWidth(3); outlinedLabel.updateRenderData();
 check(Math.abs(outlinedTransform.getWidth() - 101.9765625) < 0.001 && readLabelCoverage(outlinedLabel) > baseCoverage,
     'Label renders a real native text stroke with preserved layout margins');

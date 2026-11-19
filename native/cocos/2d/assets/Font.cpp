@@ -83,12 +83,13 @@ void TTFFont::setFontFamily(const std::string &value) {
     if (_released || value == _family) return;
     _family = value; refreshFontAlias(); notifyFontChanged();
 }
-bool TTFFont::loadFontData(const std::string &path) {
+bool TTFFont::loadFontData(const std::string &path, const std::string &family) {
     auto *files = FileUtils::getInstance();
     if (_released || path.empty() || !files || !files->isFileExist(path)) return false;
     const auto data = files->getDataFromFile(path);
     if (data.isNull() || data.getSize() == 0) return false;
     _bytes.assign(data.getBytes(), data.getBytes() + data.getSize());
+    _family = family;
     _source = path; refreshFontAlias(); notifyFontChanged();
     return true;
 }

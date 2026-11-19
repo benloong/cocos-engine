@@ -19,7 +19,7 @@ class NativeTTF extends NativeFont {
     setFontFamily (value) { this.family = value; this.revision++; }
     getSourcePath () { return this.source; }
     getFontDataSize () { return this.size; }
-    loadFontData = jest.fn((source) => { this.source = source; this.size = 100; return true; });
+    loadFontData = jest.fn((source, family) => { this.source = source; this.family = family; this.size = 100; return true; });
     clearNativeData () { this.family = ''; this.source = ''; this.size = 0; super.clearNativeData(); }
 }
 class NativeBitmap extends NativeFont {
@@ -75,7 +75,7 @@ test('TTF alias, native dependency and load-once source forward to native storag
     expect(font.loadFontData).toHaveBeenCalledTimes(1);
     expect(font._nativeDep).toEqual({ uuid: 'font-id', __nativeName__: '.ttf', ext: '.ttf', __isNative__: true });
     font.nativeUrl = '/fonts/replacement.ttf'; font.onLoaded();
-    expect(font.loadFontData).toHaveBeenLastCalledWith('/fonts/replacement.ttf');
+    expect(font.loadFontData).toHaveBeenLastCalledWith('/fonts/replacement.ttf', 'Example_LABEL');
     font._nativeAsset = null;
     expect(font._fontFamily).toBe('Arial');
 });
@@ -90,13 +90,13 @@ test.each(['cache', 'temp'])('HTTP TTF resolves its %s path without changing its
         font.nativeUrl = 'https://example.test/font.ttf?v=2';
         font._nativeAsset = 'Downloaded_LABEL'; font.onLoaded();
         expect(font.loadFontData).toHaveBeenCalledTimes(1);
-        expect(font.loadFontData).toHaveBeenCalledWith(storage === 'cache' ? '/cache/font.ttf' : '/temp/font.ttf');
+        expect(font.loadFontData).toHaveBeenCalledWith(storage === 'cache' ? '/cache/font.ttf' : '/temp/font.ttf', 'Downloaded_LABEL');
         expect(font.nativeUrl).toBe('https://example.test/font.ttf?v=2');
         expect(font._nativeAsset).toBe('Downloaded_LABEL');
         if (storage === 'cache') expect(getTemp).not.toHaveBeenCalled();
         getCache.mockReturnValue('/cache/reloaded.ttf');
         font.onLoaded();
-        expect(font.loadFontData).toHaveBeenLastCalledWith('/cache/reloaded.ttf');
+        expect(font.loadFontData).toHaveBeenLastCalledWith('/cache/reloaded.ttf', 'Downloaded_LABEL');
         font._destroy();
         const calls = getCache.mock.calls.length;
         font.onLoaded();
