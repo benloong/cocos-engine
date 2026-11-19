@@ -23,8 +23,8 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     const before = stats();
     const cacheBefore = assetManager.assets.count;
     let lastReleased: TTFFont | null = null;
-    const load = (source = url): Promise<TTFFont> => new Promise((resolve, reject) => {
-        assetManager.loadRemote<TTFFont>(source, { ext: '.ttf' }, (error, asset) => error ? reject(error) : resolve(asset));
+    const load = (source = url, options: { maxRetryCount?: number } = {}): Promise<TTFFont> => new Promise((resolve, reject) => {
+        assetManager.loadRemote<TTFFont>(source, { ext: '.ttf', ...options }, (error, asset) => error ? reject(error) : resolve(asset));
     });
     const release = (asset: TTFFont, source = url): void => {
         assetManager.releaseAsset(asset);
@@ -67,7 +67,13 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(origin)) throw new Error('HTTP font fixture origin missing');
     const httpUrl = `${origin}/m6-http-font.ttf`, cache = assetManager.cacheManager!;
     if (cache.getCache(httpUrl)) cache.removeCache(httpUrl);
-    const httpFont = await load(httpUrl);
+    let interrupted = false;
+    try { await load(httpUrl, { maxRetryCount: 0 }); } catch { interrupted = true; }
+    if (!interrupted || cache.getCache(httpUrl) || assetManager.assets.has(httpUrl)
+        || assetManager.assets.count !== cacheBefore || stats() !== before) {
+        throw new Error('Partial font transfer was accepted or left a cache or alias entry');
+    }
+    const httpFont = await load(httpUrl, { maxRetryCount: 0 });
     const cachedSource = (httpFont as any).getSourcePath();
     if (httpFont.nativeUrl !== httpUrl || cachedSource !== cache.getCache(httpUrl) || !files.isFileExist(cachedSource)
         || (httpFont as any).getFontDataSize() !== 223404) throw new Error('HTTP font did not resolve its downloaded cache path');
@@ -84,7 +90,7 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     let httpMissingRejected = false;
     try { await load(`${origin}/missing.ttf`); } catch { httpMissingRejected = true; }
     if (!httpMissingRejected || stats() !== before || assetManager.assets.count !== cacheBefore) throw new Error('HTTP 404 retained font state');
-    const http = { loaded: true, bytes: 223404, cachePathResolved: true, width, released: true, cacheRemoved: true, missingRejected: true };
+    const http = { interrupted, loaded: true, bytes: 223404, cachePathResolved: true, width, released: true, cacheRemoved: true, missingRejected: true };
     return { cycles: 1000, cacheHits: 1000, bytesPerLoad: 223404, assignmentFailureRolledBack: true,
         retrySucceeded: true, missingRejected, deferredDestroyFinished: true,
         before: JSON.parse(before), after: JSON.parse(stats()), cacheBefore, cacheAfter: assetManager.assets.count, http };
@@ -93,6 +99,15 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
 /** The real asset factory loads the same TTF bytes in both applications. */
 export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>): Promise<object> {
     const url = sys.isNative ? '__M6_GPU_FONT__' : '/m6-font.ttf';
+    if (!sys.isNative) {
+        // Read the entire response: fetch resolves the headers before a truncated body rejects.
+        const response = await fetch(url, { cache: 'no-store' });
+        let truncated = false;
+        try { await response.arrayBuffer(); } catch { truncated = true; }
+        if (response.status !== 200 || !truncated || assetManager.assets.has(url)) {
+            throw new Error('Expected a truncated Web font response before loading the TTF');
+        }
+    }
     const font = await new Promise<TTFFont>((resolve, reject) => {
         assetManager.loadRemote<TTFFont>(url, { ext: '.ttf' }, (error, asset) => error ? reject(error) : resolve(asset!));
     });
