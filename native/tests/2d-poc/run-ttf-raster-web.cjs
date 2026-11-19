@@ -25,9 +25,10 @@ const done = new Promise((resolve, reject) => { complete = resolve; fail = rejec
 const received = new Set();
 const server = http.createServer(async (req, res) => {
     try {
-        if (req.url === '/font.ttf') {
+        if (req.url === '/font.ttf' || req.url === '/replacement.ttf') {
             res.writeHead(200, { 'Content-Type': 'font/ttf' });
-            fs.createReadStream(path.join(__dirname, '../../../tests/fixtures/Thonburi.ttf')).pipe(res);
+            const file = req.url === '/font.ttf' ? 'tests/fixtures/Thonburi.ttf' : 'editor/assets/default_fonts/builtin-freetype/OpenSans-Regular.ttf';
+            fs.createReadStream(path.join(__dirname, '../../..', file)).pipe(res);
             return;
         }
         if (req.method === 'POST') {
@@ -40,6 +41,11 @@ const server = http.createServer(async (req, res) => {
                 }
                 const metadata = JSON.parse(Buffer.concat(chunks).toString());
                 if (received.size !== 4 * styleCount || metadata.cases.length !== received.size) throw new Error('Incomplete raw matrix');
+                const { fallback, loaded, replaced, restored, released, reloaded } = metadata.aliasWidths;
+                if (loaded !== 95.9765625 || fallback === loaded || !Number.isFinite(replaced) || replaced === loaded
+                    || restored !== loaded || released !== fallback || reloaded !== loaded) {
+                    throw new Error('Canvas did not follow font registration: ' + JSON.stringify(metadata.aliasWidths));
+                }
                 fs.writeFileSync(path.join(output, 'metadata.json'), JSON.stringify(metadata, null, 2));
                 res.end('OK'); complete(); return;
             }
@@ -61,7 +67,21 @@ const server = http.createServer(async (req, res) => {
         res.end(`<script>
         (async () => {
             const face = new FontFace('M6Raw', 'url(/font.ttf)');
+            const retained = document.createElement('canvas').getContext('2d');
+            retained.font = '24px M6Raw';
+            const measure = () => retained.measureText('Atlas 123').width;
+            const fallback = measure();
             document.fonts.add(await face.load());
+            const loaded = measure();
+            const replacement = await new FontFace('M6Raw', 'url(/replacement.ttf)').load();
+            document.fonts.add(replacement);
+            const replaced = measure();
+            document.fonts.delete(replacement);
+            const restored = measure();
+            document.fonts.delete(face);
+            const released = measure();
+            document.fonts.add(face);
+            const aliasWidths = { fallback, loaded, replaced, restored, released, reloaded: measure() };
             const cases=[], text=${JSON.stringify(texts[sample])};
             for (const size of [12,24,36,48]) for (let style=0; style<${styleCount}; style++) {
                 const canvas = document.createElement('canvas'); canvas.width=${width}; canvas.height=${height};
@@ -82,7 +102,7 @@ const server = http.createServer(async (req, res) => {
                 cases.push({size,style,font:ctx.font,width:ctx.measureText(text).width});
                 await fetch('/'+size+'-'+style+'.rgba',{method:'POST',body:ctx.getImageData(0,0,canvas.width,canvas.height).data});
             }
-            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},cases})});
+            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},aliasWidths,cases})});
         })();</script>`);
     } catch (error) { res.writeHead(500); res.end(String(error)); fail(error); }
 });

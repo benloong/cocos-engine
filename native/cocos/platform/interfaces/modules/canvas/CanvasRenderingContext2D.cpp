@@ -68,6 +68,9 @@ CanvasRenderingContext2D::CanvasRenderingContext2D(float width, float height)
 : _width(width),
   _height(height) {
     _delegate = ccnew CanvasRenderingContext2DDelegate();
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    _fontAliasRevision = getFontAliasRevision();
+#endif
     //SE_LOGD("CanvasRenderingContext2D constructor: %p, width: %f, height: %f\n", this, width, height);
 }
 
@@ -92,6 +95,7 @@ void CanvasRenderingContext2D::fillText(const ccstd::string &text, float x, floa
         return;
     }
     recreateBufferIfNeeded();
+    refreshFontAliases();
     _delegate->fillText(text, x, y, maxWidth);
 }
 
@@ -101,14 +105,17 @@ void CanvasRenderingContext2D::strokeText(const ccstd::string &text, float x, fl
         return;
     }
     recreateBufferIfNeeded();
+    refreshFontAliases();
     _delegate->strokeText(text, x, y, maxWidth);
 }
 bool CanvasRenderingContext2D::supportsTextStroke() const {
+    refreshFontAliases();
     return _delegate && _delegate->supportsTextStroke();
 }
 
 cc::Size CanvasRenderingContext2D::measureText(const ccstd::string &text) {
     //SE_LOGD("CanvasRenderingContext2D::measureText: %s\n", text.c_str());
+    refreshFontAliases();
     auto s = _delegate->measureText(text);
     return cc::Size(s[0], s[1]);
 }
@@ -223,12 +230,27 @@ void CanvasRenderingContext2D::rect(float x, float y, float w, float h) {
 
 void CanvasRenderingContext2D::setFont(const ccstd::string &font) {
     recreateBufferIfNeeded();
-#if CC_PLATFORM == CC_PLATFORM_WINDOWS || CC_PLATFORM == CC_PLATFORM_QNX || CC_PLATFORM == CC_PLATFORM_LINUX || CC_PLATFORM == CC_PLATFORM_ANDROID || CC_PLATFORM == CC_PLATFORM_OHOS || CC_PLATFORM == CC_PLATFORM_OPENHARMONY || CC_PLATFORM == CC_PLATFORM_MACOS || CC_PLATFORM == CC_PLATFORM_IOS
     if (_font != font) {
         _font = font;
-        const auto parsed = detail::parseCanvasFont(font);
-        _delegate->updateFont(parsed.family, parsed.size, parsed.bold, parsed.italic, parsed.oblique, parsed.smallCaps);
+        selectFont();
+    } else {
+        refreshFontAliases();
     }
+}
+
+void CanvasRenderingContext2D::refreshFontAliases() const {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    if (_fontAliasRevision != getFontAliasRevision()) selectFont();
+#endif
+}
+
+void CanvasRenderingContext2D::selectFont() const {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    _fontAliasRevision = getFontAliasRevision();
+#endif
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS || CC_PLATFORM == CC_PLATFORM_QNX || CC_PLATFORM == CC_PLATFORM_LINUX || CC_PLATFORM == CC_PLATFORM_ANDROID || CC_PLATFORM == CC_PLATFORM_OHOS || CC_PLATFORM == CC_PLATFORM_OPENHARMONY || CC_PLATFORM == CC_PLATFORM_MACOS || CC_PLATFORM == CC_PLATFORM_IOS
+    const auto parsed = detail::parseCanvasFont(_font);
+    _delegate->updateFont(parsed.family, parsed.size, parsed.bold, parsed.italic, parsed.oblique, parsed.smallCaps);
 #endif
 }
 

@@ -47,6 +47,7 @@ struct FontAliasLease {
 // Value-owned records only. IDs never reset, so late releases after runtime
 // cleanup cannot affect leases acquired by a subsequent script engine.
 uint64_t nextFontAliasId{0};
+uint64_t fontAliasRevision{0};
 ccstd::unordered_map<uint64_t, FontAliasGroup> fontAliasGroups;
 ccstd::unordered_map<uint64_t, FontAliasLease> fontAliasLeases;
 ccstd::unordered_map<ccstd::string, uint64_t> currentFontAliasGroups;
@@ -62,6 +63,7 @@ const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontAssetFamilyName
 }
 size_t getFontAliasLeaseCount() { return fontAliasLeases.size(); }
 size_t getFontAliasGroupCount() { return fontAliasGroups.size(); }
+uint64_t getFontAliasRevision() { return fontAliasRevision; }
 
 uint64_t retainFontFamilyAlias(const ccstd::string &family, const ccstd::string &source, const ccstd::string &renderFamily) {
     if (family.empty() || source.empty() || renderFamily.empty()) return 0;
@@ -80,6 +82,7 @@ uint64_t retainFontFamilyAlias(const ccstd::string &family, const ccstd::string 
     fontAliasLeases.emplace(lease, FontAliasLease{group, renderFamily});
     fontFamilyNameMap.insert_or_assign(family, path);
     fontAssetFamilyNameMap.insert_or_assign(renderFamily, path);
+    ++fontAliasRevision;
     return lease;
 }
 
@@ -107,6 +110,7 @@ void releaseFontFamilyAlias(uint64_t lease) {
         fontAliasGroups.erase(group);
     }
     fontAliasLeases.erase(owned);
+    ++fontAliasRevision;
 }
 
 static bool jsbLoadFont(se::State &s) {
@@ -141,6 +145,7 @@ static bool jsbLoadFont(se::State &s) {
         const auto current = fontFamilyNameMap.find(originalFamilyName);
         if (current != fontFamilyNameMap.end() && current->second != fontFilePath) currentFontAliasGroups.erase(originalFamilyName);
         fontFamilyNameMap.insert_or_assign(originalFamilyName, fontFilePath);
+        ++fontAliasRevision;
 
         s.rval().setString(originalFamilyName);
 
@@ -174,6 +179,7 @@ bool register_platform_bindings(se::Object * /*obj*/) { // NOLINT(readability-id
         decltype(fontAliasGroups)().swap(fontAliasGroups);
         decltype(fontAliasLeases)().swap(fontAliasLeases);
         decltype(currentFontAliasGroups)().swap(currentFontAliasGroups);
+        ++fontAliasRevision;
     });
     return true;
 }

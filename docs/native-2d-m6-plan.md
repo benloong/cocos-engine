@@ -74,6 +74,7 @@
 - [x] Windows 自定义字体选择：GDI 拒绝真实 Thonburi.ttf 后回退，现以私有 DirectWrite collection 加载、shaping 和绘制；明确 COM/缓冲区所有权，Debug/Release 各 1000 次释放计数及 64 项 Jest、ASAN 应用通过。该节点 RichText 当时为 9/12 布局一致、严格图像 0/12，见 [报告与未关闭门禁](./native-2d-m6.1-directwrite-fonts.md)。
 - [ ] 字体终态验收：真实字体资源/旧场景/Prefab、完整资源加载释放、跨平台 alias/字体句柄与注册表清理、复杂文本和 GPU 对照。TTF 原生字节已持有，渲染仍使用现有 Canvas 平台后端，基础数据通过不替代这些验收。
 - [x] Windows 字体注册表补充：修复单参越界、同 alias 重载不替换和无效绝对路径误注册；脚本引擎 cleanup 释放表。Debug/Release 实际 JSB、1000 次同名重载和临时字体文件释放回归通过。本节点仅覆盖 runtime 清理，逐资产机制见下一项，跨平台仍归字体终态项，见 [报告](./native-2d-m6.1-font-registry.md)。
+- [x] 已创建的 Windows Canvas 在字体注册、同名替换、释放和恢复后重新选择字形。相同 Canvas 上，Thonburi 与 Open Sans 的测宽在 Windows Debug、Release 和 Chrome 分别为 95.9765625 和 101.9296875；释放最后一个资产后恢复各自的回退宽度。Windows 另验证首个填充、描边与新建上下文逐字节一致。[回归数据与可执行文件哈希](./native-2d-m6-canvas-font-alias.json)
 - [x] Windows TTFFont 逐资产 alias：native 记录明确持有者与来源代次，独立渲染身份隔离同名换源；共享释放、最后持有者清理、两种换源销毁顺序及迟到释放通过。Debug/Release 各 1000 轮 native/实际 JSB、49 项 Jest、10 项静态检查与同快照真实加载/释放、ASAN 应用通过；严格图像仍 9/12，完整异步/跨平台仍待验收，见 [实现与边界](./native-2d-m6.1-font-alias-ownership.md)。
 - [x] 字体工厂失败回滚：native 空字节/赋值异常销毁半成品并回调错误，Factory 同步异常清理等待队列、支持同 ID 重试并隔离旧回调；16 个 suite、120 项和 Debug/Release 实际 JSB 故障探针通过。创建前无主 alias、完整异步下载与跨平台仍待验收，见 [报告](./native-2d-m6.1-font-factory-failure.md)。
 - [x] Windows 本地 TTFFont 真实资源循环：Debug 普通/ASAN 应用各 1000 次 loadRemote/releaseAsset 与缓存身份检查，逐轮字节/alias/缓存恢复、失败回滚与同 URL 重试、缺失源拒绝和最终延迟销毁通过；当前源码完整引擎 JS 重建，图像仍 9/12。长期 heap、HTTP/bundle、BMFont/LabelAtlas 与跨平台仍待验收，见 [证据](./native-2d-m6.1-font-remote-lifecycle.md)。

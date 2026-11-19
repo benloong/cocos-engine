@@ -1,0 +1,55 @@
+{
+  "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+  "replacementSha256": "e64e508b2aa2880f907e470c4550980ec4c0694d103a43f36150ac3f93189bee",
+  "web": {
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "widths": {
+      "fallback": 100.10343933105469,
+      "loaded": 95.9765625,
+      "replaced": 101.9296875,
+      "restored": 95.9765625,
+      "released": 100.10343933105469,
+      "reloaded": 95.9765625
+    }
+  },
+  "windows": [
+    {
+      "configuration": "Debug",
+      "widths": {
+        "fallback": 108,
+        "loaded": 95.9765625,
+        "replaced": 101.9296875
+      },
+      "restorationChecked": true,
+      "retainedCanvasFillAndStrokeMatchFresh": true,
+      "probeExeSha256": "d00fc23eb798190df9470de655eb6006be3444ed9b5c3761d1d5c4c2b7a5460b",
+      "appExeSha256": "7bb0b3ad510aec14cd0128cdfd2a113388aeaf5c728fb54b63533e73f12bb022",
+      "richTextSnapshot": "69bd94c4fce6f5706fc9853ac7b96f6ca9b5e87cefd662305b53289f51514329",
+      "richTextReportSha256": "53b3cbc94138a1e7ff014fd28ee49d4e133000ae027d80b8813769ea04396e69",
+      "layoutPass": 12,
+      "strictImagePass": 9,
+      "assetCycles": 1000,
+      "graphicsSnapshot": "aad0cdeafbd6e71c8bab8508f8e718085de84874c3b62ad2a427853f297181da",
+      "graphicsExactImages": 85
+    },
+    {
+      "configuration": "Release",
+      "widths": {
+        "fallback": 108,
+        "loaded": 95.9765625,
+        "replaced": 101.9296875
+      },
+      "restorationChecked": true,
+      "retainedCanvasFillAndStrokeMatchFresh": true,
+      "probeExeSha256": "c7a9c1dd592f1a89da1ded189c67146affc735cfe78fbfee888a8d089d288352",
+      "appExeSha256": "17d970f71442600a5935383bb6e111cfeabc6a5689c259bdd155afee89045fb2",
+      "richTextSnapshot": "69bd94c4fce6f5706fc9853ac7b96f6ca9b5e87cefd662305b53289f51514329",
+      "richTextReportSha256": "53b3cbc94138a1e7ff014fd28ee49d4e133000ae027d80b8813769ea04396e69",
+      "layoutPass": 12,
+      "strictImagePass": 9,
+      "assetCycles": 1000,
+      "graphicsSnapshot": "aad0cdeafbd6e71c8bab8508f8e718085de84874c3b62ad2a427853f297181da",
+      "graphicsExactImages": 85
+    }
+  ]
+}

@@ -786,6 +786,54 @@ void testFontAliasOwnership() {
         check(font->loadFontData(CC2D_FONT_FIXTURE), "owned TTF loads actual font");
         return font;
     };
+    {
+        cc::CanvasRenderingContext2D canvas(128, 32);
+        canvas.setFont("24px " + family);
+        const auto fallback = canvas.measureText("Atlas 123").width;
+        auto owner = create();
+        const auto loaded = canvas.measureText("Atlas 123").width;
+        checkNear(loaded, 95.9765625F, "existing Canvas measures newly registered font");
+        check(loaded != fallback && canvas.supportsTextStroke(), "existing Canvas acquired file-backed font");
+        owner->clearNativeData();
+        check(!canvas.supportsTextStroke(), "existing Canvas drops released font before querying stroke support");
+        checkNear(canvas.measureText("Atlas 123").width, fallback, "existing Canvas restores fallback metrics");
+        cc::CanvasRenderingContext2D fill(128, 32), stroke(128, 32);
+        fill.setFont("24px " + family);
+        stroke.setFont("24px " + family);
+        auto raster = [](cc::CanvasRenderingContext2D &ctx, bool outline) {
+            ctx.resetBuffer(128, 32);
+            if (outline) ctx.strokeText("Atlas 123", 2, 24, 0);
+            else ctx.fillText("Atlas 123", 2, 24, 0);
+            std::vector<uint8_t> bytes;
+            ctx.setCanvasBufferUpdatedCallback([&](const cc::Data &data) {
+                bytes.assign(data.getBytes(), data.getBytes() + data.getSize());
+            });
+            ctx.fetchData();
+            ctx.setCanvasBufferUpdatedCallback(nullptr);
+            return bytes;
+        };
+        const auto fallbackFill = raster(fill, false), fallbackStroke = raster(stroke, true);
+        owner = create();
+        cc::CanvasRenderingContext2D fresh(128, 32);
+        fresh.setFont("24px " + family);
+        const auto fileFill = raster(fresh, false), fileStroke = raster(fresh, true);
+        check(fileFill != fallbackFill && fileStroke != fallbackStroke, "Canvas file font has distinct fill and stroke masks");
+        check(raster(fill, false) == fileFill && raster(stroke, true) == fileStroke, "first draw after font load uses new face");
+        checkNear(canvas.measureText("Atlas 123").width, loaded, "existing Canvas selects reloaded font");
+        cc::IntrusivePtr<cc::TTFFont> replacement(new cc::TTFFont());
+        replacement->setFontFamily(family);
+        check(replacement->loadFontData(CC2D_REPLACEMENT_FONT), "second font binds to the same Canvas family");
+        const auto replaced = canvas.measureText("Atlas 123").width;
+        cc::CanvasRenderingContext2D direct(128, 32);
+        direct.setFont("24px " + replacement->getRenderFontFamily());
+        check(replaced != loaded && replaced == direct.measureText("Atlas 123").width,
+              "existing Canvas selects replacement font metrics");
+        replacement->clearNativeData();
+        checkNear(canvas.measureText("Atlas 123").width, loaded, "releasing replacement restores older font face");
+        owner->clearNativeData();
+        check(raster(fill, false) == fallbackFill && raster(stroke, true) == fallbackStroke, "first draw after release uses fallback");
+        std::printf("Canvas alias widths: fallback %.8f, file %.8f, replacement %.8f\n", fallback, loaded, replaced);
+    }
     for (int iteration = 0; iteration < 1000; ++iteration) {
         auto first = create(), second = create();
         const auto firstRender = first->getRenderFontFamily(), secondRender = second->getRenderFontFamily();

@@ -104,6 +104,8 @@ public:
 
 private:
     void recreateBufferIfNeeded() override;
+    void selectFont() const;
+    void refreshFontAliases() const;
 
 public:
     float _width = 0.0F;
@@ -133,6 +135,9 @@ private:
     CanvasBufferUpdatedCallback _canvasBufferUpdatedCB = nullptr;
 
     bool _isBufferSizeDirty = true;
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    mutable uint64_t _fontAliasRevision{0};
+#endif
 };
 
 } // namespace cc
