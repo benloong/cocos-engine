@@ -8,7 +8,7 @@ let active;
 let recording = false;
 let completed = 0;
 for (const line of lines) {
-    const begin = /M6_TRACE_BEGIN (setup|steady|explicit|mutation|flush|disable|enable|destroy) ([\w-]+)/.exec(line);
+    const begin = /M6_TRACE_BEGIN (setup|steady|explicit|mutation|flush|disable|enable|destroy|create|edit|release|drain) ([\w-]+)/.exec(line);
     if (begin) {
         if (active || recording) throw new Error('Missing trace terminator');
         const [, phase, name] = begin;
@@ -38,9 +38,21 @@ for (const line of lines) {
 
 const expectedCases = ['Canvas', 'UITransform', 'RenderRoot2D', 'UIOpacity', 'UIRenderer-Sprite-SpriteFrame',
     'Label', 'LabelOutline', 'LabelShadow', 'Font-TTFFont', 'BitmapFont', 'LabelAtlas', 'Graphics', 'Mask', 'RichText-SpriteAtlas'];
+const assetCases = ['Font', 'TTFFont', 'BitmapFont', 'LabelAtlas', 'SpriteFrame', 'SpriteAtlas'].map(name => 'Asset-' + name);
+expectedCases.push(...assetCases);
 if (active || recording || completed !== expectedCases.length || Object.keys(cases).length !== completed
     || expectedCases.some(name => !cases[name])) throw new Error('Incomplete per-component trace');
 for (const [name, phases] of Object.entries(cases)) {
+    if (assetCases.includes(name)) {
+        for (const phase of ['create', 'edit', 'release', 'drain']) {
+            const calls = phases[phase]?.calls;
+            if (calls?.jsb_clearInvocationRecords !== 1 || (calls.js_cc_Root_frameMove || 0) !== (phase === 'drain' ? 3 : 0)) {
+                throw new Error(name + ': invalid ' + phase + ' window');
+            }
+        }
+        console.log(name + ': independent asset lifecycle verified');
+        continue;
+    }
     if (!phases.setup || !phases.steady || phases.explicit?.calls.js_cc_SpriteFrame_getRectWidth !== 1) {
         throw new Error('Missing native positive control for ' + name);
     }

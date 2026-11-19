@@ -1,0 +1,1054 @@
+{
+  "runtime": "6bde0911f8",
+  "fixtureSha256": "c0bdbc3f9d75a0e5ab048bd599225eeeb04b4ad857b4fe1bd41b16704e0797f5",
+  "configs": {
+    "Debug": {
+      "exeSha256": "67831792011f612da1901444de9db4c3ffc29936c81218d9df1b2e3802f2d9c4",
+      "engineSha256": "0416d89df16ade492892e5d01484806a7d66cc75d24cfa96f1d12211e5f6a443",
+      "logSha256": "ecbca06f3ce76ca04ee9045b1765a39ebfec7ab06fb41c6db6fc16bee6be38b0",
+      "cases": {
+        "Asset-Font": {
+          "create": {
+            "calls": {
+              "js_new_cc_FontAsset": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "edit": {
+            "calls": {
+              "js_cc_CCObject_name_set": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__destroy": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_performance_now": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_gfx_Color_x_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_w_get": 3
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-TTFFont": {
+          "create": {
+            "calls": {
+              "js_new_cc_TTFFont": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "edit": {
+            "calls": {
+              "js_cc_TTFFont_loadFontData": 1,
+              "js_cc_TTFFont_setFontFamily": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 3
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_performance_now": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_w_get": 3
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-BitmapFont": {
+          "create": {
+            "calls": {
+              "js_new_cc_BitmapFontAsset": 1,
+              "js_cc_BitmapFont_setConfigJson": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "js_cc_BitmapFont_setFontSize": 1,
+              "js_cc_Font_isReleased": 2,
+              "js_cc_BitmapFont_getConfigRevision": 1
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_performance_now": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_gfx_Color_z_get": 3
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-LabelAtlas": {
+          "create": {
+            "calls": {
+              "js_new_cc_LabelAtlas": 1,
+              "js_cc_BitmapFont_setConfigJson": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "js_cc_BitmapFont_setFontSize": 1,
+              "js_cc_Font_isReleased": 2,
+              "js_cc_BitmapFont_getConfigRevision": 1
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_performance_now": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_gfx_Color_z_get": 3
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-SpriteFrame": {
+          "create": {
+            "calls": {
+              "js_new_cc_SpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_SpriteFrame_getTexture": 3,
+              "js_cc_SpriteFrame_resetWithTexture": 1,
+              "js_cc_CCObject__objFlags_get": 1,
+              "js_cc_SpriteFrame_hasDynamicAtlasFrame": 1
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_SpriteFrame_getTexture": 3,
+              "js_cc_SpriteFrame_resetWithTexture": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_get": 1,
+              "js_cc_SpriteFrame_hasDynamicAtlasFrame": 1
+            },
+            "totalCalls": 7
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__objFlags_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__destroy": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_performance_now": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_SpriteFrame_clearTextureReferences": 1,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_gfx_Color_z_get": 3
+            },
+            "totalCalls": 196
+          }
+        },
+        "Asset-SpriteAtlas": {
+          "create": {
+            "calls": {
+              "js_new_cc_SpriteAtlas": 1,
+              "js_cc_SpriteAtlas_setSpriteFrameOrder": 2,
+              "js_cc_SpriteAtlas_addSpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_SpriteAtlas_getSpriteFrameNames": 1,
+              "js_cc_CCObject__objFlags_get": 2
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_SpriteAtlas_addSpriteFrame": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 4
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__objFlags_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__destroy": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_performance_now": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_SpriteAtlas_clear": 1,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_CCObject_destruct": 1
+            },
+            "totalCalls": 196
+          }
+        }
+      }
+    },
+    "Release": {
+      "exeSha256": "aedf99eaad7ca0f5cb74f92658bbcd2e6b2a44d2677df43061c1c4c61ce1c6fe",
+      "engineSha256": "0416d89df16ade492892e5d01484806a7d66cc75d24cfa96f1d12211e5f6a443",
+      "logSha256": "ba6cef60d8e6b0467c2294bb4c8381844ca2bb0b5c1fdb4a3a54dc28254fda0d",
+      "cases": {
+        "Asset-Font": {
+          "create": {
+            "calls": {
+              "js_new_cc_FontAsset": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "edit": {
+            "calls": {
+              "js_cc_CCObject_name_set": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_performance_now": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-TTFFont": {
+          "create": {
+            "calls": {
+              "js_new_cc_TTFFont": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "edit": {
+            "calls": {
+              "js_cc_TTFFont_loadFontData": 1,
+              "js_cc_TTFFont_setFontFamily": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 3
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_performance_now": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-BitmapFont": {
+          "create": {
+            "calls": {
+              "js_new_cc_BitmapFontAsset": 1,
+              "js_cc_BitmapFont_setConfigJson": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "js_cc_BitmapFont_setFontSize": 1,
+              "js_cc_BitmapFont_getConfigRevision": 1,
+              "js_cc_Font_isReleased": 2
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_performance_now": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_scene_Camera_clearDepth_get": 3
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-LabelAtlas": {
+          "create": {
+            "calls": {
+              "js_new_cc_LabelAtlas": 1,
+              "js_cc_BitmapFont_setConfigJson": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "js_cc_BitmapFont_setFontSize": 1,
+              "js_cc_Font_isReleased": 2,
+              "js_cc_BitmapFont_getConfigRevision": 1
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_BitmapFont_setSpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 2
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__objFlags_set": 1
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_performance_now": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 195
+          }
+        },
+        "Asset-SpriteFrame": {
+          "create": {
+            "calls": {
+              "js_new_cc_SpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_SpriteFrame_getTexture": 3,
+              "js_cc_SpriteFrame_resetWithTexture": 1,
+              "js_cc_CCObject__objFlags_get": 1,
+              "js_cc_SpriteFrame_hasDynamicAtlasFrame": 1
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_SpriteFrame_getTexture": 3,
+              "js_cc_SpriteFrame_resetWithTexture": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_get": 1,
+              "js_cc_SpriteFrame_hasDynamicAtlasFrame": 1
+            },
+            "totalCalls": 7
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_set": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_get": 3
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_performance_now": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_SpriteFrame_clearTextureReferences": 1,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject_destruct": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 196
+          }
+        },
+        "Asset-SpriteAtlas": {
+          "create": {
+            "calls": {
+              "js_new_cc_SpriteAtlas": 1,
+              "js_cc_SpriteAtlas_setSpriteFrameOrder": 2,
+              "js_cc_SpriteAtlas_addSpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_SpriteAtlas_getSpriteFrameNames": 1,
+              "js_cc_CCObject__objFlags_get": 2
+            },
+            "totalCalls": 8
+          },
+          "edit": {
+            "calls": {
+              "js_cc_SpriteAtlas_addSpriteFrame": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_get": 2
+            },
+            "totalCalls": 4
+          },
+          "release": {
+            "calls": {
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_CCObject__objFlags_set": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_get": 3
+            },
+            "totalCalls": 6
+          },
+          "drain": {
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_performance_now": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_CCObject__objFlags_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_SpriteAtlas_clear": 1,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_CCObject_destruct": 1,
+              "jsb_clearInvocationRecords": 1
+            },
+            "totalCalls": 196
+          }
+        }
+      }
+    }
+  }
+}

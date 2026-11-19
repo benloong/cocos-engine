@@ -162,8 +162,63 @@ function installM6JsbTrace (cc, fontPath) {
             jsb.printInvocationRecords();
             if (cc.isValid(node)) throw new Error('Deferred destruction incomplete: ' + name);
         }
+        const replacement = new Texture2D();
+        replacement.reset({ width: 16, height: 16, format: Texture2D.PixelFormat.RGBA8888 });
+        const otherFrame = new SpriteFrame();
+        otherFrame.texture = replacement;
+        const bitmapCase = Type => [
+            () => bitmap(Type), asset => { asset.spriteFrame = otherFrame; },
+            asset => asset.spriteFrame === otherFrame,
+            asset => asset.isReleased() && !asset.spriteFrame,
+        ];
+        const assetCases = [
+            ['Font', () => new cc.Font(), asset => { asset.name = 'Trace Font'; },
+                asset => asset.name === 'Trace Font', asset => asset.isReleased()],
+            ['TTFFont', () => new cc.TTFFont(), asset => {
+                asset._fontFamily = 'Trace TTF';
+                asset.loadFontData(fontPath);
+            }, asset => asset.getFontDataSize() === 223404 && asset.getSourcePath() === fontPath,
+            asset => asset.isReleased() && asset.getFontDataSize() === 0 && !asset.getSourcePath()],
+            ['BitmapFont', ...bitmapCase(cc.BitmapFont)],
+            ['LabelAtlas', ...bitmapCase(cc.LabelAtlas)],
+            ['SpriteFrame', () => {
+                const asset = new SpriteFrame();
+                asset.texture = texture;
+                return asset;
+            }, asset => { asset.texture = replacement; }, asset => asset.texture === replacement,
+            () => cc.isValid(replacement, true)],
+            ['SpriteAtlas', () => {
+                const asset = new cc.SpriteAtlas();
+                asset.spriteFrames.icon = frame;
+                return asset;
+            }, asset => { asset.spriteFrames.icon = otherFrame; }, asset => asset.getSpriteFrame('icon') === otherFrame,
+            asset => asset.getSpriteFrameCount() === 0 && cc.isValid(otherFrame, true)],
+        ];
+        for (const [name, create, edit, verifyEdit, verifyRelease] of assetCases) {
+            const begin = phase => {
+                console.log('M6_TRACE_BEGIN ' + phase + ' Asset-' + name);
+                jsb.clearInvocationRecords();
+            };
+            begin('create');
+            const asset = create();
+            jsb.printInvocationRecords();
+            begin('edit');
+            edit(asset);
+            jsb.printInvocationRecords();
+            if (!verifyEdit(asset)) throw new Error('Asset mutation failed: ' + name);
+            begin('release');
+            asset.destroy();
+            jsb.printInvocationRecords();
+            if (cc.isValid(asset, true)) throw new Error('Asset still live after destroy: ' + name);
+            begin('drain');
+            await frames(3);
+            jsb.printInvocationRecords();
+            if (cc.isValid(asset) || !verifyRelease(asset)) throw new Error('Asset cleanup failed: ' + name);
+        }
+        otherFrame.destroy();
+        replacement.destroy();
         for (const asset of [bm, labelAtlas, atlas, frame, texture]) asset.destroy();
         cc.assetManager.releaseAsset(ttf);
-        console.log('M6_TRACE_DONE ' + cases.length);
+        console.log('M6_TRACE_DONE ' + (cases.length + assetCases.length));
     }
 }

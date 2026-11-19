@@ -44,3 +44,18 @@ Windows Debug 和 Release 使用相同的引擎 JS，原生程序分别按配置
 Component、Node 和管线方法计入窗口总数。例如 RichText 场景启停各有一次 Component.setEnabled。静止窗口与空 Canvas 逐方法相减，移除 GC 析构后，两种配置的差值均为空。资产通过表中消费者参与场景，表内销毁计数覆盖这些节点的生命周期，独立资产的加载、换源及 releaseAsset 另行验收。
 
 复现时使用两个独立的 CMake 构建目录。Debug 使用上文配置，Release 使用 `-DCMAKE_BUILD_TYPE=Release` 及 `-DCMAKE_CXX_FLAGS_RELEASE=/O2 /Ob2 /DNDEBUG /DRECORD_JSB_INVOKING`。分别将目录传给 `run-m6-jsb-trace.ps1 -BuildDir`。每次运行均保存完整 trace.log 和 trace.json。
+
+## 独立资产的 JSB 调用
+
+Windows Debug 和 Release 各运行 Font、TTFFont、BitmapFont、LabelAtlas、SpriteFrame、SpriteAtlas 六组独立资产，每组分四个计数窗口。下表是 V8 原始总调用数，两种配置逐格相同。每个窗口包含一次计数器清零；延迟清理窗口还包含三帧的常规引擎调用。[完整逐方法记录及可执行文件哈希](./native-2d-m6-jsb-assets.json)
+
+| 资产及变更 | 创建和初始配置 | 同步变更 | destroy | 随后三帧 |
+|---|---:|---:|---:|---:|
+| Font 改名 | 2 | 2 | 6 | 195 |
+| TTFFont 设字体族并加载 223404 字节的本地 TTF | 2 | 3 | 6 | 195 |
+| BitmapFont 更换字形图集帧 | 8 | 2 | 6 | 195 |
+| LabelAtlas 更换字形图集帧 | 8 | 2 | 6 | 195 |
+| SpriteFrame 更换纹理 | 8 | 7 | 6 | 196 |
+| SpriteAtlas 替换同名帧 | 8 | 4 | 6 | 196 |
+
+每次变更后回读属性，调用 destroy 后立即检查严格有效性，三帧后检查延迟销毁完成。字体资产报告已释放，TTF 字节和源路径清空，位图字体解除帧引用；SpriteAtlas 清空原生帧表，共享帧及纹理仍然有效。这组同步 destroy 采集与前文的节点生命周期窗口独立，异步下载、取消和跨场景资源行为由其各自验收项覆盖。

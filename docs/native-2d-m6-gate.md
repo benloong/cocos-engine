@@ -35,7 +35,7 @@
 | M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
 | M6.5 | 性能 KPI | 混合变更帧 CPU 比迁移前高 2.64%。dirty 更新阶段增加 0.9460 ms，属性写入节省 0.8405 ms |
-| M6.5 | 薄壳约束 | 14 个原生 override 均在物理行数预算内。[14 组场景在 Windows Debug/Release 的变更和节点生命周期调用数](./native-2d-m6-jsb-lifecycle.json)已分阶段记录。独立资产生命周期及 Label/RichText 的逻辑与转发边界仍待复核 |
+| M6.5 | 薄壳约束 | 14 个原生 override 均在物理行数预算内。[14 组场景在 Windows Debug/Release 的变更和节点生命周期调用数](./native-2d-m6-jsb-lifecycle.json)已分阶段记录。[六种独立资产的创建、属性变更与销毁调用](./native-2d-m6-jsb-assets.json)已复测。Label/RichText 的逻辑与转发边界仍待复核 |
 | M6.5 | CI | 全部迁移类、间接热路径与组件/场景回归的 CI 证据 |
 | M6.5 | 回退 | 分模块回退后的旧场景行为、资产、材质与性能 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |
