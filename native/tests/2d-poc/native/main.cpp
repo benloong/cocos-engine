@@ -95,6 +95,15 @@ bool register_all_engine(se::Object *globalObject);
 bool register_all_assets(se::Object *globalObject);
 bool register_all_scene(se::Object *globalObject);
 
+namespace cc {
+struct Batcher2dTestAccess {
+    static size_t countLiveRoots(Batcher2d &batcher) {
+        batcher.sortRootNodes();
+        return batcher._rootNodes.size();
+    }
+};
+} // namespace cc
+
 namespace {
 
 int gFailures = 0;
@@ -1787,14 +1796,14 @@ void testRootRegistrationLifecycle() {
     parent->addChild(first); parent->addChild(second);
     const auto refs=first->getRefCount();
     batcher.addRootNode(second);batcher.addRootNode(first);batcher.addRootNode(first);batcher.addRootNode(nullptr);
-    check(batcher.getRootNodeCount()==2,"root registration deduplicates nodes and ignores null");
+    check(cc::Batcher2dTestAccess::countLiveRoots(batcher)==2,"root registration deduplicates nodes and ignores null");
     check(first->getRefCount()==refs,"root registration links do not retain Nodes");
     batcher.removeRootNode(second);batcher.removeRootNode(second);
-    check(batcher.getRootNodeCount()==1,"repeated root removal is safe");
+    check(cc::Batcher2dTestAccess::countLiveRoots(batcher)==1,"repeated root removal is safe");
     batcher.syncRootNodesToNative({second,nullptr,first,second});
-    check(batcher.getRootNodeCount()==2,"legacy root synchronization uses the same observed deduplicated registry");
+    check(cc::Batcher2dTestAccess::countLiveRoots(batcher)==2,"legacy root synchronization uses the same observed deduplicated registry");
     batcher.fillBuffersAndMergeBatches();
-    check(batcher.getRootNodeCount()==2,"detached roots without a Scene are skipped safely");
+    check(cc::Batcher2dTestAccess::countLiveRoots(batcher)==2,"detached roots without a Scene are skipped safely");
     batcher.syncRootNodesToNative({});
     cc::RenderRoot2D component;
     {
@@ -1803,7 +1812,7 @@ void testRootRegistrationLifecycle() {
         batcher.addRootNode(node.get());
         check(node->getUIComponent(cc::RenderRoot2D::TYPE_ID)==&component,"RenderRoot2D participates in Node destruction notifications");
         node.reset();
-        check(component.getNode()==nullptr && batcher.getRootNodeCount()==0,"Node destruction invalidates both root component and batcher registration");
+        check(component.getNode()==nullptr && cc::Batcher2dTestAccess::countLiveRoots(batcher)==0,"Node destruction invalidates both root component and batcher registration");
     }
     component.setEnabled(false);component.setNode(first);
     cc::Component *base=&component;base->setNode(second);
@@ -1811,7 +1820,7 @@ void testRootRegistrationLifecycle() {
     component.setNode(nullptr);
     for(int i=0;i<1000;++i) {
         auto node=std::make_unique<cc::Node>("root-repeat");batcher.addRootNode(node.get());node.reset();
-        check(batcher.getRootNodeCount()==0,"1000 root registration/destruction cycles prune invalid links");
+        check(cc::Batcher2dTestAccess::countLiveRoots(batcher)==0,"1000 root registration/destruction cycles prune invalid links");
     }
     {
         cc::Batcher2d temporary(cc::Root::getInstance());temporary.addRootNode(first);

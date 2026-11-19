@@ -3,16 +3,33 @@ import { Camera, Color, Director, director, Graphics, instantiate, isValid, Laye
 type Check = { name: string; actual: boolean | number; expected: boolean | number };
 const nextFrame = (): Promise<void> => new Promise(resolve => director.once(Director.EVENT_AFTER_DRAW, resolve));
 
+// All render roots in this fixture are direct Scene children. A walk overwrites
+// final opacity even when a root has no drawable components or visible pixels.
+export async function countTraversedRoots (): Promise<number> {
+    const nodes = director.getScene()!.children.slice();
+    const previous = nodes.map(node => node._uiProps.opacity);
+    function setFinalOpacity (node: Node, value: number): void {
+        if (sys.isNative) (node as any)._setFinalOpacity(value);
+        else node._uiProps.setOpacity(value);
+    }
+    for (const node of nodes) setFinalOpacity(node, -1);
+    await nextFrame();
+    let count = 0;
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (!isValid(node)) continue;
+        if (node._uiProps.opacity !== -1) count++;
+        else setFinalOpacity(node, previous[i]);
+    }
+    return count;
+}
+
 /** Real director transitions; no retained list of old Scenes or their assets. */
 export async function runSceneMatrix (rt: RenderTexture, capture: (name: string, source?: RenderTexture) => Promise<void>): Promise<object> {
     const checks: Check[] = [];
     const check = (name: string, actual: boolean | number, expected: boolean | number): void => {
         checks.push({ name, actual, expected });
         if (actual !== expected) throw new Error(`Scene check ${name}: ${actual}, expected ${expected}`);
-    };
-    const rootCount = (): number => {
-        const batcher: any = director.root!.batcher2D;
-        return sys.isNative ? batcher._nativeObj.getRootNodeCount() : batcher._screens.length;
     };
     const node = (parent: Node, name: string, layer: number): Node => {
         const n = new Node(name); n.layer = layer; parent.addChild(n); n.addComponent(UITransform); return n;
@@ -36,7 +53,7 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
     const ca = camera(multi, 'camera-a', 1, 0, 7, rt), cb = camera(multi, 'camera-b', 2, 1, 6, rt);
     director.runSceneImmediate(multi); await nextFrame();
     check('initial-scene-destroyed', isValid(original), false);
-    check('camera-scene-roots', rootCount(), 2);
+    check('camera-scene-roots', await countTraversedRoots(), 2);
     await capture('scene-camera-overlay');
     ca.priority = 2; await capture('scene-camera-priority');
     ca.priority = 0; cb.visibility = 0; await capture('scene-camera-layer');
@@ -56,7 +73,7 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
     const persistent = root(multi, 'persistent-render-root', layer);
     graphics(persistent, new Color(0, 255, 0, 255), 80, -10, 20, 20);
     director.addPersistRootNode(persistent);
-    check('persistent-root-registered', rootCount(), 3);
+    check('persistent-root-registered', await countTraversedRoots(), 3);
     type State = { scene: Scene; root: Node; texture: Texture2D; frame: SpriteFrame };
     const build = (index: number): State => {
         const scene = new Scene(`m6-cycle-${index + 1}`);
@@ -77,8 +94,8 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
         const current = build(i); texturesCreated++;
         director.runSceneImmediate(current.scene);
         if (previous) { previous.frame.destroy(); previous.texture.destroy(); texturesDestroyed++; }
-        await nextFrame(); cycles++;
-        require(rootCount() === 2, 'root registry balance');
+        const traversed = await countTraversedRoots(); cycles++;
+        require(traversed === 2, 'persistent and transient roots traversed');
         require(persistent.scene === current.scene, 'persistent root Scene updated');
         require(isValid(current.texture) && isValid(current.frame), 'current assets alive');
         if (previous) {
@@ -90,10 +107,10 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
             if (sys.isNative) native.garbageCollect();
             else { const gc = (globalThis as any).gc; if (typeof gc !== 'function') throw new Error('Run Chrome with --js-flags=--expose-gc'); gc(); }
             collections++;
-            console.log(`M6_SCENE_PROGRESS ${JSON.stringify({ cycle: cycles, roots: rootCount() })}`);
+            console.log(`M6_SCENE_PROGRESS ${JSON.stringify({ cycle: cycles, roots: traversed })}`);
         }
         if (cycles === 1 || cycles % 250 === 0) {
-            samples.push({ cycle: cycles, roots: rootCount(), persistent: persistent.scene === current.scene });
+            samples.push({ cycle: cycles, roots: traversed, persistent: persistent.scene === current.scene });
             await capture(`scene-cycle-${cycles}`);
         }
     }
@@ -102,7 +119,7 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
     director.runSceneImmediate(empty);
     previous!.frame.destroy(); previous!.texture.destroy(); texturesDestroyed++;
     await nextFrame();
-    check('final-root-registry-empty', rootCount(), 0);
+    check('final-no-traversed-roots', await countTraversedRoots(), 0);
     check('persistent-root-destroyed', isValid(persistent), false);
     check('final-previous-scene-destroyed', isValid(previous!.scene), false);
     check('final-frame-destroyed', isValid(previous!.frame), false);
@@ -147,7 +164,7 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
     await nextFrame(); await nextFrame();
     check('atlas-all-assets-released', assets.every(asset => !isValid(asset)), true);
     check('atlas-all-cache-keys-released', ids.every(id => !assetManager.assets.has(id)), true);
-    check('atlas-final-root-count', rootCount(), 0);
+    check('atlas-final-root-count', await countTraversedRoots(), 0);
     await capture('scene-atlas-unloaded');
     return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks };
 }

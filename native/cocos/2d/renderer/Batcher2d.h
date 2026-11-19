@@ -63,7 +63,6 @@ public:
     void syncRootNodesToNative(ccstd::vector<Node*>&& rootNodes);
     void addRootNode(Node* node);
     void removeRootNode(Node* node);
-    uint32_t getRootNodeCount();
     void sortRootNodes();
     void releaseDescriptorSetCache(gfx::Texture* texture, gfx::Sampler* sampler);
 
@@ -86,6 +85,7 @@ public:
     void resetRenderStates();
 
 private:
+    friend struct Batcher2dTestAccess;
     struct RootNodeEntry;
     void pruneAndSortRootNodes();
     bool hasRootNode(Node* node) const;

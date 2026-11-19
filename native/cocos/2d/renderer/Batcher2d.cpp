@@ -217,11 +217,6 @@ void Batcher2d::pruneAndSortRootNodes() {
     });
 }
 
-uint32_t Batcher2d::getRootNodeCount() {
-    pruneAndSortRootNodes();
-    return static_cast<uint32_t>(_rootNodes.size());
-}
-
 void Batcher2d::sortRootNodes() { pruneAndSortRootNodes(); }
 
 void Batcher2d::fillBuffersAndMergeBatches() {
