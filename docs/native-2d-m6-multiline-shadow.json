@@ -1,0 +1,80 @@
+{
+  "snapshot": "36c27cfb1b3e74a76e73d148220677db17c944d38bfbabd96ff24c39ceaa4125",
+  "reference": "Windows Chrome",
+  "color": "white",
+  "font": "Thonburi",
+  "fontSize": 24,
+  "lineHeight": 30,
+  "text": "Atlas\nAtlas",
+  "shadowOffsetY": [
+    30,
+    -30
+  ],
+  "shadowBlur": 0,
+  "before": {
+    "layoutPass": 42,
+    "pixelPass": 37,
+    "cases": 42,
+    "fontCycles": 1000,
+    "multiline": [
+      {
+        "name": "label-shadow-multiline-positive",
+        "max": 64,
+        "pixels": 1003,
+        "nativeSha256": "656dee5bedeca860ad63e936962796bd4404bed31d779a52d577ab33faf5c140",
+        "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde"
+      },
+      {
+        "name": "label-shadow-multiline-negative",
+        "max": 64,
+        "pixels": 1003,
+        "nativeSha256": "656dee5bedeca860ad63e936962796bd4404bed31d779a52d577ab33faf5c140",
+        "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde"
+      }
+    ]
+  },
+  "debug": {
+    "layoutPass": 42,
+    "pixelPass": 39,
+    "cases": 42,
+    "fontCycles": 1000,
+    "multiline": [
+      {
+        "name": "label-shadow-multiline-positive",
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+        "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde"
+      },
+      {
+        "name": "label-shadow-multiline-negative",
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+        "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde"
+      }
+    ]
+  },
+  "release": {
+    "layoutPass": 42,
+    "pixelPass": 39,
+    "cases": 42,
+    "fontCycles": 1000,
+    "multiline": [
+      {
+        "name": "label-shadow-multiline-positive",
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+        "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde"
+      },
+      {
+        "name": "label-shadow-multiline-negative",
+        "max": 0,
+        "pixels": 0,
+        "nativeSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+        "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde"
+      }
+    ]
+  }
+}

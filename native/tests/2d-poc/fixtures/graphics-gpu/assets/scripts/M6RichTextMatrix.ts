@@ -284,6 +284,11 @@ async function captureShadowLayout (parent: Node, font: TTFFont, capture: (name:
     label.shadowColor = new Color(255, 255, 255, 255);
     label.string = 'Atlas';
     const metrics: object[] = [];
+    const captureLabel = async (name: string): Promise<void> => {
+        await capture(name);
+        const texture = label.ttfSpriteFrame!.texture!;
+        metrics.push({ name, width: ui.width, height: ui.height, textureWidth: texture.width, textureHeight: texture.height });
+    };
     for (const overflow of [Label.Overflow.NONE, Label.Overflow.CLAMP, Label.Overflow.SHRINK, Label.Overflow.RESIZE_HEIGHT]) {
         label.overflow = overflow;
         if (overflow !== Label.Overflow.NONE) ui.setContentSize(96, 72);
@@ -293,11 +298,18 @@ async function captureShadowLayout (parent: Node, font: TTFFont, capture: (name:
             for (const sign of [1, -1]) {
                 label.shadowOffset = new Vec2(16 * sign, 14 * sign);
                 const name = `label-shadow-${overflow}-${align}-${sign > 0 ? 'positive' : 'negative'}`;
-                await capture(name);
-                const texture = label.ttfSpriteFrame!.texture!;
-                metrics.push({ name, width: ui.width, height: ui.height, textureWidth: texture.width, textureHeight: texture.height });
+                await captureLabel(name);
             }
         }
+    }
+    label.overflow = Label.Overflow.CLAMP;
+    ui.setContentSize(128, 128);
+    label.horizontalAlign = 1;
+    label.verticalAlign = 1;
+    label.string = 'Atlas\nAtlas';
+    for (const sign of [1, -1]) {
+        label.shadowOffset = new Vec2(0, sign * label.lineHeight);
+        await captureLabel('label-shadow-multiline-' + (sign > 0 ? 'positive' : 'negative'));
     }
     node.destroy();
     await wait();

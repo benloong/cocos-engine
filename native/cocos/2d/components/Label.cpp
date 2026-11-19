@@ -933,7 +933,7 @@ void Label::rebuildTexture() {
         context.setShadowOffsetY(_shadowOffsetY);
     }
 
-    for (size_t i = 0; i < lines.size(); ++i) {
+    auto drawLine = [&](size_t i, bool underline) {
         const std::string &line = lines[i];
         const float lineWidth = lineWidths[i];
         const float x = lineX(lineWidth);
@@ -999,9 +999,19 @@ void Label::rebuildTexture() {
                       1.0);
         context.setFillStyle(fillColor);
         context.fillText(line, x, lineY, 0.0F);
-        if (_isUnderline) {
+        if (underline) {
             context.fillRect(x, lineY + rasterFontSize / 8.F, lineWidth, std::max(_underlineHeight, 0.F));
         }
+    };
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    // Web paints all shadowed lines during its effect pass, then paints the text pass.
+    if (drawShadow && lines.size() > 1) {
+        for (size_t i = 0; i < lines.size(); ++i) drawLine(i, _isUnderline);
+        for (size_t i = 0; i < lines.size(); ++i) drawLine(i, false);
+    } else
+#endif
+    {
+        for (size_t i = 0; i < lines.size(); ++i) drawLine(i, _isUnderline);
     }
     cc::Data pixels;
     context.setCanvasBufferUpdatedCallback([&pixels](const cc::Data &data) {
