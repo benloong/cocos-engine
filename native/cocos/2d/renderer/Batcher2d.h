@@ -64,7 +64,6 @@ public:
     void addRootNode(Node* node);
     void removeRootNode(Node* node);
     uint32_t getRootNodeCount();
-    Node* getRootNodeAt(uint32_t index);
     void sortRootNodes();
     void releaseDescriptorSetCache(gfx::Texture* texture, gfx::Sampler* sampler);
 

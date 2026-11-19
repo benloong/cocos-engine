@@ -1787,10 +1787,8 @@ void testRootRegistrationLifecycle() {
     parent->addChild(first); parent->addChild(second);
     const auto refs=first->getRefCount();
     batcher.addRootNode(second);batcher.addRootNode(first);batcher.addRootNode(first);batcher.addRootNode(nullptr);
-    check(batcher.getRootNodeCount()==2 && batcher.getRootNodeAt(0)==first,"root registration deduplicates and orders by sibling index");
+    check(batcher.getRootNodeCount()==2,"root registration deduplicates nodes and ignores null");
     check(first->getRefCount()==refs,"root registration links do not retain Nodes");
-    second->setSiblingIndex(0);
-    check(batcher.getRootNodeAt(0)==second && batcher.getRootNodeAt(2)==nullptr,"live root ordering follows sibling changes and checks bounds");
     batcher.removeRootNode(second);batcher.removeRootNode(second);
     check(batcher.getRootNodeCount()==1,"repeated root removal is safe");
     batcher.syncRootNodesToNative({second,nullptr,first,second});
@@ -1849,6 +1847,18 @@ void testRootRegistrationLifecycle() {
         check(c->getParent()==nullptr && c->getScene()==nullptr,"surviving root drops a destroyed Scene owner");
     }
     batcher.syncRootNodesToNative({});
+    // A nested root receives both walks. Its final opacity identifies which root ran last.
+    a->addChild(c);
+    b->setParent(a);
+    b->setActiveInHierarchy(true);
+    b->_setLocalOpacity(.5F);
+    batcher.addRootNode(b);
+    batcher.addRootNode(a);
+    batcher.fillBuffersAndMergeBatches();
+    checkNear(b->_getFinalOpacity(), .5F, "higher sibling index renders after its registered parent");
+    b->setSiblingIndex(0);
+    batcher.fillBuffersAndMergeBatches();
+    checkNear(b->_getFinalOpacity(), .125F, "equal sibling indices render in registration order after reordering");
     std::printf("root registration lifecycle: PASS\n");
 }
 

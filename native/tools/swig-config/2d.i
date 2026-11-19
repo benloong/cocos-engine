@@ -84,7 +84,6 @@
 
 %ignore cc::Batcher2d::addVertDirtyRenderer;
 %ignore cc::Batcher2d::getMeshBuffer;
-%ignore cc::Batcher2d::getRootNodeAt;
 %ignore cc::Batcher2d::getDevice;
 %ignore cc::Batcher2d::updateDescriptorSet;
 %ignore cc::Batcher2d::fillBuffersAndMergeBatches;
