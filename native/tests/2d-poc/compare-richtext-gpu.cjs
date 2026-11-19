@@ -13,6 +13,11 @@ if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!
 for(const value of [a,b]) {
     if (JSON.stringify(value.text.shadowLayout?.map(row=>row.name)) !== JSON.stringify(shadowNames)) throw Error('Incomplete Label shadow layouts');
     const coverage = value.text.hardShadowCoverage;
+    const centers = value.text.blurredShadowCenters;
+    if (!Array.isArray(centers) || centers.length !== 2 || centers.some(({sign, dx, dy}, i) =>
+        sign !== (i === 0 ? 1 : -1) || !Number.isFinite(dx) || !Number.isFinite(dy) || Math.abs(dx) > 1 || Math.abs(dy) > 1)) {
+        throw Error('Missing or misplaced blurred shadow: ' + value.backend);
+    }
     if (!Array.isArray(coverage) || coverage.length !== 2 || coverage.some(count => !Number.isInteger(count) || count <= 0)) {
         throw Error('Missing positive and negative hard shadow GPU checks: ' + value.backend);
     }

@@ -185,7 +185,9 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
         cacheBefore, cacheAfter: assetManager.assets.count, http };
 }
 
-async function checkHardShadow (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<number[]> {
+async function checkShadowOffsets (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<{
+    hardShadowCoverage: number[]; blurredShadowCenters: { sign: number; dx: number; dy: number }[];
+}> {
     const node = new Node('hard-shadow');
     parent.addChild(node);
     node.layer = parent.layer;
@@ -203,6 +205,7 @@ async function checkHardShadow (parent: Node, font: TTFFont, readPixels: () => U
     label.shadowColor = new Color(0, 255, 0, 255);
     label.shadowBlur = 0;
     const coverage: number[] = [];
+    const blurredShadowCenters: { sign: number; dx: number; dy: number }[] = [];
     for (const sign of [1, -1]) {
         const offset = new Vec2(16 * sign, 14 * sign);
         label.shadowOffset = offset;
@@ -222,10 +225,34 @@ async function checkHardShadow (parent: Node, font: TTFFont, readPixels: () => U
         }
         if (!covered || mismatches) throw new Error(`Hard shadow ${sign}: ${mismatches} differing pixels for ${covered} glyph pixels`);
         coverage.push(covered);
+        // With blur, compare centers instead of the sharp glyph boundary.
+        label.shadowBlur = 2;
+        node.setPosition(0, 0, 0);
+        await wait();
+        const blurred = readPixels();
+        node.setPosition(offset.x, offset.y, 0);
+        await wait();
+        const translated = readPixels();
+        const width = Math.sqrt(blurred.length / 4);
+        let mass = 0, shadowX = 0, shadowY = 0;
+        let ink = 0, glyphX = 0, glyphY = 0;
+        for (let i = 0; i < blurred.length; i += 4) {
+            const x = (i / 4) % width, y = Math.floor(i / 4 / width);
+            const green = Math.max(0, blurred[i + 1] - blurred[i]);
+            const white = Math.max(0, translated[i] - 1); // Label textures carry a 1/255 background.
+            mass += green; shadowX += green * x; shadowY += green * y;
+            ink += white; glyphX += white * x; glyphY += white * y;
+        }
+        const dx = shadowX / mass - glyphX / ink, dy = shadowY / mass - glyphY / ink;
+        if (!mass || !ink || Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+            throw new Error(`Blurred shadow ${sign}: center differs from translated glyph by (${dx}, ${dy}) pixels`);
+        }
+        blurredShadowCenters.push({ sign, dx, dy });
+        label.shadowBlur = 0;
     }
     node.destroy();
     await wait();
-    return coverage;
+    return { hardShadowCoverage: coverage, blurredShadowCenters };
 }
 
 async function captureShadowLayout (parent: Node, font: TTFFont, capture: (name: string) => Promise<void>): Promise<object[]> {
@@ -311,7 +338,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
-    const hardShadowCoverage = await checkHardShadow(parent, font, readPixels);
+    const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
     const prefab = await checkRichTextPrefab(parent, font);
     const cases = [
         { name: 'text-basic', value: 'Atlas 123' },
@@ -386,5 +413,5 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
-    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, hardShadowCoverage, shadowLayout };
+    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, hardShadowCoverage, blurredShadowCenters, shadowLayout };
 }

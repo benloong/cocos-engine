@@ -946,10 +946,13 @@ void Label::rebuildTexture() {
 
         if (_enableShadow) {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+            const float shadowY = -_shadowOffsetY;
             // GDI has no Canvas shadow. A hard shadow is one translated glyph.
             if (_shadowBlur == 0.F) {
-                fillWithColor(_shadowOffsetX, -_shadowOffsetY, _shadowColor);
+                fillWithColor(_shadowOffsetX, shadowY, _shadowColor);
             } else
+#else
+            const float shadowY = _shadowOffsetY;
 #endif
             {
                 const float blur = std::max(_shadowBlur, 1.0F);
@@ -957,7 +960,7 @@ void Label::rebuildTexture() {
                     const int px = (pass % 3) - 1;
                     const int py = (pass / 3) - 1;
                     fillWithColor(_shadowOffsetX + static_cast<float>(px) * blur,
-                                  _shadowOffsetY + static_cast<float>(py) * blur,
+                                  shadowY + static_cast<float>(py) * blur,
                                   _shadowColor);
                 }
             }
