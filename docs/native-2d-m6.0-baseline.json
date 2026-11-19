@@ -455,6 +455,7 @@
       "cocos/2d/utils/font-loader.ts",
       "cocos/2d/utils/html-text-parser.ts",
       "cocos/2d/utils/index.ts",
+      "cocos/2d/utils/label-canvas-pool.ts",
       "cocos/2d/utils/text-utils.ts"
     ],
     "boundaries": [
@@ -6000,6 +6001,16 @@
         ],
         "members": [
           {
+            "name": "_canvasPool",
+            "kind": "PropertyDeclaration",
+            "visibility": "public",
+            "static": true,
+            "type": null,
+            "parameters": [],
+            "default": "CanvasPool.getInstance()",
+            "decorators": []
+          },
+          {
             "name": "HorizontalAlign",
             "kind": "PropertyDeclaration",
             "visibility": "public",
@@ -7400,7 +7411,6 @@
       "comparison": {
         "disposition": "declarations only; inherited APIs and behavior require review",
         "notDeclaredInShell": [
-          "_canvasPool",
           "_onPreDestroy",
           "_updateBlendFunc",
           "assemblerData",
@@ -7454,7 +7464,8 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts",
+          "cocos/2d/utils/label-canvas-pool.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
@@ -7466,6 +7477,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -12186,7 +12198,8 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts",
+          "cocos/2d/utils/label-canvas-pool.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
@@ -12198,6 +12211,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -12625,7 +12639,8 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts",
+          "cocos/2d/utils/label-canvas-pool.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
@@ -12637,6 +12652,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -12851,7 +12867,8 @@
           "cocos/2d/renderer/static-vb-accessor.ts",
           "cocos/2d/renderer/stencil-manager.ts",
           "cocos/2d/renderer/vertex-format.ts",
-          "cocos/2d/utils/dynamic-atlas/atlas.ts"
+          "cocos/2d/utils/dynamic-atlas/atlas.ts",
+          "cocos/2d/utils/label-canvas-pool.ts"
         ],
         "boundaries": [
           "cocos/3d/assets/mesh.jsb.ts",
@@ -12863,6 +12880,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -15105,8 +15123,8 @@
     },
     {
       "file": "cocos/2d/components/label.jsb.ts",
-      "sha256": "8d90394858a275cd6bc92dfe3a9767411f5edf14fbb7012a5529ad9e4ae86bd8",
-      "printedCodeLines": 417,
+      "sha256": "b4884caa8aabce4876358c26effb2792c102860cd63d9cfeab29043f7345b70d",
+      "printedCodeLines": 419,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15116,261 +15134,262 @@
         "../framework/native-ui-materials",
         "../assets/font",
         "../assets/bitmap-font",
+        "../utils/label-canvas-pool",
         "../assets/letter-render-texture"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native?.getTTFSpriteFrame",
-          "line": 130
+          "line": 133
         },
         {
           "expression": "this._native.getLetterTexture",
-          "line": 141
-        },
-        {
-          "expression": "this._native.setLetterTexture",
           "line": 144
         },
         {
-          "expression": "this._native?.getTTFContentWidth",
-          "line": 181
+          "expression": "this._native.setLetterTexture",
+          "line": 147
         },
         {
-          "expression": "this._native?.setTTFContentWidth",
+          "expression": "this._native?.getTTFContentWidth",
           "line": 184
         },
         {
+          "expression": "this._native?.setTTFContentWidth",
+          "line": 187
+        },
+        {
           "expression": "this._native.setTTFContentWidth",
-          "line": 189
+          "line": 192
         },
         {
           "expression": "this._native.setNode",
-          "line": 190
-        },
-        {
-          "expression": "this._native.setUITransform",
           "line": 193
         },
         {
+          "expression": "this._native.setUITransform",
+          "line": 196
+        },
+        {
           "expression": "this._native.setPriority",
-          "line": 195
+          "line": 198
         },
         {
           "expression": "this._native?.updateRenderData",
-          "line": 201
+          "line": 204
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 205
+          "line": 208
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 210
+          "line": 213
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 217
-        },
-        {
-          "expression": "this._native.setNode",
-          "line": 218
-        },
-        {
-          "expression": "this._native.setFontAsset",
-          "line": 219
-        },
-        {
-          "expression": "this._native.destroyTTFSpriteFrame",
           "line": 220
         },
         {
+          "expression": "this._native.setNode",
+          "line": 221
+        },
+        {
+          "expression": "this._native.setFontAsset",
+          "line": 222
+        },
+        {
+          "expression": "this._native.destroyTTFSpriteFrame",
+          "line": 223
+        },
+        {
           "expression": "this._native?.setString",
-          "line": 235
+          "line": 238
         },
         {
           "expression": "this._native?.getActualFontSize",
-          "line": 252
+          "line": 255
         },
         {
           "expression": "this._native?.setActualFontSize",
-          "line": 253
-        },
-        {
-          "expression": "this._native?.setUnderlineHeight",
           "line": 256
         },
         {
+          "expression": "this._native?.setUnderlineHeight",
+          "line": 259
+        },
+        {
           "expression": "this._native?.setIsBold",
-          "line": 261
+          "line": 264
         },
         {
           "expression": "this._native?.setIsItalic",
-          "line": 267
+          "line": 270
         },
         {
           "expression": "this._native?.setIsUnderline",
-          "line": 273
+          "line": 276
         },
         {
           "expression": "this._native?.setLineHeight",
-          "line": 293
+          "line": 296
         },
         {
           "expression": "this._native?.setOverflow",
-          "line": 358
+          "line": 361
         },
         {
           "expression": "this._native?.setEnableWrapText",
-          "line": 370
+          "line": 373
         },
         {
           "expression": "this._native?.setHorizontalAlign",
-          "line": 383
+          "line": 386
         },
         {
           "expression": "this._native?.setVerticalAlign",
-          "line": 396
+          "line": 399
         },
         {
           "expression": "this._native?.setSpacingX",
-          "line": 405
+          "line": 408
         },
         {
           "expression": "this._native?.setCacheMode",
-          "line": 417
+          "line": 420
         },
         {
           "expression": "this._native?.setColorRGBA",
-          "line": 431
+          "line": 434
         },
         {
           "expression": "this._native.setMaterial",
-          "line": 441
+          "line": 444
         },
         {
           "expression": "this._native?.setEnableOutline",
-          "line": 449
+          "line": 452
         },
         {
           "expression": "this._native?.setOutlineColor",
-          "line": 455
+          "line": 458
         },
         {
           "expression": "this._native?.setOutlineWidth",
-          "line": 461
+          "line": 464
         },
         {
           "expression": "this._native?.setEnableShadow",
-          "line": 467
+          "line": 470
         },
         {
           "expression": "this._native?.setShadowColor",
-          "line": 473
+          "line": 476
         },
         {
           "expression": "this._native?.setShadowBlur",
-          "line": 479
+          "line": 482
         },
         {
           "expression": "this._native?.setShadowOffset",
-          "line": 485
+          "line": 488
         },
         {
           "expression": "this._native?.setFontAsset",
-          "line": 489
+          "line": 492
         },
         {
           "expression": "this._native?.setFont",
-          "line": 490
+          "line": 493
         },
         {
           "expression": "this._native?.setFontSize",
-          "line": 491
+          "line": 494
         },
         {
           "expression": "this._native?.setString",
-          "line": 495
-        },
-        {
-          "expression": "this._native?.setActualFontSize",
-          "line": 497
-        },
-        {
-          "expression": "this._native?.setIsBold",
           "line": 498
         },
         {
-          "expression": "this._native?.setIsItalic",
-          "line": 499
-        },
-        {
-          "expression": "this._native?.setIsUnderline",
+          "expression": "this._native?.setActualFontSize",
           "line": 500
         },
         {
-          "expression": "this._native?.setUnderlineHeight",
+          "expression": "this._native?.setIsBold",
           "line": 501
         },
         {
-          "expression": "this._native?.setLineHeight",
+          "expression": "this._native?.setIsItalic",
           "line": 502
         },
         {
-          "expression": "this._native?.setEnableWrapText",
+          "expression": "this._native?.setIsUnderline",
           "line": 503
         },
         {
-          "expression": "this._native?.setOverflow",
+          "expression": "this._native?.setUnderlineHeight",
           "line": 504
         },
         {
-          "expression": "this._native?.setHorizontalAlign",
+          "expression": "this._native?.setLineHeight",
           "line": 505
         },
         {
-          "expression": "this._native?.setVerticalAlign",
+          "expression": "this._native?.setEnableWrapText",
           "line": 506
         },
         {
-          "expression": "this._native?.setSpacingX",
+          "expression": "this._native?.setOverflow",
           "line": 507
         },
         {
-          "expression": "this._native?.setColorRGBA",
+          "expression": "this._native?.setHorizontalAlign",
           "line": 508
         },
         {
-          "expression": "this._native?.setEnableOutline",
+          "expression": "this._native?.setVerticalAlign",
           "line": 509
         },
         {
-          "expression": "this._native?.setOutlineColor",
+          "expression": "this._native?.setSpacingX",
           "line": 510
         },
         {
-          "expression": "this._native?.setOutlineWidth",
+          "expression": "this._native?.setColorRGBA",
           "line": 511
         },
         {
-          "expression": "this._native?.setEnableShadow",
+          "expression": "this._native?.setEnableOutline",
           "line": 512
         },
         {
-          "expression": "this._native?.setShadowColor",
+          "expression": "this._native?.setOutlineColor",
           "line": 513
         },
         {
-          "expression": "this._native?.setShadowBlur",
+          "expression": "this._native?.setOutlineWidth",
           "line": 514
         },
         {
-          "expression": "this._native?.setShadowOffset",
+          "expression": "this._native?.setEnableShadow",
           "line": 515
         },
         {
-          "expression": "this._native?.setCacheMode",
+          "expression": "this._native?.setShadowColor",
           "line": 516
+        },
+        {
+          "expression": "this._native?.setShadowBlur",
+          "line": 517
+        },
+        {
+          "expression": "this._native?.setShadowOffset",
+          "line": 518
+        },
+        {
+          "expression": "this._native?.setCacheMode",
+          "line": 519
         }
       ],
       "allocations": [],
@@ -17093,6 +17112,20 @@
         "./text-utils",
         "./dynamic-atlas/atlas-manager",
         "./dynamic-atlas/atlas"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
+      "file": "cocos/2d/utils/label-canvas-pool.ts",
+      "sha256": "b3a846d6d7e563960b6f259ef4fc3950095c7a7621c4f9ca1fe87bd92479d5ed",
+      "printedCodeLines": 44,
+      "runtimeImports": [
+        "internal:constants",
+        "../../core",
+        "../../core/global-exports"
       ],
       "frameMethods": [],
       "nativeCalls": [],

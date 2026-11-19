@@ -43,6 +43,7 @@ function require(id){
  if(id==='../../core')return {cclegacy,ccenum:()=>{},warnID:()=>{},Color,Vec2};
  if(id==='../assets/font')return {Font:jsb.Font};
  if(id==='../assets/bitmap-font')return {BitmapFont:jsb.BitmapFont};
+ if(id==='../utils/label-canvas-pool')return {CanvasPool:{getInstance:()=>({})}};
  if(id==='../assets/letter-render-texture')return {LetterRenderTexture:jsb.Texture2D};
  if(id==='../../core/math/vec2')return {Vec2};
  if(id==='../../core/math/color')return {Color};

@@ -49,6 +49,7 @@
 - [x] Sprite、Label 和 Graphics 的材质数组原地编辑通过 Windows Debug、Release 和 Web 真实场景验证。保留数组引用后覆盖、截短、push、splice、delete，以及写空实例槽，均核对共享槽和实际使用材质。JSB 探针另查原生槽引用，定向测试覆盖加载前修改、销毁后写入。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 - [x] Sprite、Label 和 Graphics 的实际 shader 重编译回调。场景为每个组件的第 1 号实例槽切换 `USE_TEXTURE`，检查材质 hash 变化和恢复、两次有效切换的 owner 回调参数，以及相同宏重复设置时的通知次数。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 - [x] Sprite、Label 和 Graphics 的材质生命周期。传回同一共享材质保留实例；强制刷新和替换共享材质立即清空旧实例的 passes。组件持有共享材质期间显式销毁，核对两次 destroy 的返回值、帧内严格与普通有效性、帧末失效及槽位引用身份。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
+- [x] Label._canvasPool 显式兼容入口。Web 和 native 使用同一画布池实现，借出两个独立画布、测量文字、归还后获取相同上下文及字体状态在 Web、Windows Debug/Release 均通过，三端 85 张图像逐字节一致。Windows 部署 cc.js 哈希为 `45073de1a593f50274e1a5dd88e8103681b97a42b0afba6821106fcc8864594e`，画布池模块贡献 990 字节，Web Label assembler 未进入部署包。完整串行验收与 23 项定向 Jest 通过。[GPU 快照与配置](./native-2d-m6-windows-web-gpu-results.json)
 - [ ] 完整组件 parity：Label 其余公开/兼容接口，以及真实场景/Prefab 和资源管线继续验收。radial CPU 几何通过不替代 GPU 像素验收。
 - [x] Label 运行时字体切换：从位图字体切回系统字体会清空字体资产；再次关闭系统字体、向空槽写入 null 均保留空槽。显式重新指定 BitmapFont 后立即读取到单个 A 字形宽度 16，且混合遮罩场景中的绿色字形正常绘制。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 - [x] Label.contentWidth：实际 JSB 验证初值为 0，加载前写入的小数保留精度。Windows Debug、Release 和 Web 的 TTF 在四种 overflow 下发布各自的节点宽度，强制更新覆盖手动赋值；干净帧刷新、BMFont 和 CHAR 更新保留手动值。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。

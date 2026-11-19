@@ -33,6 +33,7 @@ import { Font } from '../assets/font';
 import { BitmapFont } from '../assets/bitmap-font';
 import type { FontAtlas } from '../assets/bitmap-font';
 import type { SpriteFrame } from '../assets/sprite-frame';
+import { CanvasPool } from '../utils/label-canvas-pool';
 import { LetterRenderTexture } from '../assets/letter-render-texture';
 
 declare const n2d: any;
@@ -74,6 +75,8 @@ export enum CacheMode {
 @menu('2D/Label')
 @requireComponent(UITransform)
 export class Label extends UIRenderer {
+    /** @deprecated Legacy canvas access for explicit callers. */
+    public static _canvasPool = CanvasPool.getInstance();
     public static HorizontalAlign = HorizontalTextAlignment;
     public static VerticalAlign = VerticalTextAlignment;
     public static Overflow = Overflow;

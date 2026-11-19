@@ -330,6 +330,19 @@ export class M6GraphicsGpuProbe extends Component {
                 }
             }
         }
+        const pool = Label._canvasPool;
+        const borrowed = pool.get();
+        if (!borrowed.context || borrowed.canvas.getContext('2d') !== borrowed.context) throw new Error('Invalid Label canvas context');
+        borrowed.context.font = '18px Arial';
+        if (!(borrowed.context.measureText('M6').width > 0)) throw new Error('Label canvas could not measure text');
+        const previousFont = borrowed.context.font;
+        const other = pool.get();
+        if (other.canvas === borrowed.canvas) throw new Error('Label canvas issued to two callers');
+        pool.put(other);
+        pool.put(borrowed);
+        const reused = pool.get();
+        if (reused !== borrowed || reused.context?.font !== previousFont) throw new Error('Label canvas lost its identity or state');
+        pool.put(reused);
         label.contentWidth = -17.125;
         label.updateRenderData();
         if (label.contentWidth !== -17.125) throw new Error('Clean Label refresh overwrote contentWidth');
