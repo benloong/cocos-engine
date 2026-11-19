@@ -46,14 +46,21 @@ if (labelStages) {
     fs.copyFileSync(path.join(__dirname, 'm6-ttf-timer.h'), path.join(source, 'native/cocos', timer));
     const labelSource = execFileSync('git', ['-C', source, 'show', 'HEAD:' + labelFile], { encoding: 'utf8' });
     const drawContext = 'auto &context = measurement.drawingContext(textureWidth, textureHeight);';
+    const hasRasterReuse = labelSource.includes('uploadRaster(cache->pixels);');
     const cuts = [
         ['Layout', labelSource.includes(drawContext) ? drawContext : 'CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));'],
         ['CanvasSetup', 'const Color &edgeColor ='],
-        ['Background', 'float textTop ='],
+        ['Background', hasRasterReuse ? 'for (size_t i = 0; i < lines.size(); ++i)' : 'float textTop ='],
         ['Draw', 'cc::Data pixels;'],
-        ['Readback', '_texture = _ttfTexture;'],
-        ['TextureSetup', 'const uint8_t *bytes = pixels.getBytes();'],
-        ['Diagnostics', '_texture->uploadData(bytes);'],
+        ...(hasRasterReuse ? [
+            ['Layout', 'uploadRaster(cache->pixels);'],
+            ['Readback', 'uploadRaster(pixels);'],
+            ['TextureSetup', '_texture->uploadData(data.getBytes());'],
+        ] : [
+            ['Readback', '_texture = _ttfTexture;'],
+            ['TextureSetup', 'const uint8_t *bytes = pixels.getBytes();'],
+            ['Diagnostics', '_texture->uploadData(bytes);'],
+        ]),
         ['Upload', '_lastTextureWidth = static_cast<float>(textureWidth);'],
     ];
     instrument(labelFile, [

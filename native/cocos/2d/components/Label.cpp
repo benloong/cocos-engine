@@ -41,6 +41,7 @@
 #include "core/scene-graph/Node.h"
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+#include "application/ApplicationManager.h"
 #include "bindings/manual/jsb_platform.h"
 #include "platform/interfaces/modules/canvas/CanvasFont.h"
 #endif
@@ -50,8 +51,27 @@ namespace cc {
 namespace {
 
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
-// Only the idle 1x1 system-font context is shared. Nested measurements own
-// separate contexts and file-backed fonts release their handles immediately.
+// Each entry belongs to one system-font DC. Nested measurements own separate
+// contexts and cannot replace the pixels during a texture upload.
+struct LineRaster {
+    struct Placement {
+        uint32_t frame;
+        uint64_t fontRevision;
+        std::array<uint32_t, 2> size;
+        std::array<float, 2> origin;
+        std::array<uint8_t, 3> rgb;
+
+        bool operator==(const Placement &other) const {
+            return frame == other.frame && fontRevision == other.fontRevision &&
+                   size == other.size && origin == other.origin && rgb == other.rgb;
+        }
+    };
+
+    Placement placement{};
+    std::string text;
+    Data pixels;
+};
+
 class TextMeasurement {
 public:
     explicit TextMeasurement(const std::string &font) : _slot(std::move(idle())) {
@@ -59,6 +79,7 @@ public:
             _slot.font = font;
             _slot.family = detail::parseCanvasFont(font).family;
             _slot.context.reset();
+            _slot.raster = {};
         }
         _reusable = !getFontAssetFamilyNameMap().count(_slot.family) && !getFontFamilyNameMap().count(_slot.family);
         if (!_reusable || !_slot.context) {
@@ -76,6 +97,7 @@ public:
         }
     }
     CanvasRenderingContext2D &context() { return *_slot.context; }
+    LineRaster *systemRaster() { return _reusable ? &_slot.raster : nullptr; }
     CanvasRenderingContext2D &drawingContext(uint32_t width, uint32_t height) {
         _usedForDrawing = true;
         _slot.context->resetBuffer(static_cast<float>(width), static_cast<float>(height));
@@ -87,6 +109,7 @@ private:
         std::unique_ptr<CanvasRenderingContext2D> context;
         std::string font;
         std::string family;
+        LineRaster raster;
     };
     static Slot &idle() {
         static thread_local Slot slot;
@@ -817,7 +840,62 @@ void Label::rebuildTexture() {
     const uint32_t textureWidth = std::max(static_cast<uint32_t>(canvasWidth), 1U);
     const uint32_t textureHeight = std::max(static_cast<uint32_t>(canvasHeight), 1U);
 
+    float textTop = static_cast<float>(rasterFontSize * (1.0 - 0.26 / 2.0));
+    if (_vAlign != 0) {
+        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + rasterFontSize - canvasHeight;
+        if (_vAlign == 2) blank += static_cast<float>(rasterFontSize * 0.26 / 2.0);
+        textTop -= _vAlign == 1 ? blank / 2.F : blank;
+    }
+    textTop += outlineMargin;
+
+    const auto lineX = [&](float lineWidth) {
+        float x = outlineMargin;
+        if (_hAlign == 1) {
+            x = (canvasWidth - static_cast<float>(styleExtent[0]) - lineWidth) * 0.5F + outlineMargin;
+        } else if (_hAlign == 2) {
+            x = canvasWidth - lineWidth - static_cast<float>(styleExtent[0]) + outlineMargin;
+        }
+        return x;
+    };
+    const auto uploadRaster = [&](const Data &data) {
+        _texture = _ttfTexture;
+        _frame = _ttfFrame;
+        ensureRasterTexture(_texture, textureWidth, textureHeight);
+        _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
+        _texture->uploadData(data.getBytes());
+
+        _lastTextureWidth = static_cast<float>(textureWidth);
+        _lastTextureHeight = static_cast<float>(textureHeight);
+        _lastContentWidth = contentWidth;
+        _ttfContentWidth = _overflow == 0 ? contentWidth : box.x;
+        _lastContentHeight = contentHeight;
+        _lastLineCount = static_cast<int32_t>(lines.size());
+        _frame->setTexture(_texture);
+        _frame->setRect(0.0F, 0.0F, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
+        _frame->setOriginalSize(static_cast<float>(textureWidth), static_cast<float>(textureHeight));
+        _frame->setOffset(0.0F, 0.0F);
+        _frame->setRotated(false);
+
+        _renderer.setFrame(_frame);
+    };
+
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    LineRaster *cache = nullptr;
+    LineRaster::Placement placement{};
+    if (!_fontAsset && !_enableOutline && !_enableShadow && !_isUnderline && lines.size() == 1 &&
+        _string.size() <= 256 && static_cast<uint64_t>(textureWidth) * textureHeight <= 16384) {
+        const auto app = CC_CURRENT_APPLICATION();
+        const auto engine = app ? app->getEngine() : nullptr;
+        if (engine) cache = measurement.systemRaster();
+        if (cache) {
+            placement = {engine->getTotalFrames(), getFontAliasRevision(), {textureWidth, textureHeight},
+                         {lineX(lineWidths.front()), textTop}, {_color.r, _color.g, _color.b}};
+            if (!cache->pixels.isNull() && cache->placement == placement && cache->text == lines.front()) {
+                uploadRaster(cache->pixels);
+                return;
+            }
+        }
+    }
     auto &context = measurement.drawingContext(textureWidth, textureHeight);
 #else
     CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));
@@ -847,23 +925,10 @@ void Label::rebuildTexture() {
         context.setShadowOffsetY(_shadowOffsetY);
     }
 
-    float textTop = static_cast<float>(rasterFontSize * (1.0 - 0.26 / 2.0));
-    if (_vAlign != 0) {
-        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + rasterFontSize - canvasHeight;
-        if (_vAlign == 2) blank += static_cast<float>(rasterFontSize * 0.26 / 2.0);
-        textTop -= _vAlign == 1 ? blank / 2.F : blank;
-    }
-    textTop += outlineMargin;
-
     for (size_t i = 0; i < lines.size(); ++i) {
         const std::string &line = lines[i];
         const float lineWidth = lineWidths[i];
-        float x = outlineMargin;
-        if (_hAlign == 1) {
-            x = (canvasWidth - static_cast<float>(styleExtent[0]) - lineWidth) * 0.5F + outlineMargin;
-        } else if (_hAlign == 2) {
-            x = canvasWidth - lineWidth - static_cast<float>(styleExtent[0]) + outlineMargin;
-        }
+        const float x = lineX(lineWidth);
         const float lineY = textTop + static_cast<float>(i) * lineHeight;
         auto fillWithColor = [&](float dx, float dy, const Color &color) {
             char rgba[64] = {0};
@@ -925,26 +990,14 @@ void Label::rebuildTexture() {
     });
     context.fetchData();
 
-    _texture = _ttfTexture;
-    _frame = _ttfFrame;
-    ensureRasterTexture(_texture, textureWidth, textureHeight);
-    _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
-    const uint8_t *bytes = pixels.getBytes();
-    _texture->uploadData(bytes);
-
-    _lastTextureWidth = static_cast<float>(textureWidth);
-    _lastTextureHeight = static_cast<float>(textureHeight);
-    _lastContentWidth = contentWidth;
-    _ttfContentWidth = _overflow == 0 ? contentWidth : box.x;
-    _lastContentHeight = contentHeight;
-    _lastLineCount = static_cast<int32_t>(lines.size());
-    _frame->setTexture(_texture);
-    _frame->setRect(0.0F, 0.0F, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
-    _frame->setOriginalSize(static_cast<float>(textureWidth), static_cast<float>(textureHeight));
-    _frame->setOffset(0.0F, 0.0F);
-    _frame->setRotated(false);
-
-    _renderer.setFrame(_frame);
+    uploadRaster(pixels);
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    if (cache && !pixels.isNull()) {
+        cache->placement = placement;
+        cache->text = lines[0];
+        cache->pixels = std::move(pixels);
+    }
+#endif
 }
 
 } // namespace cc

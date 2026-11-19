@@ -1,10 +1,17 @@
-param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory, [switch]$TextWidthProbe, [ValidatePattern('^[0-9a-f]{10}$')][string]$ProjectRevision)
+param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory, [switch]$TextWidthProbe, [ValidatePattern('^[0-9a-f]{10}$')][string]$ProjectRevision, [switch]$LabelRasterProbe)
 $ErrorActionPreference = 'Stop'
 $dir = Join-Path $PSScriptRoot 'build'
 $key = if ($Target -eq 'web') { 'after' } else { $Target }
 $projectName = if ($ProjectRevision) { "perf-project-$key-$ProjectRevision" } else { "perf-project-$key" }
 $project = Join-Path $dir "$projectName/build"
 $fixture = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'm6-perf-workloads.js'))
+if ($LabelRasterProbe) {
+    if ($Target -eq 'web') { throw 'The Label raster probe uses Windows texture readback' }
+    $marker = 'if (textWidthProbe) {'
+    if ($fixture.Split($marker, [StringSplitOptions]::None).Count -ne 2) { throw 'Missing post-workload probe entry' }
+    $probe = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'test-label-line-raster.js'))
+    $fixture = $probe + [Environment]::NewLine + $fixture.Replace($marker, 'result.lineRasterVariants = await checkLabelLineRaster(cc, canvas, nextFrame);' + [Environment]::NewLine + $marker)
+}
 if ($Target -eq 'web') {
     $file = Join-Path $project 'web-mobile/index.js'
     $original = Join-Path $dir 'graphics-gpu-project/build/web-mobile/index.js'
@@ -37,6 +44,7 @@ try {
         if ((Test-Path -LiteralPath $result) -and (Get-Item -LiteralPath $result).LastWriteTimeUtc -gt $since) {
             $data = Get-Content -Raw -LiteralPath $result | ConvertFrom-Json
             if ($data.cases.Count -ne 12 -or @($data.cases | Where-Object {$_.samples.Count -ne 120}).Count) { throw 'Incomplete benchmark' }
+            if ($LabelRasterProbe -and $data.lineRasterVariants -lt 1) { throw 'Missing Label raster comparisons' }
             Write-Output "M6_PERF_READY $key"
             return
         }
