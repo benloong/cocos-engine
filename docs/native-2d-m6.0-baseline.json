@@ -15928,8 +15928,8 @@
     },
     {
       "file": "cocos/2d/framework/native-ui-materials.ts",
-      "sha256": "001ee1a7b63e1203e90033e36229f35dea2620606c8f2070c79893058c56098e",
-      "printedCodeLines": 134,
+      "sha256": "9b0c0f3c5d51d013b773f893b3eed0710b93bc0c013633f5431dbf70589c7bdf",
+      "printedCodeLines": 143,
       "runtimeImports": [
         "internal:constants",
         "../../core"
@@ -15938,72 +15938,68 @@
       "nativeCalls": [
         {
           "expression": "owner._native?.resizeMaterials",
-          "line": 52
+          "line": 45
         },
         {
           "expression": "owner._native.getSharedMaterialCount",
-          "line": 58
+          "line": 51
         },
         {
           "expression": "owner._native.getRenderMaterial",
-          "line": 60
+          "line": 53
         },
         {
           "expression": "owner._native.getSharedMaterial",
-          "line": 64
+          "line": 63
         },
         {
           "expression": "owner._native.setMaterial",
-          "line": 70
-        },
-        {
-          "expression": "owner._native.setSharedMaterial",
           "line": 73
         },
         {
+          "expression": "owner._native.setSharedMaterial",
+          "line": 76
+        },
+        {
           "expression": "owner._native.setMaterialInstance",
-          "line": 74
+          "line": 77
+        },
+        {
+          "expression": "owner._native.resizeMaterials",
+          "line": 84
         },
         {
           "expression": "this._native.getSharedMaterial",
-          "line": 85
+          "line": 97
         },
         {
           "expression": "this._native.setSharedMaterial",
-          "line": 89
+          "line": 101
         },
         {
           "expression": "this._native.getMaterialInstance",
-          "line": 94
+          "line": 106
         },
         {
           "expression": "this._native.setMaterialInstance",
-          "line": 105
+          "line": 117
         },
         {
           "expression": "this._native.getRenderMaterial",
-          "line": 109
-        },
-        {
-          "expression": "this._native?.resizeMaterials",
-          "line": 124
-        },
-        {
-          "expression": "this._native?.resizeMaterials",
-          "line": 140
+          "line": 121
         }
       ],
       "allocations": [],
       "loops": [
-        51,
-        59,
-        64,
-        71,
-        122,
-        123,
-        132,
-        138,
-        139
+        42,
+        52,
+        62,
+        74,
+        134,
+        135,
+        143,
+        149,
+        150
       ]
     },
     {

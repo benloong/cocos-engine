@@ -37,18 +37,11 @@ type Owner = UIRenderer & {
     _customMaterial: Material | null;
 };
 
-function cacheInstance (owner: Owner, index: number, instance: MaterialInstance | null): void {
-    const previous = owner._materialInstances[index] as any;
-    if (previous && previous !== instance && previous._owner === owner) previous._owner = null;
-    owner._materialInstances[index] = instance;
-    if (instance && (!(instance as any)._owner || (instance as any)._owner === owner)) {
-        Object.assign(instance, { _owner: owner, _subModelIdx: index });
-    }
-}
-
 export function releaseNativeMaterialSlots (component: UIRenderer): void {
     const owner = component as Owner;
-    for (let i = 0; i < owner._materialInstances.length; i++) cacheInstance(owner, i, null);
+    for (const instance of owner._materialInstances as any[]) {
+        if (instance && instance._owner === owner) instance._owner = null;
+    }
     owner._native?.resizeMaterials(0);
     owner._materials.length = owner._materialInstances.length = 0;
 }
@@ -58,10 +51,20 @@ export function syncNativeMaterialSlots (component: UIRenderer): void {
     const count = owner._native.getSharedMaterialCount();
     for (let i = 0; i < Math.max(count, owner._materialInstances.length); i++) {
         const rendered = i < count ? owner._native.getRenderMaterial(i) : null;
-        cacheInstance(owner, i, rendered?.parent ? rendered : null);
+        const current = rendered?.parent ? rendered : null;
+        const previous = owner._materialInstances[i] as any;
+        if (previous && previous !== current && previous._owner === owner && previous._subModelIdx === i) {
+            previous._owner = null;
+        }
+        owner._materialInstances[i] = current;
     }
     owner._materialInstances.length = owner._materials.length = count;
-    for (let i = 0; i < count; i++) owner._materials[i] = owner._native.getSharedMaterial(i);
+    for (let i = 0; i < count; i++) {
+        owner._materials[i] = owner._native.getSharedMaterial(i);
+        // An instance may occupy multiple slots. Retain its callback slot until that slot is replaced.
+        const instance = owner._materialInstances[i] as any;
+        if (instance && !instance._owner) Object.assign(instance, { _owner: owner, _subModelIdx: i });
+    }
 }
 
 export function bindNativeMaterialSlots (component: UIRenderer): void {
@@ -74,6 +77,15 @@ export function bindNativeMaterialSlots (component: UIRenderer): void {
         if (instances[i]) owner._native.setMaterialInstance(instances[i], i);
     }
     syncNativeMaterialSlots(component);
+}
+
+function resizeMaterialSlots (owner: Owner, size: number): void {
+    if (owner._native) {
+        owner._native.resizeMaterials(size);
+        syncNativeMaterialSlots(owner);
+    } else {
+        owner._materials.length = owner._materialInstances.length = size;
+    }
 }
 
 /** Install the same explicit API bridges on native-backed component shells. */
@@ -121,8 +133,7 @@ export function patchNativeMaterialAPIs (Component: typeof UIRenderer): void {
                 if (this._native) syncNativeMaterialSlots(this);
                 for (let i = 0; i < shared.length; i++) this.setSharedMaterial(shared[i], i);
                 for (let i = shared.length; i < this._materials.length; i++) this.setSharedMaterial(null, i);
-                this._native?.resizeMaterials(shared.length);
-                this._materials.length = this._materialInstances.length = shared.length;
+                resizeMaterialSlots(this, shared.length);
             },
         },
         materials: {
@@ -137,8 +148,7 @@ export function patchNativeMaterialAPIs (Component: typeof UIRenderer): void {
                 if (this._native) syncNativeMaterialSlots(this);
                 for (let i = instances.length; i < this._materials.length; i++) this.setMaterialInstance(null, i);
                 for (let i = 0; i < instances.length; i++) this.setMaterialInstance(instances[i], i);
-                this._native?.resizeMaterials(instances.length);
-                this._materials.length = this._materialInstances.length = instances.length;
+                resizeMaterialSlots(this, instances.length);
             },
         },
     });

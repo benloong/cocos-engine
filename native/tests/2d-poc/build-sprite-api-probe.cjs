@@ -49,7 +49,6 @@ function require(id){
  throw new Error(id);
 }
 jsb.Material.prototype._ctor=function(){};
-jsb.MaterialInstance.prototype._registerListeners=function(){};
 const materialExports={}; ((exports)=>{ ${materialShell} })(materialExports);
 const materialAPIExports={}; ((exports)=>{ ${materialAPIs} })(materialAPIExports);
 const exports={};
@@ -126,7 +125,22 @@ label.sharedMaterials=[custom,normal];
 const labelInstances=label.materials;
 check(labelInstances.length===2&&labelInstances[0].parent===custom&&labelInstances[1].owner===label,'Label actual shell native material slots');
 const labelOld=labelInstances[1];
+const callbackSlots=[];
+label._onRebuildPSO=(slot,material)=>{
+ check(material===labelOld&&label.getRenderMaterial(slot)===material,'callback targets a live Label draw material');
+ callbackSlots.push(slot);
+};
+label.setMaterialInstance(labelOld,0);
+labelOld.onPassStateChange(true);
+labelOld.onPassStateChange(false);
+label.setSharedMaterial(null,1);
+labelOld.onPassStateChange(false);
+label.setMaterialInstance(labelOld,1);
+label.setSharedMaterial(null,0);
+labelOld.onPassStateChange(false);
 label.sharedMaterials=[null];
+labelOld.onPassStateChange(false);
+check(callbackSlots.join(',')==='1,0,1','callback preserves its original slot, moves on replacement, and detaches on removal');
 check(labelOld.owner===null&&label.getRenderMaterial(0)===null,'Label truncation releases owner and explicit null');
 label.customMaterial=custom;
 const labelCurrent=label.getMaterialInstance(0);

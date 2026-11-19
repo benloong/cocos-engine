@@ -34,6 +34,7 @@
 #include <vector>
 
 #include "base/Log.h"
+#include "bindings/manual/jsb_scene_manual.h"
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
 #include "scene/DrawBatch2D.h"
@@ -1691,6 +1692,7 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
     // Match production: scene MaterialInstance derives from assets Material.
     check(register_all_assets(globalObject), "register_all_assets");
     check(register_all_scene(globalObject), "register_all_scene");
+    check(register_all_scene_manual(globalObject), "register_all_scene_manual");
     check(register_all_native2d(globalObject), "register_all_native2d");
     check(register_platform_bindings(globalObject), "register_platform_bindings");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS

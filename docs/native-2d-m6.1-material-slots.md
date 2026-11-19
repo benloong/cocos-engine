@@ -29,3 +29,9 @@
 - 常规 TypeScript 配置显式加入 Sprite/Label JSB 模块后无诊断。
 
 V8 探针隔离装饰器和 JS 基类，Jest 使用实际 Component/UIRenderer 补 API/元数据覆盖。以上不替代真实资产加载、GPU 像素、线程或泄漏工具验证。
+
+### Windows 材质状态回调与槽位生命周期
+
+Windows Debug/Release 探针注册生产版 scene 手工绑定，在同一 Label 的两个槽中引用同一个原生 MaterialInstance，再替换和截短槽。调用原生 `onPassStateChange(false)`，经 JSB 送达组件的槽号依次为 1、0、1，每次回调参数与该槽的 `getRenderMaterial` 相同。静默更新和移除最后一个引用后的通知均未触发组件回调。此前截短数组会留下已失效的 owner，回调可能指向已删除的槽。
+
+该探针从 pass 状态变化入口触发通知。实际 shader 重编译与 GPU 出图仍需场景验证。
