@@ -28,9 +28,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci --ignore-scripts
-    - name: Verify generated native 2D metadata
+    - name: Verify native 2D metadata, shell budgets and runtime imports
       run: |
         node scripts/generate-native-2d-decorators.cjs --check
+        node native/tests/2d-poc/check-thin-shell.js
         node --test tests/scripts/native-2d-decorators.test.cjs tests/scripts/native-2d-audit.test.cjs tests/scripts/native-2d-assembler.test.cjs
         node native/tests/2d-poc/audit-m6.cjs --check
     - run: node scripts/spread-pal.cjs

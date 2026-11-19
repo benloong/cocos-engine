@@ -85,6 +85,11 @@ function main () {
 
     const { build, shellHotPaths } = require('./audit-m6.cjs');
     const report = build();
+    const { shellSizes } = require('./measure-shell-lines.cjs');
+    for (const { name, file, counted, limit } of shellSizes(report)) {
+        check(counted <= limit, file + ' has ' + counted + ' lines, limit ' + limit);
+        console.log(name + ': ' + counted + '/' + limit + ' lines');
+    }
     const hotPaths = shellHotPaths(report);
     check(!hotPaths.length, hotPaths.map(({ component, file }) => component + ' imports ' + file).join('\n'));
     console.log('Checked transitive 2D runtime imports for ' + report.classes.length + ' classes.');

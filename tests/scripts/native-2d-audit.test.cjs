@@ -77,3 +77,23 @@ test('native shell closures reject Web layout and tessellation while allowing th
     assert.equal(isWebAssembler('C:/engine/' + paths[2]), true);
     assert.equal(isWebAssembler('C:/engine/' + paths[6]), false);
 });
+
+test('shell budgets count physical lines and keep logic mixed with exclusions', () => {
+    const { measure } = require('../../native/tests/2d-poc/measure-shell-lines.cjs');
+    const lines = [
+        '/* Copyright (c) example */', '', "import type { X } from './x';",
+        "import { type X, Y } from './mixed';", 'interface A {', '    x: number;', '}',
+        'type B = number; const live = 1;', 'class Shell {',
+        '    /** @deprecated Use value. */', '    get old () { return this.value; }',
+        '    /** @deprecated Has validation. */', '    set checked (x) { if (x) this.update(x); }',
+        '    /** @deprecated */ @decorator get decorated () { return this.value; }',
+        '    /** @deprecated */ alias (x) { return this.update(x); }',
+        '    /** @deprecated */ aliasWithDefault (x = sideEffect()) { return this.update(x); }',
+        '    /** @deprecated */ set oldValue (x) { this.value = x; }',
+        '    /** @deprecated */ [key()] (x) { return this.update(x); }',
+        '}', '// keep ordinary comments',
+    ];
+    const expected = { physical: 20, excluded: 9, counted: 11 };
+    assert.deepEqual(measure('shell.ts', lines.join('\n')), expected);
+    assert.deepEqual(measure('shell.ts', lines.join('\r\n') + '\r\n'), expected);
+});
