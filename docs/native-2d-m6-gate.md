@@ -35,6 +35,6 @@
 | M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
 | M6.5 | 性能 KPI | 混合变更帧 CPU 较迁移前下降 4.0%，仍差 1.9780 ms/帧 |
-| M6.5 | CI | 全部迁移类、间接热路径与组件/场景回归的 CI 证据 |
+| M6.5 | CI | [PR 工作流](../.github/workflows/native-ts-build.yml)已配置 Windows Debug/Release 的六组真实 JSB 检查、场景记录和 SIMPLE Sprite 对 Web 的几何对照。仍缺远程运行记录、完整应用场景矩阵及其余间接热路径的证据 |
 | M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md) 和 [RenderRoot2D](./native-2d-m6-render-root-rollback.md) 回退与恢复。其余模块与真实旧项目的场景、资产、材质及性能仍待验证 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

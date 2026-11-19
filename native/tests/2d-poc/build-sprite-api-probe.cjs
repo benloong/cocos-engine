@@ -35,6 +35,7 @@ class Vec2 { constructor(x=0,y=0){this.x=x;this.y=y;} set(value){this.x=value.x;
 class Color {constructor(r=255,g=255,b=255,a=255){this.r=r;this.g=g;this.b=b;this.a=a;} equals(v){return this.r===v.r&&this.g===v.g&&this.b===v.b&&this.a===v.a;} set(v){Object.assign(this,v);} }
 Color.BLACK=new Color(0,0,0,255);Color.WHITE=new Color();Color.prototype.clone=function(){return new Color(this.r,this.g,this.b,this.a);};
 class UIRenderer {
+ get color(){return this._color;}
  constructor(){this.isValid=true;this._materials=[];this._materialInstances=[];this._color=new Color();this._customMaterial=null;this._srcBlendFactor=2;this._dstBlendFactor=4;this.priority=0;this.enabledInHierarchy=true;}
 }
 function require(id){
