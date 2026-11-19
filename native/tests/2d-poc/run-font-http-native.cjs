@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const font = fs.readFileSync(path.join(__dirname, '../../../tests/fixtures/Thonburi.ttf'));
 const asan = process.argv.includes('--asan');
 const release = process.argv.includes('--release');
+const exeIndex = process.argv.indexOf('--exe');
 if (asan && release) throw new Error('Select one native configuration');
 const requests = { font: 0, missing: 0 };
 const server = http.createServer((request, response) => {
@@ -25,6 +26,10 @@ const server = http.createServer((request, response) => {
             '-Mode', 'richtext', '-FontHttpOrigin', `http://127.0.0.1:${server.address().port}`];
         if (asan) args.push('-Exe', path.join(__dirname, 'build/gpu-win-asan/native-2d-m6-gpu.exe'));
         if (release) args.push('-Exe', path.join(__dirname, 'build/gpu-win-release/native-2d-m6-gpu.exe'));
+        if (exeIndex !== -1) {
+            if (asan || release) throw new Error('Select a configuration or an explicit executable');
+            args.push('-Exe', path.resolve(process.argv[exeIndex + 1]));
+        }
         const bypass = [process.env.NO_PROXY || process.env.no_proxy, '127.0.0.1', 'localhost'].filter(Boolean).join(',');
         const child = spawn('powershell.exe', args, { windowsHide: true, stdio: 'inherit',
             env: { ...process.env, NO_PROXY: bypass, no_proxy: bypass } });

@@ -1,5 +1,5 @@
 // Installed in the generated app entry before application.init, on both backends.
-function installM6Perf (cc, output) {
+function installM6Perf (cc, output, textWidthProbe = false) {
     const { director, DirectorEvent: E, Node, UITransform, Texture2D, SpriteFrame, Sprite, Mask, RichText, Label } = cc;
     const native = cc.sys.isNative;
     const nextFrame = () => new Promise(resolve => director.once(E.END_FRAME, resolve));
@@ -88,6 +88,35 @@ function installM6Perf (cc, output) {
         }
         const result = { backend: native ? 'native' : 'web', captures: [], cases, os: cc.sys.os,
             renderer: director.root.device.renderer, vendor: director.root.device.vendor };
+        if (textWidthProbe) {
+            const node = make(canvas, 0);
+            const label = node.addComponent(Label);
+            label.fontFamily = 'Arial';
+            label.fontSize = 20;
+            label.lineHeight = 25;
+            result.textWidth = [];
+            for (const alignment of [0, 1, 2]) {
+                label.horizontalAlign = alignment;
+                label.verticalAlign = alignment;
+                for (const text of ['AB', 'Wide line\ni', 'Café 文']) {
+                    label.overflow = Label.Overflow.CLAMP;
+                    node.getComponent(UITransform).setContentSize(160, 80);
+                    label.string = text;
+                    label.updateRenderData(true);
+                    const tex = label.ttfSpriteFrame.texture;
+                    const region = new cc.gfx.BufferTextureCopy();
+                    region.texExtent.width = tex.width;
+                    region.texExtent.height = tex.height;
+                    const bytes = new Uint8Array(tex.width * tex.height * 4);
+                    director.root.device.copyTextureToBuffers(tex.getGFXTexture(), [bytes], [region]);
+                    if (!bytes.some((value, i) => i % 4 === 3 && value > 128)) throw new Error('Empty system-font raster');
+                    const index = result.textWidth.length;
+                    if (!cc.native.fileUtils.writeDataToFile(bytes.buffer, output + '-' + index + '.rgba')) throw new Error('Could not save system-font raster');
+                    result.textWidth.push({ alignment, text, width: tex.width, height: tex.height });
+                }
+            }
+            node.destroy();
+        }
         if (native) {
             if (!cc.native.fileUtils.writeStringToFile(JSON.stringify(result), output)) throw new Error('Could not save benchmark');
         } else {

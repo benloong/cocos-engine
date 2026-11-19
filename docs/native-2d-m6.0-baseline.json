@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "4a94948350a3fe4133e837565cbb227157f1ec837d2998b578cee8fadf41f7ee"
+      "sha256": "9ed8b1df0aa3968b05b8fed03e39e7c9947ef014416f2216b96f024422aac3fc"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -331,11 +331,11 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "19f91c881619631950f62bffdb6ac84809f11f2bb94864f058de1efd77906671"
+      "sha256": "f7e69de7f76dc1abdc1b3504e246bcd9f9ca16078adf20ce83dff3c9530163ad"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
-      "sha256": "909ee53469096a894523e5206bfe1e7f0319a932e223b4bb19c3ca113ff67b15"
+      "sha256": "954f1ec961702db5a5e0245aa6d51f3b0ea5a641d07fd1286180479649f79bd3"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",

@@ -1,0 +1,1111 @@
+{
+  "baseCommit": "05b30887d0",
+  "migrationRevision": "7e83734299",
+  "perfCheckout": "3235a8d0de",
+  "method": "Windows Release, 30 warmup frames, 120 samples per phase. Each round reports the median frame, aggregate reports the median of six rounds. Texture readbacks run after timing.",
+  "order": [
+    "mca",
+    "cam",
+    "amc",
+    "acm",
+    "cma",
+    "mac"
+  ],
+  "arms": {
+    "migration": "m",
+    "control": "c",
+    "candidate": "a"
+  },
+  "workloadSha256": "2a05c12a55909098cb5481a184a0976ed6e357994cbb38c085a99f4d0bce2562",
+  "runs": {
+    "migration": {
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "binarySha256": "3b2132fcb9638f05a6f399cb73ddfb6d1c716405aa60a2baa4f1a8437e3a05a5",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669",
+      "roundSha256": [
+        "756e6920f7cee53b3bf3295202806a9dd34aa8abf2553b995c9f283eecf0e554",
+        "fa4f424f301c6cf2a400154dc6bd2e1edc143b7f33a10d5349460fd77f322e65",
+        "67e1c0d826dc72f421608dc559d4e7b9a850047c22fa58a37e18218340e45b95",
+        "acae15e78f0aa1ae086b1c6a8caa515f694134fffbc8bc8bfa0769e06fc47d03",
+        "96b6f044ed25a2e7566433c189451e3a1fd8dccc70fba3e48e392d1b3f0fd0b8",
+        "8f7bd1bf094c63baa047112afb065aece8deecb7a8e1ce15d949be8d9490ec4d"
+      ],
+      "summary": {
+        "empty/steady": {
+          "cpuMs": 0.00572500000027012,
+          "setterMs": 0.0010000000002037268,
+          "prepareMs": 0.0019999999997253326,
+          "batchMs": 0.002725,
+          "jsbCalls": 67,
+          "peakJsBytes": 12565896,
+          "forcedGcMs": 2.7630000000003747
+        },
+        "empty/dirty": {
+          "cpuMs": 0.007000000000132786,
+          "setterMs": 0.0020000000004074536,
+          "prepareMs": 0.001999999999497959,
+          "batchMs": 0.00275,
+          "jsbCalls": 67,
+          "peakJsBytes": 12716228,
+          "forcedGcMs": 3.5774999999998727
+        },
+        "sprites/steady": {
+          "cpuMs": 0.18854999999957617,
+          "setterMs": 0.0010000000002037268,
+          "prepareMs": 0.001999999999497959,
+          "batchMs": 0.18480000000000002,
+          "jsbCalls": 67,
+          "peakJsBytes": 17846156,
+          "forcedGcMs": 5.012499999999818
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.29442499999961075,
+          "setterMs": 0.09825000000000728,
+          "prepareMs": 0.0020000000004074536,
+          "batchMs": 0.17075,
+          "jsbCalls": 67,
+          "peakJsBytes": 18013000,
+          "forcedGcMs": 4.2039999999997235
+        },
+        "labels/steady": {
+          "cpuMs": 0.3116249999998508,
+          "setterMs": 0.0004999999991923687,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.310125,
+          "jsbCalls": 67,
+          "peakJsBytes": 15776076,
+          "forcedGcMs": 4.212999999999738
+        },
+        "labels/dirty": {
+          "cpuMs": 2.377099999999931,
+          "setterMs": 0.014000000000123691,
+          "prepareMs": 2.1695000000004256,
+          "batchMs": 0.19642500000000002,
+          "jsbCalls": 447,
+          "peakJsBytes": 23232238,
+          "forcedGcMs": 3.237500000000182
+        },
+        "masks/steady": {
+          "cpuMs": 0.5604750000002038,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.559525,
+          "jsbCalls": 67,
+          "peakJsBytes": 14037426,
+          "forcedGcMs": 3.7230000000017753
+        },
+        "masks/dirty": {
+          "cpuMs": 0.5795999999999708,
+          "setterMs": 0.012250000001586159,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.5676749999999999,
+          "jsbCalls": 72,
+          "peakJsBytes": 14122134,
+          "forcedGcMs": 2.9549999999999272
+        },
+        "rich/steady": {
+          "cpuMs": 0.16299999999874126,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.16042499999999998,
+          "jsbCalls": 67,
+          "peakJsBytes": 14114570,
+          "forcedGcMs": 3.4325000000008004
+        },
+        "rich/dirty": {
+          "cpuMs": 2.3576499999985154,
+          "setterMs": 2.250250000000051,
+          "prepareMs": 0.004000000000814907,
+          "batchMs": 0.0933,
+          "jsbCalls": 491,
+          "peakJsBytes": 19499142,
+          "forcedGcMs": 4.714500000000044
+        },
+        "mixed/steady": {
+          "cpuMs": 0.7095000000001528,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.7088,
+          "jsbCalls": 67,
+          "peakJsBytes": 22117702,
+          "forcedGcMs": 4.507499999999709
+        },
+        "mixed/dirty": {
+          "cpuMs": 3.5258000000000655,
+          "setterMs": 1.075749999999971,
+          "prepareMs": 1.772250000000895,
+          "batchMs": 0.666825,
+          "jsbCalls": 876,
+          "peakJsBytes": 30032240,
+          "forcedGcMs": 5.0899999999983265
+        }
+      },
+      "rounds": [
+        {
+          "labels/dirty": {
+            "cpuMs": 2.417150000000233,
+            "setterMs": 0.013999999999214197,
+            "prepareMs": 2.2135000000007494,
+            "batchMs": 0.19574999999999998,
+            "jsbCalls": 447,
+            "peakJsBytes": 23115968,
+            "forcedGcMs": 3.514000000001033
+          },
+          "rich/dirty": {
+            "cpuMs": 2.3602999999981082,
+            "setterMs": 2.2524999999986903,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 0.0954,
+            "jsbCalls": 491,
+            "peakJsBytes": 19391592,
+            "forcedGcMs": 5.356999999999971
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.539050000001237,
+            "setterMs": 1.073500000000422,
+            "prepareMs": 1.790499999997337,
+            "batchMs": 0.66235,
+            "jsbCalls": 876,
+            "peakJsBytes": 30086432,
+            "forcedGcMs": 4.672000000002299
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.3835499999996945,
+            "setterMs": 0.013999999999214197,
+            "prepareMs": 2.175000000000182,
+            "batchMs": 0.1962,
+            "jsbCalls": 447,
+            "peakJsBytes": 23348508,
+            "forcedGcMs": 3.04700000000048
+          },
+          "rich/dirty": {
+            "cpuMs": 2.3025000000004363,
+            "setterMs": 2.202499999999418,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 0.0913,
+            "jsbCalls": 491,
+            "peakJsBytes": 19556708,
+            "forcedGcMs": 5.983000000000175
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.5343999999999856,
+            "setterMs": 1.087999999999738,
+            "prepareMs": 1.7544999999990978,
+            "batchMs": 0.67115,
+            "jsbCalls": 876,
+            "peakJsBytes": 29978048,
+            "forcedGcMs": 5.11699999999837
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.3698500000007785,
+            "setterMs": 0.013999999999214197,
+            "prepareMs": 2.1564999999991414,
+            "batchMs": 0.1975,
+            "jsbCalls": 447,
+            "peakJsBytes": 23349380,
+            "forcedGcMs": 3.2399999999997817
+          },
+          "rich/dirty": {
+            "cpuMs": 2.3789000000006553,
+            "setterMs": 2.2739999999994325,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 0.0927,
+            "jsbCalls": 491,
+            "peakJsBytes": 19418836,
+            "forcedGcMs": 3.230999999999767
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.5172000000001455,
+            "setterMs": 1.0675000000010186,
+            "prepareMs": 1.7599999999983993,
+            "batchMs": 0.6842,
+            "jsbCalls": 876,
+            "peakJsBytes": 30151116,
+            "forcedGcMs": 4.5349999999998545
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.4028499999992143,
+            "setterMs": 0.014999999999417923,
+            "prepareMs": 2.179500000000189,
+            "batchMs": 0.19685,
+            "jsbCalls": 447,
+            "peakJsBytes": 23022404,
+            "forcedGcMs": 3.2840000000014697
+          },
+          "rich/dirty": {
+            "cpuMs": 2.2925000000001168,
+            "setterMs": 2.194999999999709,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 0.09035,
+            "jsbCalls": 491,
+            "peakJsBytes": 19446548,
+            "forcedGcMs": 5.523000000001048
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.5390999999996073,
+            "setterMs": 1.0850000000027649,
+            "prepareMs": 1.7750000000014552,
+            "batchMs": 0.67715,
+            "jsbCalls": 876,
+            "peakJsBytes": 29963848,
+            "forcedGcMs": 5.50800000000163
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.3706500000001673,
+            "setterMs": 0.014000000001033186,
+            "prepareMs": 2.1640000000006694,
+            "batchMs": 0.1875,
+            "jsbCalls": 447,
+            "peakJsBytes": 23355856,
+            "forcedGcMs": 2.7879999999986467
+          },
+          "rich/dirty": {
+            "cpuMs": 2.354999999998923,
+            "setterMs": 2.2480000000014115,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 0.0939,
+            "jsbCalls": 491,
+            "peakJsBytes": 19581920,
+            "forcedGcMs": 3.44800000000032
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.4988499999981375,
+            "setterMs": 1.0779999999995198,
+            "prepareMs": 1.7705000000005384,
+            "batchMs": 0.6625,
+            "jsbCalls": 876,
+            "peakJsBytes": 30112832,
+            "forcedGcMs": 5.254000000000815
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.36380000000048,
+            "setterMs": 0.014500000000225555,
+            "prepareMs": 2.1534999999994398,
+            "batchMs": 0.19665,
+            "jsbCalls": 447,
+            "peakJsBytes": 22986480,
+            "forcedGcMs": 3.235000000000582
+          },
+          "rich/dirty": {
+            "cpuMs": 2.5112499999991558,
+            "setterMs": 2.4104999999999563,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 0.0942,
+            "jsbCalls": 491,
+            "peakJsBytes": 19551736,
+            "forcedGcMs": 4.072000000000116
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.5059500000014117,
+            "setterMs": 1.0689999999995052,
+            "prepareMs": 1.7740000000012515,
+            "batchMs": 0.65005,
+            "jsbCalls": 876,
+            "peakJsBytes": 29836112,
+            "forcedGcMs": 5.062999999998283
+          }
+        }
+      ]
+    },
+    "control": {
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "binarySha256": "5c4ddae367aad24c82061f63bf317459667e39e67329d93b6aae1cc40e99e889",
+      "engineSha256": "bb872b4380d870229bd5dea3ea2ab0263fec309152f38173107d79f07ef68d88",
+      "roundSha256": [
+        "5f3e7cdced2d045a9e3debaa4e929808a40ec8d58acc614a09a8a1010a6fe9d1",
+        "edbd42a1c18e3996e79577c6d1d3c9ec81b541a46723c5d3475c946ca50aaf48",
+        "fbab2206088f2c87fb84f5486b7acfd268791ce3b435961010e58fe82803a9af",
+        "303cc91bfb7728d0f0708ca5b8668dd0d05b8dd025cb2b98868e7af821254863",
+        "5ef0c10384d7c53ba78b02148451dc5099593d2324ca29305a058332b068a633",
+        "5100374603697e8cfa6f9e201b543b5f8bc4f14e8104c7a685bc2cd88d5939c1"
+      ],
+      "summary": {
+        "empty/steady": {
+          "cpuMs": 0.009349999999932697,
+          "setterMs": 0.0010000000002037268,
+          "prepareMs": 0.0039999999999054126,
+          "batchMs": 0.004225,
+          "jsbCalls": 68,
+          "peakJsBytes": 12086314,
+          "forcedGcMs": 4.021499999999833
+        },
+        "empty/dirty": {
+          "cpuMs": 0.011075000000136424,
+          "setterMs": 0.0020000000004074536,
+          "prepareMs": 0.0039999999999054126,
+          "batchMs": 0.0045249999999999995,
+          "jsbCalls": 68,
+          "peakJsBytes": 12224934,
+          "forcedGcMs": 4.317499999999654
+        },
+        "sprites/steady": {
+          "cpuMs": 0.26345000000008545,
+          "setterMs": 0.0010000000002037268,
+          "prepareMs": 0.003999999998995918,
+          "batchMs": 0.258175,
+          "jsbCalls": 68,
+          "peakJsBytes": 15529820,
+          "forcedGcMs": 4.995500000000902
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.43262500000032744,
+          "setterMs": 0.15575000000035288,
+          "prepareMs": 0.014999999999417923,
+          "batchMs": 0.25227499999999997,
+          "jsbCalls": 168,
+          "peakJsBytes": 15677086,
+          "forcedGcMs": 4.813500000000204
+        },
+        "labels/steady": {
+          "cpuMs": 0.23512500000000364,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.232925,
+          "jsbCalls": 68,
+          "peakJsBytes": 13306182,
+          "forcedGcMs": 3.305500000000393
+        },
+        "labels/dirty": {
+          "cpuMs": 3.0619000000001204,
+          "setterMs": 0.021999999999934516,
+          "prepareMs": 2.818249999999807,
+          "batchMs": 0.20997500000000002,
+          "jsbCalls": 88,
+          "peakJsBytes": 13026746,
+          "forcedGcMs": 2.2739999999994325
+        },
+        "masks/steady": {
+          "cpuMs": 0.2881250000003565,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.2865,
+          "jsbCalls": 68,
+          "peakJsBytes": 12746202,
+          "forcedGcMs": 2.7375000000010914
+        },
+        "masks/dirty": {
+          "cpuMs": 0.3148999999983993,
+          "setterMs": 0.007999999997991836,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.305,
+          "jsbCalls": 73,
+          "peakJsBytes": 12752920,
+          "forcedGcMs": 2.433000000000902
+        },
+        "rich/steady": {
+          "cpuMs": 0.1445249999997526,
+          "setterMs": 0,
+          "prepareMs": 0.0030000000006111804,
+          "batchMs": 0.14155,
+          "jsbCalls": 68,
+          "peakJsBytes": 12538588,
+          "forcedGcMs": 3.058999999999287
+        },
+        "rich/dirty": {
+          "cpuMs": 1.8437249999996,
+          "setterMs": 0.32600000000002183,
+          "prepareMs": 1.41150000000016,
+          "batchMs": 0.090225,
+          "jsbCalls": 72,
+          "peakJsBytes": 12676758,
+          "forcedGcMs": 2.4755000000004657
+        },
+        "mixed/steady": {
+          "cpuMs": 0.6287250000003565,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.6265,
+          "jsbCalls": 68,
+          "peakJsBytes": 16912756,
+          "forcedGcMs": 3.3330000000005384
+        },
+        "mixed/dirty": {
+          "cpuMs": 4.269025000000873,
+          "setterMs": 0.2335000000002765,
+          "prepareMs": 3.3609999999998763,
+          "batchMs": 0.65145,
+          "jsbCalls": 197,
+          "peakJsBytes": 17074836,
+          "forcedGcMs": 3.496000000001004
+        }
+      },
+      "rounds": [
+        {
+          "labels/dirty": {
+            "cpuMs": 3.1298499999990614,
+            "setterMs": 0.024999999999636202,
+            "prepareMs": 2.8284999999996217,
+            "batchMs": 0.26205,
+            "jsbCalls": 88,
+            "peakJsBytes": 12994720,
+            "forcedGcMs": 2.2559999999994034
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8965999999993741,
+            "setterMs": 0.3294999999998254,
+            "prepareMs": 1.4394999999985885,
+            "batchMs": 0.09,
+            "jsbCalls": 72,
+            "peakJsBytes": 12570936,
+            "forcedGcMs": 2.1679999999978463
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.207950000000495,
+            "setterMs": 0.2250000000003638,
+            "prepareMs": 3.31550000000243,
+            "batchMs": 0.64815,
+            "jsbCalls": 197,
+            "peakJsBytes": 17067600,
+            "forcedGcMs": 3.0050000000010186
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 3.0372999999990977,
+            "setterMs": 0.023500000000240107,
+            "prepareMs": 2.7750000000005457,
+            "batchMs": 0.22255,
+            "jsbCalls": 88,
+            "peakJsBytes": 13017988,
+            "forcedGcMs": 2.2219999999997526
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8621999999986176,
+            "setterMs": 0.33399999999892316,
+            "prepareMs": 1.4290000000000873,
+            "batchMs": 0.09075,
+            "jsbCalls": 72,
+            "peakJsBytes": 12551292,
+            "forcedGcMs": 2.45600000000195
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.253249999996594,
+            "setterMs": 0.23250000000007276,
+            "prepareMs": 3.3254999999971915,
+            "batchMs": 0.6647000000000001,
+            "jsbCalls": 197,
+            "peakJsBytes": 16966188,
+            "forcedGcMs": 3.67699999999968
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 3.063599999999745,
+            "setterMs": 0.02199999999902502,
+            "prepareMs": 2.819499999999607,
+            "batchMs": 0.20884999999999998,
+            "jsbCalls": 88,
+            "peakJsBytes": 13055236,
+            "forcedGcMs": 2.2919999999994616
+          },
+          "rich/dirty": {
+            "cpuMs": 1.7972499999994178,
+            "setterMs": 0.3204999999998108,
+            "prepareMs": 1.3945000000003347,
+            "batchMs": 0.0912,
+            "jsbCalls": 72,
+            "peakJsBytes": 12782580,
+            "forcedGcMs": 2.665000000000873
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.340250000001586,
+            "setterMs": 0.23550000000068394,
+            "prepareMs": 3.386500000000524,
+            "batchMs": 0.6688000000000001,
+            "jsbCalls": 197,
+            "peakJsBytes": 17007360,
+            "forcedGcMs": 3.1039999999993597
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 3.062600000000131,
+            "setterMs": 0.02200000000084401,
+            "prepareMs": 2.82300000000032,
+            "batchMs": 0.20645000000000002,
+            "jsbCalls": 88,
+            "peakJsBytes": 13022440,
+            "forcedGcMs": 2.563000000000102
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8252500000005822,
+            "setterMs": 0.32450000000062573,
+            "prepareMs": 1.3635000000012951,
+            "batchMs": 0.09045,
+            "jsbCalls": 72,
+            "peakJsBytes": 12785508,
+            "forcedGcMs": 2.8960000000006403
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.323650000000248,
+            "setterMs": 0.23999999999978172,
+            "prepareMs": 3.4059999999990396,
+            "batchMs": 0.64835,
+            "jsbCalls": 197,
+            "peakJsBytes": 17082072,
+            "forcedGcMs": 3.3150000000023283
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 3.0248500000002765,
+            "setterMs": 0.02199999999902502,
+            "prepareMs": 2.790999999999258,
+            "batchMs": 0.2094,
+            "jsbCalls": 88,
+            "peakJsBytes": 13031052,
+            "forcedGcMs": 2.293999999999869
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8822499999986613,
+            "setterMs": 0.3274999999994179,
+            "prepareMs": 1.4284999999999854,
+            "batchMs": 0.08465,
+            "jsbCalls": 72,
+            "peakJsBytes": 12570712,
+            "forcedGcMs": 2.224999999998545
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.265950000000597,
+            "setterMs": 0.2304999999996653,
+            "prepareMs": 3.3690000000005966,
+            "batchMs": 0.629,
+            "jsbCalls": 197,
+            "peakJsBytes": 17086048,
+            "forcedGcMs": 3.8729999999995925
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 3.061200000000109,
+            "setterMs": 0.02099999999973079,
+            "prepareMs": 2.8170000000000073,
+            "batchMs": 0.21055000000000001,
+            "jsbCalls": 88,
+            "peakJsBytes": 13236776,
+            "forcedGcMs": 2.2189999999991414
+          },
+          "rich/dirty": {
+            "cpuMs": 1.5846000000004075,
+            "setterMs": 0.28849999999874854,
+            "prepareMs": 1.1929999999993015,
+            "batchMs": 0.0842,
+            "jsbCalls": 72,
+            "peakJsBytes": 12787948,
+            "forcedGcMs": 2.4949999999989814
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.272100000001149,
+            "setterMs": 0.2345000000004802,
+            "prepareMs": 3.352999999999156,
+            "batchMs": 0.65455,
+            "jsbCalls": 197,
+            "peakJsBytes": 17087484,
+            "forcedGcMs": 4.139999999999418
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+      "binarySha256": "5de3dd935eff9f7860e218b7fa67eb30210c0e65099bc3e582bae1c48769e418",
+      "engineSha256": "bb872b4380d870229bd5dea3ea2ab0263fec309152f38173107d79f07ef68d88",
+      "roundSha256": [
+        "56ef40d5726fe6ed4cecfb9dcc8443611f298dfcbfe7c09fdd3b33fa617ad13b",
+        "44fed211cae76b5c58fe3f54ac5204beb33fb33c4ec7fbcc599d22597db8a498",
+        "4b3e919892d7b096c66854f48719b4e12e3adc104482d67f30f27e156b45b693",
+        "bc157bed9c815f69f400da834c174c0c2c1471ca0b924f08438bb2ddd0ed9f28",
+        "bf8bc1e618d300dafaf0bbd0691e237a5603ce2da32fc33119e82b16ca4b1766",
+        "f7c6ab7a874247887ad462311594a6fb7b77374a8ad45867670fc928b1129afa"
+      ],
+      "summary": {
+        "empty/steady": {
+          "cpuMs": 0.00945000000016007,
+          "setterMs": 0.0010000000002037268,
+          "prepareMs": 0.0039999999999054126,
+          "batchMs": 0.004225,
+          "jsbCalls": 68,
+          "peakJsBytes": 12092418,
+          "forcedGcMs": 3.194500000000062
+        },
+        "empty/dirty": {
+          "cpuMs": 0.010449999999403372,
+          "setterMs": 0.0020000000004074536,
+          "prepareMs": 0.0039999999999054126,
+          "batchMs": 0.00435,
+          "jsbCalls": 68,
+          "peakJsBytes": 12239352,
+          "forcedGcMs": 3.0655000000001564
+        },
+        "sprites/steady": {
+          "cpuMs": 0.25385000000033653,
+          "setterMs": 0.0010000000002037268,
+          "prepareMs": 0.0037499999993997335,
+          "batchMs": 0.24919999999999998,
+          "jsbCalls": 68,
+          "peakJsBytes": 15503638,
+          "forcedGcMs": 3.9010000000007494
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.41304999999935244,
+          "setterMs": 0.14849999999978536,
+          "prepareMs": 0.014999999999417923,
+          "batchMs": 0.239825,
+          "jsbCalls": 168,
+          "peakJsBytes": 15673818,
+          "forcedGcMs": 5.142499999999927
+        },
+        "labels/steady": {
+          "cpuMs": 0.23757499999995269,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.23575,
+          "jsbCalls": 68,
+          "peakJsBytes": 13321494,
+          "forcedGcMs": 3.977499999999054
+        },
+        "labels/dirty": {
+          "cpuMs": 2.504799999999731,
+          "setterMs": 0.02199999999902502,
+          "prepareMs": 2.2667499999997744,
+          "batchMs": 0.20715,
+          "jsbCalls": 88,
+          "peakJsBytes": 13030436,
+          "forcedGcMs": 2.2895000000007713
+        },
+        "masks/steady": {
+          "cpuMs": 0.298774999999447,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.297025,
+          "jsbCalls": 68,
+          "peakJsBytes": 12754088,
+          "forcedGcMs": 2.5120000000006257
+        },
+        "masks/dirty": {
+          "cpuMs": 0.30932499999971624,
+          "setterMs": 0.007999999997991836,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.29919999999999997,
+          "jsbCalls": 73,
+          "peakJsBytes": 12747716,
+          "forcedGcMs": 2.5170000000016444
+        },
+        "rich/steady": {
+          "cpuMs": 0.1476999999999054,
+          "setterMs": 0,
+          "prepareMs": 0.0030000000006111804,
+          "batchMs": 0.1437,
+          "jsbCalls": 68,
+          "peakJsBytes": 12515924,
+          "forcedGcMs": 2.7219999999997526
+        },
+        "rich/dirty": {
+          "cpuMs": 1.6652999999987341,
+          "setterMs": 0.34175000000050204,
+          "prepareMs": 1.2042499999997744,
+          "batchMs": 0.096575,
+          "jsbCalls": 72,
+          "peakJsBytes": 12782460,
+          "forcedGcMs": 3.6039999999975407
+        },
+        "mixed/steady": {
+          "cpuMs": 0.6457500000003056,
+          "setterMs": 0,
+          "prepareMs": 0.0010000000002037268,
+          "batchMs": 0.64425,
+          "jsbCalls": 68,
+          "peakJsBytes": 16866940,
+          "forcedGcMs": 3.430000000000291
+        },
+        "mixed/dirty": {
+          "cpuMs": 3.6187749999991556,
+          "setterMs": 0.235250000000633,
+          "prepareMs": 2.7182500000008076,
+          "batchMs": 0.6511750000000001,
+          "jsbCalls": 197,
+          "peakJsBytes": 16996396,
+          "forcedGcMs": 3.691499999998996
+        }
+      },
+      "rounds": [
+        {
+          "labels/dirty": {
+            "cpuMs": 2.513999999999971,
+            "setterMs": 0.02199999999902502,
+            "prepareMs": 2.2695000000003347,
+            "batchMs": 0.21355000000000002,
+            "jsbCalls": 88,
+            "peakJsBytes": 13043940,
+            "forcedGcMs": 2.2620000000006257
+          },
+          "rich/dirty": {
+            "cpuMs": 1.5519500000013386,
+            "setterMs": 0.31600000000071304,
+            "prepareMs": 1.1265000000003056,
+            "batchMs": 0.0957,
+            "jsbCalls": 72,
+            "peakJsBytes": 12782448,
+            "forcedGcMs": 5.369999999998981
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.611449999999025,
+            "setterMs": 0.24050000000170257,
+            "prepareMs": 2.6929999999993015,
+            "batchMs": 0.6509,
+            "jsbCalls": 197,
+            "peakJsBytes": 16987704,
+            "forcedGcMs": 4.269000000000233
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.481649999999542,
+            "setterMs": 0.02199999999902502,
+            "prepareMs": 2.2475000000004,
+            "batchMs": 0.20705,
+            "jsbCalls": 88,
+            "peakJsBytes": 13205280,
+            "forcedGcMs": 2.3740000000016153
+          },
+          "rich/dirty": {
+            "cpuMs": 1.076849999999869,
+            "setterMs": 0.2580000000016298,
+            "prepareMs": 0.7680000000018481,
+            "batchMs": 0.09045,
+            "jsbCalls": 72,
+            "peakJsBytes": 12782472,
+            "forcedGcMs": 1.9429999999993015
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.6223999999996215,
+            "setterMs": 0.2375000000010914,
+            "prepareMs": 2.725000000002183,
+            "batchMs": 0.65245,
+            "jsbCalls": 197,
+            "peakJsBytes": 17005088,
+            "forcedGcMs": 3.944999999999709
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.536899999999811,
+            "setterMs": 0.02199999999902502,
+            "prepareMs": 2.28899999999976,
+            "batchMs": 0.21455000000000002,
+            "jsbCalls": 88,
+            "peakJsBytes": 13016932,
+            "forcedGcMs": 2.3540000000011787
+          },
+          "rich/dirty": {
+            "cpuMs": 1.5552999999985302,
+            "setterMs": 0.32950000000164437,
+            "prepareMs": 1.1054999999996653,
+            "batchMs": 0.09004999999999999,
+            "jsbCalls": 72,
+            "peakJsBytes": 12552100,
+            "forcedGcMs": 3.1819999999970605
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.701250000000786,
+            "setterMs": 0.2360000000007858,
+            "prepareMs": 2.816500000000815,
+            "batchMs": 0.65145,
+            "jsbCalls": 197,
+            "peakJsBytes": 17080728,
+            "forcedGcMs": 3.4879999999975553
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.49024999999976,
+            "setterMs": 0.02200000000084401,
+            "prepareMs": 2.263999999999214,
+            "batchMs": 0.2048,
+            "jsbCalls": 88,
+            "peakJsBytes": 12990580,
+            "forcedGcMs": 2.223999999998341
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8019000000003493,
+            "setterMs": 0.3539999999993597,
+            "prepareMs": 1.2995000000009895,
+            "batchMs": 0.1016,
+            "jsbCalls": 72,
+            "peakJsBytes": 12782416,
+            "forcedGcMs": 2.49199999999837
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.6200499999992575,
+            "setterMs": 0.227999999999156,
+            "prepareMs": 2.7114999999994325,
+            "batchMs": 0.6508499999999999,
+            "jsbCalls": 197,
+            "peakJsBytes": 16945512,
+            "forcedGcMs": 3.8629999999975553
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.4985499999992653,
+            "setterMs": 0.02199999999902502,
+            "prepareMs": 2.263999999999214,
+            "batchMs": 0.20725,
+            "jsbCalls": 88,
+            "peakJsBytes": 13205760,
+            "forcedGcMs": 2.3170000000009168
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8172000000007569,
+            "setterMs": 0.3600000000005821,
+            "prepareMs": 1.3224999999983993,
+            "batchMs": 0.0991,
+            "jsbCalls": 72,
+            "peakJsBytes": 12784944,
+            "forcedGcMs": 4.440999999998894
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.617499999999054,
+            "setterMs": 0.2345000000004802,
+            "prepareMs": 2.727500000000873,
+            "batchMs": 0.6515,
+            "jsbCalls": 197,
+            "peakJsBytes": 17085960,
+            "forcedGcMs": 3.5200000000004366
+          }
+        },
+        {
+          "labels/dirty": {
+            "cpuMs": 2.5110500000001963,
+            "setterMs": 0.021499999999832653,
+            "prepareMs": 2.2775000000001455,
+            "batchMs": 0.20095000000000002,
+            "jsbCalls": 88,
+            "peakJsBytes": 12999816,
+            "forcedGcMs": 2.195000000001528
+          },
+          "rich/dirty": {
+            "cpuMs": 1.7752999999989378,
+            "setterMs": 0.35649999999986903,
+            "prepareMs": 1.2819999999992433,
+            "batchMs": 0.09745000000000001,
+            "jsbCalls": 72,
+            "peakJsBytes": 12790588,
+            "forcedGcMs": 4.025999999998021
+          },
+          "mixed/dirty": {
+            "cpuMs": 3.5885999999999854,
+            "setterMs": 0.22999999999956344,
+            "prepareMs": 2.7070000000021537,
+            "batchMs": 0.6269,
+            "jsbCalls": 197,
+            "peakJsBytes": 16933076,
+            "forcedGcMs": 3.4729999999981374
+          }
+        }
+      ]
+    }
+  },
+  "systemFont": [
+    {
+      "alignment": 0,
+      "text": "AB",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "727820eef8f64660910279bf09824a2721ff6c0d7ea4080b41e3459bff629b1a"
+    },
+    {
+      "alignment": 0,
+      "text": "Wide line\ni",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "b84bbcf2cfd3887d7b5258de836488d8b006f36724f646b3f1fa142aca34ec75"
+    },
+    {
+      "alignment": 0,
+      "text": "Café 文",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "4ce57321f2b8bd9353338e737a0f4aed8bcebd6fd196be4738c0a3110675e964"
+    },
+    {
+      "alignment": 1,
+      "text": "AB",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "f32c97fea9397c78188d56ec62ed531c1090ecb8458217b5deac435cdc732976"
+    },
+    {
+      "alignment": 1,
+      "text": "Wide line\ni",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "9502ca42763bf7d1f20252720ac68e3658dd444133f8706daa8726a669dbc388"
+    },
+    {
+      "alignment": 1,
+      "text": "Café 文",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "3ceb8b293bea1a0ff542cba350c9a639535286776bac48923d0be669fb4bc2c8"
+    },
+    {
+      "alignment": 2,
+      "text": "AB",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "f5c99e3c16a49b99c9bc7be4d09511758beddbdf7b0dfc0758683e8d504990a9"
+    },
+    {
+      "alignment": 2,
+      "text": "Wide line\ni",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "5f35fb0fe8076f9c0a4dd03f57c2108ecc0fb24e3d94a28625c06ce2f4ef69f8"
+    },
+    {
+      "alignment": 2,
+      "text": "Café 文",
+      "width": 160,
+      "height": 80,
+      "rgbaSha256": "9095091ccc963b30090dd09344826546450ec999344ad1a79f5d83c997da7fc4"
+    }
+  ],
+  "graphics": {
+    "snapshot": "8e88c3bb335fdb780aa76a3bdc7fcd5666742fd5c0208228e08a8bb4dd17e11a",
+    "identical": 85,
+    "reportSha256": [
+      "52efdbcc07b633b91e5317c904f422d9705b3c970a0b20a82c2d90e7a3d2f8b0",
+      "52efdbcc07b633b91e5317c904f422d9705b3c970a0b20a82c2d90e7a3d2f8b0"
+    ]
+  },
+  "customFont": {
+    "snapshot": "defa9c546e5dc9574da5a3823f3890c939d75efa1d8f52d98b45c1817167f094",
+    "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+    "results": [
+      {
+        "name": "text-basic",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+        "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87"
+      },
+      {
+        "name": "text-bold",
+        "max": 20,
+        "pixels": 467,
+        "layoutEqual": true,
+        "pass": false,
+        "nativeSha256": "0dd74ae6f769b10b63ffe14398329805b8efab6cc6c188aefee8d815ac4775d7",
+        "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9"
+      },
+      {
+        "name": "text-italic",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+        "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475"
+      },
+      {
+        "name": "text-underline",
+        "max": 1,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "200bf94693f41bb3e257cef10e3cd5be52b3959c29de780f216c34ebbaa0c961",
+        "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a"
+      },
+      {
+        "name": "text-outline",
+        "max": 30,
+        "pixels": 202,
+        "layoutEqual": true,
+        "pass": false,
+        "nativeSha256": "b149ca666d8f4e617e59c3c6e122bf603cd32e68fb2732f8024f10d9f2d3db61",
+        "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c"
+      },
+      {
+        "name": "text-nested",
+        "max": 47,
+        "pixels": 573,
+        "layoutEqual": true,
+        "pass": false,
+        "nativeSha256": "6edd9cc4c32ccbd760b54a5f508768a52fff74a2b1dbc463d77d7646bd27b09e",
+        "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3"
+      },
+      {
+        "name": "text-colors",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+        "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22"
+      },
+      {
+        "name": "text-wrap-left",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+        "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f"
+      },
+      {
+        "name": "text-wrap-center",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+        "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca"
+      },
+      {
+        "name": "text-wrap-right",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+        "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da"
+      },
+      {
+        "name": "text-multiline",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+        "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220"
+      },
+      {
+        "name": "text-unicode",
+        "max": 0,
+        "pixels": 0,
+        "layoutEqual": true,
+        "pass": true,
+        "nativeSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+        "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9"
+      }
+    ]
+  },
+  "runtimeSources": {
+    "native/cocos/2d/components/Label.cpp": "9ed8b1df0aa3968b05b8fed03e39e7c9947ef014416f2216b96f024422aac3fc",
+    "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp": "f7e69de7f76dc1abdc1b3504e246bcd9f9ca16078adf20ce83dff3c9530163ad",
+    "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h": "954f1ec961702db5a5e0245aa6d51f3b0ea5a641d07fd1286180479649f79bd3"
+  }
+}

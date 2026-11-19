@@ -167,17 +167,25 @@ void CanvasRenderingContext2DDelegate::fillText(const ccstd::string &text, float
     }
 
     if (_directWrite) {
-        const auto size = _directWrite->measure(text);
-        if (_textAlign == TextAlign::CENTER) x -= size[0] / 2;
-        else if (_textAlign == TextAlign::RIGHT) x -= size[0];
+        x = alignDirectWriteX(text, x);
         _directWrite->draw(text, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
                           static_cast<uint32_t>(_bufferWidth), static_cast<uint32_t>(_bufferHeight), _fillStyle);
         return;
     }
-    SIZE textSize = {0, 0};
-    Point offsetPoint = convertDrawPoint(Point{x, y}, text);
-
-    drawText(text, (int)offsetPoint[0], (int)offsetPoint[1]);
+    int length = 0;
+    wchar_t *wide = utf8ToUtf16(text, &length);
+    if (!wide || !length) {
+        CC_SAFE_DELETE_ARRAY(wide);
+        return;
+    }
+    const Size size = sizeWithText(wide, length);
+    const Point origin = convertDrawPoint(Point{x, y}, size);
+    RECT rect{0, 0, static_cast<LONG>(size[0]), static_cast<LONG>(size[1])};
+    OffsetRect(&rect, static_cast<LONG>(origin[0]), static_cast<LONG>(origin[1]));
+    SetBkMode(_DC, TRANSPARENT);
+    SetTextColor(_DC, RGB(255, 255, 255));
+    DrawTextW(_DC, wide, length, &rect, DT_SINGLELINE | DT_NOPREFIX);
+    CC_SAFE_DELETE_ARRAY(wide);
     fillTextureData();
 }
 
@@ -352,46 +360,6 @@ void CanvasRenderingContext2DDelegate::removeCustomFont() {
     }
 }
 
-// x, y offset value
-int CanvasRenderingContext2DDelegate::drawText(const ccstd::string &text, int x, int y) {
-    int nRet = 0;
-    wchar_t *pwszBuffer = nullptr;
-    do {
-        CC_BREAK_IF(text.empty());
-
-        DWORD dwFmt = DT_SINGLELINE | DT_NOPREFIX;
-
-        int bufferLen = 0;
-        pwszBuffer = utf8ToUtf16(text, &bufferLen);
-
-        Size newSize = sizeWithText(pwszBuffer, bufferLen);
-
-        _textSize = newSize;
-
-        RECT rcText = {0};
-
-        rcText.right = static_cast<int>(newSize[0]);
-        rcText.bottom = static_cast<int>(newSize[1]);
-
-        LONG offsetX = x;
-        LONG offsetY = y;
-        if (offsetX || offsetY) {
-            OffsetRect(&rcText, offsetX, offsetY);
-        }
-
-        // SE_LOGE("_drawText text,%s size: (%d, %d) offset after convert: (%d, %d) \n", text.c_str(), newSize.cx, newSize.cy, offsetX, offsetY);
-
-        SetBkMode(_DC, TRANSPARENT);
-        SetTextColor(_DC, RGB(255, 255, 255)); // white color
-
-        // draw text
-        nRet = DrawTextW(_DC, pwszBuffer, bufferLen, &rcText, dwFmt);
-    } while (false);
-    CC_SAFE_DELETE_ARRAY(pwszBuffer);
-
-    return nRet;
-}
-
 CanvasRenderingContext2DDelegate::Size CanvasRenderingContext2DDelegate::sizeWithText(const wchar_t *pszText, int nLen) {
     Size tRet{0, 0};
     do {
@@ -478,8 +446,13 @@ void CanvasRenderingContext2DDelegate::fillTextureData() {
     } while (false);
 }
 
-ccstd::array<float, 2> CanvasRenderingContext2DDelegate::convertDrawPoint(Point point, const ccstd::string &text) {
-    Size textSize = measureText(text);
+float CanvasRenderingContext2DDelegate::alignDirectWriteX(const ccstd::string &text, float x) {
+    if (_textAlign == TextAlign::CENTER) return x - _directWrite->measure(text)[0] / 2;
+    if (_textAlign == TextAlign::RIGHT) return x - _directWrite->measure(text)[0];
+    return x;
+}
+
+ccstd::array<float, 2> CanvasRenderingContext2DDelegate::convertDrawPoint(Point point, const Size &textSize) {
     if (_textAlign == TextAlign::CENTER) {
         point[0] -= textSize[0] / 2.0f;
     } else if (_textAlign == TextAlign::RIGHT) {
@@ -524,9 +497,7 @@ void CanvasRenderingContext2DDelegate::strokeText(const ccstd::string &text,
                                                   float y,
                                                   float /* maxWidth */) {
     if (text.empty() || !_directWrite || _bufferWidth < 1 || _bufferHeight < 1) return;
-    const auto size = _directWrite->measure(text);
-    if (_textAlign == TextAlign::CENTER) x -= size[0] / 2;
-    else if (_textAlign == TextAlign::RIGHT) x -= size[0];
+    x = alignDirectWriteX(text, x);
     const auto join = _lineJoin == "round" ? DirectWriteFont::StrokeJoin::ROUND
         : _lineJoin == "bevel" ? DirectWriteFont::StrokeJoin::BEVEL : DirectWriteFont::StrokeJoin::MITER;
     _directWrite->stroke(text, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),

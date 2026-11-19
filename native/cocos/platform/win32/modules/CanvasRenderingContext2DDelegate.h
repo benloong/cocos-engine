@@ -86,12 +86,12 @@ public:
 private:
     static wchar_t *utf8ToUtf16(const ccstd::string &str, int *pRetLen = nullptr);
     void removeCustomFont();
-    int drawText(const ccstd::string &text, int x, int y);
+    float alignDirectWriteX(const ccstd::string &text, float x);
     Size sizeWithText(const wchar_t *pszText, int nLen);
     void prepareBitmap(int nWidth, int nHeight);
     void deleteBitmap();
     void fillTextureData();
-    ccstd::array<float, 2> convertDrawPoint(Point point, const ccstd::string &text);
+    Point convertDrawPoint(Point point, const Size &textSize);
 
 public:
     HDC _DC{nullptr};
@@ -113,7 +113,6 @@ private:
 
     ccstd::string _fontName;
     int _fontSize{0};
-    Size _textSize;
     TextAlign _textAlign{TextAlign::LEFT};
     TextBaseline _textBaseLine{TextBaseline::ALPHABETIC};
     Color4F _fillStyle{0, 0, 0, 1};

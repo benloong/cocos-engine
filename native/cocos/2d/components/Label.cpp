@@ -990,8 +990,11 @@ void Label::rebuildTexture() {
     }
 
     float contentWidth = 0.0F;
+    std::vector<float> lineWidths;
+    lineWidths.reserve(lines.size());
     for (const std::string &line : lines) {
-        contentWidth = std::max(contentWidth, measureText(measureContext, line));
+        lineWidths.push_back(measureText(measureContext, line));
+        contentWidth = std::max(contentWidth, lineWidths.back());
     }
     if (_transform->getContentSize().x > 0.0F && _overflow != 0) {
         contentWidth = std::max(contentWidth, _transform->getContentSize().x);
@@ -1047,7 +1050,7 @@ void Label::rebuildTexture() {
 
     for (size_t i = 0; i < lines.size(); ++i) {
         const std::string &line = lines[i];
-        const float lineWidth = measureText(context, line);
+        const float lineWidth = lineWidths[i];
         float x = outlineMargin;
         if (_hAlign == 1) {
             x = (canvasWidth - static_cast<float>(styleExtent[0]) - lineWidth) * 0.5F + outlineMargin;

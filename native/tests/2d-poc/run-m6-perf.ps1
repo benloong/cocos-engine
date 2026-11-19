@@ -1,4 +1,4 @@
-param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory)
+param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory, [switch]$TextWidthProbe)
 $ErrorActionPreference = 'Stop'
 $dir = Join-Path $PSScriptRoot 'build'
 $key = if ($Target -eq 'web') { 'after' } else { $Target }
@@ -18,7 +18,7 @@ if ($Target -eq 'web') {
     $original = Join-Path $project 'windows/data/main.js'
     $result = (Join-Path $dir "m6-perf-$key-results.json").Replace('\','/')
     $hook = 'return application.init(cc);'
-    $install = 'installM6Perf(cc,' + (ConvertTo-Json -InputObject $result -Compress) + ');'
+    $install = 'installM6Perf(cc,' + (ConvertTo-Json -InputObject $result -Compress) + ',' + $TextWidthProbe.IsPresent.ToString().ToLowerInvariant() + ');'
 }
 $entry = [IO.File]::ReadAllText($original)
 if ($entry.Split($hook, [StringSplitOptions]::None).Count -ne 2) { throw 'Cannot identify unique benchmark entry' }
