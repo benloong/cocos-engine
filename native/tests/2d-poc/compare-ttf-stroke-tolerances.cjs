@@ -32,7 +32,7 @@ for (const config of ['out', 'out-release2']) {
     fs.mkdirSync(directory);
     const binary = name => path.join(__dirname, 'native', config, name + '.exe');
     const env = { ...process.env };
-    for (const key of ['CC2D_STROKE_REPLAY', 'CC2D_STROKE_BOUNDARY', 'CC2D_DIRECT_STROKE', 'CC2D_WIDEN_TOLERANCE', 'CC2D_EDGE_TOLERANCE']) delete env[key];
+    for (const key of ['CC2D_STROKE_REPLAY', 'CC2D_STROKE_BOUNDARY', 'CC2D_DIRECT_STROKE', 'CC2D_WIDEN_TOLERANCE', 'CC2D_EDGE_TOLERANCE', 'CC2D_PEN_SCALE']) delete env[key];
     function capture(name, output, overrides = {}) {
         execFileSync(binary(name), [font, output, 'green', 'latin', 'stroke-round', String(strokeWidth)],
             { cwd: directory, env: { ...env, ...overrides }, stdio: 'pipe' });

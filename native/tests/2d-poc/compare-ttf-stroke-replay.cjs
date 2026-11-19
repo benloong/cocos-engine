@@ -112,13 +112,14 @@ function scan(paths) {
     document.querySelector('pre').textContent = JSON.stringify({ masks: result, rectangles });
 }
 
-function capture(config, binary, output, cwd, stage, variant) {
+function capture(config, binary, output, cwd, stage, variant, penScale = 1) {
     const env = { ...process.env };
     delete env.CC2D_STROKE_REPLAY;
     delete env.CC2D_STROKE_BOUNDARY;
     delete env.CC2D_DIRECT_STROKE;
     delete env.CC2D_WIDEN_TOLERANCE;
     delete env.CC2D_EDGE_TOLERANCE;
+    env.CC2D_PEN_SCALE = String(penScale);
     if (variant) env[variant] = '1';
     if (stage) env.CC2D_STROKE_REPLAY = stage;
     execFileSync(path.join(__dirname, 'native', config, binary + '.exe'),
@@ -175,6 +176,12 @@ for (const config of configs) {
     fs.mkdirSync(dir);
     capture(config, 'cc2d_ttf_raster', 'production', dir);
     capture(config, 'cc2d_ttf_stroke_replay', 'baseline', dir);
+    const penScales = [3, 4, 7, 16, 64];
+    for (const scale of penScales) {
+        const scratch = path.join(dir, 'pen-' + scale);
+        fs.mkdirSync(scratch);
+        capture(config, 'cc2d_ttf_stroke_replay', path.join(dir, 'scale' + scale), scratch, undefined, undefined, scale);
+    }
     const outlined = path.join(dir, 'outlined');
     fs.mkdirSync(outlined);
     capture(config, 'cc2d_ttf_stroke_replay', path.join(dir, 'boundaryNative'), outlined, undefined, 'CC2D_STROKE_BOUNDARY');
@@ -244,7 +251,7 @@ for (const config of configs) {
         if (boldFill && style !== 1) continue;
         const row = { size, style, webHash: hash(reference), stages: {} };
         const nativeStages = boldFill ? ['production', 'boundaryNative'] : ['production', 'boundaryNative', 'directStroke'];
-        for (const stage of [...nativeStages, ...stages]) {
+        for (const stage of [...nativeStages, ...stages, ...penScales.map(scale => 'scale' + scale)]) {
             const image = fs.readFileSync(path.join(dir, stage, file));
             row.stages[stage] = { hash: hash(image), ...compareAlpha(image, reference) };
         }

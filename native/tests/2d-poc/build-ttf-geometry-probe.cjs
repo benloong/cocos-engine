@@ -46,7 +46,7 @@ if (designUnits) {
 } else if (process.argv[3] === '--stroke-replay') {
     source = '#include "ttf-stroke-replay.h"\n' + source;
     replaceOnce('strokePath->Widen(thickness, style.get(), nullptr, .01F, sink.get())',
-        'strokePath->Widen(thickness, style.get(), nullptr, stroke_replay::tolerance("CC2D_WIDEN_TOLERANCE"), sink.get())');
+        'stroke_replay::widen(_factory.get(), strokePath, thickness, style.get(), sink.get())');
     replaceOnce('SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get()',
         'SIMPLIFICATION_OPTION_LINES, &transform, stroke_replay::tolerance("CC2D_EDGE_TOLERANCE"), adapter.get()');
     replaceOnce('target->FillGeometry(sampled.get(), brush.get());', `if (std::getenv("CC2D_DIRECT_STROKE")) {

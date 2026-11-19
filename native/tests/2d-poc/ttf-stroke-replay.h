@@ -1,6 +1,7 @@
 // Included only by the generated DirectWrite stroke comparison executable.
 #pragma once
 #include <d2d1.h>
+#include <wrl/client.h>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
@@ -12,6 +13,24 @@ namespace stroke_replay {
 inline float tolerance(const char *name) {
     const char *value = std::getenv(name);
     return value ? std::stof(value) : .01F;
+}
+inline HRESULT widen(ID2D1Factory *factory, ID2D1Geometry *path, float width, ID2D1StrokeStyle *style, ID2D1GeometrySink *sink) {
+    const float accuracy = tolerance("CC2D_WIDEN_TOLERANCE");
+    const char *setting = std::getenv("CC2D_PEN_SCALE");
+    const float scale = setting ? std::stof(setting) : 1.F;
+    if (scale == 1.F) return path->Widen(width, style, nullptr, accuracy, sink);
+    if (!(scale > 0.F)) return E_INVALIDARG;
+    Microsoft::WRL::ComPtr<ID2D1TransformedGeometry> enlarged;
+    Microsoft::WRL::ComPtr<ID2D1PathGeometry> pen;
+    Microsoft::WRL::ComPtr<ID2D1GeometrySink> writer;
+    HRESULT hr = factory->CreateTransformedGeometry(path, D2D1::Matrix3x2F::Scale(scale, scale), enlarged.GetAddressOf());
+    if (SUCCEEDED(hr)) hr = factory->CreatePathGeometry(pen.GetAddressOf());
+    if (SUCCEEDED(hr)) hr = pen->Open(writer.GetAddressOf());
+    if (SUCCEEDED(hr)) hr = enlarged->Widen(width * scale, style, nullptr, accuracy * scale, writer.Get());
+    if (SUCCEEDED(hr)) hr = writer->Close();
+    if (FAILED(hr)) return hr;
+    const auto restore = D2D1::Matrix3x2F::Scale(1.F / scale, 1.F / scale);
+    return pen->Simplify(D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, &restore, accuracy, sink);
 }
 class PathWriter final : public ID2D1SimplifiedGeometrySink {
 public:

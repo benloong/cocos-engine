@@ -31,6 +31,8 @@
 
 ## 尚需签收的节点
 
+Windows Debug、Release 将 Direct2D 字形与笔宽同步放大 3、4、7、16、64 倍，按比例调整扩张容差，再将笔画还原至原尺寸。以 Chrome 同字体画布为参考，四个字号的合成粗体和十二组圆角描边共 80 个对照，每个配置的超差像素数和最大 alpha 差均与原尺度相同。仅 24 px 粗体在 3 倍、7 倍时原始 RGBA 哈希变化。调整坐标尺度未改善这组用例，生产路径继续使用原尺度。[粗体逐图数据](./native-2d-m6-bold-replay.json)、[描边逐图数据](./native-2d-m6-stroke-replay.json)
+
 Windows 圆角字体描边的轮廓扩张和边缘细分已分别测量。以 Chrome 的同源 Thonburi 为参考，1、4、8 像素笔宽各比较 25 种容差组合、4 个字号和 3 种字形样式。两个 Windows 配置的逐图哈希一致。4 像素笔宽的最少差异像素为 5112，生产设置为 5835；该组合使 12 像素正体的最大 alpha 差从 43 增至 49。三种笔宽的 900 次比较均未通过逐像素容差 1，生产参数继续使用 0.01。[对照结果](./native-2d-m6-stroke-tolerances.json)、[复现脚本](../native/tests/2d-poc/compare-ttf-stroke-tolerances.cjs)
 
 编号采用计划章节；同一行中的不同验收条件均须满足。各已验收子项、夹具及历史版本记录见[逐项计划](./native-2d-m6-plan.md)。
