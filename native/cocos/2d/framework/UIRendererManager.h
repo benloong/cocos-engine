@@ -40,12 +40,6 @@ public:
     void markDirtyRenderer(UIRenderer *renderer);
     void updateAllDirtyRenderers();
 
-    uint32_t getDirtyCount() const { return static_cast<uint32_t>(_dirtyRenderers.size()); }
-    UIRenderer *getDirtyNativeRenderer(uint32_t index) const {
-        return index < _dirtyRenderers.size() ? _dirtyRenderers[index] : nullptr;
-    }
-    static const UIRendererManager &pendingNativeRenderers() { return getInstance(); }
-
 private:
     std::vector<UIRenderer *> _allRenderers;
     std::vector<UIRenderer *> _dirtyRenderers;

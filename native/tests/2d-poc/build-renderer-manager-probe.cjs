@@ -22,8 +22,9 @@ const probe = `
     }
     const manager = n2d.UIRendererManager;
     if (typeof manager.prototype.updateAllDirtyRenderers !== 'function' || 'updateAllDirtyRenderers' in manager) throw Error('Expected instance method');
-    for (const name of ['addRenderer', 'removeRenderer', 'markDirtyRenderer', 'takeDirtyRenderers', 'getDirtyCount']) {
-        if (name in manager.prototype) throw Error('Unexpected JSB API: ' + name);
+    for (const name of ['addRenderer', 'removeRenderer', 'markDirtyRenderer', 'takeDirtyRenderers',
+        'getDirtyCount', 'getDirtyNativeRenderer', 'pendingNativeRenderers', 'getInstance']) {
+        if (name in manager.prototype || name in manager) throw Error('Unexpected JSB API: ' + name);
     }
     const calls = [];
     const nativeUpdate = manager.prototype.updateAllDirtyRenderers;

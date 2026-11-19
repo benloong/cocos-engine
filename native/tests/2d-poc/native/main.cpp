@@ -2346,38 +2346,51 @@ void testJsSceneRecord(se::ScriptEngine *scriptEngine) {
 }
 
 void testDirtyRenderers() {
-    const auto &native = cc::UIRendererManager::pendingNativeRenderers();
-    const auto previous = native.getDirtyCount();
-    {
-        cc::Node node("dirty-sprite");
-        cc::Sprite sprite;
-        check(native.getDirtyCount() == previous, "detached renderer does not enter the active dirty set");
-        sprite.setNode(&node);
-        sprite.setDirty();
-        sprite.setColorRGBA(.5F, .5F, .5F, 1.F);
-        check(native.getDirtyCount() == previous + 1 && native.getDirtyNativeRenderer(previous) == &sprite,
-              "native Sprite mutations coalesce in the renderer dirty set");
-        sprite.setEnabled(false);
-        sprite.setType(1);
-        check(native.getDirtyCount() == previous, "disabled renderer keeps pending work off the queue");
-        sprite.setEnabled(true);
-        check(native.getDirtyCount() == previous + 1, "enable reschedules pending renderer work");
-        sprite.setNode(nullptr);
-        check(native.getDirtyCount() == previous, "detach cancels pending renderer work");
-        sprite.setNode(&node);
-    }
-    check(native.getDirtyCount() == previous, "destroying a dirty native renderer cancels its entry");
-    // Removing the next item swaps the tail into its place. Appends during a callback
-    // are visited in the same pass, and repeated marks of the current item coalesce.
     class Probe final : public cc::UIRenderer {
     public:
         std::function<void()> run;
-        void updateRenderer() override { run(); }
+        void invalidate() { markRenderDirty(); }
+        void updateRenderer() override {
+            clearRenderDirty();
+            run();
+        }
     };
+    auto &manager = cc::UIRendererManager::getInstance();
+    int updates = 0;
+    {
+        cc::Node node("dirty-renderer");
+        Probe renderer;
+        renderer.run = [&] { ++updates; };
+        renderer.invalidate();
+        manager.updateAllDirtyRenderers();
+        check(updates == 0, "detached renderer defers its update");
+        renderer.setNode(&node);
+        renderer.invalidate();
+        renderer.invalidate();
+        manager.updateAllDirtyRenderers();
+        check(updates == 1, "repeated mutations dispatch once");
+        renderer.invalidate();
+        renderer.setEnabled(false);
+        renderer.invalidate();
+        manager.updateAllDirtyRenderers();
+        check(updates == 1, "disabled renderer defers pending work");
+        renderer.setEnabled(true);
+        manager.updateAllDirtyRenderers();
+        check(updates == 2, "enable dispatches deferred work");
+        renderer.invalidate();
+        renderer.setNode(nullptr);
+        manager.updateAllDirtyRenderers();
+        check(updates == 2, "detach cancels queued work");
+        renderer.setNode(&node);
+        renderer.invalidate();
+    }
+    manager.updateAllDirtyRenderers();
+    check(updates == 2, "destruction cancels queued work");
+    // Removing the next item swaps the tail into its place. Appends during a callback
+    // are visited in the same pass, and repeated marks of the current item coalesce.
     cc::Node root("manager-parity");
     Probe first, second, third, fourth;
     for (auto *item : {&first, &second, &third, &fourth}) item->setNode(&root);
-    auto &manager = cc::UIRendererManager::getInstance();
     std::vector<int> order;
     first.run = [&] {
         order.push_back(1);
@@ -2464,14 +2477,6 @@ void testSpritePrepare() {
         check(drawInfo->getTexture() == texture->getGFXTexture(), "sprite texture");
     }
 
-    // Inspect the queue independently from the draw data produced by the manager.
-    const auto pending = [](cc::Sprite *item) {
-        const auto &manager = cc::UIRendererManager::pendingNativeRenderers();
-        for (uint32_t i = 0; i < manager.getDirtyCount(); ++i) {
-            if (manager.getDirtyNativeRenderer(i) == item) return true;
-        }
-        return false;
-    };
     {
         cc::IntrusivePtr<cc::Node> parent(new cc::Node("sprite-ancestor"));
         cc::IntrusivePtr<cc::Node> child(new cc::Node("sprite-child"));
@@ -2489,11 +2494,13 @@ void testSpritePrepare() {
         auto *peerEntity = peer.getRenderEntity();
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         auto *draw = peerEntity->getStaticRenderDrawInfo(0);
-        check(draw && draw->getVbCount() == 4 && !pending(&peer), "child starts with prepared quad");
+        check(draw && draw->getVbCount() == 4, "child starts with prepared quad");
+        if (!draw || !drawInfo) return;
         const float initialX = draw->getVDataBuffer()[0];
         parent->setPosition(17.F, 0.F, 0.F);
         child->getWorldMatrix(); // A different consumer can clear Node transform flags first.
-        check(pending(&peer), "ancestor motion queues descendant geometry");
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(draw->getVDataBuffer()[0], initialX + 17.F, "ancestor motion updates cached positions before traversal");
         child->setActiveInHierarchy(true);
         peer.setEnabled(true);
         parent->setActiveInHierarchy(true);
@@ -2503,8 +2510,6 @@ void testSpritePrepare() {
             cc::Batcher2d batcher;
             batcher.walk(parent, 1.F, false);
         }
-        check(!pending(&peer), "manager prepares the dirty Sprite before traversal");
-        checkNear(draw->getVDataBuffer()[0], initialX + 17.F, "ancestor motion updates cached positions");
         checkNear(draw->getVDataBuffer()[8], .5F, "inherited opacity updates vertex alpha");
         peer.setColorRGBA(64, 128, 192, 255);
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
@@ -2521,19 +2526,23 @@ void testSpritePrepare() {
         checkNear(draw->getVDataBuffer()[0], initialX + 23.F, "a pending tint cannot mask dirty geometry");
         checkNear(draw->getVDataBuffer()[6], 0.F, "geometry rebuild applies concurrent tint");
         texture->setFilters(cc::Filter::NEAREST, cc::Filter::NEAREST);
-        check(pending(&peer) && pending(&sprite), "shared sampler queues both consumers");
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-        check(draw->getSampler() == texture->getGFXSampler(), "prepared draw binds replacement sampler");
+        check(draw->getSampler() == texture->getGFXSampler() && drawInfo->getSampler() == texture->getGFXSampler(), "both consumers bind replacement sampler");
         texture->create(2, 2, cc::Texture2D::PixelFormat::RGBA8888);
-        check(pending(&peer) && pending(&sprite), "shared texture reset queues both consumers");
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-        check(draw->getTexture() == texture->getGFXTexture(), "prepared draw binds replacement texture view");
+        check(draw->getTexture() == texture->getGFXTexture() && drawInfo->getTexture() == texture->getGFXTexture(), "both consumers bind replacement texture view");
         checkNear(draw->getVDataBuffer()[12], .5F, "resized texture recomputes frame UV");
+        checkNear(drawInfo->getVDataBuffer()[12], .5F, "resized texture recomputes second consumer UV");
         peer.setSizeMode(0);
         peer.setFrame(makeSquareFrame(texture, 1.F));
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        // A geometry update rewrites this UV even if the resulting frame is identical.
+        const float oldU = draw->getVDataBuffer()[12];
+        draw->getVDataBuffer()[12] = -1.F;
         shared->setRectWidth(.5F);
-        check(!pending(&peer), "switching frames unsubscribes the old frame");
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(draw->getVDataBuffer()[12], -1.F, "changing a former frame leaves the prepared vertices untouched");
+        draw->getVDataBuffer()[12] = oldU;
         texture->create(1, 1, cc::Texture2D::PixelFormat::RGBA8888);
         child->setParent(nullptr);
     }
