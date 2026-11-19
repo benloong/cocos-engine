@@ -227,7 +227,7 @@ export class M6GraphicsGpuProbe extends Component {
             console.log(`M6_GPU_CAPTURE ${JSON.stringify({ name, backend: sys.isNative ? 'native' : 'web' })}`);
         };
         if (probeMode === 'richtext') {
-            const text = await runRichTextMatrix(canvas.node, capture);
+            const text = await runRichTextMatrix(canvas.node, capture, () => rt.readPixels()!);
             const device = director.root!.device;
             const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures, text,
                 width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };

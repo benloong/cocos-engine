@@ -11,6 +11,10 @@ if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.by
 const expected=['text-basic','text-bold','text-italic','text-underline','text-outline','text-nested','text-colors','text-wrap-left','text-wrap-center','text-wrap-right','text-multiline','text-unicode','text-shadow-tag'];
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 for(const value of [a,b]) {
+    const coverage = value.text.hardShadowCoverage;
+    if (!Array.isArray(coverage) || coverage.length !== 2 || coverage.some(count => !Number.isInteger(count) || count <= 0)) {
+        throw Error('Missing positive and negative hard shadow GPU checks: ' + value.backend);
+    }
     if(value.width!==256||value.height!==256||JSON.stringify(value.captures)!==JSON.stringify(expected)||!value.text.loaded||!value.text.released||JSON.stringify(value.text.metrics.map(x=>x.name))!==JSON.stringify(expected))throw Error('Incomplete RichText capture/font lifecycle evidence');
 }
 if(a.text.nativeBytes!==223404||b.text.nativeBytes!==null)throw Error('Unexpected TTF source size');

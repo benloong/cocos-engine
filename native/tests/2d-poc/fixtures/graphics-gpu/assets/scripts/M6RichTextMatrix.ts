@@ -1,4 +1,4 @@
-import { assetManager, deserialize, director, gfx, Color, instantiate, isValid, Label, Node, Prefab, RichText, sys, TTFFont, UITransform } from 'cc';
+import { assetManager, deserialize, director, gfx, Color, instantiate, isValid, Label, Node, Prefab, RichText, sys, TTFFont, UITransform, Vec2 } from 'cc';
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
@@ -185,8 +185,51 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
         cacheBefore, cacheAfter: assetManager.assets.count, http };
 }
 
+async function checkHardShadow (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<number[]> {
+    const node = new Node('hard-shadow');
+    parent.addChild(node);
+    node.layer = parent.layer;
+    const ui = node.addComponent(UITransform);
+    const label = node.addComponent(Label);
+    label.font = font;
+    label.fontSize = 24;
+    label.lineHeight = 30;
+    label.overflow = Label.Overflow.CLAMP;
+    ui.setContentSize(96, 96);
+    label.horizontalAlign = 1;
+    label.verticalAlign = 1;
+    label.string = 'I';
+    label.enableShadow = true;
+    label.shadowColor = new Color(0, 255, 0, 255);
+    label.shadowBlur = 0;
+    const coverage: number[] = [];
+    for (const sign of [1, -1]) {
+        const offset = new Vec2(16 * sign, 14 * sign);
+        label.shadowOffset = offset;
+        node.setPosition(0, 0, 0);
+        await wait();
+        const original = readPixels();
+        node.setPosition(offset.x, offset.y, 0);
+        await wait();
+        const moved = readPixels();
+        let covered = 0;
+        let mismatches = 0;
+        for (let i = 0; i < original.length; i += 4) {
+            const shadow = original[i + 1] - original[i] > 127;
+            const glyph = moved[i] > 127;
+            if (glyph) ++covered;
+            if (glyph !== shadow) ++mismatches;
+        }
+        if (!covered || mismatches) throw new Error(`Hard shadow ${sign}: ${mismatches} differing pixels for ${covered} glyph pixels`);
+        coverage.push(covered);
+    }
+    node.destroy();
+    await wait();
+    return coverage;
+}
+
 /** The real asset factory loads the same TTF bytes in both applications. */
-export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>): Promise<object> {
+export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>, readPixels: () => Uint8Array): Promise<object> {
     const url = sys.isNative ? '__M6_GPU_FONT__' : '/m6-font.ttf';
     const loadFont = (): Promise<TTFFont> => new Promise((resolve, reject) => {
         assetManager.loadRemote<TTFFont>(url, { ext: '.ttf' }, (error, asset) => error ? reject(error) : resolve(asset!));
@@ -234,6 +277,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
+    const hardShadowCoverage = await checkHardShadow(parent, font, readPixels);
     const prefab = await checkRichTextPrefab(parent, font);
     const cases = [
         { name: 'text-basic', value: 'Atlas 123' },
@@ -304,5 +348,5 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
-    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab };
+    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, hardShadowCoverage };
 }

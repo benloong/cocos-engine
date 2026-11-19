@@ -141,6 +141,7 @@
 - [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
   - [x] RichText 动态换行后改成含未知 <shadow> 标签的双色文本。Windows Debug、Release 和 Web 都移除了旧行，保留内部红绿样式、段位置与尺寸。三端分别与无标签对照逐像素一致，跨端最大通道差为 0。实际 Label 阴影另行验收。[回归场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
+  - [x] Windows 单行 Label 的零模糊阴影按 UI 坐标绘制一次。固定大小 96×96、24px Thonburi 字体的字母 I，分别偏移 (16,14) 和 (−16,−14)。GPU 回读按半覆盖阈值比较原阴影与平移后的字形。旧 Debug 正向有 98 个差异像素，修复后 Debug、Release 和 Web 两个方向各覆盖 30 个像素，差异均为 0。模糊、裁边及自动尺寸另行验收。[回归场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
 - [x] Windows GDI 合成斜体布局例外仅用于 M5 系统 Arial 40px 的单段 Italic。Web 基准 90.748px（舍入校验 ±0.01px），Windows 接受历史差值 9.748px 加 0.001px 舍入余量。实测 Windows Debug/Release 均为 89.50227px，Web 为 90.74836px。自定义 TTF、字形图像、事件与其他布局保持各自门限。[历史对照](./native-2d-m5-web-parity.md)
 
 交付：native 解析/布局测试、场景对照、壳审计。M5 的文本/图片渲染闭环继续有效，不能用它替代本项。
