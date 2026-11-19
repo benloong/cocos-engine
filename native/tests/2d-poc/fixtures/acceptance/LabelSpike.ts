@@ -86,7 +86,7 @@ export class LabelSpike {
                 const draw = native?.getRenderEntity().getStaticRenderDrawInfo(0);
                 console.log(`M3_BITMAP_LABEL ${JSON.stringify({
                     width: bitmapTransform.width, height: bitmapTransform.height, actualFontSize: bitmapLabel.actualFontSize,
-                    glyphs: native?.getRenderedBitmapGlyphCount(), vertices: draw?.vbCount, indices: draw?.ibCount,
+                    glyphs: draw ? draw.vbCount / 4 : undefined, vertices: draw?.vbCount, indices: draw?.ibCount,
                     textureWidth: native?.getTextureWidth?.(),
                     textureHeight: native?.getTextureHeight?.(),
                     lines: native?.getLineCount?.(),

@@ -1,6 +1,17 @@
 import { BitmapFont, LabelAtlas, Canvas, Color, director, DynamicAtlasManager, dynamicAtlasManager, ImageAsset,
     Label, native, Node, Rect, RenderTexture, Size, SpriteFrame, sys, Texture2D, UITransform, Vec2 } from 'cc';
 
+function submittedGlyphCount (entity: any): number {
+    let glyphs = 0;
+    for (let i = 0; i < entity.staticDrawInfoSize; ++i) {
+        const draw = entity.getStaticRenderDrawInfo(i);
+        const quads = draw.vbCount / 4;
+        if (!Number.isInteger(quads) || draw.ibCount !== quads * 6) throw new Error('Invalid bitmap draw topology');
+        glyphs += quads;
+    }
+    return glyphs;
+}
+
 /** Real GPU font source/packed/restored captures. No CPU diagnostic getter is used. */
 export class BitmapGpuProbe {
     public static async run (parent: Node): Promise<void> {
@@ -70,10 +81,11 @@ export class BitmapGpuProbe {
                     const backend = (label as any)._native;
                     if (sys.isNative) {
                         const entity = backend.getRenderEntity();
+                        if (entity.staticDrawInfoSize !== 1) throw new Error('Expected one bitmap draw');
                         const draw = entity.getStaticRenderDrawInfo(0);
-                        if (backend.getRenderedBitmapGlyphCount() !== 2 || backend.getBitmapDiagnosticBuildCount() !== 0
-                            || entity.staticDrawInfoSize !== 1 || draw.vbCount !== 8 || draw.ibCount !== 12
-                            || draw.texture !== frame.texture.getGFXTexture()) throw new Error('Bitmap is not sampling its current GPU atlas directly: ' + JSON.stringify({ stage, glyphs: backend.getRenderedBitmapGlyphCount(), diagnostics: backend.getBitmapDiagnosticBuildCount(), draws: entity.staticDrawInfoSize, vertices: draw.vbCount, indices: draw.ibCount, textureMatches: draw.texture === frame.texture.getGFXTexture(), submittedId: draw.texture?.objectID, expectedId: frame.texture.getGFXTexture()?.objectID, submittedNull: draw.texture == null, expectedNull: frame.texture.getGFXTexture() == null }));
+                        if (backend.getBitmapDiagnosticBuildCount() !== 0
+                            || draw.vbCount !== 8 || draw.ibCount !== 12
+                            || draw.texture !== frame.texture.getGFXTexture()) throw new Error('Bitmap is not sampling its current GPU atlas directly: ' + JSON.stringify({ stage, diagnostics: backend.getBitmapDiagnosticBuildCount(), draws: entity.staticDrawInfoSize, vertices: draw.vbCount, indices: draw.ibCount, textureMatches: draw.texture === frame.texture.getGFXTexture(), submittedId: draw.texture?.objectID, expectedId: frame.texture.getGFXTexture()?.objectID, submittedNull: draw.texture == null, expectedNull: frame.texture.getGFXTexture() == null }));
                     }
                     const file = name + '-' + stage;
                     if (sys.isNative) {
@@ -139,7 +151,7 @@ export class BitmapGpuProbe {
                             const output = native.fileUtils.getDefaultResourceRootPath() + 'm6-bitmap-captures/';
                             if (!native.fileUtils.writeDataToFile(data.buffer, output + file + '.rgba')) throw new Error('Bitmap layout output failed');
                         } else if (!(await fetch('/m6-bitmap-capture?name=' + file, { method: 'POST', body: data })).ok) throw new Error('Bitmap layout collector failed');
-                        const glyphs = sys.isNative ? (label as any)._native.getRenderedBitmapGlyphCount() : (label as any).renderData.vertexCount / 4;
+                        const glyphs = sys.isNative ? submittedGlyphCount((label as any)._native.getRenderEntity()) : (label as any).renderData.vertexCount / 4;
                         if (settings.id === 'unicode-scalar' && glyphs !== 4) throw new Error('Missing supplementary BMFont glyph');
                         const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, glyphs, metadataFontSize: font.fontSize,
                             sourceFontSize: sys.isNative ? (font as any).getSourceFontSize() : font.fntConfig!.fontSize,
@@ -154,8 +166,9 @@ export class BitmapGpuProbe {
                         label.overflow = Label.Overflow.NONE; label.enableWrapText = false; label.fontSize = 16; label.lineHeight = 16;
                         label.string = 'A'.repeat(70000); await wait();
                         const entity = backend.getRenderEntity();
+                        if (entity.staticDrawInfoSize !== 5) throw new Error('Expected five bitmap draw chunks');
                         const overflow = entity.getStaticRenderDrawInfo(4);
-                        if (backend.getRenderedBitmapGlyphCount() !== 70000 || entity.staticDrawInfoSize !== 5
+                        if (submittedGlyphCount(entity) !== 70000
                             || overflow.vbCount !== 17872 || overflow.ibCount !== 26808) throw new Error('Large bitmap GPU chunks truncated');
                         label.string = ''; await wait();
                         if (entity.staticDrawInfoSize !== 0 || overflow.texture || overflow.material) throw new Error('Bitmap clear retains submissions');

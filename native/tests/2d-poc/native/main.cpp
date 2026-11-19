@@ -425,14 +425,24 @@ void testBitmapGpuGeometry() {
     checkNear(label.getContentWidth(), 20.F, "Explicit bitmap update observes transform resize before prepare");
     checkNear(label.getContentHeight(), 10.F, "Explicit bitmap update preserves new clamp height");
     label.setOverflow(0); label.setFontSize(4); label.setSpacingX(0); label.setLineHeight(4);
+    const auto checkGlyphDraws = [entity](uint32_t glyphs, uint32_t chunks) {
+        uint32_t vertices = 0;
+        uint32_t indices = 0;
+        for (uint32_t i = 0; i < entity->getStaticDrawInfoSize(); ++i) {
+            auto *draw = entity->getStaticRenderDrawInfo(i);
+            vertices += draw->getVbCount();
+            indices += draw->getIbCount();
+        }
+        check(entity->getStaticDrawInfoSize() == chunks && vertices == glyphs * 4 && indices == glyphs * 6,
+              "All submitted bitmap chunks contain the expected glyph quads");
+    };
     label.setString(std::string(17000, 'A')); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getRenderedBitmapGlyphCount() == 17000 && entity->getStaticDrawInfoSize() == 2, "Large bitmap text chunks all glyphs without truncating");
+    checkGlyphDraws(17000, 2);
     check(entity->getStaticRenderDrawInfo(0)->getVbCount() == 65532 && entity->getStaticRenderDrawInfo(1)->getVbCount() == 2468,
           "Bitmap chunks respect 16-bit mesh-buffer limits");
     check(label.getBitmapDiagnosticBuildCount() == 0, "Large GPU-only bitmap text never allocates diagnostic pixels");
     label.setString(std::string(70000, 'A')); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(label.getRenderedBitmapGlyphCount() == 70000 && entity->getStaticDrawInfoSize() == 5,
-          "Bitmap text exceeds inline DrawInfo slots without truncation");
+    checkGlyphDraws(70000, 5);
     check(entity->getRenderDrawInfoAt(4) == entity->getStaticRenderDrawInfo(4), "Batcher indexed access reaches owned overflow DrawInfo");
     auto *overflow = entity->getStaticRenderDrawInfo(4);
     entity->updateInheritedOpacity(.25F);
@@ -444,7 +454,7 @@ void testBitmapGpuGeometry() {
     label.setString(""); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(overflow->getMaterial() == nullptr && overflow->getTexture() == nullptr && overflow->getVDataBuffer() == nullptr,
           "Inactive overflow slots release resources and borrowed buffers");
-    check(entity->getStaticDrawInfoSize() == 0 && label.getRenderedBitmapGlyphCount() == 0, "Empty bitmap text clears glyph submissions");
+    checkGlyphDraws(0, 0);
     label.setFontAsset(nullptr); label.setNode(nullptr);
     font->clearNativeData();
     check(!font->hasSourceFontSize() && font->getSourceFontSize() == -1, "Clearing bitmap asset releases configured source-size state");

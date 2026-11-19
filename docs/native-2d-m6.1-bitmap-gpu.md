@@ -29,3 +29,8 @@ Label 通过 IntrusivePtr 持有字体、源帧及渲染帧；Sprite 拥有复�
 本节点不迁移 DynamicAtlasManager/Atlas 排布算法，不代表自动合图、图集满/压缩来源回退、真实 bundle/旧场景/Prefab、异步/延迟销毁、长期内存、性能、Release、ASAN 或其他平台验收完成。RichText 严格图像历史结果仍为 9/12。
 
 后续状态：默认居中、字号/间距/换行和四种 overflow 已由[原生布局节点](./native-2d-m6.1-bitmap-layout.md)继续实现，并扩大到 76 组布局及默认居中图集 GPU 对照；上文未解决记录描述本节点当时的快照，不再作为当前居中对齐阻塞。复杂布局/资产与终态 M6 范围仍按后续计划验收。
+## 2026-11-19 字形提交计数回归
+
+删除 `Label.getRenderedBitmapGlyphCount()` 和原生计数字段后，验收按每个有效 `RenderDrawInfo` 的 4 个顶点、6 个索引统计一个字形。Windows Debug、Release 的原生回归分别检查 17,000 个字形分为 2 块、70,000 个字形分为 5 块，以及清空文本后的 0 块。整应用在两个配置下都提交了完整的 70,000 个字形，清空后释放了溢出块引用的材质和纹理。
+
+两个 Windows 配置分别与同轮 Web 对照。BitmapFont 和 LabelAtlas 的 12 张图集状态图、80 张布局图全部逐字节相等，80 项布局的字形数和测量值通过对照。复现入口见 [GPU 场景](../native/tests/2d-poc/fixtures/acceptance/BitmapGpuProbe.ts)、[图集状态比较](../native/tests/2d-poc/compare-bitmap-gpu.cjs)和[布局比较](../native/tests/2d-poc/compare-bitmap-layout.cjs)。两个比较脚本均接受项目路径和 `Debug` 或 `Release`。

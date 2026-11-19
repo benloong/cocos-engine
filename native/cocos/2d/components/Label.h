@@ -126,7 +126,6 @@ public:
     uint32_t getPixelChecksum() const { ensureBitmapDiagnostics(); return _lastPixelChecksum; }
     uint32_t getOpaquePixels() const { ensureBitmapDiagnostics(); return _lastOpaquePixels; }
     RenderEntity *getRenderEntity() const override { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
-    uint32_t getRenderedBitmapGlyphCount() const { return _renderedBitmapGlyphs; }
     uint32_t getBitmapDiagnosticBuildCount() const { return _bitmapDiagnosticBuilds; }
 
     void setColor(const Color &color);
@@ -164,7 +163,6 @@ private:
     void syncBitmapAtlas();
     bool _bitmapDiagnosticsDirty{false};
     uint32_t _bitmapDiagnosticBuilds{0};
-    uint32_t _renderedBitmapGlyphs{0};
     void rebuildLetterTexture();
     void applyBitmapAtlas();
 

@@ -1,7 +1,9 @@
 'use strict';
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const project = path.resolve(process.argv[2] || path.join(__dirname, '../../../../cocos-m1-test'));
-const native = path.join(project, 'build/windows/proj/Debug/m6-bitmap-captures');
+const configuration = process.argv[3] || 'Debug';
+if (!['Debug', 'Release'].includes(configuration)) throw new Error('Expected Debug or Release');
+const native = path.join(project, 'build/windows/proj', configuration, 'm6-bitmap-captures');
 const web = path.join(__dirname, 'build/bitmap-web-captures');
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 const captures = [];
@@ -16,6 +18,7 @@ for (const consumer of ['bitmap', 'atlas']) for (const sampling of ['flat', 'rot
     captures.push({ name, webName, maxDifference, differingChannels, nativeSha256: hash(actual), webSha256: hash(expected) });
 }
 const passed = captures.every(capture => capture.maxDifference <= 1);
-fs.writeFileSync(path.join(__dirname, 'build/bitmap-gpu-comparison.json'), JSON.stringify({ tolerance: 1, passed, captures }, null, 2) + '\n');
+const report = configuration === 'Debug' ? 'bitmap-gpu-comparison.json' : 'bitmap-gpu-release-comparison.json';
+fs.writeFileSync(path.join(__dirname, 'build', report), JSON.stringify({ tolerance: 1, passed, captures }, null, 2) + '\n');
 for (const capture of captures) console.log(`${capture.name}: max=${capture.maxDifference}, channels=${capture.differingChannels}`);
 if (!passed) process.exitCode = 1;

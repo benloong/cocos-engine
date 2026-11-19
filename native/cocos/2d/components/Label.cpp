@@ -280,7 +280,7 @@ void Label::applyFontAsset() {
 }
 void Label::clearRenderedData() {
     _renderer.clearFrame();
-    _bitmapDiagnosticsDirty = false; _renderedBitmapGlyphs = 0;
+    _bitmapDiagnosticsDirty = false;
     _renderer.setEnabled(isEnabled());
     _frame = nullptr; _texture = nullptr;
     std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
@@ -686,7 +686,6 @@ void Label::rebuildBitmapTexture() {
         }
         quads.emplace_back(quad);
     }
-    _renderedBitmapGlyphs = static_cast<uint32_t>(quads.size());
     _lastContentWidth = static_cast<float>(layout.width); _lastContentHeight = static_cast<float>(layout.height);
     _lastTextureWidth = std::ceil(_lastContentWidth) + 2; _lastTextureHeight = std::ceil(_lastContentHeight) + 2;
     _lastLineCount = static_cast<int32_t>(layout.lineWidths.size());
@@ -961,7 +960,6 @@ void Label::rebuildTexture() {
         if (_bitmapAtlas && !glyphs.empty()) rebuildBitmapTexture(); else clearRenderedData();
         return;
     }
-    _renderedBitmapGlyphs = 0;
     _bitmapDiagnosticsDirty = false;
     _renderer.setColor(Color(255, 255, 255, _color.a));
     if (_fontAsset && _fontAsset->isReleased()) { clearRenderedData(); return; }
