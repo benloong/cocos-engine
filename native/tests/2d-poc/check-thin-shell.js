@@ -38,10 +38,12 @@ function main () {
 
     const { build, shellHotPaths } = require('./audit-m6.cjs');
     const report = build();
-    for (const name of ['UITransform', 'Sprite', 'Label', 'RichText']) {
-        const shell = report.classes.find(component => component.name === name);
+    // These shared classes intentionally run the same TypeScript on Web and native.
+    const shared = new Set(['UIRenderer', 'LabelOutline', 'LabelShadow']);
+    for (const shell of report.classes) {
+        if (shared.has(shell.name) && !shell.overridden) continue;
         const findings = report.files.find(file => file.file === shell.runtime);
-        check(shell.overridden, name + ' must use its native override');
+        check(shell.overridden, shell.name + ' must use its native override');
         check(!findings.frameMethods.length, shell.runtime + ' implements a frame method: ' + JSON.stringify(findings.frameMethods));
         check(!findings.allocations.length, shell.runtime + ' creates rendering data: ' + JSON.stringify(findings.allocations));
     }
