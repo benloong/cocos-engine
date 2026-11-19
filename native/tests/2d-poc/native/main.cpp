@@ -51,6 +51,7 @@
 #include "2d/framework/UITransform.h"
 #include "2d/framework/RenderRoot2D.h"
 #include "2d/renderer/RenderDrawInfo.h"
+#include "2d/renderer/LetterAtlas.h"
 #include "2d/renderer/RenderEntity.h"
 #include "2d/renderer/Batcher2d.h"
 #include "2d/renderer/SpriteGeometry.h"
@@ -1580,6 +1581,28 @@ void testGraphicsMeshes() {
         mask.setNode(orphan.get());orphan.reset();
         mask.setType(1);cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(mask.getNode()==nullptr && mask.getRenderEntity()->getNode()==nullptr,"Node destruction clears Mask borrowed Node before later setters");
+    }
+    {
+        auto atlas = cc::LetterAtlas::acquire();
+        const auto initialRefs = atlas->getRefCount();
+        cc::Label label;
+        label.setCacheMode(2);
+        {
+            cc::Node host("short-lived-char-host");
+            label.setNode(&host);
+            label.getLetterTexture();
+            check(atlas->getRefCount() == initialRefs + 1, "attached CHAR Label owns one atlas reference");
+        }
+        check(atlas->getRefCount() == initialRefs, "host destruction releases the orphaned Label's CHAR atlas reference");
+        cc::Node next("next-char-host");
+        label.setNode(&next);
+        label.getLetterTexture();
+        check(atlas->getRefCount() == initialRefs + 1, "reattached CHAR Label reacquires one atlas reference");
+        label.setNode(nullptr);
+        check(atlas->getRefCount() == initialRefs, "explicit detach releases the same atlas reference");
+        label.getLetterTexture();
+        label.setNode(nullptr);
+        check(atlas->getRefCount() == initialRefs, "explicit detach releases an atlas acquired without a host");
     }
     {
         cc::Node firstNode("letter-cache-first"),secondNode("letter-cache-second");

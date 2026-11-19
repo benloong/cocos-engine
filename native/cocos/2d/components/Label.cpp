@@ -243,7 +243,8 @@ void Label::setLetterTexture(Texture2D *texture) {
 }
 
 void Label::setNode(Node *node) {
-    if (!node) _letterAtlas.reset();
+    // A detached Label may have acquired an atlas through getLetterTexture().
+    if (!node && !_node) _letterAtlas.reset();
     _renderer.setNode(node);
     Component::setNode(node);
     setUITransform(node ? static_cast<UITransform *>(node->getUIComponent(UITransform::TYPE_ID)) : nullptr);
@@ -257,6 +258,7 @@ void Label::onUITransformChanged() {
 void Label::onDetach() {
     UIRenderer::onDetach();
     setUITransform(nullptr);
+    if (!_node) _letterAtlas.reset();
 }
 
 void Label::setUITransform(UITransform *transform) {
