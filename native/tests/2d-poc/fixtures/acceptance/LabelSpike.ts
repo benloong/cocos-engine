@@ -11,11 +11,7 @@ interface LabelCase {
     wrap: boolean;
 }
 
-/**
- * M3.0 text measurement probe. It intentionally uses the regular Label
- * component: the goal is to validate the existing platform text delegate
- * before introducing a native Label shell.
- */
+/** Measures scene Labels and captures their rendered pixels. */
 export class LabelSpike {
     public static run (parent: Node): void {
         const cases: LabelCase[] = [
@@ -266,16 +262,6 @@ export class LabelSpike {
             }
 
             setTimeout(() => {
-                if (typeof n2d !== 'undefined' && n2d.TextMetrics) {
-                    const metrics = new n2d.TextMetrics();
-                    metrics.setFont(`${item.fontSize}px Arial`);
-                    const measured = metrics.measure(item.text);
-                    console.log(`M3_NATIVE_MEASURE ${JSON.stringify({
-                        name: item.name,
-                        width: measured.width,
-                        height: measured.height,
-                    })}`);
-                }
                 const nativeLabel = (label as any)._native;
                 if (nativeLabel) {
                     if (item.name === 'cjk') {

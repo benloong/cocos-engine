@@ -31,6 +31,7 @@ function require(id) {
 const exports = {};
 ${shell}
 function check(value,message) { if (!value) throw new Error(message); }
+check(!('TextMetrics' in n2d), 'standalone measurement probe leaked into JSB');
 const rendererManager = new n2d.UIRendererManager();
 const node = new jsb.Node('layout-push'); let changes=0;
 node.emit = function(type) { check(type === 'size-changed','size event'); changes++; };

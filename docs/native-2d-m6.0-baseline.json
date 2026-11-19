@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "fd593504dd022f85470aeaacdc559a14106d1f9c9b11355e6643663a9ec0debe"
+      "sha256": "1a67d83c8312db3626d890ddac25c9d6c87d14bc445e90e14430be05f92a2562"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -31,7 +31,7 @@
     },
     {
       "file": "native/CMakeLists.txt",
-      "sha256": "0a9f182874cbb64b3e475666f62a6c6e248c2908d92110a9be7cbc33a583cab6"
+      "sha256": "c685201dcb8b362733694f64c2167429a96d51cdfc356233aea3087949336041"
     },
     {
       "file": "native/cocos/2d/assets/BitmapFont.h",
@@ -71,19 +71,19 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
-      "sha256": "1c72f77f086811967fb34522cd0ece3b47520a76755de2cabcb7b3227a319cc1"
+      "sha256": "ad9953f2935a735f8ba3a8c80d826249afdea6d9865c0d9445984e04fc170b8d"
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
-      "sha256": "cadebc94f1d6717b379cafbc72e1de5c71be4bef75ab3246bb1f5e59ed57366d"
+      "sha256": "c1281185355361e437532e0f6eb61fad695b84001f355d24c817504b40f947f5"
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "45a460853f12fb117f8a298c64797de7df6ac30fdf9723c09fe8b899ea31c70e"
+      "sha256": "c5a885c4648d7e3c6d1b7cad13abc7e63f9bf74d86c2c15f62d926ddf93ddc24"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "9e89ddd38c86e1ba3ed3dcf0c9abbed5947146813fe5e6671718a5478a34577b"
+      "sha256": "425818882e0d46e3f4993f4ac03834d2123d51fd54d8743f9d666261a50c3bc0"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -103,11 +103,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "4f14873fdfbdae8309857583bafbc6fd990af0e6d9921b786bee173572ed8601"
+      "sha256": "8e5c38f6b0626fddae7bd9639118d8eab64fd55691abf6098412fd7e5dce6804"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "37275b1aa7ccd30b0fc77ac477152b1ba59a9a984326a6d02c569fd091d12077"
+      "sha256": "8c5ac995a27336e935a7709075467da4520422efe18c9e04c7ec68366b5d3985"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -254,14 +254,6 @@
       "sha256": "d1dab077a7e967590e2bc3d5afd60e1c165a8c1d6df7ee1e5162c6e10b3c751f"
     },
     {
-      "file": "native/cocos/2d/renderer/TextMetrics.cpp",
-      "sha256": "7f8a5d397964ba636bc84c72fb045ea97dd0bc059d131e183dde1e895760d82f"
-    },
-    {
-      "file": "native/cocos/2d/renderer/TextMetrics.h",
-      "sha256": "504a3e7ea0ff8f5f23d3a869ad4a1203a315affa37a8c70b7a0a6f77c26b1e74"
-    },
-    {
       "file": "native/cocos/2d/renderer/UIMeshBuffer.cpp",
       "sha256": "9947485e88a2f256dd74f7ac84c2802db495dfc346786b451d958b945a491c09"
     },
@@ -307,11 +299,11 @@
     },
     {
       "file": "native/cocos/bindings/manual/jsb_platform.h",
-      "sha256": "589bb714da1f2804c8b10de33616d9abc3fa6a4a46e298713349f3b9b28dffb6"
+      "sha256": "5881468352d30e08c1043fd952453644cb3ebb5e622e14271615cbfe0dc81e0a"
     },
     {
       "file": "native/cocos/bindings/manual/jsb_platform_win32.cpp",
-      "sha256": "4d5ce67da3c0cf57d483460aa5c76139c6fd7e1c3574dfa2268bd45016e45a69"
+      "sha256": "ba0a3fe3f4918863afffd59bf3a2a56be0cabca4a6a188e487b29bb08deb8039"
     },
     {
       "file": "native/cocos/bindings/manual/jsb_scene_manual.cpp",
@@ -347,11 +339,11 @@
     },
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp",
-      "sha256": "6094291e901bbd0a80247a4f05dd8f26f3981a4e4e7002057398954cfb966400"
+      "sha256": "968a64f0e30b4219e4ab9982cd5f76cc28b8ba6449d901ecee66684b301e2fa8"
     },
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.h",
-      "sha256": "3a22fa2eea2eb69867cdae9864c5f3b096f12892f148aef5d123d19e8710a9c7"
+      "sha256": "9b80d866e0deafaf723a8b468779d59c7183b5c4f5708d8c31a3b9bfb235698b"
     },
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h",
@@ -359,7 +351,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "16ff480c6442edc140157446106f90ec65c22ebfe82b8549eac718336007a128"
+      "sha256": "29003d3f7ad865e398789a97fc113cabd0e78f1cdbecc2b609ae66a8a6a0d473"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
@@ -383,7 +375,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "e3f0c24ed10056243ca17483bbeff2c3ffdaf4a3005020e2607a604870de6dd6"
+      "sha256": "2c48039332022e466a25bd25a3bb849553364e424f4bd28d79ffe611c75cc92a"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -418,7 +410,6 @@
     "cocos/2d/components/ui-opacity.ts": "cocos/2d/components/ui-opacity.jsb.ts",
     "cocos/2d/framework/render-root-2d.ts": "cocos/2d/framework/render-root-2d.jsb.ts",
     "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
-    "cocos/2d/poc/native-2d-poc.ts": "cocos/2d/poc/native-2d-poc.jsb.ts",
     "cocos/2d/renderer/native-2d.ts": "cocos/2d/renderer/native-2d.jsb.ts"
   },
   "entrypointImports": {
@@ -14587,8 +14578,8 @@
     },
     {
       "file": "cocos/2d/assets/bitmap-font.jsb.ts",
-      "sha256": "ed6d28c0af1ab36d188efe04b85d4768ea44729ecdcfa61d71f97f4b9c49b5ca",
-      "printedCodeLines": 106,
+      "sha256": "ecbb602d29951a26c8b54f226c7858c8a5ac70f0dd0b89f2f7d9f86feaa3c18e",
+      "printedCodeLines": 107,
       "runtimeImports": [
         "../../core",
         "./font",
@@ -14605,8 +14596,8 @@
       "allocations": [],
       "loops": [
         55,
-        92,
-        113
+        93,
+        114
       ]
     },
     {

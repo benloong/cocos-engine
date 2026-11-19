@@ -2109,8 +2109,6 @@ cocos_source_files(
     cocos/2d/geometry/GraphicsGeometry.cpp
     cocos/2d/geometry/GraphicsEarcut.h
     cocos/2d/geometry/GraphicsEarcut.cpp
-    cocos/2d/renderer/TextMetrics.h
-    cocos/2d/renderer/TextMetrics.cpp
     cocos/2d/renderer/LetterAtlas.h
     cocos/2d/renderer/LetterAtlas.cpp
     cocos/2d/renderer/DynamicAtlas.h
