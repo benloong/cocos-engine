@@ -1,0 +1,265 @@
+{
+  "styles": [
+    "normal",
+    "bold",
+    "italic"
+  ],
+  "sizes": [12,24,36,48],
+  "raw": [
+    {
+      "sample": "bidi-override",
+      "text": "A‮123‬B",
+      "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "regularAndItalicPassed": 8,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,161,117,0,0],
+        [12,1,162,206,30,149],
+        [12,2,161,117,0,0],
+        [24,0,90,238,0,0],
+        [24,1,140,412,28,275],
+        [24,2,83,255,0,0],
+        [36,0,161,347,0,0],
+        [36,1,144,670,90,463],
+        [36,2,161,425,0,0],
+        [48,0,93,507,0,0],
+        [48,1,140,817,59,489],
+        [48,2,93,547,0,0]
+      ]
+    },
+    {
+      "sample": "bidi-visual",
+      "text": "A321B",
+      "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "regularAndItalicPassed": 8,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,0,0,0,0],
+        [12,1,30,149,30,149],
+        [12,2,0,0,0,0],
+        [24,0,0,0,0,0],
+        [24,1,28,275,28,275],
+        [24,2,0,0,0,0],
+        [36,0,0,0,0,0],
+        [36,1,90,463,90,463],
+        [36,2,0,0,0,0],
+        [48,0,0,0,0,0],
+        [48,1,59,489,59,489],
+        [48,2,0,0,0,0]
+      ]
+    },
+    {
+      "sample": "thai-marks",
+      "text": "กิ้ น้ำ",
+      "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "regularAndItalicPassed": 8,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,0,0,0,0],
+        [12,1,22,100,22,100],
+        [12,2,0,0,0,0],
+        [24,0,0,0,0,0],
+        [24,1,96,204,96,204],
+        [24,2,0,0,0,0],
+        [36,0,0,0,0,0],
+        [36,1,86,347,86,347],
+        [36,2,0,0,0,0],
+        [48,0,0,0,0,0],
+        [48,1,131,464,131,464],
+        [48,2,0,0,0,0]
+      ]
+    },
+    {
+      "sample": "hebrew",
+      "text": "אבג",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "regularAndItalicPassed": 7,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,175,97,56,60],
+        [12,1,190,135,62,69],
+        [12,2,161,108,0,0],
+        [24,0,93,209,0,0],
+        [24,1,63,266,48,143],
+        [24,2,93,227,0,0],
+        [36,0,161,326,0,0],
+        [36,1,182,446,56,224],
+        [36,2,161,366,0,0],
+        [48,0,93,457,0,0],
+        [48,1,136,585,26,287],
+        [48,2,93,502,0,0]
+      ]
+    },
+    {
+      "sample": "arabic",
+      "text": "سَلَام",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "regularAndItalicPassed": 7,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,186,94,151,63],
+        [12,1,155,135,23,83],
+        [12,2,161,101,1,0],
+        [24,0,108,228,0,0],
+        [24,1,119,275,66,178],
+        [24,2,164,230,0,0],
+        [36,0,161,402,0,0],
+        [36,1,174,499,54,281],
+        [36,2,204,407,0,0],
+        [48,0,113,510,0,0],
+        [48,1,158,616,118,377],
+        [48,2,201,522,0,0]
+      ]
+    },
+    {
+      "sample": "hebrew-mixed",
+      "text": "A אבג 12 B",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "regularAndItalicPassed": 0,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,222,290,173,265],
+        [12,1,190,374,125,361],
+        [12,2,190,270,152,247],
+        [24,0,241,704,241,663],
+        [24,1,207,952,207,940],
+        [24,2,247,731,247,686],
+        [36,0,254,1434,254,1368],
+        [36,1,253,1784,250,1761],
+        [36,2,254,1442,254,1379],
+        [48,0,254,2230,254,2180],
+        [48,1,254,2636,254,2597],
+        [48,2,254,2267,254,2209]
+      ]
+    },
+    {
+      "sample": "arabic-marks",
+      "text": "A سَلَام B",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "regularAndItalicPassed": 0,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,229,205,184,178],
+        [12,1,160,252,147,236],
+        [12,2,192,171,146,150],
+        [24,0,237,462,241,440],
+        [24,1,205,648,209,644],
+        [24,2,241,474,239,449],
+        [36,0,254,929,254,866],
+        [36,1,250,1231,249,1227],
+        [36,2,254,919,254,874],
+        [48,0,254,1459,254,1424],
+        [48,1,254,1846,254,1831],
+        [48,2,254,1480,254,1442]
+      ]
+    },
+    {
+      "sample": "latin-space",
+      "text": "A V A",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "regularAndItalicPassed": 0,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,null,null,241,155],
+        [12,1,null,null,210,194],
+        [12,2,null,null,239,122],
+        [24,0,null,null,254,358],
+        [24,1,null,null,254,537],
+        [24,2,null,null,254,358],
+        [36,0,null,null,254,744],
+        [36,1,null,null,254,1010],
+        [36,2,null,null,254,749],
+        [48,0,null,null,254,1245],
+        [48,1,null,null,254,1554],
+        [48,2,null,null,254,1239]
+      ]
+    },
+    {
+      "sample": "latin-kern",
+      "text": "AVATAR",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "regularAndItalicPassed": 7,
+      "boldPassed": 0,
+      "rawCases": [
+        [12,0,null,null,56,184],
+        [12,1,null,null,34,170],
+        [12,2,null,null,0,0],
+        [24,0,null,null,0,0],
+        [24,1,null,null,31,286],
+        [24,2,null,null,0,0],
+        [36,0,null,null,0,0],
+        [36,1,null,null,98,590],
+        [36,2,null,null,0,0],
+        [48,0,null,null,0,0],
+        [48,1,null,null,40,646],
+        [48,2,null,null,0,0]
+      ]
+    }
+  ],
+  "scene": {
+    "Debug": {
+      "snapshot": "ae8b3a18273c1be2d2f5cb227c6e608ba9d68191d485685e0bce642ca7394d7e",
+      "reportSha256": "fbffe76f9e25b8f5dbce2c32cdbd0155b44b6251d14790ea0c19bb2a128f512b",
+      "total": 40,
+      "layout": 40,
+      "strict": 37,
+      "fontCycles": 1000,
+      "newCases": [
+        {
+          "name": "text-bidi-override",
+          "webSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+          "max": 0,
+          "pixels": 0
+        },
+        {
+          "name": "text-bidi-visual",
+          "webSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+          "max": 0,
+          "pixels": 0
+        },
+        {
+          "name": "text-thai-marks",
+          "webSha256": "bcdb8335053936bac16391fa9ebc78c18d02f8f72a4aad0e92579ec0d2ad97c8",
+          "max": 0,
+          "pixels": 0
+        }
+      ]
+    },
+    "Release": {
+      "snapshot": "ae8b3a18273c1be2d2f5cb227c6e608ba9d68191d485685e0bce642ca7394d7e",
+      "reportSha256": "fbffe76f9e25b8f5dbce2c32cdbd0155b44b6251d14790ea0c19bb2a128f512b",
+      "total": 40,
+      "layout": 40,
+      "strict": 37,
+      "fontCycles": 1000,
+      "newCases": [
+        {
+          "name": "text-bidi-override",
+          "webSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+          "max": 0,
+          "pixels": 0
+        },
+        {
+          "name": "text-bidi-visual",
+          "webSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+          "max": 0,
+          "pixels": 0
+        },
+        {
+          "name": "text-thai-marks",
+          "webSha256": "bcdb8335053936bac16391fa9ebc78c18d02f8f72a4aad0e92579ec0d2ad97c8",
+          "max": 0,
+          "pixels": 0
+        }
+      ]
+    }
+  },
+  "rawColumns": [
+    "size",
+    "styleIndex",
+    "beforeMax",
+    "beforePixelsOver1",
+    "afterMax",
+    "afterPixelsOver1"
+  ]
+}

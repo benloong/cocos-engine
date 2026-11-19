@@ -3,6 +3,7 @@
 const richTextNames = [
     'text-basic', 'text-bold', 'text-italic', 'text-underline', 'text-outline', 'text-nested', 'text-colors',
     'text-wrap-left', 'text-wrap-center', 'text-wrap-right', 'text-multiline', 'text-unicode', 'text-shadow-tag',
+    'text-bidi-override', 'text-bidi-visual', 'text-thai-marks',
 ];
 const shadowNames = [];
 for (const overflow of [0, 1, 2, 3]) {

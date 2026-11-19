@@ -387,22 +387,25 @@ public:
     HRESULT STDMETHODCALLTYPE GetCurrentTransform(void *, DWRITE_MATRIX *matrix) override { *matrix = {1, 0, 0, 1, 0, 0}; return S_OK; }
     HRESULT STDMETHODCALLTYPE GetPixelsPerDip(void *, FLOAT *scale) override { *scale = 1; return S_OK; }
     HRESULT STDMETHODCALLTYPE DrawGlyphRun(void *, FLOAT x, FLOAT y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run, const DWRITE_GLYPH_RUN_DESCRIPTION *, IUnknown *) override {
-        // Preserve the shaped advances and offsets. Quantize only raster
-        // origins, as the horizontal Canvas glyph cache does. RTL/sideways
-        // runs retain DWrite's full-run positioning until separately verified.
-        if (run->bidiLevel & 1U || run->isSideways) return drawMask(x, y, mode, run);
+        if (run->isSideways) return drawMask(x, y, mode, run);
+        // DirectWrite supplies the right edge of an RTL run. Place each shaped
+        // glyph at its left origin before snapping it to the Canvas raster grid.
+        const bool rtl = (run->bidiLevel & 1U) != 0;
         float origin = x;
         for (UINT32 index = 0; index < run->glyphCount; ++index) {
             DWRITE_GLYPH_RUN glyph = *run;
+            glyph.bidiLevel = 0;
             glyph.glyphCount = 1;
             glyph.glyphIndices = run->glyphIndices + index;
             glyph.glyphAdvances = run->glyphAdvances + index;
             glyph.glyphOffsets = nullptr;
             const auto offset = run->glyphOffsets ? run->glyphOffsets[index] : DWRITE_GLYPH_OFFSET{};
-            const auto hr = drawMask(std::floor((origin + offset.advanceOffset) * 4.F + .5F) / 4.F,
+            const float advance = run->glyphAdvances[index];
+            const float glyphX = rtl ? origin - advance - offset.advanceOffset : origin + offset.advanceOffset;
+            const auto hr = drawMask(std::floor(glyphX * 4.F + .5F) / 4.F,
                                      std::floor(y - offset.ascenderOffset + .5F), mode, &glyph);
             if (FAILED(hr)) return hr;
-            origin += run->glyphAdvances[index];
+            origin += rtl ? -advance : advance;
         }
         return S_OK;
     }

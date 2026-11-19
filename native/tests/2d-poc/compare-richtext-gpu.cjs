@@ -24,6 +24,7 @@ const rows=[];
 // Web RichText treats shadow as an unknown tag and retains the nested color spans.
 for (const [dir,manifest] of [[nativeDir,a],[webDir,b]]) {
     const bytes = name => fs.readFileSync(path.join(dir,name+'.rgba'));
+    if (!bytes('text-bidi-override').equals(bytes('text-bidi-visual'))) throw Error('RTL override differs from its visual order: '+dir);
     if (!bytes('text-shadow-tag').equals(bytes('text-colors'))) throw Error('RichText shadow tag changed the colored control image: '+dir);
     const [control, edited] = ['text-colors','text-shadow-tag'].map(name=>manifest.text.metrics.find(row=>row.name===name));
     if (control.width!==edited.width || control.height!==edited.height || JSON.stringify(control.segments)!==JSON.stringify(edited.segments)) {

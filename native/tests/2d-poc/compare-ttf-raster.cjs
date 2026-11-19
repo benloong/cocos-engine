@@ -36,7 +36,7 @@ const result = {
     browser: metadata,
     nativeDirectory: path.basename(native),
     sourceSha256: hash(path.join(root, 'native/cocos/platform/win32/modules/DirectWriteFont.cpp')),
-    fontSha256: hash(path.join(root, 'tests/fixtures/Thonburi.ttf')),
+    fontSha256: metadata.fontSha256 ?? hash(path.join(root, 'tests/fixtures/Thonburi.ttf')),
     // Hashes describe files at comparison time; this diagnostic does not prove
     // binary/source freshness or replace the full application's snapshot gate.
     cases, passed: cases.filter(item => item.passed).length, total: cases.length,

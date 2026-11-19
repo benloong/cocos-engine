@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const { createHash } = require('node:crypto');
 const { spawn } = require('child_process');
 const color = process.argv[2] || 'white';
 const sample = process.argv[3] || 'latin';
@@ -16,6 +17,20 @@ const colors = { white: 'white', red: 'red', green: 'lime', gray: 'rgb(128,128,1
 const texts = { latin: 'Atlas 123', stems: 'I E L', rounds: 'O S C', combining: 'A\u0301tlas', thai: '\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22' };
 texts['origin-stem'] = 'I';
 texts['origin-curve'] = 'O';
+texts['bidi-override'] = 'A\u202E123\u202CB';
+texts['bidi-visual'] = 'A321B';
+texts['thai-marks'] = '\u0E01\u0E34\u0E49 \u0E19\u0E49\u0E33';
+texts['hebrew-mixed'] = 'A \u05D0\u05D1\u05D2 12 B';
+texts['arabic-marks'] = 'A \u0633\u064E\u0644\u064E\u0627\u0645 B';
+texts.hebrew = '\u05D0\u05D1\u05D2';
+texts.arabic = '\u0633\u064E\u0644\u064E\u0627\u0645';
+texts['latin-space'] = 'A V A';
+texts['latin-kern'] = 'AVATAR';
+const usesArial = ['hebrew', 'arabic', 'hebrew-mixed', 'arabic-marks', 'latin-space', 'latin-kern'].includes(sample);
+const primaryFont = usesArial
+    ? path.join(process.env.WINDIR, 'Fonts', 'arial.ttf')
+    : path.resolve(__dirname, '../../../tests/fixtures/Thonburi.ttf');
+if (!fs.existsSync(primaryFont)) throw new Error('Missing raster fixture font: ' + primaryFont);
 if (!Object.hasOwn(colors, color) || !Object.hasOwn(texts, sample)) throw new Error('Unknown color or sample');
 if (!['fill', 'outline', 'stroke-round', 'stroke-miter', 'stroke-bevel'].includes(mode)) throw new Error('Unknown paint mode');
 const suffix = mode === 'fill' ? (color === 'white' && sample === 'latin' ? '' : '-' + color + '-' + sample) : '-' + color + '-' + sample + '-' + mode;
@@ -29,8 +44,8 @@ const server = http.createServer(async (req, res) => {
     try {
         if (req.url === '/font.ttf' || req.url === '/replacement.ttf') {
             res.writeHead(200, { 'Content-Type': 'font/ttf' });
-            const file = req.url === '/font.ttf' ? 'tests/fixtures/Thonburi.ttf' : 'editor/assets/default_fonts/builtin-freetype/OpenSans-Regular.ttf';
-            fs.createReadStream(path.join(__dirname, '../../..', file)).pipe(res);
+            const file = req.url === '/font.ttf' ? primaryFont : path.resolve(__dirname, '../../../editor/assets/default_fonts/builtin-freetype/OpenSans-Regular.ttf');
+            fs.createReadStream(file).pipe(res);
             return;
         }
         if (req.method === 'POST') {
@@ -44,10 +59,11 @@ const server = http.createServer(async (req, res) => {
                 const metadata = JSON.parse(Buffer.concat(chunks).toString());
                 if (received.size !== 4 * styleCount || metadata.cases.length !== received.size) throw new Error('Incomplete raw matrix');
                 const { fallback, loaded, replaced, restored, released, reloaded } = metadata.aliasWidths;
-                if (loaded !== 95.9765625 || fallback === loaded || !Number.isFinite(replaced) || replaced === loaded
+                if ((!usesArial && loaded !== 95.9765625) || !Number.isFinite(loaded) || loaded <= 0 || fallback === loaded || !Number.isFinite(replaced) || replaced === loaded
                     || restored !== loaded || released !== fallback || reloaded !== loaded) {
                     throw new Error('Canvas did not follow font registration: ' + JSON.stringify(metadata.aliasWidths));
                 }
+                metadata.fontSha256 = createHash('sha256').update(fs.readFileSync(primaryFont)).digest('hex');
                 fs.writeFileSync(path.join(output, 'metadata.json'), JSON.stringify(metadata, null, 2));
                 res.end('OK'); complete(); return;
             }

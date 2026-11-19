@@ -328,6 +328,9 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         { name: 'text-unicode', value: 'ไทย Á 123' },
         { name: 'text-shadow-tag', value: '<shadow color=#0000ff blur=4><color=#ff0000>Red</color></shadow><color=#00ff00>Green</color>',
             initial: '<size=36>Before<br/>edit</size>' },
+        { name: 'text-bidi-override', value: 'A\u202E123\u202CB' },
+        { name: 'text-bidi-visual', value: 'A321B' },
+        { name: 'text-thai-marks', value: '\u0E01\u0E34\u0E49 \u0E19\u0E49\u0E33' },
     ];
     const metrics: object[] = [];
     const raster: object[] = [];

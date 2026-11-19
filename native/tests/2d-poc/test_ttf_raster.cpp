@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cstdio>
 #include <vector>
+#include <map>
 #include <string>
 
 int main(int argc, char **argv) {
@@ -19,10 +20,27 @@ int main(int argc, char **argv) {
     else if (colorName == "half-white") color[3] = .5F;
     else if (colorName != "white") return 2;
     const std::string sample = argc >= 5 ? argv[4] : "latin";
-    const std::string text = sample == "combining" ? u8"A\u0301tlas" : sample == "thai" ? u8"\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22"
-        : sample == "stems" ? "I E L" : sample == "rounds" ? "O S C" : sample == "latin" ? "Atlas 123"
-        : sample == "origin-stem" ? "I" : sample == "origin-curve" ? "O" : "";
-    if (text.empty()) return 2;
+    const std::map<std::string, std::string> texts{
+        {"combining", u8"A\u0301tlas"},
+        {"thai", u8"\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22"},
+        {"bidi-override", u8"A\u202E123\u202CB"},
+        {"bidi-visual", "A321B"},
+        {"latin-space", "A V A"},
+        {"latin-kern", "AVATAR"},
+        {"hebrew", u8"\u05D0\u05D1\u05D2"},
+        {"arabic", u8"\u0633\u064E\u0644\u064E\u0627\u0645"},
+        {"hebrew-mixed", u8"A \u05D0\u05D1\u05D2 12 B"},
+        {"arabic-marks", u8"A \u0633\u064E\u0644\u064E\u0627\u0645 B"},
+        {"thai-marks", u8"\u0E01\u0E34\u0E49 \u0E19\u0E49\u0E33"},
+        {"stems", "I E L"},
+        {"rounds", "O S C"},
+        {"latin", "Atlas 123"},
+        {"origin-stem", "I"},
+        {"origin-curve", "O"},
+    };
+    const auto entry = texts.find(sample);
+    if (entry == texts.end()) return 2;
+    const auto &text = entry->second;
     const std::string mode = argc >= 6 ? argv[5] : "fill";
     if (mode != "fill" && mode != "outline" && mode != "stroke-round" && mode != "stroke-miter" && mode != "stroke-bevel") return 2;
     float lineWidth = 4.F;
