@@ -135,6 +135,16 @@ export class M6GraphicsGpuProbe extends Component {
                 label.contentWidth = 7.125;
                 label.updateRenderData(true);
                 if (label.contentWidth !== 7.125) throw new Error('Bitmap font overwrote the TTF layout width');
+                const tinyNode = node(root, 'bitmap-minimum-shrink');
+                const tiny = tinyNode.addComponent(Label);
+                tiny.font = font;
+                tiny.string = 'A';
+                tiny.fontSize = tiny.lineHeight = 16;
+                tiny.overflow = Label.Overflow.SHRINK;
+                tinyNode.getComponent(UITransform)!.setContentSize(16, 0.25);
+                tiny.updateRenderData(true);
+                if (tiny.actualFontSize !== 0.1) throw new Error(`Minimum bitmap SHRINK size was ${tiny.actualFontSize}`);
+                tinyNode.destroy();
                 const sibling = graphics(node(root, 'yellow'));
                 sibling.fillColor = new Color(255, 255, 0, 255); sibling.fillRect(70, -10, 20, 20);
                 return () => { setFrame(alphaFrame); };
@@ -336,6 +346,8 @@ export class M6GraphicsGpuProbe extends Component {
         if (!(ttfFrame instanceof SpriteFrame) || !ttfFrame.texture) throw new Error('Enabled Label has no TTF sprite frame');
         const transform = labelNode.getComponent(UITransform)!;
         label.fontSize = 16;
+        label.actualFontSize = 14.123456789;
+        if (label.actualFontSize !== 14.123456789) throw new Error('Label rounded a manual actualFontSize');
         label.lineHeight = 20;
         label.enableWrapText = true;
         label.overflow = Label.Overflow.RESIZE_HEIGHT;
@@ -344,6 +356,7 @@ export class M6GraphicsGpuProbe extends Component {
         label.enableWrapText = true;
         label.updateRenderData(true);
         const wrappedHeight = transform.height;
+        if (Number(label.actualFontSize) !== label.fontSize) throw new Error('TTF layout did not publish its resolved size');
         label.enableWrapText = false;
         label.updateRenderData(true);
         if (transform.width !== 48 || wrappedHeight <= label.lineHeight * 2 || transform.height !== wrappedHeight) {

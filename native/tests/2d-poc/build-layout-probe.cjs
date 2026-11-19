@@ -51,7 +51,13 @@ const lines=label.getLineCount(); ui.setContentSize(25, ui.height); rendererMana
 check(ui.width===25 && label.getLineCount()>lines,'native layout follows width change');
 label.measureContent(); check(ui.width===label.getContentWidth(),'explicit native measurement');
 check(label.getActualFontSize()===16,'native resolved font size');
+rendererManager.updateAllDirtyRenderers();
+label.setActualFontSize(14.123456789);
+check(label.getActualFontSize()===14.123456789,'native Label rounded a manual actualFontSize');
+rendererManager.updateAllDirtyRenderers();
+check(label.getActualFontSize()===14.123456789,'clean native Label preserves a manual fractional actualFontSize');
 label.setOverflow(0); label.setString('underline'); label.setIsUnderline(true); label.setUnderlineHeight(1); rendererManager.updateAllDirtyRenderers();
+check(label.getActualFontSize()===16,'text layout replaces manual actualFontSize');
 const thin=label.getOpaquePixels(); label.setUnderlineHeight(3); rendererManager.updateAllDirtyRenderers();
 check(label.getOpaquePixels()>thin,'native underline height changes raster output');
 label.setString(''); rendererManager.updateAllDirtyRenderers(); check(label.getActualFontSize()===0,'empty text clears actual font size');

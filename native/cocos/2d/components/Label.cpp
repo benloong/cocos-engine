@@ -670,7 +670,7 @@ void Label::rebuildBitmapTexture() {
     std::vector<int32_t> text;
     for (const auto &symbol : splitUtf8(_string)) text.push_back(utf8CodePoint(symbol));
     const auto layout = layoutBitmapFont(text, glyphs, glyphMap, kerningMap, options);
-    _actualFontSize = static_cast<float>(layout.actualFontSize);
+    _actualFontSize = layout.actualFontSize;
     std::vector<SpriteQuad> quads; quads.reserve(layout.glyphs.size());
     const auto *frame = _bitmapAtlas.get();
     const BitmapFrameRect frameRect{frame->getRectX(), frame->getRectY(), frame->getRectWidth(), frame->getRectHeight(),
@@ -976,9 +976,10 @@ void Label::rebuildTexture() {
 
     const auto box = _transform->getContentSize();
     const bool shrink = _overflow == 2;
-    if (shrink && _fontSize > 0.F) _actualFontSize = shrinkFontSize(box.x, box.y);
+    const float rasterFontSize = shrink && _fontSize > 0.F ? shrinkFontSize(box.x, box.y) : _fontSize;
+    _actualFontSize = rasterFontSize;
     std::string resizedFont;
-    if (_actualFontSize != _fontSize) resizedFont = fontDescription(_actualFontSize);
+    if (rasterFontSize != _fontSize) resizedFont = fontDescription(rasterFontSize);
     const auto &renderFont = resizedFont.empty() ? _font : resizedFont;
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     TextMeasurement measurement(renderFont);
@@ -988,7 +989,7 @@ void Label::rebuildTexture() {
     measureContext.setFont(renderFont);
 #endif
     const float lineHeight = shrink && _fontSize > 0.F
-        ? (_lineHeight > 0.F ? _lineHeight : _fontSize) * _actualFontSize / _fontSize
+        ? (_lineHeight > 0.F ? _lineHeight : _fontSize) * rasterFontSize / _fontSize
         : (_lineHeight > 0.F ? _lineHeight : _fontSize * 1.2F);
     const bool wrap = _overflow == 3 || (_overflow != 0 && _wrap);
     const auto lines = layoutLines(measureContext, _string, wrap, box.x);
@@ -1053,10 +1054,10 @@ void Label::rebuildTexture() {
         context.setShadowOffsetY(_shadowOffsetY);
     }
 
-    float textTop = static_cast<float>(_actualFontSize * (1.0 - 0.26 / 2.0));
+    float textTop = static_cast<float>(rasterFontSize * (1.0 - 0.26 / 2.0));
     if (_vAlign != 0) {
-        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + _actualFontSize - canvasHeight;
-        if (_vAlign == 2) blank += static_cast<float>(_actualFontSize * 0.26 / 2.0);
+        float blank = lineHeight * static_cast<float>(lines.size() - 1) + static_cast<float>(styleExtent[1]) + rasterFontSize - canvasHeight;
+        if (_vAlign == 2) blank += static_cast<float>(rasterFontSize * 0.26 / 2.0);
         textTop -= _vAlign == 1 ? blank / 2.F : blank;
     }
     textTop += outlineMargin;
@@ -1122,7 +1123,7 @@ void Label::rebuildTexture() {
         context.setFillStyle(fillColor);
         context.fillText(line, x, lineY, 0.0F);
         if (_isUnderline) {
-            context.fillRect(x, lineY + _actualFontSize / 8.F, lineWidth, std::max(_underlineHeight, 0.F));
+            context.fillRect(x, lineY + rasterFontSize / 8.F, lineWidth, std::max(_underlineHeight, 0.F));
         }
     }
     cc::Data pixels;

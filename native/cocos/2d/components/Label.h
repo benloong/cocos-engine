@@ -70,8 +70,8 @@ public:
     void setFontAsset(FontAsset *font);
     FontAsset *getFontAsset() const { return _fontAsset.get(); }
     void setFontSize(float size);
-    float getActualFontSize() const { return _actualFontSize; }
-    void setActualFontSize(float size) { _actualFontSize = size; }
+    double getActualFontSize() const { return _actualFontSize; }
+    void setActualFontSize(double size) { _actualFontSize = size; }
     void setUnderlineHeight(float height) { if (_underlineHeight != height) { _underlineHeight = height; markRenderDirty(); } }
     float getUnderlineHeight() const { return _underlineHeight; }
     void setIsBold(bool bold) { if (_isBold != bold) { _isBold = bold; updateFont(); markRenderDirty(); } }
@@ -181,7 +181,7 @@ private:
     bool _isItalic{false};
     bool _isUnderline{false};
     float _fontSize{32.0F};
-    float _actualFontSize{0.F};
+    double _actualFontSize{0.0};
     float _underlineHeight{2.F};
     float _lineHeight{0.0F};
     float _spacingX{0.0F};
