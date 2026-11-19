@@ -254,6 +254,7 @@
 %include "core/assets/TextAsset.h"
 %include "2d/assets/SpriteFrame.h"
 %include "2d/assets/SpriteAtlas.h"
+%ignore cc::FontAsset::getIdentity;
 %include "2d/assets/Font.h"
 %ignore cc::TTFFont::getRenderFontFamily;
 %include "2d/assets/TTFFont.h"
