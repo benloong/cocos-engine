@@ -64,6 +64,11 @@
           "pixels": 146,
           "max": 36
         },
+        "fillNativeStroke": {
+          "hash": "7af11c3277e10ac320d9f70aafb042a0165524e354b47ab8bf00b1dac3e3d0bc",
+          "pixels": 195,
+          "max": 47
+        },
         "fillStroke": {
           "hash": "2726d1a19545f758269775672e27e5778fbe6c28d7f4e91b625b7aed639b7b29",
           "pixels": 139,
@@ -120,6 +125,11 @@
           "hash": "fea13129754900db875cf8becd03e4b948b51aa09208ee2f2c1e4abd1508a605",
           "pixels": 330,
           "max": 73
+        },
+        "fillNativeStroke": {
+          "hash": "c363408283b7a6dcde359eca4d354b4fcd90330add42163220a4d279c46a2166",
+          "pixels": 369,
+          "max": 48
         },
         "fillStroke": {
           "hash": "275196dec4d77f957f5484ec194142e700e37f1a3f50c87d79e4e0834ddb76fa",
@@ -178,6 +188,11 @@
           "pixels": 435,
           "max": 90
         },
+        "fillNativeStroke": {
+          "hash": "a8eb990dcb5f73b67106e67bc2275d1bf08a39d38909be0d831f7716ef0cc58b",
+          "pixels": 532,
+          "max": 57
+        },
         "fillStroke": {
           "hash": "0967a4e860e1c65b23fccbd209303742402d491ead334706858c10faa6ad99ac",
           "pixels": 112,
@@ -234,6 +249,11 @@
           "hash": "3772ca19d26e44d167cc9af0591289e863ff9e2776feb97efe37231cdb37f465",
           "pixels": 488,
           "max": 68
+        },
+        "fillNativeStroke": {
+          "hash": "a4e477ab756bfffa2d360af6d0cdd5d45243ca5f39e0a7c8dd70f4ac9a05567e",
+          "pixels": 612,
+          "max": 50
         },
         "fillStroke": {
           "hash": "1d7bb7ee115f1c7c7a960a69c25e4b5e8f7bc5ac5e258042b17a286535a8d785",

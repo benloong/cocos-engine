@@ -72,6 +72,7 @@ if (designUnits) {
             hr = stroke_replay::capture(stem + ".lines.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, 0, columns * scale, rows);
             if (SUCCEEDED(hr)) hr = stroke_replay::capture(stem + ".widened.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, 0, columns * scale, rows);
             if (SUCCEEDED(hr)) hr = stroke_replay::capture(stem + ".center.path", strokePath, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, thickness, columns * scale, rows);
+            if (SUCCEEDED(hr) && lineWidth <= 0) hr = stroke_replay::capture(stem + ".pen.path", stroke.get(), transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, 0, columns * scale, rows);
             if (FAILED(hr)) return hr;
         }
         hr = shape->Simplify`);

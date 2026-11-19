@@ -14,7 +14,7 @@ const glyphMasks = boldFill ? 32 : 96;
 const work = fs.mkdtempSync(path.join(build, boldFill ? 'bold-replay-' : 'stroke-replay-'));
 const font = path.resolve(__dirname, '../../../tests/fixtures/Thonburi.ttf');
 const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const stages = boldFill ? ['snapped', 'lines', 'widened', 'boundary', 'left', 'right', 'fillStroke', 'quadraticFillStroke'] : ['lines', 'widened', 'center', 'quadraticCenter', 'boundary', 'freetype'];
+const stages = boldFill ? ['snapped', 'lines', 'widened', 'boundary', 'left', 'right', 'fillNativeStroke', 'fillStroke', 'quadraticFillStroke'] : ['lines', 'widened', 'center', 'quadraticCenter', 'boundary', 'freetype'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
 // Runs inside Chrome. The mask is four samples wide per destination pixel.
@@ -29,7 +29,7 @@ function scan(paths) {
         return btoa(bytes);
     }
     for (const [name, text] of paths) {
-        const outline = new Path2D();
+        let outline = new Path2D();
         const fillStroke = /\.(?:fillStroke|quadraticFillStroke)\.path$/.test(name);
         let ctx, stroke = false, fillRule = 'evenodd';
         for (const line of text.trim().split(/\r?\n/)) {
@@ -50,6 +50,13 @@ function scan(paths) {
                 stroke = true;
                 break;
             case 'F': fillRule = v[0] ? 'nonzero' : 'evenodd'; break;
+            case 'P':
+                // Composite the expanded native pen on the same filled glyph as the browser pen.
+                ctx.fill(outline, fillRule);
+                ctx.resetTransform();
+                outline = new Path2D();
+                stroke = false;
+                break;
             case 'M': outline.moveTo(...v); break;
             case 'L': outline.lineTo(...v); break;
             case 'C': outline.bezierCurveTo(...v); break;
@@ -179,7 +186,13 @@ for (const config of configs) {
     }
     for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.center.path'))) {
         const source = fs.readFileSync(path.join(dir, file), 'utf8');
-        if (boldFill) fs.writeFileSync(path.join(dir, file.replace('.center.path', '.fillStroke.path')), source);
+        if (boldFill) {
+            fs.writeFileSync(path.join(dir, file.replace('.center.path', '.fillStroke.path')), source);
+            const pen = fs.readFileSync(path.join(dir, file.replace('.center.path', '.pen.path')), 'utf8').trim().split(/\r?\n/);
+            assert.equal(pen.shift(), source.split(/\r?\n/, 1)[0], 'Native pen and glyph masks must share bounds');
+            assert.ok(pen[0].startsWith('F '), 'Native pen must specify its fill rule');
+            fs.writeFileSync(path.join(dir, file.replace('.center.path', '.fillNativeStroke.path')), [source.trimEnd(), 'P', ...pen].join('\n'));
+        }
         const quadratic = boldFill ? '.quadraticFillStroke.path' : '.quadraticCenter.path';
         fs.writeFileSync(path.join(dir, file.replace('.center.path', quadratic)), quadraticPath(source));
     }
