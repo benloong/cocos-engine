@@ -343,11 +343,11 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "29003d3f7ad865e398789a97fc113cabd0e78f1cdbecc2b609ae66a8a6a0d473"
+      "sha256": "75d0a23cda3d9c18114c19da16a38a9e0f4551943ce72406d44fc74a98710b92"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
-      "sha256": "954f1ec961702db5a5e0245aa6d51f3b0ea5a641d07fd1286180479649f79bd3"
+      "sha256": "fa3c64e7cbef5ca87634a6d52a438eeabb571e802d8b16a59b8147bfab96d689"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",

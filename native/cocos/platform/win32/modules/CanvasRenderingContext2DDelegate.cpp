@@ -128,6 +128,7 @@ void CanvasRenderingContext2DDelegate::saveContext() {
 }
 
 void CanvasRenderingContext2DDelegate::restoreContext() {
+    _measuredText.clear();
     BOOL ret = RestoreDC(_DC, _savedDC);
     if (0 == ret) {
         SE_LOGD("CanvasRenderingContext2DImpl restore context failed.\n");
@@ -217,6 +218,7 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
                                                   bool /* oblique */,
                                                   bool /* smallCaps */) {
     do {
+        _measuredText.clear();
         _directWrite.reset();
         _fontName = fontName;
         _fontSize = static_cast<int>(fontSize);
@@ -369,21 +371,23 @@ void CanvasRenderingContext2DDelegate::removeCustomFont() {
 }
 
 CanvasRenderingContext2DDelegate::Size CanvasRenderingContext2DDelegate::sizeWithText(const wchar_t *pszText, int nLen) {
-    Size tRet{0, 0};
-    do {
-        CC_BREAK_IF(!pszText || nLen <= 0);
+    if (!pszText || nLen <= 0) return {0, 0};
+    // Layout and drawing often measure the same run. Keep one short run per DC.
+    constexpr int MAX_CACHED_LENGTH = 256;
+    const bool cacheable = nLen <= MAX_CACHED_LENGTH;
+    if (cacheable && _measuredText.size() == static_cast<size_t>(nLen)
+        && _measuredText.compare(0, _measuredText.size(), pszText, nLen) == 0) {
+        return _measuredSize;
+    }
 
-        RECT rc = {0, 0, 0, 0};
-        DWORD dwCalcFmt = DT_CALCRECT | DT_NOPREFIX;
-
-        // measure text size
-        DrawTextW(_DC, pszText, nLen, &rc, dwCalcFmt);
-
-        tRet[0] = static_cast<float>(rc.right);
-        tRet[1] = static_cast<float>(rc.bottom);
-    } while (false);
-
-    return tRet;
+    RECT rect{};
+    const int height = DrawTextW(_DC, pszText, nLen, &rect, DT_CALCRECT | DT_NOPREFIX);
+    const Size size{static_cast<float>(rect.right), static_cast<float>(rect.bottom)};
+    if (cacheable && height != 0) {
+        _measuredText.assign(pszText, nLen);
+        _measuredSize = size;
+    }
+    return size;
 }
 
 void CanvasRenderingContext2DDelegate::prepareBitmap(int nWidth, int nHeight) {

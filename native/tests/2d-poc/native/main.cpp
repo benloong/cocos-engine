@@ -852,6 +852,23 @@ void testFontAssets() {
 
 void testFontAliasOwnership() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    {
+        cc::CanvasRenderingContext2D canvas(128, 64);
+        canvas.setFont("16px Arial");
+        const auto narrow = canvas.measureText("ii").width;
+        const auto wide = canvas.measureText("WW").width;
+        check(narrow > 0 && wide > narrow, "system text measurement distinguishes equal-length strings");
+        canvas.resetBuffer(256, 64);
+        checkNear(canvas.measureText("WW").width, wide, "resizing the bitmap preserves system font metrics");
+        canvas.fillText("WW", 0, 32, 0);
+        canvas.save();
+        canvas.setFont("32px Arial");
+        check(canvas.measureText("WW").width > wide, "font change invalidates the previous system text measurement");
+        canvas.restore();
+        checkNear(canvas.measureText("WW").width, wide, "restoring the saved DC discards its replacement font metrics");
+        canvas.setFont("16px Arial");
+        checkNear(canvas.measureText("ii").width, narrow, "restoring font and text restores the original width");
+    }
     const auto publicBefore = getFontFamilyNameMap().size();
     const auto privateBefore = getFontAssetFamilyNameMap().size();
     const auto leasesBefore = getFontAliasLeaseCount(), groupsBefore = getFontAliasGroupCount();

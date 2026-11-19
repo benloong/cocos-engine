@@ -30,6 +30,7 @@
 #include <cstdint>
 #include <memory>
 #include <regex>
+#include <string>
 #include "base/csscolorparser.h"
 #include "base/std/container/array.h"
 #include "cocos/bindings/jswrapper/SeApi.h"
@@ -118,6 +119,8 @@ private:
     Color4F _fillStyle{0, 0, 0, 1};
     Color4F _strokeStyle{0, 0, 0, 1};
 
+    std::wstring _measuredText;
+    Size _measuredSize{};
     TEXTMETRIC _tm;
 };
 
