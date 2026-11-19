@@ -40,6 +40,13 @@ jobs:
       run: |
         EXT_VERSION=`node ./.github/workflows/get-native-external-version.js`
         git clone --branch $EXT_VERSION --depth 1 https://github.com/cocos/cocos-engine-external native/external
+    - name: Verify Windows and Web Release feature exports
+      run: node native/tests/2d-poc/check-m6-feature-matrix.cjs
+    - uses: actions/upload-artifact@v4
+      with:
+        name: native-2d-release-feature-exports
+        path: native/tests/2d-poc/build/feature-matrix/results.json
+        if-no-files-found: error
     - name: Compare native RichText parser and layout with Web
       shell: pwsh
       run: |
