@@ -6,6 +6,22 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { declaration, runtimeImports, inspect, build, shellHotPaths, isWebAssembler } = require('../../native/tests/2d-poc/audit-m6.cjs');
 
+test('UIOpacity rollback removes only its Windows override and preserves all Web overrides', async () => {
+    const root = path.resolve(__dirname, '../..');
+    const query = await require('@cocos/ccbuild').StatsQuery.create(root);
+    function overrides (platform, flags) {
+        const mode = 'BUILD';
+        const buildTimeConstants = query.constantManager.genBuildTimeConstants({ mode, platform, flags });
+        return query.evaluateModuleOverrides({ platform, mode, buildTimeConstants });
+    }
+    const windows = overrides('WINDOWS', {});
+    const component = path.join(root, 'cocos/2d/components/ui-opacity.ts');
+    assert.equal(windows[component], path.join(root, 'cocos/2d/components/ui-opacity.jsb.ts'));
+    delete windows[component];
+    assert.deepEqual(overrides('WINDOWS', { USE_JS_UI_OPACITY: true }), windows);
+    assert.deepEqual(overrides('HTML5', { USE_JS_UI_OPACITY: true }), overrides('HTML5', {}));
+});
+
 test('native 2D owners do not use shared_ptr or weak_ptr', () => {
     const root=path.resolve(__dirname,'../..');
     for(const {file} of build().nativeSourceHashes.filter(x=>x.file.startsWith('native/cocos/2d/')||/\/DirectWriteFont\.(h|cpp)$/.test(x.file))) {

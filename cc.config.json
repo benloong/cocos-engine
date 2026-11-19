@@ -329,6 +329,13 @@
             }
         },
         {
+            "test": "context.buildTimeConstants.NATIVE && !context.buildTimeConstants.USE_JS_UI_OPACITY",
+            "isVirtualModule": false,
+            "overrides": {
+                "cocos/2d/components/ui-opacity.ts": "cocos/2d/components/ui-opacity.jsb.ts"
+            }
+        },
+        {
             "test": "context.buildTimeConstants.NATIVE",
             "isVirtualModule": false,
             "overrides": {
@@ -351,7 +358,6 @@
                 "cocos/render-scene/scene/reflection-probe.ts": "cocos/render-scene/scene/reflection-probe.jsb.ts",
                 "cocos/2d/renderer/native-2d.ts": "cocos/2d/renderer/native-2d.jsb.ts",
                 "cocos/2d/poc/native-2d-poc.ts": "cocos/2d/poc/native-2d-poc.jsb.ts",
-                "cocos/2d/components/ui-opacity.ts": "cocos/2d/components/ui-opacity.jsb.ts",
                 "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
                 "cocos/2d/components/sprite.ts": "cocos/2d/components/sprite.jsb.ts",
                 "cocos/2d/components/label.ts": "cocos/2d/components/label.jsb.ts",
@@ -827,6 +833,12 @@
         },
         "WASM_SUBPACKAGE": {
             "comment": "An internal constant to indicate whether we use wasm assets as minigame subpackage.\nThis is useful when we need to reduce code size.",
+            "type": "boolean",
+            "value": false,
+            "internal": true
+        },
+        "USE_JS_UI_OPACITY": {
+            "comment": "Use the JavaScript UIOpacity component on native platforms.",
             "type": "boolean",
             "value": false,
             "internal": true
