@@ -180,6 +180,27 @@ public:
         const auto uv = _data.calculateUV(static_cast<float>(_texture->getWidth()), static_cast<float>(_texture->getHeight()));
         return {uv.begin(), uv.end()};
     }
+    std::vector<double> getMeshRawPositions() const {
+        if (_data.meshType == 1) return {}; // Polygon generation is also empty on Web.
+        const double w = _data.width * 0.5;
+        const double h = _data.height * 0.5;
+        return {-w, -h, 0, w, -h, 0, -w, h, 0, w, h, 0};
+    }
+    std::vector<double> getMeshUVs(bool normalized) const {
+        if (_data.meshType == 1 || !_texture) return {};
+        const double width = _texture->getWidth();
+        const double height = _texture->getHeight();
+        const double left = _data.x;
+        const double right = left + _data.width;
+        const double top = height - _data.y;
+        const double bottom = top - _data.height;
+        if (!normalized) return {left, top, right, top, left, bottom, right, bottom};
+        const double l = width ? left / width : 0;
+        const double r = width ? right / width : 1;
+        const double t = height ? top / height : 1;
+        const double b = height ? bottom / height : 0;
+        return {l, b, r, b, l, t, r, t};
+    }
     // Authored coordinates are in pixels. Pivot and pixelsToUnit affect XY only.
     std::vector<double> transformMeshPositions(const std::vector<double> &raw) const {
         std::vector<double> positions(raw);

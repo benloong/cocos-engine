@@ -201,10 +201,12 @@ Mesh::ICreateInfo MeshUtils::createMeshInfo(const IGeometry &geometry, const ccs
     BufferBlob bufferBlob;
 
     // Fill vertex buffer.
-    auto *vertexBuffer = ccnew ArrayBuffer(vertCount * stride);
-    DataView vertexBufferView(vertexBuffer);
-    for (const auto &channel : channels) {
-        writeBuffer(vertexBufferView, channel.data, channel.attribute.format, channel.offset, stride);
+    ArrayBuffer::Ptr vertexBuffer = ccnew ArrayBuffer(vertCount * stride);
+    if (vertexBuffer->byteLength() != 0) {
+        DataView vertexBufferView(vertexBuffer);
+        for (const auto &channel : channels) {
+            writeBuffer(vertexBufferView, channel.data, channel.attribute.format, channel.offset, stride);
+        }
     }
     bufferBlob.setNextAlignment(0);
     Mesh::IVertexBundle vertexBundle;
@@ -236,8 +238,10 @@ Mesh::ICreateInfo MeshUtils::createMeshInfo(const IGeometry &geometry, const ccs
         }
         idxCount = static_cast<uint32_t>(indices.size());
         indexBuffer = ccnew ArrayBuffer(idxStride * idxCount);
-        DataView indexBufferView(indexBuffer);
-        writeBuffer(indexBufferView, indices, indexFormat);
+        if (idxCount != 0) {
+            DataView indexBufferView(indexBuffer);
+            writeBuffer(indexBufferView, indices, indexFormat);
+        }
     }
 
     // Create primitive.

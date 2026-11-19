@@ -10,6 +10,10 @@ const materialShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/ren
     compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
 }).outputText;
 const output=path.join(__dirname,'build/sprite-api-probe.js');
+const frameModules=['sprite-frame-vertices','sprite-frame.jsb'].map(name=>
+    ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/assets',name+'.ts'),'utf8'),{
+        compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
+    }).outputText);
 const materialAPIs=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/framework/native-ui-materials.ts'),'utf8'),{
     compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
 }).outputText;
@@ -179,7 +183,52 @@ check(mask.isHitWorldPointXY(0,0)&&!mask.isHitWorldPointXY(49,39),'native rounde
 check(maskUI.hitTestWorldXY(0,0)&&!maskUI.hitTestWorldXY(49,39),'native UITransform ancestor Mask test bindings');
 check(!maskUI.hitTestXY(0,0)&&!maskUI.hitTestXY(0,0,3),'screen hit binding supports default and explicit window id without scene');
 mask.setNode(null);maskUI.detach();
-transform.detach();return 'OK';
+transform.detach();
+class Vec3 {
+ constructor(x=0,y=0,z=0){this.set(x,y,z);}
+ set(x,y,z){this.x=x;this.y=y;this.z=z;return this;}
+ clone(){return new Vec3(this.x,this.y,this.z);}
+}
+const vertexExports={};
+function frameRequire(id){
+ if(id==='../../core')return {cclegacy,Vec2,Vec3,isValid:()=>true};
+ if(id==='../../core/math/vec3')return {Vec3};
+ if(id==='./sprite-frame-vertices')return vertexExports;
+ if(id==='../utils/dynamic-atlas/atlas')return {Atlas:{releaseFrame(){},trackClone(){}}};
+ if(id==='../../native-binding/decorators')return {patch_cc_SpriteFrame(){}};
+ throw new Error(id);
+}
+jsb.Asset.prototype._ctor=function(){};
+// The engine installs CCObject.destroy from TypeScript; exercise its native destruction call.
+jsb.CCObject.prototype.destroy=function(){return this._destroy();};
+jsb.SpriteFrame.prototype.emit=function(){};
+((exports,require)=>{ ${frameModules[0]} })(vertexExports,frameRequire);
+((exports,require)=>{ ${frameModules[1]} })({},id=>id.startsWith('../../asset/assets/')?{}:frameRequire(id));
+const meshFrame=new jsb.SpriteFrame();
+meshFrame.texture=texture;
+meshFrame.rect={x:1,y:0,width:2,height:3};
+meshFrame.pixelsToUnit=2;
+meshFrame.pivot={x:0.25,y:0.75};
+check(meshFrame.mesh===null,'mesh lazy before ensure');
+meshFrame.ensureMeshData();
+const mesh=meshFrame.mesh,vertices=meshFrame.vertices;
+const expectedPositions=[-0.25,-1.125,0,0.75,-1.125,0,-0.25,0.375,0,0.75,0.375,0];
+function equalArray(actual,expected){return JSON.stringify(Array.from(actual))===JSON.stringify(expected);}
+check(equalArray(mesh.readAttribute(0,'a_position'),expectedPositions),'mesh vertex buffer');
+check(equalArray(mesh.readAttribute(0,'a_texCoord'),[0.25,0.25,0.75,0.25,0.25,1,0.75,1]),'mesh UV buffer');
+check(equalArray(mesh.readIndices(0),[0,1,2,2,1,3]),'mesh index buffer');
+check(equalArray(vertices.uv,[1,4,3,4,1,1,3,1]),'mesh pixel UV');
+const meshMin=mesh.getMinPosition(),meshMax=mesh.getMaxPosition();
+check(meshMin!=null&&meshMax!=null,'native mesh exposes both bounds');
+meshFrame.ensureMeshData();meshFrame.texture=texture;
+check(meshFrame.mesh===mesh,'repeated ensure and unchanged texture retain mesh');
+const copy=meshFrame.clone();
+check(copy.mesh!==mesh&&equalArray(copy.mesh.readAttribute(0,'a_position'),expectedPositions),'clone owns mesh');
+const larger=new jsb.Texture2D();larger.create(8,8);meshFrame.texture=larger;
+check(meshFrame.mesh!==mesh&&meshFrame.vertices===vertices&&vertices.rawPosition[0].x===-4,'texture refresh rebuild');
+const emptyFrame=new jsb.SpriteFrame();emptyFrame.meshType=1;emptyFrame.ensureMeshData();
+check(emptyFrame.mesh.getStruct().vertexBundles[0].view.count===0&&emptyFrame.vertices.indexes.length===0,'empty polygon mesh');
+return 'OK';
 }catch(error){return String(error.stack||error);}})()`;
 fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,script);console.log(output);
 

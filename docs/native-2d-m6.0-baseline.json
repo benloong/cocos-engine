@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "7e1a22f50bc0b91d31d110e015044445560786533a5e8a73619711cb881025d7"
+      "sha256": "cb0ced472621c6237a69481552e082960b0b8f4bfc9019e748c343429e4ad3a7"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
@@ -14622,8 +14622,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "5ab9a0b0c336673d60b6485d64dba06e6aeda56d2963e404f11d90a120b903f7",
-      "printedCodeLines": 272,
+      "sha256": "031a41603acd2cb0cbd87ddddd5efb64ba39d5e7f139b8f28f7dc5b2a5d1f1cc",
+      "printedCodeLines": 320,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
         "./sprite-frame-vertices",
@@ -14639,11 +14639,16 @@
         {
           "expression": "jsb.Asset.prototype._ctor.apply",
           "line": 83
+        },
+        {
+          "expression": "jsb.MeshUtils.createMesh",
+          "line": 95
         }
       ],
       "allocations": [],
       "loops": [
-        70
+        70,
+        108
       ]
     },
     {

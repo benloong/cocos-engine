@@ -24,7 +24,7 @@
 
 import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { cloneFrameVertices, deserializeFrameVertices, serializeFrameVertices } from './sprite-frame-vertices';
-import { cclegacy, isValid, js, Rect, Size, Vec2, Vec4 } from '../../core';
+import { cclegacy, isValid, js, Rect, Size, Vec2, Vec3, Vec4 } from '../../core';
 import '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
 import { Texture2D } from '../../asset/assets/texture-2d';
@@ -90,14 +90,50 @@ function detachReplacedTexture (frame: any, texture: TextureBase | null): void {
     Atlas.releaseFrame(frame);
 }
 
+function createFrameMesh (frame: any): void {
+    const vertices = frame.vertices;
+    frame._mesh = jsb.MeshUtils.createMesh({
+        positions: vertices.positions, indices: vertices.indexes, uvs: vertices.nuv,
+        minPos: frame._meshMin, maxPos: frame._meshMax,
+    });
+}
+
+function rebuildFrameMesh (frame: any): void {
+    if (frame.meshType !== MeshType.POLYGON && !frame.texture) throw new TypeError('SpriteFrame mesh requires a texture');
+    const raw: number[] = frame.getMeshRawPositions();
+    const vertices = frame.vertices ??= {
+        rawPosition: [], positions: [], indexes: [], uv: [], nuv: [], minPos: new Vec3(), maxPos: new Vec3(),
+    };
+    vertices.rawPosition.length = 0;
+    for (let i = 0; i < raw.length; i += 3) vertices.rawPosition.push(new Vec3(raw[i], raw[i + 1], raw[i + 2]));
+    vertices.minPos.set(raw[0] ?? 0, raw[1] ?? 0, 0);
+    vertices.maxPos.set(raw[9] ?? 0, raw[10] ?? 0, 0);
+    vertices.positions.splice(0, vertices.positions.length, ...frame.transformMeshPositions(raw));
+    vertices.indexes.length = 0;
+    if (raw.length) vertices.indexes.push(0, 1, 2, 2, 1, 3);
+    vertices.uv.splice(0, vertices.uv.length, ...frame.getMeshUVs(false));
+    vertices.nuv.splice(0, vertices.nuv.length, ...frame.getMeshUVs(true));
+    const bounds = frame.transformMeshPositions([vertices.minPos.x, vertices.minPos.y, 0, vertices.maxPos.x, vertices.maxPos.y, 0]);
+    frame._meshMin = new Vec3(bounds[0], bounds[1], bounds[2]);
+    frame._meshMax = new Vec3(bounds[3], bounds[4], bounds[5]);
+    frame._mesh?.destroy();
+    createFrameMesh(frame);
+}
+
+spriteFrameProto.ensureMeshData = function (): void {
+    if (!this._mesh) rebuildFrameMesh(this);
+};
+
 Object.defineProperties(spriteFrameProto, {
+    mesh: { configurable: true, get () { return this._mesh ?? null; } },
     texture: {
         enumerable: true, configurable: true,
         get (): TextureBase | null { return this.getTexture(); },
         set (value: TextureBase | null) {
-            if (!isValid(this, true)) return;
+            if (!isValid(this, true) || !value || this.getTexture() === value) return;
             detachReplacedTexture(this, value);
             this.resetWithTexture(value);
+            if (this._mesh) rebuildFrameMesh(this);
             this._calculateUV();
         },
     },
@@ -107,6 +143,7 @@ Object.defineProperties(spriteFrameProto, {
             if (!isValid(this, true)) return;
             detachReplacedTexture(this, value);
             this.loadTexture(value);
+            if (this._mesh && value) rebuildFrameMesh(this);
             this._calculateUV();
         },
     },
@@ -202,7 +239,10 @@ spriteFrameProto.reset = function (info?: ISpriteFrameInitInfo, clearData = fals
     if (info?.texture) detachReplacedTexture(this, info.texture);
     this.resetFrame(clearData);
     if (info) {
-        if (info.texture) this.resetTexture(info.texture);
+        if (info.texture) {
+            this.resetTexture(info.texture);
+            if (this._mesh) rebuildFrameMesh(this);
+        }
         if (info.rect) nativeSetRect.call(this, info.rect.x, info.rect.y, info.rect.width, info.rect.height);
         if (info.originalSize) nativeSetOriginalSize.call(this, info.originalSize.width, info.originalSize.height);
         if (info.offset) nativeSetOffset.call(this, info.offset.x, info.offset.y);
@@ -227,6 +267,11 @@ spriteFrameProto.clone = function (): SpriteFrame {
     const frame = new SpriteFrame();
     (frame as any).copyFrom(this);
     frame.vertices = cloneFrameVertices(this.vertices);
+    if (this._mesh) {
+        (frame as any)._meshMin = this._meshMin;
+        (frame as any)._meshMax = this._meshMax;
+        createFrameMesh(frame);
+    }
     Atlas.trackClone(this, frame);
     return frame;
 };

@@ -52,8 +52,10 @@ ArrayBuffer::Ptr BufferBlob::getCombined() {
         if (const auto *p = ccstd::get_if<uint32_t>(&arrayBufferOrPadding)) {
             counter += *p;
         } else if (const auto *p = ccstd::get_if<ArrayBuffer::Ptr>(&arrayBufferOrPadding)) {
-            result.set(*p, counter);
-            counter += (*p)->byteLength();
+            if ((*p)->byteLength() != 0) {
+                result.set(*p, counter);
+                counter += (*p)->byteLength();
+            }
         }
     }
 

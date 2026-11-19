@@ -30,7 +30,7 @@ ArrayBuffer::ArrayBuffer(uint32_t length) : _byteLength{length} {
     _jsArrayBuffer = se::Object::createArrayBufferObject(nullptr, length);
     _jsArrayBuffer->root();
     _jsArrayBuffer->getArrayBufferData(static_cast<uint8_t **>(&_data), nullptr);
-    memset(_data, 0x00, _byteLength);
+    if (_byteLength != 0) memset(_data, 0x00, _byteLength);
 }
 
 ArrayBuffer::ArrayBuffer(const uint8_t *data, uint32_t length) {

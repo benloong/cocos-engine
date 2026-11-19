@@ -1,5 +1,6 @@
 import { cclegacy, Rect, Size, Vec2 } from '../../cocos/core';
 import { SpriteFrame as WebSpriteFrame } from '../../cocos/2d/assets/sprite-frame';
+import { AttributeName } from '../../cocos/gfx';
 
 const defaults = {
     RectX: 0, RectY: 0, RectWidth: 0, RectHeight: 0,
@@ -58,6 +59,39 @@ proto.copyFrom = jest.fn(function (other) { this.data = { ...other.data }; this.
 proto.getUV = jest.fn(() => [0, 1, 1, 1, 0, 0, 1, 0]);
 proto.getSlicedUV = jest.fn(() => [0, 1, 0.25, 1, 0.75, 1, 1, 1]);
 const assetCtor = jest.fn();
+
+test('Web generated mesh buffers, clone and texture refresh match the Windows JSB fixture', () => {
+    const frame = new WebSpriteFrame();
+    const texture = { width: 4, height: 4 } as any;
+    frame.texture = texture;
+    frame._deserialize({ rect: new Rect(1, 0, 2, 3), pixelsToUnit: 2, pivot: new Vec2(0.25, 0.75) }, null);
+    expect(frame.mesh).toBeNull();
+    frame.ensureMeshData();
+    const mesh = frame.mesh!;
+    const vertices = frame.vertices!;
+    const positions = [-0.25, -1.125, 0, 0.75, -1.125, 0, -0.25, 0.375, 0, 0.75, 0.375, 0];
+    expect(Array.from(mesh.readAttribute(0, AttributeName.ATTR_POSITION)!)).toEqual(positions);
+    expect(Array.from(mesh.readAttribute(0, AttributeName.ATTR_TEX_COORD)!)).toEqual([0.25, 0.25, 0.75, 0.25, 0.25, 1, 0.75, 1]);
+    expect(Array.from(mesh.readIndices(0)!)).toEqual([0, 1, 2, 2, 1, 3]);
+    expect(vertices.uv).toEqual([1, 4, 3, 4, 1, 1, 3, 1]);
+    expect(mesh.struct.minPosition).toMatchObject({ x: -0.25, y: -1.125, z: 0 });
+    expect(mesh.struct.maxPosition).toMatchObject({ x: 0.75, y: 0.375, z: 0 });
+    frame.ensureMeshData();
+    frame.texture = texture;
+    expect(frame.mesh).toBe(mesh);
+    const clone = frame.clone();
+    expect(clone.mesh).not.toBe(mesh);
+    expect(Array.from(clone.mesh!.readAttribute(0, AttributeName.ATTR_POSITION)!)).toEqual(positions);
+    frame.texture = { width: 8, height: 8 } as any;
+    expect(frame.mesh).not.toBe(mesh);
+    expect(frame.vertices).toBe(vertices);
+    expect(vertices.rawPosition[0].x).toBe(-4);
+    const polygon = new WebSpriteFrame();
+    polygon._deserialize({ meshType: WebSpriteFrame.MeshType.POLYGON, pixelsToUnit: 100 }, null);
+    polygon.ensureMeshData();
+    expect(polygon.mesh!.struct.vertexBundles[0].view.count).toBe(0);
+    expect(polygon.vertices!.indexes).toEqual([]);
+});
 
 test('authored polygon vertices survive Web and native serialization and cloning', () => {
     const vertices = {
