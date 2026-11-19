@@ -306,6 +306,21 @@ export class M6GraphicsGpuProbe extends Component {
         material.destroy();
         const labelNode = node(canvas.node, 'immediate-label-layout');
         const label = labelNode.addComponent(Label);
+        const colorNode = node(canvas.node, 'sprite-color-contract');
+        for (const renderer of [label, colorNode.addComponent(Sprite)]) {
+            const original = renderer.color.clone();
+            let events = 0;
+            const changed = (): void => { ++events; };
+            renderer.node.on(Node.EventType.COLOR_CHANGED, changed);
+            const input = new Color(12, 34, 56, 78);
+            renderer.color = input;
+            input.r = 99;
+            renderer.color = renderer.color.clone();
+            if (renderer.color.r !== 12 || renderer.color.a !== 78 || events !== 0) throw new Error('Runtime renderer color assignment failed');
+            renderer.node.off(Node.EventType.COLOR_CHANGED, changed);
+            renderer.color = original;
+        }
+        colorNode.destroy();
         label.enabled = false;
         label.useSystemFont = false;
         label.fontFamily = '';

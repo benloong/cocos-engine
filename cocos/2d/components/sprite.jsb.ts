@@ -28,7 +28,6 @@ import { ccenum, cclegacy, warnID } from '../../core';
 import { SpriteAtlas } from '../assets/sprite-atlas';
 import { Material } from '../../asset/assets';
 import { BlendFactor } from '../../gfx';
-import { Color } from '../../core/math/color';
 import { Vec2 } from '../../core/math/vec2';
 import { SpriteFrame } from '../assets/sprite-frame';
 import { UITransform } from '../framework/ui-transform';
@@ -187,18 +186,6 @@ export class Sprite extends UIRenderer {
         else this._fillCenter.set(value);
     }
 
-    get color (): Readonly<Color> {
-        return this._color;
-    }
-
-    set color (value: Readonly<Color>) {
-        if (this._color.equals(value)) {
-            return;
-        }
-        this._color.set(value);
-        this._syncColor();
-    }
-
     get customMaterial (): Material | null {
         return this._customMaterial;
     }
@@ -220,7 +207,7 @@ export class Sprite extends UIRenderer {
         if (transform && transform._native) {
             this._native.setUITransform(transform._native);
         }
-        this._syncColor();
+        this._updateColor();
         bindNativeMaterialSlots(this);
         this._native.setTrim(this._isTrimmedMode);
         this._native.setGrayscale(this._useGrayscale);
@@ -277,7 +264,7 @@ export class Sprite extends UIRenderer {
         return center;
     }
 
-    private _syncColor (): void {
+    protected _updateColor (): void {
         if (this._native) {
             this._native.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
         }

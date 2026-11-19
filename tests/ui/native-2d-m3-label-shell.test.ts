@@ -1,8 +1,11 @@
 import { Node } from '../../cocos/scene-graph/node';
 import { UITransform } from '../../cocos/2d/framework/ui-transform';
+import type { UIRenderer } from '../../cocos/2d/framework/ui-renderer';
 import { Font } from '../../cocos/2d/assets/font';
 import { BitmapFont } from '../../cocos/2d/assets/bitmap-font';
 import { Label as WebLabel } from '../../cocos/2d/components/label';
+import { Sprite as WebSprite } from '../../cocos/2d/components/sprite';
+import { mockEnv } from '../utils/mock-cc-env';
 import { deserialize, Details } from '../../cocos/serialization/deserialize';
 import { instantiate } from '../../exports/base';
 import { Color } from '../../cocos/core/math/color';
@@ -71,6 +74,36 @@ beforeAll(() => {
 });
 
 beforeEach(() => { jest.clearAllMocks(); shared = []; instances = []; });
+
+test.each([false, true])('Label and Sprite color setters preserve node events (EDITOR=%s)', (editor) => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const { Sprite } = require('../../cocos/2d/components/sprite.jsb');
+    const fixtures = [WebLabel, WebSprite, Label, Sprite].map((Renderer) => {
+        const node = new Node();
+        const renderer = node.addComponent(Renderer) as UIRenderer;
+        return { node, renderer, native: Renderer === Label || Renderer === Sprite };
+    });
+    const env = mockEnv('EDITOR', editor);
+    try {
+        for (const { node, renderer, native } of fixtures) {
+            const bridge = { setColorRGBA: jest.fn() };
+            if (native) Object.assign(renderer, { _native: bridge });
+            const input = new Color(12, 34, 56, 78);
+            const handler = jest.fn((snapshot: Color) => {
+                expect(snapshot).toEqual(input);
+                if (native) expect(bridge.setColorRGBA).toHaveBeenCalledWith(12, 34, 56, 78);
+                snapshot.r = 99;
+            });
+            node.on(Node.EventType.COLOR_CHANGED, handler);
+            renderer.color = input;
+            renderer.color = input.clone();
+            expect(handler).toHaveBeenCalledTimes(editor ? 1 : 0);
+            expect(bridge.setColorRGBA).toHaveBeenCalledTimes(native ? 1 : 0);
+            expect(renderer.color.r).toBe(12);
+            expect(input.r).toBe(12);
+        }
+    } finally { env.restore(); }
+});
 
 test('Label reports the original bitmap font size as its assigned asset changes', () => {
     const { Label } = require('../../cocos/2d/components/label.jsb');

@@ -424,16 +424,8 @@ export class Label extends UIRenderer {
         this._acquireLetterTexture();
     }
 
-    get color (): Readonly<Color> {
-        return this._color;
-    }
-
-    set color (value: Readonly<Color>) {
-        if (this._color.equals(value)) {
-            return;
-        }
-        this._color.set(value);
-        this._native?.setColorRGBA(value.r, value.g, value.b, value.a);
+    protected _updateColor (): void {
+        this._native?.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
     }
 
     get customMaterial (): Material | null {
@@ -510,7 +502,7 @@ export class Label extends UIRenderer {
         this._native?.setHorizontalAlign(this._horizontalAlign);
         this._native?.setVerticalAlign(this._verticalAlign);
         this._native?.setSpacingX(this._spacingX);
-        this._native?.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
+        this._updateColor();
         this._native?.setEnableOutline(this._enableOutline);
         this._native?.setOutlineColor(this._outlineColor);
         this._native?.setOutlineWidth(this._outlineWidth);
