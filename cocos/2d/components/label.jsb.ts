@@ -254,22 +254,29 @@ export class Label extends UIRenderer {
     set actualFontSize (value: number) { this._actualFontSize = value; this._native?.setActualFontSize(value); }
 
     get underlineHeight (): number { return this._underlineHeight; }
-    set underlineHeight (value: number) { this._underlineHeight = value; this._native?.setUnderlineHeight(value); }
+    set underlineHeight (value: number) {
+        if (this._underlineHeight === value) return;
+        this._underlineHeight = value;
+        this._native?.setUnderlineHeight(value);
+    }
 
     get isBold (): boolean { return this._isBold; }
     set isBold (value: boolean) {
+        if (this._isBold === value) return;
         this._isBold = value;
         this._native?.setIsBold(value);
     }
 
     get isItalic (): boolean { return this._isItalic; }
     set isItalic (value: boolean) {
+        if (this._isItalic === value) return;
         this._isItalic = value;
         this._native?.setIsItalic(value);
     }
 
     get isUnderline (): boolean { return this._isUnderline; }
     set isUnderline (value: boolean) {
+        if (this._isUnderline === value) return;
         this._isUnderline = value;
         this._native?.setIsUnderline(value);
     }
@@ -439,6 +446,7 @@ export class Label extends UIRenderer {
 
     get enableOutline (): boolean { return this._enableOutline; }
     set enableOutline (value: boolean) {
+        if (this._enableOutline === value) return;
         this._enableOutline = value;
         this._native?.setEnableOutline(value);
     }
@@ -451,12 +459,14 @@ export class Label extends UIRenderer {
 
     get outlineWidth (): number { return this._outlineWidth; }
     set outlineWidth (value: number) {
+        if (this._outlineWidth === value) return;
         this._outlineWidth = value;
         this._native?.setOutlineWidth(value);
     }
 
     get enableShadow (): boolean { return this._enableShadow; }
     set enableShadow (value: boolean) {
+        if (this._enableShadow === value) return;
         this._enableShadow = value;
         this._native?.setEnableShadow(value);
     }
@@ -469,6 +479,7 @@ export class Label extends UIRenderer {
 
     get shadowBlur (): number { return this._shadowBlur; }
     set shadowBlur (value: number) {
+        if (this._shadowBlur === value) return;
         this._shadowBlur = value;
         this._native?.setShadowBlur(value);
     }

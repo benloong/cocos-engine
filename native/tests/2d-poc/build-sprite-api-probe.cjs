@@ -166,6 +166,18 @@ label._color.r=96;labelAssembler.updateColor(label);
 labelAssembler.updateRenderData(label);
 check(readLabelCoverage(label._native)>0,'native Label still renders after assembler color update');
 label.sharedMaterials=[custom,normal];
+for (const key of ['isBold','isItalic','isUnderline','underlineHeight','enableOutline','outlineWidth','enableShadow','shadowBlur']) {
+ const setter='set'+key[0].toUpperCase()+key.slice(1);
+ const prototype=n2d.Label.prototype;
+ const original=prototype[setter], initial=label[key];
+ const changed=typeof initial==='boolean' ? !initial : initial+0.25;
+ const calls=[];
+ prototype[setter]=function(value){calls.push(value);return original.call(this,value);};
+ try {
+  label[key]=initial; label[key]=changed; label[key]=changed; label[key]=initial;
+  check(calls.length===2&&calls[0]===changed&&calls[1]===initial,'Label JSB setter transitions '+key+' calls='+calls.length);
+ } finally {prototype[setter]=original;}
+}
 const labelInstances=label.materials;
 check(labelInstances.length===2&&labelInstances[0].parent===custom&&labelInstances[1].owner===label,'Label actual shell native material slots');
 const labelOld=labelInstances[1];

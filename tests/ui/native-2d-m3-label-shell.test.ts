@@ -104,6 +104,23 @@ test.each([false, true])('Label and Sprite color setters preserve node events (E
     } finally { env.restore(); }
 });
 
+test('Web Label scalar styles invalidate render data only on transitions', () => {
+    const label = new WebLabel();
+    const dirty = jest.spyOn(label as any, '_markForUpdateRenderData').mockImplementation(() => {});
+    for (const key of ['isBold', 'isItalic', 'isUnderline', 'enableOutline', 'enableShadow'] as const) {
+        const initial = label[key];
+        dirty.mockClear();
+        for (const value of [initial, !initial, !initial, initial]) label[key] = value;
+        expect(dirty).toHaveBeenCalledTimes(2);
+    }
+    for (const key of ['underlineHeight', 'outlineWidth', 'shadowBlur'] as const) {
+        const initial = label[key];
+        dirty.mockClear();
+        for (const value of [initial, initial + 0.25, initial + 0.25, initial]) label[key] = value;
+        expect(dirty).toHaveBeenCalledTimes(2);
+    }
+});
+
 test('Label reports the original bitmap font size as its assigned asset changes', () => {
     const { Label } = require('../../cocos/2d/components/label.jsb');
     for (const Component of [WebLabel, Label]) {
