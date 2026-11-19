@@ -1,0 +1,166 @@
+{
+  "previous": "1f64cb1745",
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "sizes": [12,24,36,48],
+  "raw": [
+    {
+      "sample": "bidi-override",
+      "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "beforePassOf8": 8,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 0,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "bidi-visual",
+      "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "beforePassOf8": 8,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 0,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "thai-marks",
+      "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "beforePassOf8": 8,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 0,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "hebrew",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "beforePassOf8": 7,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 1,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "arabic",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "beforePassOf8": 7,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 1,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "hebrew-mixed",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "beforePassOf8": 0,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 1,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "arabic-marks",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "beforePassOf8": 0,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 1,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "latin-space",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "beforePassOf8": 0,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 0,
+      "syntheticBoldPassOf4": 0
+    },
+    {
+      "sample": "latin-kern",
+      "fontSha256": "edfbd22a3d088fc2f5d7c79b8c9c732df6dc878a60f0a80be0f92a3c7a634404",
+      "beforePassOf8": 7,
+      "afterPassOf8": 8,
+      "maxChannelDifference": 0,
+      "syntheticBoldPassOf4": 0
+    }
+  ],
+  "rawReportsSha256": {
+    "Debug": "7d51a75d6a21dc74dc9615c373da6fa1ac08135c6c313d45a1029b4d1113850d",
+    "Release": "7d51a75d6a21dc74dc9615c373da6fa1ac08135c6c313d45a1029b4d1113850d"
+  },
+  "application": {
+    "Debug": {
+      "snapshot": "6517cdf1b0283f9b67d1a04ec6883c6b2a56d9e1156bbe715116188d5638b712",
+      "sha256": "9761d80eeb67919250aeb761df4f0fcaedaa70b78d6da3a005056249ec90d2e3",
+      "total": 40,
+      "layout": 40,
+      "passed": 37,
+      "fontCycles": 1000
+    },
+    "Release": {
+      "snapshot": "6517cdf1b0283f9b67d1a04ec6883c6b2a56d9e1156bbe715116188d5638b712",
+      "sha256": "9761d80eeb67919250aeb761df4f0fcaedaa70b78d6da3a005056249ec90d2e3",
+      "total": 40,
+      "layout": 40,
+      "passed": 37,
+      "fontCycles": 1000
+    }
+  },
+  "timing": {
+    "unit": "microseconds per call",
+    "compiler": "MSVC /O2 /DNDEBUG",
+    "font": "Thonburi 24px regular",
+    "order": "before/final, final/before, before/final, final/before",
+    "columns": [
+      "word measure",
+      "word draw",
+      "line measure",
+      "line draw"
+    ],
+    "texts": [
+      "Atlas<n>",
+      "Atlas <n> score"
+    ],
+    "distinctStrings": 128,
+    "measureCalls": 40000,
+    "drawCalls": 4000,
+    "warmupBatches": 1,
+    "before": {
+      "rounds": [
+        [2.6765,34.935,2.5736,54.7764],
+        [2.7103,35.2537,2.6167,68.3559],
+        [2.7114,34.7699,2.5631,54.4427],
+        [2.6584,34.8691,2.5329,54.8689]
+      ],
+      "median": [2.6934,34.9021,2.5683,54.8227]
+    },
+    "final": {
+      "rounds": [
+        [2.4301,35.1909,2.566,55.9042],
+        [2.685,34.8419,2.5507,55.2101],
+        [2.6729,35.0371,2.5557,55.2442],
+        [2.4365,34.8225,2.523,54.9594]
+      ],
+      "median": [2.5547,34.9395,2.5532,55.2272]
+    },
+    "arial": {
+      "font": "Arial 24px regular",
+      "columns": [
+        "word measure",
+        "word draw",
+        "line measure",
+        "line draw"
+      ],
+      "before": {
+        "rounds": [
+          [183.3354,270.7381,199.8875,314.9411],
+          [171.8087,268.2273,190.2104,316.5236],
+          [186.6693,269.1448,197.9335,331.283],
+          [185.2696,268.5835,199.182,317.6891]
+        ],
+        "median": [184.3025,268.8642,198.5578,317.1064]
+      },
+      "final": {
+        "rounds": [
+          [195.3312,279.7193,209.5713,335.0061],
+          [192.8542,283.1851,221.9077,355.9879],
+          [183.9157,270.6481,217.6424,344.5003],
+          [194.2921,273.2587,220.4187,346.0996]
+        ],
+        "median": [193.5732,276.489,219.0306,345.2999]
+      }
+    }
+  }
+}

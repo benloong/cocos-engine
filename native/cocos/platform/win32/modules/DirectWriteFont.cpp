@@ -369,12 +369,37 @@ private:
     std::atomic<ULONG> _refs{1};
 };
 
+// An ASCII line can use the unformatted layout when every glyph comes from
+// this face and there is no font positioning table that can kern a space.
+bool hasUnkernedAscii(IDWriteFontFamily *family) {
+    ComOwner<IDWriteFont> font;
+    ComOwner<IDWriteFontFace> face;
+    if (FAILED(family->GetFirstMatchingFont(DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STRETCH_NORMAL, DWRITE_FONT_STYLE_NORMAL, font.out()))
+        || FAILED(font->CreateFontFace(face.out()))) return false;
+    for (const auto tag : {DWRITE_MAKE_OPENTYPE_TAG('k', 'e', 'r', 'n'), DWRITE_MAKE_OPENTYPE_TAG('G', 'P', 'O', 'S')}) {
+        const void *table = nullptr;
+        UINT32 bytes = 0;
+        void *context = nullptr;
+        BOOL exists = FALSE;
+        if (FAILED(face->TryGetFontTable(tag, &table, &bytes, &context, &exists))) return false;
+        if (exists) {
+            face->ReleaseFontTable(context);
+            return false;
+        }
+    }
+    std::array<UINT32, 95> codes{};
+    std::array<UINT16, 95> glyphs{};
+    for (size_t i = 0; i < codes.size(); ++i) codes[i] = static_cast<UINT32>(i) + 0x20;
+    return SUCCEEDED(face->GetGlyphIndices(codes.data(), static_cast<UINT32>(codes.size()), glyphs.data()))
+        && std::all_of(glyphs.begin(), glyphs.end(), [](UINT16 glyph) { return glyph != 0; });
+}
+
 class TextRenderer final : public IDWriteTextRenderer {
 public:
     // These buffers/factory are synchronous borrows for IDWriteTextLayout::Draw.
-    TextRenderer(IDWriteFactory *factory, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color,
+    TextRenderer(IDWriteFactory *factory, IDWriteRenderingParams *renderingParams, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color,
                  bool bold, bool italic, float lineWidth, DirectWriteFont::StrokeJoin join)
-    : _factory(factory), _pixels(pixels), _width(width), _height(height), _color(color), _bold(bold), _italic(italic), _lineWidth(lineWidth), _join(join) {}
+    : _factory(factory), _renderingParams(renderingParams), _pixels(pixels), _width(width), _height(height), _color(color), _bold(bold), _italic(italic), _lineWidth(lineWidth), _join(join) {}
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **out) override {
         if (!out) return E_POINTER;
         *out = nullptr;
@@ -388,6 +413,14 @@ public:
     HRESULT STDMETHODCALLTYPE GetPixelsPerDip(void *, FLOAT *scale) override { *scale = 1; return S_OK; }
     HRESULT STDMETHODCALLTYPE DrawGlyphRun(void *, FLOAT x, FLOAT y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run, const DWRITE_GLYPH_RUN_DESCRIPTION *, IUnknown *) override {
         if (run->isSideways) return drawMask(x, y, mode, run);
+        DWRITE_RENDERING_MODE rasterMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
+        if (!_bold && !_italic && _lineWidth == 0 && _renderingParams) {
+            DWRITE_RENDERING_MODE recommended{};
+            if (SUCCEEDED(run->fontFace->GetRecommendedRenderingMode(run->fontEmSize, 1, mode, _renderingParams, &recommended))
+                && recommended == DWRITE_RENDERING_MODE_NATURAL) {
+                rasterMode = recommended;
+            }
+        }
         // DirectWrite supplies the right edge of an RTL run. Place each shaped
         // glyph at its left origin before snapping it to the Canvas raster grid.
         const bool rtl = (run->bidiLevel & 1U) != 0;
@@ -403,13 +436,14 @@ public:
             const float advance = run->glyphAdvances[index];
             const float glyphX = rtl ? origin - advance - offset.advanceOffset : origin + offset.advanceOffset;
             const auto hr = drawMask(std::floor(glyphX * 4.F + .5F) / 4.F,
-                                     std::floor(y - offset.ascenderOffset + .5F), mode, &glyph);
+                                     std::floor(y - offset.ascenderOffset + .5F), mode, &glyph, rasterMode);
             if (FAILED(hr)) return hr;
             origin += rtl ? -advance : advance;
         }
         return S_OK;
     }
-    HRESULT drawMask(float x, float y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run) {
+    HRESULT drawMask(float x, float y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run,
+                     DWRITE_RENDERING_MODE rasterMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC) {
         if (_bold || _lineWidth > 0) {
             if (!_outline) {
                 auto outline = std::make_unique<OutlineRasterizer>();
@@ -427,7 +461,7 @@ public:
         // each glyph origin, preserving the regular shaped advances.
         const DWRITE_MATRIX transform{1, 0, -.25F, 1, x, y};
         HRESULT hr = _factory->CreateGlyphRunAnalysis(run, 1, _italic ? &transform : nullptr,
-            DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC, mode, _italic ? 0.F : x, _italic ? 0.F : y, analysis.out());
+            rasterMode, mode, _italic ? 0.F : x, _italic ? 0.F : y, analysis.out());
         if (FAILED(hr)) return hr;
         RECT bounds{};
         hr = analysis->GetAlphaTextureBounds(texture, &bounds);
@@ -482,6 +516,7 @@ public:
 private:
     std::atomic<ULONG> _refs{1};
     IDWriteFactory *_factory;
+    IDWriteRenderingParams *_renderingParams; // borrowed for this draw
     uint8_t *_pixels;
     uint32_t _width;
     uint32_t _height;
@@ -499,12 +534,14 @@ struct DirectWriteFont::Impl {
     ComOwner<CollectionLoader> loader;
     ComOwner<IDWriteFontCollection> collection;
     ComOwner<IDWriteTextFormat> format;
+    bool unkernedAscii{false};
+    ComOwner<IDWriteRenderingParams> renderingParams;
     std::wstring key;
     bool registered{false};
     bool bold{false};
     bool italic{false};
     ~Impl() {
-        format.reset(); collection.reset();
+        renderingParams.reset(); format.reset(); collection.reset();
         if (registered) factory->UnregisterFontCollectionLoader(loader.get());
         loader.reset(); factory.reset(); // key remains alive through factory/cache destruction
     }
@@ -534,10 +571,24 @@ struct DirectWriteFont::Impl {
         if (SUCCEEDED(hr)) hr = factory->CreateTextFormat(name.c_str(), collection.get(), DWRITE_FONT_WEIGHT_NORMAL,
             DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", format.out());
         if (FAILED(hr)) return false;
+        unkernedAscii = hasUnkernedAscii(family.get());
+        if (!bold && !italic) factory->CreateRenderingParams(renderingParams.out());
         return SUCCEEDED(format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP));
     }
     HRESULT layout(const std::wstring &text, IDWriteTextLayout **out) const {
-        return factory->CreateTextLayout(text.data(), static_cast<UINT32>(text.size()), format.get(), 1000000, 1000000, out);
+        HRESULT hr = factory->CreateTextLayout(text.data(), static_cast<UINT32>(text.size()), format.get(), 1000000, 1000000, out);
+        const size_t firstSpace = text.find(L' ');
+        if (FAILED(hr) || firstSpace == std::wstring::npos) return hr;
+        if (unkernedAscii && std::all_of(text.begin(), text.end(), [](wchar_t c) { return c >= 0x20 && c <= 0x7E; })) return hr;
+        // Itemize ordinary spaces separately, retaining the locale and shaping
+        // of the surrounding words (including their internal kerning).
+        for (size_t start = firstSpace; SUCCEEDED(hr) && start != std::wstring::npos;) {
+            const size_t end = text.find_first_not_of(L' ', start);
+            const size_t length = (end == std::wstring::npos ? text.size() : end) - start;
+            hr = (*out)->SetLocaleName(L"und", {static_cast<UINT32>(start), static_cast<UINT32>(length)});
+            start = text.find(L' ', start + length);
+        }
+        return hr;
     }
 };
 DirectWriteFont::DirectWriteFont() : _impl(std::make_unique<Impl>()) {}
@@ -576,7 +627,7 @@ bool DirectWriteFont::drawText(const std::string &text, float x, float y, int ba
         y -= line.baseline;
     }
     ComOwner<TextRenderer> renderer;
-    renderer.reset(new TextRenderer(_impl->factory.get(), pixels, width, height, color, _impl->bold, _impl->italic, lineWidth, join));
+    renderer.reset(new TextRenderer(_impl->factory.get(), _impl->renderingParams.get(), pixels, width, height, color, _impl->bold, _impl->italic, lineWidth, join));
     return SUCCEEDED(layout->Draw(nullptr, renderer.get(), x, y));
 }
 } // namespace cc
