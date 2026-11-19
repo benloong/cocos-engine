@@ -1349,9 +1349,11 @@ void testRichTextRuntime() {
     check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
     check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
     check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
-    const auto revision = rich.getLayoutRevision(); auto *first = rich.getSegmentNode(0);
+    auto *first = rich.getSegmentNode(0);
+    rich.getSegmentLabel(0)->setString("idle marker");
     for (int i = 0; i < 1000; ++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(rich.getLayoutRevision() == revision && rich.getSegmentNode(0) == first, "idle RichText performs no layout or segment churn");
+    check(rich.getSegmentNode(0) == first && rich.getSegmentLabel(0)->getString() == "idle marker", "idle RichText preserves segment identity and content");
+    rich.getSegmentLabel(0)->setString("one");
     for (uint32_t i = 0; i < rich.getSegmentCount(); ++i) {
         auto *entity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(i)->getUserData());
         check(entity != nullptr, "native RichText child has renderer");
@@ -1367,9 +1369,10 @@ void testRichTextRuntime() {
     const auto hits = rich.getHitSegments(static_cast<float>(placement.x + placement.width / 2), static_cast<float>(placement.y + placement.height / 2));
     check(hits.size() == 1 && hits[0] == 0 && rich.getHitSegments(-1000,-1000).empty(), "native RichText hit and miss use segment geometry");
     rich.setEnabled(false); check(!first->isActive() && rich.getHitSegments(1,1).empty(), "disabled RichText hides children and ignores hits");
-    rich.setString("changed"); check(rich.getLayoutRevision() == revision, "disabled RichText defers layout");
+    rich.setString("changed");
+    check(rich.getSegmentCount() == 3 && rich.getSegmentLabel(0)->getString() == "one", "disabled RichText defers layout");
     rich.setEnabled(true);
-    check(rich.getSegmentCount() == 1 && rich.getSegmentNode(0) == first, "RichText reuses compatible native segments");
+    check(rich.getSegmentCount() == 1 && rich.getSegmentNode(0) == first && rich.getSegmentLabel(0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
     check(frame->getRefCount() == frameRefs, "recycled image releases frame and texture references");
     rich.setFontAsset(nullptr); check(font->getRefCount() == fontRefs, "RichText clears font references including measurement cache");
     rich.setString("<img src=\"icon\"/>");

@@ -254,7 +254,7 @@ void RichText::updateLayout() {
     for (auto &segment : previous) if (segment) recycle(std::move(segment));
     _fontRevision = _font ? _font->getRevision() : 0;
     _atlasRevision = _atlas ? _atlas->getRevision() : 0;
-    _dirty = false; ++_layoutRevision;
+    _dirty = false;
     _transform->setContentSize(static_cast<float>(_layout.width), static_cast<float>(_layout.height));
     _updating = false;
 }

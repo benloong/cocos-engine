@@ -74,7 +74,6 @@ public:
     std::string getSegmentClickHandler(uint32_t index) const;
     std::string getSegmentClickParam(uint32_t index) const;
     std::vector<uint32_t> getHitSegments(float worldX, float worldY);
-    uint32_t getLayoutRevision() const { return _layoutRevision; }
     const RichTextLayoutResult &getLayout() const { return _layout; }
 private:
     struct Segment;
@@ -110,7 +109,6 @@ private:
     int32_t _cacheMode{0};
     uint32_t _fontRevision{0};
     uint32_t _atlasRevision{0};
-    uint32_t _layoutRevision{0};
     uint32_t _layer{0};
     bool _dirty{true};
     bool _updating{false};

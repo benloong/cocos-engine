@@ -95,11 +95,11 @@
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
-      "sha256": "7ce124f705444e9af818ba812912789968298031ea1f957d5278fd578d5d2b1b"
+      "sha256": "f51de69165f06caefd70b79e5bb9ffa206a9acb7d3b77f5139147844641b820a"
     },
     {
       "file": "native/cocos/2d/components/RichText.h",
-      "sha256": "90521e126f63c255de228b6cb438d2a18d174182a35f61526e7164ae3288f5f4"
+      "sha256": "619d20c9008e20742f3f293eb06be012cc5ce5f6dbd0197806f1406f16b68f70"
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
