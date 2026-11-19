@@ -1,6 +1,6 @@
 import { _decorator, BitmapFont, Camera, Canvas, Color, Component, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { runSceneMatrix } from './M6SceneMatrix';
-import { EffectAsset, instantiate, Material, Prefab, resources, SpriteRenderer } from 'cc';
+import { EffectAsset, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
 
 const { ccclass } = _decorator;
@@ -249,6 +249,30 @@ export class M6GraphicsGpuProbe extends Component {
             if (1 in owner.sharedMaterials || owner.getSharedMaterial(1) !== undefined || owner.getSharedMaterial(2) !== material) {
                 throw new Error('Material array splice/delete lost slot identity');
             }
+            const disposable = new Material();
+            disposable.initialize({ effectAsset: variantEffect });
+            owner.setSharedMaterial(disposable, 1);
+            const held = owner.getMaterialInstance(1)!;
+            owner.setMaterialInstance(disposable, 1);
+            if (owner.getRenderMaterial(1) !== held || !held.passes.length) throw new Error('Same parent discarded a live instance');
+            owner.setSharedMaterial(disposable, 1, true);
+            if (held.passes.length || !isValid(held, true) || !disposable.passes.length) {
+                throw new Error('Replacing a slot failed to dispose only the instance passes');
+            }
+            const next = owner.getMaterialInstance(1)!;
+            if (next === held || !next.passes.length) throw new Error('Failed to recreate instance after disposal');
+            owner.setMaterialInstance(alternate, 1);
+            if (next.passes.length || owner.getRenderMaterial(1) !== alternate) throw new Error('Replacing the parent retained instance passes');
+            owner.setSharedMaterial(disposable, 2);
+            if (!disposable.destroy() || disposable.destroy() || disposable.passes.length || !isValid(disposable)
+                || isValid(disposable, true) || owner.getSharedMaterial(2) !== disposable) {
+                throw new Error('Unexpected shared material state during deferred destruction');
+            }
+            await wait();
+            if (isValid(disposable) || owner.getSharedMaterial(2) !== disposable || !isValid(held, true)) {
+                throw new Error('Unexpected shared material or instance lifetime after deferred destruction');
+            }
+            owner.setSharedMaterial(null, 2);
             ownerNode.destroy();
         }
         await wait();

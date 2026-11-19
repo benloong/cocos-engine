@@ -67,6 +67,9 @@ void UIRenderer::setSharedMaterial(Material *material, uint32_t index, bool forc
     if (index == 0) _useBuiltinMaterial = false;
     if (!forceUpdate && !wasBuiltin && _materials[index] == material) return;
     IntrusivePtr<Material> retained(material);
+    if (auto *instance = getMaterialInstanceSlot(index)) {
+        instance->destroy();
+    }
     if (index == 0) _materialInstance = nullptr;
     else if (index < _extraMaterialInstances.size()) _extraMaterialInstances[index] = nullptr;
     _materials[index] = retained;
@@ -150,9 +153,7 @@ void UIRenderer::setMaterialInstance(Material *material, uint32_t index) {
         if (_materials.size() <= index) _materials.resize(index + 1);
         instance = material;
     } else {
-        IntrusivePtr<Material> retained(material);
-        instance = nullptr;
-        setSharedMaterial(retained, index);
+        setSharedMaterial(material, index);
     }
     onMaterialChanged();
 }
