@@ -61,10 +61,6 @@ const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontFamilyNameMap()
 const ccstd::unordered_map<ccstd::string, ccstd::string> &getFontAssetFamilyNameMap() {
     return fontAssetFamilyNameMap;
 }
-#if defined(CC_2D_FONT_ALIAS_DIAGNOSTICS)
-size_t getFontAliasLeaseCount() { return fontAliasLeases.size(); }
-size_t getFontAliasGroupCount() { return fontAliasGroups.size(); }
-#endif
 uint64_t getFontAliasRevision() { return fontAliasRevision; }
 
 uint64_t retainFontFamilyAlias(const ccstd::string &family, const ccstd::string &source, const ccstd::string &renderFamily) {
@@ -159,24 +155,9 @@ static bool jsbLoadFont(se::State &s) {
 }
 SE_BIND_FUNC(jsbLoadFont)
 
-#if defined(CC_2D_FONT_ALIAS_DIAGNOSTICS)
-static bool jsbGetFontAliasStats(se::State &s) {
-    se::HandleObject result(se::Object::createPlainObject());
-    result->setProperty("publicAliases", se::Value(static_cast<double>(fontFamilyNameMap.size())));
-    result->setProperty("renderAliases", se::Value(static_cast<double>(fontAssetFamilyNameMap.size())));
-    result->setProperty("leases", se::Value(static_cast<double>(fontAliasLeases.size())));
-    result->setProperty("groups", se::Value(static_cast<double>(fontAliasGroups.size())));
-    s.rval().setObject(result);
-    return true;
-}
-SE_BIND_FUNC(jsbGetFontAliasStats)
-#endif
 
 bool register_platform_bindings(se::Object * /*obj*/) { // NOLINT(readability-identifier-naming)
     __jsbObj->defineFunction("loadFont", _SE(jsbLoadFont));
-#if defined(CC_2D_FONT_ALIAS_DIAGNOSTICS)
-    __jsbObj->defineFunction("getFontAliasStats", _SE(jsbGetFontAliasStats));
-#endif
     se::ScriptEngine::getInstance()->addAfterCleanupHook([]() {
         // Values own paths only; Canvas instances own their selected font faces.
         decltype(fontFamilyNameMap)().swap(fontFamilyNameMap);

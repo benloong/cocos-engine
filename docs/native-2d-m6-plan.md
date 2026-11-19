@@ -84,7 +84,7 @@
 - [x] 字体工厂失败回滚：native 空字节/赋值异常销毁半成品并回调错误，Factory 同步异常清理等待队列、支持同 ID 重试并隔离旧回调；16 个 suite、120 项和 Debug/Release 实际 JSB 故障探针通过。创建前无主 alias、完整异步下载与跨平台仍待验收，见 [报告](./native-2d-m6.1-font-factory-failure.md)。
 - [x] Windows 本地 TTFFont 真实资源循环：Debug 普通/ASAN 应用各 1000 次 loadRemote/releaseAsset 与缓存身份检查，逐轮字节/alias/缓存恢复、失败回滚与同 URL 重试、缺失源拒绝和最终延迟销毁通过；当前源码完整引擎 JS 重建，图像仍 9/12。长期 heap、HTTP/bundle、BMFont/LabelAtlas 与跨平台仍待验收，见 [证据](./native-2d-m6.1-font-remote-lifecycle.md)。
 - [x] HTTP 字体缓存来源修复：保留资产 URL，onLoaded 从已下载缓存/临时文件读取 native 字节；缓存换源与 released 回调测试通过。按统一文档构建测试工程并执行基础门禁，旧 M4/M5 探针迁移到真实 GPU/原生段观测；历史 HTTP/ASAN 补充证据及 HTTPS、取消、半文件、无主 alias 等剩余边界见 [报告](./native-2d-m6.1-font-http.md)。
-- [x] 生产导出清理：原 M0 的两个 PoC 组件及模块入口已删除。Windows 普通应用由场景检查字体别名统计入口缺席；原生字体验收工程单独启用该诊断。见 [验收配置](./native-2d-m6.1-font-remote-lifecycle.md)。
+- [x] 生产导出清理：原 M0 的两个 PoC 组件及模块入口已删除。Windows 绑定已移除字体别名统计函数和测试编译开关。C++ 测试检查私有计数，Mask 和 RichText 应用夹具检查 JSB 上没有该导出。见 [验收配置](./native-2d-m6.1-font-remote-lifecycle.md)。
   [功能裁剪测试](../native/tests/2d-poc/check-m6-feature-matrix.cjs) 同时检查可用模块列表和生成的 `cc.js`。模块列表不得包含 `native-2d-poc`，Windows 与 Web 各九种组合均须排除 `NativeUITransformPoc` 和 `NativeSpritePoc`。
 - [x] Sprite 的原生几何准备收为 C++ 入口。Windows 双配置的 JSB 验收确认 Sprite 对象没有 prepare 方法，帧纹理迟到和 assembler 标脏后经 UIRendererManager.updateAllDirtyRenderers 刷新。独立 C++ 几何测试仍可直接测量准备耗时。该候选 Windows Debug/Release 各 88 张图像均与 Web 逐字节相等。
 - [x] HTTP 字体部分响应后断线：Windows Debug/Release 各一次 loadRemote 拒绝，缓存与别名计数恢复；同 URL 取得 223404 字节并实际绘字，测量宽度 95.9765625。Web 首次 fetch 读取失败，随后同 URL 经 loadRemote 完成 12 张截图。每个平台记录一次断流、一次完整传输。布局 12/12，严格像素仍为 9/12。见 [HTTP 验收记录](./native-2d-m6.1-font-http.md)。

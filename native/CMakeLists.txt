@@ -2976,10 +2976,6 @@ elseif(APPLE)
                     cocos/platform/apple/JsbBridgeWrapper.mm
     )
 elseif(WIN32)
-    if(CC_2D_FONT_ALIAS_DIAGNOSTICS)
-        set_property(SOURCE "${CMAKE_CURRENT_LIST_DIR}/cocos/bindings/manual/jsb_platform_win32.cpp"
-                     APPEND PROPERTY COMPILE_DEFINITIONS CC_2D_FONT_ALIAS_DIAGNOSTICS=1)
-    endif()
     cocos_source_files(
         NO_WERROR    cocos/bindings/manual/jsb_platform_win32.cpp
     )

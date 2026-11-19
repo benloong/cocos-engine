@@ -19,8 +19,9 @@ function submittedTextCoverage (label: any): number {
 
 async function checkNativeFontLifecycle (url: string, parent: Node): Promise<object | null> {
     if (!sys.isNative) return null;
-    const stats = (): string => JSON.stringify((globalThis as any).jsb.getFontAliasStats());
-    const before = stats();
+    if ('getFontAliasStats' in (globalThis as any).jsb) throw new Error('Test-only font diagnostics exposed by JSB');
+    const released = (asset: any): boolean => asset.isReleased() && !asset.getFontDataSize()
+        && !asset.getSourcePath() && !asset.getFontFamily();
     const cacheBefore = assetManager.assets.count;
     let lastReleased: TTFFont | null = null;
     const load = (source = url, options: { maxRetryCount?: number } = {}): Promise<TTFFont> => new Promise((resolve, reject) => {
@@ -29,9 +30,9 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     const release = (asset: TTFFont, source = url): void => {
         assetManager.releaseAsset(asset);
         lastReleased = asset;
-        if (isValid(asset, true) || !(asset as any).isReleased() || (asset as any).getFontDataSize() !== 0
-            || assetManager.assets.has(source) || assetManager.assets.count !== cacheBefore || stats() !== before) {
-            throw new Error('loadRemote/releaseAsset retained font data, cache or alias records');
+        if (isValid(asset, true) || !released(asset)
+            || assetManager.assets.has(source) || assetManager.assets.count !== cacheBefore) {
+            throw new Error('loadRemote/releaseAsset retained font data, cache or source records');
         }
     };
     for (let iteration = 0; iteration < 1000; iteration++) {
@@ -51,14 +52,14 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     try {
         let rejected = false;
         try { await load(); } catch { rejected = true; }
-        if (!rejected || !partial?.isReleased() || partial.getFontDataSize() !== 0 || stats() !== before
+        if (!rejected || !partial || !released(partial)
             || assetManager.assets.has(url)) throw new Error('Remote font failure did not roll back');
     } finally { Object.defineProperty(prototype, '_nativeAsset', descriptor); }
     release(await load());
     let missingRejected = false;
     try { await load(`${url}.missing.ttf`); } catch { missingRejected = true; }
-    if (!missingRejected || stats() !== before || assetManager.assets.count !== cacheBefore) {
-        throw new Error('Missing remote font was accepted or retained alias/cache records');
+    if (!missingRejected || assetManager.assets.count !== cacheBefore) {
+        throw new Error('Missing remote font was accepted or retained cache records');
     }
     await wait();
     if (isValid(lastReleased)) throw new Error('Font deferred destruction did not finish');
@@ -70,7 +71,7 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     let interrupted = false;
     try { await load(httpUrl, { maxRetryCount: 0 }); } catch { interrupted = true; }
     if (!interrupted || cache.getCache(httpUrl) || assetManager.assets.has(httpUrl)
-        || assetManager.assets.count !== cacheBefore || stats() !== before) {
+        || assetManager.assets.count !== cacheBefore) {
         throw new Error('Partial font transfer was accepted or left a cache or alias entry');
     }
     const httpFont = await load(httpUrl, { maxRetryCount: 0 });
@@ -89,11 +90,11 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     if (cache.getCache(httpUrl) || files.isFileExist(cachedSource)) throw new Error('Released HTTP font cache file was retained');
     let httpMissingRejected = false;
     try { await load(`${origin}/missing.ttf`); } catch { httpMissingRejected = true; }
-    if (!httpMissingRejected || stats() !== before || assetManager.assets.count !== cacheBefore) throw new Error('HTTP 404 retained font state');
+    if (!httpMissingRejected || assetManager.assets.count !== cacheBefore) throw new Error('HTTP 404 retained font state');
     const http = { interrupted, loaded: true, bytes: 223404, cachePathResolved: true, width, released: true, cacheRemoved: true, missingRejected: true };
     return { cycles: 1000, cacheHits: 1000, bytesPerLoad: 223404, assignmentFailureRolledBack: true,
         retrySucceeded: true, missingRejected, deferredDestroyFinished: true,
-        before: JSON.parse(before), after: JSON.parse(stats()), cacheBefore, cacheAfter: assetManager.assets.count, http };
+        cacheBefore, cacheAfter: assetManager.assets.count, http };
 }
 
 /** The real asset factory loads the same TTF bytes in both applications. */

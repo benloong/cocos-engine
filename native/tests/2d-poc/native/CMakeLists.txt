@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CC_USE_SCRIPT_ENGINE ON)
-set(CC_2D_FONT_ALIAS_DIAGNOSTICS ON)
 set(USE_MODULES OFF)
 
 # Build the real engine static library and link a tiny console smoke test
@@ -18,6 +17,7 @@ get_filename_component(CC2D_REPLACEMENT_FONT "${CMAKE_CURRENT_LIST_DIR}/../../..
 target_compile_definitions(cc2d_native_poc PRIVATE CC2D_FONT_FIXTURE="${CC2D_FONT_FIXTURE}" CC2D_REPLACEMENT_FONT="${CC2D_REPLACEMENT_FONT}")
 target_link_libraries(cc2d_native_poc PRIVATE cocos_engine)
 if(WIN32)
+    target_sources(cc2d_native_poc PRIVATE font_alias_test.cpp)
     add_executable(cc2d_gdi_draw_profile EXCLUDE_FROM_ALL ../m6-gdi-draw-profile.cpp)
     target_link_libraries(cc2d_gdi_draw_profile PRIVATE cocos_engine)
     add_executable(cc2d_font_resource ../test_win_font_resource.cpp)

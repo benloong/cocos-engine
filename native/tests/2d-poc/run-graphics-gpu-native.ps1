@@ -57,9 +57,7 @@ try {
             if($Mode -eq 'richtext') {
                 $lifecycle = $result.text.lifecycle
                 if($result.captures.Count -ne 12 -or $result.text.loaded -ne $true -or $result.text.released -ne $true -or $lifecycle.cycles -ne 1000 -or $lifecycle.cacheHits -ne 1000 -or $lifecycle.bytesPerLoad -ne 223404 -or $lifecycle.assignmentFailureRolledBack -ne $true -or $lifecycle.retrySucceeded -ne $true -or $lifecycle.missingRejected -ne $true -or $lifecycle.deferredDestroyFinished -ne $true) { throw 'Invalid native RichText manifest' }
-                $before = $lifecycle.before | ConvertTo-Json -Compress
-                $after = $lifecycle.after | ConvertTo-Json -Compress
-                if($before -ne $after -or $lifecycle.cacheBefore -ne $lifecycle.cacheAfter) { throw 'Native font lifecycle did not restore its baseline' }
+                if($null -eq $lifecycle.cacheBefore -or $lifecycle.cacheBefore -ne $lifecycle.cacheAfter) { throw 'Native font lifecycle did not restore its baseline' }
             }
             if (($RootImplementation -or $OpacityImplementation) -and !(Select-String -LiteralPath $log -Pattern $marker -Quiet)) { throw "Missing rollback result: $marker" }
             Write-Output "M6_GPU_NATIVE_READY $($result.captures.Count)"

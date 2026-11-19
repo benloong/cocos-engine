@@ -7,7 +7,7 @@ const read=dir=>JSON.parse(fs.readFileSync(path.join(dir,'manifest.json')));
 const a=read(nativeDir),b=read(webDir);
 const lifecycle=a.text?.lifecycle;
 if(!lifecycle?.http?.interrupted||!lifecycle.http.loaded||!lifecycle.http.cachePathResolved||!lifecycle.http.released||!lifecycle.http.cacheRemoved||!lifecycle.http.missingRejected||lifecycle.http.bytes!==223404)throw Error('Incomplete HTTP font lifecycle evidence');
-if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||JSON.stringify(lifecycle.before)!==JSON.stringify(lifecycle.after)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
+if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||!Number.isInteger(lifecycle.cacheBefore)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
 const expected=['text-basic','text-bold','text-italic','text-underline','text-outline','text-nested','text-colors','text-wrap-left','text-wrap-center','text-wrap-right','text-multiline','text-unicode'];
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 for(const value of [a,b]) {
