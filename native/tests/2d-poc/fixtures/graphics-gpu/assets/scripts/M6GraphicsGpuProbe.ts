@@ -204,7 +204,9 @@ export class M6GraphicsGpuProbe extends Component {
         instance.destroy();
         await wait();
         const alternate = new Material();
-        alternate.initialize({ effectAsset: effect });
+        const variantEffect = await new Promise<EffectAsset>((resolve, reject) =>
+            resources.load('VariantSprite', EffectAsset, (error, asset) => error ? reject(error) : resolve(asset)));
+        alternate.initialize({ effectAsset: variantEffect, defines: { USE_TEXTURE: false } });
         for (const Type of [Sprite, Label, Graphics] as const) {
             const ownerNode = node(canvas.node, 'material-array');
             const owner = ownerNode.addComponent(Type as typeof Sprite);
@@ -214,6 +216,25 @@ export class M6GraphicsGpuProbe extends Component {
             const instances = owner.materials;
             const old = instances[1];
             if (!old || old === alternate) throw new Error('Expected an independent material instance');
+            const rebuild = owner._onRebuildPSO;
+            const notifications: number[] = [];
+            owner._onRebuildPSO = function (index, changed) {
+                if (changed !== old) throw new Error('Shader rebuild reported a different material');
+                notifications.push(index);
+                rebuild.call(this, index, changed);
+            };
+            try {
+                const originalHash = old.hash;
+                old.recompileShaders({ USE_TEXTURE: true }, 0);
+                if (old.hash === originalHash) throw new Error('Textured shader variant retained the original hash');
+                old.recompileShaders({ USE_TEXTURE: true }, 0);
+                old.recompileShaders({ USE_TEXTURE: false });
+                if (old.hash !== originalHash || notifications.join(',') !== '1,1') {
+                    throw new Error(`Material variant rebuild failed for ${owner.constructor.name}: slots ${notifications}`);
+                }
+            } finally {
+                owner._onRebuildPSO = rebuild;
+            }
             shared[1] = material;
             if (owner.sharedMaterials !== shared || owner.getSharedMaterial(1) !== material || owner.getRenderMaterial(1) !== old) {
                 throw new Error('In-place shared material replacement discarded the existing instance');

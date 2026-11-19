@@ -16,7 +16,8 @@ module.exports=function graphicsGpuSnapshot(mode='graphics') {
     if (mode === 'graphics') {
         const atlas = path.join(__dirname,'fixtures/acceptance/resources/M6StaticAtlas');
         walk(atlas);
-        for (const file of [atlas+'.meta',path.join(root,'editor/assets/effects/for2d/builtin-sprite-renderer.effect')]) {
+        for (const file of [atlas+'.meta',path.join(root,'editor/assets/effects/for2d/builtin-sprite-renderer.effect'),
+            path.join(root,'editor/assets/effects/for2d/builtin-sprite.effect')]) {
             fixtureHashes.push([path.relative(root,file).replaceAll('\\','/'),crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')]);
         }
     }

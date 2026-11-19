@@ -18,6 +18,7 @@ if (mode === 'graphics') {
     fs.cpSync(atlas, path.join(resources, 'M6StaticAtlas'), {recursive:true});
     fs.copyFileSync(atlas + '.meta', path.join(resources,'M6StaticAtlas.meta'));
     fs.copyFileSync(path.join(root, 'editor/assets/effects/for2d/builtin-sprite-renderer.effect'), path.join(resources,'AtlasMesh.effect'));
+    fs.copyFileSync(path.join(root, 'editor/assets/effects/for2d/builtin-sprite.effect'), path.join(resources,'VariantSprite.effect'));
 }
 // CLI keeps outputName from the supplied config even when --platform differs.
 // Use a separate Web config so building Web cannot replace Windows resources.
