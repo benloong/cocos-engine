@@ -1354,24 +1354,24 @@ void testRichTextRuntime() {
     rich.setNode(&node); rich.setUITransform(&ui);
     check(node.getUserData() == parentEntity, "RichText group preserves an existing parent renderer");
     check(rich.getSegmentCount() == 3 && node.getChildren().size() == 3, "native RichText owns native segment children");
-    auto *segmentEntity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(0)->getUserData());
+    auto *segmentEntity = static_cast<cc::RenderEntity *>(node.getChildren()[0]->getUserData());
     check(segmentEntity->isEnabled(), "RichText font segment remains eligible for Batcher prepare");
     if (segmentEntity->isEnabled()) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(countLabelCoverage(*rich.getSegmentLabel(0)) > 0, "Batcher prepare renders native RichText font segment");
     check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
-    check((rich.getSegmentNode(0)->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
+    check((node.getChildren()[0]->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
     check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
     se::Value imageLayout;
     auto *transform = rich.getSegmentSprite(1)->getUITransform();
     const bool hasWrapper = transform && nativevalue_to_se(transform, imageLayout, nullptr) && imageLayout.isObject();
     check(hasWrapper, "wrap the image segment layout");
-    auto *first = rich.getSegmentNode(0);
+    auto *first = node.getChildren()[0].get();
     rich.getSegmentLabel(0)->setString("idle marker");
     for (int i = 0; i < 1000; ++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(rich.getSegmentNode(0) == first && rich.getSegmentLabel(0)->getString() == "idle marker", "idle RichText preserves segment identity and content");
+    check(node.getChildren()[0].get() == first && rich.getSegmentLabel(0)->getString() == "idle marker", "idle RichText preserves segment identity and content");
     rich.getSegmentLabel(0)->setString("one");
     for (uint32_t i = 0; i < rich.getSegmentCount(); ++i) {
-        auto *entity = static_cast<cc::RenderEntity *>(rich.getSegmentNode(i)->getUserData());
+        auto *entity = static_cast<cc::RenderEntity *>(node.getChildren()[i]->getUserData());
         check(entity != nullptr, "native RichText child has renderer");
         if (entity) { cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); check(entity->getStaticDrawInfoSize() > 0, "native RichText submits segment draw info"); }
     }
@@ -1388,7 +1388,7 @@ void testRichTextRuntime() {
     rich.setString("changed");
     check(rich.getSegmentCount() == 3 && rich.getSegmentLabel(0)->getString() == "one", "disabled RichText defers layout");
     rich.setEnabled(true);
-    check(rich.getSegmentCount() == 1 && rich.getSegmentNode(0) == first && rich.getSegmentLabel(0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
+    check(rich.getSegmentCount() == 1 && node.getChildren()[0].get() == first && rich.getSegmentLabel(0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
     if (hasWrapper) check(imageLayout.toObject()->getPrivateData() == transform, "pooled image layout wrapper stays valid");
     check(frame->getRefCount() == frameRefs, "recycled image releases frame and texture references");
     rich.setFontAsset(nullptr); check(font->getRefCount() == fontRefs, "RichText clears font references including measurement cache");
