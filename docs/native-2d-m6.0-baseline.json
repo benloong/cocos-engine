@@ -151,7 +151,7 @@
     },
     {
       "file": "native/cocos/2d/framework/UITransform.h",
-      "sha256": "996967c766cab87951834b2bfcaf0f26b0c7a51629cb0036293921c20160b297"
+      "sha256": "74a625d0d8552f16a0f64afee33a07cb672af436dbc720d200feb92aa41ec551"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.cpp",

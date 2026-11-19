@@ -127,6 +127,9 @@ public:
     void detach() { _sizeChangedCallback = nullptr; setNode(nullptr); }
 
 private:
+    void onDetach() override {
+        if (!_node) _sizeChangedCallback = nullptr;
+    }
     std::function<void(float, float)> _sizeChangedCallback;
     Vec2 _contentSize{100.F, 100.F};
     Vec2 _anchorPoint{0.5F, 0.5F};

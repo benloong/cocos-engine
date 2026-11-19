@@ -169,6 +169,7 @@
 - [x] CHAR 图集由使用它的 Label 通过 IntrusivePtr 持有。最后一个引用释放时同步清理原生查找指针，JSB 与 Web 共享独立的 LetterRenderTexture 类型。Debug/Release 验证双 Label 共享、释放一个后继续绘制和切换缓存 1000 次，两个配置各 85 张图像与 Web 完全一致。运行时依赖与所有权审计、测试工程 M0/M2/M3/M4/M5 和 SpriteFrame 回归通过。[当前 GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)
 - [ ] 所有 native 组件/资产核对 attach/detach、Node 非 owning 槽位、RenderEntity/DrawInfo、纹理、字体缓存及回调所有权。
   - [x] 宿主析构时按挂载顺序从当前组件列表逐个解绑。回调迁移的组件在新节点保留有效的双向关联。原先的快照会重复通知已迁出的组件，导致透明度设置失效。[原生回归](../native/tests/2d-poc/native/main.cpp)
+  - [x] UITransform 的尺寸回调随宿主销毁释放。迁移到另一个存活节点仍能收到尺寸通知；原节点先析构时，独立存活的布局对象再次改尺寸不会通知旧宿主。Windows Debug/Release 检查闭包对象存活数、回调次数和 JSB 布局推送。[所有权回归](../native/tests/2d-poc/native/main.cpp)、[JSB 探针](../native/tests/2d-poc/build-layout-probe.cjs)
   - [x] Sprite、Label 薄壳在 `onLoad` 时通过 `setNode` 绑定布局，已移除 JS 查询 UITransform 和回传指针的调用。Windows Debug/Release 的[真实 JSB 探针](../native/tests/2d-poc/build-renderer-manager-probe.cjs)检查两个类均无 `setUITransform` 导出。Sprite 的 `getUITransform` 也已从 JSB 移除。RichText 图像段布局的借用包装对象由 C++ 回归检查入池有效、解绑后失效。
   - [x] Mask 自身从宿主节点取得布局，图像遮罩使用内部 Sprite 自身的节点绑定。已移除 JSB 的 `Mask.setUITransform`。Windows Debug/Release 检查布局晚挂载、替换、销毁、换宿主后修改旧布局，以及两端分别对 Web 的 88 张 GPU 图像。[原生生命周期回归](../native/tests/2d-poc/native/main.cpp)、[像素对照入口](../native/tests/2d-poc/compare-graphics-gpu.cjs)
   - [x] UIOpacity 换宿主、显式解绑及组件析构时恢复旧节点的 localOpacity。修复前，真实 JSB 将取值 102 的组件换宿主后两个节点都为 0.4，解绑后新节点仍为 0.4。Windows 双配置覆盖宿主和组件两种销毁顺序，并复测 Prefab、启停和继承透明度。[原生回归](../native/tests/2d-poc/native/main.cpp)、[Prefab 探针](../native/tests/2d-poc/opacity-rollback-probe.js)

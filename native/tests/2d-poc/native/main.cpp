@@ -1431,6 +1431,20 @@ void testLayoutAndMaterials() {
     transform.detach();
     check(live==0, "detach releases size callback ownership");
     transform.setContentSize(90, 30); check(changes == 1, "no callback after detach");
+    {
+        cc::Node firstHost("first-layout-host");
+        cc::Node host("short-lived-layout-host");
+        transform.setNode(&firstHost);
+        Capture owner(&live);
+        transform.setSizeChangedCallback([&, owner](float, float) { ++changes; });
+        transform.setNode(&host);
+        transform.setContentSize(81, 21);
+        check(changes == 2, "moving a live layout keeps its size callback");
+    }
+    check(live == 0, "destroying the layout host releases the size callback");
+    transform.setContentSize(91, 31);
+    check(changes == 2, "an orphaned layout cannot notify its destroyed host");
+    transform.detach();
     cc::IntrusivePtr<cc::Material> builtin(new cc::Material());
     cc::BuiltinResMgr::getInstance()->addAsset("ui-sprite-material", builtin);
     cc::BuiltinResMgr::getInstance()->addAsset("ui-graphics-material", builtin);
