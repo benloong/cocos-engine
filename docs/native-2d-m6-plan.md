@@ -87,6 +87,7 @@
 - [x] 生产导出清理：原 M0 的两个 PoC 组件及模块入口已删除。Windows 绑定已移除字体别名统计函数和测试编译开关。C++ 测试检查私有计数，Mask 和 RichText 应用夹具检查 JSB 上没有该导出。见 [验收配置](./native-2d-m6.1-font-remote-lifecycle.md)。
   [功能裁剪测试](../native/tests/2d-poc/check-m6-feature-matrix.cjs) 同时检查可用模块列表和生成的 `cc.js`。模块列表不得包含 `native-2d-poc`，Windows 与 Web 各九种组合均须排除 `NativeUITransformPoc` 和 `NativeSpritePoc`。
 - [x] Sprite 的原生几何准备收为 C++ 入口。Windows 双配置的 JSB 验收确认 Sprite 对象没有 prepare 方法，帧纹理迟到和 assembler 标脏后经 UIRendererManager.updateAllDirtyRenderers 刷新。独立 C++ 几何测试仍可直接测量准备耗时。该候选 Windows Debug/Release 各 88 张图像均与 Web 逐字节相等。
+- [x] HTTP 字体主动取消与半文件回收。Windows Debug/Release 验证排队取消零请求、保留旧文件、从 4096 字节处续传及失败文件清理。Web 验证 fetch 取消及续传后的字体摘要。[验收记录](./native-2d-m6.1-font-http.md)
 - [x] HTTP 字体部分响应后断线：Windows Debug/Release 各一次 loadRemote 拒绝，缓存与别名计数恢复；同 URL 取得 223404 字节并实际绘字，测量宽度 95.9765625。Web 首次 fetch 读取失败，随后同 URL 经 loadRemote 完成 12 张截图。每个平台记录一次断流、一次完整传输。布局 12/12，严格像素仍为 9/12。见 [HTTP 验收记录](./native-2d-m6.1-font-http.md)。
 - [x] 字体数据边界补充：BitmapFont/LabelAtlas 拒绝溢出 float、非法 glyph/kerning 与重复字形，失败保留 native 数据、版本和 JS 编辑视图；TTFFont 销毁后 initDefault 不再改写状态。Windows Debug/Release native 与实际 JSB 定向回归通过，见 [字体资产报告](./native-2d-m6.1-font-assets.md)。
 - [x] 字体字号入口复核：BitmapFont/LabelAtlas 忽略非有限字号及 JSB float 溢出，保留默认/零/小数语义；重复赋值、销毁后迟到赋值保持版本稳定。Windows Debug/Release native 与实际 JSB、7 个 Jest suite（68 项）通过，见字体资产报告。

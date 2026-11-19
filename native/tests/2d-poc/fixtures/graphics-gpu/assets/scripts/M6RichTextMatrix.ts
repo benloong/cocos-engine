@@ -17,6 +17,56 @@ function submittedTextCoverage (label: any): number {
     return covered;
 }
 
+async function checkCancelledFont (origin: string, reference: string): Promise<void> {
+    const { Downloader, fileUtils: files } = (globalThis as any).jsb;
+    const downloader = new Downloader({ countOfMaxProcessingTasks: 1, timeoutInSeconds: 10, tempFileNameSuffix: '.tmp' });
+    const url = origin + '/m6-cancel.ttf';
+    const dest = files.getWritablePath() + '/m6-replacement-' + origin.split(':').pop() + '.ttf';
+    const old = 'previous-font';
+    if (!files.writeStringToFile(old, dest)) throw new Error('Cannot seed previous font');
+    await new Promise<void>((resolve, reject) => {
+        downloader.onSuccess = () => reject(new Error('Missing replacement unexpectedly succeeded'));
+        downloader.onError = () => resolve();
+        downloader.createDownloadTask(origin + '/missing.ttf', dest);
+    });
+    if (files.getStringFromFile(dest) !== old || files.isFileExist(dest + '.tmp')) {
+        throw new Error('Failed replacement modified the destination or left an incomplete file');
+    }
+    let task: any;
+    let cancelled = false;
+    let queuedAborted = false;
+    const result = await new Promise<number>((resolve, reject) => {
+        downloader.onProgress = (_task: any, _delta: number, received: number) => {
+            if (!cancelled && received === 4096) {
+                cancelled = true;
+                const queued = downloader.createDownloadTask(origin + '/never-requested.ttf', dest + '.queued', 'queued');
+                downloader.abort(queued);
+            }
+        };
+        downloader.onError = (failed: any, code: number) => {
+            if (failed.identifier === 'queued') {
+                queuedAborted = code === -4 && !files.isFileExist(dest + '.queued') && !files.isFileExist(dest + '.queued.tmp');
+                if (!queuedAborted) reject(new Error('Queued cancellation retained a download or returned ' + code));
+                downloader.abort(task);
+            } else resolve(code);
+        };
+        downloader.onSuccess = () => resolve(0);
+        task = downloader.createDownloadTask(url, dest);
+    });
+    if (!cancelled || !queuedAborted || result !== -4 || files.getStringFromFile(dest) !== old || files.getFileSize(dest + '.tmp') !== 4096) {
+        throw new Error('Cancelled font did not preserve the old file and resumable prefix: ' + result);
+    }
+    await new Promise<void>((resolve, reject) => {
+        downloader.onSuccess = () => resolve();
+        downloader.onError = (_task: any, code: number) => reject(new Error('Font resume failed: ' + code));
+        downloader.createDownloadTask(url, dest);
+    });
+    const bytes = new Uint8Array(files.getDataFromFile(dest));
+    const expected = new Uint8Array(files.getDataFromFile(reference));
+    if (bytes.length !== 223404 || bytes.length !== expected.length || !bytes.every((v, i) => v === expected[i])
+        || files.isFileExist(dest + '.tmp') || !files.removeFile(dest)) throw new Error('Invalid resumed font');
+}
+
 async function checkNativeFontLifecycle (url: string, parent: Node): Promise<object | null> {
     if (!sys.isNative) return null;
     if ('getFontAliasStats' in (globalThis as any).jsb) throw new Error('Test-only font diagnostics exposed by JSB');
@@ -68,9 +118,11 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(origin)) throw new Error('HTTP font fixture origin missing');
     const httpUrl = `${origin}/m6-http-font.ttf`, cache = assetManager.cacheManager!;
     if (cache.getCache(httpUrl)) cache.removeCache(httpUrl);
+    const diskEntries = (): string => JSON.stringify(files.listFiles((cache as any).cacheDir).sort());
+    const entriesBefore = diskEntries();
     let interrupted = false;
     try { await load(httpUrl, { maxRetryCount: 0 }); } catch { interrupted = true; }
-    if (!interrupted || cache.getCache(httpUrl) || assetManager.assets.has(httpUrl)
+    if (!interrupted || diskEntries() !== entriesBefore || cache.getCache(httpUrl) || assetManager.assets.has(httpUrl)
         || assetManager.assets.count !== cacheBefore) {
         throw new Error('Partial font transfer was accepted or left a cache or alias entry');
     }
@@ -90,8 +142,10 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     if (cache.getCache(httpUrl) || files.isFileExist(cachedSource)) throw new Error('Released HTTP font cache file was retained');
     let httpMissingRejected = false;
     try { await load(`${origin}/missing.ttf`); } catch { httpMissingRejected = true; }
-    if (!httpMissingRejected || assetManager.assets.count !== cacheBefore) throw new Error('HTTP 404 retained font state');
-    const http = { interrupted, loaded: true, bytes: 223404, cachePathResolved: true, width, released: true, cacheRemoved: true, missingRejected: true };
+    if (!httpMissingRejected || diskEntries() !== entriesBefore || assetManager.assets.count !== cacheBefore) throw new Error('HTTP 404 retained font state');
+    await checkCancelledFont(origin, url);
+    const http = { interrupted, loaded: true, bytes: 223404, cachePathResolved: true, width, released: true, cacheRemoved: true,
+        missingRejected: true, failedFilesRemoved: true, cancelledAndResumed: true };
     return { cycles: 1000, cacheHits: 1000, bytesPerLoad: 223404, assignmentFailureRolledBack: true,
         retrySucceeded: true, missingRejected, deferredDestroyFinished: true,
         cacheBefore, cacheAfter: assetManager.assets.count, http };
@@ -101,6 +155,27 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
 export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>): Promise<object> {
     const url = sys.isNative ? '__M6_GPU_FONT__' : '/m6-font.ttf';
     if (!sys.isNative) {
+        const controller = new AbortController();
+        const partial = await fetch('/m6-cancel.ttf', { signal: controller.signal, cache: 'no-store' });
+        const reader = partial.body!.getReader();
+        const bytes = new Uint8Array(223404);
+        let offset = 0;
+        while (offset < 4096) {
+            const part = await reader.read();
+            if (part.done) throw new Error('Font ended before cancellation');
+            bytes.set(part.value, offset);
+            offset += part.value.length;
+        }
+        controller.abort();
+        let aborted = false;
+        try { await reader.read(); } catch (error) { aborted = (error as Error).name === 'AbortError'; }
+        const tail = await fetch('/m6-cancel.ttf', { headers: { Range: 'bytes=4096-' }, cache: 'no-store' });
+        if (!aborted || offset !== 4096 || tail.status !== 206) throw new Error('Web font cancellation or resume failed');
+        bytes.set(new Uint8Array(await tail.arrayBuffer()), offset);
+        const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+        if (Array.from(digest, value => value.toString(16).padStart(2, '0')).join('') !== '2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16') {
+            throw new Error('Resumed Web font differs from the fixture');
+        }
         // Read the entire response: fetch resolves the headers before a truncated body rejects.
         const response = await fetch(url, { cache: 'no-store' });
         let truncated = false;

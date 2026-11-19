@@ -32,6 +32,7 @@ const server=http.createServer(async(req,res)=>{
             } else throw new Error('Unknown POST');
             res.writeHead(200);res.end('OK');return;
         }
+        if(interruptedFont && url.pathname==='/m6-cancel.ttf') { interruptedFont.serveResumable(req,res); return; }
         if(interruptedFont && url.pathname==='/m6-font.ttf') { interruptedFont.serve(req,res); return; }
         if(url.pathname==='/m6-font.ttf') {
             res.writeHead(200,{'Content-Type':'font/ttf'});
@@ -74,6 +75,6 @@ const server=http.createServer(async(req,res)=>{
         } catch(error) { logs.push(String(error)); }
     });
     const timeout=setTimeout(()=>doneReject(new Error('Web capture timeout')),180000);
-    try { const result=await done;if(interruptedFont && (interruptedFont.requests.interrupted !== 1 || interruptedFont.requests.complete !== 1)) throw new Error('Unexpected Web font transfers: ' + JSON.stringify(interruptedFont.requests));console.log(`M6_GPU_WEB_READY ${result.captures.length}`); }
+    try { const result=await done;if(interruptedFont && (interruptedFont.requests.interrupted !== 1 || interruptedFont.requests.complete !== 1 || interruptedFont.requests.cancelled !== 1 || interruptedFont.requests.resumed !== 1)) throw new Error('Unexpected Web font transfers: ' + JSON.stringify(interruptedFont.requests));console.log(`M6_GPU_WEB_READY ${result.captures.length}`); }
     finally { clearTimeout(timeout);socket?.close();browser.kill();server.close();fs.writeFileSync(path.join(output,'console.log'),logs.join('\n')); }
 })().catch(error=>{console.error(error);process.exitCode=1;});

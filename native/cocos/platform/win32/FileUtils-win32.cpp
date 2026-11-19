@@ -243,13 +243,7 @@ bool FileUtilsWin32::renameFile(const ccstd::string &oldfullpath, const ccstd::s
     std::wstring _wNew = StringUtf8ToWideChar(newfullpath);
     std::wstring _wOld = StringUtf8ToWideChar(oldfullpath);
 
-    if (FileUtils::getInstance()->isFileExist(newfullpath)) {
-        if (!DeleteFile(_wNew.c_str())) {
-            CC_LOG_ERROR("Fail to delete file %s !Error code is 0x%x", newfullpath.c_str(), GetLastError());
-        }
-    }
-
-    if (MoveFile(_wOld.c_str(), _wNew.c_str())) {
+    if (MoveFileExW(_wOld.c_str(), _wNew.c_str(), MOVEFILE_REPLACE_EXISTING)) {
         return true;
     } else {
         CC_LOG_ERROR("Fail to rename file %s to %s !Error code is 0x%x", oldfullpath.c_str(), newfullpath.c_str(), GetLastError());

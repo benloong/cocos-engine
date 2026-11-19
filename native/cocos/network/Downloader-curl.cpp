@@ -26,6 +26,11 @@
 #include "network/Downloader-curl.h"
 
 #include <curl/curl.h>
+#include <algorithm>
+#include <atomic>
+#include <cctype>
+#include <limits>
+#include <sstream>
 #include <string.h>
 #include <thread>
 
@@ -60,6 +65,7 @@ class DownloadTaskCURL : public IDownloadTask {
     // if more than one task write to one file, cause file broken
     // so use a set to check this situation
     static ccstd::set<ccstd::string> _sStoragePathSet;
+    static std::mutex _storageMutex;
 
 public:
     int serialId;
@@ -72,15 +78,11 @@ public:
     }
 
     virtual ~DownloadTaskCURL() {
-        // if task destroyed unnormally, we should release WritenFileName stored in set.
-        // Normally, this action should done when task finished.
-        if (_tempFileName.length() && _sStoragePathSet.end() != _sStoragePathSet.find(_tempFileName)) {
-            DownloadTaskCURL::_sStoragePathSet.erase(_tempFileName);
-        }
         if (_fp) {
             fclose(_fp);
             _fp = nullptr;
         }
+        releaseStoragePath();
         DLLOG("Destruct DownloadTaskCURL %p", this);
     }
 
@@ -94,9 +96,13 @@ public:
         // file task
         _fileName = filename;
         _tempFileName = filename;
-        _tempFileName.append(tempSuffix);
+        _tempFileName.append(tempSuffix.empty() ? ".tmp" : tempSuffix);
 
-        if (_sStoragePathSet.end() != _sStoragePathSet.find(_tempFileName)) {
+        {
+            std::lock_guard<std::mutex> lock(_storageMutex);
+            _ownsStoragePath = _sStoragePathSet.insert(_tempFileName).second;
+        }
+        if (!_ownsStoragePath) {
             // there is another task uses this storage path
             _errCode = DownloadTask::ERROR_FILE_OP_FAILED;
             _errCodeInternal = 0;
@@ -104,7 +110,6 @@ public:
             _errDescription.append(_tempFileName);
             return false;
         }
-        _sStoragePathSet.insert(_tempFileName);
 
         // open temp file handle for write
         bool ret = false;
@@ -138,6 +143,7 @@ public:
                 _errCodeInternal = 0;
                 _errDescription = "Can't open file:";
                 _errDescription.append(_tempFileName);
+                break;
             }
             ret = true;
         } while (0);
@@ -180,6 +186,16 @@ public:
 
 private:
     friend class DownloaderCURL;
+    std::atomic<bool> _cancelRequested{false};
+    bool _ownsStoragePath{false};
+
+    void releaseStoragePath() {
+        if (_ownsStoragePath) {
+            std::lock_guard<std::mutex> lock(_storageMutex);
+            _sStoragePathSet.erase(_tempFileName);
+            _ownsStoragePath = false;
+        }
+    }
 
     // for lock object instance
     std::mutex _mutex;
@@ -220,6 +236,7 @@ private:
 };
 int DownloadTaskCURL::_sSerialId;
 ccstd::set<ccstd::string> DownloadTaskCURL::_sStoragePathSet;
+std::mutex DownloadTaskCURL::_storageMutex;
 
 typedef std::pair<std::shared_ptr<const DownloadTask>, DownloadTaskCURL *> TaskWrapper;
 
@@ -258,6 +275,18 @@ public:
         }
     }
 
+    void cancel(DownloadTaskCURL *task) {
+        task->_cancelRequested.store(true);
+        std::lock_guard<std::mutex> lock(_requestMutex);
+        auto it = std::find_if(_requestQueue.begin(), _requestQueue.end(),
+                               [task](const TaskWrapper &wrapper) { return wrapper.second == task; });
+        if (it != _requestQueue.end()) {
+            std::lock_guard<std::mutex> finishedLock(_finishedMutex);
+            _finishedQueue.push_back(std::move(*it));
+            _requestQueue.erase(it);
+        }
+    }
+
     void stop() {
         std::lock_guard<std::mutex> lock(_threadMutex);
         if (_thread.joinable()) {
@@ -288,6 +317,7 @@ private:
         int strLen = int(size * count);
         DLLOG("    _outputHeaderCallbackProc: %.*s", strLen, buffer);
         DownloadTaskCURL &coTask = *((DownloadTaskCURL *)(userdata));
+        if (strLen >= 5 && memcmp(buffer, "HTTP/", 5) == 0) coTask._header.clear();
         coTask._header.append((const char *)buffer, strLen);
         return strLen;
     }
@@ -319,9 +349,11 @@ private:
         }
         curl_easy_setopt(handle, CURLOPT_WRITEDATA, coTask);
 
-        curl_easy_setopt(handle, CURLOPT_NOPROGRESS, true);
-        //            curl_easy_setopt(handle, CURLOPT_XFERINFOFUNCTION, DownloaderCURL::Impl::_progressCallbackProc);
-        //            curl_easy_setopt(handle, CURLOPT_XFERINFODATA, coTask);
+        curl_easy_setopt(handle, CURLOPT_NOPROGRESS, 0L);
+        curl_easy_setopt(handle, CURLOPT_XFERINFOFUNCTION, +[](void *context, curl_off_t, curl_off_t, curl_off_t, curl_off_t) -> int {
+            return static_cast<DownloadTaskCURL *>(context)->_cancelRequested.load() ? 1 : 0;
+        });
+        curl_easy_setopt(handle, CURLOPT_XFERINFODATA, coTask);
 
         curl_easy_setopt(handle, CURLOPT_FAILONERROR, true);
         curl_easy_setopt(handle, CURLOPT_NOSIGNAL, 1L);
@@ -374,6 +406,7 @@ private:
                 char buf[256] = {0};
                 sprintf(buf, "When request url(%s) header info, return unexcept http response code(%ld)", wrapper.first->requestURL.c_str(), httpResponseCode);
                 coTask.setErrorProc(DownloadTask::ERROR_IMPL_INTERNAL, CURLE_OK, buf);
+                return false;
             }
 
             //                curl_easy_getinfo(handle, CURLINFO_EFFECTIVE_URL, &effectiveUrl);
@@ -384,21 +417,40 @@ private:
                 break;
             }
 
-            bool acceptRanges = (ccstd::string::npos != coTask._header.find("Accept-Ranges")) ? true : false;
+            std::istringstream headers(coTask._header);
+            bool acceptRanges = false;
+            for (std::string line; std::getline(headers, line);) {
+                std::transform(line.begin(), line.end(), line.begin(), [](unsigned char c) { return std::tolower(c); });
+                const auto colon = line.find(':');
+                if (colon != std::string::npos && line.compare(0, colon, "accept-ranges") == 0) {
+                    std::istringstream value(line.substr(colon + 1));
+                    std::string unit;
+                    value >> unit;
+                    acceptRanges = unit == "bytes";
+                }
+            }
 
-            // get current file size
+            if (contentLen > std::numeric_limits<uint32_t>::max()) {
+                coTask.setErrorProc(DownloadTask::ERROR_IMPL_INTERNAL, 0, "Download exceeds supported size");
+                return false;
+            }
             uint32_t fileSize = 0;
-            if (acceptRanges && coTask._tempFileName.length()) {
-                fileSize = FileUtils::getInstance()->getFileSize(coTask._tempFileName);
+            if (coTask._fp) {
+                auto *files = FileUtils::getInstance();
+                fileSize = static_cast<uint32_t>(files->getFileSize(coTask._tempFileName));
+                if (fileSize > 0 && (!acceptRanges || (contentLen >= 0 && fileSize > contentLen))) {
+                    coTask._fp = freopen(files->getSuitableFOpen(coTask._tempFileName).c_str(), "wb", coTask._fp);
+                    if (!coTask._fp) {
+                        coTask.setErrorProc(DownloadTask::ERROR_FILE_OP_FAILED, 0, "Cannot restart staged download");
+                        return false;
+                    }
+                    fileSize = 0;
+                }
             }
-
-            // set header info to coTask
             std::lock_guard<std::mutex> lock(coTask._mutex);
-            coTask._totalBytesExpected = (uint32_t)contentLen;
+            coTask._totalBytesExpected = contentLen >= 0 ? static_cast<uint32_t>(contentLen) : 0;
             coTask._acceptRanges = acceptRanges;
-            if (acceptRanges && fileSize > 0) {
-                coTask._totalBytesReceived = fileSize;
-            }
+            coTask._totalBytesReceived = fileSize;
             coTask._headerAchieved = true;
         } while (0);
 
@@ -560,8 +612,7 @@ private:
             }
 
             // process tasks in _requestList
-            auto size = coTaskMap.size();
-            while (0 == countOfMaxProcessingTasks || size < countOfMaxProcessingTasks) {
+            while (0 == countOfMaxProcessingTasks || coTaskMap.size() < countOfMaxProcessingTasks) {
                 // get task wrapper from request queue
                 TaskWrapper wrapper;
                 {
@@ -606,10 +657,22 @@ private:
                 std::lock_guard<std::mutex> lock(_processMutex);
                 _processSet.insert(wrapper);
             }
-        } while (coTaskMap.size());
+            if (coTaskMap.empty()) {
+                // Serialize an idle exit with run() so a concurrently queued retry always gets a worker.
+                std::lock_guard<std::mutex> threadLock(_threadMutex);
+                std::lock_guard<std::mutex> queueLock(_requestMutex);
+                if (_requestQueue.empty() && _thread.get_id() == thisThreadId) {
+                    _thread.detach();
+                    break;
+                }
+            }
+        } while (true);
 
         curl_multi_cleanup(curlmHandle);
-        this->stop();
+        {
+            std::lock_guard<std::mutex> lock(_threadMutex);
+            if (_thread.get_id() == thisThreadId) _thread.detach();
+        }
         DLLOG("----DownloaderCURL::Impl::_threadProc end");
     }
 
@@ -683,9 +746,7 @@ IDownloadTask *DownloaderCURL::createCoTask(std::shared_ptr<const DownloadTask> 
 }
 
 void DownloaderCURL::abort(const std::unique_ptr<IDownloadTask> &task) {
-    // REFINE
-    // https://github.com/cocos-creator/cocos2d-x-lite/pull/1291
-    DLLOG("%s isn't implemented!\n", __FUNCTION__);
+    if (task) _impl->cancel(static_cast<DownloadTaskCURL *>(task.get()));
 }
 
 void DownloaderCURL::onSchedule(float) {
@@ -712,12 +773,12 @@ void DownloaderCURL::onSchedule(float) {
     tasks.resize(0);
 
     // update finished tasks
-    _impl->getFinishedTasks(tasks);
     if (_impl->stoped()) {
         if (auto sche = _scheduler.lock()) {
             sche->pauseTarget(this);
         }
     }
+    _impl->getFinishedTasks(tasks);
 
     for (auto &wrapper : tasks) {
         const DownloadTask &task = *wrapper.first;
@@ -735,42 +796,29 @@ void DownloaderCURL::onSchedule(float) {
             _currTask = nullptr;
         }
 
-        // if file task, close file handle and rename file if needed
-        if (coTask._fp) {
-            fclose(coTask._fp);
-            coTask._fp = nullptr;
-            do {
-                if (0 == coTask._fileName.length()) {
-                    break;
-                }
-
-                auto util = FileUtils::getInstance();
-                // if file already exist, remove it
-                if (util->isFileExist(coTask._fileName)) {
-                    if (false == util->removeFile(coTask._fileName)) {
-                        coTask._errCode = DownloadTask::ERROR_FILE_OP_FAILED;
-                        coTask._errCodeInternal = 0;
-                        coTask._errDescription = "Can't remove old file: ";
-                        coTask._errDescription.append(coTask._fileName);
-                        break;
-                    }
-                }
-
-                // rename file
-                if (util->renameFile(coTask._tempFileName, coTask._fileName)) {
-                    // success, remove storage from set
-                    DownloadTaskCURL::_sStoragePathSet.erase(coTask._tempFileName);
-                    break;
-                }
-                // failed
-                coTask._errCode = DownloadTask::ERROR_FILE_OP_FAILED;
-                coTask._errCodeInternal = 0;
-                coTask._errDescription = "Can't renamefile from: ";
-                coTask._errDescription.append(coTask._tempFileName);
-                coTask._errDescription.append(" to: ");
-                coTask._errDescription.append(coTask._fileName);
-            } while (0);
+        if (coTask._cancelRequested.load()) {
+            coTask.setErrorProc(DownloadTask::ERROR_ABORT, CURLE_ABORTED_BY_CALLBACK, "Download aborted");
         }
+        if (coTask._fp) {
+            const bool closed = fclose(coTask._fp) == 0;
+            coTask._fp = nullptr;
+            auto *files = FileUtils::getInstance();
+            if (!closed) {
+                coTask.setErrorProc(DownloadTask::ERROR_FILE_OP_FAILED, 0, "Cannot flush downloaded file");
+            } else if (coTask._errCode == DownloadTask::ERROR_NO_ERROR &&
+                       !files->renameFile(coTask._tempFileName, coTask._fileName)) {
+                coTask.setErrorProc(DownloadTask::ERROR_FILE_OP_FAILED, 0, "Cannot publish downloaded file");
+            }
+            // Cancelling before HEAD completes must also preserve a prefix from an earlier task.
+            const bool resumableAbort = coTask._errCode == DownloadTask::ERROR_ABORT &&
+                                        (coTask._acceptRanges || !coTask._headerAchieved) &&
+                                        files->getFileSize(coTask._tempFileName) != 0;
+            if (coTask._errCode != DownloadTask::ERROR_NO_ERROR && !resumableAbort &&
+                !files->removeFile(coTask._tempFileName)) {
+                CC_LOG_WARNING("Cannot remove incomplete download: %s", coTask._tempFileName.c_str());
+            }
+        }
+        coTask.releaseStoragePath(); // The callback may retry immediately, even while retaining the old task.
         // needn't lock coTask here, because tasks has removed form _impl
         onTaskFinish(task, coTask._errCode, coTask._errCodeInternal, coTask._errDescription, coTask._buf);
         DLLOG("    DownloaderCURL: finish Task: Id(%d)", coTask.serialId);

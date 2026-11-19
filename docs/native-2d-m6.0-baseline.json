@@ -330,6 +330,10 @@
       "sha256": "14708be8569731f3ca28f4068c1a065076d625ee447a5020c01d3431617c548c"
     },
     {
+      "file": "native/cocos/network/Downloader-curl.cpp",
+      "sha256": "f047d00c7cc09e459f000520968767acc6f7c7a9c7faf61dd9b2e494ab5eb913"
+    },
+    {
       "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp",
       "sha256": "968a64f0e30b4219e4ab9982cd5f76cc28b8ba6449d901ecee66684b301e2fa8"
     },
@@ -340,6 +344,10 @@
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h",
       "sha256": "7cc1835224403589cc6dfd5c7a4539af730a3243be352385e0eeee9ea79d8e2c"
+    },
+    {
+      "file": "native/cocos/platform/win32/FileUtils-win32.cpp",
+      "sha256": "98304ba8646f397c751b6eb1e4ada9491545dc93419d6c1f703b8c1d9bbfd62a"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
