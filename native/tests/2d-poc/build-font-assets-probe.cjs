@@ -122,7 +122,8 @@ for (let iteration = 0; iteration < 1000; iteration++) {
     sharedLabel.setUITransform(null); sharedLabel.setNode(null);
 }
 const config = { fontDefDictionary: {65: {rect: {x: 0, y: 0, width: 2, height: 2}, xAdvance: 2}}, kerningDict: {4259905: -1} };
-font.fntConfig = config; font.fontSize = 2; font.fntDataStr = 'source';
+const originalJson = JSON.stringify(config);
+font.fntConfig = JSON.parse(originalJson); font.fontSize = 2; font.fntDataStr = 'source';
 const frame = new jsb.SpriteFrame(), texture = new jsb.Texture2D(); texture.create(2, 2); frame.setTexture(texture); font.spriteFrame = frame;
 let rejected = false;
 try { font.fntConfig = []; } catch (error) { rejected = error instanceof TypeError; }
@@ -138,7 +139,13 @@ font.onLoaded();
 check(font.getGlyphData()[7] === 2 && font.fntConfig !== stale, 'stale JS view cannot overwrite native config');
 for (const FontClass of [BitmapFont, LabelAtlas]) {
     const reloaded = new FontClass();
-    reloaded.fntConfig = config;
+    const assigned = JSON.parse(originalJson);
+    reloaded.fntConfig = assigned;
+    assigned.fontDefDictionary[65].xAdvance = 5;
+    reloaded.onLoaded();
+    check(reloaded.getGlyphData()[7] === 5, 'onLoaded reads edits made through assigned configuration');
+    assigned.fontDefDictionary[65].xAdvance = 2;
+    reloaded.onLoaded();
     const retainedView = reloaded.fntConfig;
     const retainedRevision = reloaded.getRevision();
     const retainedConfigRevision = reloaded.getConfigRevision();

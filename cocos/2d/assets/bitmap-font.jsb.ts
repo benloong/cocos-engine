@@ -80,7 +80,8 @@ Object.defineProperties(proto, {
         set (value: IConfig | null) {
             if (this.isReleased()) return;
             if (!this.setConfigJson(JSON.stringify(value ?? null))) throw new TypeError('Invalid BitmapFont configuration');
-            this._configRevision = undefined;
+            this._configView = value ?? null;
+            this._configRevision = this.getConfigRevision();
         } },
     fontDefDictionary: { configurable: true,
         get (): FontAtlas {

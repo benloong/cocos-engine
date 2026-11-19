@@ -5,7 +5,20 @@ import { TextStyle } from '../../cocos/2d/assembler/label/text-style';
 import { TextLayout } from '../../cocos/2d/assembler/label/text-layout';
 import { TextOutputLayoutData, TextOutputRenderData } from '../../cocos/2d/assembler/label/text-output-data';
 import { shareLabelInfo } from '../../cocos/2d/assembler/label/font-utils';
-import { FontAtlas } from '../../cocos/2d/assets/bitmap-font';
+import { BitmapFont, FontAtlas } from '../../cocos/2d/assets/bitmap-font';
+import { LabelAtlas } from '../../cocos/2d/assets/label-atlas';
+
+test.each([BitmapFont, LabelAtlas])('Web bitmap font reloads edits to its assigned config', (FontClass) => {
+    const font = new FontClass();
+    font.fontDefDictionary = new FontAtlas(null);
+    const glyph = { rect: { x: 0, y: 0, width: 2, height: 2 }, xOffset: 0, yOffset: 0, xAdvance: 2 };
+    font.fntConfig = { fontDefDictionary: { 65: glyph } };
+    for (const advance of [5, 2]) {
+        glyph.xAdvance = advance;
+        font.onLoaded();
+        expect(font.fontDefDictionary.getLetter('65').xAdvance).toBe(advance);
+    }
+});
 const fixture = process.env.CC_BITMAP_LAYOUT_FIXTURE;
 (fixture ? test : test.skip)('native bitmap layout matches actual Web TextProcessing', () => {
  const {inputs, backends} = JSON.parse(readFileSync(fixture!, 'utf8'));
