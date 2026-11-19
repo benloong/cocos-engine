@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),http=require('http');
 const { spawn }=require('child_process');
+const { createHash } = require('crypto');
 const benchmark = process.argv.includes('--perf');
 const mode=process.argv.includes('--richtext')?'richtext':'graphics';
 const graphicsProbe=['graphics-metrics','graphics-command'].find(name => process.argv.includes('--'+name));
@@ -13,6 +14,7 @@ const chrome=process.env.CC_GPU_CHROME||'C:/Program Files/Google/Chrome/Applicat
 if(!fs.existsSync(path.join(root,'index.html'))) throw new Error('Build the Web fixture first');
 fs.mkdirSync(output,{recursive:true});
 const interruptedFont = mode === 'richtext' ? require('./font-http-response.cjs')() : null;
+const captureSha256 = Object.create(null);
 const logs=[];let doneResolve,doneReject;
 const done=new Promise((resolve,reject)=>{doneResolve=resolve;doneReject=reject;});
 const server=http.createServer(async(req,res)=>{
@@ -25,9 +27,19 @@ const server=http.createServer(async(req,res)=>{
             if(url.pathname==='/m6-capture') {
                 const name=url.searchParams.get('name');
                 if(!/^[a-z0-9.-]+$/.test(name)||body.length!==262144) throw new Error('Bad capture');
+                if (mode === 'richtext') {
+                    if (Object.hasOwn(captureSha256, name)) throw new Error('Duplicate RichText capture: ' + name);
+                    captureSha256[name] = createHash('sha256').update(body).digest('hex');
+                }
                 fs.writeFileSync(path.join(output,name+'.rgba'),body);
             } else if(url.pathname==='/m6-result') {
                 const value=JSON.parse(body.toString());if(value.backend!=='web') throw new Error('Bad backend');
+                if (mode === 'richtext') {
+                    if (JSON.stringify(Object.keys(captureSha256)) !== JSON.stringify(require('./richtext-gpu-cases.cjs').captures)) {
+                        throw new Error('Incomplete RichText capture uploads');
+                    }
+                    value.captureSha256 = captureSha256;
+                }
                 fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify(value,null,2));doneResolve(value);
             } else throw new Error('Unknown POST');
             res.writeHead(200);res.end('OK');return;

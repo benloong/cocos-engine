@@ -1,0 +1,818 @@
+{
+  "configurations": {
+    "Debug": {
+      "executableSha256": "0c66d4af6b730c3a41a0b237be74b4373157c63106afad63c672f063eaf3c212",
+      "layouts": 42,
+      "images": 39,
+      "fontCycles": 1000
+    },
+    "Release": {
+      "executableSha256": "77400653bc5051396ceb627a46bd1117a1565aba4abe6479839f6112eab88737",
+      "layouts": 42,
+      "images": 39,
+      "fontCycles": 1000
+    }
+  },
+  "captures": [
+    {
+      "name": "text-basic",
+      "nativeSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+      "webSha256": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-bold",
+      "nativeSha256": "2a3ad3e634605c591dfde808a318a6f8112afb78331cdb715e09220d371d17e6",
+      "webSha256": "9c9f91b7cd970c0a831cc3590fc8f153cef4a4d9e74e6c3482c8b3d8dce213a9",
+      "layoutEqual": true,
+      "pixels": 448,
+      "maxByChannel": [
+        20,
+        20,
+        20,
+        0
+      ],
+      "differingPixelsByChannel": [
+        448,
+        448,
+        448,
+        0
+      ]
+    },
+    {
+      "name": "text-italic",
+      "nativeSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+      "webSha256": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-underline",
+      "nativeSha256": "200bf94693f41bb3e257cef10e3cd5be52b3959c29de780f216c34ebbaa0c961",
+      "webSha256": "3c11de2b736e5c6ccc5c3096b9ec6154ec71535567ee977e9c68d57b0fe6404a",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-outline",
+      "nativeSha256": "b149ca666d8f4e617e59c3c6e122bf603cd32e68fb2732f8024f10d9f2d3db61",
+      "webSha256": "b832a7e2d07b13d44c7ad62228a40799e9ea72da59c8f853dd0ff2b9b56a603c",
+      "layoutEqual": true,
+      "pixels": 202,
+      "maxByChannel": [
+        1,
+        30,
+        1,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        202,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-nested",
+      "nativeSha256": "03f8244696d18b55caa7b785a279c6add93bde42c94aad0ef7f67373fa05d11a",
+      "webSha256": "f5066a3ae7a8b0a1cd360cf057be8b1579ad232889d435e38e850ec5e6f1b0a3",
+      "layoutEqual": true,
+      "pixels": 553,
+      "maxByChannel": [
+        47,
+        22,
+        22,
+        0
+      ],
+      "differingPixelsByChannel": [
+        553,
+        250,
+        250,
+        0
+      ]
+    },
+    {
+      "name": "text-colors",
+      "nativeSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+      "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-wrap-left",
+      "nativeSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+      "webSha256": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-wrap-center",
+      "nativeSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+      "webSha256": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-wrap-right",
+      "nativeSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+      "webSha256": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-multiline",
+      "nativeSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+      "webSha256": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-unicode",
+      "nativeSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+      "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-shadow-tag",
+      "nativeSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+      "webSha256": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-bidi-override",
+      "nativeSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+      "webSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-bidi-visual",
+      "nativeSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+      "webSha256": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "text-thai-marks",
+      "nativeSha256": "bcdb8335053936bac16391fa9ebc78c18d02f8f72a4aad0e92579ec0d2ad97c8",
+      "webSha256": "bcdb8335053936bac16391fa9ebc78c18d02f8f72a4aad0e92579ec0d2ad97c8",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-0-0-positive",
+      "nativeSha256": "e05fb0857545b2c024fd9f8b55370e3fe8677a782b8b1d52e7b488e4688fc5f2",
+      "webSha256": "e05fb0857545b2c024fd9f8b55370e3fe8677a782b8b1d52e7b488e4688fc5f2",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-0-0-negative",
+      "nativeSha256": "e05fb0857545b2c024fd9f8b55370e3fe8677a782b8b1d52e7b488e4688fc5f2",
+      "webSha256": "e05fb0857545b2c024fd9f8b55370e3fe8677a782b8b1d52e7b488e4688fc5f2",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-0-1-positive",
+      "nativeSha256": "01808009f8e085ea2891b4c2b3ecb32d56546001449e89ecff88f19b41b83e1b",
+      "webSha256": "01808009f8e085ea2891b4c2b3ecb32d56546001449e89ecff88f19b41b83e1b",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-0-1-negative",
+      "nativeSha256": "01808009f8e085ea2891b4c2b3ecb32d56546001449e89ecff88f19b41b83e1b",
+      "webSha256": "01808009f8e085ea2891b4c2b3ecb32d56546001449e89ecff88f19b41b83e1b",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-0-2-positive",
+      "nativeSha256": "9ac4165f886f08404849918d59df51dc8d92d2e5384941bb8f0799e4a7343219",
+      "webSha256": "9ac4165f886f08404849918d59df51dc8d92d2e5384941bb8f0799e4a7343219",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-0-2-negative",
+      "nativeSha256": "9ac4165f886f08404849918d59df51dc8d92d2e5384941bb8f0799e4a7343219",
+      "webSha256": "9ac4165f886f08404849918d59df51dc8d92d2e5384941bb8f0799e4a7343219",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-1-0-positive",
+      "nativeSha256": "386b991449b375e6b798d3ea3ca2e69092079ba2fbca4cf4df0e39239e310723",
+      "webSha256": "386b991449b375e6b798d3ea3ca2e69092079ba2fbca4cf4df0e39239e310723",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-1-0-negative",
+      "nativeSha256": "386b991449b375e6b798d3ea3ca2e69092079ba2fbca4cf4df0e39239e310723",
+      "webSha256": "386b991449b375e6b798d3ea3ca2e69092079ba2fbca4cf4df0e39239e310723",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-1-1-positive",
+      "nativeSha256": "82b1d9f1d28d09f0651d56c81867399be1b0de1c17c68b9486f2958900f80ad4",
+      "webSha256": "82b1d9f1d28d09f0651d56c81867399be1b0de1c17c68b9486f2958900f80ad4",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-1-1-negative",
+      "nativeSha256": "82b1d9f1d28d09f0651d56c81867399be1b0de1c17c68b9486f2958900f80ad4",
+      "webSha256": "82b1d9f1d28d09f0651d56c81867399be1b0de1c17c68b9486f2958900f80ad4",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-1-2-positive",
+      "nativeSha256": "cbb694683345343300298b27d580a8de9d7888139d9343cbd0778c85cd38ac95",
+      "webSha256": "cbb694683345343300298b27d580a8de9d7888139d9343cbd0778c85cd38ac95",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-1-2-negative",
+      "nativeSha256": "8133faf30f624af279643057c915757638f1b1fc803048226213697ee238f015",
+      "webSha256": "8133faf30f624af279643057c915757638f1b1fc803048226213697ee238f015",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-2-0-positive",
+      "nativeSha256": "f816d41c5eecaa259c1bbf8fa1c41f898141c29411e2cab7f25251cea632026c",
+      "webSha256": "f816d41c5eecaa259c1bbf8fa1c41f898141c29411e2cab7f25251cea632026c",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-2-0-negative",
+      "nativeSha256": "f816d41c5eecaa259c1bbf8fa1c41f898141c29411e2cab7f25251cea632026c",
+      "webSha256": "f816d41c5eecaa259c1bbf8fa1c41f898141c29411e2cab7f25251cea632026c",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-2-1-positive",
+      "nativeSha256": "4e75efa3ee8aea7722c49dc9e4076dae6180d0c91171e207d4f98135ec6daa6e",
+      "webSha256": "4e75efa3ee8aea7722c49dc9e4076dae6180d0c91171e207d4f98135ec6daa6e",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-2-1-negative",
+      "nativeSha256": "4e75efa3ee8aea7722c49dc9e4076dae6180d0c91171e207d4f98135ec6daa6e",
+      "webSha256": "4e75efa3ee8aea7722c49dc9e4076dae6180d0c91171e207d4f98135ec6daa6e",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-2-2-positive",
+      "nativeSha256": "682d888280a120430fe62f9567d2f6d1f6418b4384ae39ff68e36452b87898a9",
+      "webSha256": "682d888280a120430fe62f9567d2f6d1f6418b4384ae39ff68e36452b87898a9",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-2-2-negative",
+      "nativeSha256": "682d888280a120430fe62f9567d2f6d1f6418b4384ae39ff68e36452b87898a9",
+      "webSha256": "682d888280a120430fe62f9567d2f6d1f6418b4384ae39ff68e36452b87898a9",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-3-0-positive",
+      "nativeSha256": "282197bb25fb22cdcfa07fb1d628766b326fd3c1a0eb4f30a57bafdd94367c16",
+      "webSha256": "282197bb25fb22cdcfa07fb1d628766b326fd3c1a0eb4f30a57bafdd94367c16",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-3-0-negative",
+      "nativeSha256": "282197bb25fb22cdcfa07fb1d628766b326fd3c1a0eb4f30a57bafdd94367c16",
+      "webSha256": "282197bb25fb22cdcfa07fb1d628766b326fd3c1a0eb4f30a57bafdd94367c16",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-3-1-positive",
+      "nativeSha256": "49c5da95d5a8414ff2da9e70aaa7bb3f6a20fa8c6495b3995a1579eb5065b9bc",
+      "webSha256": "49c5da95d5a8414ff2da9e70aaa7bb3f6a20fa8c6495b3995a1579eb5065b9bc",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-3-1-negative",
+      "nativeSha256": "49c5da95d5a8414ff2da9e70aaa7bb3f6a20fa8c6495b3995a1579eb5065b9bc",
+      "webSha256": "49c5da95d5a8414ff2da9e70aaa7bb3f6a20fa8c6495b3995a1579eb5065b9bc",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-3-2-positive",
+      "nativeSha256": "f5f57a4d744def94aecb9b00da4335cd2870047814bf13976184d8480c8a9482",
+      "webSha256": "f5f57a4d744def94aecb9b00da4335cd2870047814bf13976184d8480c8a9482",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-3-2-negative",
+      "nativeSha256": "2d322f38c0d9fe9a01fbf444dfb0d62fef19cee8a4797deca6781b85b9e9319d",
+      "webSha256": "2d322f38c0d9fe9a01fbf444dfb0d62fef19cee8a4797deca6781b85b9e9319d",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-multiline-positive",
+      "nativeSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+      "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "label-shadow-multiline-negative",
+      "nativeSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+      "webSha256": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+      "layoutEqual": true,
+      "pixels": 0,
+      "maxByChannel": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "differingPixelsByChannel": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "snapshot": "c6f767c34120cb350618c83910efba1239ae1c56f7d3e7a1aaeff856482e5d91",
+  "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16"
+}

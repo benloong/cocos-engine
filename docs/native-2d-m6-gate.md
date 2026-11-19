@@ -18,6 +18,7 @@
 | TTF 水平混排 | 同源 Arial、Thonburi 对 Windows Chrome 的原始画布，Windows Debug/Release 的常规及斜体 72/72，合成粗体 0/36。[32 个字形的分阶段重放](./native-2d-m6-bold-replay.json)显示仅更换掩码采样仍有偏差。40 项应用矩阵布局全同，严格图像 37/40。 | [字体哈希、样本和微基准](./native-2d-m6-text-spacing.json) |
 | TTF 双向文本与泰文 | Windows Debug/Release 与 Web 的三张新增场景图逐字节一致。字体场景布局 40/40，严格像素 37/40。Arial 混排与小字号的原始画布差异另列 | [字形与场景实测](./native-2d-m6-bidi.json) |
 | Label 多行阴影 | Windows Debug/Release 与 Web 的两组重叠硬阴影图像逐字节相同。字体矩阵布局 42/42，严格图像 39/42。 | [正负偏移采样与哈希](./native-2d-m6-multiline-shadow.json) |
+| RichText 捕获校验 | Windows 双配置与 Chrome 的每张 RGBA 均通过采集时记录的 SHA-256 校验。双配置布局均为 42/42，严格像素均为 39/42。按通道差大于 1 统计，粗体有 448 个差异像素，绿色描边有 202 个，粗斜体嵌套有 553 个。描边全部差异集中在绿色通道，最大差值 30。分别改动原生图和 Web 图的一个字节，比较器均拒绝该图。 | [二进制与逐图哈希、RGBA 各通道差值](./native-2d-m6-richtext-capture-hashes.json) |
 | CHAR 自动高度 | 旧场景 CJK Label 在 Windows Debug、Release 和 Web 均为 240×40。双行文本行高 19.125 时，三端高度均为 38.25，加 1.5 像素描边后均为 41.25。同场景的英文 TTF Label 加 3 像素描边后高度为 56.4。 | [旧场景](../native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts)、[Windows 断言](../native/tests/2d-poc/run-m3-label-probe.ps1)、[Web 断言](../native/tests/2d-poc/run-dynamic-atlas-web.cjs) |
 | Label 阴影布局 | Windows Debug/Release 与 Web 的四种溢出模式共 24 组，布局与像素全部一致。含原 13 组 RichText，字体矩阵布局 37/37、严格图像 34/37。另有 88 张既有图形截图逐字节一致 | [逐图与构建数据](./native-2d-m6-label-shadow-layout.json) |
 | Label 零模糊阴影 | 固定尺寸、正负偏移两组，Windows Debug/Release 与 Web 的 GPU 轮廓检查均通过。原 13 张 RichText 图的各端哈希与上轮相同 | [场景及断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts) |

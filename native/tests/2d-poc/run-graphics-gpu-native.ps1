@@ -3,6 +3,14 @@ param([string]$Exe = (Join-Path $PSScriptRoot 'build/gpu-win/native-2d-m6-gpu.ex
     [ValidateSet('native','js')][string]$RootImplementation,
     [ValidateSet('native','js')][string]$RichTextImplementation)
 $ErrorActionPreference = 'Stop'
+function Get-CaptureHash([string]$Path) {
+    $algorithm = [Security.Cryptography.SHA256]::Create()
+    try {
+        $stream = [IO.File]::OpenRead($Path)
+        try { return [BitConverter]::ToString($algorithm.ComputeHash($stream)).Replace('-', '').ToLowerInvariant() }
+        finally { $stream.Dispose() }
+    } finally { $algorithm.Dispose() }
+}
 $exePath=(Resolve-Path -LiteralPath $Exe).Path
 $data=(Resolve-Path (Join-Path $PSScriptRoot "build/$Mode-gpu-project/build/windows/data")).Path
 $resources=Join-Path (Split-Path -Parent $exePath) 'Resources'
@@ -72,6 +80,15 @@ try {
                     $prefab.updatesPerBatch -ne 8 -or $prefab.samples.Count -ne 31) { throw "Invalid $expected RichText prefab result" }
                 if(($result.captures -join '|') -cne $expectedCaptures -or $result.text.loaded -ne $true -or $result.text.released -ne $true -or $lifecycle.cycles -ne 1000 -or $lifecycle.cacheHits -ne 1000 -or $lifecycle.bytesPerLoad -ne 223404 -or $lifecycle.assignmentFailureRolledBack -ne $true -or $lifecycle.retrySucceeded -ne $true -or $lifecycle.missingRejected -ne $true -or $lifecycle.deferredDestroyFinished -ne $true) { throw 'Invalid native RichText manifest' }
                 if($null -eq $lifecycle.cacheBefore -or $lifecycle.cacheBefore -ne $lifecycle.cacheAfter) { throw 'Native font lifecycle did not restore its baseline' }
+                $digests = [ordered]@{}
+                foreach ($name in $result.captures) {
+                    $image = Get-Item -LiteralPath (Join-Path (Split-Path -Parent $manifest) "$name.rgba")
+                    if ($image.LastWriteTimeUtc -lt $started -or $image.Length -ne 262144) { throw "Stale or incomplete native capture: $name" }
+                    $digests[$name] = Get-CaptureHash $image.FullName
+                }
+                $result | Add-Member -NotePropertyName captureSha256 -NotePropertyValue $digests
+                $result | Add-Member -NotePropertyName executableSha256 -NotePropertyValue (Get-CaptureHash $exePath)
+                [IO.File]::WriteAllText($manifest, ($result | ConvertTo-Json -Depth 100 -Compress), [Text.UTF8Encoding]::new($false))
             }
             if (($RootImplementation -or $OpacityImplementation) -and !(Select-String -LiteralPath $log -Pattern $marker -Quiet)) { throw "Missing rollback result: $marker" }
             Write-Output "M6_GPU_NATIVE_READY $($result.captures.Count)"

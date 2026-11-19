@@ -2,9 +2,10 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const base=path.join(__dirname,'build');
 const nativeDir=path.resolve(process.argv[2]||path.join(base,'richtext-gpu-native'));
-const webDir=path.join(base,'richtext-gpu-web');
+const webDir=path.resolve(process.argv[3]||path.join(base,'richtext-gpu-web'));
 const read=dir=>JSON.parse(fs.readFileSync(path.join(dir,'manifest.json')));
 const a=read(nativeDir),b=read(webDir);
+if (!/^[0-9a-f]{64}$/.test(a.executableSha256)) throw Error('Missing native executable hash');
 const lifecycle=a.text?.lifecycle;
 if(!lifecycle?.http?.interrupted||!lifecycle.http.loaded||!lifecycle.http.cachePathResolved||!lifecycle.http.released||!lifecycle.http.cacheRemoved||!lifecycle.http.missingRejected||!lifecycle.http.failedFilesRemoved||!lifecycle.http.cancelledAndResumed||lifecycle.http.bytes!==223404)throw Error('Incomplete HTTP font lifecycle evidence');
 if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||!Number.isInteger(lifecycle.cacheBefore)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
@@ -42,21 +43,36 @@ const webMetrics = b.text.metrics.concat(b.text.shadowLayout);
 for(let n=0;n<captures.length;n++) {
     const name=captures[n],actual=fs.readFileSync(path.join(nativeDir,name+'.rgba')),reference=fs.readFileSync(path.join(webDir,name+'.rgba'));
     if(actual.length!==256*256*4||reference.length!==actual.length)throw Error('Invalid RGBA dimensions');
-    let max=0,pixels=0,webColored=0,nativeColored=0;
+    const nativeSha256 = crypto.createHash('sha256').update(actual).digest('hex');
+    const webSha256 = crypto.createHash('sha256').update(reference).digest('hex');
+    if (nativeSha256 !== a.captureSha256?.[name]) throw Error('Native capture hash mismatch: ' + name);
+    if (webSha256 !== b.captureSha256?.[name]) throw Error('Web capture hash mismatch: ' + name);
+    let pixels=0,webColored=0,nativeColored=0;
+    const differingPixelsByChannel = [0, 0, 0, 0];
+    const maxByChannel = [0, 0, 0, 0];
     for(let i=0;i<actual.length;i+=4) {
         let mismatch=false;
-        for(let c=0;c<4;c++){const d=Math.abs(actual[i+c]-reference[i+c]);max=Math.max(max,d);if(d>1)mismatch=true;}
+        for (let c = 0; c < 4; c++) {
+            const difference = Math.abs(actual[i+c] - reference[i+c]);
+            maxByChannel[c] = Math.max(maxByChannel[c], difference);
+            if (difference > 1) {
+                differingPixelsByChannel[c]++;
+                mismatch = true;
+            }
+        }
         if(mismatch)pixels++;
         if(actual[i]||actual[i+1]||actual[i+2])nativeColored++;
         if(reference[i]||reference[i+1]||reference[i+2])webColored++;
     }
+    const max = Math.max(...maxByChannel);
     if(!webColored)throw Error(`Empty Web reference: ${name}`);
     const layoutEqual=JSON.stringify(canonical(nativeMetrics[n]))===JSON.stringify(canonical(webMetrics[n]));
     rows.push({name,max,pixels,webColored,nativeColored,layoutEqual,pass:max<=1&&layoutEqual,
         native:nativeMetrics[n],web:webMetrics[n],
-        nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),webSha256:crypto.createHash('sha256').update(reference).digest('hex')});
+        nativeSha256,webSha256,differingPixelsByChannel,maxByChannel});
 }
 const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},pass:rows.every(x=>x.pass),results:rows};
+result.executableSha256 = a.executableSha256;
 fs.writeFileSync(path.join(base,'richtext-gpu-comparison.json'),JSON.stringify(result,null,2)+'\n');
 for(const row of rows)console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: layout=${row.layoutEqual}, max=${row.max}, pixels=${row.pixels}, colored=${row.nativeColored}/${row.webColored}`);
 if(!result.pass)process.exitCode=1;
