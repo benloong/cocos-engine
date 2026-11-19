@@ -107,6 +107,8 @@ function capture(config, binary, output, cwd, stage, variant) {
     delete env.CC2D_STROKE_REPLAY;
     delete env.CC2D_STROKE_BOUNDARY;
     delete env.CC2D_DIRECT_STROKE;
+    delete env.CC2D_WIDEN_TOLERANCE;
+    delete env.CC2D_EDGE_TOLERANCE;
     if (variant) env[variant] = '1';
     if (stage) env.CC2D_STROKE_REPLAY = stage;
     execFileSync(path.join(__dirname, 'native', config, binary + '.exe'),

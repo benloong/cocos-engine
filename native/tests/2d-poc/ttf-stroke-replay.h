@@ -9,6 +9,10 @@
 #include <vector>
 
 namespace stroke_replay {
+inline float tolerance(const char *name) {
+    const char *value = std::getenv(name);
+    return value ? std::stof(value) : .01F;
+}
 class PathWriter final : public ID2D1SimplifiedGeometrySink {
 public:
     explicit PathWriter(std::ostream &out) : _out(out) {}
