@@ -66,14 +66,15 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(`<script>
         (async () => {
-            const face = new FontFace('M6Raw', 'url(/font.ttf)');
+            const family = 'M6CanvasFamilyWithMoreThanThirtyOneCharacters';
+            const face = new FontFace(family, 'url(/font.ttf)');
             const retained = document.createElement('canvas').getContext('2d');
-            retained.font = '24px M6Raw';
+            retained.font = '24px ' + family;
             const measure = () => retained.measureText('Atlas 123').width;
             const fallback = measure();
             document.fonts.add(await face.load());
             const loaded = measure();
-            const replacement = await new FontFace('M6Raw', 'url(/replacement.ttf)').load();
+            const replacement = await new FontFace(family, 'url(/replacement.ttf)').load();
             document.fonts.add(replacement);
             const replaced = measure();
             document.fonts.delete(replacement);
@@ -81,12 +82,12 @@ const server = http.createServer(async (req, res) => {
             document.fonts.delete(face);
             const released = measure();
             document.fonts.add(face);
-            const aliasWidths = { fallback, loaded, replaced, restored, released, reloaded: measure() };
+            const aliasWidths = { family, fallback, loaded, replaced, restored, released, reloaded: measure() };
             const cases=[], text=${JSON.stringify(texts[sample])};
             for (const size of [12,24,36,48]) for (let style=0; style<${styleCount}; style++) {
                 const canvas = document.createElement('canvas'); canvas.width=${width}; canvas.height=${height};
                 const ctx=canvas.getContext('2d');
-                ctx.font=['','bold ','italic ','bold italic '][style]+size+'px M6Raw';
+                ctx.font=['','bold ','italic ','bold italic '][style]+size+'px '+family;
                 ctx.textBaseline='alphabetic'; ctx.textAlign='left';
                 ctx.fillStyle='rgba(255,255,255,0.004)'; ctx.fillRect(0,0,canvas.width,canvas.height);
                 const tiles=${originGrid ? 8 : 1};

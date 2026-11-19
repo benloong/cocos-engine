@@ -4,6 +4,7 @@
   "web": {
     "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
     "widths": {
+      "family": "M6CanvasFamilyWithMoreThanThirtyOneCharacters",
       "fallback": 100.10343933105469,
       "loaded": 95.9765625,
       "replaced": 101.9296875,
@@ -22,15 +23,24 @@
       },
       "restorationChecked": true,
       "retainedCanvasFillAndStrokeMatchFresh": true,
-      "probeExeSha256": "d00fc23eb798190df9470de655eb6006be3444ed9b5c3761d1d5c4c2b7a5460b",
-      "appExeSha256": "7bb0b3ad510aec14cd0128cdfd2a113388aeaf5c728fb54b63533e73f12bb022",
-      "richTextSnapshot": "69bd94c4fce6f5706fc9853ac7b96f6ca9b5e87cefd662305b53289f51514329",
-      "richTextReportSha256": "53b3cbc94138a1e7ff014fd28ee49d4e133000ae027d80b8813769ea04396e69",
+      "probeExeSha256": "9476e3a5ce42e4dcd6768553a3015acfb5f383c1c535e0b85003ce7a6b529a09",
+      "appExeSha256": "cea8b90a42cd6916b4b5c86e81dfe8bbc250e812622b2dac300985d8eec6dfee",
+      "richTextSnapshot": "533f92c73986213b08915ca1a3f716799e86e31a605b64c21ebf0eb7ce37764a",
+      "richTextReportSha256": "8a318e429051c4bcf48051062ebf344dbe56d7bda664bac77b4c7ef2f3a1c7f7",
       "layoutPass": 12,
       "strictImagePass": 9,
       "assetCycles": 1000,
-      "graphicsSnapshot": "aad0cdeafbd6e71c8bab8508f8e718085de84874c3b62ad2a427853f297181da",
-      "graphicsExactImages": 85
+      "graphicsSnapshot": "ab748d6abe2d1ed64495e1e0ce520b0668e9d35676c2212539b81b5d1698558e",
+      "graphicsExactImages": 85,
+      "gdiFallback": {
+        "invalidFaceCycles": 32,
+        "systemBitmapFont": "8514fix.fon",
+        "privateRegistrationObserved": true,
+        "releasedAfterCanvasDestruction": true,
+        "gdiObjectsBeforeCanvasCycles": 16,
+        "gdiObjectsAfterCanvasCycles": 16,
+        "probeLogSha256": "3292041661eb98b808b8d0328873192781bffc79f701635e5312c0b0d0d08a67"
+      }
     },
     {
       "configuration": "Release",
@@ -41,15 +51,24 @@
       },
       "restorationChecked": true,
       "retainedCanvasFillAndStrokeMatchFresh": true,
-      "probeExeSha256": "c7a9c1dd592f1a89da1ded189c67146affc735cfe78fbfee888a8d089d288352",
-      "appExeSha256": "17d970f71442600a5935383bb6e111cfeabc6a5689c259bdd155afee89045fb2",
-      "richTextSnapshot": "69bd94c4fce6f5706fc9853ac7b96f6ca9b5e87cefd662305b53289f51514329",
-      "richTextReportSha256": "53b3cbc94138a1e7ff014fd28ee49d4e133000ae027d80b8813769ea04396e69",
+      "probeExeSha256": "b806e520b664c055358492533ca3abda214503ecd0c5e81ad6a7cd66206b0e82",
+      "appExeSha256": "3dfb35139df4268796faa34b0f8cc7c9abdb90b35675d9deab52daeb106f55fa",
+      "richTextSnapshot": "533f92c73986213b08915ca1a3f716799e86e31a605b64c21ebf0eb7ce37764a",
+      "richTextReportSha256": "8a318e429051c4bcf48051062ebf344dbe56d7bda664bac77b4c7ef2f3a1c7f7",
       "layoutPass": 12,
       "strictImagePass": 9,
       "assetCycles": 1000,
-      "graphicsSnapshot": "aad0cdeafbd6e71c8bab8508f8e718085de84874c3b62ad2a427853f297181da",
-      "graphicsExactImages": 85
+      "graphicsSnapshot": "ab748d6abe2d1ed64495e1e0ce520b0668e9d35676c2212539b81b5d1698558e",
+      "graphicsExactImages": 85,
+      "gdiFallback": {
+        "invalidFaceCycles": 32,
+        "systemBitmapFont": "8514fix.fon",
+        "privateRegistrationObserved": true,
+        "releasedAfterCanvasDestruction": true,
+        "gdiObjectsBeforeCanvasCycles": 16,
+        "gdiObjectsAfterCanvasCycles": 16,
+        "probeLogSha256": "2c9345e093f6a19313ef0db24657cf661896a0c85ada355a440c50cc878199d1"
+      }
     }
   ]
 }

@@ -221,7 +221,7 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
         _fontName = fontName;
         _fontSize = static_cast<int>(fontSize);
         ccstd::string fontPath;
-        LOGFONTA tFont = {0};
+        LOGFONTW tFont = {};
         if (!_fontName.empty()) {
             // firstly, try to create font from ttf file
             const auto &assetFonts = getFontAssetFamilyNameMap();
@@ -252,7 +252,12 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
                 if (_directWrite) return;
             }
             tFont.lfCharSet = DEFAULT_CHARSET;
-            strcpy_s(tFont.lfFaceName, LF_FACESIZE, _fontName.c_str());
+            // A CSS family can exceed LOGFONT's limit. Let GDI select its
+            // fallback instead of matching a truncated name.
+            if (!MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, _fontName.c_str(), -1,
+                                     tFont.lfFaceName, LF_FACESIZE)) {
+                tFont.lfFaceName[0] = L'\0';
+            }
         }
 
         if (_fontSize) {
@@ -274,11 +279,10 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
         removeCustomFont();
 
         if (!fontPath.empty()) {
-            _curFontPath = fontPath;
-            wchar_t *pwszBuffer = utf8ToUtf16(_curFontPath);
+            wchar_t *pwszBuffer = utf8ToUtf16(fontPath);
             if (pwszBuffer) {
-                if (AddFontResource(pwszBuffer)) {
-                    SendMessage(_wnd, WM_FONTCHANGE, 0, 0);
+                if (AddFontResourceExW(pwszBuffer, FR_PRIVATE, nullptr)) {
+                    _curFontPath = fontPath;
                 }
                 delete[] pwszBuffer;
                 pwszBuffer = nullptr;
@@ -286,14 +290,14 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
         }
 
         // create new font
-        _font = CreateFontIndirectA(&tFont);
-        if (!_font) {
+        HFONT created = CreateFontIndirectW(&tFont);
+        if (!created || !SelectObject(_DC, created)) {
+            if (created) DeleteObject(created);
             // create failed, use default font
             SE_LOGE("Failed to create custom font(font name: %s, font size: %f), use default font.\n",
                     _fontName.c_str(), fontSize);
         } else {
-            SelectObject(_DC, _font);
-            SendMessage(_wnd, WM_FONTCHANGE, 0, 0);
+            _font = created;
         }
     } while (false);
 }
@@ -348,15 +352,15 @@ wchar_t *CanvasRenderingContext2DDelegate::utf8ToUtf16(const ccstd::string &str,
 void CanvasRenderingContext2DDelegate::removeCustomFont() {
     HFONT hDefFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
     if (hDefFont != _font) {
-        DeleteObject(SelectObject(_DC, hDefFont));
+        SelectObject(_DC, hDefFont);
+        DeleteObject(_font);
         _font = hDefFont;
     }
     // release temp font resource
     if (!_curFontPath.empty()) {
         wchar_t *pwszBuffer = utf8ToUtf16(_curFontPath);
         if (pwszBuffer) {
-            RemoveFontResource(pwszBuffer);
-            SendMessage(_wnd, WM_FONTCHANGE, 0, 0);
+            RemoveFontResourceExW(pwszBuffer, FR_PRIVATE, nullptr);
             delete[] pwszBuffer;
             pwszBuffer = nullptr;
         }

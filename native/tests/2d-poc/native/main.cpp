@@ -779,7 +779,42 @@ void testFontAliasOwnership() {
     const auto publicBefore = getFontFamilyNameMap().size();
     const auto privateBefore = getFontAssetFamilyNameMap().size();
     const auto leasesBefore = getFontAliasLeaseCount(), groupsBefore = getFontAliasGroupCount();
-    const std::string family = "M6OwnedFont_LABEL";
+    const std::string family = "M6CanvasFamilyWithMoreThanThirtyOneCharacters";
+    {
+        // A file can exist when its bytes cannot be registered by either backend.
+        const auto lease = retainFontFamilyAlias(family, __FILE__, "M6InvalidFont");
+        check(lease != 0, "invalid font fixture path is registered");
+        const auto handles = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+        for (int cycle = 0; cycle < 32; ++cycle) {
+            cc::CanvasRenderingContext2D canvas(32, 32);
+            canvas.setFont("24px " + family);
+            check(!canvas.supportsTextStroke() && canvas.measureText("A").width > 0,
+                  "unreadable font face falls back to GDI");
+        }
+        check(handles == GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS), "failed font registration releases GDI objects");
+        releaseFontFamilyAlias(lease);
+    }
+    // This legacy Windows bitmap font exercises the GDI-only path when installed.
+    wchar_t windowsDir[MAX_PATH]{};
+    const auto length = GetWindowsDirectoryW(windowsDir, MAX_PATH);
+    const auto bitmapFont = std::filesystem::path(windowsDir) / L"Fonts" / L"8514fix.fon";
+    if (length && length < MAX_PATH && AddFontResourceExW(bitmapFont.c_str(), FR_PRIVATE, nullptr)) {
+        check(RemoveFontResourceExW(bitmapFont.c_str(), FR_PRIVATE, nullptr), "GDI control registration released");
+        const auto lease = retainFontFamilyAlias(family, bitmapFont.generic_string(), "M6BitmapFont");
+        check(lease != 0, "GDI bitmap font alias acquired");
+        {
+            cc::CanvasRenderingContext2D canvas(32, 32);
+            canvas.setFont("24px " + family);
+            check(!canvas.supportsTextStroke(), "bitmap font uses GDI fallback");
+            const bool registered = RemoveFontResourceExW(bitmapFont.c_str(), FR_PRIVATE, nullptr) != FALSE;
+            check(registered, "Canvas registered the bitmap font privately");
+            if (registered) check(AddFontResourceExW(bitmapFont.c_str(), FR_PRIVATE, nullptr) > 0,
+                                  "restored the Canvas-owned registration after inspecting it");
+        }
+        check(!RemoveFontResourceExW(bitmapFont.c_str(), FR_PRIVATE, nullptr), "Canvas destruction released its private registration");
+        releaseFontFamilyAlias(lease);
+        std::puts("Canvas GDI bitmap font registration exercised");
+    }
     auto create = [&]() {
         cc::IntrusivePtr<cc::TTFFont> font(new cc::TTFFont());
         font->setFontFamily(family);
