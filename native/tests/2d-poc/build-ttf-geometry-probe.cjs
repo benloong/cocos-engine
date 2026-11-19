@@ -74,8 +74,15 @@ if (designUnits) {
     replaceOnce('mask.bounds = {std::max<LONG>', `if (replay && FAILED(stroke_replay::replaceAlpha(stem + "." + replay + ".alpha", pixels))) return E_FAIL;
         mask.bounds = {std::max<LONG>`);
 } else {
-    replaceOnce('constexpr bool SNAP_OUTLINE_EDGES = true;', 'constexpr bool SNAP_OUTLINE_EDGES = false;');
-    replaceOnce('constexpr bool FILTER_OUTLINE_MASK = true;', 'constexpr bool FILTER_OUTLINE_MASK = CC2D_TTF_GEOMETRY_FILTERED != 0;');
+    replaceOnce('BeginFigure(snap(point), type)', 'BeginFigure(point, type)');
+    replaceOnce('const auto point = snap(points[i]);', 'const auto point = points[i];');
+    replaceOnce('SnappedOutlineSink(sink.get(), bold && !italic && lineWidth <= 0)', 'SnappedOutlineSink(sink.get(), false)');
+    replaceOnce('constexpr uint32_t scale = 4U;', 'constexpr uint32_t scale = CC2D_TTF_GEOMETRY_FILTERED ? 4U : 1U;');
+    replaceOnce('unsigned channels[3] = {};', `if constexpr (scale == 1) {
+                mask.coverage[row * maskWidth + column] = pixels[(static_cast<size_t>(row) * columns + localColumn) * 4 + 3];
+                continue;
+            }
+            unsigned channels[3] = {};`);
 }
 fs.mkdirSync(output, { recursive: true });
 const variant = designUnits ? 'design-units' : process.argv[3] === '--stroke-replay' ? 'stroke-replay' : 'geometry';

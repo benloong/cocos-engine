@@ -89,10 +89,6 @@ const std::array<uint8_t, 256> &coverageTable(const std::array<float, 4> &color)
     const auto luminance = (rgb[0] * 54U + rgb[1] * 183U + rgb[2] * 19U) >> 8U;
     return tables[luminance >> 5U];
 }
-// Kept as private constants so the standalone diagnostic can compare the
-// sampling stages in source copies without adding product build switches.
-constexpr bool SNAP_OUTLINE_EDGES = true;
-constexpr bool FILTER_OUTLINE_MASK = true;
 
 class SnappedOutlineSink final : public ID2D1SimplifiedGeometrySink {
 public:
@@ -153,7 +149,6 @@ private:
     int _runs{0}, _direction{0}, _firstDirection{0};
     bool _started{false};
     static D2D1_POINT_2F snap(D2D1_POINT_2F point) {
-        if (!SNAP_OUTLINE_EDGES) return point;
         return {std::trunc(point.x * 256.F) / 256.F, std::floor(std::trunc(point.y * 256.F) / 64.F + .5F) / 4.F};
     }
     std::atomic<ULONG> _refs{1};
@@ -238,14 +233,14 @@ public:
         const LONG top = static_cast<LONG>(std::clamp(std::floor(static_cast<double>(bounds.top)) - 1, 0.0, static_cast<double>(height)));
         const LONG bottom = static_cast<LONG>(std::clamp(std::ceil(static_cast<double>(bounds.bottom)) + 1, 0.0, static_cast<double>(height)));
         if (right <= left || bottom <= top || right <= 0 || left >= static_cast<LONG>(width)) return S_OK;
-        constexpr uint32_t scale = FILTER_OUTLINE_MASK ? 4U : 1U;
+        constexpr uint32_t scale = 4U;
         const auto columns = static_cast<uint32_t>(right - left), rows = static_cast<uint32_t>(bottom - top);
         if (columns > UINT32_MAX / (scale * 4U) || rows > UINT32_MAX / (columns * scale * 4U)) return E_OUTOFMEMORY;
         hr = _factory->CreatePathGeometry(sampled.out());
         if (SUCCEEDED(hr)) hr = sampled->Open(sink.out());
         if (FAILED(hr)) return hr;
         ComOwner<SnappedOutlineSink> adapter;
-        adapter.reset(new SnappedOutlineSink(sink.get(), SNAP_OUTLINE_EDGES && bold && !italic && lineWidth <= 0));
+        adapter.reset(new SnappedOutlineSink(sink.get(), bold && !italic && lineWidth <= 0));
         const D2D1::Matrix3x2F transform(static_cast<float>(scale), 0, shear * scale, 1, (x - left) * scale, y - top);
         hr = shape->Simplify(D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get());
         if (SUCCEEDED(hr)) hr = adapter->Close();
@@ -295,20 +290,16 @@ public:
         };
         for (uint32_t row = 0; row < rows; ++row) for (size_t column = 0; column < maskWidth; ++column) {
             const auto localColumn = static_cast<uint32_t>(column + mask.bounds.left - left);
-            unsigned value = 0;
-            if constexpr (!FILTER_OUTLINE_MASK) value = pixels[(static_cast<size_t>(row) * columns + localColumn) * 4U + 3];
-            else {
-                unsigned channels[3] = {};
-                for (int tap = 0; tap < 12; ++tap) {
-                    const int64_t sample = static_cast<int64_t>(localColumn) * 4 + tap - 4;
-                    if (sample < 0 || sample >= static_cast<int64_t>(columns) * 4) continue;
-                    const auto coverage = pixels[(static_cast<size_t>(row) * columns * 4 + sample) * 4 + 3];
-                    for (size_t channel = 0; channel < 3; ++channel) channels[channel] += coefficients[channel][tap] * coverage;
-                }
-                for (const auto channel : channels) value += std::min(channel / 256U, 255U);
-                value /= 3U;
+            unsigned channels[3] = {};
+            for (int tap = 0; tap < 12; ++tap) {
+                const int64_t sample = static_cast<int64_t>(localColumn) * scale + tap - 4;
+                if (sample < 0 || sample >= static_cast<int64_t>(columns) * scale) continue;
+                const auto coverage = pixels[(static_cast<size_t>(row) * columns * scale + sample) * 4 + 3];
+                for (size_t channel = 0; channel < 3; ++channel) channels[channel] += coefficients[channel][tap] * coverage;
             }
-            mask.coverage[row * maskWidth + column] = static_cast<uint8_t>(value);
+            unsigned value = 0;
+            for (const auto channel : channels) value += std::min(channel / 256U, 255U);
+            mask.coverage[row * maskWidth + column] = static_cast<uint8_t>(value / 3U);
         }
         return S_OK;
     }
