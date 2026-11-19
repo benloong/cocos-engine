@@ -109,6 +109,8 @@ public:
     void setShadowBlur(float blur);
     void setShadowOffset(float x, float y);
     float getTextureWidth() const { return _lastTextureWidth; }
+    SpriteFrame *getTTFSpriteFrame() const { return _ttfFrame.get(); }
+    void destroyTTFSpriteFrame();
     void updateRenderData();
     void updateRenderData(bool force);
     void measureContent();
@@ -140,6 +142,7 @@ private:
     std::array<double, 2> getTextStyleExtent() const;
     void onMaterialChanged() override;
     void rebuildTexture();
+    void ensureTTFFrame();
     std::string fontDescription(float size) const;
     float shrinkFontSize(float width, float height) const;
     void onUITransformChanged() override;
@@ -231,6 +234,8 @@ private:
     std::unordered_map<uint64_t, float> _kerning;
 
     IntrusivePtr<Texture2D> _texture;
+    IntrusivePtr<Texture2D> _ttfTexture;
+    IntrusivePtr<SpriteFrame> _ttfFrame;
     IntrusivePtr<SpriteFrame> _frame;
 };
 

@@ -452,6 +452,14 @@ void Label::addGlyph(int32_t code, float u, float v, float w, float h, float off
 
 void Label::setCacheMode(int32_t mode) {
     if (_cacheMode == mode) { return; }
+    if (_cacheMode == 2) {
+        _ttfFrame = nullptr;
+        _ttfTexture = nullptr;
+    }
+    if (mode == 2 && _ttfFrame && _frame == _ttfFrame) {
+        _frame = nullptr;
+        _texture = nullptr;
+    }
     _cacheMode = mode;
     if (mode != 2) releaseLetterAtlas();
     markRenderDirty();
@@ -486,6 +494,22 @@ void Label::setPriority(int32_t priority) {
 void Label::setEnabled(bool enabled) {
     Component::setEnabled(enabled);
     _renderer.setEnabled(enabled);
+    if (enabled && !_bitmapFont && !_bitmapAtlas && _cacheMode != 2) ensureTTFFrame();
+}
+
+void Label::ensureTTFFrame() {
+    if (_ttfFrame) return;
+    _ttfTexture = new Texture2D();
+    _ttfFrame = new SpriteFrame();
+    _ttfFrame->setTexture(_ttfTexture);
+}
+
+void Label::destroyTTFSpriteFrame() {
+    if (!_ttfFrame) return;
+    _ttfFrame->destroy();
+    _ttfTexture->destroy();
+    _ttfFrame = nullptr;
+    _ttfTexture = nullptr;
 }
 
 void Label::updateRenderer() {
@@ -665,7 +689,7 @@ void Label::rebuildBitmapTexture() {
     _lastAtlasWidth = frame->getRectWidth(); _lastAtlasHeight = frame->getRectHeight();
     _texture = nullptr;
     std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0; _bitmapDiagnosticsDirty = true;
-    if (!_frame) _frame = new SpriteFrame();
+    if (!_frame || _frame == _ttfFrame) _frame = new SpriteFrame();
     _frame->copyFrom(frame);
     _renderer.setColor(_color);
     _renderer.setLabelQuads(_frame, std::move(quads));
@@ -936,6 +960,7 @@ void Label::rebuildTexture() {
     _renderer.setColor(Color(255, 255, 255, _color.a));
     if (_fontAsset && _fontAsset->isReleased()) { clearRenderedData(); return; }
     if (_cacheMode == 2) { rebuildLetterTexture(); return; }
+    ensureTTFFrame();
 
     if (_string.empty() || _transform == nullptr) {
         if (_transform) _ttfContentWidth = _overflow == 0 ? getTextStyleExtent()[0] : _transform->getContentSize().x;
@@ -1093,6 +1118,8 @@ void Label::rebuildTexture() {
     });
     context.fetchData();
 
+    _texture = _ttfTexture;
+    _frame = _ttfFrame;
     ensureRasterTexture(_texture, textureWidth, textureHeight);
     _lastPixelChecksum = 0U;
     _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
@@ -1113,9 +1140,6 @@ void Label::rebuildTexture() {
     _ttfContentWidth = _overflow == 0 ? contentWidth : box.x;
     _lastContentHeight = contentHeight;
     _lastLineCount = static_cast<int32_t>(lines.size());
-    if (_frame == nullptr) {
-        _frame = new SpriteFrame();
-    }
     _frame->setTexture(_texture);
     _frame->setRect(0.0F, 0.0F, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
     _frame->setOriginalSize(static_cast<float>(textureWidth), static_cast<float>(textureHeight));

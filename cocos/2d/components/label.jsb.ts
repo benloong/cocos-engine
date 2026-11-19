@@ -32,6 +32,7 @@ import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterial
 import { Font } from '../assets/font';
 import { BitmapFont } from '../assets/bitmap-font';
 import type { FontAtlas } from '../assets/bitmap-font';
+import type { SpriteFrame } from '../assets/sprite-frame';
 
 declare const n2d: any;
 
@@ -124,6 +125,8 @@ export class Label extends UIRenderer {
     /** @deprecated Preserved for callers of the legacy Label atlas accessor. */
     get fontAtlas (): FontAtlas | null { return this._fontAtlas; }
     set fontAtlas (value: FontAtlas | null) { this._fontAtlas = value; }
+
+    get ttfSpriteFrame (): SpriteFrame | null { return this._native?.getTTFSpriteFrame() ?? null; }
     @serializable
     protected _enableOutline = false;
     @serializable
@@ -185,6 +188,7 @@ export class Label extends UIRenderer {
             this._native.setEnabled(false);
             this._native.setNode(null);
             this._native.setFontAsset(null);
+            this._native.destroyTTFSpriteFrame();
             this._native = null;
         }
     }
@@ -377,8 +381,10 @@ export class Label extends UIRenderer {
     }
 
     set cacheMode (value: CacheMode) {
+        if (this._cacheMode === value) return;
         this._cacheMode = value;
         this._native?.setCacheMode(value);
+        this.updateRenderData(true);
     }
 
     get color (): Readonly<Color> {

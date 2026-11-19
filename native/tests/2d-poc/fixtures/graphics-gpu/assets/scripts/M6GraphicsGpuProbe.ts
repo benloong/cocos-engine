@@ -107,7 +107,13 @@ export class M6GraphicsGpuProbe extends Component {
                     fontDefDictionary: { 65: { rect: { x: 0, y: 0, width: 16, height: 16 }, xOffset: 0, yOffset: 0, xAdvance: 16 } } } as any;
                 font.onLoaded();
                 const glyph = node(n, 'green'); glyph.setPosition(24, 0);
-                const label = glyph.addComponent(Label); label.font = font;
+                const label = glyph.addComponent(Label);
+                const systemFrame = label.ttfSpriteFrame;
+                const systemTexture = systemFrame?.texture;
+                label.font = font;
+                if (!systemTexture || label.ttfSpriteFrame !== systemFrame || systemFrame?.texture !== systemTexture) {
+                    throw new Error('Bitmap font replaced the retained TTF sprite frame or its texture');
+                }
                 const atlas = font.fontDefDictionary;
                 if (!atlas || label.fontAtlas !== null) throw new Error('Unexpected initial Label fontAtlas');
                 label.fontAtlas = atlas;
@@ -299,6 +305,8 @@ export class M6GraphicsGpuProbe extends Component {
         material.destroy();
         const labelNode = node(canvas.node, 'immediate-label-layout');
         const label = labelNode.addComponent(Label);
+        const ttfFrame = label.ttfSpriteFrame;
+        if (!(ttfFrame instanceof SpriteFrame) || !ttfFrame.texture) throw new Error('Enabled Label has no TTF sprite frame');
         const transform = labelNode.getComponent(UITransform)!;
         label.fontSize = 16;
         label.lineHeight = 20;
@@ -326,10 +334,14 @@ export class M6GraphicsGpuProbe extends Component {
         label.updateRenderData(true);
         if (label.contentWidth !== transform.width) throw new Error('Forced TTF refresh did not publish contentWidth');
         label.cacheMode = Label.CacheMode.CHAR;
+        if (label.ttfSpriteFrame !== ttfFrame) throw new Error('Entering CHAR discarded the cached TTF sprite frame');
         label.contentWidth = 13.25;
         label.updateRenderData(true);
         if (label.contentWidth !== 13.25) throw new Error('CHAR cache overwrote the TTF layout width');
         label.cacheMode = Label.CacheMode.NONE;
+        const freshFrame = label.ttfSpriteFrame;
+        if (!freshFrame?.texture || freshFrame === ttfFrame) throw new Error('Leaving CHAR did not replace the TTF sprite frame');
+        const freshTexture = freshFrame.texture;
         const shrinkSizes: number[] = [];
         label.fontSize = 32;
         label.lineHeight = 40;
@@ -353,6 +365,7 @@ export class M6GraphicsGpuProbe extends Component {
         }
         labelNode.destroy();
         await wait();
+        if (isValid(freshFrame) || isValid(freshTexture)) throw new Error('Destroyed Label retained valid TTF assets');
         for (const item of cases) {
             const root = node(canvas.node, item.name);
             const update = item.draw(root);
