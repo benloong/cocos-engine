@@ -98,7 +98,6 @@ export class LabelSpike {
             nativeTransform.setContentSize(320, 60);
             const nativeLabel = new n2d.Label();
             nativeLabel.setNode(nativeNode);
-            nativeLabel.setUITransform((nativeTransform as any)._native);
             nativeLabel.setString('Native Label 你好');
             nativeLabel.setFont('32px Arial');
             nativeLabel.setFontSize(32);

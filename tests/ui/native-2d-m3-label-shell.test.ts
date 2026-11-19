@@ -15,7 +15,6 @@ let shared: any[] = [], instances: any[] = [];
 
 const nativeLabel = {
     setNode: jest.fn(),
-    setUITransform: jest.fn(),
     setMaterial: jest.fn((value) => { shared[0] = value; instances[0] = null; }),
     getMaterialInstanceCount: jest.fn(() => instances.length),
     getMaterialInstanceSlot: jest.fn((i) => instances[i] ?? null),

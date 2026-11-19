@@ -15,7 +15,6 @@ let nativeShared: any[] = [], nativeInstances: any[] = [];
 
 const nativeSprite = {
     setNode: jest.fn(),
-    setUITransform: jest.fn(),
     setColorRGBA: jest.fn(),
     setMaterial: jest.fn((material) => { nativeShared[0] = material ?? builtinMaterial; nativeInstances[0] = null; }),
     setSharedMaterial: jest.fn((material, index, force) => {

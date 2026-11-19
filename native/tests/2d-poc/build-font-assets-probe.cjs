@@ -65,7 +65,7 @@ for (const method of ['setBitmapAtlas', 'clearBitmapFont', 'clearGlyphs', 'addGl
     check(!(method in outlinedLabel), 'unexpected direct bitmap table binding: ' + method);
 }
 const outlinedNode = new jsb.Node('font-stroke-probe'), outlinedTransform = new n2d.UITransform(outlinedNode);
-outlinedLabel.setNode(outlinedNode); outlinedLabel.setUITransform(outlinedTransform);
+outlinedLabel.setNode(outlinedNode);
 outlinedLabel.setFontAsset(ttf); outlinedLabel.setFontSize(24); outlinedLabel.setLineHeight(30); outlinedLabel.setString('Atlas 123');
 outlinedLabel.updateRenderData();
 check(Math.abs(outlinedLabel.getContentWidth() - 95.9765625) < 0.001, 'Label consumes the registered custom font: ' + outlinedLabel.getContentWidth());
@@ -74,7 +74,7 @@ outlinedLabel.setEnableOutline(true); outlinedLabel.setOutlineWidth(3); outlined
 check(Math.abs(outlinedLabel.getContentWidth() - 101.9765625) < 0.001 && readLabelCoverage(outlinedLabel) > baseCoverage,
     'Label renders a real native text stroke with preserved layout margins');
 outlinedLabel.setFontAsset(null);
-outlinedLabel.setUITransform(null); outlinedLabel.setNode(null);
+outlinedLabel.setNode(null);
 require('./font-loader');
 const originalNativeAsset = Object.getOwnPropertyDescriptor(TTFFont.prototype, '_nativeAsset');
 const assignmentFailure = new Error('injected font assignment failure');
@@ -111,7 +111,7 @@ for (let iteration = 0; iteration < 1000; iteration++) {
     first._nativeUrl = ttf._nativeUrl; second._nativeUrl = ttf._nativeUrl;
     first._nativeAsset = 'M6SharedFont_LABEL'; second._nativeAsset = 'M6SharedFont_LABEL';
     const sharedLabel = new n2d.Label();
-    sharedLabel.setNode(outlinedNode); sharedLabel.setUITransform(outlinedTransform);
+    sharedLabel.setNode(outlinedNode);
     sharedLabel.setFontAsset(second); sharedLabel.setFontSize(24); sharedLabel.setString('Atlas 123');
     first.destroy();
     sharedLabel.updateRenderData();
@@ -122,8 +122,9 @@ for (let iteration = 0; iteration < 1000; iteration++) {
     check(second.getFontDataSize() > 1000 && Math.abs(sharedLabel.getContentWidth() - 95.9765625) < 0.001 && readLabelCoverage(sharedLabel) > 0,
         'cleared actual JSB font can reload its alias and source');
     second.destroy(); sharedLabel.setFontAsset(null);
-    sharedLabel.setUITransform(null); sharedLabel.setNode(null);
+    sharedLabel.setNode(null);
 }
+outlinedTransform.detach();
 const config = { fontDefDictionary: {65: {rect: {x: 0, y: 0, width: 2, height: 2}, xAdvance: 2}}, kerningDict: {4259905: -1} };
 const originalJson = JSON.stringify(config);
 font.fntConfig = JSON.parse(originalJson); font.fontSize = 2; font.fntDataStr = 'source';

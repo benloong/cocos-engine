@@ -38,7 +38,7 @@ node.emit = function(type) { check(type === 'size-changed','size event'); change
 const ui = new exports.UITransform(); ui.node=node; ui.onLoad();
 ui.setContentSize(100,10);
 check(ui.height===10 && changes===1,'shell setter notifies once');
-const label = new n2d.Label(); label.setNode(node); label.setUITransform(ui._native);
+const label = new n2d.Label(); label.setNode(node);
 label.setFontSize(16); label.setLineHeight(20); label.setOverflow(3); label.setString('first line');
 rendererManager.updateAllDirtyRenderers();
 check(ui.height===label.getContentHeight() && ui.height>10,'native layout updates JS cache');
@@ -63,7 +63,7 @@ const thin=readLabelCoverage(label); label.setUnderlineHeight(3); rendererManage
 check(readLabelCoverage(label)>thin,'native underline height changes raster output');
 label.setString(''); rendererManager.updateAllDirtyRenderers(); check(label.getActualFontSize()===0,'empty text clears actual font size');
 const native = ui._native;
-label.setNode(null); label.setUITransform(null); ui.onDestroy();
+label.setNode(null); ui.onDestroy();
 previous=changes; native.setContentSizeXY(50,50);
 check(changes===previous,'detach releases callback');
 return 'OK';

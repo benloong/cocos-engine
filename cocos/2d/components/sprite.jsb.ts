@@ -30,7 +30,6 @@ import { Material } from '../../asset/assets';
 import { BlendFactor } from '../../gfx';
 import { Vec2 } from '../../core/math/vec2';
 import { SpriteFrame } from '../assets/sprite-frame';
-import { UITransform } from '../framework/ui-transform';
 import { UIRenderer } from '../framework/ui-renderer';
 import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterialSlots, syncNativeMaterialSlots } from '../framework/native-ui-materials';
 
@@ -203,10 +202,6 @@ export class Sprite extends UIRenderer {
         const centerX = this._fillCenter.x, centerY = this._fillCenter.y;
         this._native = new n2d.Sprite();
         this._native.setNode(this.node);
-        const transform = this.node.getComponent(UITransform) as any;
-        if (transform && transform._native) {
-            this._native.setUITransform(transform._native);
-        }
         this._updateColor();
         bindNativeMaterialSlots(this);
         this._native.setTrim(this._isTrimmedMode);
