@@ -56,3 +56,20 @@ Windows Debug 与 Release 的 64 张原始图集逐字节相同。Windows 与 Ch
 ```powershell
 node native/tests/2d-poc/compare-ttf-origins.cjs --capture build/fontsize-clean-Debug build/fontsize-clean-Release
 ```
+
+## 轮廓输入与矩形扩张对照
+
+Windows Debug、Release 和 Chrome 157 使用同一份 Thonburi.ttf，重复上述 I、O 的 64 起点矩阵。第一组对照改为向 DirectWrite 请求字体设计单位下的轮廓，再缩放到目标像素尺寸，然后执行原有扩张、采样与混合。两种输入得到的 64 张原生图集逐字节相同。其中 48 张经过轮廓绘制路径，另 16 张常规或斜体填充作为对照。对这批用例，更改提取字号没有改变与 Web 的差异。
+
+第二组只检查粗体填充的 I。诊断程序先核对轮廓面积与外接矩形面积一致，再以相同的合成粗体宽度直接构造扩张矩形，送入同一套采样与混合流程。表中数值为各字号 64 个起点对 Web 的最大通道差。所有对照的 Debug 与 Release 图像均逐字节相同。
+
+| I 的填充方式 | 12 px | 24 px | 36 px | 48 px |
+|---|---:|---:|---:|---:|
+| 直立粗体，原有扩张与合并 | 9 | 14 | 13 | 69 |
+| 直立粗体，直接构造矩形 | 9 | 14 | 13 | 69 |
+| 粗斜体，原有扩张与合并 | 9 | 13 | 13 | 13 |
+| 粗斜体，直接构造矩形 | 9 | 6 | 13 | 13 |
+
+直立粗体的两种原生输出在四个字号下完全相同。48 px 整数起点的超差集中在图块第 18 行（从 0 起算），像素 (11, 18) 的原生 alpha 为 1，Web 为 70。下一步可以在这一条水平边分别核对扩张宽度、纵坐标取整和扫描覆盖率。该结果仅覆盖直立矩形；24 px 粗斜体已经表现出两种几何表示的差异。
+
+在 `native/tests/2d-poc/native/out` 和 `out-release2` 分别构建 `cc2d_ttf_raster`、`cc2d_ttf_design_units`，从仓库根运行 `node native/tests/2d-poc/compare-ttf-outline-inputs.cjs --capture`。[比较器](../native/tests/2d-poc/compare-ttf-outline-inputs.cjs)将浏览器版本、字体哈希、逐图哈希、超差像素数和整数起点的超差行写入 `native/tests/2d-poc/build/ttf-outline-inputs.json`。命令成功表示采集完整且 Windows 双配置一致，各图对 Web 的误差单列报告。

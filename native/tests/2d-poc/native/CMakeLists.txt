@@ -24,8 +24,7 @@ if(WIN32)
     target_link_libraries(cc2d_font_resource PRIVATE dwrite gdi32 user32)
     add_executable(cc2d_ttf_raster ../test_ttf_raster.cpp)
     target_link_libraries(cc2d_ttf_raster PRIVATE cocos_engine)
-    # Experimental outline rasterizers remain separate from production. Both
-    # build the same source copy, with a different horizontal sampling mode.
+    # Build outline diagnostics from source copies to keep test switches out of the engine.
     find_program(CC2D_NODE_EXECUTABLE NAMES node REQUIRED)
     set(CC2D_GEOMETRY_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/ttf-geometry/DirectWriteFont-geometry.cpp")
     add_custom_command(OUTPUT "${CC2D_GEOMETRY_SOURCE}"
@@ -33,8 +32,19 @@ if(WIN32)
         DEPENDS "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs"
                 "${CMAKE_CURRENT_LIST_DIR}/../../../cocos/platform/win32/modules/DirectWriteFont.cpp"
         VERBATIM)
-    foreach(CC2D_VARIANT IN ITEMS geometry geometry_filtered)
-        add_executable(cc2d_ttf_${CC2D_VARIANT} EXCLUDE_FROM_ALL ../test_ttf_raster.cpp "${CC2D_GEOMETRY_SOURCE}")
+    set(CC2D_DESIGN_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/ttf-geometry/DirectWriteFont-design-units.cpp")
+    add_custom_command(OUTPUT "${CC2D_DESIGN_SOURCE}"
+        COMMAND "${CC2D_NODE_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs" "${CMAKE_CURRENT_BINARY_DIR}/ttf-geometry" --design-units
+        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/../build-ttf-geometry-probe.cjs"
+                "${CMAKE_CURRENT_LIST_DIR}/../../../cocos/platform/win32/modules/DirectWriteFont.cpp"
+        VERBATIM)
+    foreach(CC2D_VARIANT IN ITEMS geometry geometry_filtered design_units)
+        if(CC2D_VARIANT STREQUAL design_units)
+            set(variant_source "${CC2D_DESIGN_SOURCE}")
+        else()
+            set(variant_source "${CC2D_GEOMETRY_SOURCE}")
+        endif()
+        add_executable(cc2d_ttf_${CC2D_VARIANT} EXCLUDE_FROM_ALL ../test_ttf_raster.cpp "${variant_source}")
         target_include_directories(cc2d_ttf_${CC2D_VARIANT} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../../cocos")
         target_compile_definitions(cc2d_ttf_${CC2D_VARIANT} PRIVATE NOMINMAX CC2D_TTF_GEOMETRY_FILTERED=$<STREQUAL:${CC2D_VARIANT},geometry_filtered>)
         target_link_libraries(cc2d_ttf_${CC2D_VARIANT} PRIVATE dwrite d2d1 ole32 windowscodecs)
