@@ -80,6 +80,24 @@ function runtimeImports(source) {
     visit(source);
     return [...new Set(imports)];
 }
+const frameHooks = new Set(['update', 'lateUpdate', '_render', 'updateRenderer', 'fillBuffers', 'postUpdateAssembler']);
+
+function frameHookName(node) {
+    let name;
+    if (ts.isMethodDeclaration(node) || (ts.isPropertyDeclaration(node) && node.initializer)) {
+        name = node.name;
+        if (ts.isComputedPropertyName(name)) {
+            return ts.isStringLiteralLike(name.expression) ? name.expression.text : undefined;
+        }
+    } else if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken) {
+        if (ts.isPropertyAccessExpression(node.left)) name = node.left.name;
+        if (ts.isElementAccessExpression(node.left) && ts.isStringLiteralLike(node.left.argumentExpression)) {
+            name = node.left.argumentExpression;
+        }
+    }
+    return name && (ts.isIdentifier(name) || ts.isStringLiteralLike(name)) ? name.text : undefined;
+}
+
 function inspect(file, text) {
     const source = parse(file,text);
     const printer = ts.createPrinter({removeComments:true});
@@ -87,7 +105,8 @@ function inspect(file, text) {
     const frameMethods = [], nativeCalls = [], allocations = [], loops = [];
     const location = node => source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
     function walk(node) {
-        if (ts.isMethodDeclaration(node) && ['update','lateUpdate','_render','updateRenderer','fillBuffers','postUpdateAssembler'].includes(node.name.getText(source))) frameMethods.push({name:node.name.getText(source), line:location(node)});
+        const hook = frameHookName(node);
+        if (frameHooks.has(hook)) frameMethods.push({name:hook, line:location(node)});
         if (ts.isCallExpression(node) && /\b(_native|jsb|n2d)\b/.test(node.expression.getText(source))) nativeCalls.push({expression:node.expression.getText(source), line:location(node)});
         if (ts.isNewExpression(node) && /^(Float32Array|Uint16Array|Uint32Array|RenderData|HtmlTextParser)$/.test(node.expression.getText(source))) allocations.push({type:node.expression.getText(source), line:location(node)});
         if (ts.isForStatement(node) || ts.isForOfStatement(node) || ts.isForInStatement(node) || ts.isWhileStatement(node) || ts.isDoStatement(node)) loops.push(location(node));

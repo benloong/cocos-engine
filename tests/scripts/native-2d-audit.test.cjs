@@ -78,6 +78,21 @@ test('frame and buffer findings use syntax rather than comments or strings', () 
     assert.deepEqual(info.nativeCalls.map(m=>m.expression),['this._native.prepare']);
 });
 
+test('frame hooks installed on native prototypes and class fields are reported', () => {
+    const info = inspect('fixture.jsb.ts', `
+        const proto = jsb.Sprite.prototype;
+        proto.updateRenderer = render;
+        proto['fillBuffers'] = function () {};
+        class Shell {
+            lateUpdate = () => {};
+            ['_render']() {}
+        }
+        if (proto.update === render) render();
+        proto.updateRenderer();
+    `);
+    assert.deepEqual(info.frameMethods.map(method => method.name), ['updateRenderer', 'fillBuffers', 'lateUpdate', '_render']);
+});
+
 test('current runtime gaps remain visible instead of being called a passing gate', () => {
     const report=build();
     assert.deepEqual(shellHotPaths(report), []);
