@@ -584,6 +584,84 @@ void testFrameConsumers() {
     check(submittedTexturePixels(label.getRenderEntity()) == transparentPixels, "BMFont sees shared frame texture replacement");
 }
 
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+bool checkDirectWriteFileRelease(const std::filesystem::path &path) {
+    // Request read and write access with no sharing. A lingering reader or
+    // mapped font file must not prevent replacing this source after release.
+    HANDLE exclusive = CreateFileW(path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
+                                   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (exclusive == INVALID_HANDLE_VALUE) return false;
+    return CloseHandle(exclusive) != FALSE;
+}
+
+bool exerciseDirectWriteFile(const std::filesystem::path &path, const char *fixture, float expectedWidth) {
+    std::error_code error;
+    if (!std::filesystem::copy_file(std::filesystem::u8path(fixture), path,
+                                    std::filesystem::copy_options::overwrite_existing, error)) {
+        std::fprintf(stderr, "Replacing the test font failed: %s\n", error.message().c_str());
+        return false;
+    }
+    const std::string source = path.u8string();
+    auto first = cc::DirectWriteFont::create(source, 24.F, false, false);
+    auto second = cc::DirectWriteFont::create(source, 24.F, false, false);
+    if (!first || !second || first->measure("Atlas 123")[0] != expectedWidth) return false;
+    first.reset();
+    std::array<uint8_t, 32 * 32 * 4> pixels{};
+    if (second->measure("Atlas 123")[0] != expectedWidth
+        || !second->draw("A", 1, 24, 3, pixels.data(), 32, 32, {1, 1, 1, 1})
+        || !second->stroke("A", 1, 24, 3, pixels.data(), 32, 32, {1, 1, 1, 1}, 2.F,
+                           cc::DirectWriteFont::StrokeJoin::ROUND)) return false;
+    second.reset();
+    if (!checkDirectWriteFileRelease(path)) return false;
+    {
+        std::ofstream invalid(path, std::ios::binary | std::ios::trunc);
+        invalid.write("invalid", 7);
+        invalid.close();
+        if (!invalid) return false;
+    }
+    return !cc::DirectWriteFont::create(source, 24.F, false, false) && checkDirectWriteFileRelease(path);
+}
+
+int runDirectWriteFileProbe() {
+    const char *fixtures[]{CC2D_FONT_FIXTURE, CC2D_REPLACEMENT_FONT};
+    float widths[2]{};
+    for (int i = 0; i < 2; ++i) {
+        auto face = cc::DirectWriteFont::create(fixtures[i], 24.F, false, false);
+        if (!face) return 1;
+        widths[i] = face->measure("Atlas 123")[0];
+    }
+    if (widths[0] <= 0 || widths[1] <= 0 || widths[0] == widths[1]) return 1;
+    wchar_t name[MAX_PATH]{};
+    if (!GetTempFileNameW(L".", L"m6f", 0, name)) return 1;
+    const auto path = std::filesystem::absolute(name);
+    // Confirm the exclusive-open check detects a real outstanding reader.
+    HANDLE reader = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr,
+                                OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    bool ok = reader != INVALID_HANDLE_VALUE;
+    if (ok) {
+        ok = !checkDirectWriteFileRelease(path) && GetLastError() == ERROR_SHARING_VIOLATION;
+        if (!CloseHandle(reader)) ok = false;
+    }
+    ok = ok && exerciseDirectWriteFile(path, fixtures[0], widths[0]) && exerciseDirectWriteFile(path, fixtures[1], widths[1]);
+    std::printf("DirectWrite file replacement widths: %.6f %.6f\n", widths[0], widths[1]);
+    DWORD baseline = 0;
+    ok = ok && GetProcessHandleCount(GetCurrentProcess(), &baseline);
+    const DWORD gdi = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+    for (int i = 0; ok && i < 1000; ++i) {
+        ok = exerciseDirectWriteFile(path, fixtures[i % 2], widths[i % 2]);
+        if (!ok) std::fprintf(stderr, "DirectWrite source release failed at cycle %d\n", i + 1);
+        if ((i + 1) % 250 == 0) {
+            DWORD current = 0;
+            const DWORD currentGdi = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+            ok = ok && GetProcessHandleCount(GetCurrentProcess(), &current) && current <= baseline && currentGdi == gdi;
+            std::printf("DirectWrite file cycles %d handles %lu -> %lu GDI %lu -> %lu\n", i + 1, baseline, current, gdi, currentGdi);
+        }
+    }
+    const bool removed = DeleteFileW(path.c_str()) != FALSE;
+    return ok && removed ? 0 : 1;
+}
+#endif
+
 void testFontAssets() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     {
@@ -2693,6 +2771,9 @@ void testSpriteSceneBenchmark() {
 } // namespace
 
 int main(int argc, char **argv) {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    if (argc == 2 && std::string(argv[1]) == "--directwrite-file-probe") return runDirectWriteFileProbe();
+#endif
     if (argc == 4 && std::string(argv[1]) == "--log-visibility-probe") {
         // A quiet child must expose completed log records before it exits.
         // The ready file establishes that both production log calls returned.

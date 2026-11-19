@@ -27,7 +27,7 @@
 | 章节 | 节点 | 尚缺证据或已知失败 |
 |---|---|---|
 | M6.1 | 组件 API | 位图 Label 的 spacingX、fontSize、lineHeight 已通过 Windows 双配置与 Web 的细小增减、复位和自动尺寸对照。其余公开及兼容入口仍待验收。[逐项计划](./native-2d-m6-plan.md) |
-| M6.1 | 字体终态 | 平台句柄清理、复杂文本及严格字形对照 |
+| M6.1 | 字体终态 | Windows DirectWrite 源文件替换、失败加载和释放已通过[独立进程验证](./native-2d-m6.1-font-alias-ownership.md#windows-directwrite-源文件释放)。集成进程的句柄波动、其余平台句柄清理、复杂文本及严格字形对照仍待核查 |
 | M6.1 | 复杂布局 | [补充平面 BMFont 标量已验证](./native-2d-m6-bitmap-unicode.json)，尚缺双向文本及 shaping、任意 mesh、packed 组合和配置更新。两行 Arial 在 NONE 模式下自然宽度为 Windows 79、Web 80.9453125，见 [Label 布局实测](./native-2d-m6-windows-web-gpu-results.json) |
 | M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一旧 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。主动取消、失败半文件回收与其余旧资产仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
 | M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期及三组失败字形 |

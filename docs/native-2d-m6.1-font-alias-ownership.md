@@ -21,6 +21,12 @@ TTFFont 在 family 与文件来源均已就绪时取得一个原生注册记录�
 
 完整逐例结果和日志/源码 SHA256 见 [结果](./native-2d-m6.1-font-alias-ownership-results.json)。字体测试入口沿用 run-m6-font-assets-tests.ps1；GPU 复现沿用 [同源对照入口](./native-2d-m6.2-richtext-gpu.md#复现)。日志为 build/font-alias-ownership-*。应用经 CLI 重建，并复用对应平台此前验证的完整特性引擎 JS；本轮没有 JS 生产源码变更。
 
+## Windows DirectWrite 源文件释放
+
+原生验收程序的 `--directwrite-file-probe` 在 JSB 初始化前运行。先用仍持有的读句柄验证独占打开会返回共享冲突，再让 Thonburi 和 OpenSans 交替覆盖同一临时路径。每轮创建两个字体对象，释放第一个后由第二个对象测量、填充和描边。释放第二个后独占打开文件，截断为无效字体，验证加载失败后文件仍可独占打开。最后删除临时文件。
+
+Debug 和 Release 各运行三个独立进程，每个进程 1000 轮。24 px 下两种字体的 `Atlas 123` 测量宽度分别为 约 95.97656 和 101.92969。每 250 轮取样，Debug 三轮的进程句柄均维持 184，Release 三轮均维持 174，两个配置的 GDI 对象均维持 0。M0 在具备 Windows 原生验收程序时执行此检查。此前集成进程曾出现总句柄从 420 增至 428，其来源仍待定位。
+
 ## 剩余边界
 
 其他平台尚未接入此记录机制；仍须验证完整 bundle/异步资源失败回收、旧场景/Prefab、TTC/多字体/彩色字体、长期内存、跨线程与性能。只有 legacy loadFont 注册、尚未交给 TTFFont 的记录仍由 runtime cleanup 兜底，失败下载/工厂创建的逐请求撤销待补。既有 Canvas 不因公共表变化自动刷新；native Label 则通过资产 revision 重建。脚本引擎清理后仍存活资产的继续渲染不在本节点契约内，仅保证迟到释放安全。工作区已有 SpriteFrame.native 改动未纳入提交，此快照不作为 M6 最终候选验收。

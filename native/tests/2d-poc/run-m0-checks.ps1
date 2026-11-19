@@ -71,6 +71,8 @@ if (Test-Path (Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe')) {
     if ($LASTEXITCODE -ne 0) { throw 'Could not build renderer manager probe' }
     Push-Location (Join-Path $PSScriptRoot 'native/out')
     try {
+        & ./cc2d_native_poc.exe --directwrite-file-probe
+        if ($LASTEXITCODE -ne 0) { throw 'DirectWrite source file ownership probe failed' }
         & ./cc2d_native_poc.exe (Join-Path $PSScriptRoot 'build/renderer-manager-probe.js')
         if ($LASTEXITCODE -ne 0) { throw 'Native renderer manager probe failed' }
     } finally {
