@@ -31,6 +31,7 @@ import { UIRenderer } from '../framework/ui-renderer';
 import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterialSlots, syncNativeMaterialSlots } from '../framework/native-ui-materials';
 import { Font } from '../assets/font';
 import { BitmapFont } from '../assets/bitmap-font';
+import type { FontAtlas } from '../assets/bitmap-font';
 
 declare const n2d: any;
 
@@ -118,6 +119,11 @@ export class Label extends UIRenderer {
     @serializable
     protected _font: any = null;
     protected _userDefinedFont: Font | null = null;
+    protected _fontAtlas: FontAtlas | null = null;
+
+    /** @deprecated Preserved for callers of the legacy Label atlas accessor. */
+    get fontAtlas (): FontAtlas | null { return this._fontAtlas; }
+    set fontAtlas (value: FontAtlas | null) { this._fontAtlas = value; }
     @serializable
     protected _enableOutline = false;
     @serializable
@@ -279,6 +285,7 @@ export class Label extends UIRenderer {
     set font (value: any) {
         if (this._font === value) return;
         this._font = value;
+        this._fontAtlas = null;
         this._isSystemFontUsed = !value;
         if (EDITOR) this._userDefinedFont = value;
         this._syncFont();

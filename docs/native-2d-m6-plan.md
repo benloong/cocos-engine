@@ -52,6 +52,7 @@
 - [ ] 完整组件 parity：Label 其余公开/兼容接口，以及真实场景/Prefab 和资源管线继续验收。radial CPU 几何通过不替代 GPU 像素验收。
 - [x] Label 运行时字体切换：从位图字体切回系统字体会清空字体资产；再次关闭系统字体、向空槽写入 null 均保留空槽。显式重新指定 BitmapFont 后立即读取到单个 A 字形宽度 16，且混合遮罩场景中的绿色字形正常绘制。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 - [x] Label.contentWidth：实际 JSB 验证初值为 0，加载前写入的小数保留精度。Windows Debug、Release 和 Web 的 TTF 在四种 overflow 下发布各自的节点宽度，强制更新覆盖手动赋值；干净帧刷新、BMFont 和 CHAR 更新保留手动值。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
+- [x] Label.fontAtlas：位图字体场景读取旧接口的初值 null，赋入字体资产的 FontAtlas 后，重复赋同一字体和强制布局均保留该对象。切换到系统字体后引用清空。[GPU 矩阵](./native-2d-m6-windows-web-gpu-results.json)。
 
 - [x] SpriteFrame 基础数据/算法：quad/sliced UV 迁入 native；rotated、flip、insets、pivot、meshType、packable、clone/reset 与基础静态 API 已补实现，UV 对照与 Windows 定向回归通过，见 [报告](./native-2d-m6.1-sprite-frame.md)。
 - [x] SpriteFrame 基础状态：rect/offset/originalSize/pivot 使用 native 可写视图；setter、分量修改、反序列化、克隆和 native 回读不再依赖 JS 权威镜像，Sprite/Mask/BMFont 有原生消费者联动测试。

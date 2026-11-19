@@ -108,8 +108,15 @@ export class M6GraphicsGpuProbe extends Component {
                 font.onLoaded();
                 const glyph = node(n, 'green'); glyph.setPosition(24, 0);
                 const label = glyph.addComponent(Label); label.font = font;
+                const atlas = font.fontDefDictionary;
+                if (!atlas || label.fontAtlas !== null) throw new Error('Unexpected initial Label fontAtlas');
+                label.fontAtlas = atlas;
+                label.font = font;
+                label.updateRenderData(true);
+                if (label.fontAtlas !== atlas) throw new Error('Same font or layout refresh discarded the assigned fontAtlas');
                 label.fontSize = 16; label.lineHeight = 16; label.string = 'A'; label.color = new Color(0, 255, 0, 255);
                 label.useSystemFont = true;
+                if (label.fontAtlas !== null) throw new Error('Changing the font retained the previous fontAtlas');
                 if (label.font || !label.useSystemFont || label._bmFontOriginalSize !== -1) throw new Error('System font retained bitmap asset');
                 label.useSystemFont = false;
                 label.font = null;
