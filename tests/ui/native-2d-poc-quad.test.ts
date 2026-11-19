@@ -6,6 +6,7 @@ import { Texture2D } from '../../cocos/asset/assets';
 import { Node } from '../../cocos/scene-graph/node';
 import { Camera, Rect, Scene, Size, director } from '../../exports/base';
 import { Batcher2D } from '../../cocos/2d/renderer/batcher-2d';
+import { simple } from '../../cocos/2d/assembler/sprite/simple';
 
 test('Native 2D PoC Web sprite quad', function () {
     // @ts-expect-error
@@ -38,26 +39,30 @@ test('Native 2D PoC Web sprite quad', function () {
     sprite.sizeMode = Sprite.SizeMode.CUSTOM;
     sprite.updateRenderer();
 
-    const renderData = sprite.renderData as any;
-    expect(renderData).toBeTruthy();
+    const renderData = sprite.renderData!;
+    const { chunk, floatStride: stride } = renderData;
+    const { meshBuffer } = chunk;
+    const start = meshBuffer.indexOffset;
+    simple.fillBuffers(sprite, director.root!.batcher2D);
+    const indices = Array.from(meshBuffer.iData.subarray(start, meshBuffer.indexOffset), index => index - chunk.vertexOffset);
+    expect(indices).toHaveLength(6);
+    expect(renderData.vertexCount).toBe(4);
     const vertices: number[][] = [];
-    for (const v of renderData.data.slice(0, 4)) {
-        vertices.push([v.x, v.y, v.z, v.u, v.v, v.color.r, v.color.g, v.color.b, v.color.a]);
+    for (let i = 0; i < renderData.vertexCount; ++i) {
+        const { x, y, z } = renderData.data[i];
+        const at = i * stride;
+        const uv = chunk.vb.subarray(at + 3, at + 5);
+        const rgba = chunk.vb.subarray(at + 5, at + 9);
+        vertices.push([x, y, z, ...uv, ...Array.from(rgba, value => Math.round(value * 255))]);
     }
-    const stride = 9;
-    const iData = (renderData.chunk && renderData.chunk.meshBuffer && renderData.chunk.meshBuffer.iData)
-        || renderData.indices
-        || new Uint16Array([0, 1, 2, 1, 3, 2]);
 
     const outDir = path.join(__dirname, '..', '..', 'native', 'tests', '2d-poc', 'out');
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'web-sprite-quad.json'), JSON.stringify({
         stride,
         vertices,
-        indices: Array.from(iData.slice(0, 6)),
+        indices,
     }, null, 2));
 
-    console.log('WEB_SPRITE_QUAD', JSON.stringify({ stride, vertices, indices: Array.from(iData.slice(0, 6)) }));
-    expect(stride).toBeGreaterThan(0);
-    expect(iData.length).toBeGreaterThanOrEqual(6);
+    expect(stride).toBe(9);
 });

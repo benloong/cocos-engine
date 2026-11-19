@@ -1,6 +1,7 @@
+param([string]$NativeExecutable = (Join-Path $PSScriptRoot 'native/out/cc2d_native_poc.exe'))
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
-$nativeExe = Join-Path $PSScriptRoot 'native\out\cc2d_native_poc.exe'
+$nativeExe = (Resolve-Path -LiteralPath $NativeExecutable).Path
 $outDir = Join-Path $PSScriptRoot 'out'
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 

@@ -3,7 +3,7 @@ const path = require('path');
 const { PNG } = require(path.join(__dirname, '../../../node_modules/pngjs'));
 const { comparePng, writeDiffPng } = require('./compare-png');
 
-const dir = path.join(__dirname, 'out');
+const dir = process.argv[2] || path.join(__dirname, 'out');
 const web = JSON.parse(fs.readFileSync(path.join(dir, 'web-sprite-quad.json'), 'utf8'));
 const native = JSON.parse(fs.readFileSync(path.join(dir, 'native-sprite-quad.json'), 'utf8'));
 
@@ -15,13 +15,16 @@ const check = (ok, message) => {
 };
 
 const pos = (q) => q.vertices.map((v) => [v[0], v[1]]);
-const webPos = pos(web);
-const nativePos = pos(native);
+check(web.stride === 9 && native.stride === 9, 'position, UV and color stride');
+check(web.vertices.length === 4 && native.vertices.length === 4, 'four vertices each');
 for (let i = 0; i < 4; i++) {
-  check(Math.abs(webPos[i][0] - nativePos[i][0]) < 1e-4, `vertex ${i} x`);
-  check(Math.abs(webPos[i][1] - nativePos[i][1]) < 1e-4, `vertex ${i} y`);
+  const v = web.vertices[i];
+  const other = native.vertices[i];
+  check(v.length === web.stride && other.length === native.stride
+    && v.every((value, j) => Math.abs(value - other[j]) < 1e-4), `vertex ${i} attributes`);
 }
 check(web.indices.length === 6 && native.indices.length === 6, 'six indices each');
+check(web.indices.every((index, i) => Number.isInteger(index) && index >= 0 && index < 4 && index === native.indices[i]), 'matching triangle indices');
 
 function triangleContains(px, py, a, b, c) {
   const d1 = (px - b[0]) * (a[1] - b[1]) - (a[0] - b[0]) * (py - b[1]);
@@ -35,15 +38,18 @@ function triangleContains(px, py, a, b, c) {
 function rasterize(quad) {
   const png = new PNG({ width: 100, height: 100 });
   const p = pos(quad);
-  const idx = [0, 1, 2, 1, 3, 2];
+  const triangles = [];
+  for (let t = 0; t < quad.indices.length; t += 3) {
+    const [a, b, c] = quad.indices.slice(t, t + 3).map(index => p[index]);
+    const area = a && b && c && (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+    check(Number.isFinite(area) && area !== 0, `nondegenerate triangle ${t / 3}`);
+    if (area) triangles.push([a, b, c]);
+  }
   for (let y = 0; y < 100; y++) {
     for (let x = 0; x < 100; x++) {
       const px = x - 49.5;
       const py = 49.5 - y;
-      let inside = false;
-      for (let t = 0; t < idx.length; t += 3) {
-        if (triangleContains(px, py, p[idx[t]], p[idx[t + 1]], p[idx[t + 2]])) { inside = true; break; }
-      }
+      const inside = triangles.some(([a, b, c]) => triangleContains(px, py, a, b, c));
       const o = (y * 100 + x) * 4;
       png.data[o] = inside ? 255 : 0;
       png.data[o + 1] = inside ? 64 : 0;
@@ -62,6 +68,7 @@ fs.writeFileSync(webFile, PNG.sync.write(webPng));
 fs.writeFileSync(nativeFile, PNG.sync.write(nativePng));
 
 const diff = comparePng(webFile, nativeFile, 0);
+check(diff.passed, 'rasterized quad pixels match');
 const report = {
   web: webFile,
   native: nativeFile,
@@ -69,12 +76,11 @@ const report = {
   triangles: 2,
   diffPixels: diff.diffPixels,
   maxChannelDelta: diff.maxChannelDelta,
-  passed: diff.passed,
+  passed: failures === 0,
 };
 fs.writeFileSync(path.join(dir, 'web-native-sprite-report.json'), JSON.stringify(report, null, 2));
 writeDiffPng(diff, path.join(dir, 'web-native-sprite-diff.png'));
 
-check(diff.passed, 'rasterized quad pixels match');
 console.log(`${checks} checks, ${failures} failures`);
 console.log(JSON.stringify(report));
 process.exit(failures === 0 && diff.passed ? 0 : 1);
