@@ -1135,6 +1135,11 @@ void testLabelStyleExtents() {
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), combined.width, "outlined Label width agrees with measurement");
     checkNear(label.getContentHeight(), combined.height, "outlined Label height agrees with measurement");
+    for (float width : {2.F + 1.F / 128, 2.F, 2.F - 1.F / 128, 2.F}) {
+        label.setOutlineWidth(width);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(label.getContentWidth(), italic.width + 2.F * width, "fractional outline changes both edge extents");
+    }
     label.setEnableOutline(false); label.setIsItalic(false); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), label.measureUnwrappedText("Atlas 123").width, "style removal clears previous extent");
     label.setEnableWrapText(true);
@@ -1145,6 +1150,16 @@ void testLabelStyleExtents() {
     }
     label.setString("A"); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), label.measureUnwrappedText("A").width, "Overflow NONE shrinks with wrap flag enabled");
+    label.setEnableWrapText(false);
+    label.setOverflow(2);
+    label.setEnableShadow(true);
+    label.setShadowOffset(0.F, 0.F);
+    ui.setContentSize(label.measureUnwrappedText("A").width + 4.F + 1.F / 128, 100.F);
+    for (float blur : {2.F, 2.F + 1.F / 128, 2.F, 2.F - 1.F / 128, 2.F}) {
+        label.setShadowBlur(blur);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        checkNear(label.getActualFontSize(), blur > 2.F ? 23.F : 24.F, "fractional blur crosses the unwrapped SHRINK boundary");
+    }
     std::printf("label style extents: PASS\n");
 }
 

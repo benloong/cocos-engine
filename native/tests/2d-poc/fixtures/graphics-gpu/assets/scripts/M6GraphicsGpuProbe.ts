@@ -475,6 +475,29 @@ export class M6GraphicsGpuProbe extends Component {
             label.updateRenderData(true);
             shrinkSizes.push(label.actualFontSize);
         }
+        // Calibrate the shrink boundary using this backend's own font metrics.
+        label.overflow = Label.Overflow.NONE;
+        label.updateRenderData(true);
+        const naturalWidth = transform.width;
+        label.enableOutline = true;
+        for (const width of [2, 2 + 1 / 128, 2, 2 - 1 / 128, 2]) {
+            label.outlineWidth = width;
+            label.updateRenderData(false);
+            if (Math.abs(transform.width - naturalWidth - 2 * width) > 0.0001) {
+                throw new Error(`Fractional outline ${width}: expected ${naturalWidth + 2 * width}, got ${transform.width}`);
+            }
+        }
+        label.enableOutline = false;
+        label.enableShadow = true;
+        label.shadowOffset = new Vec2(0, 0);
+        label.overflow = Label.Overflow.SHRINK;
+        transform.setContentSize(naturalWidth + 4 + 1 / 128, 100);
+        for (const blur of [2, 2 + 1 / 128, 2, 2 - 1 / 128, 2]) {
+            label.shadowBlur = blur;
+            label.updateRenderData(false);
+            const expectedSize = blur > 2 ? 31 : 32;
+            if (label.actualFontSize !== expectedSize) throw new Error(`Fractional blur ${blur}: expected ${expectedSize}, got ${label.actualFontSize}`);
+        }
         labelNode.destroy();
         await wait();
         if (isValid(freshFrame) || isValid(freshTexture)) throw new Error('Destroyed Label retained valid TTF assets');

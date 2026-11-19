@@ -408,7 +408,7 @@ void Label::setOutlineColor(const Color &color) {
 }
 
 void Label::setOutlineWidth(float width) {
-    if (std::fabs(_outlineWidth - width) < 0.01F) { return; }
+    if (_outlineWidth == width) { return; }
     _outlineWidth = width;
     markRenderDirty();
 }
@@ -425,7 +425,7 @@ void Label::setShadowColor(const Color &color) {
 }
 
 void Label::setShadowBlur(float blur) {
-    if (std::fabs(_shadowBlur - blur) < 0.01F) { return; }
+    if (_shadowBlur == blur) { return; }
     _shadowBlur = blur;
     markRenderDirty();
 }
