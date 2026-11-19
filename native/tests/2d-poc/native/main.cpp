@@ -2043,6 +2043,25 @@ void testComponentAttach() {
     }
     check(detached->getNode() == nullptr, "component cleared on node destroy");
     delete detached;
+
+    cc::UIOpacity moved;
+    cc::Node destination("surviving-host");
+    struct TransferOnDetach final : cc::Component {
+        TransferOnDetach(cc::UIOpacity &peer, cc::Node &destination)
+        : peer(peer), destination(destination) {}
+        void onDetach() override { peer.setNode(&destination); }
+        cc::UIOpacity &peer;
+        cc::Node &destination;
+    } transfer(moved, destination);
+    {
+        cc::Node oldHost("retired-host");
+        transfer.setNode(&oldHost);
+        moved.setNode(&oldHost);
+    }
+    check(moved.getNode() == &destination && destination.getUIComponent(cc::UIOpacity::TYPE_ID) == &moved,
+          "a component moved during host teardown stays attached to its new host");
+    moved.setOpacity(102);
+    checkNear(destination._getLocalOpacity(), 0.4F, "moved component still updates its new host");
 }
 
 void testUIOpacity() {

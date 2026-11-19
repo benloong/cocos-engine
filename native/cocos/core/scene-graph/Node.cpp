@@ -80,11 +80,11 @@ Node::Node(const ccstd::string &name) {
 }
 
 Node::~Node() {
-    if (!_uiComponents.empty()) {
-        auto components = std::move(_uiComponents);
-        for (Component *component : components) {
-            component->onNodeDestroyed();
-        }
+    // A detach callback can move or release another component still awaiting notification.
+    while (!_uiComponents.empty()) {
+        Component *component = _uiComponents.front();
+        _uiComponents.erase(_uiComponents.begin());
+        component->onNodeDestroyed();
     }
     if (!_children.empty()) {
         // Reset children's _parent to nullptr to avoid dangerous pointer

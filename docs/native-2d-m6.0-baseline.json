@@ -323,7 +323,7 @@
     },
     {
       "file": "native/cocos/core/scene-graph/Node.cpp",
-      "sha256": "5397e574512beb2ba8ccec538d33d159e3c31c43f7d55cdd8f6be402d918200f"
+      "sha256": "12d46c8e300707a020b1d2a05b24a0e30b4284c40eb85a13b4e3c3051fe96f95"
     },
     {
       "file": "native/cocos/core/scene-graph/Node.h",
