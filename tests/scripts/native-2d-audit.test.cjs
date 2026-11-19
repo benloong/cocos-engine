@@ -14,8 +14,8 @@ test('component rollback removes only the selected Windows overrides and preserv
         const buildTimeConstants = query.constantManager.genBuildTimeConstants({ mode, platform, flags });
         return query.evaluateModuleOverrides({ platform, mode, buildTimeConstants });
     }
-    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d' };
-    for (const selected of [['USE_JS_UI_OPACITY'], ['USE_JS_RENDER_ROOT_2D'], Object.keys(components)]) {
+    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d', USE_JS_RICH_TEXT: 'components/rich-text' };
+    for (const selected of [...Object.keys(components).map(flag => [flag]), Object.keys(components)]) {
         const windows = overrides('WINDOWS', {});
         const flags = {};
         for (const flag of selected) {

@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "1a67d83c8312db3626d890ddac25c9d6c87d14bc445e90e14430be05f92a2562"
+      "sha256": "2597e20feccb57035eaab2df8d98606e742fd5ee8ffdaf7e06d969224c9f3828"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "d7476c999ac5e98aaeec308ad75620306e0ac0215fc8445e5a152ffb653020c1"
+      "sha256": "a4b19d00a940428f26b1dd4792bb50085e0c0cfc5e3407dec656a2fe65d771c6"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -15641,8 +15641,8 @@
     },
     {
       "file": "cocos/2d/components/rich-text.ts",
-      "sha256": "c09e9e7b28e02b39e0de6395f878e3126d6411ce4d5283cc4d0cfda29725cdb8",
-      "printedCodeLines": 1035,
+      "sha256": "f8cf8cc4d0ae1b43ca651263b8cae3236f3b78e7f3bf3860512e20efdd0b7d5e",
+      "printedCodeLines": 1046,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15667,21 +15667,21 @@
         }
       ],
       "loops": [
-        615,
-        652,
-        669,
-        670,
-        686,
-        801,
-        833,
-        878,
-        905,
-        939,
-        1054,
-        1086,
-        1110,
-        1167,
-        1186
+        625,
+        662,
+        679,
+        680,
+        696,
+        817,
+        849,
+        894,
+        921,
+        954,
+        1069,
+        1101,
+        1125,
+        1182,
+        1201
       ]
     },
     {

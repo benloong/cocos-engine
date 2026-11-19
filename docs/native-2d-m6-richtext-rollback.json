@@ -1,0 +1,146 @@
+{
+  "snapshot": "433f20c162304e0700d24deb4a278d211e68120f96076b8ef9b3dbf7e7f0a471",
+  "webEngineSha256": "654e3684c3f2968b2def3772ef0719b028bbfed70f054469326ac56ddc3b26fc",
+  "windowsNativeEngineSha256": "237dfccbebe03f769f0d2cfb9ebd6f2109bf6f6ff1da42f4fa70f110aacdbca0",
+  "windowsRollbackEngineSha256": "7d1a10798ff11d18d2991de68415aba92590212e4ac3405a31ea7776d271148b",
+  "warmupBatches": 10,
+  "timedBatches": 31,
+  "updatesPerBatch": 8,
+  "windowsImagesIdenticalToPreRollbackBaseline": 12,
+  "windowsLayoutsMatchingWeb": 12,
+  "imageFailuresAgainstWeb": [
+    {
+      "name": "text-bold",
+      "max": 20,
+      "pixels": 448
+    },
+    {
+      "name": "text-outline",
+      "max": 30,
+      "pixels": 202
+    },
+    {
+      "name": "text-nested",
+      "max": 47,
+      "pixels": 553
+    }
+  ],
+  "windowsMixedSceneSegments": [
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": "Small",
+      "x": -150,
+      "y": 11.840000000000003,
+      "w": 48
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": " ",
+      "x": -102,
+      "y": 11.840000000000003,
+      "w": 11
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": "Red",
+      "x": -91,
+      "y": 11.840000000000003,
+      "w": 73
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": "Outline",
+      "x": -18,
+      "y": 9.840000000000003,
+      "w": 126
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": "Bold",
+      "x": -150,
+      "y": -20.159999999999997,
+      "w": 88
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": " ",
+      "x": -62,
+      "y": -20.159999999999997,
+      "w": 11
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": "Italic",
+      "x": -51,
+      "y": -20.159999999999997,
+      "w": 89.50226593017578
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": " ",
+      "x": 38.50226245679562,
+      "y": -20.159999999999997,
+      "w": 11
+    },
+    {
+      "name": "RICHTEXT_CHILD",
+      "text": "Underline",
+      "x": -150,
+      "y": -52.16,
+      "w": 166
+    },
+    {
+      "name": "RICHTEXT_Image_CHILD",
+      "text": "",
+      "x": 16,
+      "y": -48,
+      "w": 32
+    }
+  ],
+  "runs": [
+    {
+      "cfg": "Debug",
+      "implementation": "js",
+      "batchMedianMs": 99.62,
+      "m5BinarySha256": "160db641b1ec8e677e782d932787fa43c49a676a847024cf2b17a49cbfc7620b",
+      "jsLabelComponents": 9,
+      "jsSpriteComponents": 1,
+      "colored": 8725,
+      "layoutPass": 12,
+      "webImagePass": 9
+    },
+    {
+      "cfg": "Debug",
+      "implementation": "native",
+      "batchMedianMs": 18.516,
+      "m5BinarySha256": "160db641b1ec8e677e782d932787fa43c49a676a847024cf2b17a49cbfc7620b",
+      "jsLabelComponents": 0,
+      "jsSpriteComponents": 0,
+      "colored": 8725,
+      "layoutPass": 12,
+      "webImagePass": 9
+    },
+    {
+      "cfg": "Release",
+      "implementation": "js",
+      "batchMedianMs": 56.81,
+      "m5BinarySha256": "48aba11bdf284ddc4ca4ecb4ed23d28b78b1b199fd313c2bd8ff242cd9fc144c",
+      "jsLabelComponents": 9,
+      "jsSpriteComponents": 1,
+      "colored": 8725,
+      "layoutPass": 12,
+      "webImagePass": 9
+    },
+    {
+      "cfg": "Release",
+      "implementation": "native",
+      "batchMedianMs": 12.723,
+      "m5BinarySha256": "48aba11bdf284ddc4ca4ecb4ed23d28b78b1b199fd313c2bd8ff242cd9fc144c",
+      "jsLabelComponents": 0,
+      "jsSpriteComponents": 0,
+      "colored": 8725,
+      "layoutPass": 12,
+      "webImagePass": 9
+    }
+  ]
+}

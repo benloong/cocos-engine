@@ -156,6 +156,13 @@ const server = http.createServer(async (req, res) => {
                         return;
                     }
                     console.log('Web system Arial Italic width=' + italic[0].w);
+                    const index = rich.segments.indexOf(italic[0]);
+                    const [space, underline] = rich.segments.slice(index + 1, index + 3);
+                    if (space?.text !== ' ' || space.y !== italic[0].y
+                        || underline?.text !== 'Underline' || underline.y >= space.y) {
+                        rejectDone(new Error('The trailing space must fit after Italic before Underline wraps'));
+                        return;
+                    }
                     if (!bitmapReady || rich.native || !rich.queryMatches || rich.clicks?.join(',') !== 'first,second,second'
                         || rich.jsLabelComponents !== rich.labels || rich.jsSpriteComponents !== rich.sprites
                         || rich.labels !== 9 || rich.sprites !== 1 || rich.children !== 10) {

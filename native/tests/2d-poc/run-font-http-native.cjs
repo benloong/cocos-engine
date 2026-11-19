@@ -26,6 +26,7 @@ const server = http.createServer((request, response) => {
         const args = ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(__dirname, 'run-graphics-gpu-native.ps1'),
             '-Mode', 'richtext', '-FontHttpOrigin', `http://127.0.0.1:${server.address().port}`];
         if (asan) args.push('-Exe', path.join(__dirname, 'build/gpu-win-asan/native-2d-m6-gpu.exe'));
+        if (process.argv.includes('--js-rich-text')) args.push('-RichTextImplementation', 'js');
         if (release) args.push('-Exe', path.join(__dirname, 'build/gpu-win-release/native-2d-m6-gpu.exe'));
         if (exeIndex !== -1) {
             if (asan || release) throw new Error('Select a configuration or an explicit executable');

@@ -1,7 +1,8 @@
 param(
     [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe',
     [int]$TimeoutSeconds = 45,
-    [string]$LogDirectory = (Join-Path $PSScriptRoot 'build/m5-probe-runs')
+    [string]$LogDirectory = (Join-Path $PSScriptRoot 'build/m5-probe-runs'),
+    [ValidateSet('native','js')][string]$Implementation = 'native'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -83,13 +84,26 @@ try {
         throw 'M5 system Arial Italic segment exceeds its Windows layout tolerance'
     }
     Write-Host ("  system Arial Italic width={0}" -f $italic[0].w)
-    Write-Host 'M5 RichText probe: PASS'
+    $italicIndex = [array]::IndexOf($data.segments, $italic[0])
+    $space = $data.segments[$italicIndex + 1]
+    $underline = $data.segments[$italicIndex + 2]
+    if ($space.text -cne ' ' -or $space.y -ne $italic[0].y -or
+        $underline.text -cne 'Underline' -or $underline.y -ge $space.y) {
+        throw 'The trailing space must fit after Italic before Underline wraps'
+    }
     Write-Host ("  segments={0}, labels={1}, sprites={2}" -f $data.children, $data.labels, $data.sprites)
     Write-Host ("  content={0}x{1}, colored={2}" -f $data.width, $data.height, $data.colored)
-    if (!$data.native -or !$data.queryMatches -or $data.jsLabelComponents -ne 0 -or $data.jsSpriteComponents -ne 0) {
-        throw 'JSB internal segment nodes exposed unexpected script renderer components'
+    if (!$data.queryMatches -or $data.native -ne ($Implementation -eq 'native')) {
+        throw "Unexpected RichText implementation or segment query result for $Implementation"
+    }
+    if ($Implementation -eq 'native' -and ($data.jsLabelComponents -ne 0 -or $data.jsSpriteComponents -ne 0)) {
+        throw 'Native segment nodes exposed unexpected script renderer components'
+    }
+    if ($Implementation -eq 'js' -and ($data.jsLabelComponents -ne $data.labels -or $data.jsSpriteComponents -ne $data.sprites)) {
+        throw 'JS RichText segment queries did not return their renderers'
     }
     $passed = $true
+    Write-Host 'M5 RichText probe: PASS'
 } catch {
     $failure = $_.Exception.Message
     throw

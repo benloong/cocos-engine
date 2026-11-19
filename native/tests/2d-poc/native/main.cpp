@@ -1136,6 +1136,9 @@ void testLabelStyleExtents() {
     checkNear(italic.width - italicGlyphWidth, 5.101357474F, "TTF italic reserves Web 12-degree overhang");
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.getContentWidth(), italic.width, "italic Label raster layout agrees with RichText measurement");
+    const double expectedAdvance = italicGlyphWidth + 24.0 * std::tan(12 * 0.0174532925);
+    check(std::abs(label.getTTFContentWidth() - expectedAdvance) < 1e-9,
+          "TTF contentWidth preserves the fractional italic advance for subsequent segments");
     label.setEnableOutline(true); label.setOutlineWidth(2);
     const auto combined = label.measureUnwrappedText("Atlas 123");
     checkNear(combined.width - italic.width, 4.F, "outline extends both horizontal edges");

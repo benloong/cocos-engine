@@ -1,6 +1,38 @@
-import { assetManager, director, gfx, Color, isValid, Label, Node, RichText, sys, TTFFont, UITransform } from 'cc';
+import { assetManager, deserialize, director, gfx, Color, instantiate, isValid, Label, Node, Prefab, RichText, sys, TTFFont, UITransform } from 'cc';
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
+
+async function checkRichTextPrefab (parent: Node, font: TTFFont): Promise<object> {
+    const source = '<b>Atlas</b> 123';
+    const prefab = deserialize([
+        { __type__: 'cc.Prefab', data: { __id__: 1 } },
+        { __type__: 'cc.Node', _name: 'RichTextRollback', _components: [{ __id__: 2 }, { __id__: 3 }] },
+        { __type__: 'cc.UITransform', node: { __id__: 1 } },
+        { __type__: 'cc.RichText', node: { __id__: 1 }, _string: source, _fontSize: 24, _lineHeight: 30 },
+    ]) as Prefab;
+    const node = instantiate(prefab);
+    node.layer = parent.layer;
+    parent.addChild(node);
+    const rich = node.getComponent(RichText)!;
+    rich.font = font;
+    await wait();
+    const backend = (rich as any)._native;
+    const segments = (): string[] => node.children.map((child, i) => backend
+        ? backend.getSegmentLabel(i).getString() : child.getComponent(Label)!.string);
+    if (rich.string !== source || rich.font !== font || segments().join('|') !== 'Atlas| 123') throw new Error('RichText prefab restoration failed');
+    const samples: number[] = [];
+    for (let batch = 0; batch < 41; ++batch) {
+        const start = performance.now();
+        for (let i = 0; i < 8; ++i) rich.string = i % 2 ? source : '<b>World</b> 456';
+        const elapsed = performance.now() - start;
+        if (batch >= 10) samples.push(elapsed);
+    }
+    if (segments().join('|') !== 'Atlas| 123') throw new Error('RichText update lost prefab segments');
+    const result = { implementation: backend ? 'native' : 'js', segments: segments(), updatesPerBatch: 8, samples };
+    node.destroy(); prefab.destroy(); await wait();
+    if (isValid(node) || isValid(prefab)) throw new Error('RichText prefab was retained');
+    return result;
+}
 
 function submittedTextTexture (label: any): gfx.Texture | null {
     const entity = label.getRenderEntity();
@@ -202,6 +234,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
+    const prefab = await checkRichTextPrefab(parent, font);
     const cases = [
         { name: 'text-basic', value: 'Atlas 123' },
         { name: 'text-bold', value: '<b>Atlas 123</b>' },
@@ -224,13 +257,16 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         const rich = node.addComponent(RichText); rich.font = font; rich.fontSize = 24; rich.lineHeight = 30;
         rich.fontColor = new Color(255, 255, 255, 255); rich.maxWidth = item.width ?? 0;
         rich.horizontalAlign = item.align ?? 0; rich.string = item.value;
-        if (sys.isNative && !(rich as any)._native) throw new Error('RichText native override not active');
+        const backend = (rich as any)._native;
+        const expectNative = sys.isNative && !(globalThis as any).__m6JsRichText;
+        if (!!backend !== expectNative) throw new Error('Unexpected RichText implementation');
         await capture(item.name);
         if (sys.isNative) {
-            const backend = (rich as any)._native;
             const labels = [];
-            for (let i = 0; i < backend.getSegmentCount(); ++i) {
-                const label = backend.getSegmentLabel(i);
+            if (backend && backend.getSegmentCount() !== node.children.length) throw new Error('RichText child count differs from native segment count');
+            for (let i = 0; i < node.children.length; ++i) {
+                const label = backend ? backend.getSegmentLabel(i) : (node.children[i].getComponent(Label) as any)?._native;
+                if (!label) throw new Error(`Missing native Label in ${item.name}/${i}`);
                 const texture = submittedTextTexture(label);
                 const opaque = submittedTextCoverage(texture);
                 if (!texture || !opaque) throw new Error(`Batcher did not prepare visible text: ${item.name}/${i}`);
@@ -256,5 +292,5 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
-    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle };
+    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab };
 }

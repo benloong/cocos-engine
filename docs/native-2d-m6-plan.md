@@ -209,6 +209,7 @@
 - [ ] 按组件/模块演练回退，验证 override、依赖资产、材质与旧场景可用；回退后记录行为与性能。
   - [x] UIOpacity 支持独立切回 JS 并恢复原生实现。Windows Debug/Release 各验证两种实现、Prefab 字段、组件生命周期、85 张 Web 对照图与 setter 耗时。[复现和采样](./native-2d-m6-ui-opacity-rollback.md)
   - [x] RenderRoot2D 支持独立切回 JS 并恢复原生注册。Windows Debug/Release 各验证两种实现、Prefab 实例化、11 个根注册检查点、85 张 Web 对照图与组件启停耗时。[复现和采样](./native-2d-m6-render-root-rollback.md)
+  - [x] RichText 支持独立切回 TS 并恢复原生实现。Windows 双配置覆盖序列化 Prefab、字体与图集、旧混合场景换行和点击、段查询与样式更新计时。12 个场景比较切换前后的布局和图像，跨端字形差异单列。[复现和数据](./native-2d-m6-richtext-rollback.md)
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
 
 交付：性能报告、回退记录、M6 Gate。原计划 4–5 周是早期估算，未包含当前列出的全部 M4/M5 终态欠项；完成 M6.0 后重新排期。

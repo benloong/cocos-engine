@@ -1,6 +1,7 @@
 param([string]$Exe = (Join-Path $PSScriptRoot 'build/gpu-win/native-2d-m6-gpu.exe'), [ValidateSet('graphics','richtext')][string]$Mode = 'graphics', [string]$FontHttpOrigin = '',
     [ValidateSet('native','js')][string]$OpacityImplementation,
-    [ValidateSet('native','js')][string]$RootImplementation)
+    [ValidateSet('native','js')][string]$RootImplementation,
+    [ValidateSet('native','js')][string]$RichTextImplementation)
 $ErrorActionPreference = 'Stop'
 $exePath=(Resolve-Path -LiteralPath $Exe).Path
 $data=(Resolve-Path (Join-Path $PSScriptRoot "build/$Mode-gpu-project/build/windows/data")).Path
@@ -34,6 +35,13 @@ if ($OpacityImplementation -or $RootImplementation) {
     [IO.File]::WriteAllText((Join-Path $resources 'main.js'), $entry.Replace($hook, "$probe`n$install(cc, '$implementation');`n$hook"))
 }
 if($Mode -eq 'richtext') {
+    if ($RichTextImplementation -eq 'js') {
+        $engine = (Resolve-Path (Join-Path $PSScriptRoot 'build/richtext-gpu-js-rich-text')).Path
+        & robocopy $engine (Join-Path $resources 'src/cocos-js') /E /NFL /NDL /NJH /NJS /NP | Out-Null
+        if ($LASTEXITCODE -gt 7) { throw 'RichText rollback bundle copy failed' }
+        $entryPath = Join-Path $resources 'main.js'
+        [IO.File]::WriteAllText($entryPath, "globalThis.__m6JsRichText = true;`n" + [IO.File]::ReadAllText($entryPath))
+    }
     if($FontHttpOrigin -notmatch '^http://127\.0\.0\.1:\d+$') { throw 'Run richtext with run-font-http-native.cjs to provide its HTTP fixture' }
     [IO.File]::WriteAllText((Join-Path $resources 'm6-font-http-origin.txt'), $FontHttpOrigin, [Text.UTF8Encoding]::new($false))
     $m6Writable = Join-Path (Split-Path -Parent $exePath) 'm6-http-writable'
@@ -56,6 +64,10 @@ try {
             if($Mode -eq 'graphics' -and ($result.captures.Count -ne 88 -or $result.hits.Count -ne 22 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000)) { throw 'Invalid native capture manifest' }
             if($Mode -eq 'richtext') {
                 $lifecycle = $result.text.lifecycle
+                $expected = if ($RichTextImplementation -eq 'js') { 'js' } else { 'native' }
+                $prefab = $result.text.prefab
+                if ($prefab.implementation -ne $expected -or ($prefab.segments -join '|') -cne 'Atlas| 123' -or
+                    $prefab.updatesPerBatch -ne 8 -or $prefab.samples.Count -ne 31) { throw "Invalid $expected RichText prefab result" }
                 if($result.captures.Count -ne 12 -or $result.text.loaded -ne $true -or $result.text.released -ne $true -or $lifecycle.cycles -ne 1000 -or $lifecycle.cacheHits -ne 1000 -or $lifecycle.bytesPerLoad -ne 223404 -or $lifecycle.assignmentFailureRolledBack -ne $true -or $lifecycle.retrySucceeded -ne $true -or $lifecycle.missingRejected -ne $true -or $lifecycle.deferredDestroyFinished -ne $true) { throw 'Invalid native RichText manifest' }
                 if($null -eq $lifecycle.cacheBefore -or $lifecycle.cacheBefore -ne $lifecycle.cacheAfter) { throw 'Native font lifecycle did not restore its baseline' }
             }

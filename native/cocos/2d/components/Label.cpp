@@ -826,10 +826,11 @@ void Label::rebuildTexture() {
     contentWidth = std::max(contentWidth, 1.0F);
 
     const auto styleExtent = getTextStyleExtent();
+    const double naturalWidth = contentWidth + styleExtent[0];
     const float outlineMargin = _enableOutline ? std::max(_outlineWidth, 0.F) : 0.F;
     float contentHeight = std::max((static_cast<float>(lines.size()) + BASELINE_RATIO) * lineHeight, 1.0F);
     if (_overflow == 0) {
-        contentWidth = static_cast<float>(contentWidth + styleExtent[0]);
+        contentWidth = static_cast<float>(naturalWidth);
         contentHeight = static_cast<float>(contentHeight + styleExtent[1]);
     }
     const float canvasWidth = shrink ? std::max(0.F, box.x) : contentWidth;
@@ -863,7 +864,7 @@ void Label::rebuildTexture() {
         _texture->uploadData(data.getBytes());
 
         _lastContentWidth = contentWidth;
-        _ttfContentWidth = _overflow == 0 ? contentWidth : box.x;
+        _ttfContentWidth = _overflow == 0 ? naturalWidth : box.x;
         _lastContentHeight = contentHeight;
         _frame->setTexture(_texture);
         _frame->setRect(0.0F, 0.0F, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
