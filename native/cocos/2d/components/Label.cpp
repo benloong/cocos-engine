@@ -316,7 +316,7 @@ void Label::updateFont() {
 }
 
 void Label::setFontSize(float size) {
-    if (std::fabs(_fontSize - size) < 0.01F) {
+    if (_fontSize == size) {
         return;
     }
     _fontSize = size;
@@ -325,7 +325,7 @@ void Label::setFontSize(float size) {
 }
 
 void Label::setLineHeight(float height) {
-    if (std::fabs(_lineHeight - height) < 0.01F) {
+    if (_lineHeight == height) {
         return;
     }
     _lineHeight = height;

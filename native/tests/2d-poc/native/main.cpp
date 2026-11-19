@@ -465,6 +465,11 @@ void testBitmapGpuGeometry() {
     checkNear(measured.height, 6.F, "Bitmap measurement uses configured line height without TTF baseline padding");
     label.setSpacingX(2.F + 1.F / 128.F);
     checkNear(label.measureUnwrappedText("AA").width, 10.01F, "Bitmap measurement rounds after applying sub-hundredth spacing changes");
+    label.setSpacingX(0);
+    label.setFontSize(8.F + 1.F / 128.F);
+    checkNear(label.measureUnwrappedText(std::string(256, 'A')).width, 1025.F, "Bitmap layout uses fractional font size changes");
+    label.setLineHeight(6.F + 1.F / 128.F);
+    checkNear(label.measureUnwrappedText("A\nA").height, 12.02F, "Bitmap layout uses fractional line height changes");
     label.setOverflow(1); transform.setContentSize(24, 12); label.updateRenderData();
     checkNear(label.getContentWidth(), 24.F, "Bitmap clamp preserves fixed content width");
     transform.setContentSize(20, 10); label.updateRenderData();

@@ -140,6 +140,19 @@ export class M6GraphicsGpuProbe extends Component {
                     const expected = 129 * 16 + 128 * spacing;
                     if (width !== expected) throw new Error(`Bitmap spacing ${spacing}: expected ${expected}, got ${width}`);
                 }
+                const transform = glyph.getComponent(UITransform)!;
+                label.string = 'A'.repeat(128);
+                for (const size of [16 + 1 / 128, 16, 16 - 1 / 128, 16]) {
+                    label.fontSize = size;
+                    label.updateRenderData(true);
+                    if (transform.width !== 128 * size) throw new Error(`Bitmap fontSize ${size}: width ${transform.width}`);
+                }
+                label.string = Array(128).fill('A').join('\n');
+                for (const height of [16 + 1 / 128, 16, 16 - 1 / 128, 16]) {
+                    label.lineHeight = height;
+                    label.updateRenderData(true);
+                    if (transform.height !== 128 * height) throw new Error(`Bitmap lineHeight ${height}: height ${transform.height}`);
+                }
                 label.string = 'A';
                 label.updateRenderData(true);
                 label.contentWidth = 7.125;
