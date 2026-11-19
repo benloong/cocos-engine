@@ -89,6 +89,32 @@ test('Label reports the original bitmap font size as its assigned asset changes'
     }
 });
 
+test('Label restores a missing system font on enable and preserves a configured family', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const node = new Node('label-font-fallback');
+    node.addComponent(UITransform);
+    const label: any = node.addComponent(Label);
+    label.useSystemFont = false;
+    label.fontFamily = '';
+    label.onLoad();
+    label.onEnable();
+    expect(label.useSystemFont).toBe(true);
+    expect(label.fontFamily).toBe('Arial');
+    expect(nativeLabel.setFont).toHaveBeenLastCalledWith('40px Arial');
+    label.onDisable();
+    label.fontFamily = 'Verdana';
+    label.onEnable();
+    expect(label.fontFamily).toBe('Verdana');
+    label.onDisable();
+    const font = new Font();
+    label.font = font;
+    label.fontFamily = '';
+    label.onEnable();
+    expect(label.font).toBe(font);
+    expect(label.useSystemFont).toBe(false);
+    expect(label.fontFamily).toBe('');
+});
+
 test('Label binds serialized material slots and releases instance owners on destruction', () => {
     const { Label } = require('../../cocos/2d/components/label.jsb');
     const node = new Node('label-materials'); node.addComponent(UITransform);

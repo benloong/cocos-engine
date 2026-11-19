@@ -205,6 +205,8 @@ export class Label extends UIRenderer {
     }
 
     public onEnable (): void {
+        if (!this._font && !this._isSystemFontUsed) this.useSystemFont = true;
+        if (this._isSystemFontUsed && !this._fontFamily) this.fontFamily = 'Arial';
         this._native?.setEnabled(true);
         this._acquireLetterTexture();
     }

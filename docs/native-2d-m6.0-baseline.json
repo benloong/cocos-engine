@@ -15123,8 +15123,8 @@
     },
     {
       "file": "cocos/2d/components/label.jsb.ts",
-      "sha256": "b4884caa8aabce4876358c26effb2792c102860cd63d9cfeab29043f7345b70d",
-      "printedCodeLines": 419,
+      "sha256": "4c3d4c42f086f4d5f906258b4a9bbd717cc0eb360603f67bf59298a96fa608b5",
+      "printedCodeLines": 423,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15181,215 +15181,215 @@
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 208
+          "line": 210
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 213
+          "line": 215
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 220
-        },
-        {
-          "expression": "this._native.setNode",
-          "line": 221
-        },
-        {
-          "expression": "this._native.setFontAsset",
           "line": 222
         },
         {
-          "expression": "this._native.destroyTTFSpriteFrame",
+          "expression": "this._native.setNode",
           "line": 223
         },
         {
+          "expression": "this._native.setFontAsset",
+          "line": 224
+        },
+        {
+          "expression": "this._native.destroyTTFSpriteFrame",
+          "line": 225
+        },
+        {
           "expression": "this._native?.setString",
-          "line": 238
+          "line": 240
         },
         {
           "expression": "this._native?.getActualFontSize",
-          "line": 255
+          "line": 257
         },
         {
           "expression": "this._native?.setActualFontSize",
-          "line": 256
+          "line": 258
         },
         {
           "expression": "this._native?.setUnderlineHeight",
-          "line": 259
+          "line": 261
         },
         {
           "expression": "this._native?.setIsBold",
-          "line": 264
+          "line": 266
         },
         {
           "expression": "this._native?.setIsItalic",
-          "line": 270
+          "line": 272
         },
         {
           "expression": "this._native?.setIsUnderline",
-          "line": 276
+          "line": 278
         },
         {
           "expression": "this._native?.setLineHeight",
-          "line": 296
+          "line": 298
         },
         {
           "expression": "this._native?.setOverflow",
-          "line": 361
+          "line": 363
         },
         {
           "expression": "this._native?.setEnableWrapText",
-          "line": 373
+          "line": 375
         },
         {
           "expression": "this._native?.setHorizontalAlign",
-          "line": 386
+          "line": 388
         },
         {
           "expression": "this._native?.setVerticalAlign",
-          "line": 399
+          "line": 401
         },
         {
           "expression": "this._native?.setSpacingX",
-          "line": 408
+          "line": 410
         },
         {
           "expression": "this._native?.setCacheMode",
-          "line": 420
+          "line": 422
         },
         {
           "expression": "this._native?.setColorRGBA",
-          "line": 434
+          "line": 436
         },
         {
           "expression": "this._native.setMaterial",
-          "line": 444
+          "line": 446
         },
         {
           "expression": "this._native?.setEnableOutline",
-          "line": 452
+          "line": 454
         },
         {
           "expression": "this._native?.setOutlineColor",
-          "line": 458
+          "line": 460
         },
         {
           "expression": "this._native?.setOutlineWidth",
-          "line": 464
+          "line": 466
         },
         {
           "expression": "this._native?.setEnableShadow",
-          "line": 470
+          "line": 472
         },
         {
           "expression": "this._native?.setShadowColor",
-          "line": 476
+          "line": 478
         },
         {
           "expression": "this._native?.setShadowBlur",
-          "line": 482
+          "line": 484
         },
         {
           "expression": "this._native?.setShadowOffset",
-          "line": 488
+          "line": 490
         },
         {
           "expression": "this._native?.setFontAsset",
-          "line": 492
-        },
-        {
-          "expression": "this._native?.setFont",
-          "line": 493
-        },
-        {
-          "expression": "this._native?.setFontSize",
           "line": 494
         },
         {
-          "expression": "this._native?.setString",
-          "line": 498
+          "expression": "this._native?.setFont",
+          "line": 495
         },
         {
-          "expression": "this._native?.setActualFontSize",
+          "expression": "this._native?.setFontSize",
+          "line": 496
+        },
+        {
+          "expression": "this._native?.setString",
           "line": 500
         },
         {
-          "expression": "this._native?.setIsBold",
-          "line": 501
-        },
-        {
-          "expression": "this._native?.setIsItalic",
+          "expression": "this._native?.setActualFontSize",
           "line": 502
         },
         {
-          "expression": "this._native?.setIsUnderline",
+          "expression": "this._native?.setIsBold",
           "line": 503
         },
         {
-          "expression": "this._native?.setUnderlineHeight",
+          "expression": "this._native?.setIsItalic",
           "line": 504
         },
         {
-          "expression": "this._native?.setLineHeight",
+          "expression": "this._native?.setIsUnderline",
           "line": 505
         },
         {
-          "expression": "this._native?.setEnableWrapText",
+          "expression": "this._native?.setUnderlineHeight",
           "line": 506
         },
         {
-          "expression": "this._native?.setOverflow",
+          "expression": "this._native?.setLineHeight",
           "line": 507
         },
         {
-          "expression": "this._native?.setHorizontalAlign",
+          "expression": "this._native?.setEnableWrapText",
           "line": 508
         },
         {
-          "expression": "this._native?.setVerticalAlign",
+          "expression": "this._native?.setOverflow",
           "line": 509
         },
         {
-          "expression": "this._native?.setSpacingX",
+          "expression": "this._native?.setHorizontalAlign",
           "line": 510
         },
         {
-          "expression": "this._native?.setColorRGBA",
+          "expression": "this._native?.setVerticalAlign",
           "line": 511
         },
         {
-          "expression": "this._native?.setEnableOutline",
+          "expression": "this._native?.setSpacingX",
           "line": 512
         },
         {
-          "expression": "this._native?.setOutlineColor",
+          "expression": "this._native?.setColorRGBA",
           "line": 513
         },
         {
-          "expression": "this._native?.setOutlineWidth",
+          "expression": "this._native?.setEnableOutline",
           "line": 514
         },
         {
-          "expression": "this._native?.setEnableShadow",
+          "expression": "this._native?.setOutlineColor",
           "line": 515
         },
         {
-          "expression": "this._native?.setShadowColor",
+          "expression": "this._native?.setOutlineWidth",
           "line": 516
         },
         {
-          "expression": "this._native?.setShadowBlur",
+          "expression": "this._native?.setEnableShadow",
           "line": 517
         },
         {
-          "expression": "this._native?.setShadowOffset",
+          "expression": "this._native?.setShadowColor",
           "line": 518
         },
         {
-          "expression": "this._native?.setCacheMode",
+          "expression": "this._native?.setShadowBlur",
           "line": 519
+        },
+        {
+          "expression": "this._native?.setShadowOffset",
+          "line": 520
+        },
+        {
+          "expression": "this._native?.setCacheMode",
+          "line": 521
         }
       ],
       "allocations": [],

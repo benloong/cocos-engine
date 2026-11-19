@@ -1,5 +1,5 @@
 {
-  "snapshot": "f21ad939f35f2b2682e0778c0250a61a64e3bdeccca03b9c5e70f5430111a39c",
+  "snapshot": "dd968633f1d5f8d858d75cfbe3e8a0134ff4eef0cbdb423672f2cd57a74b6baf",
   "width": 256,
   "height": 256,
   "environment": {
@@ -1261,13 +1261,13 @@
     {
       "configuration": "Debug",
       "executableSha256": "0f12302cb6c6e5a8a066ef35b27084ce3ba15dc7cd32f63783999eefc5bc4eec",
-      "manifestSha256": "ea311e61447668e3803f09fe3ce0ea24fc91aab68d17ae32ac1a76a28c28ec37",
+      "manifestSha256": "244b4543433890be62f45d1928dd3fa133c1568173ce73f5e12f7b564ea167e5",
       "exactImages": 85
     },
     {
       "configuration": "Release",
       "executableSha256": "c59a0a5c9522a88a763116d4b030c4a9131b8f437869a2da7263887a7bc43749",
-      "manifestSha256": "ea311e61447668e3803f09fe3ce0ea24fc91aab68d17ae32ac1a76a28c28ec37",
+      "manifestSha256": "244b4543433890be62f45d1928dd3fa133c1568173ce73f5e12f7b564ea167e5",
       "exactImages": 85
     }
   ]

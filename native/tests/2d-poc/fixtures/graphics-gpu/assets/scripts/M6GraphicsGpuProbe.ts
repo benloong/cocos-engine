@@ -306,6 +306,16 @@ export class M6GraphicsGpuProbe extends Component {
         material.destroy();
         const labelNode = node(canvas.node, 'immediate-label-layout');
         const label = labelNode.addComponent(Label);
+        label.enabled = false;
+        label.useSystemFont = false;
+        label.fontFamily = '';
+        label.enabled = true;
+        if (!label.useSystemFont || label.fontFamily !== 'Arial') throw new Error('Enabled Label did not restore its default font');
+        label.enabled = false;
+        label.fontFamily = 'Verdana';
+        label.enabled = true;
+        if (label.fontFamily !== 'Verdana') throw new Error('Enabled Label replaced a configured font family');
+        label.fontFamily = 'Arial';
         const ttfFrame = label.ttfSpriteFrame;
         if (label.spriteFrame !== ttfFrame) throw new Error('System Label spriteFrame differs from its TTF frame');
         if (!(ttfFrame instanceof SpriteFrame) || !ttfFrame.texture) throw new Error('Enabled Label has no TTF sprite frame');
