@@ -132,6 +132,16 @@ export class M6GraphicsGpuProbe extends Component {
                 if (label.font !== font || label.useSystemFont || glyph.getComponent(UITransform)!.width !== 16) {
                     throw new Error('Assigning bitmap font failed to publish its glyph width immediately');
                 }
+                label.string = 'A'.repeat(129);
+                for (const spacing of [0, 1 / 128, 0, -1 / 128, 0]) {
+                    label.spacingX = spacing;
+                    label.updateRenderData(true);
+                    const width = glyph.getComponent(UITransform)!.width;
+                    const expected = 129 * 16 + 128 * spacing;
+                    if (width !== expected) throw new Error(`Bitmap spacing ${spacing}: expected ${expected}, got ${width}`);
+                }
+                label.string = 'A';
+                label.updateRenderData(true);
                 label.contentWidth = 7.125;
                 label.updateRenderData(true);
                 if (label.contentWidth !== 7.125) throw new Error('Bitmap font overwrote the TTF layout width');

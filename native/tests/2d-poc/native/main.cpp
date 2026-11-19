@@ -463,6 +463,8 @@ void testBitmapGpuGeometry() {
     const auto measured = label.measureUnwrappedText("AA");
     checkNear(measured.width, 10.F, "Bitmap measurement scales glyphs and applies spacing");
     checkNear(measured.height, 6.F, "Bitmap measurement uses configured line height without TTF baseline padding");
+    label.setSpacingX(2.F + 1.F / 128.F);
+    checkNear(label.measureUnwrappedText("AA").width, 10.01F, "Bitmap measurement rounds after applying sub-hundredth spacing changes");
     label.setOverflow(1); transform.setContentSize(24, 12); label.updateRenderData();
     checkNear(label.getContentWidth(), 24.F, "Bitmap clamp preserves fixed content width");
     transform.setContentSize(20, 10); label.updateRenderData();

@@ -366,7 +366,7 @@ void Label::setVerticalAlign(int32_t align) {
 }
 
 void Label::setSpacingX(float spacing) {
-    if (std::fabs(_spacingX - spacing) < 0.01F) {
+    if (_spacingX == spacing) {
         return;
     }
     _spacingX = spacing;

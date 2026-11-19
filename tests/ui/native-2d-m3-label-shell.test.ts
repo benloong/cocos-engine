@@ -199,6 +199,11 @@ test('Label M3 shell attaches and forwards text properties', () => {
     expect(nativeLabel.setHorizontalAlign).toHaveBeenLastCalledWith(1);
     expect(nativeLabel.setVerticalAlign).toHaveBeenLastCalledWith(2);
     expect(nativeLabel.setSpacingX).toHaveBeenLastCalledWith(2);
+    nativeLabel.setSpacingX.mockClear();
+    label.spacingX = 2;
+    expect(nativeLabel.setSpacingX).not.toHaveBeenCalled();
+    label.spacingX = 2 + 1 / 128;
+    expect(nativeLabel.setSpacingX).toHaveBeenCalledWith(2 + 1 / 128);
     expect(nativeLabel.setCacheMode).toHaveBeenLastCalledWith(2);
 
     label.color = new Color(10, 20, 30, 255);

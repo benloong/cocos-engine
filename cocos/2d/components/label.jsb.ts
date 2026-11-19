@@ -406,6 +406,7 @@ export class Label extends UIRenderer {
     }
 
     set spacingX (value: number) {
+        if (this._spacingX === value) return;
         this._spacingX = value;
         this._native?.setSpacingX(value);
     }
