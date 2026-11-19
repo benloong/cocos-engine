@@ -93,6 +93,14 @@ namespace {
 
 int gFailures = 0;
 
+cc::IntrusivePtr<cc::SpriteFrame> makeSquareFrame(cc::TextureBase *texture, float size) {
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame());
+    frame->setTexture(texture);
+    frame->setRect(0.F, 0.F, size, size);
+    frame->setOriginalSize(size, size);
+    return frame;
+}
+
 void check(bool condition, const char *message) {
     if (!condition) {
         std::printf("FAIL: %s\n", message);
@@ -1395,7 +1403,8 @@ void testSpriteApiAndMaterials() {
     check(custom->getRefCount() == materialRefs, "all material slots release custom reference");
     sprite.setMaterial(nullptr);
     cc::IntrusivePtr<cc::RenderTexture> rt(new cc::RenderTexture());
-    sprite.setFrame(rt,0,0,4,4,4,4,0,0,4,4,false);
+    sprite.setSizeMode(0);
+    sprite.setFrame(makeSquareFrame(rt, 4.F));
     check(frame->getRefCount() == frameRefs, "scalar frame replacement drops old asset");
     auto *rtMaterial = sprite.getRenderMaterial();
     check(rtMaterial && rtMaterial != gray && !rtMaterial->_defines.empty()
@@ -2206,7 +2215,8 @@ void testSpritePrepare() {
     check(sprite.getColor().r == 10 && sprite.getColor().g == 20 && sprite.getColor().b == 30, "ui renderer color");
     sprite.setPriority(7);
     check(sprite.getPriority() == 7, "ui renderer priority");
-    sprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
+    sprite.setSizeMode(0);
+    sprite.setFrame(makeSquareFrame(texture, 1.F));
 
     cc::Node sizeNode("native-sprite-size-mode");
     cc::UITransform sizeTransform(&sizeNode);
@@ -2311,10 +2321,11 @@ void testSpritePrepare() {
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(draw->getTexture() == texture->getGFXTexture(), "prepared draw binds replacement texture view");
         checkNear(draw->getVDataBuffer()[12], .5F, "resized texture recomputes frame UV");
-        peer.setFrame(texture, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2, false);
+        peer.setSizeMode(0);
+        peer.setFrame(makeSquareFrame(texture, 1.F));
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         shared->setRectWidth(.5F);
-        check(!pending(&peer), "switching to a raw texture unsubscribes the old frame");
+        check(!pending(&peer), "switching frames unsubscribes the old frame");
         texture->create(1, 1, cc::Texture2D::PixelFormat::RGBA8888);
         child->setParent(nullptr);
     }
@@ -2423,7 +2434,8 @@ void testSpritePrepare() {
     filledSprite.setFillType(0);
     filledSprite.setFillStart(0.25F);
     filledSprite.setFillRange(0.5F);
-    filledSprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
+    filledSprite.setSizeMode(0);
+    filledSprite.setFrame(makeSquareFrame(texture, 1.F));
     cc::RenderEntity *filledEntity = filledSprite.getRenderEntity();
     check(filledEntity != nullptr, "filled sprite render entity");
     if (filledEntity != nullptr) {
@@ -2444,7 +2456,8 @@ void testSpritePrepare() {
     tiledSprite.setUITransform(&tiledTransform);
     tiledSprite.setMaterial(material);
     tiledSprite.setType(2);
-    tiledSprite.setFrame(texture, 0.F, 0.F, 100.F, 100.F, 100.F, 100.F, 0.F, 0.F, 1.F, 1.F, false);
+    tiledSprite.setSizeMode(0);
+    tiledSprite.setFrame(makeSquareFrame(texture, 100.F));
     cc::RenderEntity *tiledEntity = tiledSprite.getRenderEntity();
     check(tiledEntity != nullptr, "tiled sprite render entity");
     if (tiledEntity != nullptr) {
@@ -2469,7 +2482,8 @@ void testSpritePrepare() {
     radialSprite.setFillStart(0.F);
     radialSprite.setFillRange(0.5F);
     radialSprite.setFillCenter(0.5F,0.5F);
-    radialSprite.setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
+    radialSprite.setSizeMode(0);
+    radialSprite.setFrame(makeSquareFrame(texture, 1.F));
     cc::RenderEntity *radialEntity = radialSprite.getRenderEntity();
     check(radialEntity != nullptr, "radial sprite render entity");
     if (radialEntity != nullptr) {
@@ -2545,6 +2559,7 @@ void testSpriteSceneBenchmark() {
     texture->create(1, 1, cc::Texture2D::PixelFormat::RGBA8888);
     auto *material = new cc::Material();
 
+    const auto frame = makeSquareFrame(texture, 1.F);
     for (int i = 0; i < kSpriteCount; ++i) {
         auto node = std::make_unique<cc::Node>("sprite");
         node->setPosition(static_cast<float>(i % 40) * 10.F, static_cast<float>(i / 40) * 10.F, 0.F);
@@ -2555,7 +2570,8 @@ void testSpriteSceneBenchmark() {
         sprite->setNode(node.get());
         sprite->setUITransform(transform.get());
         sprite->setMaterial(material);
-        sprite->setFrame(texture, 0.F, 0.F, 1.F, 1.F, 1.F, 1.F, 0.F, 0.F, 1.F, 1.F, false);
+        sprite->setSizeMode(0);
+        sprite->setFrame(frame);
 
         nodes.emplace_back(std::move(node));
         transforms.emplace_back(std::move(transform));

@@ -123,16 +123,6 @@ void Sprite::bindTexture(TextureBase *texture) {
     if (texture) _textureChanged = texture->on<TextureBase::RenderDataChanged>([this](TextureBase *) { markRenderDirty(); });
 }
 
-void Sprite::setFrame(TextureBase *texture, float rectX, float rectY, float rectWidth, float rectHeight,
-                      float originalWidth, float originalHeight, float offsetX, float offsetY,
-                      float textureWidth, float textureHeight, bool rotated) {
-    // Retain the texture before dropping a frame which may be its last owner.
-    bindTexture(texture);
-    bindFrame(nullptr);
-    applyFrame(texture, rectX, rectY, rectWidth, rectHeight, originalWidth, originalHeight,
-               offsetX, offsetY, textureWidth, textureHeight, rotated);
-}
-
 void Sprite::applyFrame(TextureBase *texture,
                       float rectX,
                       float rectY,

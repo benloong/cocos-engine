@@ -70,18 +70,6 @@ public:
     void setUITransform(UITransform *transform);
     UITransform *getUITransform() const { return _transform; }
 
-    void setFrame(TextureBase *texture,
-                  float rectX,
-                  float rectY,
-                  float rectWidth,
-                  float rectHeight,
-                  float originalWidth,
-                  float originalHeight,
-                  float offsetX,
-                  float offsetY,
-                  float textureWidth,
-                  float textureHeight,
-                  bool rotated);
     void setFrame(SpriteFrame *frame);
     void clearFrame();
 
