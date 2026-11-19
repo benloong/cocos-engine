@@ -23,7 +23,7 @@ foreach ($config in 'gpu-win', 'gpu-win-release-m6-mask-fresh') {
 }
 ```
 
-演练使用同一份序列化 Prefab 夹具实例化 UITransform 和 RenderRoot2D，检查 JSB 对象身份，并读取原生 Batcher2d 根节点数。场景另行验证根节点注册顺序、调整顺序、重复启用、销毁、双 Canvas 及持久根节点。计时针对已有 Canvas 和一个测试根，每批连续执行 256 对禁用和启用操作，预热 10 批后计时 61 批。帧更新与 GPU 渲染在计时窗口外。
+演练使用同一份序列化 Prefab 夹具实例化 UITransform 和 RenderRoot2D，检查 JSB 对象身份，并在子节点的最终透明度中写入 -1。每次等待一帧后读取结果：首次启用和反复启用后均应变为 1，禁用后应保留 -1。场景另行验证根节点注册顺序、调整顺序、重复启用、销毁、双 Canvas 及持久根节点。计时针对已有 Canvas 和一个测试根，每批连续执行 256 对禁用和启用操作，预热 10 批后计时 61 批。帧更新与 GPU 渲染在计时窗口外。
 
 ## 2026-11-19 验收
 
@@ -35,3 +35,5 @@ foreach ($config in 'gpu-win', 'gpu-win-release-m6-mask-fresh') {
 | Windows Release | 0.292 ms | 0.102 ms |
 
 该测量覆盖组件生命周期及根注册开销。完整帧 CPU、用户项目中的历史场景和其他模块的回退仍按 M6 计划独立验收。[采样、快照与引擎哈希](./native-2d-m6-render-root-rollback.json)
+
+2026-11-20 复测中，Windows Debug 和全新构建的 Release 各自通过原生和 TS 回退两条路径。三次帧末采样均为 1、1、-1，每次运行完成 1000 轮场景切换，88 张图像均与同快照 Web 逐字节一致。Debug ASan 的原生路径也通过了该图像矩阵。
