@@ -123,7 +123,6 @@ public:
     float getTextureHeight() const { return _lastTextureHeight; }
     int32_t getLineCount() const { return _lastLineCount; }
     // Optional legacy CPU diagnostics. Bitmap rendering does not call these.
-    uint32_t getPixelChecksum() const { ensureBitmapDiagnostics(); return _lastPixelChecksum; }
     uint32_t getOpaquePixels() const { ensureBitmapDiagnostics(); return _lastOpaquePixels; }
     RenderEntity *getRenderEntity() const override { return _renderer.getRenderEntity(); } // borrowed while this Label is alive
     uint32_t getBitmapDiagnosticBuildCount() const { return _bitmapDiagnosticBuilds; }
@@ -204,7 +203,6 @@ private:
     float _lastContentWidth{0.0F};
     double _ttfContentWidth{0.0};
     float _lastContentHeight{0.0F};
-    uint32_t _lastPixelChecksum{0};
     uint32_t _lastOpaquePixels{0};
     std::vector<uint8_t> _lastPixels;
     uint64_t _lastAtlasTextureId{0};

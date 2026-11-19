@@ -282,7 +282,6 @@ export class LabelSpike {
                         textureWidth: nativeLabel.getTextureWidth(),
                         textureHeight: nativeLabel.getTextureHeight(),
                         lines: nativeLabel.getLineCount(),
-                        checksum: nativeLabel.getPixelChecksum(),
                         opaque: nativeLabel.getOpaquePixels(),
                     })}`);
                 }

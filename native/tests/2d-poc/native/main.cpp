@@ -108,6 +108,26 @@ void check(bool condition, const char *message) {
     }
 }
 
+std::vector<uint8_t> submittedTexturePixels(cc::RenderEntity *entity) {
+    cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+    if (entity->getStaticDrawInfoSize() != 1) {
+        check(false, "Expected one submitted Label draw");
+        return {};
+    }
+    auto *texture = entity->getStaticRenderDrawInfo(0)->getTexture();
+    if (!texture) {
+        check(false, "Expected a submitted Label texture");
+        return {};
+    }
+    cc::gfx::BufferTextureCopy region{};
+    region.texExtent.width = texture->getWidth();
+    region.texExtent.height = texture->getHeight();
+    std::vector<uint8_t> rgba(static_cast<size_t>(region.texExtent.width) * region.texExtent.height * 4U);
+    uint8_t *buffer = rgba.data();
+    cc::Root::getInstance()->getDevice()->copyTextureToBuffers(texture, &buffer, &region, 1);
+    return rgba;
+}
+
 void checkNear(float actual, float expected, const char *message) {
     if (std::fabs(actual - expected) > 1e-4F) {
         std::printf("FAIL: %s expected %f got %f\n", message, expected, actual);
@@ -715,7 +735,7 @@ void testFontAssets() {
     check(label.isEnabled() && fontEntity->isEnabled(), "Label re-enable restores Batcher prepare eligibility");
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 4, "LabelAtlas native glyph renders even in CHAR mode");
-    const auto coverageChecksum = label.getPixelChecksum();
+    const auto originalAtlas = submittedTexturePixels(fontEntity);
     label.setColorRGBA(128,64,32,128); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     node.setActiveInHierarchy(true);
     cc::Batcher2d().walk(&node, 1.F, false);
@@ -727,7 +747,7 @@ void testFontAssets() {
         checkNear(labelVertices[6], 64.F / 255.F, "Bitmap glyph green is applied by the GPU");
         checkNear(labelVertices[8], 128.F / 255.F, "Label submitted opacity is applied once");
     }
-    check(label.getPixelChecksum() == coverageChecksum, "Label texture coverage does not bake component alpha");
+    check(submittedTexturePixels(fontEntity) == originalAtlas, "Label texture coverage does not bake component alpha");
     label.setColorRGBA(255,255,255,255); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     checkNear(label.measureUnwrappedText("A").width, label.getContentWidth(), "bitmap measurement uses native glyph table");
     check(font->getRefCount() == refs + 1, "Label retains font asset");
@@ -1011,15 +1031,19 @@ void testLabelRasterMapping() {
     reference.setFont("24px Arial"); reference.setTextBaseline("alphabetic"); reference.setTextAlign("left");
     reference.setFillStyle("rgba(255,255,255,0.004)"); reference.fillRect(0, 0, static_cast<float>(width), static_cast<float>(height));
     reference.setFillStyle("rgb(255,255,255)"); reference.fillText("Atlas 123", 0, 20.88F, 0);
-    uint32_t checksum = 0, covered = 0;
+    std::vector<uint8_t> expectedAlpha;
+    uint32_t covered = 0;
     reference.setCanvasBufferUpdatedCallback([&](const cc::Data &data) {
         for (uint32_t i = 3; i < data.getSize(); i += 4) {
-            checksum = checksum * 31U + data.getBytes()[i];
+            expectedAlpha.push_back(data.getBytes()[i]);
             if (data.getBytes()[i] > 1) ++covered;
         }
     });
     reference.fetchData();
-    check(label.getPixelChecksum() == checksum, "TTF raster follows Web alphabetic baseline and edge prefill");
+    const auto rgba = submittedTexturePixels(entity);
+    std::vector<uint8_t> actualAlpha;
+    for (size_t i = 3; i < rgba.size(); i += 4) actualAlpha.push_back(rgba[i]);
+    check(actualAlpha == expectedAlpha, "TTF raster follows Web alphabetic baseline and edge prefill");
     check(label.getOpaquePixels() == covered, "TTF glyph coverage excludes invisible edge prefill");
     label.setString(" "); cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(label.getOpaquePixels() == 0, "whitespace prefill is not counted as visible text");
@@ -1029,7 +1053,7 @@ void testLabelRasterMapping() {
     ui.setContentSize(96, 40);
     label.setString("Atlas 123");
     label.updateRenderData(true);
-    const auto originalChecksum = label.getPixelChecksum();
+    const auto originalPixels = submittedTexturePixels(entity);
     const auto handlesBeforeRedraw = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
     bool redrawMatches = true;
     for (int i = 0; i < 128; ++i) {
@@ -1040,7 +1064,7 @@ void testLabelRasterMapping() {
         ui.setContentSize(96, 40);
         label.setString("Atlas 123");
         label.updateRenderData(true);
-        redrawMatches &= label.getPixelChecksum() == originalChecksum;
+        redrawMatches &= submittedTexturePixels(entity) == originalPixels;
     }
     check(redrawMatches, "cached Windows font redraws same-size and resized surfaces without stale glyphs");
     check(GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS) == handlesBeforeRedraw,

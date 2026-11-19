@@ -34,3 +34,6 @@ Label 通过 IntrusivePtr 持有字体、源帧及渲染帧；Sprite 拥有复�
 删除 `Label.getRenderedBitmapGlyphCount()` 和原生计数字段后，验收按每个有效 `RenderDrawInfo` 的 4 个顶点、6 个索引统计一个字形。Windows Debug、Release 的原生回归分别检查 17,000 个字形分为 2 块、70,000 个字形分为 5 块，以及清空文本后的 0 块。整应用在两个配置下都提交了完整的 70,000 个字形，清空后释放了溢出块引用的材质和纹理。
 
 两个 Windows 配置分别与同轮 Web 对照。BitmapFont 和 LabelAtlas 的 12 张图集状态图、80 张布局图全部逐字节相等，80 项布局的字形数和测量值通过对照。复现入口见 [GPU 场景](../native/tests/2d-poc/fixtures/acceptance/BitmapGpuProbe.ts)、[图集状态比较](../native/tests/2d-poc/compare-bitmap-gpu.cjs)和[布局比较](../native/tests/2d-poc/compare-bitmap-layout.cjs)。两个比较脚本均接受项目路径和 `Debug` 或 `Release`。
+## 2026-11-19 Label 纹理回读
+
+移除 `getPixelChecksum()` 后，Label 重绘时不再逐像素累加校验和。Windows Debug 和 Release 的原生回归从提交的纹理读取 RGBA，核对位图字形着色前后的图集内容、TTF 上传的 alpha 与独立 Canvas 栅格结果，以及 128 次重绘后的纹理内容。整应用在 NONE、CHAR 两种缓存模式下分别检查等尺寸换字后的纹理身份与像素变化，以及尺寸变化后的纹理替换。两种配置的 M3 Label 和 M5 RichText 入口通过，位图字体各 92 张图与同轮 Web 逐字节相等。

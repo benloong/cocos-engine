@@ -11,6 +11,7 @@ import {
     Canvas,
     Color,
     director,
+    gfx,
     Label,
     Node,
     Rect,
@@ -54,15 +55,21 @@ async function checkLabelTextureUpdates (parent: Node): Promise<void> {
                 await new Promise<void>(resolve => director.once(DirectorEvent.END_FRAME, () => resolve()));
             }
             const texture = backend.getRenderEntity().getStaticRenderDrawInfo(0).texture;
-            if (!texture || !backend.getOpaquePixels()) throw new Error('Missing Label texture update');
-            return { id: texture.objectID, checksum: backend.getPixelChecksum(), width: backend.getTextureWidth() };
+            if (!texture) throw new Error('Missing submitted Label texture');
+            const pixels = new Uint8Array(texture.width * texture.height * 4);
+            const region = new gfx.BufferTextureCopy();
+            region.texExtent.width = texture.width;
+            region.texExtent.height = texture.height;
+            director.root!.device.copyTextureToBuffers(texture, [pixels], [region]);
+            if (!pixels.some((value, i) => i % 4 === 3 && value > 1)) throw new Error('Empty Label texture');
+            return { id: texture.objectID, pixels, width: texture.width };
         };
         for (const mode of [Label.CacheMode.NONE, Label.CacheMode.CHAR]) {
             label.cacheMode = mode;
             transform.setContentSize(100, 32);
             const before = await render('AB');
             const updated = await render('BA');
-            if (before.id !== updated.id || before.checksum === updated.checksum) {
+            if (before.id !== updated.id || before.pixels.every((value, i) => value === updated.pixels[i])) {
                 throw new Error('Equal-size Label upload lost texture identity or pixels: ' + mode);
             }
             transform.setContentSize(160, 32);

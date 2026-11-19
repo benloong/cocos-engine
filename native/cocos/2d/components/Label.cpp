@@ -283,7 +283,7 @@ void Label::clearRenderedData() {
     _bitmapDiagnosticsDirty = false;
     _renderer.setEnabled(isEnabled());
     _frame = nullptr; _texture = nullptr;
-    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
+    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0;
     _lastContentWidth = _lastContentHeight = _lastTextureWidth = _lastTextureHeight = 0;
     _actualFontSize = 0.F;
     _lastLineCount = 0;
@@ -615,10 +615,8 @@ void Label::rebuildLetterTexture() {
     _lastLineCount = static_cast<int32_t>(lines.size());
     _lastContentWidth = contentWidth;
     _lastContentHeight = contentHeight;
-    _lastPixelChecksum = 0U;
     _lastOpaquePixels = 0U;
     for (size_t i = 3; i < pixels.size(); i += 4U) {
-        _lastPixelChecksum = _lastPixelChecksum * 31U + pixels[i];
         if (pixels[i] > 0U) { ++_lastOpaquePixels; }
     }
 
@@ -693,7 +691,7 @@ void Label::rebuildBitmapTexture() {
     _lastAtlasX = frame->getRectX(); _lastAtlasY = frame->getRectY();
     _lastAtlasWidth = frame->getRectWidth(); _lastAtlasHeight = frame->getRectHeight();
     _texture = nullptr;
-    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _lastPixelChecksum = 0; _bitmapDiagnosticsDirty = true;
+    std::vector<uint8_t>().swap(_lastPixels); _lastOpaquePixels = 0; _bitmapDiagnosticsDirty = true;
     if (!_frame || _frame == _ttfFrame) _frame = new SpriteFrame();
     _frame->copyFrom(frame);
     _renderer.setColor(_color);
@@ -708,7 +706,7 @@ void Label::rasterizeBitmapDiagnostics() {
         ? _bitmapAtlas->getOriginalTexture() : _bitmapAtlas->getTexture());
     ImageAsset *image = atlasTexture != nullptr ? atlasTexture->getImage() : nullptr;
     if (image == nullptr || image->getData() == nullptr || image->getWidth() == 0U || image->getHeight() == 0U) {
-        _lastPixels.clear(); _lastOpaquePixels = 0; _lastPixelChecksum = 0;
+        _lastPixels.clear(); _lastOpaquePixels = 0;
         return;
     }
 
@@ -806,10 +804,8 @@ void Label::rasterizeBitmapDiagnostics() {
     }
 
     _lastPixels = pixels;
-    _lastPixelChecksum = 0U;
     _lastOpaquePixels = 0U;
     for (size_t i = 3; i < pixels.size(); i += 4U) {
-        _lastPixelChecksum = _lastPixelChecksum * 31U + pixels[i];
         if (pixels[i] > 0U) { ++_lastOpaquePixels; }
     }
 
@@ -1133,12 +1129,10 @@ void Label::rebuildTexture() {
     _texture = _ttfTexture;
     _frame = _ttfFrame;
     ensureRasterTexture(_texture, textureWidth, textureHeight);
-    _lastPixelChecksum = 0U;
     _texture->setWrapMode(TextureBase::WrapMode::CLAMP_TO_EDGE, TextureBase::WrapMode::CLAMP_TO_EDGE);
     _lastOpaquePixels = 0U;
     const uint8_t *bytes = pixels.getBytes();
     for (uint32_t i = 0; i + 3U < pixels.getSize(); i += 4U) {
-        _lastPixelChecksum = _lastPixelChecksum * 31U + bytes[i + 3U];
         if (bytes[i + 3U] > 1U) {
             ++_lastOpaquePixels;
         }
