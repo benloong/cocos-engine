@@ -17,6 +17,29 @@ Windows 混合变更帧 CPU 增加 17.67%，距离下降 50% 的门槛还差 2.5
 
 复现沿用下文构建流程，候选 CMake 输出使用 `perf-bin-3235a8d0de`，启动时通过 `run-m6-perf.ps1 -Target after -BinaryDirectory` 指定该目录。运行顺序和每轮输入哈希见数据文件。将各次输出保存为 `build/m6-perf-paired-3235a8d0de-轮次-目标.json` 后执行 `node native/tests/2d-poc/compare-m6-perf.cjs --paired 3235a8d0de`。汇总会逐帧校验三个耗时分项与合计。
 
+### Windows TTF 重建分段
+
+在同一 `3235a8d0de`、同一 JS 引擎和负载上，对 Windows Release 程序做三轮配对测量。对照程序的 SHA256 与上文候选一致。计时版只在隔离工作树的 TTF 非空文本重建路径分段，采样覆盖整个游戏帧内的重建。纯 Label、RichText、混合变更场景分别每帧记录 20、4、24 次重建；六个稳态场景和 Sprite、Mask、空 Canvas 变更场景的计数均为零。[各阶段、逐轮及构建哈希](./native-2d-m6-ttf-stages.json)
+
+| 混合变更帧，每帧 24 次重建 | ms/帧 |
+|---|---:|
+| 测宽、换行、布局与画布尺寸计算 | 0.7445 |
+| 创建绘制 Canvas 并设置字体、基线和对齐 | 0.4699 |
+| 背景填充及阴影设置，含首次填充触发的缓冲区分配 | 0.1912 |
+| 文本定位、逐行测宽和字形绘制 | 1.6345 |
+| 从 Canvas 取回像素 | 0.0041 |
+| 准备纹理及设置采样参数 | 0.0281 |
+| 像素计数、校验和及 CPU 副本 | 0.0138 |
+| 提交纹理上传的 CPU 耗时 | 0.0078 |
+| 发布帧和尺寸、函数退出时清理临时对象 | 0.1792 |
+| 每帧分项之和的中位数 | 3.2676 |
+
+绘制占 TTF 重建约 50%，布局约 23%，Canvas 初始化约 14%。上传测量止于 CPU 提交返回，GPU 执行时间未采样。源码中绘制段还会重新测量每行宽度；Win32 GDI 的坐标换算和 DrawText 调用准备也分别测量相同文本。各次测宽的独立成本尚未分离。
+
+混合变更帧在三轮中，计时版相对对照版总 CPU 差值分别为 +0.1271、−0.0827、+0.0578 ms。纯 RichText 对照波动更大，三轮为 1.0639、1.0913、1.8805 ms。该实验用于定位阶段成本，M6 性能门槛继续使用上文迁移前与候选的同轮对照。
+
+复现时先保存未加 TTF 计时的 Windows Release 程序及其 DLL，再给 `prepare-m6-perf.cjs after WINDOWS` 添加 `--label-stages` 并重建同一候选。两端运行同一个 `m6-perf-workloads.js`。将三轮输出按 `m6-ttf-3235a8d0de-轮次-control.json` 和 `-stages.json` 保存在 build 目录，使用 `compare-m6-ttf-stages.cjs 3235a8d0de` 校验计数和采样窗口。对照二进制目录为 `perf-bin-3235a8d0de-ttf-control`，计时版为 `perf-bin-3235a8d0de`。
+
 ## 首轮测量
 
 迁移前取总计划提交 7e83734299，候选取 7045a76a35。硬件为 Core i7-13700KF 和 GeForce RTX 4080，Windows 显卡驱动 32.0.16.1088，Chrome 157.0.8103.78。Windows 两端均使用 x64 MSVC Release，引擎 JS 的 DEBUG 为 false。[三轮逐场景数据与原始文件哈希](./native-2d-m6-performance.json)

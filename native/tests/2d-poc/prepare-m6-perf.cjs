@@ -37,8 +37,34 @@ instrument('native/cocos/bindings/jswrapper/v8/HelperMacros.h', [
     ['do {                    \\\n            } while (0)', '++m6BindingCalls'],
 ]);
 const hook = 'SE_BIND_FUNC(js_performance_now)';
+const labelStages = process.argv.includes('--label-stages');
+const labelFile = 'native/cocos/2d/components/Label.cpp';
+const timer = 'M6TtfTimer.h';
+if (labelStages) {
+    if (key !== 'after' || process.argv[3] !== 'WINDOWS') throw new Error('TTF stage timings require the migrated Windows backend');
+    fs.copyFileSync(path.join(__dirname, 'm6-ttf-timer.h'), path.join(source, 'native/cocos', timer));
+    const cuts = [
+        ['Layout', 'CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));'],
+        ['CanvasSetup', 'const Color &edgeColor ='],
+        ['Background', 'float textTop ='],
+        ['Draw', 'cc::Data pixels;'],
+        ['Readback', '_texture = _ttfTexture;'],
+        ['TextureSetup', 'const uint8_t *bytes = pixels.getBytes();'],
+        ['Diagnostics', '_texture->uploadData(bytes);'],
+        ['Upload', '_lastTextureWidth = static_cast<float>(textureWidth);'],
+    ];
+    instrument(labelFile, [
+        ['#include "2d/components/Label.h"', '#include "M6TtfTimer.h"\n#include "2d/components/Label.h"'],
+        ['const auto box = _transform->getContentSize();', 'M6TtfTimer timer;\n    const auto box = _transform->getContentSize();'],
+        ...cuts.map(([stage, line]) => [line, 'timer.next(M6TtfTimer::Stage::' + stage + ');\n    ' + line]),
+    ]);
+} else if (fs.existsSync(path.join(source, 'native/cocos', timer))) {
+    instrument(labelFile, []);
+}
+let bindings = fs.readFileSync(path.join(__dirname, 'm6-perf-bindings.inc'), 'utf8');
+if (labelStages) bindings = '#include "M6TtfTimer.h"\n' + bindings.replace('std::to_string(heap.used_heap_size())', 'std::to_string(heap.used_heap_size()) + M6TtfTimer::drain()');
 instrument('native/cocos/bindings/manual/jsb_global.cpp', [
-    [hook, hook + '\n' + fs.readFileSync(path.join(__dirname, 'm6-perf-bindings.inc'), 'utf8')],
+    [hook, hook + '\n' + bindings],
     ['__jsbObj->defineFunction("garbageCollect"', '\n#if defined(_MSC_VER) && defined(_DEBUG)\n    __jsbObj->defineFunction("saveM6HeapSnapshot", _SE(js_saveM6HeapSnapshot));\n    __jsbObj->defineFunction("readM6CrtHeap", _SE(js_readM6CrtHeap));\n#endif\n    __jsbObj->defineFunction("readM6Perf", _SE(js_readM6Perf));\n    __jsbObj->defineFunction("garbageCollect"'],
 ]);
 const update = 'uiRendererManager.updateAllDirtyRenderers();';

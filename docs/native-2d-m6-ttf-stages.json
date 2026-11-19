@@ -1,0 +1,968 @@
+{
+  "revision": "3235a8d0deb5fea4cbdd82341a91e11450953966",
+  "workloadSha256": "e9229b6b9f4ad4d0d66c499dfa6d6e2310875d2cd461c0ffe8a38153591f5322",
+  "rounds": [
+    {
+      "control": {
+        "rawSha256": "09d9d6f8061abc1c99de6a7a0496d093bbdea37f0d970c17e906cd51522a90dc",
+        "cases": {
+          "empty/steady": {
+            "cpuMs": 0.007400000000485671,
+            "prepareMs": 0.0029999999997016857
+          },
+          "empty/dirty": {
+            "cpuMs": 0.008150000000007276,
+            "prepareMs": 0.0029999999997016857
+          },
+          "sprites/steady": {
+            "cpuMs": 0.17390000000015643,
+            "prepareMs": 0.0020000000004074536
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.2559500000004657,
+            "prepareMs": 0.009000000000014552
+          },
+          "labels/steady": {
+            "cpuMs": 0.23775000000040747,
+            "prepareMs": 0.0010000000002037268
+          },
+          "labels/dirty": {
+            "cpuMs": 3.096450000000262,
+            "prepareMs": 2.8100000000004
+          },
+          "masks/steady": {
+            "cpuMs": 0.2536000000004075,
+            "prepareMs": 0.0010000000002037268
+          },
+          "masks/dirty": {
+            "cpuMs": 0.277699999998603,
+            "prepareMs": 0.0010000000002037268
+          },
+          "rich/steady": {
+            "cpuMs": 0.11080000000040745,
+            "prepareMs": 0.0020000000004074536
+          },
+          "rich/dirty": {
+            "cpuMs": 1.0639000000015715,
+            "prepareMs": 0.7655000000013388
+          },
+          "mixed/steady": {
+            "cpuMs": 0.7011500000004074,
+            "prepareMs": 0.0010000000002037268
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.381450000000161,
+            "prepareMs": 3.341500000000451
+          }
+        }
+      },
+      "stages": {
+        "rawSha256": "da549c18efb07cb65609372f6df73ccbd11b354de61902c7fbf4f9a1dc307de7",
+        "cases": {
+          "empty/steady": {
+            "cpuMs": 0.007899999999905413,
+            "prepareMs": 0.0029999999999290594,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "empty/dirty": {
+            "cpuMs": 0.005900000000156433,
+            "prepareMs": 0.0020000000004074536,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "sprites/steady": {
+            "cpuMs": 0.2097999999999054,
+            "prepareMs": 0.0029999999997016857,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.42579999999898865,
+            "prepareMs": 0.014500000000225555,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "labels/steady": {
+            "cpuMs": 0.2799499999995998,
+            "prepareMs": 0.0020000000004074536,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "labels/dirty": {
+            "cpuMs": 3.216399999999709,
+            "prepareMs": 2.8760000000002037,
+            "calls": 20,
+            "ttfMs": 2.8217999999999996,
+            "layout": 0.622,
+            "canvasSetup": 0.4708,
+            "background": 0.16315000000000002,
+            "draw": 1.36035,
+            "readback": 0.0034,
+            "textureSetup": 0.0296,
+            "diagnostics": 0.011,
+            "upload": 0.0069,
+            "finish": 0.1557
+          },
+          "masks/steady": {
+            "cpuMs": 0.29840000000040745,
+            "prepareMs": 0.0020000000004074536,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "masks/dirty": {
+            "cpuMs": 0.3517500000007276,
+            "prepareMs": 0.0020000000004074536,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "rich/steady": {
+            "cpuMs": 0.12180000000061118,
+            "prepareMs": 0.0029999999969732016,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8161500000014552,
+            "prepareMs": 1.33849999999984,
+            "calls": 4,
+            "ttfMs": 1.3239,
+            "layout": 0.13455,
+            "canvasSetup": 0.31510000000000005,
+            "background": 0.08845,
+            "draw": 0.66565,
+            "readback": 0.0023,
+            "textureSetup": 0.014,
+            "diagnostics": 0.00615,
+            "upload": 0.0037,
+            "finish": 0.08235
+          },
+          "mixed/steady": {
+            "cpuMs": 0.7651000000003056,
+            "prepareMs": 0.0020000000004074536,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.508499999997439,
+            "prepareMs": 3.3739999999997963,
+            "calls": 24,
+            "ttfMs": 3.30605,
+            "layout": 0.75445,
+            "canvasSetup": 0.4699,
+            "background": 0.19495,
+            "draw": 1.6345,
+            "readback": 0.0041,
+            "textureSetup": 0.03325,
+            "diagnostics": 0.01375,
+            "upload": 0.0093,
+            "finish": 0.1809
+          }
+        }
+      }
+    },
+    {
+      "control": {
+        "rawSha256": "6f6ba1723bb28209395e314ca98302e00e7994cf70c927f28de0af23142741aa",
+        "cases": {
+          "empty/steady": {
+            "cpuMs": 0.0072999999999054125,
+            "prepareMs": 0.0029999999997016857
+          },
+          "empty/dirty": {
+            "cpuMs": 0.011950000000061845,
+            "prepareMs": 0.0039999999999054126
+          },
+          "sprites/steady": {
+            "cpuMs": 0.2560000000005639,
+            "prepareMs": 0.003999999998995918
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.41714999999973806,
+            "prepareMs": 0.014999999999417923
+          },
+          "labels/steady": {
+            "cpuMs": 0.24549999999949795,
+            "prepareMs": 0.0010000000002037268
+          },
+          "labels/dirty": {
+            "cpuMs": 3.0097000000000653,
+            "prepareMs": 2.7614999999996144
+          },
+          "masks/steady": {
+            "cpuMs": 0.3263500000004075,
+            "prepareMs": 0.0020000000004074536
+          },
+          "masks/dirty": {
+            "cpuMs": 0.30389999999799183,
+            "prepareMs": 0.0010000000002037268
+          },
+          "rich/steady": {
+            "cpuMs": 0.10635000000030559,
+            "prepareMs": 0.0020000000004074536
+          },
+          "rich/dirty": {
+            "cpuMs": 1.0912999999980937,
+            "prepareMs": 0.7865000000001601
+          },
+          "mixed/steady": {
+            "cpuMs": 0.6214500000004075,
+            "prepareMs": 0.0010000000002037268
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.3133999999992145,
+            "prepareMs": 3.3300000000017462
+          }
+        }
+      },
+      "stages": {
+        "rawSha256": "8cf102a7afe2e6dd7fe4c046a97f5a927e3c8b63c0343fba97fee988a938811e",
+        "cases": {
+          "empty/steady": {
+            "cpuMs": 0.008299999999881767,
+            "prepareMs": 0.003000000000156433,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "empty/dirty": {
+            "cpuMs": 0.01049999999985812,
+            "prepareMs": 0.0039999999999054126,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "sprites/steady": {
+            "cpuMs": 0.23314999999975627,
+            "prepareMs": 0.0030000000006111804,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.4300000000010695,
+            "prepareMs": 0.01599999999962165,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "labels/steady": {
+            "cpuMs": 0.19925000000040743,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "labels/dirty": {
+            "cpuMs": 3.0394000000007275,
+            "prepareMs": 2.802500000000691,
+            "calls": 20,
+            "ttfMs": 2.75495,
+            "layout": 0.6073999999999999,
+            "canvasSetup": 0.43595,
+            "background": 0.1595,
+            "draw": 1.3583,
+            "readback": 0.0034,
+            "textureSetup": 0.023,
+            "diagnostics": 0.011,
+            "upload": 0.0062,
+            "finish": 0.15184999999999998
+          },
+          "masks/steady": {
+            "cpuMs": 0.2787500000002037,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "masks/dirty": {
+            "cpuMs": 0.34149999999829744,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "rich/steady": {
+            "cpuMs": 0.09335000000091678,
+            "prepareMs": 0.0020000000004074536,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8773000000007714,
+            "prepareMs": 1.4604999999992287,
+            "calls": 4,
+            "ttfMs": 1.44735,
+            "layout": 0.1511,
+            "canvasSetup": 0.3194,
+            "background": 0.09825,
+            "draw": 0.7386,
+            "readback": 0.0026,
+            "textureSetup": 0.012,
+            "diagnostics": 0.007050000000000001,
+            "upload": 0.0037,
+            "finish": 0.08865
+          },
+          "mixed/steady": {
+            "cpuMs": 0.6347000000002038,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.230650000000685,
+            "prepareMs": 3.313000000000102,
+            "calls": 24,
+            "ttfMs": 3.2596499999999997,
+            "layout": 0.7353,
+            "canvasSetup": 0.47050000000000003,
+            "background": 0.19045,
+            "draw": 1.6308,
+            "readback": 0.0039,
+            "textureSetup": 0.02805,
+            "diagnostics": 0.0136,
+            "upload": 0.0077,
+            "finish": 0.1786
+          }
+        }
+      }
+    },
+    {
+      "control": {
+        "rawSha256": "d4cb5a25d07ab7c383edcad1ff9b9334c8494b519d34c361b70e89fd36488b6a",
+        "cases": {
+          "empty/steady": {
+            "cpuMs": 0.00940000000010914,
+            "prepareMs": 0.0039999999999054126
+          },
+          "empty/dirty": {
+            "cpuMs": 0.011499999999607099,
+            "prepareMs": 0.0039999999999054126
+          },
+          "sprites/steady": {
+            "cpuMs": 0.2400499999995525,
+            "prepareMs": 0.003999999998995918
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.3060499999998108,
+            "prepareMs": 0.01099999999951251
+          },
+          "labels/steady": {
+            "cpuMs": 0.1991499999993961,
+            "prepareMs": 0.0010000000002037268
+          },
+          "labels/dirty": {
+            "cpuMs": 2.9978500000002692,
+            "prepareMs": 2.7664999999997235
+          },
+          "masks/steady": {
+            "cpuMs": 0.31230000000030556,
+            "prepareMs": 0.001999999996769475
+          },
+          "masks/dirty": {
+            "cpuMs": 0.32134999999991265,
+            "prepareMs": 0.0010000000002037268
+          },
+          "rich/steady": {
+            "cpuMs": 0.14094999999919966,
+            "prepareMs": 0.0030000000006111804
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8804500000007711,
+            "prepareMs": 1.4624999999996362
+          },
+          "mixed/steady": {
+            "cpuMs": 0.5999500000002037,
+            "prepareMs": 0.0010000000002037268
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.200499999999156,
+            "prepareMs": 3.308500000001004
+          }
+        }
+      },
+      "stages": {
+        "rawSha256": "af6ad5b33bf1b43ec815604af91ad50260b06ee890319871415826cc3e2ddd0b",
+        "cases": {
+          "empty/steady": {
+            "cpuMs": 0.008350000000234649,
+            "prepareMs": 0.003000000000156433,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "empty/dirty": {
+            "cpuMs": 0.009700000000312866,
+            "prepareMs": 0.0030000000006111804,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "sprites/steady": {
+            "cpuMs": 0.2402000000000073,
+            "prepareMs": 0.0030000000006111804,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.4092499999996507,
+            "prepareMs": 0.014500000000225555,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "labels/steady": {
+            "cpuMs": 0.23750000000020371,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "labels/dirty": {
+            "cpuMs": 3.028349999999476,
+            "prepareMs": 2.7854999999999563,
+            "calls": 20,
+            "ttfMs": 2.7407500000000002,
+            "layout": 0.6068,
+            "canvasSetup": 0.4215,
+            "background": 0.1597,
+            "draw": 1.3581,
+            "readback": 0.0034,
+            "textureSetup": 0.0229,
+            "diagnostics": 0.0109,
+            "upload": 0.0061,
+            "finish": 0.1517
+          },
+          "masks/steady": {
+            "cpuMs": 0.28620000000030554,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "masks/dirty": {
+            "cpuMs": 0.3228500000019354,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "rich/steady": {
+            "cpuMs": 0.14030000000040746,
+            "prepareMs": 0.0030000000006111804,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "rich/dirty": {
+            "cpuMs": 1.909499999999709,
+            "prepareMs": 1.4584999999988213,
+            "calls": 4,
+            "ttfMs": 1.44415,
+            "layout": 0.1585,
+            "canvasSetup": 0.2925,
+            "background": 0.10165,
+            "draw": 0.7726,
+            "readback": 0.0027,
+            "textureSetup": 0.0121,
+            "diagnostics": 0.007050000000000001,
+            "upload": 0.0035,
+            "finish": 0.09029999999999999
+          },
+          "mixed/steady": {
+            "cpuMs": 0.6291999999985884,
+            "prepareMs": 0.0010000000002037268,
+            "calls": 0,
+            "ttfMs": 0,
+            "layout": 0,
+            "canvasSetup": 0,
+            "background": 0,
+            "draw": 0,
+            "readback": 0,
+            "textureSetup": 0,
+            "diagnostics": 0,
+            "upload": 0,
+            "finish": 0
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.258300000000785,
+            "prepareMs": 3.326499999999214,
+            "calls": 24,
+            "ttfMs": 3.2676499999999997,
+            "layout": 0.7444999999999999,
+            "canvasSetup": 0.46525,
+            "background": 0.19119999999999998,
+            "draw": 1.6374499999999999,
+            "readback": 0.0041,
+            "textureSetup": 0.027450000000000002,
+            "diagnostics": 0.0138,
+            "upload": 0.0078,
+            "finish": 0.1792
+          }
+        }
+      }
+    }
+  ],
+  "medians": {
+    "control": {
+      "executableSha256": "5c4ddae367aad24c82061f63bf317459667e39e67329d93b6aae1cc40e99e889",
+      "engineSha256": "bb872b4380d870229bd5dea3ea2ab0263fec309152f38173107d79f07ef68d88",
+      "cases": {
+        "empty/steady": {
+          "cpuMs": 0.007400000000485671,
+          "prepareMs": 0.0029999999997016857
+        },
+        "empty/dirty": {
+          "cpuMs": 0.011499999999607099,
+          "prepareMs": 0.0039999999999054126
+        },
+        "sprites/steady": {
+          "cpuMs": 0.2400499999995525,
+          "prepareMs": 0.003999999998995918
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.3060499999998108,
+          "prepareMs": 0.01099999999951251
+        },
+        "labels/steady": {
+          "cpuMs": 0.23775000000040747,
+          "prepareMs": 0.0010000000002037268
+        },
+        "labels/dirty": {
+          "cpuMs": 3.0097000000000653,
+          "prepareMs": 2.7664999999997235
+        },
+        "masks/steady": {
+          "cpuMs": 0.31230000000030556,
+          "prepareMs": 0.001999999996769475
+        },
+        "masks/dirty": {
+          "cpuMs": 0.30389999999799183,
+          "prepareMs": 0.0010000000002037268
+        },
+        "rich/steady": {
+          "cpuMs": 0.11080000000040745,
+          "prepareMs": 0.0020000000004074536
+        },
+        "rich/dirty": {
+          "cpuMs": 1.0912999999980937,
+          "prepareMs": 0.7865000000001601
+        },
+        "mixed/steady": {
+          "cpuMs": 0.6214500000004075,
+          "prepareMs": 0.0010000000002037268
+        },
+        "mixed/dirty": {
+          "cpuMs": 4.3133999999992145,
+          "prepareMs": 3.3300000000017462
+        }
+      }
+    },
+    "stages": {
+      "executableSha256": "870335fec1630a6a9e8a0c9b7b4e4616d4aea0f43669d12e5486ec68a2cef8b0",
+      "engineSha256": "bb872b4380d870229bd5dea3ea2ab0263fec309152f38173107d79f07ef68d88",
+      "cases": {
+        "empty/steady": {
+          "cpuMs": 0.008299999999881767,
+          "prepareMs": 0.003000000000156433,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "empty/dirty": {
+          "cpuMs": 0.009700000000312866,
+          "prepareMs": 0.0030000000006111804,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "sprites/steady": {
+          "cpuMs": 0.23314999999975627,
+          "prepareMs": 0.0030000000006111804,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "sprites/dirty": {
+          "cpuMs": 0.42579999999898865,
+          "prepareMs": 0.014500000000225555,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "labels/steady": {
+          "cpuMs": 0.23750000000020371,
+          "prepareMs": 0.0010000000002037268,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "labels/dirty": {
+          "cpuMs": 3.0394000000007275,
+          "prepareMs": 2.802500000000691,
+          "calls": 20,
+          "ttfMs": 2.75495,
+          "layout": 0.6073999999999999,
+          "canvasSetup": 0.43595,
+          "background": 0.1597,
+          "draw": 1.3583,
+          "readback": 0.0034,
+          "textureSetup": 0.023,
+          "diagnostics": 0.011,
+          "upload": 0.0062,
+          "finish": 0.15184999999999998
+        },
+        "masks/steady": {
+          "cpuMs": 0.28620000000030554,
+          "prepareMs": 0.0010000000002037268,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "masks/dirty": {
+          "cpuMs": 0.34149999999829744,
+          "prepareMs": 0.0010000000002037268,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "rich/steady": {
+          "cpuMs": 0.12180000000061118,
+          "prepareMs": 0.0029999999969732016,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "rich/dirty": {
+          "cpuMs": 1.8773000000007714,
+          "prepareMs": 1.4584999999988213,
+          "calls": 4,
+          "ttfMs": 1.44415,
+          "layout": 0.1511,
+          "canvasSetup": 0.31510000000000005,
+          "background": 0.09825,
+          "draw": 0.7386,
+          "readback": 0.0026,
+          "textureSetup": 0.0121,
+          "diagnostics": 0.007050000000000001,
+          "upload": 0.0037,
+          "finish": 0.08865
+        },
+        "mixed/steady": {
+          "cpuMs": 0.6347000000002038,
+          "prepareMs": 0.0010000000002037268,
+          "calls": 0,
+          "ttfMs": 0,
+          "layout": 0,
+          "canvasSetup": 0,
+          "background": 0,
+          "draw": 0,
+          "readback": 0,
+          "textureSetup": 0,
+          "diagnostics": 0,
+          "upload": 0,
+          "finish": 0
+        },
+        "mixed/dirty": {
+          "cpuMs": 4.258300000000785,
+          "prepareMs": 3.326499999999214,
+          "calls": 24,
+          "ttfMs": 3.2676499999999997,
+          "layout": 0.7444999999999999,
+          "canvasSetup": 0.4699,
+          "background": 0.19119999999999998,
+          "draw": 1.6345,
+          "readback": 0.0041,
+          "textureSetup": 0.02805,
+          "diagnostics": 0.01375,
+          "upload": 0.0078,
+          "finish": 0.1792
+        }
+      }
+    }
+  }
+}
