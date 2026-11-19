@@ -1,0 +1,818 @@
+{
+  "framesPerWindow": 24,
+  "trials": 3,
+  "pixelHashes": {
+    "rect-1": "ab376711b0d5a213e9df1cb4e218fc7bfdf818ba5f26b65e134bbfaa05222d88",
+    "rect-32": "1bff3c321b313480573c76ac1fb28aed864f3691407af7a9d6e3f718fff22f7a",
+    "rect-256": "0fd695bc8d99fa13253c88e0738c344b6b69b90bc567d9f5e37741a3fdf5682d",
+    "path-1": "ab376711b0d5a213e9df1cb4e218fc7bfdf818ba5f26b65e134bbfaa05222d88",
+    "path-32": "1bff3c321b313480573c76ac1fb28aed864f3691407af7a9d6e3f718fff22f7a",
+    "path-256": "0fd695bc8d99fa13253c88e0738c344b6b69b90bc567d9f5e37741a3fdf5682d"
+  },
+  "configurations": {
+    "debug": {
+      "rawSha256": "223818d075ed7d8a556a20754b7ad27cfb69cc2b2c0ebba634fb992b103b5ec1",
+      "binarySha256": "2b32601f1442c9025e047a1c5d1a2c22be1f440a62b9c4b5c96e40fa60618306",
+      "rows": [
+        {
+          "name": "rect-1",
+          "mode": "direct",
+          "callsPerFrame": 3,
+          "submitUs": [
+            81.3,
+            68.737,
+            92.162
+          ],
+          "batchUs": [
+            397.313,
+            680.858,
+            611.071
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            6.5,
+            5,
+            5
+          ],
+          "crtAllocatedBytes": [
+            1029.583,
+            656,
+            656
+          ]
+        },
+        {
+          "name": "rect-1",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            84,
+            99.275,
+            104.029
+          ],
+          "batchUs": [
+            586.792,
+            563.188,
+            499.738
+          ],
+          "stagingBytes": 40,
+          "newBufferBytesPerFrame": 40,
+          "crtAllocations": [
+            10.042,
+            10,
+            10
+          ],
+          "crtAllocatedBytes": [
+            928.167,
+            928,
+            928
+          ]
+        },
+        {
+          "name": "rect-1",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            86.254,
+            82.4,
+            135.938
+          ],
+          "batchUs": [
+            725.854,
+            728.15,
+            708.025
+          ],
+          "stagingBytes": 40,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            6,
+            6,
+            6
+          ],
+          "crtAllocatedBytes": [
+            760,
+            760,
+            760
+          ]
+        },
+        {
+          "name": "rect-32",
+          "mode": "direct",
+          "callsPerFrame": 34,
+          "submitUs": [
+            349.825,
+            261.467,
+            240.546
+          ],
+          "batchUs": [
+            585.708,
+            485.375,
+            560.3
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            160,
+            160,
+            160
+          ],
+          "crtAllocatedBytes": [
+            20992,
+            20992,
+            20992
+          ]
+        },
+        {
+          "name": "rect-32",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            406.375,
+            249.55,
+            214.717
+          ],
+          "batchUs": [
+            510.85,
+            543.667,
+            716.688
+          ],
+          "stagingBytes": 1280,
+          "newBufferBytesPerFrame": 1280,
+          "crtAllocations": [
+            165,
+            166.292,
+            165
+          ],
+          "crtAllocatedBytes": [
+            22504,
+            28086.708,
+            22504
+          ]
+        },
+        {
+          "name": "rect-32",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            331.025,
+            169.475,
+            144.571
+          ],
+          "batchUs": [
+            728.525,
+            559.367,
+            453.129
+          ],
+          "stagingBytes": 1280,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            161,
+            161,
+            161
+          ],
+          "crtAllocatedBytes": [
+            21096,
+            21096,
+            21096
+          ]
+        },
+        {
+          "name": "rect-256",
+          "mode": "direct",
+          "callsPerFrame": 258,
+          "submitUs": [
+            1094.658,
+            1348.946,
+            1440.521
+          ],
+          "batchUs": [
+            368.354,
+            387.392,
+            435.925
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            1280,
+            1280,
+            1280
+          ],
+          "crtAllocatedBytes": [
+            167936,
+            167936,
+            167936
+          ]
+        },
+        {
+          "name": "rect-256",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            795.629,
+            835.217,
+            823.271
+          ],
+          "batchUs": [
+            347.554,
+            482.096,
+            413.262
+          ],
+          "stagingBytes": 10240,
+          "newBufferBytesPerFrame": 10240,
+          "crtAllocations": [
+            1285,
+            1285,
+            1285
+          ],
+          "crtAllocatedBytes": [
+            178408,
+            178408,
+            178408
+          ]
+        },
+        {
+          "name": "rect-256",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            1074.921,
+            867.862,
+            890.875
+          ],
+          "batchUs": [
+            479.488,
+            390.9,
+            344.829
+          ],
+          "stagingBytes": 10240,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            1281,
+            1281,
+            1281
+          ],
+          "crtAllocatedBytes": [
+            168040,
+            168040,
+            168040
+          ]
+        },
+        {
+          "name": "path-1",
+          "mode": "direct",
+          "callsPerFrame": 7,
+          "submitUs": [
+            106.2,
+            118.508,
+            112.504
+          ],
+          "batchUs": [
+            652.654,
+            619.996,
+            575.875
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            15.333,
+            15,
+            15
+          ],
+          "crtAllocatedBytes": [
+            1062.167,
+            1060,
+            1060
+          ]
+        },
+        {
+          "name": "path-1",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            133.338,
+            119.179,
+            103.867
+          ],
+          "batchUs": [
+            754.158,
+            670.513,
+            556.125
+          ],
+          "stagingBytes": 104,
+          "newBufferBytesPerFrame": 104,
+          "crtAllocations": [
+            20,
+            20,
+            20
+          ],
+          "crtAllocatedBytes": [
+            1396,
+            1396,
+            1396
+          ]
+        },
+        {
+          "name": "path-1",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            108.967,
+            102.196,
+            131.221
+          ],
+          "batchUs": [
+            572.804,
+            599.629,
+            609.221
+          ],
+          "stagingBytes": 104,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            16,
+            16,
+            16
+          ],
+          "crtAllocatedBytes": [
+            1164,
+            1164,
+            1164
+          ]
+        },
+        {
+          "name": "path-32",
+          "mode": "direct",
+          "callsPerFrame": 162,
+          "submitUs": [
+            816.725,
+            671.154,
+            580.063
+          ],
+          "batchUs": [
+            463.271,
+            623.946,
+            551.092
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            481.292,
+            480,
+            480
+          ],
+          "crtAllocatedBytes": [
+            39504.583,
+            33920,
+            33920
+          ]
+        },
+        {
+          "name": "path-32",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            508.896,
+            491.633,
+            429.8
+          ],
+          "batchUs": [
+            319.683,
+            563.067,
+            566.183
+          ],
+          "stagingBytes": 3328,
+          "newBufferBytesPerFrame": 3328,
+          "crtAllocations": [
+            485,
+            486.292,
+            485
+          ],
+          "crtAllocatedBytes": [
+            37480,
+            43062.708,
+            37480
+          ]
+        },
+        {
+          "name": "path-32",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            695.704,
+            355.783,
+            368.462
+          ],
+          "batchUs": [
+            613.721,
+            504.813,
+            842.233
+          ],
+          "stagingBytes": 3328,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            481,
+            481,
+            481
+          ],
+          "crtAllocatedBytes": [
+            34024,
+            34024,
+            34024
+          ]
+        },
+        {
+          "name": "path-256",
+          "mode": "direct",
+          "callsPerFrame": 1282,
+          "submitUs": [
+            3816.325,
+            3376.846,
+            2968.621
+          ],
+          "batchUs": [
+            407.508,
+            465.579,
+            401.321
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            3840,
+            3840,
+            3840
+          ],
+          "crtAllocatedBytes": [
+            271360,
+            271360,
+            271360
+          ]
+        },
+        {
+          "name": "path-256",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            1665.888,
+            1651.129,
+            1531.458
+          ],
+          "batchUs": [
+            333.946,
+            346.179,
+            362.163
+          ],
+          "stagingBytes": 26624,
+          "newBufferBytesPerFrame": 26624,
+          "crtAllocations": [
+            3845,
+            3845,
+            3845
+          ],
+          "crtAllocatedBytes": [
+            298216,
+            298216,
+            298216
+          ]
+        },
+        {
+          "name": "path-256",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            1826.742,
+            1943.617,
+            1870.404
+          ],
+          "batchUs": [
+            412.617,
+            398.604,
+            828.558
+          ],
+          "stagingBytes": 26624,
+          "newBufferBytesPerFrame": 0,
+          "crtAllocations": [
+            3841,
+            3841,
+            3841
+          ],
+          "crtAllocatedBytes": [
+            271464,
+            271464,
+            271464
+          ]
+        }
+      ]
+    },
+    "release": {
+      "rawSha256": "15e9a5a841bcde0f24a38954d8d80d12d4986a62579b45aa2bcbbd7b30ec41fc",
+      "binarySha256": "1f71944a620e88a50a094443a24ec14f7d355abd4f0c614b4366bf33491af9fe",
+      "rows": [
+        {
+          "name": "rect-1",
+          "mode": "direct",
+          "callsPerFrame": 3,
+          "submitUs": [
+            34.183,
+            10.333,
+            13.662
+          ],
+          "batchUs": [
+            34.642,
+            38.237,
+            33.467
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "rect-1",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            26.304,
+            23.813,
+            27.404
+          ],
+          "batchUs": [
+            41.446,
+            37.417,
+            39.017
+          ],
+          "stagingBytes": 40,
+          "newBufferBytesPerFrame": 40
+        },
+        {
+          "name": "rect-1",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            17.321,
+            18.95,
+            19.262
+          ],
+          "batchUs": [
+            34.354,
+            34.092,
+            39.633
+          ],
+          "stagingBytes": 40,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "rect-32",
+          "mode": "direct",
+          "callsPerFrame": 34,
+          "submitUs": [
+            44.792,
+            34.888,
+            21.996
+          ],
+          "batchUs": [
+            45.167,
+            35.367,
+            28.254
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "rect-32",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            50.542,
+            44.75,
+            56.783
+          ],
+          "batchUs": [
+            39.587,
+            37.546,
+            43.729
+          ],
+          "stagingBytes": 1280,
+          "newBufferBytesPerFrame": 1280
+        },
+        {
+          "name": "rect-32",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            24.892,
+            25.275,
+            30.337
+          ],
+          "batchUs": [
+            38.275,
+            42.854,
+            38.987
+          ],
+          "stagingBytes": 1280,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "rect-256",
+          "mode": "direct",
+          "callsPerFrame": 258,
+          "submitUs": [
+            244.012,
+            181.492,
+            219.887
+          ],
+          "batchUs": [
+            37.854,
+            37.917,
+            38.433
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "rect-256",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            157.704,
+            142.217,
+            168.717
+          ],
+          "batchUs": [
+            40.321,
+            40.321,
+            43.6
+          ],
+          "stagingBytes": 10240,
+          "newBufferBytesPerFrame": 10240
+        },
+        {
+          "name": "rect-256",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            132.779,
+            169.754,
+            130.033
+          ],
+          "batchUs": [
+            31.033,
+            34.354,
+            38.733
+          ],
+          "stagingBytes": 10240,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "path-1",
+          "mode": "direct",
+          "callsPerFrame": 7,
+          "submitUs": [
+            24.238,
+            21.058,
+            24.867
+          ],
+          "batchUs": [
+            36.763,
+            41.933,
+            35.308
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "path-1",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            29.95,
+            30.212,
+            35.233
+          ],
+          "batchUs": [
+            47.071,
+            36.625,
+            47.467
+          ],
+          "stagingBytes": 104,
+          "newBufferBytesPerFrame": 104
+        },
+        {
+          "name": "path-1",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            26.829,
+            27.079,
+            26.692
+          ],
+          "batchUs": [
+            59.829,
+            40.413,
+            43.008
+          ],
+          "stagingBytes": 104,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "path-32",
+          "mode": "direct",
+          "callsPerFrame": 162,
+          "submitUs": [
+            154.404,
+            114.033,
+            102.896
+          ],
+          "batchUs": [
+            46.954,
+            39.596,
+            38.508
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "path-32",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            105.071,
+            75.383,
+            99.483
+          ],
+          "batchUs": [
+            42.346,
+            36.996,
+            39.554
+          ],
+          "stagingBytes": 3328,
+          "newBufferBytesPerFrame": 3328
+        },
+        {
+          "name": "path-32",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            72.571,
+            96.004,
+            51.175
+          ],
+          "batchUs": [
+            36.408,
+            41.892,
+            39.575
+          ],
+          "stagingBytes": 3328,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "path-256",
+          "mode": "direct",
+          "callsPerFrame": 1282,
+          "submitUs": [
+            617.717,
+            581.708,
+            577.167
+          ],
+          "batchUs": [
+            42.65,
+            34.046,
+            35.704
+          ],
+          "stagingBytes": 0,
+          "newBufferBytesPerFrame": 0
+        },
+        {
+          "name": "path-256",
+          "mode": "new-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            341.371,
+            344.979,
+            303.825
+          ],
+          "batchUs": [
+            37.067,
+            39.425,
+            40.813
+          ],
+          "stagingBytes": 26624,
+          "newBufferBytesPerFrame": 26624
+        },
+        {
+          "name": "path-256",
+          "mode": "reused-buffer",
+          "callsPerFrame": 3,
+          "submitUs": [
+            350.462,
+            349.142,
+            321.858
+          ],
+          "batchUs": [
+            36.946,
+            35.388,
+            34.421
+          ],
+          "stagingBytes": 26624,
+          "newBufferBytesPerFrame": 0
+        }
+      ]
+    }
+  }
+}

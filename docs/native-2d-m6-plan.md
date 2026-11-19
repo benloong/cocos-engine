@@ -114,7 +114,7 @@
 - [x] Windows Debug/Release 与 Web 的 78 张 GPU 图像逐通道相同。缩放、旋转、大尺寸、多子路径、Camera 切换和混合绘制均经实际 RenderTexture 读回。混合场景逐点检查 Sprite 红、Label 绿、Graphics 蓝及 stencil 后继 Graphics 黄。[逐图哈希与结果](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Mask radius 与动态几何状态：半径归原生所有，圆角限幅/更新、尺寸/anchor 更新、rect→ellipse 已通过真实 GPU 对照；扩展夹具 48/48 图像全通道差值 0，见 [状态与命中报告](./native-2d-m6.4-mask-state-hit.md)。动态资产、完整混合场景和跨平台仍待验收。
 - [x] Windows Debug、Release 与 Web 实际 GPU 验收通过。覆盖 9 种 lineCap/lineJoin 组合（miterLimit=2）、roundRect、ellipse、arc、曲线、填充、描边和 clear 后重绘。夹具逐项检查必需的非空图像，三端全部 74 组捕获无通道差异。[候选指纹与逐图结果](./native-2d-m6-windows-web-gpu-results.json)。
-- [ ] 对比逐 API JSB 与命令批量提交的 CPU、调用次数、分配和绘制成本；用数据选择接口。JS 允许纯命令收集，不允许路径算法/三角化。
+- [x] Windows Debug/Release 同轮对比逐 API JSB、新建和复用命令缓冲。单个 rect 选择直接调用，密集路径选择复用缓冲。256 个闭合路径的 Release 提交时间中位数为 581.7 → 349.1 µs，调用数为 1282 → 3，所有方式均单次 draw。六种输入与 Web 图像逐字节一致。[分配、逐轮数据及接口结论](./native-2d-m6.3-graphics-commands.md)
 - [x] Windows Debug/Release、Web 验证四类 Mask、反转、嵌套和 stencil 恢复、阈值、尺寸与资产切换。椭圆从 4 段改为 64 段，着色面积从 8000 增至 12560；混合场景从不透明帧换为左右透明度不同的帧，着色面积从 12400 降至 6400，后继 Graphics 保持黄色。[逐图结果](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Graphics 在原生端选择内置绘制材质。Mask 在挂接 Sprite stencil 时选择内置 alpha-test 材质，各实例持有独立阈值。两个 Mask 共享一张纹理并交换阈值，Windows Debug/Release 与 Web 逐像素一致，销毁其中一个 Mask 后材质引用数恢复。[GPU 对照](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Windows Debug、Release 和 Web 完成 Graphics/Mask 创建、静止和变更测量。32 个矩形在单组件与 32 个组件中分别产生 1、32 个批次，单层与双层 Mask 分别产生 3、5 个批次。三端以 4096 字节纹理上传校准计数，覆盖全部 189 个采样窗口。[成本与复现](./native-2d-m6.3-graphics-cost.md)

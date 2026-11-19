@@ -22,6 +22,7 @@ function(install_graphics_metrics)
         add_custom_command(OUTPUT "${copy}"
             COMMAND "${node}" "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/instrument-graphics-metrics.cjs" "${matches}" "${copy}"
             DEPENDS "${matches}" "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/instrument-graphics-metrics.cjs"
+                    "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/graphics-command-probe.inc"
             VERBATIM)
         set_source_files_properties("${copy}" TARGET_DIRECTORY cocos_engine PROPERTIES INCLUDE_DIRECTORIES "${includes}")
         list(REMOVE_ITEM sources "${matches}")

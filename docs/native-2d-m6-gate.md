@@ -8,6 +8,7 @@
 
 | 项目 | 配置和结果 | 证据 |
 |---|---|---|
+| Graphics 命令提交 | Windows Debug/Release 与 Web 像素对照。Release 的 256 个闭合路径从逐调用改用复用缓冲，提交耗时中位数从 581.7 降至 349.1 µs，批次和绘制次数均为 1 | [接口选择与分配实测](./native-2d-m6.3-graphics-commands.md) |
 | 混合负载 CPU | Windows Release 三轮。迁移前 4.5881 ms，候选 6.3762 ms，目标 ≤2.2941 ms，失败 | [方法与版本](./native-2d-m6-performance.md)、[逐负载数据](./native-2d-m6-performance-label.json) |
 | JSB、堆峰值与 GC | 同一负载下 JSB 876→196，堆峰值下降 43.22%，强制 GC 7.943→4.277 ms | [三轮数据](./native-2d-m6-performance-label.json) |
 | 稳态组件 JSB | Windows，13 组组件及资产消费者与空 Canvas 对照，各采样 60 帧 | [逐方法计数与对照](./native-2d-m6.0-windows-jsb-trace.md) |
@@ -32,7 +33,6 @@
 | M6.1 | 旧资产边界 | 异步取消、延迟依赖、克隆和跨场景生命周期 |
 | M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期及三组失败字形 |
 | M6.2 | RichText 固定回归 | shadow、样式、布局、用户事件和销毁解绑的完整组合 |
-| M6.3 | Graphics 提交 | 逐 API 与批量命令在相同输入下的 CPU、调用、分配和绘制对照 |
 | M6.4 | 所有权审计 | 全组件及资产的 attach/detach、借用指针和回调逐类核查 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
 | M6.5 | 性能 KPI | 混合变更负载比迁移前慢 38.97% |

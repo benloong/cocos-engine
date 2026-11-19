@@ -34,6 +34,8 @@ case 'GLES3Queue.cpp':
         m6graphics::triangles.fetch_add(cmdBuff->_numTriangles, std::memory_order_relaxed);`);
     break;
 case 'jsb_global.cpp':
+    insert('#include "jsb_global.h"', '\n#include "2d/components/Graphics.h"\n#include "bindings/auto/jsb_2d_auto.h"\n#ifdef _DEBUG\n#include <crtdbg.h>\n#endif');
+    insert('SE_BIND_FUNC(js_performance_now)', '\n' + fs.readFileSync(path.join(__dirname, 'graphics-command-probe.inc'), 'utf8'));
     insert('SE_BIND_FUNC(js_performance_now)', `
 static bool js_readGraphicsMetrics(se::State &s) {
     using namespace m6graphics;
@@ -45,6 +47,10 @@ static bool js_readGraphicsMetrics(se::State &s) {
 SE_BIND_FUNC(js_readGraphicsMetrics)
 `);
     insert('__jsbObj->defineFunction("garbageCollect", _SE(jsc_garbageCollect));', '\n    __jsbObj->defineFunction("readGraphicsMetrics", _SE(js_readGraphicsMetrics));');
+    insert('__jsbObj->defineFunction("readGraphicsMetrics", _SE(js_readGraphicsMetrics));', `
+    __jsbObj->defineFunction("submitGraphicsCommands", _SE(js_submitGraphicsCommands));
+    __jsbObj->defineFunction("beginGraphicsCommands", _SE(js_beginGraphicsCommands));
+    __jsbObj->defineFunction("endGraphicsCommands", _SE(js_endGraphicsCommands));`);
     break;
 default: throw Error('Unknown instrumentation source: ' + source);
 }
