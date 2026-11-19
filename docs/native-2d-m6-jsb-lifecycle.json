@@ -1,0 +1,3129 @@
+{
+  "runtimeRevision": "0a56b5906e",
+  "platform": "Windows V8",
+  "frames": {
+    "warmup": 12,
+    "steady": 60,
+    "flush": 1,
+    "destroy": 3
+  },
+  "fixtureSha256": "072d6bd25c24cbe85ad53071b271b99c90000d0c193ec4e26f4b17b5af0fa9bf",
+  "configs": {
+    "Debug": {
+      "executableSha256": "67831792011f612da1901444de9db4c3ffc29936c81218d9df1b2e3802f2d9c4",
+      "engineSha256": "0416d89df16ade492892e5d01484806a7d66cc75d24cfa96f1d12211e5f6a443",
+      "rawLogSha256": "6120ea053e8a2f778d574d4e00525d07adda5b6b65ff1ba64986a503bcb480a5",
+      "cases": {
+        "Canvas": {
+          "setup": {
+            "totalCalls": 1,
+            "componentCalls": 0,
+            "calls": {
+              "jsb_clearInvocationRecords": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Root_frameMove": 60,
+              "js_cc_render_RenderQueueBuilder_addScene": 180,
+              "js_cc_render_Pipeline_addRenderPass": 60,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 180,
+              "js_cc_render_BasicPipeline_beginSetup": 60,
+              "js_cc_render_BasicPipeline_setVec4": 60,
+              "js_cc_scene_Camera_viewport_get": 60,
+              "js_performance_now": 60,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 60,
+              "js_cc_Root_cameraList_get": 60,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 60,
+              "js_cc_scene_Camera_window_get": 240,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 60,
+              "js_cc_scene_Camera_scene_get": 240,
+              "js_cc_scene_RenderWindow_colorName_get": 60,
+              "js_cc_Root_customPipeline_get": 60,
+              "js_cc_render_RenderNode_name_set": 60,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 60,
+              "js_cc_scene_RenderWindow_swapchain_get": 60,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 60,
+              "js_cc_scene_RenderScene_spotLights_get": 60,
+              "js_cc_scene_Camera_frustum_get": 60,
+              "js_cc_scene_Shadows_size_get": 60,
+              "js_cc_scene_Camera_clearColor_get": 60,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 60,
+              "js_cc_Node_resetHasChangedFlags_static": 60,
+              "js_cc_scene_Camera_cameraUsage_get": 180,
+              "js_cc_scene_Camera_clearFlag_get": 180,
+              "js_cc_scene_RenderScene_sphereLights_get": 60,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 60,
+              "js_cc_render_BasicPipeline_endSetup": 60,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 60,
+              "js_cc_scene_RenderScene_pointLights_get": 60,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 60,
+              "js_cc_render_PipelineRuntime_profiler_get": 60,
+              "js_cc_scene_RenderScene_getMainLight": 60,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 120,
+              "js_cc_gfx_Color_x_get": 60,
+              "js_cc_scene_Camera_visibility_get": 60,
+              "js_cc_Node_clearNodeArray_static": 60,
+              "js_cc_scene_RenderWindow_width_get": 60,
+              "js_cc_scene_Camera_geometryRenderer_get": 60,
+              "js_cc_scene_RenderWindow_height_get": 60,
+              "js_cc_scene_Camera_clearDepth_get": 60,
+              "js_cc_gfx_Color_z_get": 60,
+              "js_cc_scene_Camera_clearStencil_get": 60,
+              "js_cc_gfx_Color_y_get": 60,
+              "js_cc_gfx_Color_w_get": 60,
+              "jsb_clearInvocationRecords": 1
+            }
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "calls": {
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_SpriteFrame_getRectWidth": 1
+            }
+          },
+          "mutation": {
+            "totalCalls": 1,
+            "componentCalls": 0,
+            "calls": {
+              "jsb_clearInvocationRecords": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Root_frameMove": 1,
+              "js_cc_render_RenderQueueBuilder_addScene": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 1,
+              "js_cc_render_Pipeline_addRenderPass": 1,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 3,
+              "js_cc_render_BasicPipeline_setVec4": 1,
+              "js_cc_scene_Camera_viewport_get": 1,
+              "js_cc_Root_cameraList_get": 1,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 1,
+              "js_performance_now": 1,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 1,
+              "js_cc_scene_Camera_window_get": 4,
+              "js_cc_Root_customPipeline_get": 1,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 1,
+              "js_cc_scene_Camera_scene_get": 4,
+              "js_cc_scene_RenderWindow_colorName_get": 1,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 1,
+              "js_cc_scene_Shadows_size_get": 1,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 1,
+              "js_cc_scene_RenderWindow_swapchain_get": 1,
+              "js_cc_render_RenderNode_name_set": 1,
+              "js_cc_scene_Camera_frustum_get": 1,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 1,
+              "js_cc_scene_Camera_clearColor_get": 1,
+              "js_cc_scene_RenderScene_spotLights_get": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_Node_resetHasChangedFlags_static": 1,
+              "js_cc_scene_Camera_cameraUsage_get": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 1,
+              "js_cc_scene_RenderScene_sphereLights_get": 1,
+              "js_cc_scene_RenderScene_pointLights_get": 1,
+              "js_cc_render_BasicPipeline_endSetup": 1,
+              "js_cc_scene_Camera_clearFlag_get": 3,
+              "js_cc_gfx_Color_x_get": 1,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 1,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 1,
+              "js_cc_render_PipelineRuntime_profiler_get": 1,
+              "js_cc_scene_Camera_visibility_get": 1,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 2,
+              "js_cc_scene_RenderScene_getMainLight": 1,
+              "js_cc_Node_clearNodeArray_static": 1,
+              "js_cc_scene_RenderWindow_height_get": 1,
+              "js_cc_gfx_Color_y_get": 1,
+              "js_cc_scene_RenderWindow_width_get": 1,
+              "js_cc_gfx_Color_w_get": 1,
+              "js_cc_scene_Camera_clearStencil_get": 1,
+              "js_cc_scene_Camera_geometryRenderer_get": 1,
+              "js_cc_gfx_Color_z_get": 1,
+              "js_cc_scene_Camera_clearDepth_get": 1
+            }
+          },
+          "disable": {
+            "totalCalls": 9,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Node_setActive": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_get": 4,
+              "js_cc_CCObject__objFlags_set": 3
+            }
+          },
+          "enable": {
+            "totalCalls": 12,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Node_setActive": 1,
+              "js_cc_CCObject__objFlags_get": 6,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Node_invalidateChildren": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 216,
+            "componentCalls": 1,
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_performance_now": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_CCObject__objFlags_get": 15,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_CCObject__objFlags_set": 6,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_CCObject_destruct": 2,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_y_get": 3
+            }
+          }
+        },
+        "UITransform": {
+          "setup": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_UITransform_setContentSizeXY": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_UITransform_setContentSizeXY": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 9,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "enable": {
+            "totalCalls": 12,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "destroy": {
+            "totalCalls": 1340,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_delete_cc_render_RenderQueueBuilder": 462,
+              "js_delete_cc_render_SceneBuilder": 462,
+              "js_delete_cc_render_RenderPassBuilder": 154,
+              "js_delete_cc_scene_RenderWindow": 1,
+              "js_delete_cc_scene_Pass": 2,
+              "js_delete_cc_geometry_Frustum": 1,
+              "js_delete_cc_gfx_Buffer": 2,
+              "js_delete_cc_Material": 2,
+              "js_delete_cc_gfx_Sampler": 1,
+              "js_delete_cc_gfx_DescriptorSet": 2,
+              "js_delete_cc_JSBNativeDataHolder": 1,
+              "js_delete_cc_gfx_DeviceCaps": 1,
+              "js_delete_cc_UITransform": 2,
+              "js_delete_cc_gfx_Texture": 2,
+              "js_delete_cc_gfx_Swapchain": 1,
+              "js_delete_cc_gfx_Framebuffer": 1,
+              "js_delete_cc_gfx_InputAssembler": 1,
+              "js_delete_cc_gfx_Color": 1,
+              "js_delete_cc_CCObject": 1,
+              "js_delete_cc_gfx_RenderPass": 1,
+              "js_delete_cc_Vec2": 2,
+              "js_delete_cc_Color": 1,
+              "js_delete_cc_Node": 1,
+              "js_delete_cc_CanvasRenderingContext2D": 1,
+              "js_delete_cc_gfx_Shader": 1,
+              "js_delete_cc_Vec4": 2,
+              "js_delete_cc_gfx_CommandBuffer": 1,
+              "js_delete_cc_scene_AmbientInfo": 1,
+              "js_delete_cc_scene_ShadowsInfo": 1,
+              "js_delete_cc_scene_SkyboxInfo": 1,
+              "js_delete_cc_scene_FogInfo": 1,
+              "js_delete_cc_scene_OctreeInfo": 1,
+              "js_delete_cc_scene_SkinInfo": 1,
+              "js_delete_cc_SceneAsset": 1,
+              "js_delete_cc_gfx_Queue": 1,
+              "js_delete_cc_gfx_PipelineState": 1,
+              "js_delete_cc_scene_PostSettings": 1,
+              "js_delete_cc_scene_PostSettingsInfo": 1,
+              "js_delete_cc_gi_LightProbeInfo": 1,
+              "js_delete_cc_pipeline_PipelineSceneData": 1,
+              "js_delete_cc_scene_Shadows": 1
+            }
+          }
+        },
+        "RenderRoot2D": {
+          "setup": {
+            "totalCalls": 85,
+            "componentCalls": 29,
+            "deltaFromCanvas": {
+              "js_cc_Node_setParent": 1,
+              "js_new_cc_Node": 1,
+              "js_new_cc_Sprite": 1,
+              "js_cc_Sprite_setFrame": 1,
+              "js_cc_Node_initAndReturnSharedBuffer": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_new_cc_CCObject": 3,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_Node_walk": 1,
+              "js_cc_Component_setNode": 2,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_RenderRoot2D_setEnabled": 1,
+              "js_cc_CCObject__objFlags_set": 12,
+              "js_new_cc_UITransform": 1,
+              "js_new_cc_RenderRoot2D": 1,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_cc_UITransform_setSizeChangedCallback": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_UITransform_setContentSizeXY": 1,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_UITransform_setAnchorPointXY": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Sprite_setFillRange": 1,
+              "js_cc_UITransform_setPriority": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_Sprite_setFillStart": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_scene_Node_setPosition": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 24,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__objFlags_set": 5,
+              "js_cc_RenderRoot2D_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 40,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_CCObject__objFlags_set": 3,
+              "js_cc_RenderRoot2D_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 265,
+            "componentCalls": 9,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_CCObject__objFlags_set": 9,
+              "js_cc_CCObject_destruct": 4,
+              "js_cc_Component_setNode": 2,
+              "js_cc_RenderRoot2D_setEnabled": 2,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "UIOpacity": {
+          "setup": {
+            "totalCalls": 86,
+            "componentCalls": 31,
+            "deltaFromCanvas": {
+              "js_cc_Node_setParent": 1,
+              "js_new_cc_Node": 1,
+              "js_new_cc_Sprite": 1,
+              "js_cc_Sprite_setFrame": 1,
+              "js_new_cc_UIOpacity": 1,
+              "js_new_cc_CCObject": 3,
+              "js_cc_Node_initAndReturnSharedBuffer": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_Node_walk": 1,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__objFlags_set": 12,
+              "js_new_cc_UITransform": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_UITransform_setSizeChangedCallback": 1,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_cc_UIOpacity_setActive": 1,
+              "js_cc_UIOpacity_setOpacity": 2,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_UITransform_setContentSizeXY": 1,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_UITransform_setAnchorPointXY": 1,
+              "js_cc_Sprite_setFillRange": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_UITransform_setPriority": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1,
+              "js_cc_Sprite_setFillStart": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_UIOpacity_setOpacity": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 24,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__objFlags_set": 5,
+              "js_cc_Sprite_setEnabled": 1,
+              "js_cc_UIOpacity_setActive": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 40,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_CCObject__objFlags_set": 3,
+              "js_cc_UIOpacity_setActive": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 264,
+            "componentCalls": 9,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_CCObject__objFlags_set": 9,
+              "js_cc_CCObject_destruct": 4,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UIOpacity_detach": 1,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_UIOpacity_setActive": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "UIRenderer-Sprite-SpriteFrame": {
+          "setup": {
+            "totalCalls": 41,
+            "componentCalls": 22,
+            "deltaFromCanvas": {
+              "js_cc_Sprite_setFrame": 1,
+              "js_new_cc_Sprite": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1,
+              "js_cc_Sprite_setFillStart": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_Sprite_setFillRange": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 5020,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_delete_cc_render_SceneBuilder": 519,
+              "js_delete_cc_render_RenderQueueBuilder": 519,
+              "js_delete_cc_render_RenderPassBuilder": 173,
+              "js_delete_cc_UIOpacity": 1,
+              "js_delete_cc_Node": 5,
+              "js_delete_cc_CCObject": 7,
+              "js_delete_cc_UITransform": 4,
+              "js_delete_cc_RenderEntity": 2,
+              "js_delete_cc_scene_Shadows": 1,
+              "js_delete_cc_Sprite": 2,
+              "js_delete_cc_gfx_Swapchain": 1,
+              "js_delete_cc_pipeline_PipelineSceneData": 1,
+              "js_delete_cc_Vec2": 1,
+              "js_delete_cc_gfx_Color": 1,
+              "js_delete_cc_RenderRoot2D": 1,
+              "js_delete_cc_scene_RenderWindow": 1
+            }
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Sprite_setColorRGBA": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "Label": {
+          "setup": {
+            "totalCalls": 53,
+            "componentCalls": 34,
+            "deltaFromCanvas": {
+              "js_new_cc_Label": 1,
+              "js_cc_Component_setNode": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Label_setFont": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_Label_setString": 2,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setFontSize": 1,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setVerticalAlign": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Label_setString": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setFontAsset": 1
+            }
+          }
+        },
+        "LabelOutline": {
+          "setup": {
+            "totalCalls": 69,
+            "componentCalls": 35,
+            "deltaFromCanvas": {
+              "js_cc_Label_setOutlineColor": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_new_cc_CCObject": 2,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_Label_setFont": 1,
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_Label_setString": 2,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__objFlags_set": 8,
+              "js_cc_Label_setEnableOutline": 2,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_Label_setFontSize": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setOverflow": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 3,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "jsbConsoleWarn": 1,
+              "js_cc_Label_setOutlineWidth": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 17,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 4,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableOutline": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 30,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 10,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableOutline": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 242,
+            "componentCalls": 7,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 13,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject_destruct": 2,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setFontAsset": 1
+            }
+          }
+        },
+        "LabelShadow": {
+          "setup": {
+            "totalCalls": 69,
+            "componentCalls": 35,
+            "deltaFromCanvas": {
+              "js_new_cc_Label": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_new_cc_CCObject": 2,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_Label_setFont": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_CCObject__objFlags_set": 8,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Label_setEnableShadow": 2,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setFontSize": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setShadowBlur": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 3,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "jsbConsoleWarn": 1,
+              "js_cc_Label_setShadowBlur": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 17,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 4,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableShadow": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 30,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 10,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableShadow": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 242,
+            "componentCalls": 7,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 13,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject_destruct": 2,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setEnableShadow": 1
+            }
+          }
+        },
+        "Font-TTFFont": {
+          "setup": {
+            "totalCalls": 57,
+            "componentCalls": 38,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Label_setFontAsset": 2,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setFont": 2,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setFontSize": 2,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setIsUnderline": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 6185,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_delete_cc_render_RenderQueueBuilder": 1017,
+              "js_delete_cc_render_SceneBuilder": 1017,
+              "js_delete_cc_render_RenderPassBuilder": 338,
+              "js_delete_cc_geometry_Frustum": 1,
+              "js_delete_cc_Label": 3,
+              "js_delete_cc_Node": 4,
+              "js_delete_cc_CCObject": 9,
+              "js_delete_cc_gfx_Color": 1,
+              "js_delete_cc_UITransform": 4,
+              "js_delete_cc_RenderEntity": 4,
+              "js_delete_cc_Sprite": 1,
+              "js_delete_cc_Vec2": 1,
+              "js_delete_cc_pipeline_PipelineSceneData": 1,
+              "js_delete_cc_gfx_Swapchain": 1,
+              "js_delete_cc_scene_Shadows": 1,
+              "js_delete_cc_scene_RenderWindow": 1
+            }
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 5,
+            "componentCalls": 4,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setFont": 1,
+              "js_cc_Label_setFontSize": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setFontAsset": 1
+            }
+          }
+        },
+        "BitmapFont": {
+          "setup": {
+            "totalCalls": 57,
+            "componentCalls": 38,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Label_setFontAsset": 2,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_Label_setFont": 2,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setFontSize": 2,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setOutlineWidth": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_BitmapFont_setFontSize": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1
+            }
+          }
+        },
+        "LabelAtlas": {
+          "setup": {
+            "totalCalls": 57,
+            "componentCalls": 38,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setFontAsset": 2,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setFont": 2,
+              "js_cc_Label_setMaterial": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setFontSize": 2,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setUnderlineHeight": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_BitmapFont_setFontSize": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1
+            }
+          }
+        },
+        "Graphics": {
+          "setup": {
+            "totalCalls": 45,
+            "componentCalls": 24,
+            "deltaFromCanvas": {
+              "js_new_cc_Graphics": 1,
+              "js_cc_Graphics_fillRect": 1,
+              "js_cc_Graphics_setFillColor": 2,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Graphics_setStrokeColor": 2,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Graphics_setEnabled": 3,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_UIRenderer_setMaterial": 1,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Graphics_setLineWidth": 2,
+              "js_cc_Graphics_setColorRGBA": 2,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject_isValid_get": 2,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Graphics_setPriority": 1,
+              "js_cc_Graphics_setMiterLimit": 2,
+              "js_cc_Graphics_setLineJoin": 2,
+              "js_cc_Graphics_setLineCap": 2,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 3,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Graphics_fillRect": 1,
+              "js_cc_CCObject_isValid_get": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Graphics_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Graphics_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 230,
+            "componentCalls": 4,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Graphics_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Component_setNode": 1
+            }
+          }
+        },
+        "Mask": {
+          "setup": {
+            "totalCalls": 93,
+            "componentCalls": 37,
+            "deltaFromCanvas": {
+              "js_cc_Node_setParent": 1,
+              "js_new_cc_Node": 1,
+              "js_new_cc_Mask": 1,
+              "js_cc_Node_initAndReturnSharedBuffer": 1,
+              "js_cc_Sprite_setFrame": 1,
+              "js_cc_Component_setNode": 2,
+              "js_new_cc_Sprite": 1,
+              "js_cc_Node_walk": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_new_cc_CCObject": 3,
+              "js_cc_Mask_setUITransform": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_new_cc_UITransform": 1,
+              "js_cc_CCObject__objFlags_set": 12,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_cc_UITransform_setSizeChangedCallback": 1,
+              "js_cc_Mask_setEnabled": 2,
+              "js_cc_Mask_setInverted": 1,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_UITransform_setContentSizeXY": 1,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Mask_setAlphaThreshold": 1,
+              "js_cc_Mask_setPriority": 1,
+              "js_cc_Sprite_setFillStart": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_UITransform_setAnchorPointXY": 1,
+              "js_cc_Mask_setType": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1,
+              "js_cc_Mask_setSegments": 1,
+              "js_cc_Mask_setRadius": 1,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1,
+              "js_cc_UITransform_setPriority": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_Sprite_setFillRange": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Mask_setInverted": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 24,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__objFlags_set": 5,
+              "js_cc_Mask_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 40,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_CCObject__objFlags_set": 3,
+              "js_cc_Mask_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 265,
+            "componentCalls": 9,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_CCObject__objFlags_set": 9,
+              "js_cc_CCObject_destruct": 4,
+              "js_cc_Component_setNode": 2,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_Mask_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "RichText-SpriteAtlas": {
+          "setup": {
+            "totalCalls": 53,
+            "componentCalls": 15,
+            "deltaFromCanvas": {
+              "js_cc_RichText_setString": 2,
+              "js_cc_Component_setEnabled": 3,
+              "js_cc_RichText_setImageAtlas": 2,
+              "js_new_cc_RichText": 1,
+              "js_cc_Node_initAndReturnSharedBuffer": 3,
+              "js_cc_Node_walk": 4,
+              "js_cc_Component_setNode": 1,
+              "js_cc_RichText_setUITransform": 1,
+              "js_cc_CCObject__objFlags_get": 13,
+              "js_new_cc_CCObject": 1,
+              "js_cc_CCObject__objFlags_set": 6,
+              "js_cc_Node_invalidateChildren": 3,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_RichText_setFontColorRGBA": 1,
+              "js_cc_Node__parentInternal_get": 1,
+              "js_cc_RichText_setFontFamily": 1,
+              "js_cc_RichText_setHorizontalAlign": 1,
+              "js_cc_RichText_setFontAsset": 1,
+              "js_cc_RichText_setFontSize": 1,
+              "js_cc_RichText_setMaxWidth": 1,
+              "js_cc_RichText_setLineHeight": 1,
+              "js_cc_RichText_setVerticalAlign": 1,
+              "js_cc_RichText_setCacheMode": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 6218,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_delete_cc_render_RenderQueueBuilder": 1026,
+              "js_delete_cc_render_SceneBuilder": 1026,
+              "js_delete_cc_render_RenderPassBuilder": 343,
+              "js_delete_cc_Graphics": 1,
+              "js_delete_cc_CCObject": 11,
+              "js_delete_cc_Node": 7,
+              "js_delete_cc_UITransform": 6,
+              "js_delete_cc_Label": 3,
+              "js_delete_cc_RenderEntity": 5,
+              "js_delete_cc_pipeline_PipelineSceneData": 1,
+              "js_delete_cc_Mask": 1,
+              "js_delete_cc_scene_RenderWindow": 1,
+              "js_delete_cc_Vec2": 1,
+              "js_delete_cc_gfx_Color": 1,
+              "js_delete_cc_geometry_Frustum": 1,
+              "js_delete_cc_scene_Shadows": 1,
+              "js_delete_cc_Sprite": 1,
+              "js_delete_cc_gfx_Swapchain": 1
+            }
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_RichText_setString": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Component_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 25,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Node_invalidateChildren": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Component_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 241,
+            "componentCalls": 3,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 2,
+              "js_cc_CCObject__objFlags_get": 11,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject_destruct": 3,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Component_setEnabled": 2,
+              "js_cc_RichText_setImageAtlas": 1,
+              "js_cc_RichText_setFontAsset": 1
+            }
+          }
+        }
+      }
+    },
+    "Release": {
+      "executableSha256": "aedf99eaad7ca0f5cb74f92658bbcd2e6b2a44d2677df43061c1c4c61ce1c6fe",
+      "engineSha256": "0416d89df16ade492892e5d01484806a7d66cc75d24cfa96f1d12211e5f6a443",
+      "rawLogSha256": "3725ff9f7496431b03ac6a46d863ebc90620b85f90a21d75c72011b313093b0e",
+      "cases": {
+        "Canvas": {
+          "setup": {
+            "totalCalls": 1,
+            "componentCalls": 0,
+            "calls": {
+              "jsb_clearInvocationRecords": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Root_frameMove": 60,
+              "js_cc_render_RenderQueueBuilder_addScene": 180,
+              "js_cc_render_Pipeline_addRenderPass": 60,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 180,
+              "js_cc_render_BasicPipeline_beginSetup": 60,
+              "js_cc_scene_Camera_viewport_get": 60,
+              "js_cc_render_BasicPipeline_setVec4": 60,
+              "js_cc_Root_cameraList_get": 60,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 60,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 60,
+              "js_cc_scene_RenderWindow_colorName_get": 60,
+              "js_performance_now": 60,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 60,
+              "js_cc_Root_customPipeline_get": 60,
+              "js_cc_scene_Camera_window_get": 240,
+              "js_cc_scene_Camera_scene_get": 240,
+              "js_cc_render_RenderNode_name_set": 60,
+              "js_cc_scene_RenderScene_spotLights_get": 60,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 60,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 60,
+              "js_cc_scene_RenderWindow_swapchain_get": 60,
+              "js_cc_scene_Camera_frustum_get": 60,
+              "js_cc_scene_RenderScene_sphereLights_get": 60,
+              "js_cc_scene_Shadows_size_get": 60,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 60,
+              "js_cc_scene_RenderScene_pointLights_get": 60,
+              "js_cc_scene_Camera_clearColor_get": 60,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 60,
+              "js_cc_scene_Camera_cameraUsage_get": 180,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 120,
+              "js_cc_Node_resetHasChangedFlags_static": 60,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 60,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 60,
+              "js_cc_scene_Camera_clearFlag_get": 180,
+              "js_cc_render_BasicPipeline_endSetup": 60,
+              "js_cc_scene_RenderScene_getMainLight": 60,
+              "js_cc_Node_clearNodeArray_static": 60,
+              "js_cc_render_PipelineRuntime_profiler_get": 60,
+              "js_cc_scene_RenderWindow_width_get": 60,
+              "js_cc_gfx_Color_x_get": 60,
+              "js_cc_scene_Camera_visibility_get": 60,
+              "js_cc_gfx_Color_z_get": 60,
+              "js_cc_scene_RenderWindow_height_get": 60,
+              "js_cc_gfx_Color_w_get": 60,
+              "js_cc_scene_Camera_geometryRenderer_get": 60,
+              "js_cc_scene_Camera_clearDepth_get": 60,
+              "js_cc_gfx_Color_y_get": 60,
+              "js_cc_scene_Camera_clearStencil_get": 60,
+              "jsb_clearInvocationRecords": 1
+            }
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "calls": {
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_SpriteFrame_getRectWidth": 1
+            }
+          },
+          "mutation": {
+            "totalCalls": 1,
+            "componentCalls": 0,
+            "calls": {
+              "jsb_clearInvocationRecords": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Root_frameMove": 1,
+              "js_cc_render_RenderQueueBuilder_addScene": 3,
+              "js_cc_render_Pipeline_addRenderPass": 1,
+              "js_cc_render_BasicPipeline_beginSetup": 1,
+              "js_cc_scene_Camera_viewport_get": 1,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 3,
+              "js_cc_Root_cameraList_get": 1,
+              "js_cc_render_BasicPipeline_setVec4": 1,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 1,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 1,
+              "js_cc_scene_Camera_window_get": 4,
+              "js_cc_Root_customPipeline_get": 1,
+              "js_performance_now": 1,
+              "js_cc_scene_RenderWindow_colorName_get": 1,
+              "js_cc_scene_Camera_scene_get": 4,
+              "js_cc_render_RenderNode_name_set": 1,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 1,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 1,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 1,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 1,
+              "js_cc_scene_RenderWindow_swapchain_get": 1,
+              "js_cc_scene_Shadows_size_get": 1,
+              "js_cc_scene_Camera_frustum_get": 1,
+              "js_cc_scene_RenderScene_spotLights_get": 1,
+              "js_cc_scene_Camera_clearColor_get": 1,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 2,
+              "js_cc_scene_RenderScene_pointLights_get": 1,
+              "js_cc_scene_RenderScene_sphereLights_get": 1,
+              "js_cc_scene_Camera_clearFlag_get": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 1,
+              "js_cc_Node_clearNodeArray_static": 1,
+              "js_cc_scene_RenderScene_getMainLight": 1,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 1,
+              "js_cc_scene_Camera_cameraUsage_get": 3,
+              "js_cc_gfx_Color_w_get": 1,
+              "js_cc_scene_RenderWindow_height_get": 1,
+              "js_cc_scene_RenderWindow_width_get": 1,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 1,
+              "js_cc_gfx_Color_x_get": 1,
+              "js_cc_render_BasicPipeline_endSetup": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_Node_resetHasChangedFlags_static": 1,
+              "js_cc_gfx_Color_z_get": 1,
+              "js_cc_scene_Camera_clearDepth_get": 1,
+              "js_cc_render_PipelineRuntime_profiler_get": 1,
+              "js_cc_scene_Camera_visibility_get": 1,
+              "js_cc_gfx_Color_y_get": 1,
+              "js_cc_scene_Camera_clearStencil_get": 1,
+              "js_cc_scene_Camera_geometryRenderer_get": 1
+            }
+          },
+          "disable": {
+            "totalCalls": 9,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Node_setActive": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 3,
+              "js_cc_CCObject__objFlags_get": 4
+            }
+          },
+          "enable": {
+            "totalCalls": 12,
+            "componentCalls": 0,
+            "calls": {
+              "js_cc_Node_setActive": 1,
+              "js_cc_CCObject__objFlags_get": 6,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Node_invalidateChildren": 1,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_CCObject__objFlags_set": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 216,
+            "componentCalls": 1,
+            "calls": {
+              "js_cc_Root_frameMove": 3,
+              "js_cc_render_RenderQueueBuilder_addScene": 9,
+              "js_cc_render_Pipeline_addRenderPass": 3,
+              "js_cc_render_BasicRenderPassBuilder_addQueue": 9,
+              "js_cc_render_BasicPipeline_beginSetup": 3,
+              "js_cc_scene_Camera_viewport_get": 3,
+              "js_cc_render_BasicPipeline_setVec4": 3,
+              "js_cc_CCObject__destroy": 1,
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_Root_cameraList_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_setViewport": 3,
+              "js_cc_render_BasicRenderPassBuilder_addRenderTarget": 3,
+              "js_performance_now": 3,
+              "js_cc_Root_customPipeline_get": 3,
+              "js_cc_scene_Camera_window_get": 12,
+              "js_cc_scene_RenderWindow_colorName_get": 3,
+              "js_cc_render_BasicRenderPassBuilder_addDepthStencil": 3,
+              "js_cc_scene_Camera_scene_get": 12,
+              "js_cc_scene_RenderScene_spotLights_get": 3,
+              "js_cc_render_RenderNode_name_set": 3,
+              "js_cc_scene_Shadows_size_get": 3,
+              "js_cc_scene_Camera_frustum_get": 3,
+              "js_cc_UIRendererManager_updateAllDirtyRenderers": 3,
+              "js_cc_scene_RenderWindow_depthStencilName_get": 3,
+              "js_cc_render_PipelineRuntime_pipelineSceneData_get": 3,
+              "js_cc_scene_RenderWindow_swapchain_get": 3,
+              "js_cc_CCObject__objFlags_get": 15,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_scene_Camera_clearColor_get": 3,
+              "js_cc_pipeline_PipelineSceneData_shadows_get": 3,
+              "js_cc_scene_RenderWindow_renderWindowId_get": 6,
+              "js_cc_scene_Camera_cameraUsage_get": 9,
+              "js_cc_scene_RenderScene_pointLights_get": 3,
+              "js_cc_scene_Camera_clearFlag_get": 9,
+              "js_cc_scene_RenderScene_sphereLights_get": 3,
+              "js_cc_scene_RenderWindow_isRenderWindowResized": 3,
+              "js_cc_Node_resetHasChangedFlags_static": 3,
+              "js_cc_CCObject__objFlags_set": 6,
+              "js_cc_scene_RenderScene_getMainLight": 3,
+              "js_cc_scene_RenderScene_rangedDirLights_get": 3,
+              "js_cc_scene_RenderWindow_width_get": 3,
+              "js_cc_Node_clearNodeArray_static": 3,
+              "js_cc_render_BasicPipeline_endSetup": 3,
+              "js_cc_render_PipelineRuntime_profiler_get": 3,
+              "js_cc_gfx_Color_x_get": 3,
+              "js_cc_gfx_Color_z_get": 3,
+              "js_cc_gfx_Color_w_get": 3,
+              "js_cc_scene_Camera_visibility_get": 3,
+              "js_cc_scene_Camera_geometryRenderer_get": 3,
+              "jsb_clearInvocationRecords": 1,
+              "js_cc_scene_RenderWindow_height_get": 3,
+              "js_cc_gfx_Color_y_get": 3,
+              "js_cc_scene_Camera_clearDepth_get": 3,
+              "js_cc_scene_Camera_clearStencil_get": 3,
+              "js_cc_CCObject_destruct": 2
+            }
+          }
+        },
+        "UITransform": {
+          "setup": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_UITransform_setContentSizeXY": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_UITransform_setContentSizeXY": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 9,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "enable": {
+            "totalCalls": 12,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "destroy": {
+            "totalCalls": 216,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          }
+        },
+        "RenderRoot2D": {
+          "setup": {
+            "totalCalls": 85,
+            "componentCalls": 29,
+            "deltaFromCanvas": {
+              "js_cc_Node_setParent": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_new_cc_Node": 1,
+              "js_new_cc_Sprite": 1,
+              "js_cc_Component_setNode": 2,
+              "js_cc_Sprite_setFrame": 1,
+              "js_cc_Node_initAndReturnSharedBuffer": 1,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Node_walk": 1,
+              "js_new_cc_CCObject": 3,
+              "js_cc_RenderRoot2D_setEnabled": 1,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_CCObject__objFlags_set": 12,
+              "js_new_cc_UITransform": 1,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_new_cc_RenderRoot2D": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_UITransform_setSizeChangedCallback": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_UITransform_setContentSizeXY": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_UITransform_setAnchorPointXY": 1,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_Sprite_setFillStart": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1,
+              "js_cc_UITransform_setPriority": 1,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_Sprite_setFillRange": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_scene_Node_setPosition": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 24,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 5,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_RenderRoot2D_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 40,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_CCObject__objFlags_set": 3,
+              "js_cc_RenderRoot2D_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 265,
+            "componentCalls": 9,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_CCObject__objFlags_set": 9,
+              "js_cc_CCObject_destruct": 4,
+              "js_cc_Component_setNode": 2,
+              "js_cc_RenderRoot2D_setEnabled": 2,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "UIOpacity": {
+          "setup": {
+            "totalCalls": 86,
+            "componentCalls": 31,
+            "deltaFromCanvas": {
+              "js_new_cc_Node": 1,
+              "js_cc_Node_setParent": 1,
+              "js_cc_Sprite_setFrame": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_new_cc_Sprite": 1,
+              "js_new_cc_UIOpacity": 1,
+              "js_cc_Node_initAndReturnSharedBuffer": 1,
+              "js_new_cc_CCObject": 3,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_Node_walk": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_cc_CCObject__name_get": 6,
+              "js_new_cc_UITransform": 1,
+              "js_cc_CCObject__objFlags_set": 12,
+              "js_cc_Component_setNode": 1,
+              "js_cc_UIOpacity_setActive": 1,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_cc_UITransform_setSizeChangedCallback": 1,
+              "js_cc_UIOpacity_setOpacity": 2,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_UITransform_setContentSizeXY": 1,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Sprite_setFillRange": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_UITransform_setPriority": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_UITransform_setAnchorPointXY": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_Sprite_setFillStart": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_UIOpacity_setOpacity": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 24,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 5,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_Sprite_setEnabled": 1,
+              "js_cc_UIOpacity_setActive": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 40,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_CCObject__objFlags_set": 3,
+              "js_cc_UIOpacity_setActive": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 264,
+            "componentCalls": 9,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_CCObject__objFlags_set": 9,
+              "js_cc_CCObject_destruct": 4,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_UIOpacity_setActive": 1,
+              "js_cc_UIOpacity_detach": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "UIRenderer-Sprite-SpriteFrame": {
+          "setup": {
+            "totalCalls": 41,
+            "componentCalls": 22,
+            "deltaFromCanvas": {
+              "js_new_cc_Sprite": 1,
+              "js_cc_Sprite_setFrame": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_Sprite_setFillStart": 1,
+              "js_cc_Sprite_setFillRange": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Sprite_setColorRGBA": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "Label": {
+          "setup": {
+            "totalCalls": 53,
+            "componentCalls": 34,
+            "deltaFromCanvas": {
+              "js_cc_Component_setNode": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Label_setFont": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setFontSize": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setOutlineWidth": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Label_setString": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setFontAsset": 1
+            }
+          }
+        },
+        "LabelOutline": {
+          "setup": {
+            "totalCalls": 69,
+            "componentCalls": 35,
+            "deltaFromCanvas": {
+              "js_cc_Label_setOutlineColor": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_new_cc_CCObject": 2,
+              "js_cc_Label_setFont": 1,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__objFlags_set": 8,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setEnableOutline": 2,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_Label_setFontSize": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setEnableShadow": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 3,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "jsbConsoleWarn": 1,
+              "js_cc_Label_setOutlineWidth": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 17,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject__objFlags_get": 4,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableOutline": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 30,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 10,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableOutline": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 242,
+            "componentCalls": 7,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 13,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject_destruct": 2,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setEnableOutline": 1
+            }
+          }
+        },
+        "LabelShadow": {
+          "setup": {
+            "totalCalls": 69,
+            "componentCalls": 35,
+            "deltaFromCanvas": {
+              "js_new_cc_Label": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_Label_setFont": 1,
+              "js_new_cc_CCObject": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_CCObject__objFlags_set": 8,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setEnableShadow": 2,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setFontSize": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setShadowBlur": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 3,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "jsbConsoleWarn": 1,
+              "js_cc_Label_setShadowBlur": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 17,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject__objFlags_get": 4,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableShadow": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 30,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 10,
+              "js_cc_CCObject__name_get": 4,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setEnableShadow": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 242,
+            "componentCalls": 7,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 13,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject_destruct": 2,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setEnableShadow": 1
+            }
+          }
+        },
+        "Font-TTFFont": {
+          "setup": {
+            "totalCalls": 57,
+            "componentCalls": 38,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Component_setNode": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Label_setFont": 2,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setFontAsset": 2,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_Label_setFontSize": 2,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setHorizontalAlign": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 5,
+            "componentCalls": 4,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Label_setFont": 1,
+              "js_cc_Label_setFontSize": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Label_setFontAsset": 1
+            }
+          }
+        },
+        "BitmapFont": {
+          "setup": {
+            "totalCalls": 57,
+            "componentCalls": 38,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_new_cc_Label": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setFont": 2,
+              "js_cc_Label_setFontAsset": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_Label_setMaterial": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Label_setFontSize": 2,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setSpacingX": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setShadowBlur": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 7696,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_delete_cc_render_RenderQueueBuilder": 1653,
+              "js_delete_cc_render_SceneBuilder": 1653,
+              "js_delete_cc_render_RenderPassBuilder": 551,
+              "js_delete_cc_CCObject": 17,
+              "js_delete_cc_UITransform": 9,
+              "js_delete_cc_Label": 4,
+              "js_delete_cc_Node": 9,
+              "js_delete_cc_RenderEntity": 7,
+              "js_delete_cc_Sprite": 3,
+              "js_delete_cc_geometry_Frustum": 1,
+              "js_delete_cc_UIOpacity": 1,
+              "js_delete_cc_RenderRoot2D": 1,
+              "js_delete_cc_scene_RenderWindow": 1,
+              "js_delete_cc_pipeline_PipelineSceneData": 1,
+              "js_delete_cc_scene_Shadows": 1,
+              "js_delete_cc_gfx_Color": 1,
+              "js_delete_cc_Vec2": 1,
+              "js_delete_cc_gfx_Swapchain": 1
+            }
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_BitmapFont_setFontSize": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_UIRenderer_resizeMaterials": 1
+            }
+          }
+        },
+        "LabelAtlas": {
+          "setup": {
+            "totalCalls": 57,
+            "componentCalls": 38,
+            "deltaFromCanvas": {
+              "js_cc_Label_updateRenderData": 1,
+              "js_new_cc_Label": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setOutlineColor": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Label_setFont": 2,
+              "js_cc_Label_setFontAsset": 2,
+              "js_cc_Label_setEnabled": 1,
+              "js_cc_Label_setMaterial": 1,
+              "js_cc_Label_setString": 2,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_Label_setShadowColor": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_Label_setIsBold": 1,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Label_setColorRGBA": 1,
+              "js_cc_Label_setEnableShadow": 1,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Label_setTTFContentWidth": 1,
+              "js_cc_Label_setUITransform": 1,
+              "js_cc_Label_setPriority": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Label_setEnableWrapText": 1,
+              "js_cc_Label_setEnableOutline": 1,
+              "js_cc_Label_setFontSize": 2,
+              "js_cc_Label_setShadowOffset": 1,
+              "js_cc_Label_setLineHeight": 1,
+              "js_cc_Label_setActualFontSize": 1,
+              "js_cc_Label_setOutlineWidth": 1,
+              "js_cc_Label_setShadowBlur": 1,
+              "js_cc_Label_setCacheMode": 1,
+              "js_cc_Label_setIsItalic": 1,
+              "js_cc_Label_setIsUnderline": 1,
+              "js_cc_Label_setUnderlineHeight": 1,
+              "js_cc_Label_setOverflow": 1,
+              "js_cc_Label_setHorizontalAlign": 1,
+              "js_cc_Label_setVerticalAlign": 1,
+              "js_cc_Label_setSpacingX": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_BitmapFont_setFontSize": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Label_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 232,
+            "componentCalls": 6,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Label_setFontAsset": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Label_setEnabled": 2,
+              "js_cc_Label_destroyTTFSpriteFrame": 1,
+              "js_cc_UIRenderer_resizeMaterials": 1
+            }
+          }
+        },
+        "Graphics": {
+          "setup": {
+            "totalCalls": 45,
+            "componentCalls": 24,
+            "deltaFromCanvas": {
+              "js_new_cc_Graphics": 1,
+              "js_cc_Graphics_fillRect": 1,
+              "js_cc_Graphics_setFillColor": 2,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Graphics_setEnabled": 3,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Graphics_setStrokeColor": 2,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_new_cc_CCObject": 1,
+              "js_cc_UIRenderer_setMaterial": 1,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_Graphics_setColorRGBA": 2,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_CCObject_isValid_get": 2,
+              "js_cc_Graphics_setLineWidth": 2,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_Graphics_setLineJoin": 2,
+              "js_cc_Graphics_setMiterLimit": 2,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Graphics_setLineCap": 2,
+              "js_cc_Graphics_setPriority": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 3,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Graphics_fillRect": 1,
+              "js_cc_CCObject_isValid_get": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_Graphics_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 21,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 5,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Graphics_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 230,
+            "componentCalls": 4,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__objFlags_set": 2,
+              "js_cc_CCObject_destruct": 1,
+              "js_cc_Graphics_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Component_setNode": 1
+            }
+          }
+        },
+        "Mask": {
+          "setup": {
+            "totalCalls": 93,
+            "componentCalls": 37,
+            "deltaFromCanvas": {
+              "js_cc_Node_setParent": 1,
+              "js_new_cc_Mask": 1,
+              "js_new_cc_Node": 1,
+              "js_new_cc_CCObject": 3,
+              "js_new_cc_Sprite": 1,
+              "js_cc_Sprite_setFrame": 1,
+              "js_cc_Mask_setUITransform": 1,
+              "js_cc_Component_setNode": 2,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_Node_walk": 1,
+              "js_new_cc_RenderEntity": 1,
+              "js_cc_Node_initAndReturnSharedBuffer": 1,
+              "js_cc_UIRenderer_getSharedMaterial": 1,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_CCObject__objFlags_set": 12,
+              "js_new_cc_UITransform": 1,
+              "js_cc_Sprite_setUITransform": 1,
+              "js_cc_Mask_setInverted": 1,
+              "js_cc_Sprite_setMaterial": 1,
+              "js_cc_Sprite_setColorRGBA": 1,
+              "js_cc_Mask_setEnabled": 2,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UITransform_setSizeChangedCallback": 1,
+              "js_cc_RenderEntity_getEntitySharedBufferForJS": 1,
+              "js_cc_Mask_setAlphaThreshold": 1,
+              "js_cc_Sprite_setGrayscale": 1,
+              "js_cc_Mask_setType": 1,
+              "js_cc_UITransform_setContentSizeXY": 1,
+              "js_cc_UIRenderer_getSharedMaterialCount": 1,
+              "js_cc_UIRenderer_getMaterialInstanceCount": 1,
+              "js_cc_Mask_setRadius": 1,
+              "js_cc_Sprite_setTrim": 1,
+              "js_cc_Sprite_setSizeMode": 1,
+              "js_cc_UIRenderer_setSrcBlendFactor": 1,
+              "js_cc_Sprite_clearFrame": 1,
+              "js_cc_Mask_setSegments": 1,
+              "js_cc_UITransform_setAnchorPointXY": 1,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_UITransform_setPriority": 1,
+              "js_cc_Sprite_setFillType": 1,
+              "js_cc_Sprite_setFillStart": 1,
+              "js_cc_Sprite_setPriority": 1,
+              "js_cc_Sprite_setFillCenter": 1,
+              "js_cc_Mask_setPriority": 1,
+              "js_cc_Sprite_setType": 1,
+              "js_cc_Sprite_setFillRange": 1,
+              "js_cc_UIRenderer_setDstBlendFactor": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_Mask_setInverted": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 24,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 5,
+              "js_cc_CCObject__objFlags_get": 8,
+              "js_cc_Mask_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 40,
+            "componentCalls": 2,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 16,
+              "js_cc_CCObject__name_get": 6,
+              "js_cc_Node_invalidateChildren": 1,
+              "js_cc_CCObject__objFlags_set": 3,
+              "js_cc_Mask_setEnabled": 1,
+              "js_cc_Sprite_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 265,
+            "componentCalls": 9,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 1,
+              "js_cc_CCObject__objFlags_get": 25,
+              "js_cc_UITransform_detach": 1,
+              "js_cc_CCObject__objFlags_set": 9,
+              "js_cc_CCObject_destruct": 4,
+              "js_cc_Component_setNode": 2,
+              "js_cc_Mask_setEnabled": 2,
+              "js_cc_Sprite_setEnabled": 2,
+              "js_cc_UIRenderer_resizeMaterials": 1,
+              "js_cc_Sprite_getFillCenterX": 1,
+              "js_cc_Sprite_getFillCenterY": 1
+            }
+          }
+        },
+        "RichText-SpriteAtlas": {
+          "setup": {
+            "totalCalls": 53,
+            "componentCalls": 15,
+            "deltaFromCanvas": {
+              "js_cc_RichText_setString": 2,
+              "js_cc_Component_setEnabled": 3,
+              "js_cc_RichText_setImageAtlas": 2,
+              "js_new_cc_RichText": 1,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Node_walk": 4,
+              "js_cc_Node_initAndReturnSharedBuffer": 3,
+              "js_cc_RichText_setUITransform": 1,
+              "js_cc_CCObject__objFlags_get": 13,
+              "js_new_cc_CCObject": 1,
+              "js_cc_CCObject__objFlags_set": 6,
+              "js_cc_RichText_setFontFamily": 1,
+              "js_cc_RichText_setFontColorRGBA": 1,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Node_invalidateChildren": 3,
+              "js_cc_Node__parentInternal_get": 1,
+              "js_cc_RichText_setFontSize": 1,
+              "js_cc_RichText_setFontAsset": 1,
+              "js_cc_RichText_setCacheMode": 1,
+              "js_cc_RichText_setLineHeight": 1,
+              "js_cc_RichText_setMaxWidth": 1,
+              "js_cc_RichText_setHorizontalAlign": 1,
+              "js_cc_RichText_setVerticalAlign": 1
+            }
+          },
+          "steady": {
+            "totalCalls": 3781,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "explicit": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {}
+          },
+          "mutation": {
+            "totalCalls": 2,
+            "componentCalls": 1,
+            "deltaFromCanvas": {
+              "js_cc_RichText_setString": 1
+            }
+          },
+          "flush": {
+            "totalCalls": 64,
+            "componentCalls": 0,
+            "deltaFromCanvas": {}
+          },
+          "disable": {
+            "totalCalls": 13,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_CCObject__objFlags_get": 2,
+              "js_cc_Component_setEnabled": 1
+            }
+          },
+          "enable": {
+            "totalCalls": 25,
+            "componentCalls": 0,
+            "deltaFromCanvas": {
+              "js_cc_CCObject__objFlags_get": 7,
+              "js_cc_CCObject__name_get": 2,
+              "js_cc_Node_invalidateChildren": 2,
+              "js_cc_CCObject__objFlags_set": 1,
+              "js_cc_Component_setEnabled": 1
+            }
+          },
+          "destroy": {
+            "totalCalls": 241,
+            "componentCalls": 3,
+            "deltaFromCanvas": {
+              "js_cc_Node__onPreDestroy": 2,
+              "js_cc_CCObject__objFlags_get": 11,
+              "js_cc_CCObject__objFlags_set": 4,
+              "js_cc_CCObject_destruct": 3,
+              "js_cc_Component_setNode": 1,
+              "js_cc_Component_setEnabled": 2,
+              "js_cc_RichText_setImageAtlas": 1,
+              "js_cc_RichText_setFontAsset": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -37,11 +37,7 @@
 #include "base/std/container/string.h"
 #include "v8.h"
 
-// #define RECORD_JSB_INVOKING
-
-#ifndef CC_DEBUG
-    #undef RECORD_JSB_INVOKING
-#endif
+// Define RECORD_JSB_INVOKING in a diagnostic build to count V8 binding calls.
 
 #if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_V8
 

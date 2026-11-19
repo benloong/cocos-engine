@@ -61,43 +61,106 @@ function installM6JsbTrace (cc, fontPath) {
             item.addComponent(UITransform);
             return item;
         }
+        // Setup returns one synchronous edit. Resolve component references outside the setter window.
         const cases = [
-            ['Canvas', () => {}],
-            ['UITransform', node => node.getComponent(UITransform).setContentSize(64, 64)],
-            ['RenderRoot2D', node => { node.addComponent(cc.RenderRoot2D); sprite(child(node)); }],
-            ['UIOpacity', node => { node.addComponent(cc.UIOpacity).opacity = 192; sprite(child(node)); }],
-            ['UIRenderer-Sprite-SpriteFrame', node => sprite(node)],
-            ['Label', node => label(node)],
-            ['LabelOutline', node => { label(node); node.addComponent(cc.LabelOutline); }],
-            ['LabelShadow', node => { label(node); node.addComponent(cc.LabelShadow); }],
-            ['Font-TTFFont', node => label(node, ttf)],
-            ['BitmapFont', node => label(node, bm)],
-            ['LabelAtlas', node => label(node, labelAtlas)],
-            ['Graphics', node => node.addComponent(Graphics).fillRect(-16, -16, 32, 32)],
-            ['Mask', node => { node.addComponent(Mask); sprite(child(node)); }],
+            ['Canvas', () => () => {}],
+            ['UITransform', node => {
+                const transform = node.getComponent(UITransform);
+                transform.setContentSize(64, 64);
+                return () => transform.setContentSize(96, 64);
+            }],
+            ['RenderRoot2D', node => {
+                node.addComponent(cc.RenderRoot2D);
+                sprite(child(node));
+                return () => node.setPosition(3, 0, 0);
+            }],
+            ['UIOpacity', node => {
+                const opacity = node.addComponent(cc.UIOpacity);
+                opacity.opacity = 192;
+                sprite(child(node));
+                return () => { opacity.opacity = 96; };
+            }],
+            ['UIRenderer-Sprite-SpriteFrame', node => {
+                const item = sprite(node);
+                const tint = new cc.Color(80, 160, 240, 255);
+                return () => { item.color = tint; };
+            }],
+            ['Label', node => {
+                const item = label(node);
+                return () => { item.string = 'AA'; };
+            }],
+            ['LabelOutline', node => {
+                label(node);
+                const outline = node.addComponent(cc.LabelOutline);
+                return () => { outline.width = 4; };
+            }],
+            ['LabelShadow', node => {
+                label(node);
+                const shadow = node.addComponent(cc.LabelShadow);
+                return () => { shadow.blur = 3; };
+            }],
+            ['Font-TTFFont', node => {
+                const item = label(node, ttf);
+                return () => { item.font = null; };
+            }],
+            ['BitmapFont', node => {
+                label(node, bm);
+                return () => { bm.fontSize = 20; };
+            }],
+            ['LabelAtlas', node => {
+                label(node, labelAtlas);
+                return () => { labelAtlas.fontSize = 20; };
+            }],
+            ['Graphics', node => {
+                const graphics = node.addComponent(Graphics);
+                graphics.fillRect(-16, -16, 32, 32);
+                return () => graphics.fillRect(0, 0, 4, 4);
+            }],
+            ['Mask', node => {
+                const mask = node.addComponent(Mask);
+                sprite(child(node));
+                return () => { mask.inverted = true; };
+            }],
             ['RichText-SpriteAtlas', node => {
                 const rich = node.addComponent(cc.RichText);
                 rich.imageAtlas = atlas;
                 rich.string = "<b>Text</b><img src='icon'/>";
+                return () => { rich.string = "<i>Edited</i><img src='icon'/>"; };
             }],
         ];
         for (const [name, setup] of cases) {
             const node = child(canvas);
-            console.log('M6_TRACE_BEGIN setup ' + name);
-            jsb.clearInvocationRecords();
-            setup(node);
+            const begin = phase => {
+                console.log('M6_TRACE_BEGIN ' + phase + ' ' + name);
+                jsb.clearInvocationRecords();
+            };
+            begin('setup');
+            const edit = setup(node);
             jsb.printInvocationRecords();
             await frames(12);
-            console.log('M6_TRACE_BEGIN steady ' + name);
-            jsb.clearInvocationRecords();
+            begin('steady');
             await frames(60);
             jsb.printInvocationRecords();
-            console.log('M6_TRACE_BEGIN explicit ' + name);
-            jsb.clearInvocationRecords();
+            begin('explicit');
             frame.getRectWidth();
             jsb.printInvocationRecords();
+            begin('mutation');
+            edit();
+            jsb.printInvocationRecords();
+            begin('flush');
+            await frames(1);
+            jsb.printInvocationRecords();
+            begin('disable');
+            node.active = false;
+            jsb.printInvocationRecords();
+            begin('enable');
+            node.active = true;
+            jsb.printInvocationRecords();
+            begin('destroy');
             node.destroy();
             await frames(3);
+            jsb.printInvocationRecords();
+            if (cc.isValid(node)) throw new Error('Deferred destruction incomplete: ' + name);
         }
         for (const asset of [bm, labelAtlas, atlas, frame, texture]) asset.destroy();
         cc.assetManager.releaseAsset(ttf);

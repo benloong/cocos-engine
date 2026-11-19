@@ -11,7 +11,9 @@ $hook = 'return application.init(cc);'
 if ($entry.Split($hook, [StringSplitOptions]::None).Count -ne 2) { throw 'Expected exactly one application.init hook' }
 & robocopy $data $resources /E /NFL /NDL /NJH /NJS /NP | Out-Null
 if ($LASTEXITCODE -gt 7) { throw 'Could not copy the acceptance scene' }
-$entry = $entry.Replace($hook, "$fixture`ninstallM6JsbTrace(cc, $font);`n$hook")
+$writable = New-Item -ItemType Directory -Force -Path (Join-Path $BuildDir 'trace-writable')
+$writablePath = ($writable.FullName.Replace('\','/') + '/') | ConvertTo-Json -Compress
+$entry = $entry.Replace($hook, "jsb.fileUtils.setWritablePath($writablePath);`n$fixture`ninstallM6JsbTrace(cc, $font);`n$hook")
 [IO.File]::WriteAllText((Join-Path $resources 'main.js'), $entry)
 $out = Join-Path $BuildDir 'trace.log'
 $err = Join-Path $BuildDir 'trace.err'
@@ -22,7 +24,7 @@ try {
         Start-Sleep -Milliseconds 350
         $log = Get-Content -Raw -LiteralPath $out
         if (!$log) { $log = '' }
-        if ($log.Contains('M6_TRACE_FAIL') -or $proc.HasExited) { throw "Trace application failed; see $out and $err" }
+        if ($log.Contains('M6_TRACE_FAIL') -or $log.Contains('[FATAL ERROR]') -or $log.Contains('shared the same TypeID()') -or $proc.HasExited) { throw "Trace application failed; see $out and $err" }
         if ($log.Contains('M6_TRACE_DONE ')) {
             node (Join-Path $PSScriptRoot 'summarize-jsb-trace.cjs') $out (Join-Path $BuildDir 'trace.json')
             if ($LASTEXITCODE) { throw 'Trace verification failed' }
