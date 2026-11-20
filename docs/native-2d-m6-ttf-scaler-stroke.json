@@ -1,0 +1,524 @@
+{
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+  "rendererSha256": "e6aeaef580e85ad7be9f79f5a71725333486935dac7954ba1312772fc7826adf",
+  "canvasKitVersion": "0.42.0",
+  "canvasKitWasmSha256": "25ebed8e60158c5854f8dc807b936daca21354f8bfb6a2231266b0a93812f301",
+  "canvasKitLoaderSha256": "443777592179808354031cf411d8d43cac9f6b98d1227123c5c22d401b0fbf7f",
+  "glyphMasks": 96,
+  "text": "Atlas 123",
+  "strokeWidth": 4,
+  "tolerance": 1,
+  "sourceRevision": "8be9090730",
+  "rawCaptureComparisonSha256": "02222b3ff709ab5cf3ecb7342f28ebb9b4340f7eef85b34567e843fff269a73a",
+  "fullComparisonSha256": "13d6fc8ead502b397309b8ec2e43ee5743f8f7918de91ed353c9d0863cd6ae8e",
+  "nativeExecutables": {
+    "debug": "993ae337078d5c658f04394fe34c41603e999c654306d14f0ec84f5daf82083b",
+    "release": "437c3c096f5d98aa33d98286c852fbb25cdd4ac25b8b1c2c47ff61ca8730e5f3"
+  },
+  "referenceSha256": {
+    "alpha1": {
+      "12-0": "6773a9b53ef90d4fbc7e2586238b47b6fac9acb1cf2b766ec8e7828a9d84bfde",
+      "12-1": "a10f54949bd8ec5f8241cc15ee83e26cfc2b0df8bc133b08cf34ef04c669faae",
+      "12-2": "93ab8456471345ee970497cebcc191a800f2bdd5d61a5c94b034cf74a561b9d0",
+      "24-0": "3ccf1557bd6a8bf5ed2bcd1c0f7a26ef38d86634c7720211a1787e208787f2fc",
+      "24-1": "a79b48d8668d5a6d10ef49091bad859fda32de1d6520ac06b74ec9ce4d06d581",
+      "24-2": "98aa73dea9a21f1d68b0cfb2c44a87136eeecab2e501dd5c8ae05d0cb6ea507f",
+      "36-0": "b6a6e98274543d8eed22a47dd1d44b1080552554a112fbe526b63b579200bd00",
+      "36-1": "9b288df931739537464d6ace57744760f2cfcef7d82c45d4e54cdc65105958bc",
+      "36-2": "829ab304d892112a698e614f50673079233ef20b837fe74d2f64944b3a680626",
+      "48-0": "2ad83bbd83063a3185032ba0b13f0dc550b429252559b29380304f8612f3d988",
+      "48-1": "3f2fa054138756595547191426df40c364193ade672a281e68982cec19c6ffe3",
+      "48-2": "263599da4b008476c067f8d33a1eb0dc68030a74c6dad74303c9649706f85817"
+    },
+    "alpha0": {
+      "12-0": "ccd661f5d57813a7ae244970925cc0fd38925f0cdd5cc801afd632b40393535a",
+      "12-1": "aad4e76527015debbc5bf232cc30b41dbdc34da51211a78740b480295d2bb57b",
+      "12-2": "ed4d09e82d216adba04ed35cb4b4487230978ac8b40b3a638cbf7246ca85c7f5",
+      "24-0": "ee78d279e911c08c0d1362f577b71b031493c0b68b505d166ac868ec950c9814",
+      "24-1": "0009f0545ad5af34d27fb4ad6e69ce88b1fe9c8daf75b190e84199d6f18c4214",
+      "24-2": "3e1a8083e034bf8cd7e8fcd2b89d5f132f8c06ad0ab797071c53b4e330568c17",
+      "36-0": "fd37929398326236122ef0d563747e21dbf19e77771266ba135ffec852481a4f",
+      "36-1": "43dd5355fd08dd5916bebb491b13b46e026948ebb1b016b1dd6c2eb5022f7788",
+      "36-2": "939c005e7f914c2718b12aa9f882365102a4992f5c7e2c9c6d2195223d580ccc",
+      "48-0": "4e2e27382932fef3bfef848f097f947aab9e62b9e8a7e833dae884c79524d175",
+      "48-1": "205839d91b2df7cc95fa7199dac6d9657765e9ba758faef4b77fcfce71d61cc6",
+      "48-2": "1f5e0830045b21e81670313f8966b9f9343f51b2777a3b27ea90d54b5543f04d"
+    }
+  },
+  "debugReleaseIdentical": true,
+  "stages": {
+    "center": {
+      "backgroundAlpha": 1,
+      "differingMaskSamplesVersusCanvasKitDirectStroke": 6,
+      "alphaDifferences": 40,
+      "alphaPass": 7,
+      "rgbaPass": 6,
+      "maximumAlphaDifference": 40,
+      "rgbaFailures": [
+        {
+          "size": 12,
+          "style": 0,
+          "pixels": 4,
+          "maximumRgbaDifference": 204
+        },
+        {
+          "size": 24,
+          "style": 2,
+          "pixels": 1,
+          "maximumRgbaDifference": 3
+        },
+        {
+          "size": 36,
+          "style": 2,
+          "pixels": 8,
+          "maximumRgbaDifference": 34
+        },
+        {
+          "size": 48,
+          "style": 0,
+          "pixels": 1,
+          "maximumRgbaDifference": 2
+        },
+        {
+          "size": 48,
+          "style": 1,
+          "pixels": 4,
+          "maximumRgbaDifference": 3
+        },
+        {
+          "size": 48,
+          "style": 2,
+          "pixels": 23,
+          "maximumRgbaDifference": 40
+        }
+      ],
+      "imageSha256": {
+        "12-0": "3104e2899c6b110870e874539d18a53c8409548c6691e1e29aa97924e312fa23",
+        "12-1": "a10f54949bd8ec5f8241cc15ee83e26cfc2b0df8bc133b08cf34ef04c669faae",
+        "12-2": "0d6daf1e83a7f562cc08abcb2e5c9095f9aec83c6249f732e62ebb783f0447f6",
+        "24-0": "3805a8831c82754a7cad5f159ca174ca9c3d2ff6dd6a33787325da9e63249bfe",
+        "24-1": "a999e8db1be72d376936f352768758f9197458fedab156dddaa2ce4f7a7418ee",
+        "24-2": "14de37e37a396aa52429381bff94fc477502fb5d116b63c66144ad5745ad8b94",
+        "36-0": "2aa835bb7e2f24505d93387c96a8e479466101540a667116f9be58c528816ec4",
+        "36-1": "0da6a7705fd9c6ce361e270f792433c7170377a3b77e05cf4b46f09d3115f124",
+        "36-2": "4490925b49d4b3c4c23e6bd320a10e3d4b469b540da37b51b9222e5dcc0b0d95",
+        "48-0": "ab0f14f81615ea393fcf4b3b90513e1fc1dc3997ce587ab40f516077aa6c7392",
+        "48-1": "eed1d1d72aa077e54317ddc316d6d8ec1a964e93de26ecd76d5b9b04fe2fd973",
+        "48-2": "06cb39a3060c3efbabba887f461544b1906fbf964bd14ecbf3233584f5758b3c"
+      }
+    },
+    "localStroke": {
+      "backgroundAlpha": 1,
+      "differingMaskSamplesVersusCanvasKitDirectStroke": 79,
+      "alphaDifferences": 7,
+      "alphaPass": 10,
+      "rgbaPass": 9,
+      "maximumAlphaDifference": 8,
+      "rgbaFailures": [
+        {
+          "size": 12,
+          "style": 0,
+          "pixels": 4,
+          "maximumRgbaDifference": 204,
+          "samples": [
+            {
+              "x": 28,
+              "y": 6,
+              "windows": [
+                4,
+                255,
+                4,
+                62
+              ],
+              "web": [
+                4,
+                255,
+                4,
+                70
+              ]
+            },
+            {
+              "x": 29,
+              "y": 6,
+              "windows": [
+                255,
+                255,
+                255,
+                1
+              ],
+              "web": [
+                51,
+                255,
+                51,
+                5
+              ]
+            },
+            {
+              "x": 28,
+              "y": 7,
+              "windows": [
+                0,
+                255,
+                0,
+                249
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                251
+              ]
+            },
+            {
+              "x": 29,
+              "y": 7,
+              "windows": [
+                0,
+                255,
+                0,
+                153
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                161
+              ]
+            }
+          ]
+        },
+        {
+          "size": 48,
+          "style": 0,
+          "pixels": 1,
+          "maximumRgbaDifference": 2,
+          "samples": [
+            {
+              "x": 167,
+              "y": 19,
+              "windows": [
+                0,
+                255,
+                0,
+                128
+              ],
+              "web": [
+                2,
+                255,
+                2,
+                128
+              ]
+            }
+          ]
+        },
+        {
+          "size": 48,
+          "style": 1,
+          "pixels": 3,
+          "maximumRgbaDifference": 3,
+          "samples": [
+            {
+              "x": 153,
+              "y": 21,
+              "windows": [
+                0,
+                255,
+                0,
+                220
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                218
+              ]
+            },
+            {
+              "x": 154,
+              "y": 21,
+              "windows": [
+                5,
+                255,
+                5,
+                48
+              ],
+              "web": [
+                6,
+                255,
+                6,
+                45
+              ]
+            },
+            {
+              "x": 82,
+              "y": 25,
+              "windows": [
+                4,
+                255,
+                4,
+                59
+              ],
+              "web": [
+                5,
+                255,
+                5,
+                56
+              ]
+            }
+          ]
+        }
+      ],
+      "imageSha256": {
+        "12-0": "3104e2899c6b110870e874539d18a53c8409548c6691e1e29aa97924e312fa23",
+        "12-1": "a10f54949bd8ec5f8241cc15ee83e26cfc2b0df8bc133b08cf34ef04c669faae",
+        "12-2": "0d6daf1e83a7f562cc08abcb2e5c9095f9aec83c6249f732e62ebb783f0447f6",
+        "24-0": "2215f7ae7e87a597c12089975031be669093598c12e20e828d455489c2ceb4f3",
+        "24-1": "feb265822032800c0390be0d15a3fc184740b4bbe3bb454e5a41d0e709b15fe0",
+        "24-2": "ec507d7726d07a1475693d04aa45857c82a8815edacd503b9ee6d459e3ded1d7",
+        "36-0": "2aa835bb7e2f24505d93387c96a8e479466101540a667116f9be58c528816ec4",
+        "36-1": "0da6a7705fd9c6ce361e270f792433c7170377a3b77e05cf4b46f09d3115f124",
+        "36-2": "e614221fe838949cfa22a7bf745f3b93a8bd72042cf8a41040da9a1b775f91cf",
+        "48-0": "ab0f14f81615ea393fcf4b3b90513e1fc1dc3997ce587ab40f516077aa6c7392",
+        "48-1": "5ebd29c073d29ee6c7fa1dc2558192b348b507670f25e56343004660f3ac06a4",
+        "48-2": "ace52e3d6622e1318d5e028d42c62918038a2345f00d41529fef3a738ca49fe6"
+      }
+    },
+    "positionedStroke": {
+      "backgroundAlpha": 1,
+      "differingMaskSamplesVersusCanvasKitDirectStroke": 81,
+      "alphaDifferences": 7,
+      "alphaPass": 10,
+      "rgbaPass": 9,
+      "maximumAlphaDifference": 8,
+      "rgbaFailures": [
+        {
+          "size": 12,
+          "style": 0,
+          "pixels": 4,
+          "maximumRgbaDifference": 204
+        },
+        {
+          "size": 48,
+          "style": 0,
+          "pixels": 1,
+          "maximumRgbaDifference": 2
+        },
+        {
+          "size": 48,
+          "style": 1,
+          "pixels": 3,
+          "maximumRgbaDifference": 3
+        }
+      ],
+      "imageSha256": {
+        "12-0": "c02852498755c680283efcf9c51190a8ecc208f13e3bd18de032972f0d0cf5d7",
+        "12-1": "a10f54949bd8ec5f8241cc15ee83e26cfc2b0df8bc133b08cf34ef04c669faae",
+        "12-2": "0d6daf1e83a7f562cc08abcb2e5c9095f9aec83c6249f732e62ebb783f0447f6",
+        "24-0": "2215f7ae7e87a597c12089975031be669093598c12e20e828d455489c2ceb4f3",
+        "24-1": "feb265822032800c0390be0d15a3fc184740b4bbe3bb454e5a41d0e709b15fe0",
+        "24-2": "ec507d7726d07a1475693d04aa45857c82a8815edacd503b9ee6d459e3ded1d7",
+        "36-0": "2aa835bb7e2f24505d93387c96a8e479466101540a667116f9be58c528816ec4",
+        "36-1": "0da6a7705fd9c6ce361e270f792433c7170377a3b77e05cf4b46f09d3115f124",
+        "36-2": "e614221fe838949cfa22a7bf745f3b93a8bd72042cf8a41040da9a1b775f91cf",
+        "48-0": "ab0f14f81615ea393fcf4b3b90513e1fc1dc3997ce587ab40f516077aa6c7392",
+        "48-1": "5ebd29c073d29ee6c7fa1dc2558192b348b507670f25e56343004660f3ac06a4",
+        "48-2": "ace52e3d6622e1318d5e028d42c62918038a2345f00d41529fef3a738ca49fe6"
+      }
+    },
+    "tightStroke": {
+      "backgroundAlpha": 1,
+      "differingMaskSamplesVersusCanvasKitDirectStroke": 82,
+      "alphaDifferences": 7,
+      "alphaPass": 10,
+      "rgbaPass": 9,
+      "maximumAlphaDifference": 8,
+      "rgbaFailures": [
+        {
+          "size": 12,
+          "style": 0,
+          "pixels": 4,
+          "maximumRgbaDifference": 204
+        },
+        {
+          "size": 48,
+          "style": 0,
+          "pixels": 1,
+          "maximumRgbaDifference": 2
+        },
+        {
+          "size": 48,
+          "style": 1,
+          "pixels": 3,
+          "maximumRgbaDifference": 3
+        }
+      ],
+      "imageSha256": {
+        "12-0": "3104e2899c6b110870e874539d18a53c8409548c6691e1e29aa97924e312fa23",
+        "12-1": "a10f54949bd8ec5f8241cc15ee83e26cfc2b0df8bc133b08cf34ef04c669faae",
+        "12-2": "0d6daf1e83a7f562cc08abcb2e5c9095f9aec83c6249f732e62ebb783f0447f6",
+        "24-0": "2215f7ae7e87a597c12089975031be669093598c12e20e828d455489c2ceb4f3",
+        "24-1": "feb265822032800c0390be0d15a3fc184740b4bbe3bb454e5a41d0e709b15fe0",
+        "24-2": "ec507d7726d07a1475693d04aa45857c82a8815edacd503b9ee6d459e3ded1d7",
+        "36-0": "2aa835bb7e2f24505d93387c96a8e479466101540a667116f9be58c528816ec4",
+        "36-1": "b85dd04cb347c3253d4f3d22b109af2518866eb73b0fe69b48cb2d9758f4cf0d",
+        "36-2": "e614221fe838949cfa22a7bf745f3b93a8bd72042cf8a41040da9a1b775f91cf",
+        "48-0": "ab0f14f81615ea393fcf4b3b90513e1fc1dc3997ce587ab40f516077aa6c7392",
+        "48-1": "5ebd29c073d29ee6c7fa1dc2558192b348b507670f25e56343004660f3ac06a4",
+        "48-2": "ace52e3d6622e1318d5e028d42c62918038a2345f00d41529fef3a738ca49fe6"
+      }
+    },
+    "localStrokeTransparent": {
+      "backgroundAlpha": 0,
+      "differingMaskSamplesVersusCanvasKitDirectStroke": 79,
+      "alphaDifferences": 7,
+      "alphaPass": 10,
+      "rgbaPass": 10,
+      "maximumAlphaDifference": 8,
+      "rgbaFailures": [
+        {
+          "size": 12,
+          "style": 0,
+          "pixels": 4,
+          "maximumRgbaDifference": 255,
+          "samples": [
+            {
+              "x": 28,
+              "y": 6,
+              "windows": [
+                0,
+                255,
+                0,
+                61
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                69
+              ]
+            },
+            {
+              "x": 29,
+              "y": 6,
+              "windows": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                4
+              ]
+            },
+            {
+              "x": 28,
+              "y": 7,
+              "windows": [
+                0,
+                255,
+                0,
+                249
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                251
+              ]
+            },
+            {
+              "x": 29,
+              "y": 7,
+              "windows": [
+                0,
+                255,
+                0,
+                153
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                161
+              ]
+            }
+          ]
+        },
+        {
+          "size": 48,
+          "style": 1,
+          "pixels": 3,
+          "maximumRgbaDifference": 3,
+          "samples": [
+            {
+              "x": 153,
+              "y": 21,
+              "windows": [
+                0,
+                255,
+                0,
+                220
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                218
+              ]
+            },
+            {
+              "x": 154,
+              "y": 21,
+              "windows": [
+                0,
+                255,
+                0,
+                47
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                44
+              ]
+            },
+            {
+              "x": 82,
+              "y": 25,
+              "windows": [
+                0,
+                255,
+                0,
+                58
+              ],
+              "web": [
+                0,
+                255,
+                0,
+                55
+              ]
+            }
+          ]
+        }
+      ],
+      "imageSha256": {
+        "12-0": "c423361805ffc67cf793ae32a6119631773d1b84907d70bf68e3bdced8eb848c",
+        "12-1": "aad4e76527015debbc5bf232cc30b41dbdc34da51211a78740b480295d2bb57b",
+        "12-2": "ed4d09e82d216adba04ed35cb4b4487230978ac8b40b3a638cbf7246ca85c7f5",
+        "24-0": "586928e994fc88854ee2bf871716b00341720b8a2f9af10715a77227b7a968e3",
+        "24-1": "a280d599cb2855e3096815ba23ca47afd0167fd8dac2fc53f7479876d21bb6ee",
+        "24-2": "c988d164fe4192c30f19fd4f57ccb8cd485173817099b765bda2576eb3355896",
+        "36-0": "eee9d785618cd8bad2f783a4c1368a76cc65d23df5a7045407242f4a44cdb1e2",
+        "36-1": "cb1e7f2591c8291c63ca4cb8e0eb55421658c946016505b1cc87538088ef209e",
+        "36-2": "939c005e7f914c2718b12aa9f882365102a4992f5c7e2c9c6d2195223d580ccc",
+        "48-0": "338f44e4f6083e7cd324b45138774a2e725de36039d474d3fefbeb4ae3aa7ab5",
+        "48-1": "921cfe810c00f66e563115f60aea10a2f51628f3fa53b10e71d60c48f7725e41",
+        "48-2": "9ab4473d6d402a2237681528ba429d17741d9c08f662413d66652cbaa85a6341"
+      }
+    }
+  }
+}

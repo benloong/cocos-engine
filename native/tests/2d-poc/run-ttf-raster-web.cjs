@@ -5,14 +5,17 @@ const path = require('path');
 const http = require('http');
 const { createHash } = require('node:crypto');
 const { spawn } = require('child_process');
-const color = process.argv[2] || 'white';
-const sample = process.argv[3] || 'latin';
+const args = process.argv.slice(2);
+const transparent = args.includes('--transparent');
+const [colorArg, sampleArg, modeArg, widthArg] = args.filter(arg => arg !== '--transparent');
+const color = colorArg || 'white';
+const sample = sampleArg || 'latin';
+const mode = modeArg || 'fill';
 const originGrid = sample === 'origin-stem' || sample === 'origin-curve';
 const width = originGrid ? 512 : 256, height = originGrid ? 512 : 128;
 const styleCount = originGrid ? 4 : 3;
-const mode = process.argv[4] || 'fill';
-const lineWidth = Number(process.argv[5] ?? 4);
-if (!Number.isFinite(lineWidth) || lineWidth <= 0 || (process.argv[5] && mode === 'fill')) throw new Error('Expected a positive stroke width for a stroke mode');
+const lineWidth = Number(widthArg ?? 4);
+if (!Number.isFinite(lineWidth) || lineWidth <= 0 || (widthArg && mode === 'fill')) throw new Error('Expected a positive stroke width for a stroke mode');
 const colors = { white: 'white', red: 'red', green: 'lime', gray: 'rgb(128,128,128)', black: 'black', 'half-white': 'rgba(255,255,255,0.5)' };
 const texts = { latin: 'Atlas 123', stems: 'I E L', rounds: 'O S C', combining: 'A\u0301tlas', thai: '\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22' };
 texts['origin-stem'] = 'I';
@@ -34,7 +37,8 @@ if (!fs.existsSync(primaryFont)) throw new Error('Missing raster fixture font: '
 if (!Object.hasOwn(colors, color) || !Object.hasOwn(texts, sample)) throw new Error('Unknown color or sample');
 if (!['fill', 'outline', 'stroke-round', 'stroke-miter', 'stroke-bevel'].includes(mode)) throw new Error('Unknown paint mode');
 const suffix = mode === 'fill' ? (color === 'white' && sample === 'latin' ? '' : '-' + color + '-' + sample) : '-' + color + '-' + sample + '-' + mode;
-const output = path.join(__dirname, 'build/ttf-raster-web' + suffix + (lineWidth === 4 ? '' : '-width-' + lineWidth));
+const output = path.join(__dirname, 'build/ttf-raster-web' + suffix + (lineWidth === 4 ? '' : '-width-' + lineWidth)
+    + (transparent ? '-transparent' : ''));
 const chrome = process.env.CC_GPU_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 fs.mkdirSync(output, { recursive: true });
 let complete, fail;
@@ -107,7 +111,9 @@ const server = http.createServer(async (req, res) => {
                 const ctx=canvas.getContext('2d');
                 ctx.font=['','bold ','italic ','bold italic '][style]+size+'px '+family;
                 ctx.textBaseline='alphabetic'; ctx.textAlign='left';
-                ctx.fillStyle='rgba(255,255,255,0.004)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+                if (!${transparent}) {
+                    ctx.fillStyle='rgba(255,255,255,0.004)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+                }
                 const tiles=${originGrid ? 8 : 1};
                 for(let row=0; row<tiles; row++) for(let col=0; col<tiles; col++) {
                     const x=tiles===1?4.5:8+col*64+col/8, y=tiles===1?size*.87+4:50+row*64+row/8;
@@ -121,7 +127,7 @@ const server = http.createServer(async (req, res) => {
                 cases.push({size,style,font:ctx.font,width:ctx.measureText(text).width});
                 await fetch('/'+size+'-'+style+'.rgba',{method:'POST',body:ctx.getImageData(0,0,canvas.width,canvas.height).data});
             }
-            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},lineWidth:${lineWidth},aliasWidths,cases})});
+            await fetch('/metadata',{method:'POST',body:JSON.stringify({userAgent:navigator.userAgent,text,color:${JSON.stringify(color)},mode:${JSON.stringify(mode)},lineWidth:${lineWidth},aliasWidths,cases,${transparent ? 'backgroundAlpha:0' : ''}})});
         })();</script>`);
     } catch (error) { res.writeHead(500); res.end(String(error)); fail(error); }
 });

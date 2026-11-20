@@ -145,3 +145,19 @@ CanvasKit 直接描边和填充其导出的路径，在 96 个掩码上均进入
 ```powershell
 node native/tests/2d-poc/compare-ttf-canvaskit.cjs $replayDirectory $canvasKitPackageDirectory
 ```
+
+### 描边展开精度和掩码边界
+
+以当前 DirectWrite 源码重采 Windows Debug、Release 的 96 个 Thonburi 字形和 Windows Chrome 的 12 张 `Atlas 123` 绿色描边图。轮廓重放在原 C++ 代码中完成横向滤波、颜色预混合和逐字形合成。两种 Windows 配置的掩码比较与最终图像哈希分别一致。[结果、坐标和输入哈希](./native-2d-m6-ttf-scaler-stroke.json)
+
+Skia 的字形栅格器先在局部坐标扩张字形，再对生成的路径做横向采样。诊断将 CanvasKit 的展开精度设为 1，并保持 4 倍横向采样。随后分别测试在展开前平移到四分之一像素起点，以及在展开后将掩码裁到路径包围盒、滤波前补零。[Skia 字形栅格器](https://raw.githubusercontent.com/google/skia/main/src/core/SkScalerContext.cpp)
+
+| 对照 | alpha 超差像素数 | 最大 alpha 差 | alpha 通过 | RGBA 通过 |
+|---|---:|---:|---:|---:|
+| CanvasKit 在四倍采样变换下直接描边 | 40 | 40 | 7/12 | 6/12 |
+| 字形局部展开，再进行四倍采样 | 7 | 8 | 10/12 | 9/12 |
+| 局部展开前应用横向起点 | 7 | 8 | 10/12 | 9/12 |
+| 局部展开后收紧掩码边界 | 7 | 8 | 10/12 | 9/12 |
+| 局部展开，透明背景 | 7 | 8 | 10/12 | 10/12 |
+
+局部展开后四个字号的斜体图均进入 RGBA 容差 1。剩余 alpha 超差位于 12 px 正体和 48 px 粗体。48 px 正体在 (167,19) 有单独的 RGB 超差。在透明背景上该像素的 alpha 是 128 对 127，在 alpha 为 1 的白底上两者的合成 alpha 均为 128，红、蓝通道分别为 0 对 2。透明对照将这处差异追溯到合成前的覆盖率。生产 Direct2D 仍使用原扩张及覆盖实现，严格应用 Gate 继续以真实 GPU 图像验收。

@@ -156,6 +156,7 @@
 - [x] 斜体描边顺序修复：先斜切字形再 Widen，保留笔宽/圆角；72 例 Debug/Release 字节一致，24 个斜体用例最大差值全部下降，其他 48 例字节不变。native/实际 JSB 与静态回归通过；原始严格对照仍 0/72，未重跑完整 GPU/ASAN，见 [证据](./native-2d-m6.2-ttf-italic-stroke.md)。
 - [x] 单字形亚像素起点对照。Windows Debug、Release 和 Chrome 在 64 组中对起点的分组全部一致。48 个超差组合在整数起点仍能复现，关闭轮廓点量化后严格通过数仍为 1024/4096。[方法与逐组记录](./native-2d-m6.2-ttf-stroke.md#单字形起点与轮廓覆盖)
 - [x] 将圆角扩张与栅格化分开对照。Windows Debug/Release 对同一组生产线段得到相同结果，96 个掩码与 CanvasKit 的覆盖均超差。CanvasKit 扩张后交 Direct2D 填充的 12 张图全部超差，完整 CanvasKit 描边和覆盖回放有 7 张达标。当前应用的视觉门禁继续保留原容差。[分阶段结果](./native-2d-m6-ttf-canvaskit.json)
+- [x] 分离字形局部展开精度、亚像素起点和掩码裁剪。Windows Debug、Release 的相同 96 个掩码按字形局部精度展开后，12 张描边图对 Chrome 的 alpha 超差像素由 40 降为 7，四个斜体字号均通过 RGBA。透明背景确认 48 px 正体的单处 RGB 误差可由一级覆盖差解释。两种配置的逐图哈希一致，应用像素 Gate 仍待签收。[对照数据](./native-2d-m6-ttf-scaler-stroke.json)
 - [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
   - [x] RichText 发布节点尺寸后，`SIZE_CHANGED` 监听器设置的新文本同步生成新的段。旧 Windows Debug 在回调后仍保留先前文本。Windows Debug、Release 的真实 JSB 探针以及三端应用夹具覆盖回调替换、段数与布局。[JSB 探针](../native/tests/2d-poc/build-richtext-runtime-probe.cjs)、[应用夹具](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
   - [x] RichText 生成子节点时，`CHILD_ADDED` 监听器的文本更新在尺寸发布前应用。旧 Windows Debug 虽然收到事件，仍保留原先的段。Windows Debug、Release 和 Chrome 均生成且只保留一个新文本段。两种 Windows 配置各完成 1000 轮字体生命周期，42 张图与上轮逐字节相同，严格对 Web 仍为 39/42。场景快照为 `93b5c6389fa50e2a3f85ce17180f0ee18d405468adfdb5ca63fe8db348ff05f8`。[应用夹具](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)

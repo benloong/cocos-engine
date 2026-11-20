@@ -51,12 +51,15 @@ int main(int argc, char **argv) {
     }
     std::filesystem::create_directories(argv[2]);
     const bool originGrid = sample == "origin-stem" || sample == "origin-curve";
+    const bool transparent = std::getenv("CC2D_RAW_TRANSPARENT") != nullptr;
     const unsigned width = originGrid ? 512 : 256, height = originGrid ? 512 : 128;
     for (int size : {12, 24, 36, 48}) for (int style = 0; style < (originGrid ? 4 : 3); ++style) {
         const auto font = cc::DirectWriteFont::create(argv[1], static_cast<float>(size), (style & 1) != 0, (style & 2) != 0);
         if (!font) return 3;
-        std::vector<uint8_t> pixels(width * height * 4, 255);
-        for (size_t i = 3; i < pixels.size(); i += 4) pixels[i] = 1;
+        std::vector<uint8_t> pixels(width * height * 4, transparent ? 0 : 255);
+        if (!transparent) {
+            for (size_t i = 3; i < pixels.size(); i += 4) pixels[i] = 1;
+        }
         const int tiles = originGrid ? 8 : 1;
         for (int row = 0; row < tiles; ++row) for (int column = 0; column < tiles; ++column) {
             const float x = originGrid ? 8.F + column * 64 + column / 8.F : 4.5F;

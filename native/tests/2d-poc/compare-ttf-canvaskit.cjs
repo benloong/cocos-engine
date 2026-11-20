@@ -67,6 +67,49 @@ function scanGlyph(kit, glyph, stroke = true) {
     }
 }
 
+function scanTightStroke(kit, glyph) {
+    // The scaler rounds the expanded path's bounds in destination pixels
+    // and adds horizontal padding only after rasterization, during filtering.
+    const { width, height, outline, matrix } = glyph;
+    const [scale, , x, , , y] = matrix;
+    const [left, top, right, bottom] = outline.getBounds();
+    const startX = Math.floor(left + x / scale) * scale;
+    const endX = Math.ceil(right + x / scale) * scale;
+    const startY = Math.floor(top + y), endY = Math.ceil(bottom + y);
+    const tight = { ...glyph, width: endX - startX, height: endY - startY,
+        matrix: [scale, 0, x - startX, 0, 1, y - startY, 0, 0, 1] };
+    const coverage = scanGlyph(kit, tight, false);
+    const result = Buffer.alloc(width * height);
+    const first = Math.max(0, startX), last = Math.min(width, endX);
+    assert.ok(last > first);
+    for (let row = Math.max(0, startY); row < Math.min(height, endY); ++row) {
+        const offset = (row - startY) * tight.width + first - startX;
+        coverage.copy(result, row * width + first, offset, offset + last - first);
+    }
+    return result;
+}
+
+function scanScalerStroke(kit, glyph, stage) {
+    // The font scaler expands a local glyph before applying the LCD sampling
+    // matrix. Test the quarter-pixel origin independently of that expansion.
+    const matrix = [...glyph.matrix];
+    const phase = stage === 'positionedStroke' ? (matrix[2] % matrix[0]) / matrix[0] : 0;
+    const builder = new kit.PathBuilder();
+    builder.addPath(glyph.outline);
+    builder.offset(phase, 0);
+    matrix[2] -= phase * matrix[0];
+    const local = builder.detachAndDelete();
+    const outline = local.makeStroked({ width: glyph.pen, join: kit.StrokeJoin.Round, precision: 1 });
+    try {
+        assert.ok(outline);
+        const expanded = { ...glyph, outline, matrix };
+        return stage === 'tightStroke' ? scanTightStroke(kit, expanded) : scanGlyph(kit, expanded, false);
+    } finally {
+        outline?.delete();
+        local.delete();
+    }
+}
+
 function exportStroke(kit, outline) {
     const commands = outline.toCmds(), output = ['F ' + Number(outline.getFillType() === kit.FillType.Winding)];
     let previous;
@@ -137,6 +180,16 @@ async function main() {
         canvasKitVersion: manifest.version, canvasKitWasmSha256: hash(wasm), canvasKitLoaderSha256: hash(loader),
         glyphMasks: input.glyphMasks, configurations: {} };
     const chrome = path.join(build, 'ttf-raster-web-green-latin-stroke-round');
+    execFileSync(process.execPath, [path.join(__dirname, 'run-ttf-raster-web.cjs'), 'green', 'latin', 'stroke-round', '--transparent'],
+        { stdio: 'inherit' });
+    const transparent = chrome + '-transparent';
+    const metadata = JSON.parse(fs.readFileSync(path.join(transparent, 'metadata.json')));
+    assert.equal(metadata.backgroundAlpha, 0);
+    assert.equal(metadata.fontSha256, input.fontSha256);
+    assert.equal(metadata.userAgent, input.browser);
+    assert.equal(metadata.lineWidth, input.strokeWidth);
+    assert.equal(metadata.text, input.text);
+    assert.deepEqual(metadata.cases.map(({ size, style }) => ({ size, style })), input.rows.map(({ size, style }) => ({ size, style })));
     for (const config of ['out', 'out-release2']) {
         const source = path.join(replay, config);
         const work = path.join(scratch, config);
@@ -145,20 +198,22 @@ async function main() {
         const stages = {};
         const environment = { ...process.env };
         for (const key of ['CC2D_STROKE_REPLAY', 'CC2D_STROKE_PATH', 'CC2D_FILL_IMPORTED_PATH', 'CC2D_CAPTURE_WIC_PATH', 'CC2D_STROKE_BOUNDARY',
-            'CC2D_DIRECT_STROKE', 'CC2D_WIDEN_TOLERANCE', 'CC2D_EDGE_TOLERANCE', 'CC2D_PEN_SCALE']) delete environment[key];
-        function compose(stage, env) {
+            'CC2D_DIRECT_STROKE', 'CC2D_WIDEN_TOLERANCE', 'CC2D_EDGE_TOLERANCE', 'CC2D_PEN_SCALE', 'CC2D_RAW_TRANSPARENT']) delete environment[key];
+        function compose(stage, env, background = chrome) {
             const output = path.join(work, stage);
             execFileSync(binary, [font, output, 'green', 'latin', 'stroke-round'], { cwd: work, env });
             return input.rows.map(row => {
                 const file = row.size + '-' + row.style + '.rgba';
-                const reference = path.join(chrome, file);
+                const reference = path.join(background, file);
                 const native = path.join(output, file);
-                assert.equal(hash(reference), row.webHash);
-                return { size: row.size, style: row.style, sha256: hash(native),
-                    ...compare(fs.readFileSync(native), fs.readFileSync(reference), 3, 4) };
+                if (background === chrome) assert.equal(hash(reference), row.webHash);
+                const actual = fs.readFileSync(native), expected = fs.readFileSync(reference);
+                return { size: row.size, style: row.style, sha256: hash(native), ...compare(actual, expected, 3, 4),
+                    maximumRgbaDifference: compare(actual, expected).max };
             });
         }
         const expandedMasks = [];
+        const scalerMasks = { localStroke: [], positionedStroke: [], tightStroke: [] };
         for (const stage of ['center', 'widened']) {
             const files = fs.readdirSync(source).filter(file => file.endsWith('.' + stage + '.path')).sort();
             assert.equal(files.length, input.glyphMasks);
@@ -177,6 +232,11 @@ async function main() {
                     fs.writeFileSync(path.join(work, file.replace('.center.path', '.skia.alpha')), expandedAlpha);
                     fs.writeFileSync(path.join(work, file.replace('.center.path', '.skia.stroke')), exportStroke(kit, outline));
                     outline.delete();
+                    for (const variant of Object.keys(scalerMasks)) {
+                        const coverage = scanScalerStroke(kit, glyph, variant);
+                        scalerMasks[variant].push({ file, ...compare(coverage, alpha) });
+                        fs.writeFileSync(path.join(work, file.replace('.center.path', '.' + variant + '.alpha')), coverage);
+                    }
                 }
                 glyph.outline.delete();
                 return { file, ...compare(alpha, chromeMask) };
@@ -184,6 +244,11 @@ async function main() {
             stages[stage] = { masks, images: compose(stage, { ...environment, CC2D_STROKE_REPLAY: stage }) };
         }
         assert.ok(expandedMasks.every(row => row.max <= 1), 'Expanded CanvasKit paths must reproduce its original pen masks');
+        for (const [stage, masks] of Object.entries(scalerMasks)) {
+            stages[stage] = { masks, images: compose(stage, { ...environment, CC2D_STROKE_REPLAY: stage }) };
+        }
+        stages.localStrokeTransparent = { masks: scalerMasks.localStroke,
+            images: compose('localStrokeTransparent', { ...environment, CC2D_STROKE_REPLAY: 'localStroke', CC2D_RAW_TRANSPARENT: '1' }, transparent) };
         for (const stage of ['nativeSampled', 'nativeDirect']) {
             const env = { ...environment, CC2D_STROKE_PATH: '1' };
             if (stage === 'nativeDirect') env.CC2D_FILL_IMPORTED_PATH = '1';
@@ -225,6 +290,7 @@ async function main() {
             mismatchedMasks: masks.filter(row => row.max > 1).length,
             mismatchedMaskSamples: masks.reduce((sum, row) => sum + row.pixels, 0),
             imagesWithinTolerance: images.filter(row => row.max <= 1).length,
+            rgbaImagesWithinTolerance: images.filter(row => row.maximumRgbaDifference <= 1).length,
             imageDifferences: images.reduce((sum, row) => sum + row.pixels, 0),
             maximumImageDifference: Math.max(...images.map(row => row.max)),
         }));
