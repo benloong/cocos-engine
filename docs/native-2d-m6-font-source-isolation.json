@@ -1,0 +1,141 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "5cb42fd335",
+  "baseline": {
+    "snapshot": "e0d3321260fb0f3ecad4838239b6b6156726b1b159763a9067bbf53ec62c8073",
+    "windowsDebugEarlyExitLogSha256": "242b1443413cbe4623fd6dd3419e78dacbf2dcb72e96577d26e5dd1d37aefa54",
+    "webFailure": "Same-name TTF source 1 rendered width 95.9765625, expected 101.9296875",
+    "webLogSha256": "1fe83ad1488148cbc8dd0ebecd83125152999d9f06d0c8580f937162fe2a2a5e",
+    "webAliasRequests": {
+      "a": 1,
+      "b": 0
+    }
+  },
+  "inputs": [
+    {
+      "path": "tests/fixtures/Thonburi.ttf",
+      "bytes": 223404,
+      "sha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+      "width": 95.9765625
+    },
+    {
+      "path": "editor/assets/default_fonts/builtin-freetype/OpenSans-Regular.ttf",
+      "bytes": 217360,
+      "sha256": "e64e508b2aa2880f907e470c4550980ec4c0694d103a43f36150ac3f93189bee",
+      "width": 101.9296875
+    }
+  ],
+  "fontMatrix": {
+    "snapshot": "bf2b078fb361bebf23750770d93dfea200044b7110f52dbfbabf44c9c4640db8",
+    "webAliasRequests": {
+      "a": 2,
+      "b": 2
+    },
+    "webManifestSha256": "bd8230637d8010af0dd41a088e0b2222f99ee926e7fabeacc16c0931e9ccfdd1",
+    "webLogSha256": "5ee3c95c418c599683b86ac611dd2c9263d4517e9ed56fa8931e8c93db196817",
+    "aliasLifecycle": {
+      "checkpoints": [
+        {
+          "name": "font-alias-both-0",
+          "widths": [
+            95.9765625,
+            101.9296875
+          ]
+        },
+        {
+          "name": "font-alias-only-1",
+          "widths": [
+            101.9296875
+          ]
+        },
+        {
+          "name": "font-alias-both-1",
+          "widths": [
+            95.9765625,
+            101.9296875
+          ]
+        },
+        {
+          "name": "font-alias-only-0",
+          "widths": [
+            95.9765625
+          ]
+        }
+      ],
+      "released": 4
+    },
+    "layoutPass": 62,
+    "strictPixelPass": 59,
+    "deferredPixels": [
+      "text-bold",
+      "text-outline",
+      "text-nested"
+    ],
+    "unchangedEarlierCaptures": 58,
+    "captures": [
+      {
+        "name": "font-alias-both-0",
+        "sha256": "a0e2870d9b902d5e455cfd28377528296721e25172c26209aeab2424d8fcbd2e",
+        "coloredPixels": 9900
+      },
+      {
+        "name": "font-alias-only-1",
+        "sha256": "b09f8803549532a94d9740a60c3d9630328ec45e4d5a2dd726bf075c4214cd55",
+        "coloredPixels": 5100
+      },
+      {
+        "name": "font-alias-both-1",
+        "sha256": "a0e2870d9b902d5e455cfd28377528296721e25172c26209aeab2424d8fcbd2e",
+        "coloredPixels": 9900
+      },
+      {
+        "name": "font-alias-only-0",
+        "sha256": "f66978d3f69986517e78de6538c5c277bb440b8de713093a418eb5d28b5a502a",
+        "coloredPixels": 4800
+      }
+    ]
+  },
+  "generalGpu": {
+    "snapshot": "2584ae07eead141ce243d4fd0980062d13eebdec4e157ff4180cae5d7e596467",
+    "byteIdenticalCaptures": 155,
+    "unchangedEarlierCaptures": 155,
+    "webManifestSha256": "e67d9bde8f9af0587a047f090bdac0db8914edb2fa107bf9aa22920560f2243a"
+  },
+  "configurations": {
+    "Debug": {
+      "aliasRequests": {
+        "a": 1,
+        "b": 1
+      },
+      "executableSha256": "32e0f09386065c747f79ec9949f4f9cebf76c2ffc27037799c60db0ec0e17c37",
+      "manifestSha256": "74d3bdc26a6a3a00b927883410cd486ad0f34452e7661d702f4c8aa12183f3f4",
+      "comparisonSha256": "446c8c81c017dec82bb0ef3f496acd05aed507cdac7f8e31f207e0d287d5f712",
+      "graphicsManifestSha256": "fd228f533aef5a14ea4a2818c0f3d3a3fee986e6e4baf48cb8838914858bd41d",
+      "graphicsComparisonSha256": "d6f7a96482f6d3532d3bdefc620c3d19109adbe24ef06b8e423b331c6da120e6"
+    },
+    "Release": {
+      "aliasRequests": {
+        "a": 1,
+        "b": 1
+      },
+      "executableSha256": "7a97e6ed55f589e30f38cfde2783eb0b414cd7c0a32c1f9612704bf6b4b2aced",
+      "manifestSha256": "6d8cc33d3eecc7ba433b817ae05be8f79e5602075ecb92ec325d10930ea516af",
+      "comparisonSha256": "8796fd6c513d402bf98906a55b76415a49773986e23116fabeee7aac9de9f364",
+      "graphicsManifestSha256": "96e0798b2f23464f63ae5ae7bc4ae08194dd8ccac28e037470a391823fae532e",
+      "graphicsComparisonSha256": "d6f7a96482f6d3532d3bdefc620c3d19109adbe24ef06b8e423b331c6da120e6"
+    }
+  },
+  "local": {
+    "jestSuites": 3,
+    "tests": 28,
+    "jestLogSha256": "4e5fa715299bb59c1e19f9a43609e73ace3cd85c6ccb64f5fccceff4077900bc",
+    "nativeTypeScript": true,
+    "fullWeb": {
+      "suitesPassed": 198,
+      "testsPassed": 1478,
+      "testsSkipped": 8,
+      "todo": 16,
+      "logSha256": "f6b7b90f6798ab7f8dc351ff193d333cc9c352b71c57d34a8373a1479b5d429a"
+    }
+  }
+}

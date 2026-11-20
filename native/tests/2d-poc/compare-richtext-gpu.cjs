@@ -15,7 +15,7 @@ if (!/^[0-9a-f]{64}$/.test(a.executableSha256)) throw Error('Missing native exec
 const lifecycle=a.text?.lifecycle;
 if(!lifecycle?.http?.interrupted||!lifecycle.http.loaded||!lifecycle.http.cachePathResolved||!lifecycle.http.released||!lifecycle.http.cacheRemoved||!lifecycle.http.missingRejected||!lifecycle.http.failedFilesRemoved||!lifecycle.http.cancelledAndResumed||lifecycle.http.bytes!==223404)throw Error('Incomplete HTTP font lifecycle evidence');
 if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||!Number.isInteger(lifecycle.cacheBefore)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
-const { wordWrapNames, richTextNames, shadowNames, lifecycleNames, captures } = require('./richtext-gpu-cases.cjs');
+const { wordWrapNames, richTextNames, shadowNames, lifecycleNames, aliasNames, captures } = require('./richtext-gpu-cases.cjs');
 const emptyCaptures = new Set(['richtext-lifecycle-disabled', 'richtext-lifecycle-destroyed']);
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 const expectedWrap = [
@@ -23,6 +23,13 @@ const expectedWrap = [
     [3, 120, 127.8, 24], [3, 74, 157.8, 24], [3, 62, 127.8, 24], [3, 116, 127.8, 24],
 ];
 for(const value of [a,b]) {
+    const aliases = value.text.fontAliasSources;
+    const widths = [[95.9765625, 101.9296875], [101.9296875], [95.9765625, 101.9296875], [95.9765625]];
+    if (aliases?.released !== 4 || JSON.stringify(aliases.checkpoints?.map(x => x.name)) !== JSON.stringify(aliasNames)
+        || aliases.checkpoints.some((item, index) => item.widths.length !== widths[index].length
+            || item.widths.some((w, i) => !Number.isFinite(w) || Math.abs(w - widths[index][i]) > 0.001))) {
+        throw Error('Incomplete same-name font lifetime: ' + value.backend);
+    }
     const segments = value.text.segmentLifecycle;
     if (segments?.atlasId !== 'ba29c4cd-b002-4ab8-9089-dfe715fcf63c' || segments.rows !== 8 || segments.pairsPerRow !== 8
         || segments.cycles !== 32 || segments.layerChanges?.join() !== '1,33554432' || !segments.ownerReleased || segments.eventPairs !== 4224
@@ -63,6 +70,14 @@ for (const [dir,manifest] of [[nativeDir,a],[webDir,b]]) {
     const bytes = name => fs.readFileSync(path.join(dir,name+'.rgba'));
     if (!bytes('text-bidi-override').equals(bytes('text-bidi-visual'))) throw Error('RTL override differs from its visual order: '+dir);
     if (!bytes('text-shadow-tag').equals(bytes('text-colors'))) throw Error('RichText shadow tag changed the colored control image: '+dir);
+    const bothFonts = bytes('font-alias-both-0');
+    if (!bothFonts.equals(bytes('font-alias-both-1'))) throw Error('Font loading order changed the rendering: ' + dir);
+    const survivors = bytes('font-alias-only-0');
+    const second = bytes('font-alias-only-1');
+    for (let i = 0; i < second.length; i += 4) {
+        if (second[i] || second[i + 1] || second[i + 2]) second.copy(survivors, i, i, i + 4);
+    }
+    if (!bothFonts.equals(survivors)) throw Error('Releasing a same-name font changed the surviving rendering: ' + dir);
     const green = rgba => rgba.some((value, index) => index % 4 === 1 && value > rgba[index - 1]);
     if (green(bytes('richtext-lifecycle-grid')) || !green(bytes('richtext-lifecycle-rebuilt'))) {
         throw Error('RichText did not replace the red image segments with green frames: ' + dir);
@@ -84,8 +99,8 @@ function shadowCoverage(bytes, width) {
     }
     return { pixels, minX, maxX };
 }
-const nativeMetrics = a.text.labelWordWrap.concat(a.text.metrics, a.text.shadowLayout, a.text.segmentLifecycle.checkpoints);
-const webMetrics = b.text.labelWordWrap.concat(b.text.metrics, b.text.shadowLayout, b.text.segmentLifecycle.checkpoints);
+const nativeMetrics = a.text.labelWordWrap.concat(a.text.metrics, a.text.shadowLayout, a.text.segmentLifecycle.checkpoints, a.text.fontAliasSources.checkpoints);
+const webMetrics = b.text.labelWordWrap.concat(b.text.metrics, b.text.shadowLayout, b.text.segmentLifecycle.checkpoints, b.text.fontAliasSources.checkpoints);
 for(let n=0;n<captures.length;n++) {
     const name=captures[n],actual=fs.readFileSync(path.join(nativeDir,name+'.rgba')),reference=fs.readFileSync(path.join(webDir,name+'.rgba'));
     if(actual.length!==256*256*4||reference.length!==actual.length)throw Error('Invalid RGBA dimensions');
@@ -132,6 +147,7 @@ for(let n=0;n<captures.length;n++) {
 const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},interaction:{native:a.text.interaction,web:b.text.interaction},pass:rows.every(x=>x.pass),results:rows};
 result.executableSha256 = a.executableSha256;
 result.segmentLifecycle = { native: a.text.segmentLifecycle, web: b.text.segmentLifecycle };
+result.fontAliasSources = { native: a.text.fontAliasSources, web: b.text.fontAliasSources };
 const deferredPixels = new Set();
 if (m6Gate) {
     const permitted = new Set(['text-bold', 'text-outline', 'text-nested']);

@@ -71,8 +71,9 @@ test('Web polling observes new font metrics and permits retry from the timeout c
         });
         loaded = true;
         jest.advanceTimersByTime(100);
-        expect(owner._nativeAsset).toBe('PollingOwnerTest_LABEL');
+        expect(owner._fontFamily).toBe('PollingOwnerTest_LABEL');
         const ownedStyle = nodes.filter(node => node.tagName === 'STYLE').pop()!;
+        expect(ownedStyle.textContent).toContain(`font-family:"${owner._nativeAsset}"`);
         expect(ownedStyle.isConnected).toBe(true);
         owner.destroy();
         CCObject._deferredDestroy();

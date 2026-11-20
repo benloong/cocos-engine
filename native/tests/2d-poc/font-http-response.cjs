@@ -5,6 +5,11 @@ const path = require('node:path');
 
 module.exports = function fontHttpResponse () {
     const bytes = fs.readFileSync(path.join(__dirname, '../../../tests/fixtures/Thonburi.ttf'));
+    const aliases = new Map([
+        ['/m6-font-alias/a/Shared.ttf', { id: 'a', file: bytes }],
+        ['/m6-font-alias/b/Shared.ttf', { id: 'b', file: fs.readFileSync(path.join(__dirname, '../../../editor/assets/default_fonts/builtin-freetype/OpenSans-Regular.ttf')) }],
+    ]);
+    const aliasRequests = { a: 0, b: 0 };
     const requests = { interrupted: 0, complete: 0, cancelled: 0, resumed: 0 };
     function serveResumable(req, res) {
         const headers = { 'Content-Type': 'font/ttf', 'Content-Length': bytes.length,
@@ -35,5 +40,17 @@ module.exports = function fontHttpResponse () {
         ++requests.complete;
         res.end(bytes);
     }
-    return { serve, serveResumable, requests };
+    function serveAlias (req, res) {
+        const alias = aliases.get(req.url.split('?')[0]);
+        if (!alias) return false;
+        const { id, file } = alias;
+        res.writeHead(200, { 'Content-Type': 'font/ttf', 'Content-Length': file.length, 'Cache-Control': 'no-store' });
+        if (req.method === 'HEAD') res.end();
+        else {
+            ++aliasRequests[id];
+            res.end(file);
+        }
+        return true;
+    }
+    return { serve, serveResumable, serveAlias, requests, aliasRequests };
 };

@@ -111,15 +111,17 @@ test('Web font assets share one registration and can reuse preloaded data after 
     Object.defineProperty(window, 'FontFace', { value: TestFace, configurable: true });
     Object.defineProperty(document, 'fonts', { value: { add, delete: remove }, configurable: true });
     try {
-        const data = await new Promise<BrowserFont>((resolve, reject) => {
-            downloader.download('bundle-owner-test', 'fonts/BundleOwnerTest.ttf', '.ttf', {},
+        const download = (id: string, url = 'fonts/BundleOwnerTest.ttf'): Promise<BrowserFont> => new Promise((resolve, reject) => {
+            downloader.download(id, url, '.ttf', {},
                 (error, content) => error ? reject(error) : resolve(content));
         });
+        const data = await download('bundle-owner-test');
         const first = new TTFFont();
         const second = new TTFFont();
         first._nativeAsset = data;
         second._nativeAsset = data;
-        expect(second._nativeAsset).toBe('BundleOwnerTest_LABEL');
+        expect(second._fontFamily).toBe('BundleOwnerTest_LABEL');
+        expect(second._nativeAsset).toBe(data.family);
         expect(add).toHaveBeenCalledTimes(1);
         first.destroy();
         CCObject._deferredDestroy();
@@ -138,6 +140,31 @@ test('Web font assets share one registration and can reuse preloaded data after 
         reloaded._nativeAsset = data;
         expect(remove).toHaveBeenCalledTimes(2);
         expect(add).toHaveBeenCalledTimes(2);
+
+        const [fresh, other, waiter] = await Promise.all([
+            download('fresh-owner'), download('other-owner', 'other/BundleOwnerTest.ttf'), download('same-source-waiter'),
+        ]);
+        expect(waiter).toBe(fresh);
+        const current = new TTFFont(), stale = new TTFFont(), independent = new TTFFont();
+        current._nativeAsset = fresh;
+        stale._nativeAsset = data;
+        independent._nativeAsset = other;
+        expect(stale._nativeAsset).toBe(current._nativeAsset);
+        expect(current._nativeAsset).not.toBe(data.family);
+        expect(independent._fontFamily).toBe(current._fontFamily);
+        expect(independent._nativeAsset).not.toBe(current._nativeAsset);
+        expect(add).toHaveBeenCalledTimes(4);
+        current.destroy();
+        CCObject._deferredDestroy();
+        expect(remove).toHaveBeenCalledTimes(2);
+        stale.destroy();
+        CCObject._deferredDestroy();
+        expect(remove).toHaveBeenCalledTimes(3);
+        expect(remove).toHaveBeenLastCalledWith(add.mock.calls[2][0]);
+        independent.destroy();
+        CCObject._deferredDestroy();
+        expect(remove).toHaveBeenCalledTimes(4);
+        expect(remove).toHaveBeenLastCalledWith(add.mock.calls[3][0]);
     } finally {
         if (faceDescriptor) Object.defineProperty(window, 'FontFace', faceDescriptor);
         else Reflect.deleteProperty(window, 'FontFace');

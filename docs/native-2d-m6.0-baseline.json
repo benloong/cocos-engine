@@ -7,7 +7,7 @@
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
-      "sha256": "6bff3e043381bb1058f763ff4c758b1501a906da69c855d359f7e2c906387066"
+      "sha256": "89177a9f9419937441fa167479ab8fd8a9d74680febd76dfde9d291e80eefc5a"
     },
     {
       "file": "cocos/asset/asset-manager/factory.ts",
@@ -13143,11 +13143,11 @@
             ]
           },
           {
-            "name": "_releaseBrowserFont",
+            "name": "_browserFont",
             "kind": "PropertyDeclaration",
             "visibility": "private",
             "static": false,
-            "type": "(() => void) | null",
+            "type": "BrowserFontLease | null",
             "parameters": [],
             "default": "null",
             "decorators": []
@@ -15119,8 +15119,8 @@
     },
     {
       "file": "cocos/2d/assets/ttf-font.ts",
-      "sha256": "6c36bb7a8995f6a994297ae5fd66bd570b1d791a3aeb4f0e15da1925cbe61ecb",
-      "printedCodeLines": 48,
+      "sha256": "2c94de0873a53b2cdca3533fbfbf0414b021d3c9006cf07f02f007c18b14d2a1",
+      "printedCodeLines": 45,
       "runtimeImports": [
         "cc.decorator",
         "../../core",
@@ -17335,8 +17335,8 @@
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
-      "sha256": "6bff3e043381bb1058f763ff4c758b1501a906da69c855d359f7e2c906387066",
-      "printedCodeLines": 256,
+      "sha256": "89177a9f9419937441fa167479ab8fd8a9d74680febd76dfde9d291e80eefc5a",
+      "printedCodeLines": 271,
       "runtimeImports": [
         "../../core",
         "internal:constants",
@@ -17350,8 +17350,8 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        95,
-        176
+        101,
+        195
       ]
     },
     {

@@ -21,4 +21,6 @@ shadowNames.push('label-shadow-multiline-positive', 'label-shadow-multiline-nega
 shadowNames.push('label-shadow-blur-2', 'label-shadow-blur-4', 'label-shadow-blur-8',
     'label-shadow-blur-clipped-positive', 'label-shadow-blur-clipped-negative');
 const lifecycleNames = ['richtext-lifecycle-grid', 'richtext-lifecycle-disabled', 'richtext-lifecycle-rebuilt', 'richtext-lifecycle-destroyed'];
-module.exports = { wordWrapNames, richTextNames, shadowNames, lifecycleNames, captures: wordWrapNames.concat(richTextNames, shadowNames, lifecycleNames) };
+const aliasNames = ['font-alias-both-0', 'font-alias-only-1', 'font-alias-both-1', 'font-alias-only-0'];
+module.exports = { wordWrapNames, richTextNames, shadowNames, lifecycleNames, aliasNames,
+    captures: wordWrapNames.concat(richTextNames, shadowNames, lifecycleNames, aliasNames) };

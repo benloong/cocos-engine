@@ -46,6 +46,7 @@ const server=http.createServer(async(req,res)=>{
         }
         if(interruptedFont && url.pathname==='/m6-cancel.ttf') { interruptedFont.serveResumable(req,res); return; }
         if(interruptedFont && url.pathname==='/m6-font.ttf') { interruptedFont.serve(req,res); return; }
+        if(interruptedFont?.serveAlias(req,res)) return;
         if(url.pathname==='/m6-font.ttf') {
             res.writeHead(200,{'Content-Type':'font/ttf'});
             fs.createReadStream(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf')).pipe(res);return;
@@ -87,6 +88,26 @@ const server=http.createServer(async(req,res)=>{
         } catch(error) { logs.push(String(error)); }
     });
     const timeout=setTimeout(()=>doneReject(new Error('Web capture timeout')),180000);
-    try { const result=await done;if(interruptedFont && (interruptedFont.requests.interrupted !== 1 || interruptedFont.requests.complete !== 1 || interruptedFont.requests.cancelled !== 1 || interruptedFont.requests.resumed !== 1)) throw new Error('Unexpected Web font transfers: ' + JSON.stringify(interruptedFont.requests));console.log(`M6_GPU_WEB_READY ${result.captures.length}`); }
-    finally { if (interruptedFont) console.log('M6_WEB_FONT_REQUESTS ' + JSON.stringify(interruptedFont.requests)); clearTimeout(timeout);socket?.close();browser.kill();server.close();fs.writeFileSync(path.join(output,'console.log'),logs.join('\n')); }
+    try {
+        const result = await done;
+        if (interruptedFont) {
+            const { requests, aliasRequests } = interruptedFont;
+            if (requests.interrupted !== 1 || requests.complete !== 1 || requests.cancelled !== 1 || requests.resumed !== 1
+                || aliasRequests.a !== 2 || aliasRequests.b !== 2) {
+                throw new Error('Unexpected Web font transfers: ' + JSON.stringify({ requests, aliasRequests }));
+            }
+        }
+        console.log(`M6_GPU_WEB_READY ${result.captures.length}`);
+    }
+    finally {
+        if (interruptedFont) {
+            console.log('M6_WEB_FONT_REQUESTS ' + JSON.stringify(interruptedFont.requests));
+            console.log('M6_WEB_FONT_ALIAS_REQUESTS ' + JSON.stringify(interruptedFont.aliasRequests));
+        }
+        clearTimeout(timeout);
+        socket?.close();
+        browser.kill();
+        server.close();
+        fs.writeFileSync(path.join(output, 'console.log'), logs.join('\n'));
+    }
 })().catch(error=>{console.error(error);process.exitCode=1;});

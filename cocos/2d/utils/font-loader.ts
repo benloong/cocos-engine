@@ -33,9 +33,14 @@ import { ccwindow } from '../../core/global-exports';
 const ccdocument = ccwindow.document;
 
 type FontCallback = (err: Error | null, family?: string) => void;
-export interface BrowserFont {
+export interface BrowserFontLease {
     readonly family: string;
-    retain (): () => void;
+    release (): void;
+}
+export interface BrowserFont {
+    readonly name: string;
+    readonly family: string;
+    retain (): BrowserFontLease;
 }
 type FontData = string | BrowserFont;
 type FontDataCallback = (err: Error | null, data?: FontData) => void;
@@ -59,6 +64,7 @@ const _testString = 'BES bswy:->@123\u4E01\u3041\u1101';
 
 const _pendingFaces = new Map<string, FontDataCallback[]>();
 const _fontFaces = new Map<string, BrowserFont>();
+let browserFamilySerial = 0;
 
 const _loadingFonts: IFontLoadHandle[] = [];
 // 3 seconds timeout
@@ -118,75 +124,88 @@ function checkFontLoaded (): void {
     }
 }
 
-function registerFontFace (family: string, attach: () => void, detach: () => void, discard?: () => void): void {
-    if (_fontFaces.has(family)) {
+function registerFontFace (
+    key: string, name: string, family: string, attach: () => void, detach: () => void, discard?: () => void,
+): void {
+    if (_fontFaces.has(key)) {
         discard?.();
         return;
     }
     let owners = 0;
     const font: BrowserFont = {
+        name,
         family,
-        retain (): () => void {
-            const active = _fontFaces.get(family);
+        retain (): BrowserFontLease {
+            const active = _fontFaces.get(key);
             if (active && active !== font) return active.retain();
             if (!active) {
                 // A preloaded asset may still hold these bytes after the previous owner released the face.
                 attach();
-                _fontFaces.set(family, font);
+                _fontFaces.set(key, font);
             }
             ++owners;
             let released = false;
-            return () => {
-                if (released) return;
-                released = true;
-                if (--owners === 0) {
-                    _fontFaces.delete(family);
-                    detach();
-                }
+            return {
+                family,
+                release (): void {
+                    if (released) return;
+                    released = true;
+                    if (--owners === 0) {
+                        _fontFaces.delete(key);
+                        detach();
+                    }
+                },
             };
         },
     };
     attach();
-    _fontFaces.set(family, font);
+    _fontFaces.set(key, font);
 }
 
 export function loadFont (url: string, options: Record<string, any>, onComplete: FontCallback): void {
-    loadFontAsset(url, options, (err, data) => onComplete(err, typeof data === 'string' ? data : data?.family));
+    loadFontData(url, false, (err, data) => onComplete(err, typeof data === 'string' ? data : data?.family));
 }
 
 function loadFontAsset (url: string, options: Record<string, any>, onComplete: FontDataCallback): void {
-    const fontFamilyName = getFontFamily(url);
-    const existing = _fontFaces.get(fontFamilyName);
+    loadFontData(url, true, onComplete);
+}
+
+function loadFontData (url: string, browserAsset: boolean, onComplete: FontDataCallback): void {
+    const name = getFontFamily(url);
+    const key = browserAsset ? `source:${url}` : `family:${name}`;
+    const existing = _fontFaces.get(key);
     if (existing) {
         onComplete(null, existing);
         return;
     }
-    const pending = _pendingFaces.get(fontFamilyName);
+    const pending = _pendingFaces.get(key);
     if (pending) {
         pending.push(onComplete);
         return;
     }
 
     const callbacks = [onComplete];
-    _pendingFaces.set(fontFamilyName, callbacks);
+    // A new source or reload must not reuse another font's Canvas measurement cache key.
+    const fontFamilyName = browserAsset ? `__cocos_font_${++browserFamilySerial}` : name;
+    _pendingFaces.set(key, callbacks);
     const finish = (): void => {
-        _pendingFaces.delete(fontFamilyName);
-        const font = _fontFaces.get(fontFamilyName);
-        if (!font) warnID(4933, fontFamilyName);
+        _pendingFaces.delete(key);
+        const font = _fontFaces.get(key);
+        if (!font) warnID(4933, name);
         for (const callback of callbacks) callback(null, font ?? fontFamilyName);
     };
     if (useNativeCheck()) {
         // A fresh FontFace can reload the original URL after a failed document stylesheet fetch.
         const timeout = setTimeout(finish, _timeout);
         const settle = (face?: LoadableFontFace): void => {
-            if (_pendingFaces.get(fontFamilyName) !== callbacks) return;
+            if (_pendingFaces.get(key) !== callbacks) return;
             clearTimeout(timeout);
             if (face) {
                 const fonts = (ccdocument as Document & { fonts: {
                     add (value: LoadableFontFace): void;
                     delete (value: LoadableFontFace): void;
                 } }).fonts;
-                registerFontFace(fontFamilyName, () => fonts.add(face), () => fonts.delete(face));
+                registerFontFace(key, name, fontFamilyName, () => fonts.add(face), () => fonts.delete(face));
             }
             finish();
         };
@@ -237,7 +256,7 @@ function loadFontAsset (url: string, options: Record<string, any>, onComplete: F
             preloadDiv.parentNode?.removeChild(preloadDiv);
             const detach = (): void => { fontStyle.parentNode?.removeChild(fontStyle); };
             if (loaded) {
-                registerFontFace(fontFamilyName, () => {
+                registerFontFace(key, name, fontFamilyName, () => {
                     if (!fontStyle.parentNode) ccdocument.body.appendChild(fontStyle);
                 }, detach, detach);
             } else detach();

@@ -30,6 +30,8 @@ module.exports=function graphicsGpuSnapshot(mode='graphics') {
         const atlas = path.join(__dirname, 'fixtures/acceptance/resources/M6StaticAtlas');
         walk(atlas);
         fixtureHashes.push([path.relative(root, atlas + '.meta').replaceAll('\\','/'),crypto.createHash('sha256').update(fs.readFileSync(atlas + '.meta')).digest('hex')]);
+        const openSans = 'editor/assets/default_fonts/builtin-freetype/OpenSans-Regular.ttf';
+        fixtureHashes.push([openSans,crypto.createHash('sha256').update(fs.readFileSync(path.join(root, openSans))).digest('hex')]);
     }
     fixtureHashes.push(['tests/fixtures/Thonburi.ttf',crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'tests/fixtures/Thonburi.ttf'))).digest('hex')]);
     const snapshot=crypto.createHash('sha256').update(JSON.stringify({mode,files:report.files.map(x=>[x.file,x.sha256]),native:report.nativeSourceHashes,fixture:fixtureHashes})).digest('hex');

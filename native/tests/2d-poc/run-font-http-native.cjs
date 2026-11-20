@@ -9,8 +9,9 @@ const release = process.argv.includes('--release');
 const exeIndex = process.argv.indexOf('--exe');
 const handleReportIndex = process.argv.indexOf('--handle-report');
 if (asan && release) throw new Error('Select one native configuration');
-const requests = { font: font.requests, missing: 0, queued: 0 };
+const requests = { font: font.requests, aliases: font.aliasRequests, missing: 0, queued: 0 };
 const server = http.createServer((request, response) => {
+    if (font.serveAlias(request, response)) return;
     if (request.url === '/m6-cancel.ttf') {
         font.serveResumable(request, response);
     } else if (request.url === '/m6-http-font.ttf') {
@@ -41,7 +42,9 @@ const server = http.createServer((request, response) => {
         fs.writeFileSync(path.join(__dirname, `build/font-http-${asan ? 'asan' : release ? 'release' : 'normal'}-requests.json`), JSON.stringify(requests, null, 2) + '\n');
         const completeTransfers = handleReportIndex === -1 ? 1 : 31;
         if (code !== 0 || requests.font.interrupted !== 1 || requests.font.complete !== completeTransfers || requests.font.cancelled !== 1
-            || requests.font.resumed !== 1 || requests.queued !== 0 || !requests.missing) throw new Error(`HTTP font probe failed: ${code}, ${JSON.stringify(requests)}`);
+            || requests.font.resumed !== 1 || !requests.aliases.a || !requests.aliases.b || requests.queued !== 0 || !requests.missing) {
+            throw new Error(`HTTP font probe failed: ${code}, ${JSON.stringify(requests)}`);
+        }
         console.log('M6_FONT_HTTP_REQUESTS ' + JSON.stringify(requests));
     } finally { await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

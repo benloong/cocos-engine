@@ -43,6 +43,14 @@ Windows 应用每轮通过 `assetManager.loadRemote()` 加载 Thonburi，核对�
 
 两种 Windows 配置对 Web 均为布局 47/47、严格像素 44/47，三组超差按已确认范围暂缓。各端 47 张原始像素与 `95a6252786` 的同平台捕获逐字节一致。[逐阶段读数和产物哈希](./native-2d-m6.1-font-alias-ownership-results.json)
 
+## Web 同名不同源字体
+
+Chrome 通过两个不同 HTTP 路径加载同名 `Shared.ttf`。两份文件分别为 Thonburi 和 Open Sans。旧版只请求第一份字体，Open Sans 对应的 Label 也测得 95.9765625 px。
+
+Web 资产加载按来源合并请求。来自同一 URL 的资产共享活跃注册，每次新加载生成独立 CSS 渲染别名，测宽和字形缓存可以区分不同来源与重载代次。已加载资产保留供序列化的原始 `_fontFamily`。旧预加载数据接管当前活跃来源时，同步采用该来源的渲染别名和释放句柄。[三端生命周期与请求记录](./native-2d-m6-font-source-isolation.json)
+
+Windows Debug、Release 和 Chrome 按两个顺序加载和释放两份实际 TTF。两种字体的宽度分别为 95.9765625 和 101.9296875 px。释放其中一份后，另一份保持原宽度与原图。Chrome 的两个 URL 各有两次完整请求，四个字体资产最终均释放，浏览器注册和资产缓存均通过清理检查。四张新增图在三端逐字节一致。[逐图哈希与验收结果](./native-2d-m6-font-source-isolation.json)
+
 构建 Windows 和 Web 测试工程后，用对应的 Windows 可执行文件顺序运行以下入口。原始 JSON、应用日志和 GPU 对照保存在 `native/tests/2d-poc/build`。
 
 ```powershell
