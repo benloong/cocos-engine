@@ -46,7 +46,7 @@ try {
             if ($data.cases.Count -ne 12 -or @($data.cases | Where-Object {$_.samples.Count -ne 120}).Count) { throw 'Incomplete benchmark' }
             if ($LabelRasterProbe -and $data.lineRasterVariants -lt 1) { throw 'Missing Label raster comparisons' }
             Write-Output "M6_PERF_READY $key"
-            return
+            exit 0
         }
         if ($app.HasExited -or (Select-String -LiteralPath $log -Pattern 'M6_GPU_FAIL|TypeError:|ReferenceError:' -Quiet)) {
             throw "Benchmark failed. See $log"
