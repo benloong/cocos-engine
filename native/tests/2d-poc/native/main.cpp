@@ -1113,6 +1113,34 @@ void testFontAliasOwnership() {
 #endif
 }
 
+void testTextShadowCrop() {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    constexpr size_t HEIGHT = 32, CLIPPED_WIDTH = 32, FULL_WIDTH = 64;
+    constexpr std::array<float, 4> GREEN{0, 1, 0, 0.5F};
+    for (const bool bold : {false, true}) {
+        const auto face = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 24, bold, false);
+        check(face != nullptr, "shadow crop font loads");
+        if (!face) continue;
+        std::vector<uint8_t> hard(CLIPPED_WIDTH * HEIGHT * 4);
+        check(face->draw("I", 32, 28, 3, hard.data(), CLIPPED_WIDTH, HEIGHT, GREEN), "hard shadow crop draws");
+        check(std::all_of(hard.begin(), hard.end(), [](uint8_t value) { return value == 0; }), "source glyph is outside the viewport");
+        for (const float blur : {4.F, 8.F}) {
+            std::vector<uint8_t> full(FULL_WIDTH * HEIGHT * 4), cropped(CLIPPED_WIDTH * HEIGHT * 4);
+            check(face->drawShadow("I", 32, 28, 3, full.data(), FULL_WIDTH, HEIGHT, GREEN, blur), "full shadow draws");
+            check(face->drawShadow("I", 32, 28, 3, cropped.data(), CLIPPED_WIDTH, HEIGHT, GREEN, blur), "cropped shadow draws");
+            check(std::any_of(cropped.begin(), cropped.end(), [](uint8_t value) { return value != 0; }),
+                  "cropped texture retains shadow cast by an off-canvas glyph");
+            bool matches = true;
+            for (size_t row = 0; row < HEIGHT; ++row) {
+                const auto begin = cropped.begin() + row * CLIPPED_WIDTH * 4;
+                matches &= std::equal(begin, begin + CLIPPED_WIDTH * 4, full.begin() + row * FULL_WIDTH * 4);
+            }
+            check(matches, "cropping a shadow preserves its convolution samples");
+        }
+    }
+#endif
+}
+
 void testTextStroke() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     cc::CanvasRenderingContext2D fallback(16, 16); fallback.setFont("24px M6UnavailableCanvasFamily");
@@ -3153,6 +3181,7 @@ int main(int argc, char **argv) {
         testFontAssets();
         testFontAliasOwnership();
         testTextStroke();
+        testTextShadowCrop();
         testLabelStyleExtents();
         testLabelRasterMapping();
         testRichTextParser();

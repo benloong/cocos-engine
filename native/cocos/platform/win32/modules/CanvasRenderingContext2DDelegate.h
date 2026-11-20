@@ -65,6 +65,7 @@ public:
     void clearRect(float /*x*/, float /*y*/, float w, float h) override;
     void fillRect(float x, float y, float w, float h) override;
     void fillText(const ccstd::string &text, float x, float y, float /*maxWidth*/) override;
+    bool fillTextShadow(const ccstd::string &text, float x, float y, float blur);
     bool supportsTextStroke() const override;
     Size measureText(const ccstd::string &text) override;
     void updateFont(const ccstd::string &fontName, float fontSize, bool bold, bool italic, bool oblique, bool smallCaps) override;

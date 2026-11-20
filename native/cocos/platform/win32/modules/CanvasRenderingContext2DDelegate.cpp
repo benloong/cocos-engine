@@ -205,6 +205,14 @@ bool CanvasRenderingContext2DDelegate::supportsTextStroke() const {
     return _directWrite != nullptr;
 }
 
+bool CanvasRenderingContext2DDelegate::fillTextShadow(const ccstd::string &text, float x, float y, float blur) {
+    if (!_directWrite || _bufferWidth < 1 || _bufferHeight < 1) return false;
+    if (text.empty() || _fillStyle[3] == 0) return true;
+    return _directWrite->drawShadow(text, alignDirectWriteX(text, x), y, static_cast<int>(_textBaseLine),
+                                    _imageData.getBytes(), static_cast<uint32_t>(_bufferWidth),
+                                    static_cast<uint32_t>(_bufferHeight), _fillStyle, blur);
+}
+
 CanvasRenderingContext2DDelegate::Size CanvasRenderingContext2DDelegate::measureText(const ccstd::string &text) {
     if (text.empty())
         return ccstd::array<float, 2>{0.0f, 0.0f};

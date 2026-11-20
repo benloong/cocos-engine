@@ -14,4 +14,6 @@ for (const overflow of [0, 1, 2, 3]) {
     }
 }
 shadowNames.push('label-shadow-multiline-positive', 'label-shadow-multiline-negative');
+shadowNames.push('label-shadow-blur-2', 'label-shadow-blur-4', 'label-shadow-blur-8',
+    'label-shadow-blur-clipped-positive', 'label-shadow-blur-clipped-negative');
 module.exports = { richTextNames, shadowNames, captures: richTextNames.concat(shadowNames) };

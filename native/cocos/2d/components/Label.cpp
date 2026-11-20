@@ -972,7 +972,7 @@ void Label::rebuildTexture() {
         const float lineWidth = lineWidths[i];
         const float x = lineX(lineWidth);
         const float lineY = textTop + static_cast<float>(i) * lineHeight;
-        auto fillWithColor = [&](float dx, float dy, const Color &color) {
+        auto selectColor = [&](const Color &color) {
             char rgba[64] = {0};
             std::snprintf(rgba, sizeof(rgba), "rgba(%u,%u,%u,%.3f)",
                           static_cast<unsigned>(color.r),
@@ -980,16 +980,25 @@ void Label::rebuildTexture() {
                           static_cast<unsigned>(color.b),
                           static_cast<double>(color.a) / 255.0);
             context.setFillStyle(rgba);
+        };
+        auto fillWithColor = [&](float dx, float dy, const Color &color) {
+            selectColor(color);
             context.fillText(line, x + dx, lineY + dy, 0.0F);
         };
 
         if (drawShadow) {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
             const float shadowY = -_shadowOffsetY;
-            // GDI has no Canvas shadow. A hard shadow is one translated glyph.
+            // The foreground and shadow share the selected font and glyph origins.
+            selectColor(_shadowColor);
+            bool rendered = false;
             if (_shadowBlur == 0.F) {
-                fillWithColor(_shadowOffsetX, shadowY, _shadowColor);
-            } else
+                context.fillText(line, x + _shadowOffsetX, lineY + shadowY, 0.F);
+                rendered = true;
+            } else {
+                rendered = context.fillTextShadow(line, x + _shadowOffsetX, lineY + shadowY, _shadowBlur);
+            }
+            if (!rendered)
 #else
             const float shadowY = _shadowOffsetY;
 #endif

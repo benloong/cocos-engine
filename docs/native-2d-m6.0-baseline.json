@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "a41918d1e6f4df8c8bc807ef3452e12abd6a9040ca199d6b5ef64d7d245c24f6"
+      "sha256": "05aefae4c3ddb623d2278de0e6ac01dac6150067114489f2dc104990181489db"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -335,11 +335,11 @@
     },
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp",
-      "sha256": "968a64f0e30b4219e4ab9982cd5f76cc28b8ba6449d901ecee66684b301e2fa8"
+      "sha256": "96f42c096f78e118ba8117ae38fa8c9cbd399545390eb986988f6d0ee4a2ec49"
     },
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.h",
-      "sha256": "9b80d866e0deafaf723a8b468779d59c7183b5c4f5708d8c31a3b9bfb235698b"
+      "sha256": "8252656fa2e316c7e5fa2a293f0a8da5422a7417fea03a639b7836aa65033d3d"
     },
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h",
@@ -351,19 +351,19 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "e523cb2500cf194286351a6ab18d4b405d7f0663ef02878ef890d3999e57694d"
+      "sha256": "312cb444cd9ade3894087f50fcd4e3e33aed4d73678fe516fc9aca933f5a415d"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
-      "sha256": "c238f0159b4dd76cf4fd44c736d95dc20d17b2b36c032e010d4ca297b0b863e5"
+      "sha256": "d6c66d49a14921df9fb6797bdc92999f73819c3266f297cc711c321df7816703"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
-      "sha256": "e6aeaef580e85ad7be9f79f5a71725333486935dac7954ba1312772fc7826adf"
+      "sha256": "149f68515edcced311096329b0ece86120db33c46e8cb3256aecf8543c712d6a"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
-      "sha256": "4e21e66a6bc571ca62b089eaddafb9fe89fd0b3b5b77f771479018d0fbce1ff4"
+      "sha256": "9540ff090148bbd9b2f0e91697689585b35817e5801256bb533e329eb924e79e"
     },
     {
       "file": "native/cocos/scene/DrawBatch2D.cpp",

@@ -402,6 +402,22 @@ async function captureShadowLayout (parent: Node, font: TTFFont, capture: (name:
         label.shadowOffset = new Vec2(0, sign * label.lineHeight);
         await captureLabel('label-shadow-multiline-' + (sign > 0 ? 'positive' : 'negative'));
     }
+    label.string = 'I';
+    label.shadowColor = new Color(0, 255, 0, 255);
+    ui.setContentSize(96, 96);
+    label.shadowOffset = new Vec2(16, 14);
+    for (const blur of [2, 4, 8]) {
+        label.shadowBlur = blur;
+        await captureLabel(`label-shadow-blur-${blur}`);
+    }
+    ui.setContentSize(48, 48);
+    label.shadowBlur = 4;
+    for (const sign of [1, -1]) {
+        // Put the center of the shadow at the clip edge and retain its
+        // outer glyph coverage while filtering into the visible rectangle.
+        label.shadowOffset = new Vec2(52 * sign, 0);
+        await captureLabel('label-shadow-blur-clipped-' + (sign > 0 ? 'positive' : 'negative'));
+    }
     node.destroy();
     await wait();
     return metrics;

@@ -47,6 +47,7 @@ public:
         _isBufferSizeDirty = true;
         recreateBufferIfNeeded();
     }
+    bool fillTextShadow(const ccstd::string &text, float x, float y, float blur);
 #endif
 
     // Rect

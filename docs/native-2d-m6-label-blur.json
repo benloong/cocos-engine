@@ -1,0 +1,168 @@
+{
+  "snapshot": "0b200093f43a9f57c20505bb2381d7ea4721e8b6c52de63572ea3a71e4a4eccb",
+  "font": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+  "originalWindowsExecutableSha256": "b349a28c7c37370379fabcbad572e28a607a92d51e3a71cf9558fab239fc6e8e",
+  "sources": {
+    "canvasShadow": "https://html.spec.whatwg.org/multipage/canvas.html#shadows",
+    "smallAndBoxMaskBlur": "https://raw.githubusercontent.com/google/skia/main/src/core/SkMaskBlurFilter.cpp"
+  },
+  "nativeCrop": {
+    "boldAndRegular": true,
+    "blurValues": [
+      4,
+      8
+    ],
+    "clipWidth": 32,
+    "fullWidth": 64,
+    "configurations": [
+      "Debug",
+      "Release"
+    ]
+  },
+  "configurations": {
+    "Debug": {
+      "executableSha256": "b0f432636de83c2692dcdecf79db8b136afabcee4cdfbf59e5189bc52c5e47b4",
+      "previousCapturesIdentical": 42,
+      "layout": 47,
+      "strictPixels": 44,
+      "fontLifecycleCycles": 1000,
+      "strictPixelFailures": [
+        "text-bold",
+        "text-outline",
+        "text-nested"
+      ]
+    },
+    "Release": {
+      "executableSha256": "f75f8f42d7b4d4d5dc861cac5756dcb58bb74c36bf70fe179ee4d74fa694161f",
+      "previousCapturesIdentical": 42,
+      "layout": 47,
+      "strictPixels": 44,
+      "fontLifecycleCycles": 1000,
+      "strictPixelFailures": [
+        "text-bold",
+        "text-outline",
+        "text-nested"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "label-shadow-blur-2",
+      "before": {
+        "max": 240,
+        "pixels": 160
+      },
+      "blurWithTintedCoverage": {
+        "max": 16,
+        "pixels": 115
+      },
+      "current": {
+        "max": 0,
+        "pixels": 0
+      },
+      "visibleShadowPixels": 146,
+      "leftmostShadowX": 131,
+      "rightmostShadowX": 138,
+      "rgbaSha256": "e4c60bf149e5ac6fc03fd09b65da9603dff546c18e80667b0185a3fa371fc9bc"
+    },
+    {
+      "name": "label-shadow-blur-4",
+      "before": {
+        "max": 245,
+        "pixels": 283
+      },
+      "blurWithTintedCoverage": {
+        "max": 11,
+        "pixels": 182
+      },
+      "current": {
+        "max": 0,
+        "pixels": 0
+      },
+      "visibleShadowPixels": 280,
+      "leftmostShadowX": 128,
+      "rightmostShadowX": 139,
+      "rgbaSha256": "ca2f7a7c4121497e1c49b4f98167a1f9a1c292af9191e1203ae947b5c7dfbc41"
+    },
+    {
+      "name": "label-shadow-blur-8",
+      "before": {
+        "max": 249,
+        "pixels": 629
+      },
+      "blurWithTintedCoverage": {
+        "max": 6,
+        "pixels": 271
+      },
+      "current": {
+        "max": 0,
+        "pixels": 0
+      },
+      "visibleShadowPixels": 669,
+      "leftmostShadowX": 120,
+      "rightmostShadowX": 142,
+      "rgbaSha256": "21d2e7efdbb27c799e26fb1ec5b42791aca1e7e102ababd9aa8bbe4e1a40e256"
+    },
+    {
+      "name": "label-shadow-blur-clipped-positive",
+      "before": {
+        "max": 245,
+        "pixels": 143
+      },
+      "blurWithTintedCoverage": {
+        "max": 11,
+        "pixels": 90
+      },
+      "current": {
+        "max": 0,
+        "pixels": 0
+      },
+      "visibleShadowPixels": 140,
+      "leftmostShadowX": 146,
+      "rightmostShadowX": 151,
+      "rgbaSha256": "3036d9b08f84b728b91f2fcfb1b5ab8f06f8f9998ee94043513408500f284adb"
+    },
+    {
+      "name": "label-shadow-blur-clipped-negative",
+      "before": {
+        "max": 243,
+        "pixels": 140
+      },
+      "blurWithTintedCoverage": {
+        "max": 11,
+        "pixels": 92
+      },
+      "current": {
+        "max": 0,
+        "pixels": 0
+      },
+      "visibleShadowPixels": 140,
+      "leftmostShadowX": 104,
+      "rightmostShadowX": 109,
+      "rgbaSha256": "d5d098cf0064f56b49c6e5e38b97c24094b94db0947c7c1c82e4306890bcb93f"
+    }
+  ],
+  "standardWindowsAcceptance": {
+    "Debug": {
+      "executableSha256": "17fbf7c4ea3073011acbc626e3d5cbae6c159b21bb5cc7290c585370e12e9aee",
+      "probes": [
+        "M2 Sprite",
+        "M3 Label",
+        "M4 Mask and Graphics",
+        "M4 extra",
+        "M5 RichText"
+      ],
+      "m0Checks": true
+    },
+    "Release": {
+      "executableSha256": "c06476c99ded874ae52c9dbb1ab04af9fc1c6af638549d9423168076f4726bd8",
+      "probes": [
+        "M2 Sprite",
+        "M3 Label",
+        "M4 Mask and Graphics",
+        "M4 extra",
+        "M5 RichText"
+      ]
+    }
+  }
+}

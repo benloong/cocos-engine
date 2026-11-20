@@ -44,10 +44,12 @@ public:
     bool stroke(const std::string &text, float x, float y, int baseline,
                 uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color,
                 float lineWidth, StrokeJoin join = StrokeJoin::MITER) const;
+    bool drawShadow(const std::string &text, float x, float y, int baseline,
+                    uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color, float blur) const;
 private:
     bool drawText(const std::string &text, float x, float y, int baseline,
                   uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color,
-                  float lineWidth, StrokeJoin join) const;
+                  float lineWidth, StrokeJoin join, float blur = 0.F) const;
     DirectWriteFont();
     struct Impl;
     std::unique_ptr<Impl> _impl;

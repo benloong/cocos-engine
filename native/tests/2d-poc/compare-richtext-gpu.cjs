@@ -38,6 +38,17 @@ for (const [dir,manifest] of [[nativeDir,a],[webDir,b]]) {
     }
 }
 const canonical=value=>typeof value==='number'?Math.fround(value):Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).map(([key,item])=>[key,canonical(item)])):value;
+function shadowCoverage(bytes, width) {
+    let pixels = 0, minX = width, maxX = -1;
+    for (let i = 0; i < bytes.length; i += 4) {
+        if (bytes[i + 1] <= bytes[i]) continue;
+        const x = (i / 4) % width;
+        minX = Math.min(minX, x);
+        maxX = Math.max(maxX, x);
+        ++pixels;
+    }
+    return { pixels, minX, maxX };
+}
 const nativeMetrics = a.text.metrics.concat(a.text.shadowLayout);
 const webMetrics = b.text.metrics.concat(b.text.shadowLayout);
 for(let n=0;n<captures.length;n++) {
@@ -67,9 +78,21 @@ for(let n=0;n<captures.length;n++) {
     const max = Math.max(...maxByChannel);
     if(!webColored)throw Error(`Empty Web reference: ${name}`);
     const layoutEqual=JSON.stringify(canonical(nativeMetrics[n]))===JSON.stringify(canonical(webMetrics[n]));
-    rows.push({name,max,pixels,webColored,nativeColored,layoutEqual,pass:max<=1&&layoutEqual,
+    const row = {name,max,pixels,webColored,nativeColored,layoutEqual,pass:max<=1&&layoutEqual,
         native:nativeMetrics[n],web:webMetrics[n],
-        nativeSha256,webSha256,differingPixelsByChannel,maxByChannel});
+        nativeSha256,webSha256,differingPixelsByChannel,maxByChannel};
+    if (name.startsWith('label-shadow-blur-')) {
+        row.shadowCoverage = { native: shadowCoverage(actual, a.width), web: shadowCoverage(reference, b.width) };
+        for (const [backend, coverage] of Object.entries(row.shadowCoverage)) {
+            if (!coverage.pixels) throw Error('Missing blurred shadow: ' + backend + '/' + name);
+            const halfWidth = row[backend].textureWidth / 2;
+            if ((name.endsWith('clipped-negative') && coverage.minX !== a.width / 2 - halfWidth)
+                || (name.endsWith('clipped-positive') && coverage.maxX !== a.width / 2 + halfWidth - 1)) {
+                throw Error('Shadow does not reach the clip edge: ' + backend + '/' + name);
+            }
+        }
+    }
+    rows.push(row);
 }
 const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},pass:rows.every(x=>x.pass),results:rows};
 result.executableSha256 = a.executableSha256;

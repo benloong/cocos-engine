@@ -162,6 +162,87 @@ struct OutlineMask {
     std::vector<uint8_t> coverage; // owns one byte per pixel inside bounds
 };
 
+class GlyphBlur {
+public:
+    explicit GlyphBlur(float blur) {
+        if (blur < 2.F / 3.F) return;
+        // Canvas specifies a sigma of half the blur value. Bound very large
+        // kernels the same way as the browser's text-mask implementation.
+        const double sigma = std::min(blur / 2.0, 135.0);
+        if (sigma >= 2.0) {
+            _box = static_cast<int>(std::round(sigma * 3.0 * std::sqrt(2.0 * 3.141592653589793) / 4.0));
+            radius = (_box & 1) ? 3 * (_box / 2) : 3 * (_box / 2) - 1;
+            return;
+        }
+        // Discrete Gaussian kernel, normalized after discarding weights below 1%.
+        const double variance = sigma * sigma;
+        std::vector<double> weights;
+        double total = 0;
+        for (int distance = 0;; ++distance) {
+            const double weight = std::exp(-variance) * std::cyl_bessel_i(distance, variance);
+            if (weight <= .01) break;
+            weights.push_back(weight);
+            total += distance == 0 ? weight : 2 * weight;
+        }
+        radius = static_cast<int>(weights.size()) - 1;
+        for (const double weight : weights) {
+            _weights.push_back(static_cast<uint32_t>(std::lround((weight / total) * 65536)));
+        }
+    }
+
+    void apply(std::vector<uint32_t> &coverage, int width, int height) const {
+        std::vector<uint32_t> scratch(coverage.size());
+        const bool horizontalFirst = _box != 0;
+        for (const bool horizontal : {horizontalFirst, !horizontalFirst}) {
+            const int lines = horizontal ? height : width;
+            const int length = horizontal ? width : height;
+            const size_t step = horizontal ? 1 : width;
+            const size_t rowStep = horizontal ? width : 1;
+            if (!_box) {
+                // The small kernel multiplies in 8.8 and rounds each axis to A8.
+                for (int line = 0; line < lines; ++line) {
+                    const size_t start = line * rowStep;
+                    for (int i = 0; i < length; ++i) {
+                        uint32_t value = 128;
+                        for (int j = std::max(0, i - radius); j <= std::min(length - 1, i + radius); ++j) {
+                            value += (coverage[start + j * step] * _weights[std::abs(i - j)]) >> 8U;
+                        }
+                        scratch[start + i * step] = value >> 8U;
+                    }
+                }
+                coverage.swap(scratch);
+                continue;
+            }
+            const int half = _box / 2;
+            // Even windows use opposite alignments, then a centered odd window.
+            const int narrow = (_box - 1) / 2;
+            for (const auto &sides : {std::array<int, 2>{narrow, half}, {half, narrow}, {half, half}}) {
+                const int left = sides[0], right = sides[1];
+                for (int line = 0; line < lines; ++line) {
+                    const auto start = line * rowStep;
+                    uint32_t sum = 0;
+                    for (int i = 0; i <= right && i < length; ++i) sum += coverage[start + i * step];
+                    for (int i = 0; i < length; ++i) {
+                        scratch[start + i * step] = sum;
+                        if (i >= left) sum -= coverage[start + (i - left) * step];
+                        if (i + right + 1 < length) sum += coverage[start + (i + right + 1) * step];
+                    }
+                }
+                coverage.swap(scratch);
+            }
+            const auto divisor = static_cast<uint64_t>(_box) * _box * (2 * half + 1);
+            const uint64_t reciprocal = ((1ULL << 32U) + divisor / 2) / divisor;
+            for (auto &pixel : coverage) pixel = static_cast<uint32_t>((pixel * reciprocal + (1ULL << 31U)) >> 32U);
+        }
+    }
+
+    int radius{0};
+
+private:
+    int _box{0};
+    std::vector<uint32_t> _weights;
+};
+
 class OutlineRasterizer {
 public:
     HRESULT init() {
@@ -389,8 +470,9 @@ class TextRenderer final : public IDWriteTextRenderer {
 public:
     // These buffers/factory are synchronous borrows for IDWriteTextLayout::Draw.
     TextRenderer(IDWriteFactory *factory, IDWriteRenderingParams *renderingParams, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color,
-                 bool bold, bool italic, float lineWidth, DirectWriteFont::StrokeJoin join)
-    : _factory(factory), _renderingParams(renderingParams), _pixels(pixels), _width(width), _height(height), _color(color), _bold(bold), _italic(italic), _lineWidth(lineWidth), _join(join) {}
+                 bool bold, bool italic, float lineWidth, DirectWriteFont::StrokeJoin join, float blur)
+    : _factory(factory), _renderingParams(renderingParams), _pixels(pixels), _width(width), _height(height), _color(color),
+      _bold(bold), _italic(italic), _lineWidth(lineWidth), _join(join), _blur(blur) {}
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **out) override {
         if (!out) return E_POINTER;
         *out = nullptr;
@@ -443,7 +525,10 @@ public:
                 _outline = std::move(outline);
             }
             OutlineMask mask;
-            const auto hr = _outline->draw(run, x, y, _bold, _italic, _lineWidth, _join, _width, _height, mask);
+            const auto padding = _blur.radius;
+            const auto hr = _outline->draw(run, x + padding, y + padding, _bold, _italic, _lineWidth, _join,
+                                           _width + 2 * padding, _height + 2 * padding, mask);
+            if (padding) OffsetRect(&mask.bounds, -padding, -padding);
             return FAILED(hr) ? hr : blendMask(mask.bounds, mask.coverage, 1);
         }
         ComOwner<IDWriteGlyphRunAnalysis> analysis;
@@ -459,10 +544,11 @@ public:
         if (FAILED(hr) || bounds.right <= bounds.left || bounds.bottom <= bounds.top) return hr;
         // DirectWrite accepts a subset of the run's bounds. Allocate only the
         // destination clip, including when a long run is mostly off screen.
-        bounds.left = std::max<LONG>(0, bounds.left);
-        bounds.top = std::max<LONG>(0, bounds.top);
-        bounds.right = std::min<LONG>(_width, bounds.right);
-        bounds.bottom = std::min<LONG>(_height, bounds.bottom);
+        const LONG padding = _blur.radius;
+        bounds.left = std::max(-padding, bounds.left);
+        bounds.top = std::max(-padding, bounds.top);
+        bounds.right = std::min(static_cast<LONG>(_width) + padding, bounds.right);
+        bounds.bottom = std::min(static_cast<LONG>(_height) + padding, bounds.bottom);
         if (bounds.right <= bounds.left || bounds.bottom <= bounds.top) return S_OK;
         constexpr size_t stride = 3;
         const size_t rowWidth = static_cast<size_t>(bounds.right - bounds.left);
@@ -477,29 +563,53 @@ public:
     HRESULT blendMask(const RECT &bounds, const std::vector<uint8_t> &alpha, size_t stride) {
         if (bounds.right <= bounds.left || bounds.bottom <= bounds.top) return S_OK;
         const auto rowWidth = static_cast<size_t>(bounds.right - bounds.left);
+        const auto coverage = [&](size_t i) {
+            const auto offset = i * stride;
+            return stride == 1 ? alpha[offset] : (static_cast<uint32_t>(alpha[offset]) + alpha[offset + 1] + alpha[offset + 2]) / 3U;
+        };
+        if (_blur.radius) {
+            const LONG radius = _blur.radius;
+            const LONG rows = bounds.bottom - bounds.top;
+            const LONG width = static_cast<LONG>(rowWidth) + 2 * radius, height = rows + 2 * radius;
+            if (static_cast<uint64_t>(width) * height > UINT32_MAX) return E_OUTOFMEMORY;
+            // Filter the raw glyph mask before tinting it with the shadow paint.
+            std::vector<uint32_t> blurred(static_cast<size_t>(width) * height, 0);
+            for (LONG row = 0; row < rows; ++row) {
+                const size_t start = static_cast<size_t>(row + radius) * width + radius;
+                for (size_t col = 0; col < rowWidth; ++col) blurred[start + col] = coverage(row * rowWidth + col);
+            }
+            _blur.apply(blurred, width, height);
+            const LONG left = bounds.left - radius, top = bounds.top - radius;
+            for (LONG row = std::max<LONG>(0, top); row < std::min<LONG>(_height, bounds.bottom + radius); ++row) {
+                for (LONG column = std::max<LONG>(0, left); column < std::min<LONG>(_width, bounds.right + radius); ++column) {
+                    blendPixel(column, row, blurred[static_cast<size_t>(row - top) * width + column - left]);
+                }
+            }
+            return S_OK;
+        }
         const auto &preblend = coverageTable(_color);
         for (LONG row = std::max<LONG>(0, bounds.top); row < std::min<LONG>(_height, bounds.bottom); ++row) {
             for (LONG column = std::max<LONG>(0, bounds.left); column < std::min<LONG>(_width, bounds.right); ++column) {
-                const auto offset = ((row - bounds.top) * rowWidth + column - bounds.left) * stride;
-                const auto mask = stride == 1 ? alpha[offset] : (static_cast<uint32_t>(alpha[offset]) + alpha[offset + 1] + alpha[offset + 2]) / 3U;
-                const float coverage = preblend[mask];
-                const float sourceAlpha = coverage / 255.F * _color[3];
-                if (sourceAlpha <= 0) continue;
-                auto *pixel = _pixels + (static_cast<size_t>(row) * _width + column) * 4;
-                const float destAlpha = pixel[3] / 255.F;
-                const float outAlpha = sourceAlpha + destAlpha * (1 - sourceAlpha);
-                const auto alphaByte = std::clamp(std::lround(outAlpha * 255), 0L, 255L);
-                for (size_t channel = 0; channel < 3; ++channel) {
-                    // Canvas stores premultiplied bytes. Quantize before
-                    // exposing straight RGBA, especially at alpha 1 or 2.
-                    const float destination = std::round(pixel[channel] * destAlpha);
-                    const auto premultiplied = std::lround(_color[channel] * sourceAlpha * 255 + destination * (1 - sourceAlpha));
-                    pixel[channel] = alphaByte ? static_cast<uint8_t>(std::clamp(std::lround(premultiplied * 255.F / alphaByte), 0L, 255L)) : 0;
-                }
-                pixel[3] = static_cast<uint8_t>(alphaByte);
+                blendPixel(column, row, preblend[coverage((row - bounds.top) * rowWidth + column - bounds.left)]);
             }
         }
         return S_OK;
+    }
+    void blendPixel(LONG column, LONG row, float coverage) {
+        const float sourceAlpha = coverage / 255.F * _color[3];
+        if (sourceAlpha <= 0) return;
+        auto *pixel = _pixels + (static_cast<size_t>(row) * _width + column) * 4;
+        const float destAlpha = pixel[3] / 255.F;
+        const float outAlpha = sourceAlpha + destAlpha * (1 - sourceAlpha);
+        const auto alphaByte = std::clamp(std::lround(outAlpha * 255), 0L, 255L);
+        for (size_t channel = 0; channel < 3; ++channel) {
+            // Canvas stores premultiplied bytes. Quantize before
+            // exposing straight RGBA, especially at alpha 1 or 2.
+            const float destination = std::round(pixel[channel] * destAlpha);
+            const auto premultiplied = std::lround(_color[channel] * sourceAlpha * 255 + destination * (1 - sourceAlpha));
+            pixel[channel] = alphaByte ? static_cast<uint8_t>(std::clamp(std::lround(premultiplied * 255.F / alphaByte), 0L, 255L)) : 0;
+        }
+        pixel[3] = static_cast<uint8_t>(alphaByte);
     }
     HRESULT STDMETHODCALLTYPE DrawUnderline(void *, FLOAT, FLOAT, const DWRITE_UNDERLINE *, IUnknown *) override { return S_OK; }
     HRESULT STDMETHODCALLTYPE DrawStrikethrough(void *, FLOAT, FLOAT, const DWRITE_STRIKETHROUGH *, IUnknown *) override { return S_OK; }
@@ -516,6 +626,7 @@ private:
     bool _italic;
     float _lineWidth;
     DirectWriteFont::StrokeJoin _join;
+    GlyphBlur _blur;
     std::unique_ptr<OutlineRasterizer> _outline; // owns this synchronous Draw's COM lease and factories
 };
 }
@@ -630,8 +741,15 @@ bool DirectWriteFont::stroke(const std::string &text, float x, float y, int base
     if (!(lineWidth > 0) || !std::isfinite(lineWidth)) return false;
     return drawText(text, x, y, baseline, pixels, width, height, color, lineWidth, join);
 }
+bool DirectWriteFont::drawShadow(const std::string &text, float x, float y, int baseline, uint8_t *pixels, uint32_t width, uint32_t height,
+                                 const std::array<float, 4> &color, float blur) const {
+    if (!(blur > 0) || !std::isfinite(blur) || !std::isfinite(x) || !std::isfinite(y)) return false;
+    // Keep room to grow the clipped glyph bounds for the filter.
+    if (width > LONG_MAX - 2048 || height > LONG_MAX - 2048) return false;
+    return drawText(text, x, y, baseline, pixels, width, height, color, 0.F, StrokeJoin::MITER, blur);
+}
 bool DirectWriteFont::drawText(const std::string &text, float x, float y, int baseline, uint8_t *pixels, uint32_t width, uint32_t height,
-                              const std::array<float, 4> &color, float lineWidth, StrokeJoin join) const {
+                              const std::array<float, 4> &color, float lineWidth, StrokeJoin join, float blur) const {
     if (!pixels || !width || !height || width > LONG_MAX || height > LONG_MAX) return false;
     ComOwner<IDWriteTextLayout> layout;
     if (FAILED(_impl->layout(wide(text), layout.out()))) return false;
@@ -645,7 +763,7 @@ bool DirectWriteFont::drawText(const std::string &text, float x, float y, int ba
         y -= line.baseline;
     }
     ComOwner<TextRenderer> renderer;
-    renderer.reset(new TextRenderer(_impl->factory.get(), _impl->renderingParams.get(), pixels, width, height, color, _impl->bold, _impl->italic, lineWidth, join));
+    renderer.reset(new TextRenderer(_impl->factory.get(), _impl->renderingParams.get(), pixels, width, height, color, _impl->bold, _impl->italic, lineWidth, join, blur));
     return SUCCEEDED(layout->Draw(nullptr, renderer.get(), x, y));
 }
 } // namespace cc

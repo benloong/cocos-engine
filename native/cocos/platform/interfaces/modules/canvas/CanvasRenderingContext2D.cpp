@@ -108,6 +108,18 @@ void CanvasRenderingContext2D::strokeText(const ccstd::string &text, float x, fl
     refreshFontAliases();
     _delegate->strokeText(text, x, y, maxWidth);
 }
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+bool CanvasRenderingContext2D::fillTextShadow(const ccstd::string &text, float x, float y, float blur) {
+#if defined(CC_SERVER_MODE)
+    return false;
+#else
+    recreateBufferIfNeeded();
+    refreshFontAliases();
+    return static_cast<CanvasRenderingContext2DDelegate *>(_delegate)->fillTextShadow(text, x, y, blur);
+#endif
+}
+#endif
+
 bool CanvasRenderingContext2D::supportsTextStroke() const {
     refreshFontAliases();
     return _delegate && _delegate->supportsTextStroke();
