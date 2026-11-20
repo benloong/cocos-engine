@@ -106,6 +106,7 @@
   SpriteAtlas 的测试计数方法已从 C++ 和 JSB 删除。Windows 双配置的[绑定探针](../native/tests/2d-poc/build-sprite-atlas-probe.cjs)检查导出缺席，并用有序帧名、帧查找和纹理验证空槽及释放。Windows Debug、Release 与 Web 的[真实图集场景](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)各完成 1000 轮、5000 项资产检查和 22 次像素回读。
   TTFFont 的原始字节 getter/setter 已从 C++ 和 JSB 移除。原生生命周期测试通过文件加载、释放、重载和销毁后拒绝读入同一有效文件来检查所有权。Windows Debug/Release 的[绑定回归](../native/tests/2d-poc/build-font-assets-probe.cjs)检查两个方法均未导出，两种配置各完成 1000 轮真实远程字体加载释放。37 项布局与图像结果均与清理前一致。
   RichText 的测试专用方法 `getSegmentNode` 和 `getSegmentCount` 已从 C++ 与 JSB 移除。验收通过父节点查询段节点，用实际子节点数逐段核对 Label 或 Sprite，并检查末段之后的索引越界。[Windows JSB 回归](../native/tests/2d-poc/build-richtext-runtime-probe.cjs)
+  Sprite、Graphics 的 `getRenderEntity` 与 Label 的 `getString` 已退出生产 JSB。独立测试继续核对 Sprite 顶点透明度、Graphics 提交几何和 RichText 组件的实际文本。Windows 双配置的六组 JSB 探针与 Web 旧工程的 92 张位图字体图像验收通过。[绑定记录](./native-2d-m6-binding-cleanup.json)
 - [x] Sprite 的原生几何准备收为 C++ 入口。Windows 双配置的 JSB 验收确认 Sprite 对象没有 prepare 方法，帧纹理迟到和 assembler 标脏后经 UIRendererManager.updateAllDirtyRenderers 刷新。独立 C++ 几何测试仍可直接测量准备耗时。该候选 Windows Debug/Release 各 88 张图像均与 Web 逐字节相等。
 - [x] Web 引擎断流时返回回退字体资产，释放后同 URL 可恢复真实字形。Chrome 实测重试宽度从 108 恢复到 95.9765625 px，服务端记录一次完整 GET。[HTTP 验收记录](./native-2d-m6.1-font-http.md)
 - [x] HTTP 字体主动取消与半文件回收。Windows Debug/Release 验证排队取消零请求、保留旧文件、从 4096 字节处续传及失败文件清理。Web 验证 fetch 取消及续传后的字体摘要。[验收记录](./native-2d-m6.1-font-http.md)

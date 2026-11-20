@@ -156,6 +156,33 @@ bool readLabelCoverage(se::State &state) {
 }
 SE_BIND_FUNC(readLabelCoverage)
 
+bool readLabelText(se::State &state) {
+    if (state.args().size() != 1 || !state.args()[0].isObject()) return false;
+    auto *object = state.args()[0].toObject();
+    if (object->_getClass() != __jsb_cc_Label_class) return false;
+    auto *label = static_cast<cc::Label *>(object->getPrivateData());
+    if (!label) return false;
+    state.rval().setString(label->getString());
+    return true;
+}
+SE_BIND_FUNC(readLabelText)
+
+bool readRendererEntity(se::State &state) {
+    if (state.args().size() != 1 || !state.args()[0].isObject()) return false;
+    auto *object = state.args()[0].toObject();
+    auto *data = object->getPrivateData();
+    if (!data) return false;
+    auto *type = object->_getClass();
+    if (type == __jsb_cc_Sprite_class) {
+        return nativevalue_to_se(static_cast<cc::Sprite *>(data)->getRenderEntity(), state.rval(), nullptr);
+    }
+    if (type == __jsb_cc_Graphics_class) {
+        return nativevalue_to_se(static_cast<cc::Graphics *>(data)->getRenderEntity(), state.rval(), nullptr);
+    }
+    return false;
+}
+SE_BIND_FUNC(readRendererEntity)
+
 template <class T>
 T *getChildRenderer(const cc::Node &host, size_t index) {
     const auto &children = host.getChildren();
@@ -2313,6 +2340,8 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
     check(register_all_scene_manual(globalObject), "register_all_scene_manual");
     check(register_all_native2d(globalObject), "register_all_native2d");
     globalObject->defineFunction("readLabelCoverage", _SE(readLabelCoverage));
+    globalObject->defineFunction("readLabelText", _SE(readLabelText));
+    globalObject->defineFunction("readRendererEntity", _SE(readRendererEntity));
     globalObject->defineFunction("readRichTextSegment", _SE(readRichTextSegment));
     check(register_platform_bindings(globalObject), "register_platform_bindings");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS

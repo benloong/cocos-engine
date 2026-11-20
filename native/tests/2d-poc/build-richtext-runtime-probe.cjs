@@ -62,7 +62,7 @@ ui.setSizeChangedCallback(()=>{
 });
 rich.string='longer line to resize';
 rendererManager.updateAllDirtyRenderers();
-check(changedDuringResize&&labelAt(0).getString()==='callback replacement','size listener publishes replacement RichText');
+check(changedDuringResize&&readLabelText(labelAt(0))==='callback replacement','size listener publishes replacement RichText');
 ui.setSizeChangedCallback(()=>{pushes++;});
 node._initAndReturnSharedBuffer();
 let changedDuringChildAdded=false;
@@ -74,7 +74,7 @@ node._onChildAdded=()=>{
 node._onChildRemoved=()=>{};
 rich.string='<b>first</b><i>second</i>';
 rendererManager.updateAllDirtyRenderers();
-check(changedDuringChildAdded&&hasSegments(1)&&labelAt(0).getString()==='replacement during child attach','child-added listener publishes replacement RichText');
+check(changedDuringChildAdded&&hasSegments(1)&&readLabelText(labelAt(0))==='replacement during child attach','child-added listener publishes replacement RichText');
 const beforeDetach=labelAt(0);
 let detachedDuringChildAdded=false;
 node._onChildAdded=()=>{
@@ -103,7 +103,7 @@ check(first,'generated text child is reachable through the node hierarchy');
 const segmentLabel=labelAt(0);
 segmentLabel.setString('idle marker');
 for(let i=0;i<1000;i++)rendererManager.updateAllDirtyRenderers();
-check(segmentLabel.getString()==='idle marker'&&node.getChildByName('RICHTEXT_CHILD')===first&&pushes===previousPushes,'idle layout preserves segment content, identity and size notifications');
+check(readLabelText(segmentLabel)==='idle marker'&&node.getChildByName('RICHTEXT_CHILD')===first&&pushes===previousPushes,'idle layout preserves segment content, identity and size notifications');
 segmentLabel.setString('hit');
 check(native.getHitSegments(1,1).length===1&&native.getHitSegments(-1000,-1000).length===0,'native hit and miss');
 const event={touch:{getUILocation:()=>({x:1,y:1})},propagationStopped:false};
@@ -113,7 +113,7 @@ rich.onEnable();
 const font=new jsb.TTFFont();font.setFontFamily('Arial');rich.font=font;
 labelAt(0).setString('font change marker');
 font.setFontFamily('Tahoma');rendererManager.updateAllDirtyRenderers();
-check(labelAt(0).getString()==='hit','font family change reapplies the RichText layout');
+check(readLabelText(labelAt(0))==='hit','font family change reapplies the RichText layout');
 rich.useSystemFont=true;rich.useSystemFont=false;check(rich.font===font,'editor font restore');
 const atlas=new jsb.SpriteAtlas(), frame=new jsb.SpriteFrame(), texture=new jsb.Texture2D();
 texture.create(4,2);frame.resetWithTexture(texture);atlas.addSpriteFrame('icon',frame);
@@ -160,7 +160,7 @@ check([...images,...labels].every(wrapper=>!__isObjectValid(wrapper)),'destroy i
 check(__isObjectValid(independentLabel),'destroy preserves independent Label');
 const nextLabel=new n2d.Label();
 nextLabel.setString('new owner');
-check(nextLabel.getString()==='new owner'&&!__isObjectValid(heldLabel),'new Label is independent of retired wrappers');
+check(readLabelText(nextLabel)==='new owner'&&!__isObjectValid(heldLabel),'new Label is independent of retired wrappers');
 ui.detach();return 'OK';
 }catch(error){return String(error.stack||error);}})()`;
 fs.mkdirSync(path.dirname(output), { recursive: true }); fs.writeFileSync(output, script); console.log(output);

@@ -139,7 +139,7 @@ const texture=new jsb.Texture2D();texture.create(4,4);frame.resetWithTexture(tex
 rendererManager.updateAllDirtyRenderers();check(transform.getWidth()===4,'late texture/frame update');
 const spriteAssembler=assemblerExports.spriteAssembler.getAssembler(sprite);
 sprite._color.r=64;sprite._color.a=128;spriteAssembler.updateColor(sprite);
-check(Math.abs(sprite._native.getRenderEntity().getColorAlpha()-128/255)<0.00001,'native assembler color forwarding');
+check(Math.abs(readRendererEntity(sprite._native).getColorAlpha()-128/255)<0.00001,'native assembler color forwarding');
 spriteAssembler.updateUVs(sprite);spriteAssembler.updateRenderData(sprite);
 rendererManager.updateAllDirtyRenderers();check(transform.getWidth()===4,'native Sprite geometry still prepares after assembler invalidation');
 const atlas=new jsb.SpriteAtlas();atlas.addSpriteFrame('hero',frame);sprite.spriteAtlas=atlas;
@@ -244,7 +244,7 @@ const preLoadGraphics=graphics._native;
 graphics.onLoad();
 check(graphics._native===preLoadGraphics,'onLoad retains the Graphics that recorded the rectangle');
 rendererManager.updateAllDirtyRenderers();
-const graphicsEntity=graphics._native.getRenderEntity();
+const graphicsEntity=readRendererEntity(graphics._native);
 check(graphicsEntity.getRenderDrawInfosSize()===1,'rectangle submits a single draw');
 const rectangleDraw=graphicsEntity.getRenderDrawInfoAt(0);
 check(rectangleDraw.vbCount===4 && rectangleDraw.ibCount===6,'pre-load rectangle submits four vertices and six indices');

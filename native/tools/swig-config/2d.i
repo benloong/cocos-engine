@@ -116,12 +116,15 @@
 %ignore cc::Sprite::getUITransform;
 %ignore cc::Sprite::getFillStart;
 %ignore cc::Sprite::getFillRange;
+%ignore cc::Sprite::getRenderEntity;
 %ignore cc::Label::setUITransform;
+%ignore cc::Label::getString;
 %ignore cc::Label::getCacheMode;
 %ignore cc::Label::getContentWidth;
 %ignore cc::Label::getContentHeight;
 %ignore cc::Label::measureUnwrappedText;
 %ignore cc::Graphics::getGeometry;
+%ignore cc::Graphics::getRenderEntity;
 %ignore cc::Graphics::setGeometrySource;
 %ignore cc::Graphics::setUseGeometrySource;
 %ignore cc::Mask::getRenderEntity;

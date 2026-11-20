@@ -18,8 +18,9 @@ const probe = `
     if ('NativeUITransformPoc' in n2d || 'NativeSpritePoc' in n2d) throw Error('Retired M0 component binding');
     if ('getRootNodeAt' in n2d.Batcher2d.prototype || 'getRootNodeCount' in n2d.Batcher2d.prototype) throw Error('Unexpected native root inspection API');
     for (const [className, methods] of [
-        ['Sprite', ['isGrayscale', 'isTrim', 'getType', 'getFillType', 'getFillStart', 'getFillRange', 'getSizeMode']],
-        ['Label', ['getCacheMode', 'getFontAsset', 'getUnderlineHeight', 'measureContent', 'isBold', 'isItalic', 'isUnderline', 'updateFont']],
+        ['Sprite', ['isGrayscale', 'isTrim', 'getType', 'getFillType', 'getFillStart', 'getFillRange', 'getSizeMode', 'getRenderEntity']],
+        ['Label', ['getCacheMode', 'getFontAsset', 'getUnderlineHeight', 'measureContent', 'isBold', 'isItalic', 'isUnderline', 'updateFont', 'getString']],
+        ['Graphics', ['getRenderEntity']],
         ['RichText', ['getString']],
     ]) {
         for (const method of methods) {

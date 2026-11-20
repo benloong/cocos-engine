@@ -86,6 +86,45 @@
     "targetedJestTests": 33,
     "auditTests": 10
   },
+  "rendererInspection": {
+    "removedBindings": [
+      "Sprite.getRenderEntity",
+      "Graphics.getRenderEntity",
+      "Label.getString"
+    ],
+    "generatedBindingSha256": "f79ddf3b24bd70486fceac420d19df878edc4375c7a1d78aa7804d3b8f2d889d",
+    "configurations": {
+      "Debug": {
+        "jsbExecutableSha256": "63376adfa69a14246419873d3f048e3db67504a9853ce2fa2e01179c438b0f42",
+        "standardExecutableSha256": "148c414be2253cd7ad7526bbfb12665ec09ea6ebeb3a2c57c8d3941c254c02fd",
+        "jsbProbes": 6,
+        "standardApplicationProbes": [
+          "M2 Sprite",
+          "M3 Label",
+          "M4 Mask and Graphics",
+          "M4 extra",
+          "M5 RichText"
+        ]
+      },
+      "Release": {
+        "jsbExecutableSha256": "69f71d68146ac68996fb1435195329d87949f8051180cd27954a6d102c5c059c",
+        "standardExecutableSha256": "a89a3553171a7f6e1e0f17e2abb8e9412da437e92a2f704d1cc59902a4828d7f",
+        "jsbProbes": 6,
+        "standardApplicationProbes": [
+          "M2 Sprite",
+          "M3 Label",
+          "M4 Mask and Graphics",
+          "M4 extra",
+          "M5 RichText"
+        ]
+      }
+    },
+    "web": {
+      "oldProjectLabelComponents": 9,
+      "oldProjectSpriteComponents": 1,
+      "oldProjectBitmapCaptures": 92
+    }
+  },
   "richTextSegments": {
     "removedBindings": [
       "RichText.getSegmentLabel",
