@@ -74,6 +74,20 @@ node native/tests/2d-poc/compare-graphics-gpu.cjs
 
 Web runner 默认使用系统 Chrome，也可通过 CC_GPU_CHROME 指定。它只访问本机 loopback 的测试页面，使用独立 profile，并在捕获完成后结束浏览器。native runner 复制本次 Resources、要求新的 manifest、捕获失败即报错并结束自己启动的隐藏应用。沙箱中的 Chrome 若不能启动 crashpad，需由工具对该测试进程单独申请沙箱外运行。
 
+### Windows Release 从空目录构建
+
+在 x64 MSVC 环境中，以正斜杠路径传入 `RES_DIR`。本机的默认 CMake 探测使用 Debug 的 `/Zi`，触发 MSVC C1902。令探测使用 Release 后即可配置。旧增量构建在启动时以 `0xC0000409` 退出，根因未定位。以下新构建用隔离缓存和标准脚本各实跑一次，每次 88 张图与 Chrome 逐字节一致，1000 次场景切换通过，两行 Arial 的自然宽度为 80.9453125。[二进制哈希和复测记录](./native-2d-m6-system-font.json)
+
+```powershell
+$project = (Resolve-Path 'native/tests/2d-poc/build/graphics-gpu-project').Path.Replace('\', '/')
+$build = 'native/tests/2d-poc/build/m6-system-graphics-fresh-release'
+cmake -S "$project/native/engine/win64" -B $build -G Ninja -DCMAKE_BUILD_TYPE=Release `
+    -DCMAKE_TRY_COMPILE_CONFIGURATION=Release "-DRES_DIR=$project/build/windows"
+cmake --build $build --target native-2d-m6-gpu --parallel 8
+& native/tests/2d-poc/run-graphics-gpu-native.ps1 -Exe "$build/native-2d-m6-gpu.exe"
+node native/tests/2d-poc/compare-graphics-gpu.cjs
+```
+
 ## 未关闭的门禁
 
 本轮不替代全部平台、Release 真正应用 GPU、复杂混合 Sprite/Label/Graphics、Camera/root/排序场景矩阵、Mask radius/动态形状和资产切换、完整 subComp（Sprite 类型仍缺失）及材质 API 验收。GPU 夹具使用 direct SpriteFrame 桥接设置 native sprite mask；因此不能据此声称 Sprite subComp API 已实现。

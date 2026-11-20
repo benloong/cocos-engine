@@ -411,5 +411,23 @@
         "directWriteUs": 37.552625
       }
     ]
+  },
+  "cleanWindowsRelease": {
+    "revision": "f2a78d0131",
+    "snapshot": "a9ab9009853e813382db28d6d75c664b31f7560b4d3ba28c47f04efaad3975ef",
+    "executableSha256": "d2ffde76f33695f9af8210b520274b87c9ba0e6d63a68dfdd4ffd3d9a969a44a",
+    "runs": [
+      {
+        "name": "isolated test cache",
+        "identicalImages": 88,
+        "sceneCycles": 1000
+      },
+      {
+        "name": "standard runner",
+        "identicalImages": 88,
+        "sceneCycles": 1000
+      }
+    ],
+    "naturalWidth": 80.9453125
   }
 }
