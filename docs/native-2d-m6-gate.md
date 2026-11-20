@@ -38,6 +38,8 @@ Windows Debug、Release 将 Direct2D 字形与笔宽同步放大 3、4、7、16�
 
 Windows 圆角字体描边的轮廓扩张和边缘细分已分别测量。以 Chrome 的同源 Thonburi 为参考，1、4、8 像素笔宽各比较 25 种容差组合、4 个字号和 3 种字形样式。两个 Windows 配置的逐图哈希一致。4 像素笔宽的最少差异像素为 5112，生产设置为 5835；该组合使 12 像素正体的最大 alpha 差从 43 增至 49。三种笔宽的 900 次比较均未通过逐像素容差 1，生产参数继续使用 0.01。[对照结果](./native-2d-m6-stroke-tolerances.json)、[复现脚本](../native/tests/2d-poc/compare-ttf-stroke-tolerances.cjs)
 
+CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出现差值大于 1 的采样点，累计 9167 个。用 CanvasKit 扩张并栅格化、再沿用原生混合时，12 张描边图有 7 张通过，其中 24 px 正体进入容差。改用 CanvasKit 扩张并继续用 Direct2D 填充时，12 张均超差。当前应用复测在 Windows 两种配置仍为布局 42/42、严格像素 39/42，各完成 1000 轮字体生命周期。描边生产路径仍需同时核对扩张与覆盖计算。[分阶段与应用数据](./native-2d-m6-ttf-canvaskit.json)
+
 编号采用计划章节；同一行中的不同验收条件均须满足。各已验收子项、夹具及历史版本记录见[逐项计划](./native-2d-m6-plan.md)。
 
 | 章节 | 节点 | 尚缺证据或已知失败 |

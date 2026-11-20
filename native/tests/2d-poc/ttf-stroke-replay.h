@@ -89,4 +89,65 @@ inline HRESULT replaceAlpha(const std::string &name, std::vector<uint8_t> &rgba)
     }
     return input.peek() == EOF && !input.bad() ? S_OK : E_FAIL;
 }
+
+inline HRESULT readStroke(const std::string &name, ID2D1GeometrySink *sink) {
+    std::ifstream input(name);
+    auto readPoint = [&](D2D1_POINT_2F &point) -> bool { return static_cast<bool>(input >> point.x >> point.y); };
+    char command;
+    bool open = false;
+    while (input >> command) {
+        D2D1_POINT_2F point{};
+        switch (command) {
+        case 'F': {
+            unsigned winding;
+            if (open || !(input >> winding) || winding > 1) return E_FAIL;
+            sink->SetFillMode(winding ? D2D1_FILL_MODE_WINDING : D2D1_FILL_MODE_ALTERNATE);
+            break;
+        }
+        case 'M':
+            if (open || !readPoint(point)) return E_FAIL;
+            sink->BeginFigure(point, D2D1_FIGURE_BEGIN_FILLED);
+            open = true;
+            break;
+        case 'E':
+            if (!open) return E_FAIL;
+            sink->EndFigure(D2D1_FIGURE_END_CLOSED);
+            open = false;
+            break;
+        case 'L':
+            if (!open || !readPoint(point)) return E_FAIL;
+            sink->AddLine(point);
+            break;
+        case 'Q': {
+            D2D1_QUADRATIC_BEZIER_SEGMENT curve{};
+            if (!open || !readPoint(curve.point1) || !readPoint(curve.point2)) return E_FAIL;
+            sink->AddQuadraticBezier(curve);
+            break;
+        }
+        case 'C': {
+            D2D1_BEZIER_SEGMENT curve{};
+            if (!open || !readPoint(curve.point1) || !readPoint(curve.point2) || !readPoint(curve.point3)) return E_FAIL;
+            sink->AddBezier(curve);
+            break;
+        }
+        case 'A': {
+            float radius;
+            unsigned clockwise;
+            if (!open || !readPoint(point) || !(input >> radius >> clockwise) || !(radius > 0) || clockwise > 1) return E_FAIL;
+            const auto sweep = clockwise ? D2D1_SWEEP_DIRECTION_CLOCKWISE : D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE;
+            sink->AddArc(D2D1::ArcSegment(point, D2D1::SizeF(radius, radius), 0, sweep, D2D1_ARC_SIZE_SMALL));
+            break;
+        }
+        default: return E_FAIL;
+        }
+    }
+    return input.eof() && !open ? S_OK : E_FAIL;
+}
+
+inline HRESULT writeAlpha(const std::string &name, const std::vector<uint8_t> &rgba) {
+    std::ofstream output(name, std::ios::binary);
+    for (size_t i = 3; i < rgba.size(); i += 4) output.put(static_cast<char>(rgba[i]));
+    output.close();
+    return output ? S_OK : E_FAIL;
+}
 } // namespace stroke_replay

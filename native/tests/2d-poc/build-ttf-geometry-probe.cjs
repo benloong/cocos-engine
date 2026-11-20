@@ -49,7 +49,10 @@ if (designUnits) {
         'stroke_replay::widen(_factory.get(), strokePath, thickness, style.get(), sink.get())');
     replaceOnce('SIMPLIFICATION_OPTION_LINES, &transform, .01F, adapter.get()',
         'SIMPLIFICATION_OPTION_LINES, &transform, stroke_replay::tolerance("CC2D_EDGE_TOLERANCE"), adapter.get()');
-    replaceOnce('target->FillGeometry(sampled.get(), brush.get());', `if (std::getenv("CC2D_DIRECT_STROKE")) {
+    replaceOnce('target->FillGeometry(sampled.get(), brush.get());', `if (imported.get() && std::getenv("CC2D_FILL_IMPORTED_PATH")) {
+                target->SetTransform(transform);
+                target->FillGeometry(imported.get(), brush.get());
+            } else if (std::getenv("CC2D_DIRECT_STROKE")) {
                 target->SetTransform(transform);
                 target->DrawGeometry(strokePath, brush.get(), thickness, style.get());
             } else target->FillGeometry(sampled.get(), brush.get());`);
@@ -67,7 +70,17 @@ if (designUnits) {
     replaceOnce('hr = shape->Simplify', `static unsigned sequence = 0;
         const auto stem = std::to_string(++sequence);
         const char *replay = std::getenv("CC2D_STROKE_REPLAY");
-        if (!replay) {
+        ComOwner<ID2D1PathGeometry> imported;
+        if (std::getenv("CC2D_STROKE_PATH")) {
+            ComOwner<ID2D1GeometrySink> writer;
+            hr = _factory->CreatePathGeometry(imported.out());
+            if (SUCCEEDED(hr)) hr = imported->Open(writer.out());
+            if (SUCCEEDED(hr)) hr = stroke_replay::readStroke(stem + ".skia.stroke", writer.get());
+            if (SUCCEEDED(hr)) hr = writer->Close();
+            if (FAILED(hr)) return hr;
+            shape = imported.get();
+        }
+        if (!replay && !imported.get()) {
             if (lineWidth <= 0 ? !bold : join != DirectWriteFont::StrokeJoin::ROUND) return E_INVALIDARG;
             hr = stroke_replay::capture(stem + ".lines.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, 0, columns * scale, rows);
             if (SUCCEEDED(hr)) hr = stroke_replay::capture(stem + ".widened.path", shape, transform, D2D1_GEOMETRY_SIMPLIFICATION_OPTION_CUBICS_AND_LINES, 0, columns * scale, rows);
@@ -81,8 +94,16 @@ if (designUnits) {
                 D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, 0, columns * scale, rows);
             if (FAILED(hr)) return hr;
         }
+        const bool captureWic = !replay && !imported.get() && std::getenv("CC2D_CAPTURE_WIC_PATH");
+        if (captureWic) {
+            hr = stroke_replay::capture(stem + ".wic.path", sampled.get(), D2D1::Matrix3x2F::Identity(),
+                D2D1_GEOMETRY_SIMPLIFICATION_OPTION_LINES, 0, columns * scale, rows);
+            if (FAILED(hr)) return hr;
+        }
         std::vector<uint8_t> pixels(`);
     replaceOnce('mask.bounds = {std::max<LONG>', `if (replay && FAILED(stroke_replay::replaceAlpha(stem + "." + replay + ".alpha", pixels))) return E_FAIL;
+        if (imported.get() && FAILED(stroke_replay::writeAlpha(stem + (std::getenv("CC2D_FILL_IMPORTED_PATH") ? ".nativeDirect.alpha" : ".nativeSampled.alpha"), pixels))) return E_FAIL;
+        if (captureWic && FAILED(stroke_replay::writeAlpha(stem + ".wic.alpha", pixels))) return E_FAIL;
         mask.bounds = {std::max<LONG>`);
 } else {
     replaceOnce('BeginFigure(snap(point), type)', 'BeginFigure(point, type)');

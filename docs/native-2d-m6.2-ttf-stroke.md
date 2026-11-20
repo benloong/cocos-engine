@@ -122,3 +122,26 @@ DirectWrite 输出的 1260 段三次曲线都能还原为 TrueType 二次曲线�
 另从原始路径自动选出 8 个轴对齐矩形，比较相同变换下的单字形 alpha 掩码。用对应外圆角矩形及内孔表示画笔覆盖区域，Chrome 的 roundRect 填充与直接描边在 8/8 个样本中逐字节一致。外圆角改用端点和切线相同的四段三次贝塞尔曲线后，8 个样本合计有 308 个采样点超差，最大差 72。这里统计的是水平四倍采样的原始掩码，表中则是最终图像像素。
 
 圆角的曲线表示和扫描方式已能单独复现这 8 个样本的差异。含曲线的其他字形和斜体没有由矩形实验覆盖。当前结果不足以采用替代扩张器，最终 Gate 的三组字体图像仍待修复。[逐项哈希和矩形掩码对照](./native-2d-m6-stroke-replay.json)
+
+### 固定字形路径，分别对照扩张和栅格化
+
+Windows Debug 和 Release 重采当前 DirectWrite 的 `Atlas 123` 轮廓。12 张图覆盖四个字号、正体、粗体和斜体，包含 96 个字形掩码。诊断在 CanvasKit 0.42.0 和 Windows 间交换特定绘制阶段的输入。每一组最终图像都使用原生现有滤波、预混合及合成代码，对 Chrome 157 的 `strokeText` 使用原容差 1。两个 Windows 配置的原始掩码差值、逐图统计和图像哈希均一致。[逐图数据及二进制哈希](./native-2d-m6-ttf-canvaskit.json)
+
+| 扩张与栅格化 | 图像通过数 | 超差像素合计 | 最大 alpha 差 |
+|---|---:|---:|---:|
+| Direct2D 生产路径 | 0/12 | 5835 | 86 |
+| Direct2D 扩张，CanvasKit 填充输出曲线 | 0/12 | 4872 | 86 |
+| Direct2D 扩张并沿用生产线段，CanvasKit 填充 | 0/12 | 5050 | 86 |
+| CanvasKit 扩张，Direct2D 按生产方式展平再填充 | 0/12 | 5910 | 88 |
+| CanvasKit 扩张，Direct2D 直接填充路径 | 0/12 | 6428 | 74 |
+| CanvasKit 扩张并栅格化 | 7/12 | 40 | 40 |
+
+CanvasKit 直接描边和填充其导出的路径，在 96 个掩码上均进入容差。Direct2D 回放将导出的圆锥曲线用对应的小圆弧表达。为排除这次转换的影响，另把 Direct2D 生产路径已展平及取整的线段原样交给 CanvasKit。两种栅格器用相同顶点、填充规则、掩码尺寸和坐标，96 个掩码均超差，累计 9167 个采样点差值大于 1。另一个控制中，CanvasKit 与 Chrome 填充相同 Direct2D 扩张曲线时，全部掩码都在容差内。对于这组字形，扩张和掩码覆盖都需要对照。CanvasKit 的完整诊断在 24 px 正体上通过，最终 12 张图仍有 5 张超差。[CanvasKit 路径接口](https://raw.githubusercontent.com/google/skia/main/modules/canvaskit/npm_build/types/index.d.ts)
+
+当前应用快照 `938c28378ba177b2e0b1215d166a05a1ae647fe3ed230f64578ccb89ba4d57fe` 的 Windows Debug、Release 和 Web 已重新采集。两种 Windows 配置各完成 1000 轮字体生命周期。布局 42/42，严格像素 39/42。三组超差图的像素数继续为粗体 448、描边 202、粗斜体嵌套 553，三端全部 42 张图的各自哈希与上轮相同。[当前应用数据](./native-2d-m6-ttf-canvaskit.json)
+
+这些入口只用于测试生成的原生可执行文件。复现时，按上节构建 Windows Debug 和 Release 的字形重放程序，运行 `compare-ttf-stroke-replay.cjs`，并从它打印的结果路径取所在目录。将官方 `canvaskit-wasm@0.42.0` 用 `npm pack --ignore-scripts` 下载并解包到忽略的构建目录。对照脚本验证包的 JS 和 WASM 哈希。
+
+```powershell
+node native/tests/2d-poc/compare-ttf-canvaskit.cjs $replayDirectory $canvasKitPackageDirectory
+```
