@@ -23,6 +23,10 @@ const expectedWrap = [
     [3, 120, 127.8, 24], [3, 74, 157.8, 24], [3, 62, 127.8, 24], [3, 116, 127.8, 24],
 ];
 for(const value of [a,b]) {
+    const projected = value.text.projectedInput;
+    if (projected?.starts !== 3 || projected.cancels !== 1 || projected.calls?.join() !== 'first,second') {
+        throw Error('Incomplete projected RichText touch evidence: ' + value.backend);
+    }
     const activation = value.text.activation;
     if (activation?.initial !== 3 || activation.callbacks !== 1 || !activation.cleared || activation.replacement !== 1
         || !activation.reparented || !activation.destroyed) {
@@ -153,6 +157,7 @@ const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha
 result.executableSha256 = a.executableSha256;
 result.segmentLifecycle = { native: a.text.segmentLifecycle, web: b.text.segmentLifecycle };
 result.activation = { native: a.text.activation, web: b.text.activation };
+result.projectedInput = { native: a.text.projectedInput, web: b.text.projectedInput };
 result.fontAliasSources = { native: a.text.fontAliasSources, web: b.text.fontAliasSources };
 const deferredPixels = new Set();
 if (m6Gate) {

@@ -25,6 +25,7 @@ const nativeUITransform = {
     convertToWorldSpaceARY: jest.fn((y: number) => y + 4),
     containsWorldPointXY: jest.fn(() => true),
     hitTestXY: jest.fn(() => true),
+    getHitTestWorldPointXY: jest.fn(() => ({ x: 11, y: 21 })),
     detach: jest.fn(function () { this.sizeChanged = null; }),
 };
 
@@ -73,6 +74,13 @@ test('UITransform shell attaches and forwards to native', () => {
     expect(nativeUITransform.hitTestXY).toHaveBeenCalledWith(10, 20, 0);
     expect(ui.hitTest(new Vec2(10, 20), 3)).toBe(true);
     expect(nativeUITransform.hitTestXY).toHaveBeenLastCalledWith(10, 20, 3);
+    const worldPoint = new Vec2();
+    expect(ui.hitTest(new Vec2(10, 20), 3, worldPoint)).toBe(true);
+    expect(nativeUITransform.getHitTestWorldPointXY).toHaveBeenCalledWith(10, 20, 3);
+    expect(worldPoint).toEqual(new Vec2(11, 21));
+    nativeUITransform.getHitTestWorldPointXY.mockReturnValueOnce({ x: NaN, y: NaN });
+    expect(ui.hitTest(new Vec2(10, 20), 4, worldPoint)).toBe(false);
+    expect(worldPoint).toEqual(new Vec2(11, 21));
     expect(ui.getBoundingBoxTo(new Mat4()).x).toBe(9);
     expect(ui.convertToWorldSpaceAR(new Vec3(1, 2, 0)).x).toBe(4);
 

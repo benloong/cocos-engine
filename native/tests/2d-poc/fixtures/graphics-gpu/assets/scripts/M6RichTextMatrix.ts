@@ -1,4 +1,4 @@
-import { _decorator, assetManager, deserialize, director, gfx, Color, Component, EventTouch, instantiate, isValid, Label, Node, Prefab, RichText, sys, Touch, TTFFont, UITransform, Vec2, Vec3, view } from 'cc';
+import { _decorator, assetManager, Camera, deserialize, director, gfx, Color, Component, EventTouch, input, instantiate, isValid, Label, Mask, Node, Prefab, RichText, sys, Touch, TTFFont, UITransform, Vec2, Vec3, view } from 'cc';
 import { checkRichTextActivation, checkRichTextLifecycle } from './M6RichTextLifecycle';
 import { checkFontAliasSources } from './M6FontAliasMatrix';
 
@@ -15,6 +15,84 @@ class StyledClickReceiver extends Component {
     public recordClick (event: EventTouch, param: string): void {
         if (event.type !== Node.EventType.TOUCH_END) throw new Error('Wrong styled RichText event type');
         this.calls.push(param);
+    }
+}
+
+async function checkProjectedInput (parent: Node, camera: Camera, font: TTFFont): Promise<object> {
+    const maskNode = new Node('richtext-input-mask');
+    const host = new Node('richtext-input-target');
+    maskNode.layer = host.layer = parent.layer;
+    parent.addChild(maskNode);
+    maskNode.setScale(1.25, .85, 1);
+    maskNode.setRotationFromEuler(0, 0, 11);
+    const maskUI = maskNode.addComponent(UITransform);
+    maskUI.setContentSize(120, 96);
+    maskUI.setAnchorPoint(1, .5);
+    const mask = maskNode.addComponent(Mask);
+    maskNode.addChild(host);
+    const receiver = host.addComponent(StyledClickReceiver);
+    const rich = host.addComponent(RichText);
+    rich.font = font;
+    rich.fontSize = 24;
+    rich.lineHeight = 30;
+    rich.string = "<on click='recordClick' param='first'>IIII</on><on click='recordClick' param='second'>IIII</on>";
+    let starts = 0;
+    let cancels = 0;
+    host.on(Node.EventType.TOUCH_START, () => ++starts);
+    host.on(Node.EventType.TOUCH_CANCEL, () => ++cancels);
+    const target = camera.targetTexture;
+    const cameraPosition = camera.node.position.clone();
+    const orthoHeight = camera.orthoHeight;
+    try {
+        camera.targetTexture = null;
+        camera.node.setPosition(cameraPosition.x + 53, cameraPosition.y + 23, cameraPosition.z);
+        camera.orthoHeight = 256;
+        await wait();
+        const segmentWorld = (index: number): Vec3 => Vec3.transformMat4(new Vec3(), new Vec3(2, 2, 0), host.children[index].worldMatrix);
+        const first = segmentWorld(0);
+        const second = segmentWorld(1);
+        const firstVisible = mask.isHit(new Vec2(first.x, first.y));
+        const secondVisible = mask.isHit(new Vec2(second.x, second.y));
+        const a = camera.worldToScreen(first);
+        const b = camera.worldToScreen(second);
+        const ui = host.getComponent(UITransform)!;
+        const windowId = camera.camera.systemWindowId;
+        if (!firstVisible || secondVisible || !ui.hitTest(new Vec2(a.x, a.y), windowId)
+            || ui.hitTest(new Vec2(b.x, b.y), windowId)) {
+            throw new Error('Invalid RichText camera/mask setup');
+        }
+        const uiPoint = new Touch(a.x, a.y).getUILocation();
+        if (Math.abs(uiPoint.x - first.x) < 20) throw new Error('Input fixture did not move the camera projection');
+        const dispatch = (type: 'touch-start' | 'touch-end', point: Vec3, id: number, windowId = camera.camera.systemWindowId): void => {
+            const touch = new Touch(point.x, point.y, id);
+            const event = new EventTouch([touch], true, type, [touch]);
+            event.windowId = windowId;
+            // Enter through Input so the real pointer dispatcher claims and releases the touch.
+            (input as any)._dispatchEventTouch(event);
+        };
+        dispatch('touch-start', a, 1);
+        dispatch('touch-end', a, 1);
+        dispatch('touch-start', b, 2);
+        dispatch('touch-end', b, 2);
+        dispatch('touch-start', a, 3);
+        dispatch('touch-end', b, 3);
+        mask.inverted = true;
+        await wait();
+        dispatch('touch-start', b, 4, camera.camera.systemWindowId + 1);
+        dispatch('touch-end', b, 4, camera.camera.systemWindowId + 1);
+        dispatch('touch-start', b, 5);
+        dispatch('touch-end', b, 5);
+        if (starts !== 3 || cancels !== 1 || receiver.calls.join() !== 'first,second') {
+            throw new Error(`RichText projected input dispatched ${starts} starts, ${cancels} cancels and [${receiver.calls}] links`);
+        }
+        console.log('M6_RICH_TEXT_PROJECTED_INPUT_PASS');
+        return { starts, cancels, calls: receiver.calls };
+    } finally {
+        camera.targetTexture = target;
+        camera.node.setPosition(cameraPosition);
+        camera.orthoHeight = orthoHeight;
+        maskNode.destroy();
+        await wait();
     }
 }
 
@@ -661,7 +739,7 @@ async function checkLabelWordWrap (parent: Node, font: TTFFont, capture: (name: 
 }
 
 /** The real asset factory loads the same TTF bytes in both applications. */
-export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>, readPixels: () => Uint8Array): Promise<object> {
+export async function runRichTextMatrix (parent: Node, camera: Camera, capture: (name: string) => Promise<void>, readPixels: () => Uint8Array): Promise<object> {
     const url = sys.isNative ? '__M6_GPU_FONT__' : '/m6-font.ttf';
     const loadFont = (): Promise<TTFFont> => new Promise((resolve, reject) => {
         assetManager.loadRemote<TTFFont>(url, { ext: '.ttf' }, (error, asset) => error ? reject(error) : resolve(asset!));
@@ -709,6 +787,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
+    const projectedInput = await checkProjectedInput(parent, camera, font);
     const activation = await checkRichTextActivation(parent, font, readPixels);
     const labelWordWrap = await checkLabelWordWrap(parent, font, capture, readPixels);
     const fractionalFontWidths = await checkFractionalFontSizes(parent, font, readPixels);
@@ -777,5 +856,5 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
     return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, labelWordWrap, fractionalFontWidths,
-        hardShadowCoverage, blurredShadowCenters, shadowLayout, segmentLifecycle, fontAliasSources, activation };
+        hardShadowCoverage, blurredShadowCenters, shadowLayout, segmentLifecycle, fontAliasSources, activation, projectedInput };
 }

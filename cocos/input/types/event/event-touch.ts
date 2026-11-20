@@ -61,6 +61,9 @@ export class EventTouch extends Event {
      */
     public windowId = 0;
 
+    /** @engineInternal World point selected by the node hit test during touch-end dispatch. */
+    public _hitTestWorldPoint: Vec2 | null = null;
+
     /**
      * @en Set whether to prevent events from being swallowed by nodes, which is false by default.
      * If set to true, the event is allowed to be dispatched to nodes at the bottom layer.

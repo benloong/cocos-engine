@@ -789,7 +789,7 @@ export class RichText extends Component {
         this._segments.forEach((seg) => {
             const clickHandler = seg.clickHandler;
             const clickParam = seg.clickParam;
-            if (clickHandler && this._containsTouchLocation(seg, event.touch!.getUILocation())) {
+            if (clickHandler && this._containsTouchLocation(seg, event._hitTestWorldPoint ?? event.touch!.getUILocation())) {
                 components.forEach((component) => {
                     const func = component[clickHandler];
                     if (component.enabledInHierarchy && func) {

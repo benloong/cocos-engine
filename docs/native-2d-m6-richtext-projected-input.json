@@ -1,0 +1,79 @@
+{
+  "baseCommit": "56d41e5030",
+  "baseline": {
+    "fixtureSnapshot": "4c8ec7a84cba386475a2126115fe3786d8bb4710b9288f3ec3bae068a06af516",
+    "nativeError": "RichText projected input dispatched 3 starts, 1 cancels and [] links",
+    "nativeLogSha256": "a25e88056bf52eb4dc927b4d05ea80caf07694b3ad4a87b7cc66152d7a9862cb",
+    "windowsDebugExecutableSha256": "b03d468e7101f84604f07ec26aeb24cee9f7350c22683be31a9d5910f5fd7ed0",
+    "windowsDebugEngineSha256": "906357aab2f0eeced2285986fa9eab3982632e0da863f4b5a43fb5629a488b0f"
+  },
+  "projectedInput": {
+    "starts": 3,
+    "cancels": 1,
+    "calls": [
+      "first",
+      "second"
+    ]
+  },
+  "richtext": {
+    "snapshot": "a15f8ba648d92faaef3f4726d02a9f01b0ea52584828eaf60993a691813ebeae",
+    "unchangedEarlierCaptures": 62,
+    "webManifestSha256": "86c2217103e5f19aebc257733248088deb65f8a2b80d40fce8c71564ee7d225c",
+    "webLogSha256": "5ee3c95c418c599683b86ac611dd2c9263d4517e9ed56fa8931e8c93db196817",
+    "windows": {
+      "Debug": {
+        "executableSha256": "ca13f1ad6f4033fdcd973618022bae0a910fa0305334a1690b1d82be4c6f6750",
+        "compileLogSha256": "808e70a8640aeb3b2609ab48a238d59647eb07dad7da957ba9dc1722ac4dc56f",
+        "manifestSha256": "f1579184ffb2b8573a4644f39f24f5c53d60a227e5627dd737fbad674e5e021e",
+        "comparisonSha256": "a1c7dc0f003a4f519205886335a187bfe65eb804e478c8d05ce82ca7e662849d",
+        "applicationLogSha256": "f0ebf5eab97f96a7566a588d9280314bb6e243acc5979d87317fe193ac90df8d"
+      },
+      "Release": {
+        "executableSha256": "9a357f3e23ee8ccae76d4d3ce68d285c77c137743e7e96f8035e8c24952e1ce8",
+        "compileLogSha256": "34b8b9ef8e2a96ed8f71c0e03bc109b693e16d882f0de06116a31418c8b5746b",
+        "manifestSha256": "c6d040defb8adbab7f2ad2f85448b4742e29e486343e93bc46722be382f27f9d",
+        "comparisonSha256": "94bb2fd3ed2d62da794526a372bc0bea16a5cda926aae1522b4c9eac684c042c",
+        "applicationLogSha256": "f1ab4e0a5ba9b2658847f1314afb08314522da0124c0621cb4fc4b610ef3e93a"
+      }
+    },
+    "layoutPass": 62,
+    "strictPixelPass": 59,
+    "deferredPixels": [
+      "text-bold",
+      "text-outline",
+      "text-nested"
+    ]
+  },
+  "graphics": {
+    "snapshot": "df541dedc1cc387deffdb31bb44f035b63ade3a3e40eaef9d352d85df49a281c",
+    "unchangedEarlierCaptures": 155,
+    "webManifestSha256": "7db2a1f103dd74174516a6a808fe0140523520be822c212131b59eac93d8d36e",
+    "webLogSha256": "1d1459e062111e1aedd9a75f1a54781829b94db958abee1c68a5d9df800bc7b6",
+    "windows": {
+      "Debug": {
+        "executableSha256": "010bc518e6def668718abc59ae9d58efec65b6e5dcbbb34b0b07444cd5828e60",
+        "compileLogSha256": "045fa09f6c250403bd43102e4f18b6116554c4141d451c890d9605910208c34b",
+        "manifestSha256": "e42b5dd88c6b9c5d571524d2df93d11ff6fbd1d1704cd3767acb6bec073888d5",
+        "comparisonSha256": "3a8244ef2a3f43969886039a39c516773121cb1b158bb98cdb34a14faffe8f9e",
+        "applicationLogSha256": "1bed2711d336ade380091ad9509bc9de513a3ab5ed87da32484291095b518d89"
+      },
+      "Release": {
+        "executableSha256": "bc43475bf6a4c901e757ba5c39d124431efe5947f832f6b1c6ca6a6c44e8ebb7",
+        "compileLogSha256": "5cbc9f92db7b11e1c75dd43a81864f67a1835abc2570e7850cddd2229c0227ff",
+        "manifestSha256": "0e9af39eb802c77c06ad9edc5e44c7a649242f5697d3c5616dd743667f8e424f",
+        "comparisonSha256": "3a8244ef2a3f43969886039a39c516773121cb1b158bb98cdb34a14faffe8f9e",
+        "applicationLogSha256": "1c4a2f5a48648465320caa711732c45afd637449009a16af0790eecd16e4798f"
+      }
+    },
+    "strictPixelPass": 155,
+    "hitChecks": 22,
+    "sceneCycles": 1000
+  },
+  "local": {
+    "targetedJestPassed": 13,
+    "allJestPassed": 1479,
+    "typeScript": true,
+    "nativeTypeScript": true,
+    "jestLogSha256": "acbd4665f638de3d435e48c3655571a1edf480c73c22abe50615b04e6186a1f1"
+  }
+}

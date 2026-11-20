@@ -453,8 +453,10 @@ export class UITransform extends Component {
      * @en Hit test with point in Screen Space.
      *
      * @param screenPoint @en point in Screen Space. @zh 屏幕坐标中的点。
+     * @param windowId @en System window receiving the input. @zh 接收输入的系统窗口。
+     * @param worldPoint @en Receives the world point on a hit. @zh 命中时写入世界坐标。
      */
-    public hitTest (screenPoint: Vec2, windowId = 0): boolean {
+    public hitTest (screenPoint: Vec2, windowId = 0, worldPoint?: Vec2): boolean {
         const w = this._contentSize.width;
         const h = this._contentSize.height;
         const v3WorldPt = _vec3a;
@@ -488,6 +490,7 @@ export class UITransform extends Component {
                 hit = this._maskTest(v2WorldPt);
             }
             if (hit) {
+                worldPoint?.set(v2WorldPt);
                 return true;
             }
         }

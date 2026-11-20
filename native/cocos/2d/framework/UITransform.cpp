@@ -33,6 +33,7 @@
 #include "scene/Camera.h"
 #include "scene/RenderScene.h"
 #include "scene/RenderWindow.h"
+#include <limits>
 
 namespace cc {
 
@@ -176,6 +177,17 @@ bool UITransform::hitTestWorldXY(float worldX, float worldY) const {
 }
 
 bool UITransform::hitTestXY(float screenX, float screenY, uint32_t windowId) const {
+    return tryHitTestXY(screenX, screenY, windowId, nullptr);
+}
+
+Vec2 UITransform::getHitTestWorldPointXY(float screenX, float screenY, uint32_t windowId) const {
+    const float noHit = std::numeric_limits<float>::quiet_NaN();
+    Vec2 worldPoint(noHit, noHit);
+    tryHitTestXY(screenX, screenY, windowId, &worldPoint);
+    return worldPoint;
+}
+
+bool UITransform::tryHitTestXY(float screenX, float screenY, uint32_t windowId, Vec2 *worldPoint) const {
     if (_node == nullptr || _contentSize.x <= 0.F || _contentSize.y <= 0.F) {
         return false;
     }
@@ -196,6 +208,7 @@ bool UITransform::hitTestXY(float screenX, float screenY, uint32_t windowId) con
         }
         const Vec3 world = camera->screenToWorld(Vec3(screenX, screenY, 0.F));
         if (hitTestWorldXY(world.x, world.y)) {
+            if (worldPoint) worldPoint->set(world.x, world.y);
             return true;
         }
     }

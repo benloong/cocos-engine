@@ -117,6 +117,7 @@ public:
     bool containsWorldPointXY(float x, float y) const { return containsWorldPoint(Vec2(x, y)); }
     bool hitTestWorldXY(float worldX, float worldY) const;
     bool hitTestXY(float screenX, float screenY, uint32_t windowId = 0) const;
+    cc::Vec2 getHitTestWorldPointXY(float screenX, float screenY, uint32_t windowId) const;
 
     float getBoundingBoxToX(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).x; }
     float getBoundingBoxToY(const Mat4 &targetMat) const { return getBoundingBoxTo(targetMat).y; }
@@ -127,6 +128,7 @@ public:
     void detach() { _sizeChangedCallback = nullptr; setNode(nullptr); }
 
 private:
+    bool tryHitTestXY(float screenX, float screenY, uint32_t windowId, Vec2 *worldPoint) const;
     void onDetach() override {
         if (!_node) _sizeChangedCallback = nullptr;
     }

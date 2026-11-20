@@ -1,3 +1,4 @@
+import { USE_JS_GRAPHICS_MASK } from 'internal:constants';
 import { Vec2 } from '../../core/math/vec2';
 import { Vec3 } from '../../core/math/vec3';
 import type { Node } from '../../scene-graph/node';
@@ -17,8 +18,20 @@ export function testAncestorMasks (node: Node, point: Vec2): boolean {
     return true;
 }
 
-export function hitTestWithJavaScriptMasks (node: Node, point: Vec2, windowId: number,
-    bounds: { containsWorldPointXY(x: number, y: number): boolean }): boolean {
+interface NativeHitTest {
+    containsWorldPointXY (x: number, y: number): boolean;
+    hitTestXY (x: number, y: number, windowId: number): boolean;
+    getHitTestWorldPointXY (x: number, y: number, windowId: number): Vec2;
+}
+
+export function hitTestWithNativeTransform (node: Node, transform: NativeHitTest, point: Vec2, windowId: number, worldPoint?: Vec2): boolean {
+    if (!USE_JS_GRAPHICS_MASK) {
+        if (!worldPoint) return transform.hitTestXY(point.x, point.y, windowId);
+        const hit = transform.getHitTestWorldPointXY(point.x, point.y, windowId);
+        if (!Number.isFinite(hit.x) || !Number.isFinite(hit.y)) return false;
+        worldPoint.set(hit);
+        return true;
+    }
     const cameras = node.scene?.renderScene?.cameras;
     if (!cameras) return false;
     for (const camera of cameras) {
@@ -26,8 +39,11 @@ export function hitTestWithJavaScriptMasks (node: Node, point: Vec2, windowId: n
             || (camera.window && !camera.window.swapchain)) continue;
         worldPosition.set(point.x, point.y, 0);
         camera.screenToWorld(worldPosition, worldPosition);
-        if (bounds.containsWorldPointXY(worldPosition.x, worldPosition.y)
-            && testAncestorMasks(node, maskPoint.set(worldPosition.x, worldPosition.y))) return true;
+        if (transform.containsWorldPointXY(worldPosition.x, worldPosition.y)
+            && testAncestorMasks(node, maskPoint.set(worldPosition.x, worldPosition.y))) {
+            worldPoint?.set(maskPoint);
+            return true;
+        }
     }
     return false;
 }

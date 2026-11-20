@@ -58,6 +58,12 @@ Windows Debug、Release 和 Web 使用旧 TexturePacker 图集与真实 Thonburi
 
 真实应用在 Windows Debug、Release 和 Chrome 上从三个文字段开始，在第一段重新激活时清空文本。用例检查旧段脱离且画面清空，随后恢复一个文字段。宿主经停用父节点重挂接后，原节点和像素恢复，销毁宿主后无可见段存留。[运行记录](./native-2d-m6-richtext-reactivation.json)
 
+## 相机与 Mask 下的触摸命中
+
+输入派发器在 `TOUCH_END` 命中时把 `UITransform` 选定的世界坐标随事件传递。Web 和 JSB 的 RichText 都使用此坐标查找段，与节点命中共用相机、窗口和 Mask 判断。应用直接调用 `Node.dispatchEvent` 时，RichText 从触点读取 UI 坐标。
+
+真实应用从输入分发入口注入触点。旧 Windows Debug 候选有三次按下和一次取消，两个可见段均未触发链接。修复后 Windows Debug、Release 和 Chrome 各按顺序触发 `first`、`second`。遮罩外的起点、移出遮罩的松手和错误窗口均经过实际节点命中链路。[对照数据](./native-2d-m6-richtext-projected-input.json)
+
 ## 点击回调重入补充（2026-11-16）
 
 命中几何继续由 native 计算。JS 在调用用户代码前读取本次命中段的 handler/param，作为一次事件的临时数据；回调改变 string、图集或触发布局后，不再用旧索引查询已经复用的原生片段。回调销毁、禁用组件或关闭 handleTouchEvent 时，立即停止剩余分发；已命中的事件先标记停止传播。该临时事件数据不是 JS 布局或第二份片段状态，没有新增每帧调用或 native 所有权。

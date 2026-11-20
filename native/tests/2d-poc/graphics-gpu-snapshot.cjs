@@ -13,7 +13,8 @@ module.exports=function graphicsGpuSnapshot(mode='graphics') {
         }
     }
     walk(fixture);
-    for (const file of ['cc.config.json', 'cocos/render-scene/core/material-instance.jsb.ts']) {
+    for (const file of ['cc.config.json', 'cocos/render-scene/core/material-instance.jsb.ts',
+        'cocos/input/types/event/event-touch.ts', 'cocos/scene-graph/node-event-processor.ts']) {
         fixtureHashes.push([file, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex')]);
     }
     if (mode === 'graphics') {

@@ -50,6 +50,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | Label 旧版特效 API | Windows Debug、Release 与 Web 从 Prefab 还原旧版描边和阴影组件，验证属性转发、启停和销毁。相同对象写回时跳过更新，各端的旧版组件与直接设置 Label 属性所得像素一致。155 张既有场景图三端逐字节相同。 | [调用计数与像素回归](./native-2d-m6-label-effect-api.json) |
 | RichText 段节点与生命周期 | Windows Debug、Release 和 Web 各验证 64 个文字段、64 个图片段、32 轮回收重建和图集缓存释放。宿主换层时段跟随更新，四张新增图逐字节一致。 | [三端验收](./native-2d-m6-richtext-node-lifecycle.json) |
 | RichText 激活事件重入 | Windows Debug、Release 和 Web 验证段激活回调清空内容、重建、经停用父节点重挂接及销毁宿主。既有字体图在各端逐张保持一致，布局 62/62，严格像素 59/62。 | [重入与字体回归](./native-2d-m6-richtext-reactivation.json) |
+| RichText 相机与 Mask 输入 | Windows Debug、Release 和 Web 通过输入派发器完成 3 次按下、1 次取消和两个链接回调。覆盖偏移相机、变换后的祖先 Mask、反转和窗口筛选。62 张字体图和 155 张通用场景图各端哈希与前一候选一致。 | [事件序列与逐配置证据](./native-2d-m6-richtext-projected-input.json) |
 | Label 的 TTF 小数字号 | Windows 双配置与 Web 用同一 Thonburi，依次设置 24、24.25、24.75、25、24 px。三端宽度最大差小于 0.000054 px，各次切换重绘，复位与初始图逐字节一致。既有 47 张图的各端哈希与上一轮一致，当前字体门禁通过 | [字号与快照数据](./native-2d-m6-richtext-configurations.json) |
 | Label 零模糊阴影 | 固定尺寸、正负偏移两组，Windows Debug/Release 与 Web 的 GPU 轮廓检查均通过。原 13 张 RichText 图的各端哈希与上轮相同 | [场景及断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts) |
 | RichText 动态编辑及未知 shadow 标签 | Windows Debug/Release 对 Web 的扩展矩阵布局 13/13，严格图像 10/13。新增用例的 3496 个着色像素与双色对照一致，原 12 项结果与上轮相同 | [逐项比较器](../native/tests/2d-poc/compare-richtext-gpu.cjs) |
@@ -83,7 +84,7 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.1 | 字体终态 | Windows DirectWrite 源文件替换、失败加载和释放已通过[独立进程验证](./native-2d-m6.1-font-alias-ownership.md#windows-directwrite-源文件释放)。Windows 双配置各完成 1000 轮应用内本地字体释放和 30 轮 HTTP 重复下载释放，源文件在采样点均可独占打开。[句柄分阶段记录](./native-2d-m6.1-font-alias-ownership.md#windows-应用内字体句柄) 其余旧资源生命周期、复杂文本及范围内的字形对照继续验收 |
 | M6.1 | 复杂布局 | [补充平面 BMFont 标量已验证](./native-2d-m6-bitmap-unicode.json)，水平 TTF 字形已有上述 72 组常规/斜体验收，普通 TTF 的三种溢出模式已通过整词换行像素对照。含嵌套书写方向、泰文叠加标记、拉丁组合音标和控制空白的四组 TTF 段落与 Web 逐字节相同。其余复杂字形、位图字体复杂脚本、任意 mesh、packed 组合和配置更新继续验收。已安装的 16 px Arial 两行文本在 NONE 模式下的自然宽度已修正，Windows 双配置与 Chrome 均为 80.9453125。[Label 系统字体矩阵](./native-2d-m6-system-font.json) |
 | M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一旧 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。Windows 下载器已验证排队与传输中取消、失败时保留旧文件、清除不可续传的半文件和 Range 续传。Web 已验证 fetch 主动取消及续传。Web 引擎首次断流时返回回退字体，释放后同 URL 已成功重载并测得原字体宽度。其余旧资产仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
-| M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期以及验收范围内的布局、场景、视觉与事件回归 |
+| M6.2 | RichText 终态 | 固定布局、场景、视觉和输入回归已通过当前范围。剩余资源与极限对象生命周期、Node wrapper 联调及最终候选复验。 |
 | M6.4 | 平台矩阵 | 三端 RichText 字体应用矩阵与小数字号回归已通过当前范围。本轮最终候选仍须汇总关键渲染、字体与事件场景记录 |
 | M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据 |
 | M6.5 | 最终候选回退复测 | 两种 Windows 配置已分别完成旧项目中的 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。最终候选须重跑整组回退矩阵。 |

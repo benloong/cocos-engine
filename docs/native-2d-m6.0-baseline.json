@@ -147,11 +147,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
-      "sha256": "bbf2838434c287c4c13ff4cdf1654a92939ae43f1a89054ea22553496bfb628c"
+      "sha256": "0019b802a597e9ebf95d9445848fb968c6028246b2bab599363318d9dac8a573"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.h",
-      "sha256": "74a625d0d8552f16a0f64afee33a07cb672af436dbc720d200feb92aa41ec551"
+      "sha256": "0b9a2dbad8f4721a6b632ed492a4c9e300a5a83d94e42add170f3ec84bcaace1"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.cpp",
@@ -916,7 +916,8 @@
             "type": "boolean",
             "parameters": [
               "screenPoint: Vec2",
-              "windowId = 0"
+              "windowId = 0",
+              "worldPoint?: Vec2"
             ],
             "default": null,
             "decorators": []
@@ -1442,7 +1443,8 @@
             "type": "boolean",
             "parameters": [
               "screenPoint: Vec2",
-              "windowId = 0"
+              "windowId = 0",
+              "worldPoint?: Vec2"
             ],
             "default": null,
             "decorators": []
@@ -15806,7 +15808,7 @@
     },
     {
       "file": "cocos/2d/components/rich-text.jsb.ts",
-      "sha256": "9156315f68fbb51b99ccf4595cc2462d7e05b61224f4bb579d931fefb45ab999",
+      "sha256": "95cd40404be20cfeee7a191189ba933c59937de67727795c878e4dea5cc199b3",
       "printedCodeLines": 193,
       "runtimeImports": [
         "cc.decorator",
@@ -15902,7 +15904,7 @@
     },
     {
       "file": "cocos/2d/components/rich-text.ts",
-      "sha256": "f8cf8cc4d0ae1b43ca651263b8cae3236f3b78e7f3bf3860512e20efdd0b7d5e",
+      "sha256": "597adc0b5a6ad14e3cef0fa1a47274f9dc3a002cccf619f44e64d50e754fc130",
       "printedCodeLines": 1046,
       "runtimeImports": [
         "cc.decorator",
@@ -16649,9 +16651,10 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform-mask-hit.ts",
-      "sha256": "eee704c0827b9bf6328033a14dbffdecc0664db6638eefd4780becaa946b288e",
-      "printedCodeLines": 36,
+      "sha256": "7dd136aa182dd2a3d51377b772edb2b98f2cdaa99701ab3e1cc22ae0171f8785",
+      "printedCodeLines": 51,
       "runtimeImports": [
+        "internal:constants",
         "../../core/math/vec2",
         "../../core/math/vec3",
         "../../scene-graph/node-event-processor"
@@ -16660,8 +16663,8 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        13,
-        24
+        14,
+        37
       ]
     },
     {
@@ -16682,8 +16685,8 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "481a16496849cda00ba72c0a477b7fdfc134c9005f04169a5d7ea6823c19339f",
-      "printedCodeLines": 237,
+      "sha256": "e7569c66185a144171023d7474661cac79a73ab032229be6a44670643a7c55a8",
+      "printedCodeLines": 235,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16733,72 +16736,68 @@
           "line": 220
         },
         {
-          "expression": "this._native.hitTestXY",
-          "line": 230
-        },
-        {
           "expression": "this._native.convertToNodeSpaceARX",
-          "line": 237
+          "line": 236
         },
         {
           "expression": "this._native.convertToNodeSpaceARY",
-          "line": 238
+          "line": 237
         },
         {
           "expression": "this._native.convertToWorldSpaceARX",
-          "line": 251
+          "line": 250
         },
         {
           "expression": "this._native.convertToWorldSpaceARY",
-          "line": 252
+          "line": 251
         },
         {
           "expression": "this._native.getBoundingBoxX",
-          "line": 264
+          "line": 263
         },
         {
           "expression": "this._native.getBoundingBoxY",
-          "line": 265
+          "line": 264
         },
         {
           "expression": "this._native.getBoundingBoxWidth",
-          "line": 266
+          "line": 265
         },
         {
           "expression": "this._native.getBoundingBoxHeight",
-          "line": 267
+          "line": 266
         },
         {
           "expression": "this._native.getBoundingBoxToWorldX",
-          "line": 276
+          "line": 275
         },
         {
           "expression": "this._native.getBoundingBoxToWorldY",
-          "line": 277
+          "line": 276
         },
         {
           "expression": "this._native.getBoundingBoxToWorldWidth",
-          "line": 278
+          "line": 277
         },
         {
           "expression": "this._native.getBoundingBoxToWorldHeight",
-          "line": 279
+          "line": 278
         },
         {
           "expression": "this._native.getBoundingBoxToX",
-          "line": 290
+          "line": 289
         },
         {
           "expression": "this._native.getBoundingBoxToY",
-          "line": 291
+          "line": 290
         },
         {
           "expression": "this._native.getBoundingBoxToWidth",
-          "line": 292
+          "line": 291
         },
         {
           "expression": "this._native.getBoundingBoxToHeight",
-          "line": 293
+          "line": 292
         }
       ],
       "allocations": [],
@@ -16808,8 +16807,8 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.ts",
-      "sha256": "631fb5faa8daef82471e2a57b76551852c54e7c907b320167f39f59d8166db75",
-      "printedCodeLines": 445,
+      "sha256": "45cf76ed36f3e00bd745993879a3829a61de79469875b3534474f95a1cb7063c",
+      "printedCodeLines": 446,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16825,10 +16824,10 @@
       "allocations": [],
       "loops": [
         417,
-        465,
-        503,
-        625,
-        673
+        467,
+        506,
+        628,
+        676
       ]
     },
     {

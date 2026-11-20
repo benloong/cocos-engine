@@ -29,7 +29,7 @@ import { Rect, Size, Vec2, Vec3, geometry, Mat4, visibleRect, warnID } from '../
 import { director } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
 import { queueUITransformParentChange, queueUITransformSiblingOrder } from './ui-transform-sibling-order';
-import { hitTestWithJavaScriptMasks, testAncestorMasks } from './ui-transform-mask-hit';
+import { hitTestWithNativeTransform, testAncestorMasks } from './ui-transform-mask-hit';
 
 declare const n2d: any;
 
@@ -225,9 +225,8 @@ export class UITransform extends Component {
         return false;
     }
 
-    public hitTest (screenPoint: Vec2, windowId = 0): boolean {
-        if (USE_JS_GRAPHICS_MASK && this._native) return hitTestWithJavaScriptMasks(this.node, screenPoint, windowId, this._native);
-        return this._native ? this._native.hitTestXY(screenPoint.x, screenPoint.y, windowId) : false;
+    public hitTest (screenPoint: Vec2, windowId = 0, worldPoint?: Vec2): boolean {
+        return this._native ? hitTestWithNativeTransform(this.node, this._native, screenPoint, windowId, worldPoint) : false;
     }
 
     public convertToNodeSpaceAR (worldPoint: Vec3, out?: Vec3): Vec3 {
