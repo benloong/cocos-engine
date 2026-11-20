@@ -258,6 +258,28 @@ export class M6GraphicsGpuProbe extends Component {
                 if (sys.isNative && !(sprite as any)._native) throw new Error('Native Sprite override not active');
                 return sprite;
             };
+            const sliced = (root: Node, spriteFrame: SpriteFrame, width: number, height: number): UITransform => {
+                const transform = root.getComponent(UITransform)!;
+                transform.setContentSize(width, height);
+                transform.setAnchorPoint(.25, .375);
+                const sprite = root.addComponent(Sprite);
+                sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+                sprite.type = Sprite.Type.SLICED;
+                sprite.spriteFrame = spriteFrame;
+                if (sys.isNative && !(sprite as any)._native) throw new Error('Native Sprite override not active');
+                return transform;
+            };
+            const slicedFrame = patternFrame.clone();
+            slicedFrame.insetLeft = 12;
+            slicedFrame.insetRight = 8;
+            slicedFrame.insetTop = 8;
+            slicedFrame.insetBottom = 8;
+            const editedFrame = slicedFrame.clone();
+            const slicedRotatedFrame = rotatedFrame.clone();
+            slicedRotatedFrame.insetLeft = 6;
+            slicedRotatedFrame.insetRight = 4;
+            slicedRotatedFrame.insetTop = 3;
+            slicedRotatedFrame.insetBottom = 5;
             cases.push(
                 { name: 'sprite-radial-quadrant', draw: root => {
                     const sprite = radial(root);
@@ -281,6 +303,18 @@ export class M6GraphicsGpuProbe extends Component {
                     const sprite = radial(root);
                     sprite.fillRange = 0;
                     return () => { sprite.fillRange = 1; };
+                } },
+                { name: 'sprite-sliced-resize', draw: root => {
+                    const transform = sliced(root, slicedFrame, 72, 56);
+                    return () => { transform.setContentSize(16, 10); };
+                } },
+                { name: 'sprite-sliced-insets', draw: root => {
+                    sliced(root, editedFrame, 16, 10);
+                    return () => { editedFrame.insetLeft = 4; editedFrame.insetRight = 14; };
+                } },
+                { name: 'sprite-sliced-rotated', draw: root => {
+                    const transform = sliced(root, slicedRotatedFrame, 42, 32);
+                    return () => { transform.setContentSize(8, 6); };
                 } },
             );
         }

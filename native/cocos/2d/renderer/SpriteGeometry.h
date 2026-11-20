@@ -84,8 +84,9 @@ struct SlicedSpriteGeometryParams final {
 /**
  * Build the 9-slice geometry for Sprite.Type.SLICED.
  *
- * Produces a 4x4 vertex grid and 9 quads (54 indices). Insets are clamped to
- * the content size so degenerate frames do not produce inverted quads.
+ * Produces a 4x4 vertex grid and 9 quads (54 indices). When the borders cannot
+ * fit the content size, scale both borders on that axis and collapse the center.
+ * The source UVs always use the sprite frame's original insets.
  */
 SpriteMesh buildSlicedSpriteMesh(const SlicedSpriteGeometryParams &params);
 

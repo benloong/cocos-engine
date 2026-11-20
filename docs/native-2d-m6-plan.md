@@ -43,6 +43,7 @@
 - [x] Sprite 壳声明与基础材质/状态兼容：六个缺口、fillRange 默认值/条形负范围、atlas/trim/grayscale/事件、native 材质变体与真正 MaterialInstance、帧/材质持有、尺寸/Node 变化和零填充清理已补，Windows Debug/Release 实际 JSB 与定向测试通过，见 [报告](./native-2d-m6.1-sprite-api.md)。
 - [x] Sprite radial 与可变 fillCenter：归一化中心、角度方向、矩形边界三角形、rotated UV 和 flip 行为已修复；fillCenter 分量读写直接桥接 native，加载/克隆/销毁保持视图契约。3024 组实际 Web assembler 与 native CPU 几何对照、Windows Debug/Release 定向测试通过，见 [报告](./native-2d-m6.1-radial.md)。
 - [x] Sprite 径向填充的实际 GPU 像素验收。修复 Web 直接写 `fillCenter.x/y` 后未刷新渲染数据。Windows Debug、Release 与 Web 对照正负范围、分量更新、旋转帧与 UV 翻转、空到全填充，以及旧 Prefab 的普通和旋转帧。两种 Windows 配置各 102 张图与 Web 逐字节一致。[逐图数据](./native-2d-m6-sprite-radial-gpu.json)
+- [x] Sprite 九宫格在节点小于边距总和时按轴比例压缩边框，并保留原始纹理 UV。Web 运行中修改边距同时刷新顶点分区。Windows Debug、Release 与 Web 验证现有节点缩小、直接创建同尺寸节点、修改边距及旋转帧。两个 Windows 配置各 108 张图与 Web 逐字节一致，原有 102 张图的哈希保持一致。[九宫格对照](./native-2d-m6-sprite-sliced-gpu.json)
 - [x] Sprite/Label 材质槽 API 与提交：补数组整体赋值/缩短/清空、加载前引用、forceUpdate、实例 owner 解绑；native 区分显式空槽和恢复内置材质，Label 实际 DrawInfo 跟随槽和实例变化。Windows Debug/Release、实际 JSB 与 Web 定向对照通过，见 [报告](./native-2d-m6.1-material-slots.md)。
 - [x] Label 的兼容 getter `_bmFontOriginalSize` 读取当前 BitmapFont 资产的字号，并覆盖未设置字体、字号修改和切换非位图字体的 Web/JSB 薄壳对照。见 [Label 回归](../tests/ui/native-2d-m3-label-shell.test.ts)。
 - [x] 位图 Label 的字号与行高支持小于 0.01 的变化。以字号或行高 16 为基准，在 Windows Debug/Release 和 Web 上增减 1/128 并复位，128 字形的自然宽度及 128 行的自然高度均依次为 2049、2048、2047、2048。原生双配置还验证直接调用 setter 后的测量，既有 88 张图像与 Web 及上一节点逐字节相同。[场景与断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)

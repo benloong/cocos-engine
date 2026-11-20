@@ -143,26 +143,26 @@ SpriteMesh buildSlicedSpriteMesh(const SlicedSpriteGeometryParams &params) {
     const float right = width - appX;
     const float top = height - appY;
 
-    const float insetLeft = std::clamp(params.insetLeft, 0.F, width);
-    const float insetRight = std::clamp(params.insetRight, 0.F, width);
-    const float insetBottom = std::clamp(params.insetBottom, 0.F, height);
-    const float insetTop = std::clamp(params.insetTop, 0.F, height);
-
-    const float x1 = std::min(left + insetLeft, right);
-    const float x2 = std::max(right - insetRight, left);
-    const float y1 = std::min(bottom + insetBottom, top);
-    const float y2 = std::max(top - insetTop, bottom);
-
-    const float xs[4] = {left, x1, x2, right};
-    const float ys[4] = {bottom, y1, y2, top};
-    const float us[4] = {0.F, insetLeft / rect.width, 1.F - insetRight / rect.width, 1.F};
-    const float vs[4] = {0.F, insetBottom / rect.height, 1.F - insetTop / rect.height, 1.F};
+    const float horizontalInsets = params.insetLeft + params.insetRight;
+    const float verticalInsets = params.insetBottom + params.insetTop;
+    const float xScale = horizontalInsets == 0.F ? 1.F : std::min(1.F, width / horizontalInsets);
+    const float yScale = verticalInsets == 0.F ? 1.F : std::min(1.F, height / verticalInsets);
+    const float x1 = left + params.insetLeft * xScale;
+    const float y1 = bottom + params.insetBottom * yScale;
+    const float xs[4] = {left, x1, x1 + std::max(0.F, width - horizontalInsets), right};
+    const float ys[4] = {bottom, y1, y1 + std::max(0.F, height - verticalInsets), top};
+    const float sourceX[4] = {0.F, params.insetLeft, rect.width - params.insetRight, rect.width};
+    const float sourceY[4] = {0.F, params.insetBottom, rect.height - params.insetTop, rect.height};
     mesh.vertices.reserve(16);
     for (uint32_t row = 0; row < 4; ++row) {
         for (uint32_t col = 0; col < 4; ++col) {
             SpriteVertex vertex;
             vertex.position.set(xs[col], ys[row], 0.F);
-            vertex.uv = frameUV(us[col], vs[row], rect, params.textureSize, params.rotated);
+            if (params.rotated) {
+                vertex.uv.set((rect.x + sourceY[row]) / textureWidth, (rect.y + sourceX[col]) / textureHeight);
+            } else {
+                vertex.uv.set((rect.x + sourceX[col]) / textureWidth, (rect.y + (rect.height - sourceY[row])) / textureHeight);
+            }
             mesh.vertices.push_back(vertex);
         }
     }

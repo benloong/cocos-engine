@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==102) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==108) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==102) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==108) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -72,6 +72,9 @@ const sanity={
     'sprite-radial-quadrant':1008,'sprite-radial-quadrant-updated':1008,
     'sprite-radial-center':2016,'sprite-radial-center-updated':3024,
     'sprite-radial-empty':0,'sprite-radial-empty-updated':4032,
+    'sprite-sliced-resize':4032,'sprite-sliced-resize-updated':160,
+    'sprite-sliced-insets':160,'sprite-sliced-insets-updated':160,
+    'sprite-sliced-rotated':1344,'sprite-sliced-rotated-updated':48,
     'fill-rect':6400,'large-local-coordinates':6400,'clear-and-replace':2400,
     'large-mesh-chunks':20000,'mask-rect':6400,'mask-inverted':46400,
     'mask-custom':3500,'mask-empty':52800,'mask-empty-inverted':52800,
@@ -132,6 +135,13 @@ for (const name of ['sprite-radial-quadrant', 'sprite-radial-rotated']) {
         throw new Error('Expected equivalent radial images before and after update: ' + name);
     }
 }
+const slicedBefore = results.find(row => row.name === 'sprite-sliced-insets');
+const slicedAfter = results.find(row => row.name === 'sprite-sliced-insets-updated');
+const slicedResized = results.find(row => row.name === 'sprite-sliced-resize-updated');
+if (slicedResized.webSha256 !== slicedBefore.webSha256 || slicedResized.nativeSha256 !== slicedBefore.nativeSha256) {
+    throw new Error('Resizing a sliced Sprite must match constructing it at the smaller size');
+}
+if (slicedBefore.webSha256 === slicedAfter.webSha256) throw new Error('Sliced inset update did not change its Web image');
 fs.writeFileSync(path.join(__dirname,'build/graphics-gpu-comparison.json'),JSON.stringify(result,null,2));
 for(const row of results) console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: max=${row.max}, pixels=${row.pixels}, Web colored=${row.colored}`);
 if(!result.pass) process.exitCode=1;

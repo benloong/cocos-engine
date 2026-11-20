@@ -216,6 +216,25 @@ void testSlicedMesh() {
         checkNear(mesh.vertices[10].position.y, 90.F, "sliced top inset y");
         checkNear(mesh.vertices[10].uv.y, 0.1F, "sliced top inset v");
     }
+
+    params.contentSize = cc::Vec2(10.F, 8.F);
+    params.anchorPoint = cc::Vec2(.25F, .375F);
+    params.insetLeft = 18.F;
+    params.insetRight = 12.F;
+    params.insetTop = 20.F;
+    params.insetBottom = 12.F;
+    const cc::SpriteMesh compressed = cc::buildSlicedSpriteMesh(params);
+    check(compressed.valid && compressed.vertices.size() == 16, "sliced compressed mesh keeps its grid");
+    if (compressed.vertices.size() == 16) {
+        checkNear(compressed.vertices[5].position.x, 3.5F, "sliced compressed left seam");
+        checkNear(compressed.vertices[6].position.x, 3.5F, "sliced compressed right seam");
+        checkNear(compressed.vertices[5].position.y, 0.F, "sliced compressed lower seam");
+        checkNear(compressed.vertices[9].position.y, 0.F, "sliced compressed upper seam");
+        checkNear(compressed.vertices[5].uv.x, .18F, "sliced compressed left keeps source UV");
+        checkNear(compressed.vertices[6].uv.x, .88F, "sliced compressed right keeps source UV");
+        checkNear(compressed.vertices[5].uv.y, .88F, "sliced compressed bottom keeps source UV");
+        checkNear(compressed.vertices[9].uv.y, .20F, "sliced compressed top keeps source UV");
+    }
 }
 
 void testFilledMesh() {

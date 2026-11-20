@@ -231,11 +231,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/SpriteGeometry.cpp",
-      "sha256": "763871cb71fc6d78f61ff092ed2e60a864ddfa512377fe48696dae8030d5d30b"
+      "sha256": "cb0c782bc723bb98812a205e807ddfcecb6b67636923957134085e6d0c56cf47"
     },
     {
       "file": "native/cocos/2d/renderer/SpriteGeometry.h",
-      "sha256": "5878b6a4ddd5dac65c68754a5ec3a82c7f73c0bed3f23e81106ae92de5bbce1e"
+      "sha256": "0b2a78374aa6bacc253f154490882d449ec2c1304d6a3d85887246f8e640a812"
     },
     {
       "file": "native/cocos/2d/renderer/StencilManager.cpp",
@@ -15940,8 +15940,8 @@
     },
     {
       "file": "cocos/2d/components/sprite.ts",
-      "sha256": "e045b6176334299eb297bc72c4e21d9bfc7031e9224b035e0de3364abe988e0e",
-      "printedCodeLines": 467,
+      "sha256": "8cd1ea49bcf68556ec27f9e38d747e101d99cce9265e61c1183f6fe04c0bd3c8",
+      "printedCodeLines": 470,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",

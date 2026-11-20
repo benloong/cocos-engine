@@ -738,6 +738,10 @@ export class Sprite extends UIRenderer {
     private _updateUVs (): void {
         if (this._assembler) {
             this._assembler.updateUVs!(this);
+            // The same insets determine the nine-slice position grid and its UVs.
+            if (this._type === SpriteType.SLICED && this.renderData) {
+                this._markForUpdateRenderData();
+            }
         }
     }
 
