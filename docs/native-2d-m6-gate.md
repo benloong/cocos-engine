@@ -51,6 +51,7 @@ Windows 对 Web 的 RichText 矩阵暂缓 `text-bold`、`text-outline`、`text-n
 | 线程边界 | Windows Debug/Release 实测分离设备线程，核对提交、异步加载和销毁路径 | [线程与同步报告](./native-2d-m6-threads.md) |
 | 旧 Prefab 资产生命周期 | Windows Debug/Release、ASan 和 Web，各 1000 轮；检查引用、GPU 和活动场景持有者 | [数据与采集边界](./native-2d-m6-asset-lifetime.md) |
 | 调度与裁剪 | Windows Debug/Release 交替启动 20 次通过；Windows 与 Web 的 18 个独立 Release bundle 导出通过 | [启动记录](./native-2d-m6-scheduling-results.json)、[构建矩阵](./native-2d-m6-feature-matrix.json) |
+| Graphics／Mask 回退 | Windows Debug 和 Release 各运行默认、TS 回退、恢复三阶段。每次 138 张图均与 Web 逐字节一致，22 项命中和 1000 轮场景切换通过。回退同时切换宿主 Sprite 的模板提交路径 | [三阶段构建哈希与耗时](./native-2d-m6-graphics-mask-rollback.json) |
 
 ## 字体像素诊断
 
@@ -75,5 +76,5 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期以及验收范围内的布局、场景、视觉与事件回归 |
 | M6.4 | 平台矩阵 | 三端 RichText 字体应用矩阵与小数字号回归已通过当前范围。本轮最终候选仍须汇总关键渲染、字体与事件场景记录 |
 | M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据 |
-| M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。Sprite 和 Label 已在两种 Windows 配置的旧 cocos-m1-test 工程验证。其余模块的旧项目场景、资产、材质及性能仍待验证 |
+| M6.5 | 回退 | 已验证 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。Sprite 和 Label 已在两种 Windows 配置的旧 cocos-m1-test 工程验证。其余模块的旧项目场景、资产、材质及性能仍待验证 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

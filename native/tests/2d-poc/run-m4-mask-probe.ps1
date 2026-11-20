@@ -1,6 +1,7 @@
 param(
     [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe',
-    [int]$TimeoutSeconds = 60
+    [int]$TimeoutSeconds = 60,
+    [ValidateSet('native','js')][string]$Implementation = 'native'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -59,6 +60,7 @@ try {
     $graphicsLines = @(Get-Content $log | Select-String -Pattern 'M4_GRAPHICS ')
     if ($graphicsLines.Count -lt 1) { throw 'Graphics raster capture missing' }
     $graphics = $graphicsLines[0].Line.Substring($graphicsLines[0].Line.IndexOf('M4_GRAPHICS ') + 12) | ConvertFrom-Json
+    if ($graphics.implementation -ne $Implementation) { throw "Expected Graphics implementation $Implementation, got $($graphics.implementation)" }
     if ($graphics.opaque -lt 6000 -or $graphics.opaque -gt 7000) { throw "Graphics opaque=$($graphics.opaque), expected ~6400" }
 
     if (-not (Select-String -LiteralPath $log -SimpleMatch 'M6_STATIC_ATLAS_PASS' -Quiet)) {

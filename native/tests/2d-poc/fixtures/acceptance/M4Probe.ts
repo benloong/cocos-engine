@@ -413,9 +413,10 @@ export class M4Probe {
                         graphicsNode.layer = captureLayer;
                         graphicsNode.setPosition(0, 0, 0);
                         const graphics = graphicsNode.addComponent(Graphics);
+                        const implementation = sys.isNative && !('impl' in graphics) ? 'native' : 'js';
                         graphics.fillColor = new Color(255, 0, 0, 255);
                         graphics.rect(-40, -40, 80, 80);
-                        if (sys.isNative) {
+                        if (implementation === 'native') {
                             if (Graphics.Assembler !== graphicsAssembler) throw new Error('Graphics assembler registration');
                             (graphicsAssembler.getAssembler(graphics) as { fill(component: Graphics): void }).fill(graphics);
                         } else {
@@ -426,6 +427,7 @@ export class M4Probe {
                                 textureWidth: renderTexture.width,
                                 textureHeight: renderTexture.height,
                                 opaque: readRed(),
+                                implementation,
                             })}`);
                             graphicsNode.destroy();
                             restoreCamera();

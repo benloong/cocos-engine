@@ -93,3 +93,32 @@ node native/tests/2d-poc/compare-graphics-gpu.cjs
 本轮不替代全部平台、Release 真正应用 GPU、复杂混合 Sprite/Label/Graphics、Camera/root/排序场景矩阵、Mask radius/动态形状和资产切换、完整 subComp（Sprite 类型仍缺失）及材质 API 验收。GPU 夹具使用 direct SpriteFrame 桥接设置 native sprite mask；因此不能据此声称 Sprite subComp API 已实现。
 
 逐 API/命令批量提交成本、JSB 调用数、CPU/分配/合批/上传量、事件几何命中和 1000 次真实资产加载卸载保持 M6.3–M6.5 待办。这里的面积 sanity 和像素一致性不构成性能证据。
+
+## Graphics 与 Mask 的 Windows 回退
+
+`USE_JS_GRAPHICS_MASK=true` 选择 TS Graphics、Mask 和 Sprite，并使用对应的 Graphics 与 Sprite assembler。TS Mask 在宿主 Graphics 或 Sprite 提交的 RenderEntity 上设置模板状态。三者使用同一套实体提交方式，便于用同一个 Windows 二进制演练回退。设为默认值 `false` 时使用原生组件。
+
+沿用本页的项目生成、Cocos CLI 构建和引擎覆盖流程。生成默认 Windows 包和 Web 包后，另外生成 Windows 回退包。
+
+```powershell
+node native/tests/2d-poc/build-graphics-gpu-engine.cjs WINDOWS graphics --js-graphics-mask
+```
+
+对 Windows Debug 和 Release 分别使用同一个可执行文件。依次以 `-GraphicsMaskImplementation native`、`js`、`native` 调用 `run-graphics-gpu-native.ps1`。每次保留本轮的 manifest 和原始图像，再用 `compare-graphics-gpu.cjs` 与同一份 Web 捕获比较。manifest 记录实际部署的引擎哈希、应用哈希和三种组件的实现断言。
+
+帧计时场景每帧清空并重新提交 64 个矩形，由 80×80 的 Mask 裁剪。每次启动预热 30 帧，再记录 60 帧从 `EVENT_BEFORE_UPDATE` 到 `EVENT_AFTER_DRAW` 的耗时。该区间包含路径生成、准备和渲染提交。测试另回读裁剪像素，确认计时场景进了真实渲染。
+
+旧工程使用相同的功能列表和设置生成默认、回退包。部署两种包时核对 `cc.js` 哈希。通过 `run-m4-mask-probe.ps1 -Implementation native|js` 和 `run-m4-extra-probe.ps1` 检查实际 Graphics 绘制、反向及椭圆 Mask、Sprite 模板、自定义 Graphics 模板和嵌套 Mask。
+
+两种 Windows 配置各用同一个可执行文件完成三次切换。同一候选共 138 张场景图，六次 Windows 运行均与 Web 逐字节一致，22 项命中和 1000 轮场景切换全部通过。恢复后的引擎包与初始包的 SHA-256 相同。默认包裁掉了 Web assembler，回退包实际载入 TS Graphics、Mask、Sprite。
+
+预验收暴露出两个问题。原生命中遍历没有 TS Mask 槽位，圆角外点会通过。UITransform 保留摄像机和窗口过滤，回退时实时查询 TS 祖先 Mask。随后尺寸加锚点的组合更新仍有 4902 个差异像素。JSB setter 写入原生锚点后派发 `ANCHOR_CHANGED`，重复赋值仍只产生一次事件，TS 模板也按新锚点重绘。
+
+| Windows 配置 | 初始原生中位数 | TS 回退中位数 | 恢复原生中位数 |
+| --- | ---: | ---: | ---: |
+| Debug | 3.5885 ms | 3.2140 ms | 3.5405 ms |
+| Release | 0.3705 ms | 0.3445 ms | 0.3195 ms |
+
+三个运行阶段均观察到 2704 个着色像素。Web 的同场景中位数为 0.3000 ms。完整帧样本、实际二进制和构建哈希见[回退记录](./native-2d-m6-graphics-mask-rollback.json)。
+
+旧工程的 Windows Debug、Release 也各通过默认、TS 回退和恢复三阶段。独立 Graphics、普通与反向 Mask、椭圆、Sprite 模板、自定义 Graphics 模板及嵌套 Mask 的着色覆盖保持一致。每阶段的 12 张源纹理、禁用及重置图均与对应的 Web 源纹理截图逐字节一致。默认旧工程通过 M0 与 M2–M5，Release 的六组真实 JSB 探针通过。

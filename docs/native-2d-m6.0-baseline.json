@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "da1898eba5de010d46a198848f7f040046cf8f9500126152d1d86feff0a60d0b"
+      "sha256": "2940c8ec085112d1602c50622113137085c2c825db50ebeaf44fa30c933e2437"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -464,6 +464,7 @@
       "cocos/2d/framework/ui-component.ts",
       "cocos/2d/framework/ui-renderer-manager.ts",
       "cocos/2d/framework/ui-renderer.ts",
+      "cocos/2d/framework/ui-transform-mask-hit.ts",
       "cocos/2d/framework/ui-transform-sibling-order.ts",
       "cocos/2d/framework/ui-transform.jsb.ts",
       "cocos/2d/index.ts",
@@ -1595,14 +1596,18 @@
       },
       "imports": {
         "within2d": [
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts"
         ],
         "boundaries": [
           "cocos/core/data/object.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/scene-graph/index.jsb.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts"
         ],
         "unresolved": [
@@ -2566,6 +2571,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -2595,6 +2601,7 @@
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/data/object.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
@@ -2615,6 +2622,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -2776,15 +2784,19 @@
       "imports": {
         "within2d": [
           "cocos/2d/framework/render-root-2d.jsb.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts"
         ],
         "boundaries": [
           "cocos/core/data/object.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
+          "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/scene-graph/component.ts",
           "cocos/scene-graph/index.jsb.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts"
         ],
         "unresolved": [
@@ -4391,6 +4403,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -4441,6 +4454,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -7512,6 +7526,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -7543,6 +7558,7 @@
           "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
@@ -7563,6 +7579,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -8835,6 +8852,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -8885,6 +8903,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -10335,6 +10354,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -10364,6 +10384,7 @@
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/data/object.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
@@ -10384,6 +10405,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -12287,6 +12309,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12318,6 +12341,7 @@
           "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
@@ -12338,6 +12362,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -12730,6 +12755,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12761,6 +12787,7 @@
           "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
@@ -12781,6 +12808,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -12960,6 +12988,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-mask-hit.ts",
           "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
@@ -12991,6 +13020,7 @@
           "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
@@ -13011,6 +13041,7 @@
           "cocos/scene-graph/index.jsb.ts",
           "cocos/scene-graph/layers.ts",
           "cocos/scene-graph/node-enum.ts",
+          "cocos/scene-graph/node-event-processor.ts",
           "cocos/scene-graph/node-event.ts",
           "cocos/scene-graph/node.jsb.ts",
           "cocos/sorting/sorting-layers.ts",
@@ -16573,6 +16604,23 @@
       ]
     },
     {
+      "file": "cocos/2d/framework/ui-transform-mask-hit.ts",
+      "sha256": "eee704c0827b9bf6328033a14dbffdecc0664db6638eefd4780becaa946b288e",
+      "printedCodeLines": 36,
+      "runtimeImports": [
+        "../../core/math/vec2",
+        "../../core/math/vec3",
+        "../../scene-graph/node-event-processor"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        13,
+        24
+      ]
+    },
+    {
       "file": "cocos/2d/framework/ui-transform-sibling-order.ts",
       "sha256": "e772c218db8f3cfedb136e2c8c571aa650ea10730e9e7f1b734d26d39175d1d3",
       "printedCodeLines": 46,
@@ -16590,8 +16638,8 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "c32b96538ac9a48862f677ad924ec031ca62d00ff76ef1350ac9df5658bc4e94",
-      "printedCodeLines": 232,
+      "sha256": "481a16496849cda00ba72c0a477b7fdfc134c9005f04169a5d7ea6823c19339f",
+      "printedCodeLines": 237,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16599,118 +16647,119 @@
         "../../core",
         "../../game/director",
         "../../scene-graph/node-event",
-        "./ui-transform-sibling-order"
+        "./ui-transform-sibling-order",
+        "./ui-transform-mask-hit"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native.setContentSizeXY",
-          "line": 68
+          "line": 69
         },
         {
           "expression": "this._native?.setAnchorPointXY",
-          "line": 101
+          "line": 102
         },
         {
           "expression": "this._native?.setPriority",
-          "line": 133
+          "line": 135
         },
         {
           "expression": "this._native.setContentSizeXY",
-          "line": 154
-        },
-        {
-          "expression": "this._native.setAnchorPointXY",
-          "line": 155
-        },
-        {
-          "expression": "this._native.setPriority",
           "line": 156
         },
         {
-          "expression": "this._native.setSizeChangedCallback",
+          "expression": "this._native.setAnchorPointXY",
           "line": 157
         },
         {
+          "expression": "this._native.setPriority",
+          "line": 158
+        },
+        {
+          "expression": "this._native.setSizeChangedCallback",
+          "line": 159
+        },
+        {
           "expression": "this._native?.detach",
-          "line": 173
+          "line": 175
         },
         {
           "expression": "this._native.containsWorldPointXY",
-          "line": 218
+          "line": 220
         },
         {
           "expression": "this._native.hitTestXY",
-          "line": 226
+          "line": 230
         },
         {
           "expression": "this._native.convertToNodeSpaceARX",
-          "line": 233
+          "line": 237
         },
         {
           "expression": "this._native.convertToNodeSpaceARY",
-          "line": 234
+          "line": 238
         },
         {
           "expression": "this._native.convertToWorldSpaceARX",
-          "line": 247
+          "line": 251
         },
         {
           "expression": "this._native.convertToWorldSpaceARY",
-          "line": 248
+          "line": 252
         },
         {
           "expression": "this._native.getBoundingBoxX",
-          "line": 260
+          "line": 264
         },
         {
           "expression": "this._native.getBoundingBoxY",
-          "line": 261
+          "line": 265
         },
         {
           "expression": "this._native.getBoundingBoxWidth",
-          "line": 262
+          "line": 266
         },
         {
           "expression": "this._native.getBoundingBoxHeight",
-          "line": 263
+          "line": 267
         },
         {
           "expression": "this._native.getBoundingBoxToWorldX",
-          "line": 272
+          "line": 276
         },
         {
           "expression": "this._native.getBoundingBoxToWorldY",
-          "line": 273
+          "line": 277
         },
         {
           "expression": "this._native.getBoundingBoxToWorldWidth",
-          "line": 274
+          "line": 278
         },
         {
           "expression": "this._native.getBoundingBoxToWorldHeight",
-          "line": 275
+          "line": 279
         },
         {
           "expression": "this._native.getBoundingBoxToX",
-          "line": 286
+          "line": 290
         },
         {
           "expression": "this._native.getBoundingBoxToY",
-          "line": 287
+          "line": 291
         },
         {
           "expression": "this._native.getBoundingBoxToWidth",
-          "line": 288
+          "line": 292
         },
         {
           "expression": "this._native.getBoundingBoxToHeight",
-          "line": 289
+          "line": 293
         }
       ],
       "allocations": [],
       "loops": [
-        204
+        206
       ]
     },
     {

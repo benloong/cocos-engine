@@ -270,6 +270,7 @@
   - native-ts-build 的 PR 检查已接入位图字体布局和径向 Sprite 的 C++/Web assembler 对照。本机运行同一对入口，2327 个布局和 3024 个几何用例通过；Windows 完整应用矩阵另行验收。
   - [x] [Windows PR 矩阵](../.github/workflows/native-ts-build.yml)分别构建 Debug/Release 引擎、生成 SWIG 绑定并运行[六组 JSB 用例](../native/tests/2d-poc/run-windows-jsb-probes.ps1)，覆盖 renderer manager、Sprite API、SpriteAtlas、字体资产、布局和 RichText。每次运行同时检查场景记录的节点挂接。两种配置均在本机从空目录编译通过，六组用例与 SIMPLE Sprite 对 Web 的 13 项检查全部通过。Web 全量检查通过 TypeScript 编译和 197 组 Jest（1467 项通过、8 项跳过、16 项待实现），native TS 编译通过。完整应用场景仍待签收。
 - [ ] 按组件/模块演练回退，验证 override、依赖资产、材质与旧场景可用；回退后记录行为与性能。
+  - [x] Graphics／Mask 与其 Sprite 模板依赖使用同一个回退标志。Windows 双配置各通过默认、TS 回退和恢复的 138 张严格像素对照、22 项命中及 1000 轮场景切换。TS Mask 的圆角命中走实时祖先查询，JSB UITransform 发出锚点变更事件后，回退包与 Web 的动态模板形状一致。[步骤与采样](./native-2d-m6.3-graphics-gpu.md)、[逐配置数据](./native-2d-m6-graphics-mask-rollback.json)
   - [x] RichText 42 项应用矩阵在 Windows 双配置分别完成原生、TS 回退、恢复原生三次启动。各次通过实现类型、Prefab、字体生命周期和布局检查，各配置切换前后的 RGBA 一致。对 Web 严格像素 39/42。[完整回退实测](./native-2d-m6-richtext-rollback.md#42-项应用矩阵回退与恢复)
   - [x] Sprite 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。各 Windows 配置在同一二进制上执行原生、TS 回退、恢复原生，三次各 116 张图与 Web 和上一候选逐字节一致。旧 cocos-m1-test 两种配置回退后通过 Sprite、Mask、RichText，恢复后重新通过 Sprite 五种模式。128 个 Sprite 改色和位移的帧样本另行记录。[回退流程及数据](./native-2d-m6-sprite-rollback.md)
   - [x] Label 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。六次 Windows 运行各 116 张对照图与 Web 逐字节一致。旧 cocos-m1-test 的真实 BMFont、CHAR 缓存、换行及 GPU 字形三阶段通过。系统字体在 TS 回退时的像素覆盖变化及同一 Prefab 的同步更新耗时已归档。[复现和数据](./native-2d-m6-label-rollback.md)

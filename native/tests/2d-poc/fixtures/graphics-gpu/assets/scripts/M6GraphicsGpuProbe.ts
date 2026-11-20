@@ -10,6 +10,7 @@ const snapshot = '__M6_GPU_SNAPSHOT__';
 const probeMode: string = '__M6_GPU_MODE__';
 const spriteImplementation = (globalThis as { __m6SpriteImplementation?: string }).__m6SpriteImplementation ?? (sys.isNative ? 'native' : 'js');
 const labelImplementation = (globalThis as { __m6LabelImplementation?: string }).__m6LabelImplementation ?? (sys.isNative ? 'native' : 'js');
+const graphicsMaskImplementation = (globalThis as { __m6GraphicsMaskImplementation?: string }).__m6GraphicsMaskImplementation ?? (sys.isNative ? 'native' : 'js');
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 async function releaseMeshedFrame (frame: SpriteFrame): Promise<void> {
@@ -311,7 +312,7 @@ export class M6GraphicsGpuProbe extends Component {
         };
         const graphics = (n: Node): Graphics => {
             const g = n.addComponent(Graphics);
-            if (sys.isNative && !(g as any)._native) throw new Error('Native Graphics override not active');
+            if (Boolean((g as any)._native) !== (graphicsMaskImplementation === 'native')) throw new Error('Unexpected Graphics implementation');
             g.fillColor = new Color(255, 0, 0, 255); g.strokeColor = new Color(255, 0, 0, 255); return g;
         };
         const solid = new Texture2D(); solid.reset({ width: 32, height: 32, format: Texture2D.PixelFormat.RGBA8888 });
@@ -331,7 +332,7 @@ export class M6GraphicsGpuProbe extends Component {
         const mask = (parent: Node, width: number, height: number, type = 0, inverted = false): { n: Node; m: Mask } => {
             const n = node(parent, 'mask'); n.getComponent(UITransform)!.setContentSize(width, height);
             const m = n.addComponent(Mask); m.type = type; m.inverted = inverted;
-            if (sys.isNative && !(m as any)._native) throw new Error('Native Mask override not active');
+            if (Boolean((m as any)._native) !== (graphicsMaskImplementation === 'native')) throw new Error('Unexpected Mask implementation');
             return { n, m };
         };
         const stencilSprite = (node: Node, mask: Mask): Sprite => {
@@ -1036,6 +1037,39 @@ export class M6GraphicsGpuProbe extends Component {
         benchmarkRoot.destroy();
         await wait(40);
 
+        const { n: clipWorkload } = mask(canvas.node, 80, 80);
+        const clippedGraphics = graphics(node(clipWorkload, 'clipped-graphics-workload'));
+        const graphicsSamples: number[] = [];
+        await new Promise<void>(resolve => {
+            let frame = 0;
+            let start = 0;
+            const beforeUpdate = (): void => {
+                start = performance.now();
+                clippedGraphics.clear();
+                for (let i = 0; i < 64; ++i) {
+                    clippedGraphics.rect((i % 8 - 3.5) * 12 - 4 + (frame & 1), (Math.floor(i / 8) - 3.5) * 12 - 4, 8, 8);
+                }
+                clippedGraphics.fill();
+            };
+            const afterDraw = (): void => {
+                if (frame++ >= warmupFrames) graphicsSamples.push(performance.now() - start);
+                if (graphicsSamples.length === 60) {
+                    director.off(Director.EVENT_BEFORE_UPDATE, beforeUpdate);
+                    director.off(Director.EVENT_AFTER_DRAW, afterDraw);
+                    resolve();
+                }
+            };
+            director.on(Director.EVENT_BEFORE_UPDATE, beforeUpdate);
+            director.on(Director.EVENT_AFTER_DRAW, afterDraw);
+        });
+        const graphicsPixels = rt.readPixels()!;
+        let clippedPixels = 0;
+        for (let i = 0; i < graphicsPixels.length; i += 4) if (graphicsPixels[i] > 127) ++clippedPixels;
+        if (clippedPixels === 0 || clippedPixels >= 64 * 8 * 8) throw new Error('Graphics benchmark did not render clipped paths');
+        const graphicsMaskBenchmark = { rectangles: 64, warmupFrames, samples: graphicsSamples, visiblePixels: clippedPixels };
+        clipWorkload.destroy();
+        await wait(40);
+
         const priorityRoot = node(canvas.node, 'ui-priority');
         const priorityRed = node(priorityRoot, 'red');
         const priorityBlue = node(priorityRoot, 'blue');
@@ -1173,7 +1207,8 @@ export class M6GraphicsGpuProbe extends Component {
         hitRoot.destroy(); await wait(40);
         const scenes = await runSceneMatrix(rt, capture);
         const device = director.root!.device;
-        const result = { backend: sys.isNative ? 'native' : 'web', snapshot, spriteImplementation, spriteBenchmark, labelImplementation, labelBenchmark, captures,
+        const result = { backend: sys.isNative ? 'native' : 'web', snapshot, spriteImplementation, spriteBenchmark, labelImplementation, labelBenchmark,
+            graphicsMaskImplementation, graphicsMaskBenchmark, captures,
             scenes, roots, hits, batchDrawCalls, labelLayout, shrinkSizes, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });

@@ -21,12 +21,13 @@ class Vec2 {
 }
 function require(id) {
  if (id === 'cc.decorator') return new Proxy({}, {get: () => (target, key) => typeof target === 'function' ? target : key !== undefined ? undefined : value => typeof value === 'function' ? value : undefined});
- if (id === 'internal:constants') return {EDITOR:false};
+ if (id === 'internal:constants') return {EDITOR:false,USE_JS_GRAPHICS_MASK:false};
  if (id === '../../scene-graph') return { Component: class {} };
  if (id === '../../core') return {Size,Vec2,Mat4:class {}};
  if (id === '../../game/director') return {director:{}};
  if (id === '../../scene-graph/node-event') return {NodeEventType:{SIZE_CHANGED:'size-changed'}};
  if (id === './ui-transform-sibling-order') return {queueUITransformSiblingOrder() {}};
+ if (id === './ui-transform-mask-hit') return {};
  throw new Error(id);
 }
 const exports = {};

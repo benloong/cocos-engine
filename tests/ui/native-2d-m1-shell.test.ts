@@ -58,8 +58,12 @@ test('UITransform shell attaches and forwards to native', () => {
     expect(changes).toHaveBeenCalledTimes(1);
     node.off('size-changed', changes);
     expect(ui.contentSize).toEqual(new Size(75, 48));
+    const anchors = jest.fn((_point: Vec2) => expect(nativeUITransform.setAnchorPointXY).toHaveBeenLastCalledWith(0.25, 0.75));
+    node.on('anchor-changed', anchors);
     ui.setAnchorPoint(0.25, 0.75);
-    expect(nativeUITransform.setAnchorPointXY).toHaveBeenLastCalledWith(0.25, 0.75);
+    ui.setAnchorPoint(0.25, 0.75);
+    expect(anchors).toHaveBeenCalledTimes(1);
+    expect(anchors.mock.calls[0][0]).toEqual(new Vec2(0.25, 0.75));
 
     expect(ui.getBoundingBox().x).toBe(1);
     const bounds = ui.getComputeAABB();

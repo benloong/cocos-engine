@@ -23,12 +23,13 @@
 */
 
 import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displayOrder, serializable, disallowMultiple } from 'cc.decorator';
-import { EDITOR } from 'internal:constants';
+import { EDITOR, USE_JS_GRAPHICS_MASK } from 'internal:constants';
 import { Component } from '../../scene-graph';
 import { Rect, Size, Vec2, Vec3, geometry, Mat4, visibleRect, warnID } from '../../core';
 import { director } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
 import { queueUITransformParentChange, queueUITransformSiblingOrder } from './ui-transform-sibling-order';
+import { hitTestWithJavaScriptMasks, testAncestorMasks } from './ui-transform-mask-hit';
 
 declare const n2d: any;
 
@@ -99,6 +100,7 @@ export class UITransform extends Component {
         }
         this._anchorPoint.set(value);
         this._native?.setAnchorPointXY(this._anchorPoint.x, this._anchorPoint.y);
+        this.node?.emit(NodeEventType.ANCHOR_CHANGED, this._anchorPoint);
     }
 
     get anchorX (): number {
@@ -215,7 +217,8 @@ export class UITransform extends Component {
             _isHitMat4.m13 = center.y - (_isHitMat4.m01 * m12 + _isHitMat4.m05 * m13);
             Mat4.invert(_isHitMat4, _isHitMat4);
             Vec2.transformMat4(_isHitWorld, uiPoint, _isHitMat4);
-            if (this._native.containsWorldPointXY(_isHitWorld.x, _isHitWorld.y)) {
+            if (this._native.containsWorldPointXY(_isHitWorld.x, _isHitWorld.y)
+                && (!USE_JS_GRAPHICS_MASK || testAncestorMasks(this.node, _isHitWorld))) {
                 return true;
             }
         }
@@ -223,6 +226,7 @@ export class UITransform extends Component {
     }
 
     public hitTest (screenPoint: Vec2, windowId = 0): boolean {
+        if (USE_JS_GRAPHICS_MASK && this._native) return hitTestWithJavaScriptMasks(this.node, screenPoint, windowId, this._native);
         return this._native ? this._native.hitTestXY(screenPoint.x, screenPoint.y, windowId) : false;
     }
 
