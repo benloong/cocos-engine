@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==160) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==163) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==160) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==163) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 const legacyLabelEffects = { updates: 3, prefab: true, forwarding: true, rendered: true, destroyed: true };
@@ -24,6 +24,7 @@ for (const [kind, width] of [['legacyBitmap', 40], ['labelAtlas', 64]]) {
     }
 }
 const bundled = a.scenes.bundledTTF;
+if (a.scenes.legacyBitmap.reloadWidths?.join() !== '40,42,37,40') throw new Error('Incomplete BMFont live reload evidence');
 if (!bundled || !['preload', 'discardedPreload', 'consumedPreload', 'shared', 'retainedAlias', 'aliasesReleased', 'cacheCleared', 'coldReloaded']
     .every(key => bundled[key] === true) || bundled.ids?.length !== 2 || new Set(bundled.ids).size !== 2) {
     throw new Error('Incomplete bundled TTF scene evidence');
@@ -261,6 +262,15 @@ for (const dir of [native, web]) {
     }
 }
 const authored = results.find(row => row.name === 'authored-mesh');
+const originalBitmap = results.find(row => row.name === 'scene-bmfont-initial');
+const updatedBitmap = results.find(row => row.name === 'scene-bmfont-config-updated');
+const missingBitmap = results.find(row => row.name === 'scene-bmfont-config-missing');
+const restoredBitmap = results.find(row => row.name === 'scene-bmfont-config-restored');
+for (const hash of ['nativeSha256', 'webSha256']) {
+    if (!updatedBitmap?.colored || !missingBitmap?.colored || !restoredBitmap
+        || originalBitmap[hash] === updatedBitmap[hash] || updatedBitmap[hash] === missingBitmap[hash]
+        || restoredBitmap[hash] !== originalBitmap[hash]) throw new Error('BMFont config reload did not repaint or restore the source');
+}
 const cloned = results.find(row => row.name === 'authored-mesh-clone');
 if (authored.nativeSha256 !== cloned.nativeSha256 || authored.webSha256 !== cloned.webSha256) {
     throw new Error('Cloning an authored mesh changed its image');

@@ -5604,6 +5604,16 @@
             "decorators": []
           },
           {
+            "name": "_observedBitmapFont",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "BitmapFont | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
             "name": "_letterTexture",
             "kind": "PropertyDeclaration",
             "visibility": "protected",
@@ -5692,6 +5702,28 @@
             "static": false,
             "type": "void",
             "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "onDisable",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_observeBitmapFont",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "font: BitmapFont | null"
+            ],
             "default": null,
             "decorators": []
           },
@@ -13269,6 +13301,16 @@
         ],
         "members": [
           {
+            "name": "EVENT_CONFIG_RELOAD",
+            "kind": "PropertyDeclaration",
+            "visibility": "public",
+            "static": true,
+            "type": null,
+            "parameters": [],
+            "default": "'bitmap_font_config_reload'",
+            "decorators": []
+          },
+          {
             "name": "fntDataStr",
             "kind": "PropertyDeclaration",
             "visibility": "public",
@@ -13335,6 +13377,16 @@
             "visibility": "private",
             "static": false,
             "type": "FontAtlas | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
+            "name": "_borrowedDefinitions",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "{ atlas: FontAtlas; glyphs: ILetterDefinition } | null",
             "parameters": [],
             "default": "null",
             "decorators": []
@@ -14842,8 +14894,8 @@
     },
     {
       "file": "cocos/2d/assets/bitmap-font.jsb.ts",
-      "sha256": "ecbb602d29951a26c8b54f226c7858c8a5ac70f0dd0b89f2f7d9f86feaa3c18e",
-      "printedCodeLines": 107,
+      "sha256": "f14708056f07c0050b2ca73a7da1103848d01599bc6c556728f55cf1cecc2778",
+      "printedCodeLines": 109,
       "runtimeImports": [
         "../../core",
         "./font",
@@ -14854,20 +14906,20 @@
       "nativeCalls": [
         {
           "expression": "jsb.Font.prototype._ctor.apply",
-          "line": 63
+          "line": 64
         }
       ],
       "allocations": [],
       "loops": [
         55,
-        93,
-        114
+        94,
+        116
       ]
     },
     {
       "file": "cocos/2d/assets/bitmap-font.ts",
-      "sha256": "177b0f0dde0a92448bb426a4833ba0f62ae8e8854cd82f0fdf6dd3e68cc8e68b",
-      "printedCodeLines": 135,
+      "sha256": "c237e1ee0a003e36f8c362584bfab8d7d5fb1a788962a6e2b4e2b2f478a89f70",
+      "printedCodeLines": 154,
       "runtimeImports": [
         "cc.decorator",
         "./font",
@@ -14882,7 +14934,8 @@
       "allocations": [],
       "loops": [
         89,
-        182
+        181,
+        193
       ]
     },
     {
@@ -15645,8 +15698,8 @@
     },
     {
       "file": "cocos/2d/components/label.ts",
-      "sha256": "e0e0de9af5fb807b91cf2b87b8c1215aa630da7172d0b9ecd035be9e91de10a5",
-      "printedCodeLines": 665,
+      "sha256": "c01628f7d0ecc49883887ed46535b60f94dcd88b59bafa83301e3a859225d689",
+      "printedCodeLines": 681,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15668,7 +15721,7 @@
       "frameMethods": [
         {
           "name": "_render",
-          "line": 974
+          "line": 990
         }
       ],
       "nativeCalls": [],

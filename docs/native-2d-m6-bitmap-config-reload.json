@@ -1,0 +1,91 @@
+{
+  "baseCommit": "ddb811f8d1",
+  "fixture": "Creator-imported legacy Open Sans XML FNT and serialized Label Prefab",
+  "baseline": {
+    "fixtureSnapshot": "71ceef7c25d38ab64b22a441c342cdfda205012fa6a3cb9fc3629d9f65998ab3",
+    "windowsDebugWidths": [
+      40,
+      42,
+      37,
+      40
+    ],
+    "webError": "BMFont updated reload published 40x20, expected 42x20",
+    "webInitialAndStaleUpdatedSha256": "913bc04364514d131168dfa66b2feb3d6f3b5849270bea2d0a19d3692e745901",
+    "windowsDebugLogSha256": "227f0a0c92f39ec1467422fcd2d4d0466d5a1c80ca247f19ba6d53c18922783e",
+    "webLogSha256": "510c1282bb4c6a3e7f8610c812e2439ca3845105b89ea06296aec62ed11fbbac"
+  },
+  "fixed": {
+    "snapshot": "5ae3caf3dedcb6a578cae4ee2691f90f6ea46767b9e9b80b3b1349993fcc4f0d",
+    "reloadWidths": [
+      40,
+      42,
+      37,
+      40
+    ],
+    "height": 20,
+    "phases": [
+      "initial",
+      "replace advance and kerning",
+      "remove glyph and kerning in place",
+      "restore while disabled and re-enable"
+    ],
+    "strictlyIdenticalCaptures": 163,
+    "unchangedEarlierCaptures": 160,
+    "captures": {
+      "scene-bmfont-initial": {
+        "sha256": "913bc04364514d131168dfa66b2feb3d6f3b5849270bea2d0a19d3692e745901",
+        "coloredPixels": 283
+      },
+      "scene-bmfont-config-updated": {
+        "sha256": "2609855e75d752a7712eaac69374e2f8f4f1538841bf846e65a0316411be6bf8",
+        "coloredPixels": 253
+      },
+      "scene-bmfont-config-missing": {
+        "sha256": "cb79bead47957032383de16ada579a5645153b8d66c676e13e452d1c27d0b691",
+        "coloredPixels": 256
+      },
+      "scene-bmfont-config-restored": {
+        "sha256": "913bc04364514d131168dfa66b2feb3d6f3b5849270bea2d0a19d3692e745901",
+        "coloredPixels": 283
+      }
+    },
+    "webManifestSha256": "5c6037df05bcc0fb70395a6004f66218693ff3912ecdc6e6bec9406dae29807e",
+    "webLogSha256": "db1a9456c9542ce83dc2f4d224aa048bb684a3a0216bdc8b44131f75ec23e19f",
+    "configurations": {
+      "Debug": {
+        "executableSha256": "5cc7caacb00d580f08b91e677a355db13f2f1775a1e3dd42705b14f12d9c0b0e",
+        "comparisonSha256": "8b51642f11ecc7037c93042e7cdb4f39b840c5c2f21e125c5c2181f3775c6c8d",
+        "manifestSha256": "1f083f062cb1352de6a0700d3e12ebad762dc3b29b59b6bf7cedca1445ad805e",
+        "applicationLogSha256": "2d2801094eca23cfb8a4b38f687d3ef56ca92eb8940c178f5ca7c16dd028c27a",
+        "fontShellProbe": {
+          "executableSha256": "b95591d21f8febf2253b33174b8ab5c32395bbb1b6b6ba2b14bcf8b2f2ba2863",
+          "logSha256": "7d81f5529ad778dd29cae5c4b05c2a302f8fad1bbc53f47c6eebe0f83212eedd"
+        }
+      },
+      "Release": {
+        "executableSha256": "0acfbba34e77042c4a8a8bb13786f0858577620a1430cf540f5f2b5774872881",
+        "comparisonSha256": "8b51642f11ecc7037c93042e7cdb4f39b840c5c2f21e125c5c2181f3775c6c8d",
+        "manifestSha256": "3d70d0d15026ff2dbc6756fb9fb1480a3d2f4abecdbeb5f352aafae3fa79d887",
+        "applicationLogSha256": "34bfdee3cc230bf028ad2ad5780a744793a1a2d353a08e51e2bb786a7cf0eab1",
+        "fontShellProbe": {
+          "executableSha256": "f65ecdc91ff49dcfa69718d8355c02b9c716f520ed10c8731032a4a981b5a6cc",
+          "logSha256": "61b33e7281b424a952af163c76eb64c7e64cafffa0c6f8a65ab1c2effd8c41e5"
+        }
+      }
+    }
+  },
+  "fullLabelFallback": {
+    "windowsDebug": {
+      "errorBeforeBitmapScene": "Legacy Label effect activation did not reach the rendered pixels",
+      "logSha256": "5fc436ba027d4099d82e8df1989b50c722d8fb53c8e42746749d09ba4c3aa8ec"
+    }
+  },
+  "local": {
+    "fontShellProbeSha256": "f2a6a1254ab740a973c0f7fb23f1f576778edf361a0d2f7fa964c083164df46d",
+    "jestPassed": 1480,
+    "jestLogSha256": "4811a89b75c724e4382f1ac332df3104b4eba5d0b68cc49dbd5d6220330bf9db",
+    "typeScript": true,
+    "nativeTypeScript": true,
+    "thinShellChecks": 57
+  }
+}

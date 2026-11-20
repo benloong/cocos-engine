@@ -147,6 +147,43 @@ interface ImportedFontCase {
     height: number;
 }
 
+async function checkBitmapConfigReload (label: Label, capture: (name: string) => Promise<void>): Promise<number[]> {
+    const font = label.font as BitmapFont;
+    const layout = label.node.getComponent(UITransform)!;
+    const original = font.fntConfig!;
+    const widths = [layout.width];
+    const pair = (65 << 16) | 86;
+    const updated = { ...original,
+        fontDefDictionary: { ...original.fontDefDictionary, 50: { ...original.fontDefDictionary[50], xAdvance: 14 } },
+        kerningDict: { ...original.kerningDict, [pair]: -5 } };
+    const sample = async (phase: string, expected: number): Promise<void> => {
+        await capture(`scene-bmfont-config-${phase}`);
+        widths.push(layout.width);
+        if (layout.width !== expected || layout.height !== 20 || label.font !== font || label.string !== 'AV 20') {
+            throw new Error(`BMFont ${phase} reload published ${layout.width}x${layout.height}, expected ${expected}x20`);
+        }
+    };
+    try {
+        font.fntConfig = updated;
+        font.onLoaded();
+        await sample('updated', 42);
+
+        const config = font.fntConfig!;
+        delete config.fontDefDictionary[86];
+        delete config.kerningDict[pair];
+        font.onLoaded();
+        await sample('missing', 37);
+        if (font.fontDefDictionary.getLetter('86')) throw new Error('BMFont reload retained the removed V glyph');
+    } finally {
+        label.enabled = false;
+        font.fntConfig = original;
+        font.onLoaded();
+        label.enabled = true;
+    }
+    await sample('restored', 40);
+    return widths;
+}
+
 async function runImportedFontScenes (fixture: ImportedFontCase, openScene: (name: string) => Node,
     capture: (name: string) => Promise<void>): Promise<object> {
     const { path, prefix, prefabUuid, fontUuid, imageUuid, fontType, fontSize, text, textureSize } = fixture;
@@ -248,6 +285,7 @@ async function runImportedFontScenes (fixture: ImportedFontCase, openScene: (nam
         throw new Error(`${path} retry missed the image dependency: ${pausedRequests}/${pausedFrames}`);
     }
     const first = await show(`${prefix}-initial`, prefab);
+    const reloadWidths = labelAtlas ? null : await checkBitmapConfigReload(first.label, capture);
     const second = await show(`${prefix}-next`, prefab);
     if (isValid(first.instance) || isValid(first.label) || first.assets.some((asset, i) => asset !== second.assets[i])) {
         throw new Error(`${path} did not preserve shared assets across the scene switch`);
@@ -283,7 +321,7 @@ async function runImportedFontScenes (fixture: ImportedFontCase, openScene: (nam
     await finishRelease(fresh.assets, ids);
     await capture(`${prefix}-final-empty`);
     return { preload: true, cancelledAndRetried: true, pausedRequests, pausedFrames, sharedAcrossScenes: true,
-        keptTexture: true, coldReload: true, released: true, atlasPolicy: true, width: first.width, ids };
+        keptTexture: true, coldReload: true, released: true, atlasPolicy: true, width: first.width, reloadWidths, ids };
 }
 
 // All render roots in this fixture are direct Scene children. A walk overwrites

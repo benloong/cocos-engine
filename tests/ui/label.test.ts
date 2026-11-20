@@ -1,7 +1,7 @@
 import { Label, LabelOutline, LabelShadow } from "../../cocos/2d/components";
 import { Node } from "../../cocos/scene-graph/node";
 import { Color, Vec2 } from "../../exports/base";
-import { BitmapFont, FontAtlas } from '../../cocos/2d/assets/bitmap-font';
+import { BitmapFont, FontAtlas, FontLetterDefinition } from '../../cocos/2d/assets/bitmap-font';
 import { SpriteFrame } from '../../cocos/2d/assets/sprite-frame';
 import { Texture2D } from '../../cocos/asset/assets/texture-2d';
 import { CCObject } from '../../cocos/core/data/object';
@@ -106,4 +106,20 @@ test('BitmapFont destroys its own runtime atlas texture and preserves a caller-s
     external.texture = null;
     frame.destroy();
     CCObject._deferredDestroy();
+});
+
+test('BitmapFont reload removes stale config glyphs and preserves caller glyphs in a borrowed atlas', () => {
+    const atlas = new FontAtlas(null);
+    const font = new BitmapFont();
+    font.fontDefDictionary = atlas;
+    const glyph = { rect: { x: 0, y: 0, width: 12, height: 11 }, xOffset: -1, yOffset: 5, xAdvance: 10 };
+    font.fntConfig = { fontDefDictionary: { 65: glyph, 86: glyph } };
+    font.onLoaded();
+    expect(atlas.getLetter('65').xAdvance).toBe(10);
+    const override = new FontLetterDefinition();
+    atlas.addLetterDefinitions('86', override);
+    font.fntConfig = { fontDefDictionary: {} };
+    font.onLoaded();
+    expect(atlas.getLetter('65')).toBeUndefined();
+    expect(atlas.getLetter('86')).toBe(override);
 });

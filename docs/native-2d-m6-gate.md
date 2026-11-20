@@ -32,6 +32,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | SpriteRenderer 矩形网格方向 | Windows Debug、Release 与 Web 验证非方形旋转帧、X/Y 翻转、禁用后重新启用和 Web 打包往返。11 张新增方向图通过实际四角颜色断言，138 张图三端逐字节一致，127 张旧图逐张与上一候选哈希相同 | [方向用例与捕获证据](./native-2d-m6.1-sprite-frame.md#矩形网格的旋转与翻转) |
 | SpriteRenderer 多边形深度裁剪 | Windows Debug、Release 与 Web 保留非平面多边形的 Z 边界。相机远平面移动前后的新增图为 1728 和 0 个着色像素，155 张既有图的哈希与上轮一致。Web 验证打包中克隆和恢复源纹理。 | [实际裁剪与逐配置记录](./native-2d-m6-sprite-polygon-depth.json) |
 | SpriteFrame 换纹理与网格复位 | Windows Debug、Release 和 Web 一次发布最终矩形与网格边界，整图复位从 `(0,0)` 开始。Web 在原帧换图和卸载后验证同页克隆仍可绘制并恢复源图。160 张图三端逐字节一致。 | [事件和像素记录](./native-2d-m6-sprite-packed-reset.json) |
+| BMFont 配置实时重载 | Windows Debug、Release 和 Web 使用旧 XML FNT 与序列化 Prefab，保持 Label 绑定并依次重载字距、删除字形和恢复配置。布局宽度为 40、42、37、40 像素。163 张图三端逐字节一致。 | [布局、生命周期和图像](./native-2d-m6-bitmap-config-reload.json) |
 | 生产绑定清理 | 删除 Sprite、Label 和 RichText 的 9 个未用 JSB 读回接口。Windows 双配置各通过 6 组 JSB 探针，108 张图与 Web 及上一节点逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | PoC 与遗留测试导出 | Windows 和 Web 重建包均无旧 PoC 入口或组件。Sprite 和 Label 清理 7 个内部或测试调用，Windows 双配置各通过 6 组 JSB 探针、1000 轮场景切换，116 张 GPU 图与 Web 逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | RichText 测试导出 | 删除 getSegmentLabel 和 getSegmentSprite。Windows Debug、Release 各通过六组 JSB 探针与 M2–M5。Web 旧工程检查 9 个 Label 和 1 个 Sprite。字体矩阵 42 项布局通过，严格像素 39/42，三组历史像素超差见本轮范围说明 | [绑定与快照记录](./native-2d-m6-binding-cleanup.json) |
@@ -89,5 +90,5 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.2 | RichText 终态 | 固定布局、场景、视觉和输入回归已通过当前范围。剩余资源与极限对象生命周期、Node wrapper 联调及最终候选复验。 |
 | M6.4 | 平台矩阵 | 三端 RichText 字体应用矩阵与小数字号回归已通过当前范围。本轮最终候选仍须汇总关键渲染、字体与事件场景记录 |
 | M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据 |
-| M6.5 | 最终候选回退复测 | 两种 Windows 配置已分别完成旧项目中的 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。最终候选须重跑整组回退矩阵。 |
+| M6.5 | 最终候选回退复测 | 两种 Windows 配置已分别完成旧项目中的 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。BMFont 配置重载候选的 Windows Debug 完整 Label 回退在旧版描边与阴影的像素断言处失败。最终候选须重跑整组回退矩阵。[本次结果](./native-2d-m6-bitmap-config-reload.json) |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

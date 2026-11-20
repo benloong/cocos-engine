@@ -477,6 +477,7 @@ export class Label extends UIRenderer {
 
         // this._N$file = value;
         this._font = value;
+        if (this.enabledInHierarchy) this._observeBitmapFont(value instanceof BitmapFont ? value : null);
         // if (value && this._isSystemFontUsed)
         //     this._isSystemFontUsed = false;
 
@@ -847,6 +848,7 @@ export class Label extends UIRenderer {
     protected _userDefinedFont: Font | null = null;
     protected _assemblerData: ISharedLabelData | null = null;
     protected _fontAtlas: FontAtlas | null = null;
+    private _observedBitmapFont: BitmapFont | null = null;
     protected _letterTexture: LetterRenderTexture | null = null;
 
     protected _contentWidth = 0;
@@ -895,7 +897,20 @@ export class Label extends UIRenderer {
             this.fontFamily = 'Arial';
         }
 
+        this._observeBitmapFont(this._font instanceof BitmapFont ? this._font : null);
         this._applyFontTexture();
+    }
+
+    public onDisable (): void {
+        this._observeBitmapFont(null);
+        super.onDisable();
+    }
+
+    private _observeBitmapFont (font: BitmapFont | null): void {
+        if (this._observedBitmapFont === font) return;
+        this._observedBitmapFont?.off(BitmapFont.EVENT_CONFIG_RELOAD, this._markForUpdateRenderData, this);
+        this._observedBitmapFont = font;
+        font?.on(BitmapFont.EVENT_CONFIG_RELOAD, this._markForUpdateRenderData, this);
     }
 
     private destroyTtfSpriteFrame (): void {
@@ -925,6 +940,7 @@ export class Label extends UIRenderer {
     }
 
     public onDestroy (): void {
+        this._observeBitmapFont(null);
         if (this._assembler && this._assembler.resetAssemblerData) {
             this._assembler.resetAssemblerData(this._assemblerData!);
         }

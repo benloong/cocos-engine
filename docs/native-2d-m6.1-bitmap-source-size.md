@@ -23,3 +23,9 @@ BitmapFontAsset 现以值成员保存配置源字号和存在标志；getFontSiz
 ## 边界
 
 该节点不替代任意旧资产/Prefab/bundle 管线、异步/延迟释放、复杂 Unicode、trim/offset/mesh、自动合图/回退、长期内存、性能及跨平台验收。显式非正配置源字号不会用于除法或生成非有限几何；其非法字体内容不认定为完整 Web 视觉兼容。缺少源字号的旧配置回退属于已有兼容路径，不能用于证明合法 BMFont 配置在 Web 中可省略源字号。未在本节点运行 Release 或 ASAN。
+
+## 已绑定 Label 的配置重载
+
+Web 的 `BitmapFont.onLoaded()` 替换资产此前加载的字形，再通知正在使用该字体的 Label 重新排版。调用方提供的 FontAtlas 保留自己写入的字形。Label 停用、换字体或销毁时解除订阅。JSB 的 `onLoaded()` 在提交配置后也发布通知，供 Windows 的 TS Label 回退路径使用。
+
+使用旧 Open Sans XML FNT 和序列化 Label Prefab，先替换 `AV` 字距与 `2` 的步进，再原地移除 `V` 并重载，最后停用 Label、恢复原配置并重新启用。旧 Chrome 在第一步仍显示 40 像素宽。修复后 Windows Debug、Release 和 Chrome 均得到 40、42、37、40 像素，恢复图与初始图逐字节一致。163 张图三端一致，160 张既有图的哈希与上一候选相同。[逐配置记录](./native-2d-m6-bitmap-config-reload.json)
