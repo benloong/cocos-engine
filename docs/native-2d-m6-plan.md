@@ -150,6 +150,7 @@
 - [x] 斜体描边顺序修复：先斜切字形再 Widen，保留笔宽/圆角；72 例 Debug/Release 字节一致，24 个斜体用例最大差值全部下降，其他 48 例字节不变。native/实际 JSB 与静态回归通过；原始严格对照仍 0/72，未重跑完整 GPU/ASAN，见 [证据](./native-2d-m6.2-ttf-italic-stroke.md)。
 - [x] 单字形亚像素起点对照。Windows Debug、Release 和 Chrome 在 64 组中对起点的分组全部一致。48 个超差组合在整数起点仍能复现，关闭轮廓点量化后严格通过数仍为 1024/4096。[方法与逐组记录](./native-2d-m6.2-ttf-stroke.md#单字形起点与轮廓覆盖)
 - [ ] 完成上述原生路径的终态 API、布局、场景、视觉与用户事件回归；资源/极限对象生命周期和完整 Node wrapper 联调继续验收。
+  - [x] RichText 发布节点尺寸后，`SIZE_CHANGED` 监听器设置的新文本同步生成新的段。旧 Windows Debug 在回调后仍保留先前文本。Windows Debug、Release 的真实 JSB 探针以及三端应用夹具覆盖回调替换、段数与布局。[JSB 探针](../native/tests/2d-poc/build-richtext-runtime-probe.cjs)、[应用夹具](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
 - [ ] 将现有 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss 用例迁为固定 Web/native 回归；补 shadow、嵌套样式、复杂对齐/最大宽度、动态更新、点击事件分发与销毁后解绑。
   - [x] RichText 动态换行后改成含未知 <shadow> 标签的双色文本。Windows Debug、Release 和 Web 都移除了旧行，保留内部红绿样式、段位置与尺寸。三端分别与无标签对照逐像素一致，跨端最大通道差为 0。实际 Label 阴影另行验收。[回归场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
   - [x] Windows 单行 Label 的零模糊阴影按 UI 坐标绘制一次。固定大小 96×96、24px Thonburi 字体的字母 I，分别偏移 (16,14) 和 (−16,−14)。GPU 回读按半覆盖阈值比较原阴影与平移后的字形。旧 Debug 正向有 98 个差异像素，修复后 Debug、Release 和 Web 两个方向各覆盖 30 个像素，差异均为 0。模糊、裁边及自动尺寸另行验收。[回归场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)

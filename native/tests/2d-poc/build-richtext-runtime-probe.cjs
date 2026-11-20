@@ -50,6 +50,17 @@ check(!('getSegmentCount' in native),'test-only segment count absent from JSB');
 check(cclegacy.RichText===exports.RichText&&hasSegments(1),'actual shell creates native segment');
 check(!('getLayoutRevision' in native),'layout test counter absent from JSB');
 check(!('getSegmentNode' in native),'test-only segment node lookup absent from JSB');
+let changedDuringResize=false;
+ui.setSizeChangedCallback(()=>{
+    if(changedDuringResize)return;
+    changedDuringResize=true;
+    rich.string='callback replacement';
+});
+rich.string='longer line to resize';
+rendererManager.updateAllDirtyRenderers();
+check(changedDuringResize&&native.getSegmentLabel(0).getString()==='callback replacement','size listener publishes replacement RichText');
+ui.setSizeChangedCallback(()=>{pushes++;});
+rich.string='<b click="tap" param="arg">hit</b>';
 const first=node.getChildByName('RICHTEXT_CHILD'), previousPushes=pushes;
 check(first,'generated text child is reachable through the node hierarchy');
 const segmentLabel=native.getSegmentLabel(0);

@@ -2,6 +2,33 @@ import { assetManager, deserialize, director, gfx, Color, instantiate, isValid, 
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
+async function checkRichTextResizeListener (parent: Node, font: TTFFont): Promise<void> {
+    const node = new Node('rich-text-size-listener');
+    parent.addChild(node);
+    try {
+        const rich = node.addComponent(RichText);
+        rich.font = font;
+        rich.string = 'Initial';
+        await wait();
+        let notified = false;
+        node.once(Node.EventType.SIZE_CHANGED, () => {
+            notified = true;
+            rich.string = 'Callback replacement';
+        });
+        rich.string = 'A wider line';
+        await wait();
+        const backend = (rich as any)._native;
+        const text = backend ? backend.getSegmentLabel(0)?.getString() : node.children[0]?.getComponent(Label)?.string;
+        if (!notified || text !== 'Callback replacement' || node.children.length !== 1) {
+            throw new Error('RichText resize listener did not replace the rendered text');
+        }
+        console.log('M6_RICHTEXT_RESIZE_LISTENER_PASS');
+    } finally {
+        node.destroy();
+        await wait();
+    }
+}
+
 async function checkRichTextPrefab (parent: Node, font: TTFFont): Promise<object> {
     const source = '<b>Atlas</b> 123';
     const prefab = deserialize([
@@ -367,6 +394,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
     const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
     const prefab = await checkRichTextPrefab(parent, font);
+    await checkRichTextResizeListener(parent, font);
     const cases = [
         { name: 'text-basic', value: 'Atlas 123' },
         { name: 'text-bold', value: '<b>Atlas 123</b>' },

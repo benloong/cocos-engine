@@ -1427,6 +1427,24 @@ void testRichTextRuntime() {
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     check(lateNode.getChildren().empty(), "RichText drops stale non-owning transform and old segments");
     late.setNode(nullptr);
+    cc::Node resizeNode("rich-text-resize-callback");
+    cc::UITransform resizeUI(&resizeNode);
+    cc::RichText resizeRich;
+    resizeRich.setNode(&resizeNode);
+    resizeRich.setString("initial");
+    auto &manager = cc::UIRendererManager::getInstance();
+    manager.updateAllDirtyRenderers();
+    bool changedDuringResize = false;
+    resizeUI.setSizeChangedCallback([&](float, float) {
+        if (changedDuringResize) return;
+        changedDuringResize = true;
+        resizeRich.setString("callback replacement");
+    });
+    resizeRich.setString("longer line to resize");
+    manager.updateAllDirtyRenderers();
+    const auto *resized = resizeRich.getSegmentLabel(0);
+    check(changedDuringResize && resized && resized->getString() == "callback replacement",
+          "RichText applies text changed by its size notification");
     std::printf("rich text runtime: PASS\n");
 }
 

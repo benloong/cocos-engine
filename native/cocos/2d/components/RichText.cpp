@@ -132,7 +132,11 @@ void RichText::observeTransform(UITransform *transform) {
     if (_transform) { _transform->off(_layoutChanged); _transform->off(_layoutDestroyed); }
     _transform = transform;
     if (!transform) return;
-    _layoutChanged = transform->on<UITransform::LayoutChanged>([this](UITransform *) { if (!_updating) markRenderDirty(); });
+    _layoutChanged = transform->on<UITransform::LayoutChanged>([this](UITransform *layout) {
+        if (!_updating && (_options.anchorX != layout->getAnchorX() || _options.anchorY != layout->getAnchorY())) {
+            markRenderDirty();
+        }
+    });
     _layoutDestroyed = transform->on<UITransform::LayoutDestroyed>([this](UITransform *) { _transform = nullptr; _dirty = true; markRenderDirty(); });
 }
 void RichText::setUITransform(UITransform *transform) { observeTransform(transform); dirty(); }
@@ -255,8 +259,9 @@ void RichText::updateLayout() {
     _fontRevision = _font ? _font->getRevision() : 0;
     _atlasRevision = _atlas ? _atlas->getRevision() : 0;
     _dirty = false;
-    _transform->setContentSize(static_cast<float>(_layout.width), static_cast<float>(_layout.height));
+    // Publish the completed layout before the size callback runs user code.
     _updating = false;
+    _transform->setContentSize(static_cast<float>(_layout.width), static_cast<float>(_layout.height));
 }
 Label *RichText::getSegmentLabel(uint32_t index) const { return index < _segments.size() ? _segments[index]->label.get() : nullptr; }
 Sprite *RichText::getSegmentSprite(uint32_t index) const { return index < _segments.size() ? _segments[index]->sprite.get() : nullptr; }

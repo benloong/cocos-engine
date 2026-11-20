@@ -95,7 +95,7 @@
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
-      "sha256": "5addd536a9818b5025a262ebe85fff20c9cb6f13db34acae76034cec9f5f8822"
+      "sha256": "2eb5b344502fad5c71b8e381bcd641b3d023b8ded22f431cce45bdf80ce95519"
     },
     {
       "file": "native/cocos/2d/components/RichText.h",
