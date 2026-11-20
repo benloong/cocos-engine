@@ -80,8 +80,12 @@ function installM6Perf (cc, output, textWidthProbe = false) {
                     stages.push([setterMs, globalThis.__m6PrepareMs, ns / 1e6]);
                 }
                 director.off(E.BEFORE_DRAW, change);
-                const start = performance.now(); gc(); const forcedGcMs = performance.now() - start;
-                cases.push({ name, phase, count, samples, stages, forcedGcMs, ...(ttfStages.length ? { ttfStages } : {}) });
+                const gcTrace = native && typeof jsb.traceM6Gc === 'function' ? JSON.parse(jsb.traceM6Gc()) : null;
+                const start = performance.now();
+                if (!gcTrace) gc();
+                const forcedGcMs = gcTrace ? gcTrace.wallMs : performance.now() - start;
+                cases.push({ name, phase, count, samples, stages, forcedGcMs, ...(gcTrace ? { gcTrace } : {}),
+                    ...(ttfStages.length ? { ttfStages } : {}) });
                 console.log('M6_PERF_PHASE ' + name + '/' + phase);
             }
             root.destroy(); await nextFrame(); await nextFrame(); gc();

@@ -1,0 +1,477 @@
+{
+  "configurations": {
+    "before": {
+      "revision": "7e83734299",
+      "executableSha256": "bf481394bdb287f0812884f78cdf8c22ff4441e2493d84107d6713dde423aba3",
+      "v8Dlls": {
+        "v8.dll": "48220636bd11a4378c805c52f50f94fd1cbed7856a4beda171963c25a564b3ac",
+        "v8_libbase.dll": "477ee8c9bcd9e98b3a3903dc5da10dafc0ca05f3ab629dcc6ced4c7f8f25ea41",
+        "v8_libplatform.dll": "47979cb28eed789589728d0c92ce4b2e139067b22f5d5390afa18913f388b57c"
+      }
+    },
+    "after": {
+      "revision": "76b9679ae9",
+      "executableSha256": "bbfc47271ff370eb2615097e4362db0cda07b061657a551d6fd317e538a99e25",
+      "v8Dlls": {
+        "v8.dll": "48220636bd11a4378c805c52f50f94fd1cbed7856a4beda171963c25a564b3ac",
+        "v8_libbase.dll": "477ee8c9bcd9e98b3a3903dc5da10dafc0ca05f3ab629dcc6ced4c7f8f25ea41",
+        "v8_libplatform.dll": "47979cb28eed789589728d0c92ce4b2e139067b22f5d5390afa18913f388b57c"
+      }
+    }
+  },
+  "workloadSha256": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+  "rounds": [
+    {
+      "round": 1,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "rawSha256": "c87f6a6ce4644873917b0d15a8bee398608e9ad09b801cac2291e1e9c4231cc0",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 6.5134,
+          "usedBefore": 28163776,
+          "usedAfter": 21908648,
+          "wrappersBefore": 10915,
+          "wrappersAfter": 8392,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 6.5078
+            }
+          ]
+        }
+      },
+      "after": {
+        "rawSha256": "a432cb90255d83f67aa8ca8ccb4c746b9e7ae4cd8cd0fdcb497de1b1cb817640",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 6.0126,
+          "usedBefore": 17203588,
+          "usedAfter": 16455784,
+          "wrappersBefore": 8939,
+          "wrappersAfter": 8092,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 6.006
+            }
+          ]
+        }
+      }
+    },
+    {
+      "round": 2,
+      "order": [
+        "after",
+        "before"
+      ],
+      "before": {
+        "rawSha256": "aa373e9ff2345166c35123a6ceb665423d8a79918f68e66ecff47c5d97853250",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 6.7941,
+          "usedBefore": 28081748,
+          "usedAfter": 21894700,
+          "wrappersBefore": 10915,
+          "wrappersAfter": 8392,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 6.7884
+            }
+          ]
+        }
+      },
+      "after": {
+        "rawSha256": "1dfb9ab39e457136e1bd5b70013a8a3f5390c59dbf1e05a50ff8968dc6a420af",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 4.062,
+          "usedBefore": 17201660,
+          "usedAfter": 16455644,
+          "wrappersBefore": 8939,
+          "wrappersAfter": 8092,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 4.0556
+            }
+          ]
+        }
+      }
+    },
+    {
+      "round": 3,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "rawSha256": "9ddda86a33d62226f6fbc0ef25260df4c5ef17702d9262abac3658d0eeba730b",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 7.6033,
+          "usedBefore": 28062696,
+          "usedAfter": 21900288,
+          "wrappersBefore": 10914,
+          "wrappersAfter": 8392,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 7.5958
+            }
+          ]
+        }
+      },
+      "after": {
+        "rawSha256": "1df5fc83acb0b6467abcc476113bb4bb0649809ee88b96fc93cd7d7b08ce17bf",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 10.292,
+          "usedBefore": 17203640,
+          "usedAfter": 16456056,
+          "wrappersBefore": 8939,
+          "wrappersAfter": 8092,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 10.2773
+            }
+          ]
+        }
+      }
+    },
+    {
+      "round": 4,
+      "order": [
+        "after",
+        "before"
+      ],
+      "before": {
+        "rawSha256": "e5db4751940f334a26ae1f5079d1e72a964cfab7eb3fcd334fb89745fb4522e8",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 10.7573,
+          "usedBefore": 28227380,
+          "usedAfter": 21903796,
+          "wrappersBefore": 10915,
+          "wrappersAfter": 8392,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 10.7475
+            }
+          ]
+        }
+      },
+      "after": {
+        "rawSha256": "b1e3c9d5b3c1def4fa2d5f5c41896f7f4e9a4f21bb50d433c8089033d34f24fe",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 12.0323,
+          "usedBefore": 17204696,
+          "usedAfter": 16456204,
+          "wrappersBefore": 8939,
+          "wrappersAfter": 8092,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 12.024
+            }
+          ]
+        }
+      }
+    },
+    {
+      "round": 5,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "rawSha256": "36916a59313cd32eebb4d5d38d7e0362cdb061eb3e18bceb3882951a0d55664c",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 9.2733,
+          "usedBefore": 28096268,
+          "usedAfter": 21904956,
+          "wrappersBefore": 10916,
+          "wrappersAfter": 8392,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 9.2651
+            }
+          ]
+        }
+      },
+      "after": {
+        "rawSha256": "da004fccb0ecd5caea7ec40023893f5357a24ab06ec7789ef3f39fe8238923ff",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 4.3406,
+          "usedBefore": 17205440,
+          "usedAfter": 16456000,
+          "wrappersBefore": 8939,
+          "wrappersAfter": 8092,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 4.332
+            }
+          ]
+        }
+      }
+    },
+    {
+      "round": 6,
+      "order": [
+        "after",
+        "before"
+      ],
+      "before": {
+        "rawSha256": "c80f47cf35c25b0e99db9f609fa3fe18811eb2bf091cdcd62b590c2ba1a85609",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 8.3895,
+          "usedBefore": 28135696,
+          "usedAfter": 21905400,
+          "wrappersBefore": 10914,
+          "wrappersAfter": 8392,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 8.3815
+            }
+          ]
+        }
+      },
+      "after": {
+        "rawSha256": "c231902464ef7de444bea1dcf8a06641181a76dd13df9a6ad26a6f0a988c1cd3",
+        "mixedDirty": {
+          "name": "mixed/dirty",
+          "wallMs": 10.4054,
+          "usedBefore": 17133848,
+          "usedAfter": 16455752,
+          "wrappersBefore": 8939,
+          "wrappersAfter": 8092,
+          "events": [
+            {
+              "type": 4,
+              "flags": 4,
+              "ms": 10.3903
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "cases": {
+    "empty/steady": {
+      "before": {
+        "wallMs": 9.1609,
+        "majorMs": 9.1445,
+        "outsideMajorMs": 0.01639999999999997,
+        "usedAfter": 12172968,
+        "wrappersAfter": 103
+      },
+      "after": {
+        "wallMs": 10.1235,
+        "majorMs": 10.10295,
+        "outsideMajorMs": 0.018650000000000055,
+        "usedAfter": 11690434,
+        "wrappersAfter": 102
+      }
+    },
+    "empty/dirty": {
+      "before": {
+        "wallMs": 8.34875,
+        "majorMs": 8.33595,
+        "outsideMajorMs": 0.01550000000000007,
+        "usedAfter": 12196684,
+        "wrappersAfter": 103
+      },
+      "after": {
+        "wallMs": 9.3853,
+        "majorMs": 9.371649999999999,
+        "outsideMajorMs": 0.013700000000000045,
+        "usedAfter": 11715194,
+        "wrappersAfter": 102
+      }
+    },
+    "sprites/steady": {
+      "before": {
+        "wallMs": 9.981200000000001,
+        "majorMs": 9.96945,
+        "outsideMajorMs": 0.0125999999999995,
+        "usedAfter": 17324190,
+        "wrappersAfter": 5108
+      },
+      "after": {
+        "wallMs": 9.52265,
+        "majorMs": 9.504249999999999,
+        "outsideMajorMs": 0.01655000000000051,
+        "usedAfter": 15062048,
+        "wrappersAfter": 6102
+      }
+    },
+    "sprites/dirty": {
+      "before": {
+        "wallMs": 10.3199,
+        "majorMs": 10.282399999999999,
+        "outsideMajorMs": 0.018899999999999473,
+        "usedAfter": 17379492,
+        "wrappersAfter": 5108
+      },
+      "after": {
+        "wallMs": 9.5786,
+        "majorMs": 9.56475,
+        "outsideMajorMs": 0.015249999999999986,
+        "usedAfter": 15094924,
+        "wrappersAfter": 6102
+      }
+    },
+    "labels/steady": {
+      "before": {
+        "wallMs": 9.5048,
+        "majorMs": 9.494399999999999,
+        "outsideMajorMs": 0.010799999999999699,
+        "usedAfter": 14949160,
+        "wrappersAfter": 2109
+      },
+      "after": {
+        "wallMs": 10.38345,
+        "majorMs": 10.3668,
+        "outsideMajorMs": 0.01655000000000051,
+        "usedAfter": 12595756,
+        "wrappersAfter": 1302
+      }
+    },
+    "labels/dirty": {
+      "before": {
+        "wallMs": 6.2698,
+        "majorMs": 6.2620000000000005,
+        "outsideMajorMs": 0.009799999999999809,
+        "usedAfter": 15049062,
+        "wrappersAfter": 2109
+      },
+      "after": {
+        "wallMs": 8.295,
+        "majorMs": 8.28295,
+        "outsideMajorMs": 0.012049999999999672,
+        "usedAfter": 12615642,
+        "wrappersAfter": 1302
+      }
+    },
+    "masks/steady": {
+      "before": {
+        "wallMs": 6.36195,
+        "majorMs": 6.3527000000000005,
+        "outsideMajorMs": 0.009050000000000447,
+        "usedAfter": 13516850,
+        "wrappersAfter": 879
+      },
+      "after": {
+        "wallMs": 7.3428,
+        "majorMs": 7.3266,
+        "outsideMajorMs": 0.012649999999999828,
+        "usedAfter": 12227422,
+        "wrappersAfter": 652
+      }
+    },
+    "masks/dirty": {
+      "before": {
+        "wallMs": 5.46125,
+        "majorMs": 5.4535,
+        "outsideMajorMs": 0.008499999999999952,
+        "usedAfter": 13530328,
+        "wrappersAfter": 879
+      },
+      "after": {
+        "wallMs": 7.7379999999999995,
+        "majorMs": 7.722899999999999,
+        "outsideMajorMs": 0.014550000000000285,
+        "usedAfter": 12240780,
+        "wrappersAfter": 652
+      }
+    },
+    "rich/steady": {
+      "before": {
+        "wallMs": 8.116900000000001,
+        "majorMs": 8.1037,
+        "outsideMajorMs": 0.013200000000000323,
+        "usedAfter": 13705450,
+        "wrappersAfter": 639
+      },
+      "after": {
+        "wallMs": 7.8248999999999995,
+        "majorMs": 7.8108,
+        "outsideMajorMs": 0.014100000000000001,
+        "usedAfter": 12172248,
+        "wrappersAfter": 343
+      }
+    },
+    "rich/dirty": {
+      "before": {
+        "wallMs": 9.8708,
+        "majorMs": 9.8585,
+        "outsideMajorMs": 0.011499999999999844,
+        "usedAfter": 13899092,
+        "wrappersAfter": 639
+      },
+      "after": {
+        "wallMs": 8.2848,
+        "majorMs": 8.2725,
+        "outsideMajorMs": 0.014649999999999608,
+        "usedAfter": 12187260,
+        "wrappersAfter": 343
+      }
+    },
+    "mixed/steady": {
+      "before": {
+        "wallMs": 8.3369,
+        "majorMs": 8.32545,
+        "outsideMajorMs": 0.014350000000000307,
+        "usedAfter": 21724518,
+        "wrappersAfter": 8392
+      },
+      "after": {
+        "wallMs": 9.010349999999999,
+        "majorMs": 8.99715,
+        "outsideMajorMs": 0.013150000000000883,
+        "usedAfter": 16429216,
+        "wrappersAfter": 8092
+      }
+    },
+    "mixed/dirty": {
+      "before": {
+        "wallMs": 7.9963999999999995,
+        "majorMs": 7.98865,
+        "outsideMajorMs": 0.007749999999999702,
+        "usedAfter": 21904376,
+        "wrappersAfter": 8392
+      },
+      "after": {
+        "wallMs": 8.1523,
+        "majorMs": 8.14165,
+        "outsideMajorMs": 0.00845000000000029,
+        "usedAfter": 16455892,
+        "wrappersAfter": 8092
+      }
+    }
+  }
+}

@@ -183,6 +183,14 @@ cmake --build "$poc/build/perf-bin-$key" -j 10
 
 运行 node native/tests/2d-poc/prepare-m6-perf.cjs after HTML5 生成 Web 对照。使用 run-m6-perf.ps1 -Target before、after 或 web 启动。按上述顺序将 Windows 的 m6-perf-before-results.json、m6-perf-after-results.json 和 Web 的 perf-web/manifest.json 复制到 build/m6-perf-formal-轮次-目标.json，最后运行 node native/tests/2d-poc/compare-m6-perf.cjs。
 
+## Windows Release 强制 GC 诊断
+
+迁移前版本 `7e83734299` 与候选 `76b9679ae9` 使用相同的三份 V8 DLL，六轮交替顺序测试全部 12 个负载阶段。144 次测量各收到一次 V8 强制主回收事件。混合变更帧的调用耗时中位数为 7.996 → 8.152 ms，V8 主回收中位数为 7.989 → 8.142 ms。回收回调以外部分的中位数为 0.00775 → 0.00845 ms。候选耗时三轮下降、三轮上升。回收后 JS 堆中位数为 21,904,376 → 16,455,892 字节，JSB 对象映射项为 8392 → 8092。[逐轮和各阶段数据](./native-2d-m6-gc-trace.json)
+
+在两个 Windows 基准工作树运行准备脚本时使用 `WINDOWS --isolated-project --gc-trace`。诊断二进制分别构建到 `build/perf-bin-gc-trace-before` 和 `build/perf-bin-gc-trace-after`。用 `run-m6-perf.ps1` 的 `-BinaryDirectory` 与 `-ProjectRevision` 选择该配置，按 `m6-gc-trace-轮次-before.json` 和 `m6-gc-trace-轮次-after.json` 保存原始报告，再运行 `node native/tests/2d-poc/compare-m6-gc-trace.cjs`。
+
+回调仅包围性能负载原有的一次显式回收，记录的是墙钟时间。阶段采样保留原测量协议。普通 Windows 和 Web 的 12 项负载也通过，生成的记录不含任何诊断字段。
+
 ## 原生 Sprite 合批后的三轮复测
 
 Windows Release 候选 `cfe140f062` 使用相同的测量点、预热及采样帧数。对照沿用首轮实验的三份迁移前 Windows 和三份 Web 原始记录。新候选的三轮运行另行采集，未与对照交错运行。每轮输入的 SHA256 和各负载的逐轮数据见[复测结果](./native-2d-m6-performance-pages.json)。

@@ -6,6 +6,9 @@ const { execFileSync } = require('node:child_process');
 const { buildEngine } = require('@cocos/ccbuild');
 const key = process.argv[2];
 if (!['before', 'after'].includes(key)) throw new Error('Select before or after');
+const platform = process.argv[3] || 'WINDOWS';
+const traceGc = process.argv.includes('--gc-trace');
+if (traceGc && platform !== 'WINDOWS') throw new Error('V8 GC tracing requires a Windows benchmark executable');
 const out = path.join(__dirname, 'build');
 const source = process.env.CC_M6_PERF_CHECKOUT ? path.resolve(process.env.CC_M6_PERF_CHECKOUT) : path.join(out, 'perf-' + key);
 if (path.dirname(source) !== out || !new RegExp('^perf-' + key + '(?:-[0-9a-f]+)?$').test(path.basename(source))) {
@@ -73,9 +76,11 @@ if (labelStages) {
 }
 let bindings = fs.readFileSync(path.join(__dirname, 'm6-perf-bindings.inc'), 'utf8');
 if (labelStages) bindings = '#include "M6TtfTimer.h"\n' + bindings.replace('std::to_string(heap.used_heap_size())', 'std::to_string(heap.used_heap_size()) + M6TtfTimer::drain()');
+if (traceGc) bindings = '#define CC2D_M6_TRACE_GC\n' + bindings;
+const traceRegistration = traceGc ? '    __jsbObj->defineFunction("traceM6Gc", _SE(js_traceM6Gc));\n' : '';
 instrument('native/cocos/bindings/manual/jsb_global.cpp', [
     [hook, hook + '\n' + bindings],
-    ['__jsbObj->defineFunction("garbageCollect"', '\n#if defined(_MSC_VER) && defined(_DEBUG)\n    __jsbObj->defineFunction("saveM6HeapSnapshot", _SE(js_saveM6HeapSnapshot));\n    __jsbObj->defineFunction("readM6CrtHeap", _SE(js_readM6CrtHeap));\n#endif\n    __jsbObj->defineFunction("readM6Perf", _SE(js_readM6Perf));\n    __jsbObj->defineFunction("garbageCollect"'],
+    ['__jsbObj->defineFunction("garbageCollect"', '\n#if defined(_MSC_VER) && defined(_DEBUG)\n    __jsbObj->defineFunction("saveM6HeapSnapshot", _SE(js_saveM6HeapSnapshot));\n    __jsbObj->defineFunction("readM6CrtHeap", _SE(js_readM6CrtHeap));\n#endif\n    __jsbObj->defineFunction("readM6Perf", _SE(js_readM6Perf));\n' + traceRegistration + '    __jsbObj->defineFunction("garbageCollect"'],
 ]);
 const update = 'uiRendererManager.updateAllDirtyRenderers();';
 instrument('cocos/game/director.ts', [[update, 'const m6Start = performance.now();\n            ' + update
@@ -92,7 +97,6 @@ fs.writeFileSync(path.join(project, 'native/engine/common/localCfg.cmake'), 'set
 if (process.argv[3] !== 'HTML5') fs.cpSync(path.join(template, 'build/windows/data'), path.join(windows, 'data'), { recursive: true });
 if (!fs.existsSync(path.join(windows, 'assets'))) fs.symlinkSync(path.join(windows, 'data'), path.join(windows, 'assets'), 'junction');
 execFileSync(process.execPath, [path.join(source, 'scripts/build-debug-infos.js')], { cwd: source });
-const platform = process.argv[3] || 'WINDOWS';
 if (platform === 'HTML5') fs.cpSync(path.join(template, 'build/web-mobile'), path.join(project, 'build/web-mobile'), { recursive: true });
 const features = ['base','2d','rich-text','mask','graphics','ui','affine-transform','custom-pipeline','custom-pipeline-builtin-scripts'];
 if (platform === 'HTML5') features.push('gfx-webgl');
