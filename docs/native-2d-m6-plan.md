@@ -144,6 +144,7 @@
 - [ ] 补其余旧资产和场景、异步取消与延迟依赖、clone、跨场景重复加载释放及长期生命周期。
   - [x] 旧 XML BMFont 跨场景加载、释放与冷重载。回归 Prefab 通过保留的 UUID 使用旧工程 Open Sans FNT、PNG 和元数据。修复 Web BitmapFont 销毁时归还自有 FontAtlas 的纹理引用。三端验证预加载后缓存未发布资产、跨场景共享、持有原图后重载、五个缓存键清理及冷重载。Windows 使用原图，Web 使用动态合图页。六张新增图逐字节一致。[应用结果](./native-2d-m6-legacy-bmfont.json)
   - [x] 旧 BMFont 图集依赖延迟、取消与重试。预加载后在实际资产管线暂停图集图像依赖，每次等待两个帧末。Windows Debug、Release 与 Web 在等待和首次取消后均查不到五个资产缓存键。同一 Prefab UUID 重试成功，跨场景、释放和冷重载断言通过，144 张图与上轮逐字节一致。[场景与缓存记录](./native-2d-m6-legacy-bmfont.json)
+  - [x] 旧式 `.labelatlas` 资源通过 Creator 导入并绑定序列化 Prefab。Windows Debug、Release 与 Web 验证 8 个 16×25 字格，`1076` 的四个中心像素与源图一致。三端通过图集依赖取消和重试、跨场景共享、显式保留原图、最终清理五个缓存键及冷重载。Windows 使用原图，Web 使用动态合图页。[序列化资源及像素记录](./native-2d-m6-legacy-label-atlas.json)
   - [x] 旧静态图集 Prefab 的旋转帧克隆在原 Prefab、图集和原帧释放后继续渲染。运行时显式持有导入纹理，重新加载同一 Prefab 后，新节点解析到新图集并复用该纹理。Windows Debug、Release 和 Web 的中心像素依次为绿、绿、红、绿。销毁克隆并释放最后一个纹理引用后，纹理失效且缓存中已无该 UUID。[真实加载、回读与释放用例](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
   - [x] 旧 Prefab 异步图集依赖。resources.preload 返回包含 Prefab 和图集文件的请求记录，两者尚未发布到资产缓存。在真实加载管线中暂停图集依赖两个帧末，第一次以取消错误结束，第二次对同一 Prefab UUID 放行。Windows Debug、Release 和 Web 均验证等待中及取消后无半成品进入缓存，重试解析到同一图集内的帧，切帧后中心像素由红变绿，释放后两个缓存键消失。此用例注入依赖阶段取消，传输层中止另行验收。[回归夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
   - [x] 旧 Prefab 在两个真实 Scene 中先后实例化。保留 Prefab 引用时，旧 Sprite 和节点随第一场景销毁，下一场景复用同一图集、原帧、旋转帧与纹理。切到空场景并释放最后一个引用后，五项资产均失效且移出缓存，UI 根计数归零。Windows Debug、Release 与 Web 的整幅图像分别显示红帧、绿帧和空场景，88 组图像逐字节一致。[跨场景断言与图像哈希](./native-2d-m6-windows-web-gpu-results.json)

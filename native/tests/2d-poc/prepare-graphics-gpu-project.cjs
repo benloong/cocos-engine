@@ -14,7 +14,7 @@ fs.cpSync(fixture,project,{recursive:true});
 if (mode === 'graphics') {
     const resources = path.join(project, 'assets/resources');
     fs.mkdirSync(resources, {recursive:true});
-    for (const folder of ['M6StaticAtlas', 'M3BitmapFont']) {
+    for (const folder of ['M6StaticAtlas', 'M3BitmapFont', 'M6LabelAtlas']) {
         const source = path.join(__dirname, 'fixtures/acceptance/resources', folder);
         fs.cpSync(source, path.join(resources, folder), {recursive:true});
         fs.copyFileSync(source + '.meta', path.join(resources, folder + '.meta'));

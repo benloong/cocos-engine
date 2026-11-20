@@ -1,29 +1,42 @@
-import { Asset, BitmapFont, Camera, Color, Director, director, Graphics, instantiate, isValid, Label, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
+import { Asset, BitmapFont, Camera, Color, Director, director, Graphics, instantiate, isValid, Label, LabelAtlas, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
 
 type Check = { name: string; actual: boolean | number; expected: boolean | number };
 const nextFrame = (): Promise<void> => new Promise(resolve => director.once(Director.EVENT_AFTER_DRAW, resolve));
 
-async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {
-    const path = 'M3BitmapFont/LegacyBitmapLabel';
-    const prefabUuid = '8d32029d-5446-4c2d-abce-fad14b94bc07';
-    const fontUuid = '14697d7f-eddd-40c2-bb46-5cd9c361aa1c';
-    const imageUuid = 'edf8a297-6e03-4a36-ace0-66403b851123';
+interface ImportedFontCase {
+    path: string;
+    prefix: string;
+    prefabUuid: string;
+    fontUuid: string;
+    imageUuid: string;
+    fontType: typeof BitmapFont;
+    fontSize: number;
+    text: string;
+    textureSize: number;
+    width: number;
+    height: number;
+}
+
+async function runImportedFontScenes (fixture: ImportedFontCase, openScene: (name: string) => Node,
+    capture: (name: string) => Promise<void>): Promise<object> {
+    const { path, prefix, prefabUuid, fontUuid, imageUuid, fontType, fontSize, text, textureSize } = fixture;
+    const labelAtlas = fontType === LabelAtlas;
     const ids = [prefabUuid, fontUuid, `${imageUuid}@f9941`, `${imageUuid}@6c48a`, imageUuid];
     const published = (): boolean => ids.some(id => assetManager.assets.has(id));
     const cached = (asset: Asset): boolean => isValid(asset) && assetManager.assets.get(asset.uuid) === asset;
     const finishRelease = async (assets: Asset[], keys: string[]): Promise<void> => {
         for (let frame = 0; frame < 12 && assets.some(asset => isValid(asset)); ++frame) await nextFrame();
         if (assets.some(asset => isValid(asset) || asset.refCount !== 0) || keys.some(id => assetManager.assets.has(id))) {
-            throw new Error('Legacy BMFont dependencies survived release: ' + keys.filter(id => assetManager.assets.has(id)).join(','));
+            throw new Error(`${path} dependencies survived release: ${keys.filter(id => assetManager.assets.has(id)).join(',')}`);
         }
     };
     await new Promise<void>((resolve, reject) => resources.preload(path, Prefab, (error, requests) => {
         if (error) reject(error);
         else if (![prefabUuid, fontUuid].every(uuid => requests.some(request => request.uuid === uuid && request.file))) {
-            reject(new Error('Legacy BMFont preload missed Prefab or font'));
+            reject(new Error(`${path} preload missed Prefab or font`));
         } else resolve();
     }));
-    if (published()) throw new Error('Legacy BMFont preload published assets');
+    if (published()) throw new Error(`${path} preload published assets`);
 
     const load = (): Promise<Prefab> => new Promise((resolve, reject) => resources.load(path, Prefab, (error, prefab) => {
         if (error) reject(error);
@@ -36,32 +49,37 @@ async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture
         parent.addChild(instance);
         const label = instance.getComponent(Label);
         const font = label?.font;
-        if (!label || !(font instanceof BitmapFont) || label.useSystemFont || label.string !== 'AV 20' || label.fontSize !== 20) {
-            throw new Error('Legacy Prefab did not bind its serialized BMFont Label');
+        if (!label || !(font instanceof fontType) || (font instanceof LabelAtlas) !== labelAtlas
+            || label.useSystemFont || label.string !== text || label.fontSize !== fontSize) {
+            throw new Error(`${path} did not bind its serialized Label and font type`);
         }
         const frame = font.spriteFrame;
         const texture = frame?.original?._texture ?? frame?.texture;
         if (!(frame instanceof SpriteFrame) || !(texture instanceof Texture2D) || !texture.image
-            || !font.fontDefDictionary || font.fontSize !== 20 || texture.width !== 128 || texture.height !== 128) {
-            throw new Error('Legacy BMFont did not restore its imported atlas and glyph configuration');
+            || !font.fontDefDictionary || font.fontSize !== fontSize || texture.width !== textureSize || texture.height !== textureSize) {
+            throw new Error(`${path} did not restore its imported atlas and glyph configuration`);
+        }
+        if (labelAtlas && (Object.keys(font.fontDefDictionary.letterDefinitions).length !== 8
+            || font.fontDefDictionary.getLetter('48')?.xAdvance !== 16)) {
+            throw new Error(`${path} did not import the digit cells from LabelAtlas metadata`);
         }
         if (sys.isNative ? !!frame.original || frame.texture !== texture : !frame.original || frame.texture === texture) {
-            throw new Error('Legacy BMFont did not follow the backend dynamic atlas policy');
+            throw new Error(`${path} did not follow the backend dynamic atlas policy`);
         }
         const assets = [prefab, font, frame, texture, texture.image];
         if (assets.some((asset, index) => asset.uuid !== ids[index] || !cached(asset))) {
-            throw new Error('Legacy BMFont dependency UUID or cache identity changed');
+            throw new Error(`${path} dependency UUID or cache identity changed`);
         }
         await capture(name);
         const { width, height } = instance.getComponent(UITransform)!;
-        if (label.spriteFrame !== frame || width <= 0 || height !== 20 || label.actualFontSize !== 20) {
-            throw new Error('Legacy BMFont Label did not use the loaded frame');
+        if (label.spriteFrame !== frame || width !== fixture.width || height !== fixture.height || label.actualFontSize !== fontSize) {
+            throw new Error(`${path} Label did not use the loaded frame and metrics: ${width}x${height}, size ${label.actualFontSize}`);
         }
         return { label, instance, assets, texture, width };
     };
 
     const pipeline = assetManager.pipeline;
-    const cancelled = new Error('Legacy BMFont atlas image dependency cancelled by fixture');
+    const cancelled = new Error(`${path} atlas image dependency cancelled by fixture`);
     let pausedRequests = 0;
     let pausedFrames = 0;
     pipeline.insert((task, done) => {
@@ -75,7 +93,7 @@ async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture
             for (let frame = 0; frame < 2; ++frame) {
                 await nextFrame();
                 ++pausedFrames;
-                if (published()) throw new Error('Legacy BMFont published assets before its atlas image arrived');
+                if (published()) throw new Error(`${path} published assets before its atlas image arrived`);
             }
         })().then(() => done(attempt === 1 ? cancelled : null), done);
     }, 1);
@@ -90,50 +108,50 @@ async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture
             rejected = true;
         }
         if (!rejected || pausedRequests !== 1 || published()) {
-            throw new Error('Cancelled legacy BMFont load published an asset or resolved successfully');
+            throw new Error(`${path} cancelled load published an asset or resolved successfully`);
         }
         prefab = await load();
     } finally {
         pipeline.remove(1);
     }
     if (Number(pausedRequests) !== 2 || pausedFrames !== 4 || prefab.uuid !== prefabUuid) {
-        throw new Error(`Legacy BMFont retry missed the image dependency: ${pausedRequests}/${pausedFrames}`);
+        throw new Error(`${path} retry missed the image dependency: ${pausedRequests}/${pausedFrames}`);
     }
-    const first = await show('scene-bmfont-initial', prefab);
-    const second = await show('scene-bmfont-next', prefab);
+    const first = await show(`${prefix}-initial`, prefab);
+    const second = await show(`${prefix}-next`, prefab);
     if (isValid(first.instance) || isValid(first.label) || first.assets.some((asset, i) => asset !== second.assets[i])) {
-        throw new Error('Legacy BMFont did not preserve shared assets across the scene switch');
+        throw new Error(`${path} did not preserve shared assets across the scene switch`);
     }
     const texture = second.texture.addRef();
-    openScene('scene-bmfont-retained-empty');
+    openScene(`${prefix}-retained-empty`);
     await nextFrame();
-    if (isValid(second.label)) throw new Error('Old BMFont Label survived its scene');
+    if (isValid(second.label)) throw new Error(`${path} Label survived its scene`);
     prefab.decRef();
     await finishRelease(second.assets.slice(0, 3), ids.slice(0, 3));
-    if (!cached(texture) || !cached(second.assets[4])) throw new Error('Explicitly retained legacy texture was released');
-    await capture('scene-bmfont-retained-empty');
+    if (!cached(texture) || !cached(second.assets[4])) throw new Error(`${path} released an explicitly retained texture`);
+    await capture(`${prefix}-retained-empty`);
 
     const replacement = await load();
-    const reused = await show('scene-bmfont-reloaded', replacement);
+    const reused = await show(`${prefix}-reloaded`, replacement);
     if (reused.texture !== texture || reused.assets.slice(0, 3).some((asset, i) => asset === second.assets[i])) {
-        throw new Error('Legacy BMFont reload failed to create new owners and reuse the retained texture');
+        throw new Error(`${path} reload failed to create new owners and reuse the retained texture`);
     }
-    openScene('scene-bmfont-unloaded');
+    openScene(`${prefix}-unloaded`);
     await nextFrame();
     replacement.decRef();
     texture.decRef();
     await finishRelease(reused.assets, ids);
 
     const freshPrefab = await load();
-    const fresh = await show('scene-bmfont-cold-reload', freshPrefab);
-    if (fresh.assets.some((asset, i) => asset === reused.assets[i]) || [second, reused, fresh].some(state => state.width !== first.width)) {
-        throw new Error('Legacy BMFont cold reload recovered stale wrappers or changed layout');
+    const fresh = await show(`${prefix}-cold-reload`, freshPrefab);
+    if (fresh.assets.some((asset, i) => asset === reused.assets[i])) {
+        throw new Error(`${path} cold reload recovered stale wrappers`);
     }
-    openScene('scene-bmfont-final-empty');
+    openScene(`${prefix}-final-empty`);
     await nextFrame();
     freshPrefab.decRef();
     await finishRelease(fresh.assets, ids);
-    await capture('scene-bmfont-final-empty');
+    await capture(`${prefix}-final-empty`);
     return { preload: true, cancelledAndRetried: true, pausedRequests, pausedFrames, sharedAcrossScenes: true,
         keptTexture: true, coldReload: true, released: true, atlasPolicy: true, width: first.width, ids };
 }
@@ -301,12 +319,22 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
     check('atlas-all-cache-keys-released', ids.every(id => !assetManager.assets.has(id)), true);
     check('atlas-final-root-count', await countTraversedRoots(), 0);
     await capture('scene-atlas-unloaded');
-    const legacyBitmap = await runLegacyBitmapScenes(name => {
+    const openFontScene = (name: string): Node => {
         const scene = new Scene(name);
-        const content = root(scene, 'bmfont-root', layer);
-        camera(scene, 'bmfont-camera', layer, 0, 7, rt);
+        const content = root(scene, 'font-root', layer);
+        camera(scene, 'font-camera', layer, 0, 7, rt);
         director.runSceneImmediate(scene);
         return content;
-    }, capture);
-    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks, legacyBitmap };
+    };
+    const legacyBitmap = await runImportedFontScenes({
+        path: 'M3BitmapFont/LegacyBitmapLabel', prefix: 'scene-bmfont', prefabUuid: '8d32029d-5446-4c2d-abce-fad14b94bc07',
+        fontUuid: '14697d7f-eddd-40c2-bb46-5cd9c361aa1c', imageUuid: 'edf8a297-6e03-4a36-ace0-66403b851123',
+        fontType: BitmapFont, fontSize: 20, text: 'AV 20', textureSize: 128, width: 40, height: 20,
+    }, openFontScene, capture);
+    const labelAtlas = await runImportedFontScenes({
+        path: 'M6LabelAtlas/LabelAtlasDigits', prefix: 'scene-label-atlas', prefabUuid: '995b7635-2a62-4455-a479-64ea52fa3adb',
+        fontUuid: '10882616-f51c-4257-a7c0-d651e05a62ef', imageUuid: 'a7d03c29-5d28-4f9f-b45b-3cc8c525e549',
+        fontType: LabelAtlas, fontSize: 22, text: '1076', textureSize: 64, width: 64, height: 25,
+    }, openFontScene, capture);
+    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks, legacyBitmap, labelAtlas };
 }

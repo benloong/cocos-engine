@@ -3,19 +3,21 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==144) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==150) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==144) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==150) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
 if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==19||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
-const legacy = a.scenes.legacyBitmap;
-if (!legacy || !['preload', 'cancelledAndRetried', 'sharedAcrossScenes', 'keptTexture', 'coldReload', 'released', 'atlasPolicy'].every(key => legacy[key] === true)
-    || legacy.pausedRequests !== 2 || legacy.pausedFrames !== 4
-    || !Number.isFinite(legacy.width) || legacy.width <= 0 || legacy.ids?.length !== 5 || new Set(legacy.ids).size !== 5) {
-    throw new Error('Incomplete legacy BMFont scene evidence');
+for (const [kind, width] of [['legacyBitmap', 40], ['labelAtlas', 64]]) {
+    const evidence = a.scenes[kind];
+    if (!evidence || !['preload', 'cancelledAndRetried', 'sharedAcrossScenes', 'keptTexture', 'coldReload', 'released', 'atlasPolicy']
+        .every(key => evidence[key] === true) || evidence.pausedRequests !== 2 || evidence.pausedFrames !== 4
+        || evidence.width !== width || evidence.ids?.length !== 5 || new Set(evidence.ids).size !== 5) {
+        throw new Error('Incomplete imported font scene evidence: ' + kind);
+    }
 }
 for (const backend of [a, b]) {
     const sizes = backend.shrinkSizes;
@@ -150,6 +152,15 @@ for(const name of a.captures) {
             }
         }
     }
+    if (name === 'scene-label-atlas-initial') {
+        const colors = [[0, 255, 0, 255], [255, 0, 0, 255], [255, 128, 0, 255], [255, 0, 255, 255]];
+        for (let digit = 0; digit < colors.length; ++digit) {
+            const offset = (128 * 256 + 104 + digit * 16) * 4;
+            if (colors[digit].some((channel, i) => actual[offset + i] !== channel || expected[offset + i] !== channel)) {
+                throw new Error(`LabelAtlas mapped digit ${'1076'[digit]} to the wrong cell`);
+            }
+        }
+    }
     let max=0,channels=0,pixels=0,colored=0;
     for(let i=0;i<actual.length;i+=4) {
         let different=false;
@@ -172,16 +183,18 @@ for(const name of a.captures) {
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
 }
-const legacyFrame = results.find(row => row.name === 'scene-bmfont-initial');
 const emptyFrame = results.find(row => row.name === 'scene-final-empty');
-if (!legacyFrame?.colored) throw new Error('Legacy BMFont did not render');
-for (const [phase, reference] of [
-    ['next', legacyFrame], ['reloaded', legacyFrame], ['cold-reload', legacyFrame],
-    ['retained-empty', emptyFrame], ['final-empty', emptyFrame],
-]) {
-    const frame = results.find(row => row.name === 'scene-bmfont-' + phase);
-    if (!frame || frame.nativeSha256 !== reference.nativeSha256 || frame.webSha256 !== reference.webSha256) {
-        throw new Error('Legacy BMFont rendered unexpected pixels at ' + phase);
+for (const prefix of ['scene-bmfont-', 'scene-label-atlas-']) {
+    const initial = results.find(row => row.name === prefix + 'initial');
+    if (!initial?.colored) throw new Error('Imported font did not render: ' + prefix);
+    for (const [phase, reference] of [
+        ['next', initial], ['reloaded', initial], ['cold-reload', initial],
+        ['retained-empty', emptyFrame], ['final-empty', emptyFrame],
+    ]) {
+        const frame = results.find(row => row.name === prefix + phase);
+        if (!frame || frame.nativeSha256 !== reference.nativeSha256 || frame.webSha256 !== reference.webSha256) {
+            throw new Error('Imported font rendered unexpected pixels at ' + prefix + phase);
+        }
     }
 }
 for (const [shape, colored] of [['rect', 4608], ['polygon', 4032]]) {

@@ -1,0 +1,158 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "5caa7d3cd9",
+  "snapshot": "05ba71b388ea80a6970a0932c9d0a324fed8760c2fb4fd5173d607afd85764bc",
+  "inputs": {
+    "M6LabelAtlas.meta": "bef9a9550a7ac9d924a1dd40579bd407e583b71523dde8b603b573da54af1066",
+    "digits.labelatlas": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "digits.labelatlas.meta": "08234ae38d289c96608bf33e19292d6ebcb7cde4b15a6737571ff078d0af15d7",
+    "digits.png": "983c083c6b8c34ee6255ef7bb5800d7f4b3db93ea34fffa3827cd3d285d7ca69",
+    "digits.png.meta": "48e515028ddc5c7a25c6e209c9b86b52f9e9c788fa9916a8f1ad4b027e77f112",
+    "LabelAtlasDigits.prefab": "098d560a7c2d81f08c1e61a233c9f1784c6210e63c06766e75866faa8b08cac4",
+    "LabelAtlasDigits.prefab.meta": "ec9276cb87f87d031d4fa2d5c2f01235c93a9a01118b12000e17f71f2ec33afe"
+  },
+  "importedAsset": {
+    "type": "cc.LabelAtlas",
+    "sourceFormat": "1.0.1",
+    "fontSize": 22,
+    "cellWidth": 16,
+    "cellHeight": 25,
+    "glyphs": [
+      "48",
+      "49",
+      "50",
+      "51",
+      "52",
+      "53",
+      "54",
+      "55"
+    ],
+    "sampler": {
+      "min": "linear",
+      "mag": "linear",
+      "mip": "none"
+    }
+  },
+  "prefab": {
+    "labelSize": [
+      64,
+      25
+    ],
+    "digitSamples": [
+      {
+        "digit": "1",
+        "x": 104,
+        "y": 128,
+        "rgba": [
+          0,
+          255,
+          0,
+          255
+        ]
+      },
+      {
+        "digit": "0",
+        "x": 120,
+        "y": 128,
+        "rgba": [
+          255,
+          0,
+          0,
+          255
+        ]
+      },
+      {
+        "digit": "7",
+        "x": 136,
+        "y": 128,
+        "rgba": [
+          255,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "digit": "6",
+        "x": 152,
+        "y": 128,
+        "rgba": [
+          255,
+          0,
+          255,
+          255
+        ]
+      }
+    ]
+  },
+  "lifecycle": {
+    "preload": true,
+    "cancelledAndRetried": true,
+    "pausedRequests": 2,
+    "pausedFrames": 4,
+    "sharedAcrossScenes": true,
+    "keptTexture": true,
+    "coldReload": true,
+    "released": true,
+    "atlasPolicy": true,
+    "width": 64,
+    "ids": [
+      "995b7635-2a62-4455-a479-64ea52fa3adb",
+      "10882616-f51c-4257-a7c0-d651e05a62ef",
+      "a7d03c29-5d28-4f9f-b45b-3cc8c525e549@f9941",
+      "a7d03c29-5d28-4f9f-b45b-3cc8c525e549@6c48a",
+      "a7d03c29-5d28-4f9f-b45b-3cc8c525e549"
+    ]
+  },
+  "captureCount": 150,
+  "identicalEarlierCaptures": 144,
+  "sceneCyclesPerBackend": 1000,
+  "hitChecksPerBackend": 22,
+  "webManifestSha256": "c4f7a50d9e3a60f4aec7cbd18e662e68107c53d8d98665f625e354eac729a907",
+  "configurations": {
+    "Debug": {
+      "executableSha256": "d5addda3d52637b183dffd5c0cd9cf3fe03f9d2151cb0f0b65a5bc3d5e96898c",
+      "manifestSha256": "0aad6b591996cbc8ab2bf9cade8b59631cea5e7e560822b3c603eab28a5e3f07",
+      "comparisonSha256": "3bc954a1852f0bf57264e84d6a327257c03a1c4dd08ceeab2623ec525539b260",
+      "applicationLogSha256": "dff568663d6267592ace3ec4baaaba484f69efc456f0081c1386b676bd3fd008"
+    },
+    "Release": {
+      "executableSha256": "426572c16f90efd1aa277a0f720e49c271fa8b265bf12502ef2448d5b10117f6",
+      "manifestSha256": "e79b5b0fc8f8dc94c984db0350eeb2f9bd5865a3a65bfba296d8ab9d8585f5bb",
+      "comparisonSha256": "3bc954a1852f0bf57264e84d6a327257c03a1c4dd08ceeab2623ec525539b260",
+      "applicationLogSha256": "2f951e551102f4178a91a5c5971874824f778a1b8337afe5a316ec09592d6945"
+    }
+  },
+  "captures": [
+    {
+      "name": "scene-label-atlas-initial",
+      "coloredPixels": 1600,
+      "rgbaSha256": "47d5bcefbe02f9bd8f8dd66576180eb6aff23024a848fd5c8d981352f577753a"
+    },
+    {
+      "name": "scene-label-atlas-next",
+      "coloredPixels": 1600,
+      "rgbaSha256": "47d5bcefbe02f9bd8f8dd66576180eb6aff23024a848fd5c8d981352f577753a"
+    },
+    {
+      "name": "scene-label-atlas-retained-empty",
+      "coloredPixels": 0,
+      "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    },
+    {
+      "name": "scene-label-atlas-reloaded",
+      "coloredPixels": 1600,
+      "rgbaSha256": "47d5bcefbe02f9bd8f8dd66576180eb6aff23024a848fd5c8d981352f577753a"
+    },
+    {
+      "name": "scene-label-atlas-cold-reload",
+      "coloredPixels": 1600,
+      "rgbaSha256": "47d5bcefbe02f9bd8f8dd66576180eb6aff23024a848fd5c8d981352f577753a"
+    },
+    {
+      "name": "scene-label-atlas-final-empty",
+      "coloredPixels": 0,
+      "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    }
+  ]
+}
