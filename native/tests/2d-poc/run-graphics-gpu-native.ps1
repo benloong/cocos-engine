@@ -2,7 +2,8 @@ param([string]$Exe = (Join-Path $PSScriptRoot 'build/gpu-win/native-2d-m6-gpu.ex
     [ValidateSet('native','js')][string]$OpacityImplementation,
     [ValidateSet('native','js')][string]$RootImplementation,
     [ValidateSet('native','js')][string]$SpriteImplementation,
-    [ValidateSet('native','js')][string]$RichTextImplementation)
+    [ValidateSet('native','js')][string]$RichTextImplementation,
+    [ValidateSet('native','js')][string]$LabelImplementation)
 $ErrorActionPreference = 'Stop'
 function Get-CaptureHash([string]$Path) {
     $algorithm = [Security.Cryptography.SHA256]::Create()
@@ -43,15 +44,17 @@ if ($OpacityImplementation -or $RootImplementation) {
     $probe = [IO.File]::ReadAllText((Join-Path $PSScriptRoot $probeName))
     [IO.File]::WriteAllText((Join-Path $resources 'main.js'), $entry.Replace($hook, "$probe`n$install(cc, '$implementation');`n$hook"))
 }
-if ($SpriteImplementation) {
-    if ($Mode -ne 'graphics' -or $OpacityImplementation -or $RootImplementation) { throw 'Select one graphics component rollback' }
-    if ($SpriteImplementation -eq 'js') {
-        $engine = (Resolve-Path (Join-Path $PSScriptRoot 'build/graphics-gpu-js-sprite')).Path
+if ($SpriteImplementation -or $LabelImplementation) {
+    if ($Mode -ne 'graphics' -or $OpacityImplementation -or $RootImplementation -or ($SpriteImplementation -and $LabelImplementation)) { throw 'Select one graphics component rollback' }
+    $component = if ($SpriteImplementation) { 'Sprite' } else { 'Label' }
+    $implementation = if ($SpriteImplementation) { $SpriteImplementation } else { $LabelImplementation }
+    if ($implementation -eq 'js') {
+        $engine = (Resolve-Path (Join-Path $PSScriptRoot "build/graphics-gpu-js-$($component.ToLowerInvariant())")).Path
         & robocopy $engine (Join-Path $resources 'src/cocos-js') /E /NFL /NDL /NJH /NJS /NP | Out-Null
         if ($LASTEXITCODE -gt 7) { throw 'Sprite rollback bundle copy failed' }
     }
     $entryPath = Join-Path $resources 'main.js'
-    [IO.File]::WriteAllText($entryPath, "globalThis.__m6SpriteImplementation = '$SpriteImplementation';" + [Environment]::NewLine + [IO.File]::ReadAllText($entryPath))
+    [IO.File]::WriteAllText($entryPath, "globalThis.__m6${component}Implementation = '$implementation';" + [Environment]::NewLine + [IO.File]::ReadAllText($entryPath))
 }
 if($Mode -eq 'richtext') {
     $expectedCaptures = & node -e "console.log(require(process.argv[1]).captures.join('|'))" (Join-Path $PSScriptRoot 'richtext-gpu-cases.cjs')
@@ -83,15 +86,20 @@ try {
             $result=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
             if($result.backend -ne 'native') { throw 'Invalid native backend' }
             if($Mode -eq 'graphics' -and ($result.captures.Count -ne 116 -or $result.hits.Count -ne 22 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000)) { throw 'Invalid native capture manifest' }
-            if ($SpriteImplementation) {
-                if ($result.spriteImplementation -ne $SpriteImplementation) { throw 'Unexpected Sprite implementation' }
-                $performance = $result.spriteBenchmark
-                if ($performance.spriteCount -ne 128 -or $performance.warmupFrames -ne 30 -or $performance.samples.Count -ne 60 -or
-                    @($performance.samples | Where-Object { $_ -le 0 -or ![double]::IsFinite($_) }).Count) { throw 'Invalid Sprite rollback performance capture' }
-                $bundleSource = if ($SpriteImplementation -eq 'js') { Join-Path $engine 'cc.js' } else { Join-Path $data 'src/cocos-js/cc.js' }
+            if ($SpriteImplementation -or $LabelImplementation) {
+                $key = $component.ToLowerInvariant()
+                if ($result."${key}Implementation" -ne $implementation) { throw "Unexpected $component implementation" }
+                $performance = $result."${key}Benchmark"
+                $sampleCount = if ($component -eq 'Sprite') { 60 } else { 31 }
+                $warmupOk = if ($component -eq 'Sprite') { $performance.warmupFrames -eq 30 } else { $performance.warmupBatches -eq 10 }
+                if (!$warmupOk -or $performance.samples.Count -ne $sampleCount -or
+                    @($performance.samples | Where-Object { $_ -le 0 -or ![double]::IsFinite($_) }).Count) { throw "Invalid $component rollback performance capture" }
+                if ($component -eq 'Sprite' -and $performance.spriteCount -ne 128) { throw 'Invalid Sprite benchmark count' }
+                if ($component -eq 'Label' -and ($performance.updatesPerBatch -ne 8 -or $performance.visiblePixels -le 0)) { throw 'Invalid Label benchmark result' }
+                $bundleSource = if ($implementation -eq 'js') { Join-Path $engine 'cc.js' } else { Join-Path $data 'src/cocos-js/cc.js' }
                 $deployed = Get-CaptureHash (Join-Path $resources 'src/cocos-js/cc.js')
-                if ($deployed -ne (Get-CaptureHash $bundleSource)) { throw 'Sprite rollback deployed the wrong engine bundle' }
-                $result | Add-Member -NotePropertyName spriteEngineSha256 -NotePropertyValue $deployed
+                if ($deployed -ne (Get-CaptureHash $bundleSource)) { throw "$component rollback deployed the wrong engine bundle" }
+                $result | Add-Member -NotePropertyName "${key}EngineSha256" -NotePropertyValue $deployed
                 $result | Add-Member -NotePropertyName executableSha256 -NotePropertyValue (Get-CaptureHash $exePath)
                 [IO.File]::WriteAllText($manifest, ($result | ConvertTo-Json -Depth 100 -Compress), [Text.UTF8Encoding]::new($false))
             }

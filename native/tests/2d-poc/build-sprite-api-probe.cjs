@@ -23,9 +23,10 @@ const materialAPIs=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/f
 const labelShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/components/label.jsb.ts'),'utf8'),{
     compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS,experimentalDecorators:true},
 }).outputText;
-const assemblerShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/assembler/index.jsb.ts'),'utf8'),{
-    compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS},
-}).outputText;
+const [spriteAssemblerShell, labelAssemblerShell] = ['sprite', 'label'].map(name =>
+    ts.transpileModule(fs.readFileSync(path.join(repo, 'cocos/2d/assembler', name, 'index.jsb.ts'), 'utf8'), {
+        compilerOptions: { target: ts.ScriptTarget.ES2019, module: ts.ModuleKind.CommonJS },
+    }).outputText);
 const graphicsShell=ts.transpileModule(fs.readFileSync(path.join(repo,'cocos/2d/components/graphics.jsb.ts'),'utf8'),{
     compilerOptions:{target:ts.ScriptTarget.ES2019,module:ts.ModuleKind.CommonJS,experimentalDecorators:true},
 }).outputText;
@@ -64,7 +65,15 @@ const materialAPIExports={}; ((exports,require)=>{ ${materialAPIs} })(materialAP
 const exports={};
 ${source}
 const labelExports={}; ((exports)=>{ ${labelShell} })(labelExports);
-const assemblerExports={}; ((exports)=>{ ${assemblerShell} })(assemblerExports);
+const assemblerExports={};
+((exports,require)=>{ ${spriteAssemblerShell} })(assemblerExports, id => {
+    if(id==='../../components/sprite')return exports;
+    throw new Error(id);
+});
+((exports,require)=>{ ${labelAssemblerShell} })(assemblerExports, id => {
+    if(id==='../../components/label')return labelExports;
+    throw new Error(id);
+});
 const graphicsExports={}; ((exports)=>{ ${graphicsShell} })(graphicsExports);
 function check(value,message){if(!value)throw new Error(message);}
 check(exports.Sprite.Assembler===assemblerExports.spriteAssembler&&labelExports.Label.Assembler===assemblerExports.labelAssembler,'native assembler manager registration');

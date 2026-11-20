@@ -22,10 +22,24 @@
  THE SOFTWARE.
 */
 
-import { Sprite } from '../components/sprite';
-import { spriteAssembler } from './sprite';
+import { Label } from '../../components/label';
+import type { IAssembler, IAssemblerManager } from '../../renderer/base';
 
-export { labelAssembler } from './index.jsb';
-export { spriteAssembler };
+interface NativeLabel {
+    _native: {
+        updateRenderData(): void;
+        setColorRGBA(r: number, g: number, b: number, a: number): void;
+    } | null;
+    color: { r: number; g: number; b: number; a: number };
+}
 
-Sprite.Assembler = spriteAssembler;
+const label: IAssembler = {
+    updateRenderData (comp): void { (comp as unknown as NativeLabel)._native?.updateRenderData(); },
+    updateColor (comp): void {
+        const { _native, color } = comp as unknown as NativeLabel;
+        _native?.setColorRGBA(color.r, color.g, color.b, color.a);
+    },
+};
+
+export const labelAssembler: IAssemblerManager = { getAssembler: () => label };
+Label.Assembler = labelAssembler;

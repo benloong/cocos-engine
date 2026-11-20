@@ -259,6 +259,7 @@
 - [ ] 按组件/模块演练回退，验证 override、依赖资产、材质与旧场景可用；回退后记录行为与性能。
   - [x] RichText 42 项应用矩阵在 Windows 双配置分别完成原生、TS 回退、恢复原生三次启动。各次通过实现类型、Prefab、字体生命周期和布局检查，各配置切换前后的 RGBA 一致。对 Web 严格像素 39/42。[完整回退实测](./native-2d-m6-richtext-rollback.md#42-项应用矩阵回退与恢复)
   - [x] Sprite 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。各 Windows 配置在同一二进制上执行原生、TS 回退、恢复原生，三次各 116 张图与 Web 和上一候选逐字节一致。旧 cocos-m1-test 两种配置回退后通过 Sprite、Mask、RichText，恢复后重新通过 Sprite 五种模式。128 个 Sprite 改色和位移的帧样本另行记录。[回退流程及数据](./native-2d-m6-sprite-rollback.md)
+  - [x] Label 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。六次 Windows 运行各 116 张对照图与 Web 逐字节一致。旧 cocos-m1-test 的真实 BMFont、CHAR 缓存、换行及 GPU 字形三阶段通过。系统字体在 TS 回退时的像素覆盖变化及同一 Prefab 的同步更新耗时已归档。[复现和数据](./native-2d-m6-label-rollback.md)
   - [x] UIOpacity 支持独立切回 JS 并恢复原生实现。Windows Debug/Release 各验证两种实现、Prefab 字段、组件生命周期、85 张 Web 对照图与 setter 耗时。[复现和采样](./native-2d-m6-ui-opacity-rollback.md)
   - [x] RenderRoot2D 支持独立切回 JS 并恢复原生注册。Windows Debug/Release 各验证两种实现、Prefab 实例化、11 个根注册检查点、85 张 Web 对照图与组件启停耗时。[复现和采样](./native-2d-m6-render-root-rollback.md)
   - [x] RichText 支持独立切回 TS 并恢复原生实现。Windows 双配置覆盖序列化 Prefab、字体与图集、旧混合场景换行和点击、段查询与样式更新计时。12 个场景比较切换前后的布局和图像，跨端字形差异单列。[复现和数据](./native-2d-m6-richtext-rollback.md)

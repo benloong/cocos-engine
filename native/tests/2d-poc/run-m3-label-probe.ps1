@@ -1,5 +1,6 @@
 param(
-    [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe'
+    [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe',
+    [ValidateSet('native','js')][string]$Implementation
 )
 
 $ErrorActionPreference = 'Stop'
@@ -29,6 +30,9 @@ try {
     $entries = foreach ($line in $lines) {
         $json = $line.Line.Substring($line.Line.IndexOf('M3_SHELL_LABEL ') + 15)
         $json | ConvertFrom-Json
+    }
+    if ($Implementation -and @($entries | Where-Object { $_.implementation -ne $Implementation }).Count) {
+        throw "Unexpected Label implementation, expected $Implementation"
     }
     $measure = @{}
     $charLayoutLine = Select-String -LiteralPath $log -Pattern 'M3_CHAR_LAYOUT (.+)' | Select-Object -First 1

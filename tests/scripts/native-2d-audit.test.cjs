@@ -14,7 +14,8 @@ test('component rollback removes only the selected Windows overrides and preserv
         const buildTimeConstants = query.constantManager.genBuildTimeConstants({ mode, platform, flags });
         return query.evaluateModuleOverrides({ platform, mode, buildTimeConstants });
     }
-    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d', USE_JS_RICH_TEXT: 'components/rich-text', USE_JS_SPRITE: 'components/sprite' };
+    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d',
+        USE_JS_RICH_TEXT: 'components/rich-text', USE_JS_SPRITE: 'components/sprite', USE_JS_LABEL: 'components/label' };
     for (const selected of [...Object.keys(components).map(flag => [flag]), Object.keys(components)]) {
         const windows = overrides('WINDOWS', {});
         const flags = {};
@@ -23,10 +24,10 @@ test('component rollback removes only the selected Windows overrides and preserv
             const base = path.join(root, 'cocos/2d', components[flag]);
             assert.equal(windows[base + '.ts'], base + '.jsb.ts');
             delete windows[base + '.ts'];
-            if (flag === 'USE_JS_SPRITE') {
-                const assembler = path.join(root, 'cocos/2d/assembler/index');
+            if (flag === 'USE_JS_SPRITE' || flag === 'USE_JS_LABEL') {
+                const assembler = path.join(root, 'cocos/2d/assembler', path.basename(base), 'index');
                 assert.equal(windows[assembler + '.ts'], assembler + '.jsb.ts');
-                windows[assembler + '.ts'] = assembler + '.js-sprite.ts';
+                delete windows[assembler + '.ts'];
             }
         }
         assert.deepEqual(overrides('WINDOWS', flags), windows);
@@ -123,7 +124,7 @@ test('current runtime gaps remain visible instead of being called a passing gate
     assert.ok(report.classes.some(c=>c.name==='RichText'));
     for(const c of report.classes) assert.ok(c.imports.within2d.includes(c.runtime));
     assert.ok(report.entrypointImports.within2d.includes('cocos/2d/assembler/index.jsb.ts'));
-    assert.deepEqual(report.entrypointImports.within2d.filter(file => /\/assembler\/(label|sprite)\//.test(file)), []);
+    assert.deepEqual(report.entrypointImports.within2d.filter(isWebAssembler), []);
 });
 
 test('native shell closures reject Web layout and tessellation while allowing the native Graphics bridge', () => {

@@ -2,9 +2,13 @@ import { BitmapFont, builtinResMgr, Camera, Canvas, Color, director, DirectorEve
 
 declare const n2d: any;
 
+function submittedDraw (label: any): any {
+    const entity = label._native?.getRenderEntity() ?? label.renderEntity?.nativeObj ?? label.getRenderEntity?.();
+    return entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0) : null;
+}
+
 function submittedTextureSize (label: any): { textureWidth: number; textureHeight: number } {
-    const entity = label?.getRenderEntity();
-    const texture = entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0).texture : null;
+    const texture = submittedDraw(label)?.texture;
     return { textureWidth: texture?.width ?? 0, textureHeight: texture?.height ?? 0 };
 }
 
@@ -152,12 +156,11 @@ export class LabelSpike {
             bitmapLabel.font = bitmapFont;
             bitmapLabel.string = 'ABBA';
             setTimeout(() => {
-                const native = (bitmapLabel as any)._native;
-                const draw = native?.getRenderEntity().getStaticRenderDrawInfo(0);
+                const draw = submittedDraw(bitmapLabel);
                 console.log(`M3_BITMAP_LABEL ${JSON.stringify({
                     width: bitmapTransform.width, height: bitmapTransform.height, actualFontSize: bitmapLabel.actualFontSize,
                     glyphs: draw ? draw.vbCount / 4 : undefined, vertices: draw?.vbCount, indices: draw?.ibCount,
-                    ...submittedTextureSize(native),
+                    ...submittedTextureSize(bitmapLabel),
                     samplesFontAtlas: !!draw?.texture && draw.texture === bitmapFont.spriteFrame?.texture.getGFXTexture(),
                 })}`);
             }, 500);
@@ -229,14 +232,12 @@ export class LabelSpike {
             realLabel.font = realFont;
             realLabel.string = 'Hello BMFont';
             setTimeout(() => {
-                const native = (realLabel as any)._native;
-                const entity = native?.getRenderEntity();
-                const draw = entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0) : null;
+                const draw = submittedDraw(realLabel);
                 console.log(`M3_REAL_BMFONT ${JSON.stringify({
-                    ...submittedTextureSize(native),
+                    ...submittedTextureSize(realLabel),
                     vertices: draw?.vbCount, samplesFontAtlas: !!draw?.texture && draw.texture === realFont.spriteFrame?.texture.getGFXTexture(),
                 })}`);
-                if (native) bitmapNodes.push(realNode);
+                if (draw) bitmapNodes.push(realNode);
                 finishLoadingBitmap();
             }, 500);
         });
@@ -251,9 +252,8 @@ export class LabelSpike {
         asciiCharLabel.overflow = 3;
         asciiCharLabel.string = 'Hello ASCII';
         setTimeout(() => {
-            const native = (asciiCharLabel as any)._native;
             console.log(`M3_CHAR_ASCII ${JSON.stringify({
-                ...submittedTextureSize(native),
+                ...submittedTextureSize(asciiCharLabel),
             })}`);
         }, 700);
         const bitmapNodeA = new Node('M3BitmapAtlasA');
@@ -278,10 +278,7 @@ export class LabelSpike {
 
         setTimeout(() => {
             const source = [bitmapLabelA, bitmapLabelB].map(label => label.ttfSpriteFrame);
-            const submitted = [bitmapLabelA, bitmapLabelB].map(label => {
-                const entity = (label as any)._native?.getRenderEntity();
-                return entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0).texture : null;
-            });
+            const submitted = [bitmapLabelA, bitmapLabelB].map(label => submittedDraw(label)?.texture);
             console.log(`M3_BITMAP_ATLAS ${JSON.stringify({
                 drawsOwnTexture: source.every((frame, i) => !!submitted[i] && submitted[i] === frame?.texture.getGFXTexture()),
                 distinctTextures: !!submitted[0] && submitted[0] !== submitted[1],
@@ -331,16 +328,14 @@ export class LabelSpike {
             }
 
             setTimeout(() => {
-                const nativeLabel = (label as any)._native;
-                if (nativeLabel) {
+                if (typeof n2d !== 'undefined') {
                     if (item.name === 'cjk') {
-                    console.log(`M3_CHAR_LABEL ${JSON.stringify({
-                        ...submittedTextureSize(nativeLabel),
-                    })}`);
-                }
-                console.log(`M3_SHELL_LABEL ${JSON.stringify({
+                        console.log(`M3_CHAR_LABEL ${JSON.stringify(submittedTextureSize(label))}`);
+                    }
+                    console.log(`M3_SHELL_LABEL ${JSON.stringify({
                         name: item.name,
-                        ...submittedTextureSize(nativeLabel),
+                        implementation: (label as any)._native ? 'native' : 'js',
+                        ...submittedTextureSize(label),
                     })}`);
                 }
                 const size = node.getComponent(UITransform)?.contentSize;

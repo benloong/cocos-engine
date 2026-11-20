@@ -11,15 +11,20 @@ test('native assembler managers forward updates without loading Web assemblers',
     const config = JSON.parse(fs.readFileSync(path.join(root, 'cc.config.json'), 'utf8'));
     const overrides = Object.assign({}, ...config.moduleOverrides.filter(e => /NATIVE/.test(e.test || '')).map(e => e.overrides));
     assert.equal(overrides['cocos/2d/assembler/index.ts'], 'cocos/2d/assembler/index.jsb.ts');
-    const source = fs.readFileSync(path.join(root, overrides['cocos/2d/assembler/index.ts']), 'utf8');
-    const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
     class Sprite {} class Label {}
-    const exports = {};
-    vm.runInNewContext(output, { exports, require(id) {
-        if (id === '../components/sprite') return { Sprite };
-        if (id === '../components/label') return { Label };
-        throw new Error('Unexpected native assembler runtime dependency: ' + id);
-    } });
+    function load(file) {
+        const source = fs.readFileSync(path.join(root, overrides[file]), 'utf8');
+        const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+        const exports = {};
+        vm.runInNewContext(output, { exports, require(id) {
+            if (id === './sprite' || id === './label') return load('cocos/2d/assembler/' + id.slice(2) + '/index.ts');
+            if (id === '../../components/sprite') return { Sprite };
+            if (id === '../../components/label') return { Label };
+            throw new Error('Unexpected native assembler runtime dependency: ' + id);
+        } });
+        return exports;
+    }
+    const exports = load('cocos/2d/assembler/index.ts');
     assert.equal(Sprite.Assembler, exports.spriteAssembler);
     assert.equal(Label.Assembler, exports.labelAssembler);
     const calls = [];

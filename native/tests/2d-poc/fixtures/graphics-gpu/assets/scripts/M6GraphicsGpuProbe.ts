@@ -1,4 +1,4 @@
-import { _decorator, BitmapFont, Camera, Canvas, Color, Component, Director, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, BitmapFont, Camera, Canvas, Color, Component, deserialize, Director, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { countTraversedRoots, runSceneMatrix } from './M6SceneMatrix';
 import { EffectAsset, gfx, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
@@ -9,6 +9,7 @@ const outputRoot = '__M6_GPU_OUTPUT__';
 const snapshot = '__M6_GPU_SNAPSHOT__';
 const probeMode: string = '__M6_GPU_MODE__';
 const spriteImplementation = (globalThis as { __m6SpriteImplementation?: string }).__m6SpriteImplementation ?? (sys.isNative ? 'native' : 'js');
+const labelImplementation = (globalThis as { __m6LabelImplementation?: string }).__m6LabelImplementation ?? (sys.isNative ? 'native' : 'js');
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 @ccclass('M6GraphicsGpuProbe')
@@ -668,6 +669,41 @@ export class M6GraphicsGpuProbe extends Component {
         labelNode.destroy();
         await wait();
         if (isValid(freshFrame) || isValid(freshTexture)) throw new Error('Destroyed Label retained valid TTF assets');
+        const labelPrefab = deserialize([
+            { __type__: 'cc.Prefab', data: { __id__: 1 } },
+            { __type__: 'cc.Node', _name: 'LabelRollback', _components: [{ __id__: 2 }, { __id__: 3 }] },
+            { __type__: 'cc.UITransform', node: { __id__: 1 } },
+            { __type__: 'cc.Label', node: { __id__: 1 }, _string: 'Atlas 123', _fontSize: 24, _lineHeight: 30 },
+        ]) as Prefab;
+        const labelInstance = instantiate(labelPrefab);
+        labelInstance.layer = canvas.node.layer;
+        canvas.node.addChild(labelInstance);
+        const restoredLabel = labelInstance.getComponent(Label);
+        if (!restoredLabel || restoredLabel.string !== 'Atlas 123' || restoredLabel.fontSize !== 24
+            || !!(restoredLabel as any)._native !== (labelImplementation === 'native')) {
+            throw new Error('Label Prefab restored the wrong component');
+        }
+        const warmupBatches = 10;
+        const updatesPerBatch = 8;
+        const labelSamples: number[] = [];
+        for (let batch = 0; batch < warmupBatches + 31; ++batch) {
+            const start = performance.now();
+            for (let update = 0; update < updatesPerBatch; ++update) {
+                restoredLabel.string = update % 2 === 0 ? 'World 456' : 'Atlas 123';
+                restoredLabel.updateRenderData();
+            }
+            if (batch >= warmupBatches) labelSamples.push(performance.now() - start);
+        }
+        await wait();
+        const labelPixels = rt.readPixels()!;
+        let visiblePixels = 0;
+        for (let i = 0; i < labelPixels.length; i += 4) if (labelPixels[i] > 1) ++visiblePixels;
+        if (visiblePixels === 0) throw new Error('Restored Label Prefab produced no visible glyphs');
+        const labelBenchmark = { warmupBatches, updatesPerBatch, samples: labelSamples, visiblePixels };
+        labelInstance.destroy();
+        labelPrefab.destroy();
+        await wait();
+        if (isValid(labelInstance) || isValid(labelPrefab)) throw new Error('Label rollback Prefab was retained');
         for (const item of cases) {
             const root = node(canvas.node, item.name);
             const update = item.draw(root);
@@ -851,7 +887,7 @@ export class M6GraphicsGpuProbe extends Component {
         hitRoot.destroy(); await wait(40);
         const scenes = await runSceneMatrix(rt, capture);
         const device = director.root!.device;
-        const result = { backend: sys.isNative ? 'native' : 'web', snapshot, spriteImplementation, spriteBenchmark, captures,
+        const result = { backend: sys.isNative ? 'native' : 'web', snapshot, spriteImplementation, spriteBenchmark, labelImplementation, labelBenchmark, captures,
             scenes, roots, hits, batchDrawCalls, labelLayout, shrinkSizes, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });

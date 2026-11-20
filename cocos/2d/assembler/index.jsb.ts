@@ -22,39 +22,5 @@
  THE SOFTWARE.
 */
 
-import { Label } from '../components/label';
-import { Sprite } from '../components/sprite';
-import type { IAssembler, IAssemblerManager } from '../renderer/base';
-
-// Preserve the legacy manager entry points without importing Web assemblers.
-// Native Batcher2d owns buffer preparation and submission; explicit assembler
-// updates only rebuild Label data or invalidate Sprite geometry in native.
-interface NativeRenderer {
-    _native: {
-        setDirty(): void;
-        updateRenderData(): void;
-        setColorRGBA(r: number, g: number, b: number, a: number): void;
-    } | null;
-    color: { r: number; g: number; b: number; a: number };
-}
-
-const sprite: IAssembler = {
-    updateRenderData (comp): void { (comp as unknown as NativeRenderer)._native?.setDirty(); },
-    updateUVs (comp): void { (comp as unknown as NativeRenderer)._native?.setDirty(); },
-    updateColor (comp): void {
-        const { _native, color } = comp as unknown as NativeRenderer;
-        _native?.setColorRGBA(color.r, color.g, color.b, color.a);
-    },
-};
-const label: IAssembler = {
-    updateRenderData (comp): void { (comp as unknown as NativeRenderer)._native?.updateRenderData(); },
-    updateColor (comp): void {
-        const { _native, color } = comp as unknown as NativeRenderer;
-        _native?.setColorRGBA(color.r, color.g, color.b, color.a);
-    },
-};
-
-export const spriteAssembler: IAssemblerManager = { getAssembler: () => sprite };
-export const labelAssembler: IAssemblerManager = { getAssembler: () => label };
-Sprite.Assembler = spriteAssembler;
-Label.Assembler = labelAssembler;
+export { labelAssembler } from './label';
+export { spriteAssembler } from './sprite';

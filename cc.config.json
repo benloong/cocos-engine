@@ -350,18 +350,19 @@
             }
         },
         {
-            "test": "context.buildTimeConstants.NATIVE && context.buildTimeConstants.USE_JS_SPRITE",
-            "isVirtualModule": false,
-            "overrides": {
-                "cocos/2d/assembler/index.ts": "cocos/2d/assembler/index.js-sprite.ts"
-            }
-        },
-        {
             "test": "context.buildTimeConstants.NATIVE && !context.buildTimeConstants.USE_JS_SPRITE",
             "isVirtualModule": false,
             "overrides": {
                 "cocos/2d/components/sprite.ts": "cocos/2d/components/sprite.jsb.ts",
-                "cocos/2d/assembler/index.ts": "cocos/2d/assembler/index.jsb.ts"
+                "cocos/2d/assembler/sprite/index.ts": "cocos/2d/assembler/sprite/index.jsb.ts"
+            }
+        },
+        {
+            "test": "context.buildTimeConstants.NATIVE && !context.buildTimeConstants.USE_JS_LABEL",
+            "isVirtualModule": false,
+            "overrides": {
+                "cocos/2d/components/label.ts": "cocos/2d/components/label.jsb.ts",
+                "cocos/2d/assembler/label/index.ts": "cocos/2d/assembler/label/index.jsb.ts"
             }
         },
         {
@@ -387,7 +388,7 @@
                 "cocos/render-scene/scene/reflection-probe.ts": "cocos/render-scene/scene/reflection-probe.jsb.ts",
                 "cocos/2d/renderer/native-2d.ts": "cocos/2d/renderer/native-2d.jsb.ts",
                 "cocos/2d/framework/ui-transform.ts": "cocos/2d/framework/ui-transform.jsb.ts",
-                "cocos/2d/components/label.ts": "cocos/2d/components/label.jsb.ts",
+                "cocos/2d/assembler/index.ts": "cocos/2d/assembler/index.jsb.ts",
                 "cocos/2d/assembler/graphics/index.ts": "cocos/2d/assembler/graphics/index.jsb.ts",
                 "cocos/2d/components/mask.ts": "cocos/2d/components/mask.jsb.ts",
                 "cocos/2d/components/graphics.ts": "cocos/2d/components/graphics.jsb.ts",
@@ -881,6 +882,12 @@
         },
         "USE_JS_SPRITE": {
             "comment": "Use JavaScript Sprite assembly on native platforms.",
+            "type": "boolean",
+            "value": false,
+            "internal": true
+        },
+        "USE_JS_LABEL": {
+            "comment": "Use JavaScript Label layout and assembly on native platforms.",
             "type": "boolean",
             "value": false,
             "internal": true

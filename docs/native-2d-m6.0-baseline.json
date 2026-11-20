@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "a7ce7b13be3794069f92834faee99a4753fd14144a06ec68f4781cbe725c6a14"
+      "sha256": "da1898eba5de010d46a198848f7f040046cf8f9500126152d1d86feff0a60d0b"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -396,6 +396,8 @@
   "native2dOverrides": {
     "cocos/2d/assembler/graphics/index.ts": "cocos/2d/assembler/graphics/index.jsb.ts",
     "cocos/2d/assembler/index.ts": "cocos/2d/assembler/index.jsb.ts",
+    "cocos/2d/assembler/label/index.ts": "cocos/2d/assembler/label/index.jsb.ts",
+    "cocos/2d/assembler/sprite/index.ts": "cocos/2d/assembler/sprite/index.jsb.ts",
     "cocos/2d/assets/bitmap-font.ts": "cocos/2d/assets/bitmap-font.jsb.ts",
     "cocos/2d/assets/font.ts": "cocos/2d/assets/font.jsb.ts",
     "cocos/2d/assets/label-atlas.ts": "cocos/2d/assets/label-atlas.jsb.ts",
@@ -416,6 +418,8 @@
     "within2d": [
       "cocos/2d/assembler/graphics/types.ts",
       "cocos/2d/assembler/index.jsb.ts",
+      "cocos/2d/assembler/label/index.jsb.ts",
+      "cocos/2d/assembler/sprite/index.jsb.ts",
       "cocos/2d/assembler/utils.ts",
       "cocos/2d/assets/bitmap-font.jsb.ts",
       "cocos/2d/assets/font.jsb.ts",
@@ -14631,33 +14635,58 @@
     },
     {
       "file": "cocos/2d/assembler/index.jsb.ts",
-      "sha256": "9a74194ee1e5e29c494db09d36857ebe3946dfa9ddfe178a27f0f005e5916dbf",
-      "printedCodeLines": 35,
+      "sha256": "dd2fdecc5c55806b79e450d04a323c13f0913128cb97fcfd3b093638ae4f16be",
+      "printedCodeLines": 2,
       "runtimeImports": [
-        "../components/label",
-        "../components/sprite"
+        "./label",
+        "./sprite"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": []
+    },
+    {
+      "file": "cocos/2d/assembler/label/index.jsb.ts",
+      "sha256": "8effdd70a88b25b3f7f96c5c823e421a281b65fd7f7bf6cb1c647d5f6e262769",
+      "printedCodeLines": 23,
+      "runtimeImports": [
+        "../../components/label"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
-          "expression": "(comp as unknown as NativeRenderer)._native?.setDirty",
-          "line": 42
-        },
-        {
-          "expression": "(comp as unknown as NativeRenderer)._native?.setDirty",
-          "line": 43
+          "expression": "(comp as unknown as NativeLabel)._native?.updateRenderData",
+          "line": 37
         },
         {
           "expression": "_native?.setColorRGBA",
-          "line": 46
+          "line": 40
+        }
+      ],
+      "allocations": [],
+      "loops": []
+    },
+    {
+      "file": "cocos/2d/assembler/sprite/index.jsb.ts",
+      "sha256": "5a14389f702b813cbb5d6cc44e324e1aa94fc56519fa52de15996bb116cab271",
+      "printedCodeLines": 24,
+      "runtimeImports": [
+        "../../components/sprite"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [
+        {
+          "expression": "(comp as unknown as NativeSprite)._native?.setDirty",
+          "line": 37
         },
         {
-          "expression": "(comp as unknown as NativeRenderer)._native?.updateRenderData",
-          "line": 50
+          "expression": "(comp as unknown as NativeSprite)._native?.setDirty",
+          "line": 38
         },
         {
           "expression": "_native?.setColorRGBA",
-          "line": 53
+          "line": 41
         }
       ],
       "allocations": [],

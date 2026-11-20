@@ -117,7 +117,7 @@ function inspect(file, text) {
 }
 // Rollup reports absolute paths, while source closures use repository-relative paths.
 function isWebAssembler(file) {
-    return /(?:^|\/)cocos\/2d\/assembler\/(?:label\/|sprite\/|graphics\/(?:webgl\/|helper\.ts$|index\.ts$))/.test(file);
+    return /(?:^|\/)cocos\/2d\/assembler\/(?:(?:label|sprite)\/(?!index\.jsb\.ts$)|graphics\/(?:webgl\/|helper\.ts$|index\.ts$))/.test(file);
 }
 
 function shellHotPaths(report) {

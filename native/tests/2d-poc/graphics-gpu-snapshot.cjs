@@ -18,8 +18,7 @@ module.exports=function graphicsGpuSnapshot(mode='graphics') {
     }
     if (mode === 'graphics') {
         walk(path.join(root, 'cocos/2d/assembler/sprite'));
-        const spriteRollbackEntry = 'cocos/2d/assembler/index.js-sprite.ts';
-        fixtureHashes.push([spriteRollbackEntry, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, spriteRollbackEntry))).digest('hex')]);
+        walk(path.join(root, 'cocos/2d/assembler/label'));
         const atlas = path.join(__dirname,'fixtures/acceptance/resources/M6StaticAtlas');
         walk(atlas);
         for (const file of [atlas+'.meta',path.join(root,'editor/assets/effects/for2d/builtin-sprite-renderer.effect'),
