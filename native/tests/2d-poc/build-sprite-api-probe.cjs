@@ -77,7 +77,7 @@ check(cclegacy.Sprite===exports.Sprite&&sprite.fillRange===0,'native shell ident
 check(!('prepare' in sprite._native),'native Sprite preparation stays internal');
 const normal=sprite.getSharedMaterial(0); check(normal,'default builtin material');
 sprite.grayscale=true;
-const gray=sprite.getSharedMaterial(0);check(gray&&gray!==normal&&sprite._native.isGrayscale(),'grayscale binding');
+const gray=sprite.getSharedMaterial(0);check(gray&&gray!==normal&&sprite.grayscale,'grayscale selects a different native material');
 const instance=sprite.getMaterialInstance(0);
 check(instance && instance.parent===gray && instance.owner===sprite && instance!==gray,'native MaterialInstance parent and owner');
 check(sprite.getRenderMaterial(0)===instance,'native instance is rendered');
@@ -86,7 +86,14 @@ sprite.fillCenter=new Vec2(0.25,0.75);
 const center=sprite.fillCenter;center.x=0.125;
 check(sprite._native.getFillCenterX()===0.125&&sprite._native.getFillCenterY()===0.75,'fillCenter component write');
 sprite._native.setFillCenter(0.5,0.25);check(center.x===0.5&&center.y===0.25,'native fillCenter readback');
-sprite.trim=false;check(!sprite._native.isTrim(),'trim binding');
+const setTrim=n2d.Sprite.prototype.setTrim;
+let forwardedTrim;
+n2d.Sprite.prototype.setTrim=function(value){
+ if(this===sprite._native)forwardedTrim=value;
+ return setTrim.call(this,value);
+};
+try{sprite.trim=false;}finally{n2d.Sprite.prototype.setTrim=setTrim;}
+check(!sprite.trim&&forwardedTrim===false,'trim forwards to the native setter');
 const custom=new jsb.Material();sprite.customMaterial=custom;
 check(sprite.getSharedMaterial(0)===custom,'custom material binding');
 sprite.customMaterial=null;check(sprite.getSharedMaterial(0)===gray,'custom material clear');
@@ -131,7 +138,7 @@ sprite.changeSpriteFrameFromAtlas('hero');check(sprite.spriteFrame===frame&&even
 const second=new jsb.SpriteFrame();second.resetWithTexture(texture);atlas.addSpriteFrame('second',second);
 sprite.onDisable();sprite.changeSpriteFrameFromAtlas('second');
 check(!sprite._native.isEnabled()&&events===2,'frame replacement keeps disabled state');
-sprite.fillStart=2;sprite.fillRange=-2;check(sprite._native.getFillStart()===1&&sprite._native.getFillRange()===-1,'fill bounds');
+sprite.fillStart=2;sprite.fillRange=-2;check(sprite.fillStart===1&&sprite.fillRange===-1,'public fill bounds');
 for(let i=0;i<1000;i++){
  sprite.grayscale=(i%2)===0;sprite.customMaterial=custom;sprite.customMaterial=null;sprite.spriteFrame=i%2?frame:second;
 }

@@ -16,6 +16,15 @@ const probe = `
     };
     ${compiled}
     if ('getRootNodeAt' in n2d.Batcher2d.prototype || 'getRootNodeCount' in n2d.Batcher2d.prototype) throw Error('Unexpected native root inspection API');
+    for (const [className, methods] of [
+        ['Sprite', ['isGrayscale', 'isTrim', 'getFillType', 'getFillStart', 'getFillRange', 'getSizeMode']],
+        ['Label', ['getCacheMode', 'getUnderlineHeight']],
+        ['RichText', ['getString']],
+    ]) {
+        for (const method of methods) {
+            if (method in n2d[className].prototype) throw Error('Unexpected inspection API: ' + className + '.' + method);
+        }
+    }
     for (const component of [n2d.Sprite, n2d.Label, n2d.Graphics, n2d.Mask, n2d.RichText]) {
         if ('prepareRenderEntity' in component.prototype || 'updateRenderer' in component.prototype) {
             throw Error('Unexpected component-level renderer update binding');

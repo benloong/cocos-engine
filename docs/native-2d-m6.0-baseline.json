@@ -83,7 +83,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.h",
-      "sha256": "75917bb92edd79b47d8f7ef57000b17e7621f682d5df013201d02209b500c823"
+      "sha256": "eb2150e7e2f01616d250fddb8d36f87c035841f1309d39be66a88c9f07034e53"
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
@@ -99,7 +99,7 @@
     },
     {
       "file": "native/cocos/2d/components/RichText.h",
-      "sha256": "de8f6bea47738d34f605aee0c73699229d52f05868f8ae43f2fb42a68360311e"
+      "sha256": "d3706944063752bec2beeb7252a37bb50ff5e905b4a393b016b826676cb7cfba"
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
@@ -107,7 +107,7 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "857d714e38cffe33401f02fe6103f5ed379e662e060418e00ccbe027625b0522"
+      "sha256": "606eac366d95019d7e40f0f2047efb88d186d4ea3d3b66724b0601e6e930634c"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -375,7 +375,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "9babbb9e7b65de167ca41ba38f604ef7bb2048c78818efc975fbeb7059fd0c0b"
+      "sha256": "9bd507e094e59fd8a8e37c37f35db97b4a04138b47cebe9386c9edac9c8b607e"
     },
     {
       "file": "native/tools/swig-config/assets.i",

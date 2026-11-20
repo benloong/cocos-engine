@@ -97,6 +97,7 @@
 - [x] Label 的内部布局缓存读取 getContentWidth/getContentHeight 已从 JSB 移除。Windows 双配置实测绑定缺席、UITransform 尺寸同步及 TTF 字体重载。RichText 验收通过已有 TTF contentWidth 接口取斜体宽度，Windows Release 为 89.5023 px，Web 为 90.7484 px。三端继续检查内部段命中和事件传播。
 - [x] 删除原生 Label 仅供测试使用的 getTextureWidth、getTextureHeight、getLineCount 及三个缓存字段。Windows Debug/Release 的 JSB 探针检查三个方法均不存在。Windows 应用从提交纹理读取尺寸，离屏像素测得英文、中文单行和换行文本的可见高度分别为 32、29、83 px，同时核对 UITransform 的实际尺寸。
 - [x] 生产导出清理：原 M0 的两个 PoC 组件及模块入口已删除。Windows 绑定已移除字体别名统计函数和测试编译开关。C++ 测试检查私有计数，Mask 和 RichText 应用夹具检查 JSB 上没有该导出。见 [验收配置](./native-2d-m6.1-font-remote-lifecycle.md)。
+- [x] Sprite、Label 和 RichText 清理 9 个引擎未调用的 JSB 读回接口。Sprite 夹具通过公开属性、材质和原生 setter 验证原有行为，C++ 夹具继续检查填充范围和 Label 缓存模式。Windows Debug、Release 各通过 6 组 JSB 探针和 1000 轮场景切换。各 108 张图与 Web 及清理前逐字节一致。[导出清单和运行结果](./native-2d-m6-binding-cleanup.json)
   [功能裁剪测试](../native/tests/2d-poc/check-m6-feature-matrix.cjs) 同时检查可用模块列表和生成的 `cc.js`。模块列表不得包含 `native-2d-poc`，Windows 与 Web 各九种组合均须排除 `NativeUITransformPoc` 和 `NativeSpritePoc`。
   BitmapFont 的测试计数方法已从 C++ 和 JSB 删除。Windows Debug/Release 的字体探针直接检查生产路径读取的字形数据，并验证 JSB 实例上没有 `getGlyphCount`。[字体绑定回归](../native/tests/2d-poc/build-font-assets-probe.cjs)
   SpriteAtlas 的测试计数方法已从 C++ 和 JSB 删除。Windows 双配置的[绑定探针](../native/tests/2d-poc/build-sprite-atlas-probe.cjs)检查导出缺席，并用有序帧名、帧查找和纹理验证空槽及释放。Windows Debug、Release 与 Web 的[真实图集场景](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)各完成 1000 轮、5000 项资产检查和 22 次像素回读。

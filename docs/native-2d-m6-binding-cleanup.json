@@ -1,0 +1,55 @@
+{
+  "retiredPaths": [
+    "cocos/2d/poc",
+    "native/cocos/2d/poc",
+    "exports/native-2d-poc.ts"
+  ],
+  "removedBindings": [
+    "Sprite.isGrayscale",
+    "Sprite.isTrim",
+    "Sprite.getFillType",
+    "Sprite.getFillStart",
+    "Sprite.getFillRange",
+    "Sprite.getSizeMode",
+    "Label.getCacheMode",
+    "Label.getUnderlineHeight",
+    "RichText.getString"
+  ],
+  "configurations": {
+    "Debug": {
+      "gpuSnapshot": "154053b30805747fc96b732c4c8c8084dd5ac20647749fd1b68b8d2312648df9",
+      "gpuExecutableSha256": "811d10941a830703ede4266b371e759471698b04f5038519864c8fce6a852934",
+      "jsbExecutableSha256": "92464ffab3c75c7b78e738952ce235ca4a57f0bba3cd193e838f5c939ce8f32a",
+      "jsbProbes": 6,
+      "identicalToWeb": 108,
+      "identicalToPriorCaptures": 108,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998
+    },
+    "Release": {
+      "gpuSnapshot": "154053b30805747fc96b732c4c8c8084dd5ac20647749fd1b68b8d2312648df9",
+      "gpuExecutableSha256": "f5437746682b40206d85c0b45126a07d29d6f2caf511f7e8e50a6d258d97ce72",
+      "jsbExecutableSha256": "61e3b1e217052fe8b5f887b8e97c4829531d8406ef645ca788751b9dde4c542c",
+      "jsbProbes": 6,
+      "identicalToWeb": 108,
+      "identicalToPriorCaptures": 108,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998
+    }
+  },
+  "standardWindowsDebug": {
+    "executableSha256": "f0a71e0d444ede2f564872ed6de5a3f880eaa472a75431e330a1c85368d134dc",
+    "pureNativeChecks": 159,
+    "applicationProbes": [
+      "M2 Sprite",
+      "M3 Label",
+      "M4 Mask and Graphics",
+      "M4 extra",
+      "M5 RichText"
+    ],
+    "spriteFrameUvParity": true,
+    "targetedJestTests": 40
+  }
+}

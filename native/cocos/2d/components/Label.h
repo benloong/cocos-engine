@@ -71,7 +71,6 @@ public:
     double getActualFontSize() const { return _actualFontSize; }
     void setActualFontSize(double size) { _actualFontSize = size; }
     void setUnderlineHeight(float height) { if (_underlineHeight != height) { _underlineHeight = height; markRenderDirty(); } }
-    float getUnderlineHeight() const { return _underlineHeight; }
     void setIsBold(bool bold) { if (_isBold != bold) { _isBold = bold; updateFont(); markRenderDirty(); } }
     void setIsItalic(bool italic) { if (_isItalic != italic) { _isItalic = italic; updateFont(); markRenderDirty(); } }
     void setIsUnderline(bool underline) { if (_isUnderline != underline) { _isUnderline = underline; markRenderDirty(); } }

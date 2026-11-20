@@ -55,7 +55,6 @@ public:
     void onDisable() override;
     void setUITransform(UITransform *transform);
     void setString(const std::string &value);
-    const std::string &getString() const { return _string; }
     void setFontSize(float value);
     void setLineHeight(float value);
     void setMaxWidth(float value);

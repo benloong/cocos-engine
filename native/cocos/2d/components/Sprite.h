@@ -80,19 +80,16 @@ public:
     void setSharedMaterial(Material *material, uint32_t index, bool forceUpdate = false) override;
     void setMaterialInstance(Material *material, uint32_t index = 0) override;
     void setGrayscale(bool enabled);
-    bool isGrayscale() const { return _grayscale; }
     void refreshMaterial();
 
     void setEnabled(bool enabled);
 
     void setTrim(bool trim);
-    bool isTrim() const { return _trim; }
 
     void setType(int32_t type);
     int32_t getType() const { return _type; }
 
     void setFillType(int32_t fillType);
-    int32_t getFillType() const { return _fillType; }
     void setFillStart(float fillStart);
     float getFillStart() const { return _fillStart; }
     void setFillRange(float fillRange);
@@ -102,7 +99,6 @@ public:
     float getFillCenterY() const { return _fillCenter.y; }
 
     void setSizeMode(int32_t sizeMode);
-    int32_t getSizeMode() const { return _sizeMode; }
     RenderEntity *getRenderEntity() const override { return _entity.get(); }
 
     void setDirty() { markRenderDirty(); }

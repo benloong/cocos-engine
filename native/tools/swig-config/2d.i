@@ -114,7 +114,10 @@
 %ignore cc::Sprite::prepare;
 %ignore cc::Sprite::setUITransform;
 %ignore cc::Sprite::getUITransform;
+%ignore cc::Sprite::getFillStart;
+%ignore cc::Sprite::getFillRange;
 %ignore cc::Label::setUITransform;
+%ignore cc::Label::getCacheMode;
 %ignore cc::Label::getContentWidth;
 %ignore cc::Label::getContentHeight;
 %ignore cc::Label::measureUnwrappedText;
