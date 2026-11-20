@@ -160,5 +160,69 @@
       "pixels": 0,
       "pass": true
     }
-  ]
+  ],
+  "localM6Gate": {
+    "candidate": "244decdeb0",
+    "snapshot": "c03ab82dc8ddbeb95369f9d7eda39224a1dd946d402d69939a0e7e3ba6be3a63",
+    "webManifestSha256": "a4dd3b2d232a33f96e497d65a323063e6cb9cd657abdc3d230f6beef2e08be48",
+    "deferred": [
+      {
+        "name": "text-bold",
+        "max": 20,
+        "pixels": 448
+      },
+      {
+        "name": "text-outline",
+        "max": 30,
+        "pixels": 202
+      },
+      {
+        "name": "text-nested",
+        "max": 47,
+        "pixels": 553
+      }
+    ],
+    "configurations": {
+      "Debug": {
+        "executableSha256": "49b9ac596b7ba788d06149e4c94940cb5784bde964a1c55ac52f918daecae167",
+        "comparisonSha256": "f8c083358e12c7ecc4729f4c8f2232ecae3e5fecf25312a2efb114127e470675",
+        "captures": 47,
+        "layoutPassed": 47,
+        "strictPixelsPassed": 44,
+        "m6GatePassed": true,
+        "capturesUnchangedFromPriorPerPlatform": 47,
+        "fontLifecycleCycles": 1000,
+        "httpRequests": {
+          "font": {
+            "interrupted": 1,
+            "complete": 1,
+            "cancelled": 1,
+            "resumed": 1
+          },
+          "missing": 6,
+          "queued": 0
+        }
+      },
+      "Release": {
+        "executableSha256": "a71321c5e86e966ac8e1d21801d7432ecfd7f25b38f8aacbcac05a3a8e1047a5",
+        "comparisonSha256": "ed0cc154d4678283f9aa23ed6ea58926ed585287229ecb8cfc49715cf4ace4a5",
+        "captures": 47,
+        "layoutPassed": 47,
+        "strictPixelsPassed": 44,
+        "m6GatePassed": true,
+        "capturesUnchangedFromPriorPerPlatform": 47,
+        "fontLifecycleCycles": 1000,
+        "httpRequests": {
+          "font": {
+            "interrupted": 1,
+            "complete": 1,
+            "cancelled": 1,
+            "resumed": 1
+          },
+          "missing": 6,
+          "queued": 0
+        }
+      }
+    }
+  }
 }

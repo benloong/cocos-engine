@@ -233,6 +233,7 @@
 - [x] Windows Debug/Release、完整工程 ASan、CRT/V8 诊断主机与 Web 均通过真实旧 Prefab 连续加载卸载 1000 次，每份报告含 5000 项资产和 22 项 GPU 检查。每 100 轮显式 GC、核查 500 个弱引用；Windows 双堆和 Web 快照中 Prefab、图集、精灵帧、纹理、图片实例均减少。Web 新增绘图对象全部追到当前活动场景，Windows ASan stderr 为空。[配置、覆盖限制与复现](./native-2d-m6-asset-lifetime.md)及[逐轮数据](./native-2d-m6-asset-lifetime.json)。
 - [x] Windows MSVC Release 应用项目构建与基础渲染矩阵。使用同一套 Debug 验收脚本资源，Release 原生二进制完成 M2 五模式、M3 Label、M4 Mask/Graphics 和 M5 RichText，M5 计入 9 个 Label、1 个 Sprite，着色像素为 8725。Release 输出的 12 份图集与 88 份字体 RGBA 和 Debug 同名捕获逐字节一致。Release 应用 SHA256 为 `ed9de14382436006389b64a9b23928b4dba834766993aec429666ee4e816b6b4`；日志见 `native/tests/2d-poc/build/m6-release-*.log` 和 `m6-windows-release-build.log`。此处 Release 指 C++ 配置，发布脚本与完整事件矩阵继续验收。
 - [ ] Windows Debug/Release 构建和关键渲染、字体、事件场景逐格验收。macOS、iOS、Android、OHOS 的 Debug/Release 标为暂缓、待验证。
+  - [x] 候选 `244decdeb0` 的 Windows Debug、Release 与 Web 重建后通过同一快照的 RichText 字体应用矩阵。Windows 双配置各通过 47 项布局、44 项严格像素和 1000 次加载释放，三项像素差异按当前范围暂缓。[本机矩阵记录](./native-2d-m6-richtext-configurations.json)
 - [x] 模块裁剪通过。Windows 和 Web 的 Release 引擎分别构建 9 种组合：无 2D，以及 2D 加 rich-text、mask、graphics 三个独立特性的全部 8 种组合。检查每个实际 cc.js 的公开导出，逐类核对启用及移除结果。[18 个 bundle 的 SHA256 和导出清单](./native-2d-m6-feature-matrix.json)。复现命令为 node native/tests/2d-poc/check-m6-feature-matrix.cjs。
 
 交付：平台矩阵、生命周期/泄漏/线程报告和可定位的失败项。
