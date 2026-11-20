@@ -1,0 +1,115 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "05175dc935",
+  "baseline": {
+    "snapshot": "0de7db5ed8c3cb2bdd1cd14195eb1048a0656886919b09a924f210f039ab3e60",
+    "configuration": "Windows Debug",
+    "failedAssertion": "TTF Label split a word in overflow 1",
+    "logSha256": "cc4aa0d6f663e6fd56c16b4a1697adabf8805ac2cfc34f807182aee2f02638a6"
+  },
+  "fontSnapshot": "8e801e0d17d23528db003cddc03597c4c3e3901ac9906b035749b5f74cabe4fd",
+  "graphicsSnapshot": "82e888552d8571fa8be12a2f5e4f4f4525be1d1f7ed6e15939f849b971177d0b",
+  "font": {
+    "path": "tests/fixtures/Thonburi.ttf",
+    "text": "Atlas 123",
+    "explicitLines": [
+      "Atlas ",
+      "123"
+    ],
+    "size": 24,
+    "lineHeight": 30
+  },
+  "labelCases": [
+    {
+      "name": "label-word-wrap-clamp",
+      "overflow": 1,
+      "width": 74,
+      "height": 110,
+      "fontSize": 24,
+      "coloredPixels": 8140,
+      "rgbaSha256": "7616b58353a5f2a43d0b426c310d770246df2e9afeb02bdbbae5ada2a2e32c53"
+    },
+    {
+      "name": "label-word-wrap-shrink",
+      "overflow": 2,
+      "width": 74,
+      "height": 110,
+      "fontSize": 25,
+      "coloredPixels": 8140,
+      "rgbaSha256": "7fad9fee1b894012aea830ea45af4d10efdb4767866649b18f040de2848873ac"
+    },
+    {
+      "name": "label-word-wrap-resize-height",
+      "overflow": 3,
+      "width": 74,
+      "height": 67.8,
+      "fontSize": 24,
+      "coloredPixels": 5032,
+      "rgbaSha256": "1d9cfc763f732dad24d66a3af5f43faf41ee129dea69b265e7c4d86e3137259a"
+    }
+  ],
+  "chrome": {
+    "fontManifestSha256": "b925def91120085012d990c1ad65dc41b9da3f921a4f8112d6b2bbce1dcb2720",
+    "graphicsManifestSha256": "7c70c26b29d55f92effadb3cf52403a2d3c924b9027125b77486a43f8c9fb80e"
+  },
+  "richtextLayoutParity": {
+    "caseCount": 1440,
+    "fixtureResultSha256": "d10ccc3d4af4e1d04d7b17a316b58e396523d02f36113e1dd480d5eb05cfa1e7"
+  },
+  "configurations": {
+    "Debug": {
+      "fonts": {
+        "executableSha256": "a6e003fb89d76cc35f15f5602ce6e2015de81e1ff30109a5ea0cc55756c20e03",
+        "layoutMatches": 50,
+        "strictPixelMatches": 47,
+        "existingCaptureHashesMatchPreviousNode": 47,
+        "fontLifecycleCycles": 1000,
+        "deferredPixelMaximums": {
+          "text-bold": 20,
+          "text-outline": 30,
+          "text-nested": 47
+        },
+        "comparisonSha256": "11da8b0fc8580b99991d4f93d61db5f9a98e9452797888e40b6b1720a5fdafb9",
+        "manifestSha256": "ac245da795ac36ff436ea2048229b2a021d23171cf8e028eeeb1818cc0aba73e",
+        "applicationLogSha256": "35b29e4e8c130eee57c7919bdab33b2d8f6f94a0b807b3ce0df17f4e8e4a1e95"
+      },
+      "graphics": {
+        "executableSha256": "d5d7bdae509566e54ecdfe26888ab20abae24be22f3dec1adda29ebce3d41b72",
+        "captureCount": 138,
+        "identicalPixels": 138,
+        "sceneCycles": 1000,
+        "hitChecks": 22,
+        "comparisonSha256": "c19f5b5aa3144a83907937fc2768abe0e83d0d65c38d314348481e516967cca5",
+        "manifestSha256": "c5cf5121420e0a06285ad499d126961723a7f9389ef247618e05ab93ec0021ab",
+        "applicationLogSha256": "e912fb5ca77bac3b7340cbbbad4810a216a65c3ef5325f460a2a0ef88dc7eb3a"
+      }
+    },
+    "Release": {
+      "fonts": {
+        "executableSha256": "64c2cff76159c7d3be115fe9df17cd65f0b929619868b62e838bd94d0b6cd77c",
+        "layoutMatches": 50,
+        "strictPixelMatches": 47,
+        "existingCaptureHashesMatchPreviousNode": 47,
+        "fontLifecycleCycles": 1000,
+        "deferredPixelMaximums": {
+          "text-bold": 20,
+          "text-outline": 30,
+          "text-nested": 47
+        },
+        "comparisonSha256": "153f73bc8a993e1079a6471298a7da1cfa9ba412f7bbe4771b16fefacbc1d21e",
+        "manifestSha256": "5aefcc395ac3ed14978a74c429df33610282cb47e7e8ee5ab0d39f9931037368",
+        "applicationLogSha256": "b02c25a3daa482d9368878c2950393a8719c377d7412842af27d26e1763fa40b"
+      },
+      "graphics": {
+        "executableSha256": "cc3016d570a6cd853552b20a48371297be8dfbec39786c5dbe713f943b0a1f10",
+        "captureCount": 138,
+        "identicalPixels": 138,
+        "sceneCycles": 1000,
+        "hitChecks": 22,
+        "comparisonSha256": "c19f5b5aa3144a83907937fc2768abe0e83d0d65c38d314348481e516967cca5",
+        "manifestSha256": "c9bad90dcc71b49c7a8c0a24a22c1ad52f98440a9e4ee85059606e6c79f79cf2",
+        "applicationLogSha256": "4e7c5dfb11615270c7181c51fbfa3d67567b39bb95717ae1bec719a161285cba"
+      }
+    }
+  }
+}

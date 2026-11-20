@@ -24,6 +24,10 @@
 #include <cstdint>
 
 namespace cc {
+// Wrap a paragraph with the same word and symbol boundaries as the Web text assembler.
+std::vector<std::string> fragmentTextForWidth(const std::string &paragraph, double maxWidth,
+                                              const std::function<double(const std::string &)> &measure);
+
 struct RichTextExtent { double width{0}; double height{0}; };
 struct RichTextLayoutOptions {
     double fontSize{40};

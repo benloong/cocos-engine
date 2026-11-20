@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "ef4be8f75608229e61d0373c06892c0b1af0cf5965f4ab75273c69ca0fe155b7"
+      "sha256": "8dcb1bb3b8c122f8228435bc32598fa6baefbf9dfe2d2449e5b299644a3671ac"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -215,11 +215,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/RichTextLayout.cpp",
-      "sha256": "234f5f8fb671d7a13168c2dd497bc6f27fd4cf075ea36546eae732eba28ed8d0"
+      "sha256": "f9099c72928d5ec3dc34ddb9d6e162969f420e1b5ac1e57ab31c2697ceef0ca5"
     },
     {
       "file": "native/cocos/2d/renderer/RichTextLayout.h",
-      "sha256": "a31a0aa2157c630900ec7999c24f36f72e182bace7a085a9b82335ca341104d8"
+      "sha256": "629ebd2b61e38a43397681c1c7761514c0958bcc8b4b698df301962c8c3e52ed"
     },
     {
       "file": "native/cocos/2d/renderer/RichTextParser.cpp",

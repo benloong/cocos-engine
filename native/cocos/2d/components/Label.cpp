@@ -36,6 +36,7 @@
 #include "2d/assets/TTFFont.h"
 #include "2d/framework/UITransform.h"
 #include "2d/renderer/LetterAtlas.h"
+#include "2d/renderer/RichTextLayout.h"
 #include "core/assets/AssetEnum.h"
 #include "core/assets/Texture2D.h"
 #include "core/scene-graph/Node.h"
@@ -191,24 +192,13 @@ std::vector<std::string> layoutLines(CanvasRenderingContext2D &context, const st
     while (start <= text.size()) {
         const size_t end = text.find('\n', start);
         const std::string paragraph = text.substr(start, end == std::string::npos ? std::string::npos : end - start);
-        if (paragraph.empty()) {
-            lines.emplace_back();
-        } else if (!wrap) {
+        if (!wrap) {
             lines.push_back(paragraph);
         } else {
-            std::string current;
-            for (const std::string &codepoint : splitUtf8(paragraph)) {
-                const std::string candidate = current + codepoint;
-                if (!current.empty() && measureText(context, candidate) > maxWidth) {
-                    lines.push_back(current);
-                    current = codepoint;
-                } else {
-                    current = candidate;
-                }
-            }
-            if (!current.empty()) {
-                lines.push_back(current);
-            }
+            auto fragments = fragmentTextForWidth(paragraph, maxWidth, [&](const std::string &text) {
+                return measureText(context, text);
+            });
+            for (auto &fragment : fragments) lines.push_back(std::move(fragment));
         }
         if (end == std::string::npos) {
             break;

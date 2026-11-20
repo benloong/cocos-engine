@@ -154,6 +154,70 @@ size_t firstWord(const Text &text, size_t start) {
     return length;
 }
 
+template <typename Measure>
+std::vector<Text> fragments(Text text, double width, double maxWidth, const Measure &measure) {
+    std::vector<Text> result;
+    while (width > maxWidth && text.size() > 1) {
+        int64_t length = static_cast<int64_t>(text.size() * (maxWidth / width));
+        Text remaining = safeSub(text, length), nextLine = remaining;
+        double firstWidth = width - measure(remaining);
+        int count = 0;
+        int64_t pushed = 0;
+        while (firstWidth > maxWidth && count++ < 100) {
+            length = static_cast<int64_t>(length * maxWidth / firstWidth);
+            remaining = safeSub(text, length);
+            firstWidth = width - measure(remaining);
+        }
+        count = 0;
+        while (!remaining.empty() && firstWidth <= maxWidth && count++ < 100) {
+            size_t start = 0;
+            while (start < remaining.size() && trimSpace(remaining[start])) ++start;
+            pushed = 1;
+            if (start < remaining.size() && word(remaining[start])) {
+                size_t end = start;
+                while (end < remaining.size() && word(remaining[end])) ++end;
+                pushed = end - start;
+            }
+            nextLine = remaining;
+            length += pushed;
+            remaining = safeSub(text, length);
+            firstWidth = width - measure(remaining);
+        }
+        length -= pushed;
+        if (length == 0) {
+            length = 1;
+            nextLine = safeSub(text, 1);
+        } else if (length == 1 && high(at(text, 0))) {
+            length = 2;
+            nextLine = safeSub(text, 2);
+        }
+        Text current = safeSub(text, 0, length);
+        const Text &following = nextLine.empty() ? remaining : nextLine;
+        static const Text symbols = u"!,.:;'}]%?>\u3001\u2018\u201c\u300b\uff1f\u3002\uff0c\uff01";
+        if (!following.empty() && symbols.find(following[0]) != Text::npos) {
+            length -= tailWord(current, true);
+            if (length == 0) length = 1;
+            nextLine = safeSub(text, length);
+            current = safeSub(text, 0, length);
+        }
+        if (!nextLine.empty() && english(nextLine[0])) {
+            const auto tail = tailWord(current);
+            if (tail && current.size() != tail) {
+                length -= tail;
+                nextLine = safeSub(text, length);
+                current = safeSub(text, 0, length);
+            }
+        }
+        if (!result.empty()) current = trim(current);
+        if (!current.empty() || result.empty()) result.push_back(std::move(current));
+        text = nextLine.empty() ? remaining : nextLine;
+        width = measure(text);
+    }
+    if (!result.empty()) text = trim(text);
+    if (!text.empty() || result.empty()) result.push_back(std::move(text));
+    return result;
+}
+
 class Layout {
 public:
     Layout(const std::vector<RichTextSpan> &spans, const RichTextLayoutOptions &options, const RichTextLayout::Measure &measure, const RichTextLayout::ImageSize &images)
@@ -217,50 +281,6 @@ private:
         if (_options.maxWidth <= 0) _result.width = std::max(_result.width, _offset);
         placement.line = _result.lineCount; _result.placements.push_back(std::move(placement)); return true;
     }
-    std::vector<Text> fragments(Text text, double width, size_t span) {
-        std::vector<Text> result;
-        while (width > _options.maxWidth && text.size() > 1) {
-            int64_t length = static_cast<int64_t>(text.size() * (_options.maxWidth / width));
-            Text remaining = safeSub(text, length), nextLine = remaining;
-            double firstWidth = width - measure(span, remaining).width;
-            int count = 0; int64_t pushed = 0;
-            while (firstWidth > _options.maxWidth && count++ < 100) {
-                length = static_cast<int64_t>(length * _options.maxWidth / firstWidth);
-                remaining = safeSub(text, length); firstWidth = width - measure(span, remaining).width;
-            }
-            count = 0;
-            while (!remaining.empty() && firstWidth <= _options.maxWidth && count++ < 100) {
-                size_t start = 0; while (start < remaining.size() && trimSpace(remaining[start])) ++start;
-                pushed = 1;
-                if (start < remaining.size() && word(remaining[start])) {
-                    size_t end = start; while (end < remaining.size() && word(remaining[end])) ++end;
-                    pushed = end - start;
-                }
-                nextLine = remaining; length += pushed; remaining = safeSub(text, length);
-                firstWidth = width - measure(span, remaining).width;
-            }
-            length -= pushed;
-            if (length == 0) { length = 1; nextLine = safeSub(text, 1); }
-            else if (length == 1 && high(at(text, 0))) { length = 2; nextLine = safeSub(text, 2); }
-            Text current = safeSub(text, 0, length);
-            const Text &following = nextLine.empty() ? remaining : nextLine;
-            static const Text symbols = u"!,.:;'}]%?>\u3001\u2018\u201c\u300b\uff1f\u3002\uff0c\uff01";
-            if (!following.empty() && symbols.find(following[0]) != Text::npos) {
-                length -= tailWord(current, true); if (length == 0) length = 1;
-                nextLine = safeSub(text, length); current = safeSub(text, 0, length);
-            }
-            if (!nextLine.empty() && english(nextLine[0])) {
-                const auto tail = tailWord(current);
-                if (tail && current.size() != tail) { length -= tail; nextLine = safeSub(text, length); current = safeSub(text, 0, length); }
-            }
-            if (!result.empty()) current = trim(current);
-            if (!current.empty() || result.empty()) result.push_back(current);
-            text = nextLine.empty() ? remaining : nextLine; width = measure(span, text).width;
-        }
-        if (!result.empty()) text = trim(text);
-        if (!text.empty() || result.empty()) result.push_back(text);
-        return result;
-    }
     void wrap(Text text, size_t span) {
         double width = measure(span, text).width;
         if (_offset > 0 && width + _offset > _options.maxWidth) {
@@ -277,7 +297,9 @@ private:
             }
         }
         if (width > _options.maxWidth) {
-            const auto parts = fragments(text, width, span);
+            const auto parts = fragments(std::move(text), width, _options.maxWidth, [&](const Text &part) {
+                return measure(span, part).width;
+            });
             for (size_t i = 0; i < parts.size(); ++i) {
                 addText(parts[i], span); _offset += measure(span, parts[i]).width;
                 if (i + 1 < parts.size()) newLine();
@@ -353,6 +375,20 @@ private:
     double _offset{0};
 };
 } // namespace
+std::vector<std::string> fragmentTextForWidth(const std::string &paragraph, double maxWidth,
+                                              const std::function<double(const std::string &)> &measure) {
+    if (paragraph.empty() || maxWidth < 0) return {std::string{}};
+    const double width = measure(paragraph);
+    if (width <= maxWidth) return {paragraph};
+    const auto parts = fragments(utf16(paragraph), width, maxWidth, [&](const Text &part) {
+        return measure(utf8(part));
+    });
+    std::vector<std::string> lines;
+    lines.reserve(parts.size());
+    for (const auto &part : parts) lines.push_back(utf8(part));
+    return lines;
+}
+
 RichTextLayoutResult RichTextLayout::build(const std::vector<RichTextSpan> &spans, const RichTextLayoutOptions &options,
                                           const Measure &measure, const ImageSize &images) {
     return Layout(spans, options, measure, images).build();

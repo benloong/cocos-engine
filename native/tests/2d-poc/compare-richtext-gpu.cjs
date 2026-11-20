@@ -15,13 +15,19 @@ if (!/^[0-9a-f]{64}$/.test(a.executableSha256)) throw Error('Missing native exec
 const lifecycle=a.text?.lifecycle;
 if(!lifecycle?.http?.interrupted||!lifecycle.http.loaded||!lifecycle.http.cachePathResolved||!lifecycle.http.released||!lifecycle.http.cacheRemoved||!lifecycle.http.missingRejected||!lifecycle.http.failedFilesRemoved||!lifecycle.http.cancelledAndResumed||lifecycle.http.bytes!==223404)throw Error('Incomplete HTTP font lifecycle evidence');
 if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||!Number.isInteger(lifecycle.cacheBefore)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
-const { richTextNames, shadowNames, captures } = require('./richtext-gpu-cases.cjs');
+const { wordWrapNames, richTextNames, shadowNames, captures } = require('./richtext-gpu-cases.cjs');
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 for(const value of [a,b]) {
     const interaction = value.text.interaction;
     if (!interaction?.sameWithShadowTag || !interaction.repainted || !interaction.destroyed
         || interaction.widths?.join() !== '160,96' || interaction.calls?.join() !== 'first,second') {
         throw Error('Incomplete styled RichText interaction: ' + value.backend);
+    }
+    const wordWrap = value.text.labelWordWrap;
+    if (JSON.stringify(wordWrap?.map(row => row.name)) !== JSON.stringify(wordWrapNames)
+        || wordWrap.some(({ overflow, width, height, fontSize }, index) => overflow !== index + 1 || width !== 74
+            || Math.abs(height - (index === 2 ? 67.8 : 110)) > 0.001 || fontSize !== (index === 1 ? 25 : 24))) {
+        throw Error('Incomplete TTF Label word wrap: ' + value.backend);
     }
     if (JSON.stringify(value.text.shadowLayout?.map(row=>row.name)) !== JSON.stringify(shadowNames)) throw Error('Incomplete Label shadow layouts');
     const coverage = value.text.hardShadowCoverage;
@@ -60,8 +66,8 @@ function shadowCoverage(bytes, width) {
     }
     return { pixels, minX, maxX };
 }
-const nativeMetrics = a.text.metrics.concat(a.text.shadowLayout);
-const webMetrics = b.text.metrics.concat(b.text.shadowLayout);
+const nativeMetrics = a.text.labelWordWrap.concat(a.text.metrics, a.text.shadowLayout);
+const webMetrics = b.text.labelWordWrap.concat(b.text.metrics, b.text.shadowLayout);
 for(let n=0;n<captures.length;n++) {
     const name=captures[n],actual=fs.readFileSync(path.join(nativeDir,name+'.rgba')),reference=fs.readFileSync(path.join(webDir,name+'.rgba'));
     if(actual.length!==256*256*4||reference.length!==actual.length)throw Error('Invalid RGBA dimensions');

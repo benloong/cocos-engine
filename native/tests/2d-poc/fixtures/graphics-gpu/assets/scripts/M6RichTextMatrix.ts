@@ -603,6 +603,49 @@ async function captureShadowLayout (parent: Node, font: TTFFont, capture: (name:
     return metrics;
 }
 
+async function checkLabelWordWrap (parent: Node, font: TTFFont, capture: (name: string) => Promise<void>,
+    readPixels: () => Uint8Array): Promise<object[]> {
+    const node = new Node('ttf-label-word-wrap');
+    node.layer = parent.layer;
+    parent.addChild(node);
+    try {
+        const ui = node.addComponent(UITransform);
+        const label = node.addComponent(Label);
+        label.font = font;
+        label.fontSize = 24;
+        label.lineHeight = 30;
+        label.enableWrapText = true;
+        const rows = [];
+        const cases = [
+            ['label-word-wrap-clamp', Label.Overflow.CLAMP],
+            ['label-word-wrap-shrink', Label.Overflow.SHRINK],
+            ['label-word-wrap-resize-height', Label.Overflow.RESIZE_HEIGHT],
+        ] as const;
+        for (const [name, overflow] of cases) {
+            label.overflow = overflow;
+            ui.setContentSize(74, 110);
+            label.string = 'Atlas 123';
+            await capture(name);
+            const wrapped = new Uint8Array(readPixels());
+            const { width, height } = ui.contentSize;
+            const fontSize = label.actualFontSize;
+            if (!submittedTextCoverage(label.ttfSpriteFrame?.texture.getGFXTexture() ?? null)) {
+                throw new Error('Wrapped TTF Label did not submit glyph pixels');
+            }
+            label.string = 'Atlas \n123';
+            await wait();
+            if (ui.width !== width || ui.height !== height || label.actualFontSize !== fontSize || !samePixels(wrapped, readPixels())) {
+                throw new Error(`TTF Label split a word in overflow ${overflow}`);
+            }
+            rows.push({ name, overflow, width, height, fontSize });
+        }
+        return rows;
+    } finally {
+        node.destroy();
+        await wait();
+    }
+}
+
 /** The real asset factory loads the same TTF bytes in both applications. */
 export async function runRichTextMatrix (parent: Node, capture: (name: string) => Promise<void>, readPixels: () => Uint8Array): Promise<object> {
     const url = sys.isNative ? '__M6_GPU_FONT__' : '/m6-font.ttf';
@@ -652,6 +695,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
+    const labelWordWrap = await checkLabelWordWrap(parent, font, capture, readPixels);
     const fractionalFontWidths = await checkFractionalFontSizes(parent, font, readPixels);
     const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
     const prefab = await checkRichTextPrefab(parent, font, readPixels);
@@ -715,5 +759,6 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
-    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, fractionalFontWidths, hardShadowCoverage, blurredShadowCenters, shadowLayout };
+    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, labelWordWrap, fractionalFontWidths,
+        hardShadowCoverage, blurredShadowCenters, shadowLayout };
 }
