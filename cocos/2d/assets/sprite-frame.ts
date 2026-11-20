@@ -29,7 +29,7 @@ import { cloneFrameVertices, deserializeFrameVertices, serializeFrameVertices, t
 import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { ccclass } from 'cc.decorator';
 import { EDITOR, NODEJS, TEST, BUILD } from 'internal:constants';
-import { Rect, Size, Vec2, Vec3, Vec4, cclegacy, errorID, warnID, js, v3, mat4, rect, v4, v2, size } from '../../core';
+import { Rect, Size, Vec2, Vec3, Vec4, cclegacy, errorID, warnID, isValid, js, v3, mat4, rect, v4, v2, size } from '../../core';
 import { Asset } from '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
 import { ImageAsset, ImageSource } from '../../asset/assets/image-asset';
@@ -916,7 +916,7 @@ export class SpriteFrame extends Asset {
      * @zh 确保 mesh 可用，你应该在使用 mesh 之前调用它。
      */
     public ensureMeshData (): void {
-        if (this._mesh) return;
+        if (this._mesh || !isValid(this)) return;
         // If SpriteFrame from load, we need init vertices when use mesh
         this._initVertices();
         this._createMesh();
@@ -925,6 +925,11 @@ export class SpriteFrame extends Asset {
     public destroy (): boolean {
         Atlas.releaseFrame(this);
         return super.destroy();
+    }
+
+    protected _onPreDestroy (): void {
+        this._mesh?.destroy();
+        this._mesh = null;
     }
 
     /**

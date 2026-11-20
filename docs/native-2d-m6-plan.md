@@ -133,6 +133,7 @@
 - [x] 旧格式静态图集和 Prefab：Windows Debug/Web 实际加载 TexturePacker plist、PNG 和序列化 Prefab，通过三个加载释放循环、两个独立实例、红绿 GPU 换帧、缓存清理和独立图集持有检查。见[验收报告](./native-2d-m6.1-sprite-atlas.md#5-真实资源和-prefab)。
 - [x] SpriteAtlas 帧末释放原生帧表：分别覆盖 C++ 和 JSB 销毁队列，拒绝迟到写入，Debug/Release 1000 轮引用计数复归。真实 Prefab 保留 wrapper 的释放断言和连续文档门禁通过。见[所有权验收](./native-2d-m6.1-sprite-atlas.md#6-原生帧引用随延迟销毁释放)。
 - [x] SpriteFrame 帧末归还当前纹理和原图。C++ 与 JSB 的销毁队列共用清理入口，迟到依赖不能重新绑定。Debug/Release 各 1000 轮和 Windows Debug 真实资产释放、完整串行门禁及像素对照通过。见[验收报告](./native-2d-m6.1-sprite-frame.md#帧末归还纹理引用)。
+  - [x] SpriteFrame 延迟销毁时归还自身生成的 Mesh 和 GPU 缓冲。Windows Debug、Release 与 Web 通过六个帧释放用例，存活克隆仍能绘制，Web 同页克隆可恢复到源纹理。127 张图与清理前逐字节一致。[网格所有权验收](./native-2d-m6.1-sprite-frame.md#帧末释放生成的网格)
 - [ ] 补其余旧资产和场景、异步取消与延迟依赖、clone、跨场景重复加载释放及长期生命周期。
   - [x] 旧静态图集 Prefab 的旋转帧克隆在原 Prefab、图集和原帧释放后继续渲染。运行时显式持有导入纹理，重新加载同一 Prefab 后，新节点解析到新图集并复用该纹理。Windows Debug、Release 和 Web 的中心像素依次为绿、绿、红、绿。销毁克隆并释放最后一个纹理引用后，纹理失效且缓存中已无该 UUID。[真实加载、回读与释放用例](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
   - [x] 旧 Prefab 异步图集依赖。resources.preload 返回包含 Prefab 和图集文件的请求记录，两者尚未发布到资产缓存。在真实加载管线中暂停图集依赖两个帧末，第一次以取消错误结束，第二次对同一 Prefab UUID 放行。Windows Debug、Release 和 Web 均验证等待中及取消后无半成品进入缓存，重试解析到同一图集内的帧，切帧后中心像素由红变绿，释放后两个缓存键消失。此用例注入依赖阶段取消，传输层中止另行验收。[回归夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)

@@ -107,3 +107,18 @@ Windows Debug 完整 M0、Windows 双配置旧工程 M2–M5 和各六组真实 
 |---|---|
 | Debug | bdc71bd41c48b0dce2857efdf8169159588e0fc5d586f1a8b8de8aef94e556ea |
 | Release | 84d417c0be38c6a6f2231a2d8dcb6a0365b52618d8e2788be14cc890f53228a8 |
+
+## 帧末释放生成的网格
+
+Web 和 JSB 在 SpriteFrame 的延迟销毁入口释放并清空该帧的 Mesh。提交销毁请求后，当前帧仍能使用已生成的网格。帧末归还网格所持的 GPU 顶点与索引缓冲，下一销毁批次将调用方仍持有的 Mesh 对象标为无效。已销毁的 SpriteFrame 调用 `ensureMeshData()` 时不会生成新网格。
+
+修复前，Web 定向测试在两次销毁队列刷新后仍读到有效的 Mesh。三端各通过 `assetManager.releaseAsset()` 释放六个已提交的矩形或多边形帧，保留 Mesh 和渲染子网格引用检查顶点和索引缓冲。Web 释放仍打包的原帧后，独立克隆仍可恢复并采样旧 plist 与 PNG 提供的源纹理。Windows Debug 和 Release 在动态合图禁用的条件下执行对应的原图用例。[定向回归](../tests/ui/native-2d-m2-sprite-frame-shell.test.ts)、[GPU 场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)
+
+快照 `83a78c641a96cde3a226a80b51441b51430ad4a3bd27d4e33c846ef3bd461f26` 中，三端各完成 1000 次场景切换与 4998 项断言。127 张 RGBA 的最大通道差均为 0，各端逐张与上一候选的哈希相同。Debug 和 Release 的比较器完整输出 SHA-256 均为 `7ca4a15f80445a298441bb371cbfd2fad0f028c2340eef5ddc91d836c9339734`。[严格图像比较器](../native/tests/2d-poc/compare-graphics-gpu.cjs)
+
+| Windows GPU 候选 | 可执行文件 SHA-256 |
+|---|---|
+| Debug | `01db5b7289c84a7bcb2f703c635ef775f32883794c0afac9476161963130f994` |
+| Release | `ab05e5d29eb9061f6bb543531c9fa72261b813e7b985d17d3f5b266fec50cdf2` |
+
+Windows Debug 完整 M0 通过，末尾 45 项 Jest 均通过。Windows 双配置各通过 M2–M5、六组 JSB 探针和 92 张与 Web 逐字节一致的位图字体捕获。Web 旧工程的合图和 RichText 检查也通过。

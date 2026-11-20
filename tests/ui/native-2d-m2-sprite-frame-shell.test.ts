@@ -1,4 +1,4 @@
-import { cclegacy, Rect, Size, Vec2 } from '../../cocos/core';
+import { cclegacy, CCObject, isValid, Rect, Size, Vec2 } from '../../cocos/core';
 import { SpriteFrame as WebSpriteFrame } from '../../cocos/2d/assets/sprite-frame';
 import { AttributeName } from '../../cocos/gfx';
 
@@ -91,6 +91,31 @@ test('Web generated mesh buffers, clone and texture refresh match the Windows JS
     polygon.ensureMeshData();
     expect(polygon.mesh!.struct.vertexBundles[0].view.count).toBe(0);
     expect(polygon.vertices!.indexes).toEqual([]);
+});
+
+test('destroying a Web SpriteFrame releases its mesh at frame end and leaves the clone valid', () => {
+    const frame = new WebSpriteFrame();
+    frame.texture = { width: 4, height: 4 } as any;
+    frame.ensureMeshData();
+    const mesh = frame.mesh!;
+    const clone = frame.clone();
+    const cloneMesh = clone.mesh!;
+
+    expect(frame.destroy()).toBe(true);
+    expect(isValid(mesh, true)).toBe(true);
+    CCObject._deferredDestroy();
+    expect(frame.mesh).toBeNull();
+    CCObject._deferredDestroy();
+    expect(isValid(mesh)).toBe(false);
+    expect(isValid(cloneMesh, true)).toBe(true);
+    expect(Array.from(cloneMesh.readIndices(0)!)).toEqual([0, 1, 2, 2, 1, 3]);
+
+    frame.ensureMeshData();
+    expect(frame.mesh).toBeNull();
+    clone.destroy();
+    CCObject._deferredDestroy();
+    CCObject._deferredDestroy();
+    expect(isValid(cloneMesh)).toBe(false);
 });
 
 test('authored polygon vertices survive Web and native serialization and cloning', () => {

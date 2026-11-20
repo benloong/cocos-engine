@@ -1,6 +1,6 @@
 import { _decorator, BitmapFont, Camera, Canvas, Color, Component, deserialize, Director, director, dynamicAtlasManager, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { countTraversedRoots, runSceneMatrix } from './M6SceneMatrix';
-import { EffectAsset, gfx, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
+import { assetManager, EffectAsset, gfx, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
 
 const { ccclass } = _decorator;
@@ -11,6 +11,27 @@ const probeMode: string = '__M6_GPU_MODE__';
 const spriteImplementation = (globalThis as { __m6SpriteImplementation?: string }).__m6SpriteImplementation ?? (sys.isNative ? 'native' : 'js');
 const labelImplementation = (globalThis as { __m6LabelImplementation?: string }).__m6LabelImplementation ?? (sys.isNative ? 'native' : 'js');
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+
+async function releaseMeshedFrame (frame: SpriteFrame): Promise<void> {
+    const mesh = frame.mesh!;
+    const subMesh = mesh.renderingSubMeshes[0];
+    const nativeSubMesh = subMesh as typeof subMesh & { getVertexBuffers(): unknown[]; getIndexBuffer(): unknown };
+    const vertexCount = (): number => (sys.isNative ? nativeSubMesh.getVertexBuffers() : subMesh.vertexBuffers).length;
+    const indexBuffer = (): unknown => sys.isNative ? nativeSubMesh.getIndexBuffer() : subMesh.indexBuffer;
+    const endFrame = (): Promise<void> => new Promise(resolve => director.once(Director.EVENT_END_FRAME, () => resolve()));
+
+    assetManager.releaseAsset(frame);
+    if (isValid(frame, true) || !isValid(mesh, true) || !vertexCount() || !indexBuffer()) {
+        throw new Error('SpriteFrame release invalidated the rendered mesh before deferred destruction');
+    }
+    await endFrame();
+    if (frame.mesh || isValid(mesh, true) || vertexCount() || indexBuffer()) {
+        throw new Error('SpriteFrame deferred destruction retained mesh or submitted GPU buffers');
+    }
+    await endFrame();
+    frame.ensureMeshData();
+    if (isValid(mesh) || frame.mesh) throw new Error('A released SpriteFrame retained or recreated its mesh');
+}
 
 async function checkAuthoredPolygon (parent: Node, layer: number, material: Material, capture: (name: string) => Promise<void>): Promise<void> {
     const makeMeshTexture = (side: number, channel: number): Texture2D => {
@@ -72,13 +93,12 @@ async function checkAuthoredPolygon (parent: Node, layer: number, material: Mate
     renderer.spriteFrame = clone;
     checkPolygon(clone, 0.375, -0.375);
     checkPolygon(polygon, 0.25, -0.25);
+    await releaseMeshedFrame(polygon);
+    checkPolygon(clone, 0.375, -0.375);
     await capture('authored-mesh-replaced-texture');
     polygonNode.destroy();
     await wait();
-    clone.mesh!.destroy();
-    polygon.mesh!.destroy();
-    clone.destroy();
-    polygon.destroy();
+    await releaseMeshedFrame(clone);
     red.destroy();
     green.destroy();
 }
@@ -150,9 +170,15 @@ async function checkPackedMeshes (
                 await capture(name + '-rebound');
                 model.spriteFrame = late;
                 await capture(name + '-lazy');
+                const lateTexture = late.texture;
+                sprite.spriteFrame = late;
+                await releaseMeshedFrame(frame);
+                if (late.texture !== lateTexture || !isValid(late.mesh, true)) {
+                    throw new Error('Releasing a packed frame invalidated its surviving clone');
+                }
                 dynamicAtlasManager.enabled = false;
-                if (late.original || frame.original || frame.texture !== texture || late.texture !== texture) {
-                    throw new Error('Both mesh frames must return to their source texture');
+                if (late.original || late.texture !== texture) {
+                    throw new Error('The surviving mesh frame did not return to its source texture');
                 }
                 await capture(name + '-restored');
             } finally {
@@ -160,10 +186,13 @@ async function checkPackedMeshes (
                 uiNode.destroy();
                 meshNode.destroy();
                 await wait();
-                frame.mesh?.destroy();
-                late.mesh?.destroy();
-                frame.destroy();
-                late.destroy();
+                await Promise.all([frame, late].map((value) => {
+                    if (!isValid(value, true)) return undefined;
+                    if (value.mesh) return releaseMeshedFrame(value);
+                    assetManager.releaseAsset(value);
+                    return undefined;
+                }));
+                if (!isValid(texture, true)) throw new Error('Releasing the mesh frames destroyed their source texture');
             }
         }
     } finally {

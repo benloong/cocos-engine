@@ -123,7 +123,7 @@ function rebuildFrameMesh (frame: any): void {
 }
 
 spriteFrameProto.ensureMeshData = function (): void {
-    if (!this._mesh) rebuildFrameMesh(this);
+    if (!this._mesh && isValid(this)) rebuildFrameMesh(this);
 };
 
 Object.defineProperties(spriteFrameProto, {
@@ -262,6 +262,8 @@ const onPreDestroy = spriteFrameProto._onPreDestroy;
 spriteFrameProto._onPreDestroy = function (): void {
     this.clearTextureReferences();
     Atlas.releaseFrame(this);
+    this._mesh?.destroy();
+    this._mesh = null;
     onPreDestroy?.call(this);
 };
 

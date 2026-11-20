@@ -14264,6 +14264,16 @@
             "decorators": []
           },
           {
+            "name": "_onPreDestroy",
+            "kind": "MethodDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "_calculateSlicedUV",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -14918,8 +14928,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "37db4d2318bf16214dd6f3d75c0c6b2875629d7e3c683f6edb6b40952b582039",
-      "printedCodeLines": 320,
+      "sha256": "851ffe21312bd76d51cba09825a0babe7ec31df263177e9bda7206f23bcbfc43",
+      "printedCodeLines": 322,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
         "./sprite-frame-vertices",
@@ -14951,8 +14961,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.ts",
-      "sha256": "3fa924dd8d83d879a89b50e8b5dae653119f0e269622d905bcb6eba115d094e0",
-      "printedCodeLines": 883,
+      "sha256": "ad1f834c88925809275745dfaecfcb636c5aade631840b43d42a4b5403fb1026",
+      "printedCodeLines": 887,
       "runtimeImports": [
         "./sprite-frame-vertices",
         "../utils/dynamic-atlas/atlas",
@@ -14973,11 +14983,11 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        963,
-        965,
-        983,
-        985,
-        1486
+        968,
+        970,
+        988,
+        990,
+        1491
       ]
     },
     {
