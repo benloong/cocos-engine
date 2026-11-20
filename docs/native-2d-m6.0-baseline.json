@@ -7,7 +7,7 @@
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
-      "sha256": "f0c07a0cde7c5784b543df51ea970f5c6ecb9a6d1fa2c20cbe9260a1c804c2af"
+      "sha256": "6bff3e043381bb1058f763ff4c758b1501a906da69c855d359f7e2c906387066"
     },
     {
       "file": "cocos/asset/asset-manager/factory.ts",
@@ -13143,6 +13143,16 @@
             ]
           },
           {
+            "name": "_releaseBrowserFont",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "(() => void) | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
             "name": "_nativeAsset",
             "kind": "GetAccessor",
             "visibility": "public",
@@ -13162,8 +13172,18 @@
             "static": false,
             "type": null,
             "parameters": [
-              "value"
+              "value: string | BrowserFont | null"
             ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_onPreDestroy",
+            "kind": "MethodDeclaration",
+            "visibility": "protected",
+            "static": false,
+            "type": "void",
+            "parameters": [],
             "default": null,
             "decorators": []
           },
@@ -15099,8 +15119,8 @@
     },
     {
       "file": "cocos/2d/assets/ttf-font.ts",
-      "sha256": "bd1d10c0c22c3aa3b4084dbc7faa5a9ec1491dbe5f7da38eb09b5201045676b2",
-      "printedCodeLines": 33,
+      "sha256": "6c36bb7a8995f6a994297ae5fd66bd570b1d791a3aeb4f0e15da1925cbe61ecb",
+      "printedCodeLines": 48,
       "runtimeImports": [
         "cc.decorator",
         "../../core",
@@ -17311,10 +17331,11 @@
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
-      "sha256": "f0c07a0cde7c5784b543df51ea970f5c6ecb9a6d1fa2c20cbe9260a1c804c2af",
-      "printedCodeLines": 203,
+      "sha256": "6bff3e043381bb1058f763ff4c758b1501a906da69c855d359f7e2c906387066",
+      "printedCodeLines": 256,
       "runtimeImports": [
         "../../core",
+        "internal:constants",
         "./font-family",
         "../../asset/asset-manager/downloader",
         "../../asset/asset-manager/factory",
@@ -17325,8 +17346,8 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        88,
-        132
+        95,
+        176
       ]
     },
     {

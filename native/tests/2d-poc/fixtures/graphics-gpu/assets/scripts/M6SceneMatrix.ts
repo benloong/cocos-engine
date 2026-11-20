@@ -1,7 +1,116 @@
-import { Asset, BitmapFont, Camera, Color, Director, director, Graphics, instantiate, isValid, Label, LabelAtlas, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
+import { Asset, AssetManager, BitmapFont, Camera, Color, Director, director, Graphics, instantiate, isValid, Label, LabelAtlas, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, TTFFont, UITransform } from 'cc';
 
 type Check = { name: string; actual: boolean | number; expected: boolean | number };
 const nextFrame = (): Promise<void> => new Promise(resolve => director.once(Director.EVENT_AFTER_DRAW, resolve));
+
+async function runBundledTTFScenes (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {
+    const bundleName = 'm6-ttf';
+    const prefabPath = 'BundledTTFLabel';
+    const fontPath = 'M6BundledThonburi';
+    const ids = ['fa1ba389-cd23-4275-90c4-6863fdcf15f3', '748bb085-20ec-4ee9-8792-c41c97d006ee'];
+    const loadBundle = (): Promise<AssetManager.Bundle> => new Promise((resolve, reject) => assetManager.loadBundle(bundleName,
+        (error, bundle) => error ? reject(error) : resolve(bundle)));
+    const loadPrefab = (bundle: AssetManager.Bundle): Promise<Prefab> => new Promise((resolve, reject) => bundle.load(prefabPath,
+        Prefab, (error, prefab) => error ? reject(error) : resolve(prefab.addRef())));
+    const loadFont = (bundle: AssetManager.Bundle): Promise<TTFFont> => new Promise((resolve, reject) => bundle.load(fontPath,
+        TTFFont, (error, font) => error ? reject(error) : resolve(font.addRef())));
+    const show = async (name: string, prefab: Prefab) => {
+        const parent = openScene(name);
+        const node = instantiate(prefab);
+        node.layer = parent.layer;
+        parent.addChild(node);
+        const label = node.getComponent(Label);
+        const font = label?.font;
+        if (!label || !(font instanceof TTFFont) || label.useSystemFont || label.string !== 'Atlas 123' || label.fontSize !== 24
+            || prefab.uuid !== ids[0] || font.uuid !== ids[1] || assetManager.assets.get(ids[0]) !== prefab
+            || assetManager.assets.get(ids[1]) !== font || !font._nativeAsset) {
+            throw new Error(`${name} did not bind its serialized bundled TTF`);
+        }
+        if (sys.isNative) {
+            const nativeFont = font as TTFFont & { getFontDataSize(): number; getSourcePath(): string };
+            if (nativeFont.getFontDataSize() !== 223404 || !nativeFont.getSourcePath().replaceAll('\\', '/').includes('/m6-ttf/native/')) {
+                throw new Error(`${name} did not read its bundled font bytes`);
+            }
+        }
+        await capture(name);
+        const { width, height } = node.getComponent(UITransform)!.contentSize;
+        if (Math.abs(width - 95.9765625) > 0.001 || Math.abs(height - 37.8) > 0.001) {
+            throw new Error(`${name} used fallback metrics: ${width}x${height}`);
+        }
+        return { node, label, font };
+    };
+    const verifyAlias = (family: string, owned: boolean): void => {
+        if (!sys.isNative) {
+            const faces = Array.from(document.fonts).filter(face => face.family === family);
+            if (faces.length !== Number(owned)) throw new Error(`Bundled TTF registered ${faces.length} faces after owner state ${owned}`);
+        }
+        const borrowed = Label._canvasPool.get();
+        const context = borrowed.context!;
+        const previous = context.font;
+        try {
+            context.font = `24px ${JSON.stringify(family)}`;
+            const width = context.measureText('Atlas 123').width;
+            if ((Math.abs(width - 95.9765625) <= 0.001) !== owned) throw new Error(`Bundled TTF alias ${family} width ${width} after owner state ${owned}`);
+        } finally {
+            context.font = previous;
+            Label._canvasPool.put(borrowed);
+        }
+    };
+    const checkReleased = async (prefab: Prefab, font: TTFFont, family: string): Promise<void> => {
+        for (let frame = 0; frame < 12 && (isValid(prefab) || isValid(font)); ++frame) await nextFrame();
+        if (isValid(prefab) || isValid(font) || prefab.refCount || font.refCount || ids.some(id => assetManager.assets.has(id))) {
+            throw new Error('Bundled TTF resources survived through final owner release');
+        }
+        if (sys.isNative && (font as TTFFont & { getFontDataSize(): number }).getFontDataSize()) {
+            throw new Error('Bundled TTF retained native font bytes');
+        }
+        verifyAlias(family, false);
+    };
+    const bundle = await loadBundle();
+    await new Promise<void>((resolve, reject) => bundle.preload(prefabPath, Prefab, (error, items) => {
+        if (error) reject(error);
+        else if (!items.some(item => item.uuid === ids[1] && item.isNative && item.file)) reject(new Error('TTF preload missed bundled font'));
+        else resolve();
+    }));
+    if (ids.some(id => assetManager.assets.has(id))) throw new Error('TTF preload published bundled assets');
+    const prefab = await loadPrefab(bundle);
+    const first = await show('scene-ttf-bundle-first', prefab);
+    const family = first.font._nativeAsset!;
+    verifyAlias(family, true);
+    const second = await show('scene-ttf-bundle-next', prefab);
+    const held = await loadFont(bundle);
+    if (isValid(first.node) || isValid(first.label) || first.font !== second.font || held !== second.font) {
+        throw new Error('Bundled TTF did not preserve the shared font across scenes and callers');
+    }
+    openScene('scene-ttf-bundle-unloaded');
+    await nextFrame();
+    prefab.decRef();
+    for (let frame = 0; frame < 12 && isValid(prefab); ++frame) await nextFrame();
+    if (isValid(prefab) || isValid(second.label) || assetManager.assets.has(ids[0]) || assetManager.assets.get(ids[1]) !== held) {
+        throw new Error('Bundled TTF unload affected the explicit font owner');
+    }
+    verifyAlias(family, true);
+    held.decRef();
+    await checkReleased(prefab, held, family);
+    assetManager.removeBundle(bundle);
+    if (assetManager.getBundle(bundleName)) throw new Error('Bundled TTF bundle remained cached');
+    await capture('scene-ttf-bundle-unloaded');
+
+    const coldBundle = await loadBundle();
+    const coldPrefab = await loadPrefab(coldBundle);
+    const cold = await show('scene-ttf-bundle-cold', coldPrefab);
+    if (coldBundle === bundle || coldPrefab === prefab || cold.font === held) throw new Error('Bundled TTF reused released owners');
+    const coldFamily = cold.font._nativeAsset!;
+    verifyAlias(coldFamily, true);
+    openScene('scene-ttf-bundle-final');
+    await nextFrame();
+    coldPrefab.decRef();
+    await checkReleased(coldPrefab, cold.font, coldFamily);
+    assetManager.removeBundle(coldBundle);
+    if (assetManager.getBundle(bundleName)) throw new Error('Cold TTF bundle remained cached');
+    await capture('scene-ttf-bundle-final');
+    return { preload: true, shared: true, retainedAlias: true, aliasesReleased: true, cacheCleared: true, coldReloaded: true, ids };
+}
 
 interface ImportedFontCase {
     path: string;
@@ -336,5 +445,6 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
         fontUuid: '10882616-f51c-4257-a7c0-d651e05a62ef', imageUuid: 'a7d03c29-5d28-4f9f-b45b-3cc8c525e549',
         fontType: LabelAtlas, fontSize: 22, text: '1076', textureSize: 64, width: 64, height: 25,
     }, openFontScene, capture);
-    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks, legacyBitmap, labelAtlas };
+    const bundledTTF = await runBundledTTFScenes(openFontScene, capture);
+    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks, legacyBitmap, labelAtlas, bundledTTF };
 }

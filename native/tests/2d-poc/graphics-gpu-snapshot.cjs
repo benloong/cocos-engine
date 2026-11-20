@@ -20,6 +20,7 @@ module.exports=function graphicsGpuSnapshot(mode='graphics') {
         walk(path.join(root, 'cocos/2d/assembler/sprite'));
         walk(path.join(root, 'cocos/2d/assembler/label'));
         const resources = ['M6StaticAtlas', 'M3BitmapFont', 'M6LabelAtlas'].map(folder => path.join(__dirname, 'fixtures/acceptance/resources', folder));
+        resources.push(path.join(__dirname, 'fixtures/acceptance/M6TTFBundle'));
         for (const folder of resources) walk(folder);
         for (const file of [...resources.map(folder => folder + '.meta'),path.join(root,'editor/assets/effects/for2d/builtin-sprite-renderer.effect'),
             path.join(root,'editor/assets/effects/for2d/builtin-sprite.effect')]) {

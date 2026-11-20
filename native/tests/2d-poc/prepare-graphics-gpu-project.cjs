@@ -19,6 +19,11 @@ if (mode === 'graphics') {
         fs.cpSync(source, path.join(resources, folder), {recursive:true});
         fs.copyFileSync(source + '.meta', path.join(resources, folder + '.meta'));
     }
+    const fonts = path.join(__dirname, 'fixtures/acceptance/M6TTFBundle');
+    const fontBundle = path.join(project, 'assets/M6TTFBundle');
+    fs.cpSync(fonts, fontBundle, {recursive:true});
+    fs.copyFileSync(fonts + '.meta', fontBundle + '.meta');
+    fs.copyFileSync(path.join(root, 'tests/fixtures/Thonburi.ttf'), path.join(fontBundle, 'M6BundledThonburi.ttf'));
     fs.copyFileSync(path.join(root, 'editor/assets/effects/for2d/builtin-sprite-renderer.effect'), path.join(resources,'AtlasMesh.effect'));
     fs.copyFileSync(path.join(root, 'editor/assets/effects/for2d/builtin-sprite.effect'), path.join(resources,'VariantSprite.effect'));
 }

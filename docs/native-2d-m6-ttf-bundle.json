@@ -1,0 +1,145 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "e98b5a4d15",
+  "baseline": {
+    "snapshot": "8cf2c398786797d6cd7c2cb170406dfc1e8bbcd6c4b19492817aad3955ff7c32",
+    "webFailure": "Bundled TTF registered 1 faces after owner state false",
+    "webLogSha256": "9560ac5b4c124a342e4a824e4530a2a1287f4a4eb2a4ed189f763dc8c474e15e",
+    "windowsDebugManifestSha256": "ba4347c0ef8a39562bb6ce3a1ccb29e33b826ab941a04da097e039a16cf80628"
+  },
+  "bundle": {
+    "name": "m6-ttf",
+    "snapshot": "5dd7e2e589c0f8cde5ab9120fb2b4b070c13b707e8f609f265071490aa05b086",
+    "font": {
+      "file": "tests/fixtures/Thonburi.ttf",
+      "bytes": 223404,
+      "sha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16"
+    },
+    "inputs": {
+      "BundledTTFLabel.prefab": "869006b59abd73fa34b8aa48959f5277020e4d93eacd4d0fd767b0cc21f4ed8f",
+      "BundledTTFLabel.prefab.meta": "3518af55755b395225951e245a3bcf999e426aafb30976f7984ecb716a36d51d",
+      "M6BundledThonburi.ttf.meta": "88bf7f9e3fd7fd20f5ac1270687051e1e22f63da2213d4d6219ef7f12e987e44",
+      "M6TTFBundle.meta": "578db2700cc649c52635622b4aaf5244686a7d995997c927643969d2f1483416"
+    },
+    "lifecycle": {
+      "preload": true,
+      "shared": true,
+      "retainedAlias": true,
+      "aliasesReleased": true,
+      "cacheCleared": true,
+      "coldReloaded": true,
+      "ids": [
+        "fa1ba389-cd23-4275-90c4-6863fdcf15f3",
+        "748bb085-20ec-4ee9-8792-c41c97d006ee"
+      ]
+    },
+    "labelSize": [
+      95.9765625,
+      37.8
+    ],
+    "byteIdenticalCaptures": 155,
+    "byteIdenticalEarlierCaptures": 150,
+    "sceneCyclesPerConfiguration": 1000,
+    "hitChecksPerConfiguration": 22,
+    "captures": {
+      "scene-ttf-bundle-first": {
+        "sha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1",
+        "coloredPixels": 3648
+      },
+      "scene-ttf-bundle-next": {
+        "sha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1",
+        "coloredPixels": 3648
+      },
+      "scene-ttf-bundle-unloaded": {
+        "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+        "coloredPixels": 0
+      },
+      "scene-ttf-bundle-cold": {
+        "sha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1",
+        "coloredPixels": 3648
+      },
+      "scene-ttf-bundle-final": {
+        "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+        "coloredPixels": 0
+      }
+    },
+    "webManifestSha256": "cf946b0e987592d64f541e2fdf5ffe7d5224eec9ba030f78ee029daad95bd98f",
+    "webLogSha256": "1d1459e062111e1aedd9a75f1a54781829b94db958abee1c68a5d9df800bc7b6"
+  },
+  "richText": {
+    "snapshot": "97ec80f20560b4684da7b8b5d5966fe489b20eaff84c6a2ab707565ea3c8b0a7",
+    "layoutPass": 54,
+    "strictPixelPass": 51,
+    "deferredPixels": [
+      "text-bold",
+      "text-outline",
+      "text-nested"
+    ],
+    "unchangedCapturesPerConfiguration": 54,
+    "nativeLoadReleaseCyclesPerConfiguration": 1000,
+    "webManifestSha256": "822d9f2792d67cbd56f8b59a6103d5c9d3ad43c98516464209bf2d56a8032c53",
+    "webLogSha256": "12780bcc868ee27996952308c1eb73c0d8b4e3cad84fbe3534ee2a09e2ac29a7",
+    "webHttpRequests": {
+      "interrupted": 1,
+      "complete": 1,
+      "cancelled": 1,
+      "resumed": 1
+    }
+  },
+  "configurations": {
+    "Debug": {
+      "bundle": {
+        "executableSha256": "d5addda3d52637b183dffd5c0cd9cf3fe03f9d2151cb0f0b65a5bc3d5e96898c",
+        "manifestSha256": "ebaadc38e8f0b2bff9d66d7acce872a1856e319a2891314ff809c8312368d035",
+        "comparisonSha256": "54253d7c1ccb9feee2f88f4081b753006f7ad0e7392860d3235d44730af9400b",
+        "applicationLogSha256": "fc333c23c3e1d54f1385555ea0e7743e164090b17354121dda88391d110aae16"
+      },
+      "richText": {
+        "executableSha256": "32e0f09386065c747f79ec9949f4f9cebf76c2ffc27037799c60db0ec0e17c37",
+        "manifestSha256": "7b2b729e5e02d0a4976eb01af7dd72b0daf0a5adf1b5a8c7295fd78ab45d6edc",
+        "comparisonSha256": "ed9ab41371e34d52c0c9e15854d47e7cdc93dbd7839e3f935538936bb8e4fb71",
+        "applicationLogSha256": "e8986197a95c29e2defe2036807059ea26ea4f4ad09693d7ac62edb445b14fd5",
+        "httpRequests": {
+          "font": {
+            "interrupted": 1,
+            "complete": 1,
+            "cancelled": 1,
+            "resumed": 1
+          },
+          "missing": 6,
+          "queued": 0
+        }
+      }
+    },
+    "Release": {
+      "bundle": {
+        "executableSha256": "426572c16f90efd1aa277a0f720e49c271fa8b265bf12502ef2448d5b10117f6",
+        "manifestSha256": "286fe90114f8519656b8ced6568948f77f9fbcb1434093e3f8b2765afc406719",
+        "comparisonSha256": "54253d7c1ccb9feee2f88f4081b753006f7ad0e7392860d3235d44730af9400b",
+        "applicationLogSha256": "fe0024e0ad27351d993e4621726f51e22818441d380eba3c4730696f1551ea7b"
+      },
+      "richText": {
+        "executableSha256": "7a97e6ed55f589e30f38cfde2783eb0b414cd7c0a32c1f9612704bf6b4b2aced",
+        "manifestSha256": "58adcc6c58cf79ad4eb9f5f151ae833f23ccdfa12f7c46c610f91022b71ec385",
+        "comparisonSha256": "42b141e3b601d13a83122e3735e5795ecbd71d2a320897e0b7d968a94d70a97d",
+        "applicationLogSha256": "e089d4e684f4bc8ee8770f2088eb62a6c0c652440211b1a6d8c23e6e0f871594",
+        "httpRequests": {
+          "font": {
+            "interrupted": 1,
+            "complete": 1,
+            "cancelled": 1,
+            "resumed": 1
+          },
+          "missing": 6,
+          "queued": 0
+        }
+      }
+    }
+  },
+  "unit": {
+    "suites": 3,
+    "tests": 28,
+    "logSha256": "77763fffc44e4c21df90602765f882c9ca7d6bd4c738297b48cece9492e919d8",
+    "tscNoEmit": true
+  }
+}

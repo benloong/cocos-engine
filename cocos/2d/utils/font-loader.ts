@@ -23,6 +23,7 @@
 */
 
 import { warnID } from '../../core';
+import { JSB } from 'internal:constants';
 import { buildFontDesc, quoteFontFamily } from './font-family';
 import downloader from '../../asset/asset-manager/downloader';
 import factory from '../../asset/asset-manager/factory';
@@ -32,6 +33,12 @@ import { ccwindow } from '../../core/global-exports';
 const ccdocument = ccwindow.document;
 
 type FontCallback = (err: Error | null, family?: string) => void;
+export interface BrowserFont {
+    readonly family: string;
+    retain (): () => void;
+}
+type FontData = string | BrowserFont;
+type FontDataCallback = (err: Error | null, data?: FontData) => void;
 
 // The native DOM declarations omit the browser's CSS Font Loading API.
 interface LoadableFontFace {
@@ -50,8 +57,8 @@ let _intervalId = -1;
 // letter symbol number CJK
 const _testString = 'BES bswy:->@123\u4E01\u3041\u1101';
 
-// While loading, callers share one face. A null value denotes a loaded face.
-const _fontFaces = new Map<string, FontCallback[] | null>();
+const _pendingFaces = new Map<string, FontDataCallback[]>();
+const _fontFaces = new Map<string, BrowserFont>();
 
 const _loadingFonts: IFontLoadHandle[] = [];
 // 3 seconds timeout
@@ -111,34 +118,77 @@ function checkFontLoaded (): void {
     }
 }
 
+function registerFontFace (family: string, attach: () => void, detach: () => void, discard?: () => void): void {
+    if (_fontFaces.has(family)) {
+        discard?.();
+        return;
+    }
+    let owners = 0;
+    const font: BrowserFont = {
+        family,
+        retain (): () => void {
+            const active = _fontFaces.get(family);
+            if (active && active !== font) return active.retain();
+            if (!active) {
+                // A preloaded asset may still hold these bytes after the previous owner released the face.
+                attach();
+                _fontFaces.set(family, font);
+            }
+            ++owners;
+            let released = false;
+            return () => {
+                if (released) return;
+                released = true;
+                if (--owners === 0) {
+                    _fontFaces.delete(family);
+                    detach();
+                }
+            };
+        },
+    };
+    attach();
+    _fontFaces.set(family, font);
+}
+
 export function loadFont (url: string, options: Record<string, any>, onComplete: FontCallback): void {
+    loadFontAsset(url, options, (err, data) => onComplete(err, typeof data === 'string' ? data : data?.family));
+}
+
+function loadFontAsset (url: string, options: Record<string, any>, onComplete: FontDataCallback): void {
     const fontFamilyName = getFontFamily(url);
     const existing = _fontFaces.get(fontFamilyName);
-    if (existing !== undefined) {
-        if (existing) existing.push(onComplete);
-        else onComplete(null, fontFamilyName);
+    if (existing) {
+        onComplete(null, existing);
+        return;
+    }
+    const pending = _pendingFaces.get(fontFamilyName);
+    if (pending) {
+        pending.push(onComplete);
         return;
     }
 
     const callbacks = [onComplete];
-    _fontFaces.set(fontFamilyName, callbacks);
-    const finish = (loaded: boolean): void => {
-        if (loaded) {
-            _fontFaces.set(fontFamilyName, null);
-        } else {
-            _fontFaces.delete(fontFamilyName);
-            warnID(4933, fontFamilyName);
-        }
-        for (const callback of callbacks) callback(null, fontFamilyName);
+    _pendingFaces.set(fontFamilyName, callbacks);
+    const finish = (): void => {
+        _pendingFaces.delete(fontFamilyName);
+        const font = _fontFaces.get(fontFamilyName);
+        if (!font) warnID(4933, fontFamilyName);
+        for (const callback of callbacks) callback(null, font ?? fontFamilyName);
     };
     if (useNativeCheck()) {
         // A fresh FontFace can reload the original URL after a failed document stylesheet fetch.
-        const timeout = setTimeout(() => finish(false), _timeout);
+        const timeout = setTimeout(finish, _timeout);
         const settle = (face?: LoadableFontFace): void => {
-            if (_fontFaces.get(fontFamilyName) !== callbacks) return;
+            if (_pendingFaces.get(fontFamilyName) !== callbacks) return;
             clearTimeout(timeout);
-            if (face) (ccdocument as Document & { fonts: { add (value: LoadableFontFace): void } }).fonts.add(face);
-            finish(!!face);
+            if (face) {
+                const fonts = (ccdocument as Document & { fonts: {
+                    add (value: LoadableFontFace): void;
+                    delete (value: LoadableFontFace): void;
+                } }).fonts;
+                registerFontFace(fontFamilyName, () => fonts.add(face), () => fonts.delete(face));
+            }
+            finish();
         };
         try {
             const face = new ccwindow.FontFace(fontFamilyName, `url(${JSON.stringify(url)})`);
@@ -185,8 +235,13 @@ export function loadFont (url: string, options: Record<string, any>, onComplete:
         startTime: Date.now(),
         onComplete: (loaded: boolean): void => {
             preloadDiv.parentNode?.removeChild(preloadDiv);
-            if (!loaded) fontStyle.parentNode?.removeChild(fontStyle);
-            finish(loaded);
+            const detach = (): void => { fontStyle.parentNode?.removeChild(fontStyle); };
+            if (loaded) {
+                registerFontFace(fontFamilyName, () => {
+                    if (!fontStyle.parentNode) ccdocument.body.appendChild(fontStyle);
+                }, detach, detach);
+            } else detach();
+            finish();
         },
     });
     if (_intervalId === -1) _intervalId = setInterval(checkFontLoaded, 100);
@@ -206,7 +261,7 @@ export function getFontFamily (fontHandle: string): string {
     return fontFamilyName;
 }
 
-function createFont (id: string, data: string, options: Record<string, any>, onComplete: ((err: Error | null, data?: TTFFont | null) => void)): void {
+function createFont (id: string, data: FontData, options: Record<string, any>, onComplete: ((err: Error | null, data?: TTFFont | null) => void)): void {
     let out: TTFFont | null = null;
     try {
         out = new TTFFont();
@@ -224,14 +279,15 @@ function createFont (id: string, data: string, options: Record<string, any>, onC
     onComplete(null, out);
 }
 
+const downloadFont = JSB ? loadFont : loadFontAsset;
 downloader.register({
     // font
-    '.font': loadFont,
-    '.eot': loadFont,
-    '.ttf': loadFont,
-    '.woff': loadFont,
-    '.svg': loadFont,
-    '.ttc': loadFont,
+    '.font': downloadFont,
+    '.eot': downloadFont,
+    '.ttf': downloadFont,
+    '.woff': downloadFont,
+    '.svg': downloadFont,
+    '.ttc': downloadFont,
 });
 
 factory.register({

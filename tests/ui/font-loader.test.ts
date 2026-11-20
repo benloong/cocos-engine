@@ -1,7 +1,10 @@
 import { getFontFamily, loadFont } from '../../cocos/2d/utils/font-loader';
+import type { BrowserFont } from '../../cocos/2d/utils/font-loader';
+import downloader from '../../cocos/asset/asset-manager/downloader';
 import factory from '../../cocos/asset/asset-manager/factory';
 import { assets } from '../../cocos/asset/asset-manager/shared';
 import { TTFFont } from '../../cocos/2d/assets/ttf-font';
+import { CCObject } from '../../cocos/core/data/object';
 
 test.each([
     ['fonts/Alibaba PuHuiTi 3.0.ttf', 'Alibaba PuHuiTi 3.0_LABEL'],
@@ -97,5 +100,48 @@ test('Web registers only the successful font face when a timed-out request is re
         if (fontsDescriptor) Object.defineProperty(document, 'fonts', fontsDescriptor);
         else Reflect.deleteProperty(document, 'fonts');
         jest.useRealTimers();
+    }
+});
+
+test('Web font assets share one registration and can reuse preloaded data after release', async () => {
+    const faceDescriptor = Object.getOwnPropertyDescriptor(window, 'FontFace');
+    const fontsDescriptor = Object.getOwnPropertyDescriptor(document, 'fonts');
+    const add = jest.fn(), remove = jest.fn();
+    class TestFace { load (): Promise<void> { return Promise.resolve(); } }
+    Object.defineProperty(window, 'FontFace', { value: TestFace, configurable: true });
+    Object.defineProperty(document, 'fonts', { value: { add, delete: remove }, configurable: true });
+    try {
+        const data = await new Promise<BrowserFont>((resolve, reject) => {
+            downloader.download('bundle-owner-test', 'fonts/BundleOwnerTest.ttf', '.ttf', {},
+                (error, content) => error ? reject(error) : resolve(content));
+        });
+        const first = new TTFFont();
+        const second = new TTFFont();
+        first._nativeAsset = data;
+        second._nativeAsset = data;
+        expect(second._nativeAsset).toBe('BundleOwnerTest_LABEL');
+        expect(add).toHaveBeenCalledTimes(1);
+        first.destroy();
+        CCObject._deferredDestroy();
+        expect(remove).not.toHaveBeenCalled();
+        second.destroy();
+        CCObject._deferredDestroy();
+        expect(remove).toHaveBeenCalledTimes(1);
+        expect(remove).toHaveBeenLastCalledWith(add.mock.calls[0][0]);
+
+        const reloaded = new TTFFont();
+        reloaded._nativeAsset = data;
+        expect(add).toHaveBeenCalledTimes(2);
+        expect(add).toHaveBeenLastCalledWith(add.mock.calls[0][0]);
+        reloaded.destroy();
+        CCObject._deferredDestroy();
+        reloaded._nativeAsset = data;
+        expect(remove).toHaveBeenCalledTimes(2);
+        expect(add).toHaveBeenCalledTimes(2);
+    } finally {
+        if (faceDescriptor) Object.defineProperty(window, 'FontFace', faceDescriptor);
+        else Reflect.deleteProperty(window, 'FontFace');
+        if (fontsDescriptor) Object.defineProperty(document, 'fonts', fontsDescriptor);
+        else Reflect.deleteProperty(document, 'fonts');
     }
 });
