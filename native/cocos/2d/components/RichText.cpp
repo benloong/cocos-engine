@@ -110,8 +110,11 @@ void RichText::onAttach() {
     _dirty = true;
     _observedNode = _node;
     _layerChanged = _node->on<Node::LayerChanged>([this](Node *, uint32_t) { markRenderDirty(); });
+    // A move during rebuild defers layout until the new attachment can be observed.
+    if (_updating) markRenderDirty();
 }
 void RichText::onDetach() {
+    ++_attachmentVersion;
     UIRenderer::onDetach();
     if (_observedNode) _observedNode->off(_layerChanged);
     _observedNode = nullptr;
@@ -189,7 +192,11 @@ std::unique_ptr<RichText::Segment> RichText::acquire(bool image) {
     auto segment = std::move(pool.back()); pool.pop_back(); return segment;
 }
 void RichText::recycle(std::unique_ptr<Segment> segment) {
-    segment->node->removeFromParent(); segment->node->setActive(false);
+    const auto attachment = _attachmentVersion;
+    segment->node->removeFromParent();
+    if (_attachmentVersion != attachment) return;
+    segment->node->setActive(false);
+    if (_attachmentVersion != attachment) return;
     if (segment->label) {
         segment->label->setString(""); segment->label->setFontAsset(nullptr); segment->label->setCacheMode(0); segment->label->updateRenderData();
     } else segment->sprite->clearFrame();
@@ -198,7 +205,10 @@ void RichText::recycle(std::unique_ptr<Segment> segment) {
     if (pool.size() < (segment->sprite ? 10U : 20U)) pool.push_back(std::move(segment));
 }
 void RichText::clearSegments() {
-    _segments.clear(); _labelPool.clear(); _imagePool.clear();
+    // Node removal can invoke listeners. Publish the empty state first.
+    decltype(_segments) segments;
+    segments.swap(_segments);
+    _labelPool.clear(); _imagePool.clear();
     _layout = {}; _spans.clear(); _dirty = true;
 }
 void RichText::synchronizeDependencies() {
@@ -227,6 +237,7 @@ void RichText::updateLayout() {
 }
 
 void RichText::rebuildLayout() {
+    const auto attachment = _attachmentVersion;
     _spans = RichTextParser::parse(_string);
     _options.anchorX = _transform->getAnchorX(); _options.anchorY = _transform->getAnchorY();
     _layer = _node->getLayer();
@@ -258,17 +269,29 @@ void RichText::rebuildLayout() {
             segment->frameRevision = segment->frame ? segment->frame->getRevision() : 0;
             segment->sprite->setFrame(segment->frame);
         }
+        const float x = static_cast<float>(placement.x);
+        const float y = static_cast<float>(placement.y);
+        const float anchor = static_cast<float>(placement.anchorY);
         segment->transform->setContentSize(static_cast<float>(placement.width), static_cast<float>(placement.height));
-        segment->transform->setAnchorPoint(0.F, static_cast<float>(placement.anchorY));
-        segment->node->setLayer(_layer); segment->node->setParent(_node);
+        if (_attachmentVersion != attachment) return;
+        segment->transform->setAnchorPoint(0.F, anchor);
+        segment->node->setLayer(_layer);
+        if (_attachmentVersion != attachment) return;
+        segment->node->setParent(_node);
+        if (_attachmentVersion != attachment) return;
         segment->node->setSiblingIndex(static_cast<int>(i));
         // Parenting creates a JS wrapper through ChildAdded when needed. Apply
         // position afterwards so its native transform callback updates JS caches.
-        segment->node->setPosition(static_cast<float>(placement.x), static_cast<float>(placement.y), 0.F);
-        segment->node->setActive(true); segment->node->setActiveInHierarchy(true);
+        segment->node->setPosition(x, y, 0.F);
+        segment->node->setActive(_enabled);
+        segment->node->setActiveInHierarchy(_enabled);
+        if (_attachmentVersion != attachment) return;
         _segments.push_back(std::move(segment));
     }
-    for (auto &segment : previous) if (segment) recycle(std::move(segment));
+    for (auto &segment : previous) {
+        if (segment) recycle(std::move(segment));
+        if (_attachmentVersion != attachment) return;
+    }
     _fontRevision = _font ? _font->getRevision() : 0;
     _atlasRevision = _atlas ? _atlas->getRevision() : 0;
 }

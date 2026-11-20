@@ -50,6 +50,16 @@ async function checkRichTextChildAddedListener (parent: Node, font: TTFFont): Pr
             throw new Error('RichText child-added listener did not replace the rendered text');
         }
         console.log('M6_RICHTEXT_CHILD_ADDED_LISTENER_PASS');
+
+        const unrelated = new Node('user-child');
+        node.addChild(unrelated);
+        node.once(Node.EventType.CHILD_ADDED, () => { rich.destroy(); });
+        rich.string = '<b>First</b><i>Second</i>';
+        await wait();
+        if (isValid(rich) || node.children.length !== 1 || node.children[0] !== unrelated) {
+            throw new Error('RichText destruction from child-added did not release exactly its generated children');
+        }
+        console.log('M6_RICHTEXT_CHILD_ADDED_DESTROY_PASS');
     } finally {
         node.destroy();
         await wait();

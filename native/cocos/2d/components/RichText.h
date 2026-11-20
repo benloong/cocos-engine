@@ -109,6 +109,7 @@ private:
     uint32_t _fontRevision{0};
     uint32_t _atlasRevision{0};
     uint32_t _layer{0};
+    uint32_t _attachmentVersion{0};
     bool _dirty{true};
     bool _updating{false};
 };
