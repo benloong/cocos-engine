@@ -28,3 +28,14 @@ foreach ($cfg in 'Debug', 'Release') {
 旧混合场景检查 9 个 Label 和 1 个图集 Sprite、点击命中与解绑、行尾空格和图像位置。Windows 首次测量分离的新 Label 前会通过正常节点生命周期初始化度量后端。合成斜体按未舍入的自然宽度累加段位置，到提交变换时才转为 float。
 
 完整数据见[四次 Windows 运行及 Web 对照](./native-2d-m6-richtext-rollback.json)。该数据区分 Windows 切换实现前后的像素一致性与 Web 字形验收，保留粗体、描边和嵌套样式的已有超差结果。
+
+## 42 项应用矩阵回退与恢复
+
+以 `f100d95c7b` 构建引擎包和两种 Windows 配置。在每种配置上先运行原生实现，再部署 TS 回退包，最后恢复原生包。应用在三次启动中分别确认实现类型为 `native`、`js`、`native`，各完成 1000 轮字体生命周期。42 项布局按像素比较器的 float32 精度一致，每张 Windows RGBA 在切换前后逐字节一致。对 Chrome 的严格像素验收仍为 39/42，粗体、描边及嵌套样式三项超差。[构建和逐图哈希、采样记录](./native-2d-m6-richtext-roundtrip.json)
+
+| 配置 | 原生 | TS 回退 | 恢复原生 |
+|---|---:|---:|---:|
+| Windows Debug | 20.326 ms | 91.080 ms | 19.551 ms |
+| Windows Release | 13.778 ms | 71.211 ms | 14.833 ms |
+
+计时取同一 Prefab 每批 8 次同步更新的 31 批中位数。各阶段分别启动应用，表中耗时限于该轮更新场景。
