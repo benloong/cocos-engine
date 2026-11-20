@@ -123,7 +123,9 @@ function rebuildFrameMesh (frame: any): void {
 }
 
 spriteFrameProto.ensureMeshData = function (): void {
-    if (!this._mesh && isValid(this)) rebuildFrameMesh(this);
+    if (!isValid(this)) return;
+    if (!this._mesh || (this.meshType === MeshType.RECT && this.texture
+        && this.getMeshUVs(true).some((uv: number, index: number) => uv !== this.vertices.nuv[index]))) rebuildFrameMesh(this);
 };
 
 Object.defineProperties(spriteFrameProto, {
@@ -252,7 +254,7 @@ spriteFrameProto.reset = function (info?: ISpriteFrameInitInfo, clearData = fals
         if (info.borderRight !== undefined) this.setInsetRight(info.borderRight);
         if (info.borderTop !== undefined) this.setInsetTop(info.borderTop);
         if (info.borderBottom !== undefined) this.setInsetBottom(info.borderBottom);
-        if (info.isRotate !== undefined) this.setRotated(!!info.isRotate);
+        if (info.isRotate !== undefined) nativeSetRotated.call(this, !!info.isRotate);
         if (info.isFlipUv !== undefined) this.setFlipUVY(!!info.isFlipUv);
     }
     this._calculateUV();

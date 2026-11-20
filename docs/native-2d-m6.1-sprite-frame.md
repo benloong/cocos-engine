@@ -122,3 +122,20 @@ Web 和 JSB 在 SpriteFrame 的延迟销毁入口释放并清空该帧的 Mesh�
 | Release | `ab05e5d29eb9061f6bb543531c9fa72261b813e7b985d17d3f5b266fec50cdf2` |
 
 Windows Debug 完整 M0 通过，末尾 45 项 Jest 均通过。Windows 双配置各通过 M2–M5、六组 JSB 探针和 92 张与 Web 逐字节一致的位图字体捕获。Web 旧工程的合图和 RichText 检查也通过。
+
+## 矩形网格的旋转与翻转
+
+修复前，非方形旋转帧的矩形网格使用未交换的图集宽高和错误的角点顺序。32×32 的定向回归中，逻辑尺寸 10×6 的帧把右侧 U 边界读成了 14/32，正确位置为 10/32。Web 和 Native 现在复用各自的 2D Sprite 角点映射。矩形网格的归一化 V 保留 SpriteRenderer 着色器使用的底部原点，像素 UV 保留原有存储约定，导入的多边形继续使用作者提供的顶点和 UV。[定向回归](../tests/ui/native-2d-m2-sprite-frame-shell.test.ts)
+
+SpriteRenderer 在 UV 变化时检查当前网格，源纹理坐标改变就重绑模型，并恢复模型的可见层。仅图集页或页内位置改变时继续复用已有 Mesh。禁用期间修改翻转属性，重新启用后会使用更新的网格。
+
+GPU 场景从同一纹理写入四种颜色，使用非方形普通区域与顺时针旋转区域。四种翻转组合各在平放和旋转区域验证。新增 11 张图分别逐角核对 2D Sprite 与 SpriteRenderer，覆盖 Web 真实打包、禁用组件后修改翻转属性及恢复源纹理。Windows 双配置保持 Native 动态合图禁用，执行对应原图路径。[GPU 场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)、[图像及角点比较器](../native/tests/2d-poc/compare-graphics-gpu.cjs)
+
+快照 `075ad0861ad9a4e5f065bc9c4b8016dfb36faa8021a38b565b63fa580d897699` 中，Windows Debug、Release 和 Web 的 138 张 RGBA 逐字节一致。127 张既有图在各端逐张与上一候选哈希相同，三端各完成 1000 次场景切换。双配置比较输出的 SHA-256 均为 `cc980229dd22187a8c703a616de4c0d530fd18f25f0c4da93bdb41165beabea7`。
+
+| Windows GPU 候选 | 可执行文件 SHA-256 |
+|---|---|
+| Debug | `b3eb934746340b7be41b8423dc5a366451fcce4994bf92a268c254747bb717aa` |
+| Release | `9836d6621aadab80c96ffcf2819499e0c0ef16f9f576a532bcb355c4f41906f7` |
+
+Windows Debug 完整 M0 通过，末尾 46 项 Jest 均通过。Windows 双配置各通过 M2–M5、六组真实 JSB 探针与 92 张和 Web 逐字节一致的位图字体图像。Web 旧工程的动态图集和 RichText 验收通过。

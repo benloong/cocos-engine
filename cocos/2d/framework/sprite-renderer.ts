@@ -30,7 +30,7 @@ import { ModelLocalBindings } from '../../rendering/define';
 import { Model } from '../../render-scene/scene';
 import type { Root } from '../../root';
 import { TransformBit } from '../../scene-graph/node-enum';
-import { SpriteFrame } from '../assets/sprite-frame';
+import { SpriteFrame, SpriteFrameEvent } from '../assets/sprite-frame';
 import { ModelRenderer } from '../../misc';
 
 enum SpriteMode {
@@ -67,7 +67,7 @@ export class SpriteRenderer extends ModelRenderer {
             return;
         }
 
-        const lastSprite = this._spriteFrame;
+        this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
         this._spriteFrame = value;
         if (this._spriteFrame) {
             this._spriteFrame.ensureMeshData(); // Make sure the mesh is available, you should call it before using the mesh
@@ -76,6 +76,7 @@ export class SpriteRenderer extends ModelRenderer {
         }
         this._updateModels();
         if (this.enabledInHierarchy) {
+            this._spriteFrame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
             this._attachToScene();
         }
         // TODO Update on Editor
@@ -104,18 +105,18 @@ export class SpriteRenderer extends ModelRenderer {
     protected _size: Vec2 = new Vec2(); // todo for sliced & tiled
 
     private _model: Model | null = null;
+    private _boundMesh: SpriteFrame['mesh'] = null;
 
     public onLoad (): void {
         if (this._spriteFrame) {
-            if (!this._spriteFrame.mesh) {
-                this._spriteFrame.ensureMeshData();
-            }
+            this._spriteFrame.ensureMeshData();
             this._spriteFrame.mesh!.initialize();
         }
         this._updateModels();
     }
 
     public onRestore (): void {
+        this._spriteFrame?.ensureMeshData();
         this._updateModels();
         if (this.enabledInHierarchy) {
             this._attachToScene();
@@ -124,13 +125,17 @@ export class SpriteRenderer extends ModelRenderer {
 
     public onEnable (): void {
         super.onEnable();
-        if (!this._model) {
+        const frame = this._spriteFrame;
+        frame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+        frame?.ensureMeshData();
+        if (!this._model || (frame?.mesh && frame.mesh !== this._boundMesh)) {
             this._updateModels();
         }
         this._attachToScene();
     }
 
     public onDisable (): void {
+        this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
         if (this._model) {
             this._detachFromScene();
         }
@@ -141,6 +146,16 @@ export class SpriteRenderer extends ModelRenderer {
             (cclegacy.director.root as Root).destroyModel(this._model);
             this._model = null;
             this._models.length = 0;
+        }
+        this._boundMesh = null;
+    }
+
+    private _onFrameUVChanged (): void {
+        const frame = this._spriteFrame;
+        frame?.ensureMeshData();
+        if (frame?.mesh && frame.mesh !== this._boundMesh) {
+            this._updateModels();
+            this._attachToScene();
         }
     }
 
@@ -160,6 +175,8 @@ export class SpriteRenderer extends ModelRenderer {
 
         if (this._model) {
             const mesh = this._spriteFrame.mesh!;
+            this._model.visFlags = this.visibility;
+            this._boundMesh = mesh;
             this._model.createBoundingShape(mesh.struct.minPosition, mesh.struct.maxPosition);
             this._updateModelParams();
             this._onUpdateLocalDescriptorSet();
@@ -168,7 +185,6 @@ export class SpriteRenderer extends ModelRenderer {
 
     protected _createModel (): void {
         const model = this._model = (cclegacy.director.root as Root).createModel<Model>(Model);
-        model.visFlags = this.visibility;
         model.node = model.transform = this.node;
         this._models.length = 0;
         this._models.push(this._model);
@@ -176,7 +192,6 @@ export class SpriteRenderer extends ModelRenderer {
 
     protected _updateModelParams (): void {
         if (!this._spriteFrame || !this._model) { return; }
-        this._spriteFrame.ensureMeshData();
         const mesh = this._spriteFrame.mesh!;
         this.node.hasChangedFlags |= TransformBit.POSITION; // Same as model, Maybe a hack
         this._model.transform.hasChangedFlags |= TransformBit.POSITION;

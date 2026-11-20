@@ -192,15 +192,15 @@ public:
         const double width = source->getWidth();
         const double height = source->getHeight();
         const double left = _originalTexture ? _originalX : _data.x;
-        const double right = left + _data.width;
+        const double right = left + (_data.rotated ? _data.height : _data.width);
         const double top = height - (_originalTexture ? _originalY : _data.y);
-        const double bottom = top - _data.height;
-        if (!normalized) return {left, top, right, top, left, bottom, right, bottom};
-        const double l = width ? left / width : 0;
-        const double r = width ? right / width : 1;
-        const double t = height ? top / height : 1;
-        const double b = height ? bottom / height : 0;
-        return {l, b, r, b, l, t, r, t};
+        const double bottom = top - (_data.rotated ? _data.width : _data.height);
+        // The pixel array keeps its legacy V ordering. The sprite-renderer effect flips normalized V.
+        const auto uv = normalized
+            ? _data.mapQuadUV(width ? left / width : 0, width ? right / width : 1,
+                              height ? top / height : 1, height ? bottom / height : 0)
+            : _data.mapQuadUV(left, right, bottom, top);
+        return {uv.begin(), uv.end()};
     }
     // Authored coordinates are in pixels. Pivot and pixelsToUnit affect XY only.
     std::vector<double> transformMeshPositions(const std::vector<double> &raw) const {

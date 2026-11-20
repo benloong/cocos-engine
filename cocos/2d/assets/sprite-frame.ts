@@ -44,6 +44,7 @@ const INSET_LEFT = 0;
 const INSET_TOP = 1;
 const INSET_RIGHT = 2;
 const INSET_BOTTOM = 3;
+const temp_meshUV: number[] = [];
 const temp_vec3 = v3();
 const temp_matrix = mat4();
 
@@ -916,10 +917,13 @@ export class SpriteFrame extends Asset {
      * @zh 确保 mesh 可用，你应该在使用 mesh 之前调用它。
      */
     public ensureMeshData (): void {
-        if (this._mesh || !isValid(this)) return;
-        // If SpriteFrame from load, we need init vertices when use mesh
-        this._initVertices();
-        this._createMesh();
+        if (!isValid(this)) return;
+        if (this._mesh) {
+            if (this._meshType === MeshType.POLYGON || !this._texture) return;
+            this._writeRectMeshUV(temp_meshUV, true);
+            if (temp_meshUV.every((uv, index) => uv === this.vertices!.nuv[index])) return;
+        }
+        this._updateMesh();
     }
 
     public destroy (): boolean {
@@ -1009,114 +1013,42 @@ export class SpriteFrame extends Asset {
      * @mangle
      */
     public _calculateUV (): void {
-        const arrayFill = js.array.fillItems;
-        const self = this;
-        const rect = self._rect;
-        const uv = self.uv;
-        const unbiasUV = self.unbiasUV;
-        const tex = self.texture;
-        const texw = tex.width;
-        const texh = tex.height;
+        const { x, y, width, height } = this._rect;
+        const { width: textureWidth, height: textureHeight } = this.texture;
+        const l = textureWidth === 0 ? 0 : x / textureWidth;
+        const r = textureWidth === 0 ? 1 : (x + (this._rotated ? height : width)) / textureWidth;
+        const t = textureHeight === 0 ? 0 : y / textureHeight;
+        const b = textureHeight === 0 ? 1 : (y + (this._rotated ? width : height)) / textureHeight;
+        this._writeQuadUV(this.uv, l, r, t, b);
+        this._writeQuadUV(this.unbiasUV, l, r, t, b);
+        this._calculateSlicedUV();
+    }
 
-        if (self._rotated) {
-            const l = texw === 0 ? 0 : rect.x / texw;
-            const r = texw === 0 ? 1 : (rect.x + rect.height) / texw;
-            const t = texh === 0 ? 0 : rect.y / texh;
-            const b = texh === 0 ? 1 : (rect.y + rect.width) / texh;
-
-            if (self._isFlipUVX && self._isFlipUVY) {
-                /*
-                3 - 1
-                |   |
-                2 - 0
-                */
-                arrayFill(uv, r, b, r, t, l, b, l, t);
-            } else if (self._isFlipUVX) {
-                /*
-                2 - 0
-                |   |
-                3 - 1
-                */
-                arrayFill(uv, r, t, r, b, l, t, l, b);
-            } else if (self._isFlipUVY) {
-                /*
-                1 - 3
-                |   |
-                0 - 2
-                */
-                arrayFill(uv, l, b, l, t, r, b, r, t);
-            } else {
-                /*
-                0 - 2
-                |   |
-                1 - 3
-                */
-                arrayFill(uv, l, t, l, b, r, t, r, b);
-            }
-
-            const ul = texw === 0 ? 0 : rect.x / texw;
-            const ur = texw === 0 ? 1 : (rect.x + rect.height) / texw;
-            const ut = texh === 0 ? 0 : rect.y / texh;
-            const ub = texh === 0 ? 1 : (rect.y + rect.width) / texh;
-            if (self._isFlipUVX && self._isFlipUVY) {
-                arrayFill(unbiasUV, ur, ub, ur, ut, ul, ub, ul, ut);
-            } else if (self._isFlipUVX) {
-                arrayFill(unbiasUV, ur, ut, ur, ub, ul, ut, ul, ub);
-            } else if (self._isFlipUVY) {
-                arrayFill(unbiasUV, ul, ub, ul, ut, ur, ub, ur, ut);
-            } else {
-                arrayFill(unbiasUV, ul, ut, ul, ub, ur, ut, ur, ub);
-            }
+    private _writeQuadUV (target: number[], l: number, r: number, t: number, b: number): void {
+        if (this._isFlipUVX) { const u = l; l = r; r = u; }
+        if (this._isFlipUVY) { const v = t; t = b; b = v; }
+        if (this._rotated) {
+            js.array.fillItems(target, l, t, l, b, r, t, r, b);
         } else {
-            const l = texw === 0 ? 0 : rect.x / texw;
-            const r = texw === 0 ? 1 : (rect.x + rect.width) / texw;
-            const b = texh === 0 ? 1 : (rect.y + rect.height) / texh;
-            const t = texh === 0 ? 0 : rect.y / texh;
-            if (self._isFlipUVX && self._isFlipUVY) {
-                /*
-                1 - 0
-                |   |
-                3 - 2
-                */
-                arrayFill(uv, r, t, l, t, r, b, l, b);
-            } else if (self._isFlipUVX) {
-                /*
-                3 - 2
-                |   |
-                1 - 0
-                */
-                arrayFill(uv, r, b, l, b, r, t, l, t);
-            } else if (self._isFlipUVY) {
-                /*
-                0 - 1
-                |   |
-                2 - 3
-                */
-                arrayFill(uv, l, t, r, t, l, b, r, b);
-            } else {
-                /*
-                2 - 3
-                |   |
-                0 - 1
-                */
-                arrayFill(uv, l, b, r, b, l, t, r, t);
-            }
-            const ul = texw === 0 ? 0 : rect.x / texw;
-            const ur = texw === 0 ? 1 : (rect.x + rect.width) / texw;
-            const ub = texh === 0 ? 1 : (rect.y + rect.height) / texh;
-            const ut = texh === 0 ? 0 : rect.y / texh;
-            if (self._isFlipUVX && self._isFlipUVY) {
-                arrayFill(unbiasUV, ur, ut, ul, ut, ur, ub, ul, ub);
-            } else if (self._isFlipUVX) {
-                arrayFill(unbiasUV, ur, ub, ul, ub, ur, ut, ul, ut);
-            } else if (self._isFlipUVY) {
-                arrayFill(unbiasUV, ul, ut, ur, ut, ul, ub, ur, ub);
-            } else {
-                arrayFill(unbiasUV, ul, ub, ur, ub, ul, ut, ur, ut);
-            }
+            js.array.fillItems(target, l, b, r, b, l, t, r, t);
         }
+    }
 
-        self._calculateSlicedUV();
+    private _writeRectMeshUV (target: number[], normalized: boolean): void {
+        const original = this._original;
+        const texture = original?._texture ?? this.texture;
+        const { width, height } = this._rect;
+        const left = original?._x ?? this._rect.x;
+        const right = left + (this._rotated ? height : width);
+        const top = texture.height - (original?._y ?? this._rect.y);
+        const bottom = top - (this._rotated ? width : height);
+        if (normalized) {
+            this._writeQuadUV(target, texture.width === 0 ? 0 : left / texture.width, texture.width === 0 ? 1 : right / texture.width,
+                texture.height === 0 ? 1 : top / texture.height, texture.height === 0 ? 0 : bottom / texture.height);
+        } else {
+            // Preserve the legacy pixel V ordering. The sprite-renderer effect flips normalized V.
+            this._writeQuadUV(target, left, right, bottom, top);
+        }
     }
 
     /**
@@ -1424,50 +1356,27 @@ export class SpriteFrame extends Asset {
         if (self._meshType === MeshType.POLYGON) {
             // Use Bayazit to generate vertices and assign values
         } else { // Rect mode
-            // default center is 0.5，0.5
-            const original = self._original;
-            const tex = original?._texture ?? self.texture;
-            const texw = tex.width;
-            const texh = tex.height;
-            const rect = self.rect;
-            const width = rect.width;
-            const height = rect.height;
-            const rectX = original?._x ?? rect.x;
-            const rectY = texh - (original?._y ?? rect.y) - height;
-            const halfWidth = width / 2;
-            const halfHeight = height / 2;
+            const halfWidth = self.rect.width / 2;
+            const halfHeight = self.rect.height / 2;
+            self._writeRectMeshUV(thisVertices.uv, false);
+            self._writeRectMeshUV(thisVertices.nuv, true);
 
-            const l = texw === 0 ? 0 : rectX / texw;
-            const r = texw === 0 ? 1 : (rectX + width) / texw;
-            const t = texh === 0 ? 1 : (rectY + height) / texh;
-            const b = texh === 0 ? 0 : rectY / texh;
-
-            const uv = thisVertices.uv;
-            const nuv = thisVertices.nuv;
             const rawPosition = thisVertices.rawPosition;
             const indexes = thisVertices.indexes;
 
             // left bottom
             temp_vec3.set(-halfWidth, -halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
-            uv.push(rectX, rectY + height);
-            nuv.push(l, b);
             thisVertices.minPos.set(temp_vec3);
             // right bottom
             temp_vec3.set(halfWidth, -halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
-            uv.push(rectX + width, rectY + height);
-            nuv.push(r, b);
             // left top
             temp_vec3.set(-halfWidth, halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
-            uv.push(rectX, rectY);
-            nuv.push(l, t);
             // right top
             temp_vec3.set(halfWidth, halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
-            uv.push(rectX + width, rectY);
-            nuv.push(r, t);
             thisVertices.maxPos.set(temp_vec3);
 
             indexes.push(0, 1, 2, 2, 1, 3);

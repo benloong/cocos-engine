@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==127) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==138) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==127) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==138) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -90,10 +90,19 @@ const sanity={
 };
 const geometryCases = ['fill-rect', 'curves', 'ellipse', 'arc', 'round-rect', 'clear-and-replace',
     'sprite-radial-rotated', 'sprite-radial-rotated-updated', 'prefab-atlas-radial', 'prefab-atlas-radial-rotated'];
+const orientedMeshes = new Map();
+for (const rotated of [false, true]) {
+    for (let flips = 0; flips < 4; ++flips) {
+        orientedMeshes.set(`mesh-rect-${rotated ? 'rotated' : 'flat'}-${flips}`, [rotated, flips]);
+    }
+}
+orientedMeshes.set('mesh-rect-packed', [true, 3]);
+orientedMeshes.set('mesh-rect-packed-flip', [true, 2]);
+orientedMeshes.set('mesh-rect-restored', [true, 2]);
 for (let cap = 0; cap < 3; cap++) {
     for (let join = 0; join < 3; join++) geometryCases.push(`stroke-${cap}-${join}`);
 }
-for (const name of [...Object.keys(sanity), ...geometryCases]) {
+for (const name of [...Object.keys(sanity), ...geometryCases, ...orientedMeshes.keys()]) {
     if (!a.captures.includes(name)) throw new Error('Missing graphics geometry capture: ' + name);
 }
 const results=[];
@@ -116,6 +125,23 @@ for(const name of a.captures) {
         for (const x of [-84, -44, 44, 84]) {
             const red = (x < 0) !== name.endsWith('-updated') ? 255 : 0;
             if (expected[(128 * 256 + 128 + x) * 4] !== red) throw new Error('Stencil threshold mismatch: ' + name + ' at x=' + x);
+        }
+    }
+    if (orientedMeshes.has(name)) {
+        const [rotated, flips] = orientedMeshes.get(name);
+        const flipX = !!(flips & (rotated ? 2 : 1));
+        const flipY = !!(flips & (rotated ? 1 : 2));
+        const colors = [[255, 0, 0, 255], [0, 255, 0, 255], [0, 0, 255, 255], [255, 255, 0, 255]];
+        for (const center of [80, 176]) {
+            for (const right of [false, true]) {
+                for (const top of [false, true]) {
+                    const color = colors[(top !== flipY ? 2 : 0) + (right !== flipX ? 1 : 0)];
+                    const offset = ((128 + (top ? 8 : -8)) * 256 + center + (right ? 12 : -12)) * 4;
+                    if (color.some((channel, i) => expected[offset + i] !== channel || actual[offset + i] !== channel)) {
+                        throw new Error(`Incorrect texture quadrant for ${name} at ${center}/${right}/${top}`);
+                    }
+                }
+            }
         }
     }
     let max=0,channels=0,pixels=0,colored=0;
@@ -155,6 +181,14 @@ const authored = results.find(row => row.name === 'authored-mesh');
 const cloned = results.find(row => row.name === 'authored-mesh-clone');
 if (authored.nativeSha256 !== cloned.nativeSha256 || authored.webSha256 !== cloned.webSha256) {
     throw new Error('Cloning an authored mesh changed its image');
+}
+for (const [name, reference] of [['mesh-rect-packed', 'mesh-rect-rotated-3'],
+    ['mesh-rect-packed-flip', 'mesh-rect-rotated-2'], ['mesh-rect-restored', 'mesh-rect-rotated-2']]) {
+    const image = results.find(row => row.name === name);
+    const sourceImage = results.find(row => row.name === reference);
+    if (image.nativeSha256 !== sourceImage.nativeSha256 || image.webSha256 !== sourceImage.webSha256) {
+        throw new Error('Packing, flipping or restoring changed an oriented mesh image: ' + name);
+    }
 }
 const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},shrinkSizes:{native:a.shrinkSizes,web:b.shrinkSizes},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
 for (const name of ['sprite-radial-quadrant', 'sprite-radial-rotated']) {

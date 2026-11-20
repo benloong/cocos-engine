@@ -1,6 +1,6 @@
 import { _decorator, BitmapFont, Camera, Canvas, Color, Component, deserialize, Director, director, dynamicAtlasManager, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { countTraversedRoots, runSceneMatrix } from './M6SceneMatrix';
-import { assetManager, EffectAsset, gfx, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
+import { assetManager, EffectAsset, gfx, ImageAsset, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
 
 const { ccclass } = _decorator;
@@ -197,6 +197,98 @@ async function checkPackedMeshes (
         }
     } finally {
         rebound.destroy();
+        dynamicAtlasManager.enabled = atlasEnabled;
+    }
+}
+
+async function checkRectMeshOrientation (
+    parent: Node, layer: number, material: Material, capture: (name: string) => Promise<void>,
+): Promise<void> {
+    const width = 12;
+    const height = 8;
+    const textureWidth = 64;
+    const textureHeight = 32;
+    const flatRect = new Rect(3, 2, width, height);
+    const rotatedRect = new Rect(21, 5, width, height);
+    const pixels = new Uint8Array(textureWidth * textureHeight * 4);
+    const colors = [[0, 0, 255, 255], [255, 255, 0, 255], [255, 0, 0, 255], [0, 255, 0, 255]];
+    for (let y = 0; y < height; ++y) {
+        for (let x = 0; x < width; ++x) {
+            const color = colors[(y < height / 2 ? 0 : 2) + (x < width / 2 ? 0 : 1)];
+            pixels.set(color, 4 * ((flatRect.y + y) * textureWidth + flatRect.x + x));
+            pixels.set(color, 4 * ((rotatedRect.y + x) * textureWidth + rotatedRect.x + height - 1 - y));
+        }
+    }
+    const image = new ImageAsset({ _data: pixels, width: textureWidth, height: textureHeight, format: Texture2D.PixelFormat.RGBA8888 } as any);
+    const texture = new Texture2D();
+    texture.image = image;
+    texture.uploadData(pixels);
+    const frame = new SpriteFrame();
+    frame._deserialize({ pixelsToUnit: 16, rect: flatRect, originalSize: { width, height } }, null);
+    frame._textureSource = texture;
+    frame.packable = false;
+    const atlasEnabled = dynamicAtlasManager.enabled;
+    dynamicAtlasManager.enabled = false;
+
+    const uiNode = new Node('oriented-rect-sprite');
+    uiNode.layer = layer;
+    uiNode.setPosition(-48, 0);
+    parent.addChild(uiNode);
+    const transform = uiNode.addComponent(UITransform);
+    const sprite = uiNode.addComponent(Sprite);
+    sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+    sprite.spriteFrame = frame;
+    transform.setContentSize(width * 4, height * 4);
+
+    const meshNode = new Node('oriented-rect-mesh');
+    meshNode.layer = layer;
+    meshNode.setPosition(48, 0);
+    meshNode.setScale(64, 64, 1);
+    parent.addChild(meshNode);
+    const renderer = meshNode.addComponent(SpriteRenderer);
+    renderer.visibility = layer;
+    renderer.setSharedMaterial(material, 0);
+    renderer.spriteFrame = frame;
+    try {
+        for (const rotated of [false, true]) {
+            frame.reset({ rect: rotated ? rotatedRect : flatRect, isRotate: rotated });
+            for (let flips = 0; flips < 4; ++flips) {
+                frame.flipUVX = !!(flips & 1);
+                frame.flipUVY = !!(flips & 2);
+                const meshUVs = frame.mesh!.readAttribute(0, gfx.AttributeName.ATTR_TEX_COORD)!;
+                if (!Array.from(meshUVs).every((uv, i) => uv === (i % 2 === 0 ? frame.uv[i] : 1 - frame.uv[i]))) {
+                    throw new Error('Bound mesh does not address the current source corners');
+                }
+                await capture(`mesh-rect-${rotated ? 'rotated' : 'flat'}-${flips}`);
+            }
+        }
+        const beforePacking = frame.mesh;
+        frame.packable = true;
+        dynamicAtlasManager.enabled = true;
+        dynamicAtlasManager.packToDynamicAtlas(sprite, frame);
+        if (frame.mesh !== beforePacking || (sys.isNative ? frame.texture !== texture || frame.original
+            : frame.texture === texture || frame.original?._texture !== texture)) {
+            throw new Error('Packing changed the mesh source UV or violated the backend atlas policy');
+        }
+        await capture('mesh-rect-packed');
+        renderer.enabled = false;
+        frame.flipUVX = false;
+        renderer.enabled = true;
+        await capture('mesh-rect-packed-flip');
+        const beforeRestore = frame.mesh;
+        dynamicAtlasManager.enabled = false;
+        if (frame.original || frame.texture !== texture || frame.mesh !== beforeRestore) {
+            throw new Error('Atlas restore changed the oriented source mesh');
+        }
+        await capture('mesh-rect-restored');
+    } finally {
+        dynamicAtlasManager.enabled = false;
+        uiNode.destroy();
+        meshNode.destroy();
+        await wait();
+        await releaseMeshedFrame(frame);
+        texture.destroy();
+        image.destroy();
         dynamicAtlasManager.enabled = atlasEnabled;
     }
 }
@@ -602,6 +694,7 @@ export class M6GraphicsGpuProbe extends Component {
 
         await checkAuthoredPolygon(canvas.node, meshLayer, material, capture);
         await checkPackedMeshes(canvas.node, meshLayer, material, left, capture);
+        await checkRectMeshOrientation(canvas.node, meshLayer, material, capture);
         const alternate = new Material();
         const variantEffect = await new Promise<EffectAsset>((resolve, reject) =>
             resources.load('VariantSprite', EffectAsset, (error, asset) => error ? reject(error) : resolve(asset)));

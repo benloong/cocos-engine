@@ -93,6 +93,32 @@ test('Web generated mesh buffers, clone and texture refresh match the Windows JS
     expect(polygon.vertices!.indexes).toEqual([]);
 });
 
+test('a generated rectangle mesh follows rotated atlas corners and live flips', () => {
+    const frame = new WebSpriteFrame();
+    frame.reset({ texture: { width: 32, height: 32 } as any, rect: new Rect(4, 3, 10, 6), isRotate: true });
+    const readUVs = (): number[] => {
+        frame.ensureMeshData();
+        return Array.from(frame.mesh!.readAttribute(0, AttributeName.ATTR_TEX_COORD)!);
+    };
+    const left = 4 / 32;
+    const right = 10 / 32;
+    const top = 29 / 32;
+    const bottom = 19 / 32;
+    expect(readUVs()).toEqual([left, top, left, bottom, right, top, right, bottom]);
+    const original = frame.mesh!;
+    frame.flipUVX = true;
+    expect(readUVs()).toEqual([right, top, right, bottom, left, top, left, bottom]);
+    expect(frame.mesh).not.toBe(original);
+    const flipped = frame.mesh!;
+    frame.ensureMeshData();
+    expect(frame.mesh).toBe(flipped);
+    frame.flipUVY = true;
+    expect(readUVs()).toEqual([right, bottom, right, top, left, bottom, left, top]);
+    frame.destroy();
+    CCObject._deferredDestroy();
+    CCObject._deferredDestroy();
+});
+
 test('destroying a Web SpriteFrame releases its mesh at frame end and leaves the clone valid', () => {
     const frame = new WebSpriteFrame();
     frame.texture = { width: 4, height: 4 } as any;

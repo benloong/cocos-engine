@@ -283,6 +283,21 @@ void testSpriteFrameData() {
     auto uv = frame->getUV();
     check(uv.size() == 8 && frame->getSlicedUV().size() == 32, "native frame UV sizes");
     checkNear(uv[0], 7.F / 128.F, "native frame rotated UV");
+    for (int flags = 0; flags < 8; ++flags) {
+        frame->setRotated((flags & 1) != 0);
+        frame->setFlipUVX((flags & 2) != 0);
+        frame->setFlipUVY((flags & 4) != 0);
+        const auto spriteUV = frame->getUV();
+        const auto meshUV = frame->getMeshUVs(true);
+        check(meshUV.size() == spriteUV.size(), "native sprite and mesh use the same quad topology");
+        for (size_t i = 0; i < meshUV.size(); i += 2) {
+            checkNear(static_cast<float>(meshUV[i]), spriteUV[i], "oriented mesh and sprite U address the same corner");
+            checkNear(static_cast<float>(meshUV[i + 1]), 1.F - spriteUV[i + 1], "oriented mesh V uses bottom-origin coordinates");
+        }
+    }
+    frame->setRotated(true);
+    frame->setFlipUVX(false);
+    frame->setFlipUVY(false);
     auto border = frame->getTrimmedBorder();
     checkNear(border[0], 13, "native trimmed left border");
     checkNear(border[3], -13, "native trimmed top border");

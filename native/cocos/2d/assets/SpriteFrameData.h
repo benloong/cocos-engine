@@ -43,15 +43,20 @@ struct SpriteFrameData final {
         rotated = false;
     }
 
+    template <class T>
+    std::array<T, 8> mapQuadUV(T l, T r, T t, T b) const {
+        if (flipUVX) { const T v = l; l = r; r = v; }
+        if (flipUVY) { const T v = t; t = b; b = v; }
+        return rotated ? std::array<T, 8>{l, t, l, b, r, t, r, b}
+                       : std::array<T, 8>{l, b, r, b, l, t, r, t};
+    }
+
     std::array<float, 8> calculateUV(float textureWidth, float textureHeight) const {
-        float l = textureWidth == 0 ? 0 : x / textureWidth;
-        float r = textureWidth == 0 ? 1 : (x + (rotated ? height : width)) / textureWidth;
-        float t = textureHeight == 0 ? 0 : y / textureHeight;
-        float b = textureHeight == 0 ? 1 : (y + (rotated ? width : height)) / textureHeight;
-        if (flipUVX) { const float v = l; l = r; r = v; }
-        if (flipUVY) { const float v = t; t = b; b = v; }
-        return rotated ? std::array<float, 8>{l, t, l, b, r, t, r, b}
-                       : std::array<float, 8>{l, b, r, b, l, t, r, t};
+        const float l = textureWidth == 0 ? 0 : x / textureWidth;
+        const float r = textureWidth == 0 ? 1 : (x + (rotated ? height : width)) / textureWidth;
+        const float t = textureHeight == 0 ? 0 : y / textureHeight;
+        const float b = textureHeight == 0 ? 1 : (y + (rotated ? width : height)) / textureHeight;
+        return mapQuadUV(l, r, t, b);
     }
 
     // Row-major 4x4 grid, interleaved u/v. Matches Web uvSliced, including

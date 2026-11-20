@@ -59,11 +59,11 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "a9afd694a9a545f8696f26866423d39b0f8b39617b52189f787bcbefb754b3fa"
+      "sha256": "c4d90436d27071b15d78b2b106cba7ca1aee84253ae2de8acffeeac500f044d6"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
-      "sha256": "f421ce5a348975a5ecc0c1785d717c7349593b86dd80a03253f92d27784e2e0b"
+      "sha256": "7c02b9b4e4e6700c2db59d4f91d24c2d09211fe904a7f4f4fe21010d2eecc71a"
     },
     {
       "file": "native/cocos/2d/assets/TTFFont.h",
@@ -14294,6 +14294,35 @@
             "decorators": []
           },
           {
+            "name": "_writeQuadUV",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "target: number[]",
+              "l: number",
+              "r: number",
+              "t: number",
+              "b: number"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_writeRectMeshUV",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "target: number[]",
+              "normalized: boolean"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "_setDynamicAtlasFrame",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -14928,8 +14957,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "851ffe21312bd76d51cba09825a0babe7ec31df263177e9bda7206f23bcbfc43",
-      "printedCodeLines": 322,
+      "sha256": "5d0a935d369fa48707f3c2caa6160c33fc61c69fd3947fddb5485d4e93eaed23",
+      "printedCodeLines": 325,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
         "./sprite-frame-vertices",
@@ -14961,8 +14990,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.ts",
-      "sha256": "ad1f834c88925809275745dfaecfcb636c5aade631840b43d42a4b5403fb1026",
-      "printedCodeLines": 887,
+      "sha256": "3a05bdb6d0d1e2b22877a0b6265aa889f15e9ddec6f2fdb9e05622b9c3e3cd83",
+      "printedCodeLines": 838,
       "runtimeImports": [
         "./sprite-frame-vertices",
         "../utils/dynamic-atlas/atlas",
@@ -14983,11 +15012,11 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        968,
-        970,
-        988,
-        990,
-        1491
+        972,
+        974,
+        992,
+        994,
+        1400
       ]
     },
     {
@@ -16418,8 +16447,8 @@
     },
     {
       "file": "cocos/2d/framework/sprite-renderer.ts",
-      "sha256": "cbd85c61468751c06fafa59df5676b3d8c9ee419c76ab91968eea1e20c44ce17",
-      "printedCodeLines": 198,
+      "sha256": "d7ed8720b9ee59838657f79975223c972cd4d0a8a0ef64cc0ab7b8195d05fe41",
+      "printedCodeLines": 212,
       "runtimeImports": [
         "cc.decorator",
         "../../asset/asset-manager",
@@ -16435,8 +16464,8 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        186,
-        236
+        201,
+        251
       ]
     },
     {

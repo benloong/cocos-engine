@@ -124,6 +124,7 @@
 - [ ] 字体复杂布局与资产边界：补充平面 BMFont 标量字形通过 2327 个 Web/native 布局对照，Windows Debug/Release 的四种字体/旋转组合与 Web 逐像素相等，见[捕获](./native-2d-m6-bitmap-unicode.json)。bidi/shaping、任意 mesh 和其余 packed 帧状态组合、其余字体配置/元数据动态入口，以及真实旧资产/场景/Prefab 和资源生命周期矩阵继续验收；基础布局通过不关闭字体终态项。
   - [x] 旧 SpriteFrame 多边形数据在 SpriteRenderer 生成网格时保留顶点、索引和 UV。Windows Debug、Release 与 Web 对照包含凹多边形、独立克隆和换纹理重建。[逐图证据](./native-2d-m6.1-sprite-frame.md#旧序列化多边形)
   - [x] 共享 SpriteFrame 打包后，Web 2D Sprite 更新图集 UV 和纹理提交，SpriteRenderer 的网格与材质继续采样同一源纹理。矩形和多边形各验收源图、材质重绑、打包后建网格与恢复，Windows 双配置以禁用路径对照。[同一帧打包对照](./native-2d-m6.1-sprite-frame.md#同一帧的图集页和源纹理)
+  - [x] SpriteRenderer 的矩形网格遵循旋转帧的有效图集区域和 X/Y 翻转，绑定中的帧变化会刷新模型。Windows 双配置和 Web 的 11 张新增方向图均通过四角颜色检查，覆盖 Web 打包、禁用后翻转与恢复。138 张图逐字节一致。[网格方向验收](./native-2d-m6.1-sprite-frame.md#矩形网格的旋转与翻转)
 - [x] 动态图集入口回退：拒绝不可上传的来源，满页失败保留剩余空间，同源帧复用已有页。定向 Jest 和真实 Windows Debug/Web 回退探针通过，100 份 RGBA 逐字节一致，见[回退报告](./native-2d-m6.1-atlas-fallback.md)。
 - [x] 动态图集帧所有权：删除单帧保留共享源，打包克隆随页跟踪，删除源纹理与重置先恢复帧后释放页。真实 Windows Debug/Web 探针和 100 份 RGBA 对照通过，见[所有权报告](./native-2d-m6.1-atlas-lifecycle.md)。
 - [x] 原生组件事件触发自动合图曾在 Windows Debug 与 Web 通过。该实现是禁用前的历史基线，见[触发报告](./native-2d-m6.1-atlas-automatic.md)。
