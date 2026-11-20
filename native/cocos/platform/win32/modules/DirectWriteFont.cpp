@@ -566,6 +566,29 @@ struct DirectWriteFont::Impl {
         if (!bold && !italic) factory->CreateRenderingParams(renderingParams.out());
         return SUCCEEDED(format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP));
     }
+    bool initSystem(const std::string &familyName, float size, bool useBold, bool useItalic) {
+        if (!(size > 0) || !std::isfinite(size)) return false;
+        const auto name = wide(familyName);
+        if (name.empty()) return false;
+        HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown **>(factory.out()));
+        if (FAILED(hr)) return false;
+        hr = factory->GetSystemFontCollection(collection.out());
+        UINT32 index = 0;
+        BOOL found = FALSE;
+        if (SUCCEEDED(hr)) hr = collection->FindFamilyName(name.c_str(), &index, &found);
+        if (FAILED(hr) || !found) return false;
+        const auto weight = useBold ? DWRITE_FONT_WEIGHT_BOLD : DWRITE_FONT_WEIGHT_NORMAL;
+        const auto style = useItalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
+        hr = factory->CreateTextFormat(name.c_str(), collection.get(), weight, style,
+            DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", format.out());
+        if (FAILED(hr)) return false;
+        ComOwner<IDWriteFontFamily> family;
+        if (!useBold && !useItalic && SUCCEEDED(collection->GetFontFamily(index, family.out()))) {
+            unkernedAscii = hasUnkernedAscii(family.get());
+        }
+        factory->CreateRenderingParams(renderingParams.out());
+        return SUCCEEDED(format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP));
+    }
     HRESULT layout(const std::wstring &text, IDWriteTextLayout **out) const {
         HRESULT hr = factory->CreateTextLayout(text.data(), static_cast<UINT32>(text.size()), format.get(), 1000000, 1000000, out);
         const size_t firstSpace = text.find(L' ');
@@ -587,6 +610,10 @@ DirectWriteFont::~DirectWriteFont() = default;
 std::unique_ptr<DirectWriteFont> DirectWriteFont::create(const std::string &path, float size, bool bold, bool italic) {
     std::unique_ptr<DirectWriteFont> result(new DirectWriteFont());
     return result->_impl->init(path, size, bold, italic) ? std::move(result) : nullptr;
+}
+std::unique_ptr<DirectWriteFont> DirectWriteFont::createSystem(const std::string &family, float size, bool bold, bool italic) {
+    std::unique_ptr<DirectWriteFont> result(new DirectWriteFont());
+    return result->_impl->initSystem(family, size, bold, italic) ? std::move(result) : nullptr;
 }
 std::array<float, 2> DirectWriteFont::measure(const std::string &text) const {
     ComOwner<IDWriteTextLayout> layout;

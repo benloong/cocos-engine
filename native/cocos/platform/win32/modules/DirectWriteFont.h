@@ -27,15 +27,17 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include "base/RefCounted.h"
 
 namespace cc {
-// Owns an isolated DirectWrite factory, one private file collection and format.
-// No process-wide font registration; all COM references end with this object.
-class DirectWriteFont final {
+// Owns a DirectWrite text format and its font collection. Private files use
+// an isolated factory and system families use the installed font collection.
+class DirectWriteFont final : public RefCounted {
 public:
     enum class StrokeJoin { MITER, ROUND, BEVEL };
     static std::unique_ptr<DirectWriteFont> create(const std::string &path, float size, bool bold, bool italic);
-    ~DirectWriteFont();
+    static std::unique_ptr<DirectWriteFont> createSystem(const std::string &family, float size, bool bold, bool italic);
+    ~DirectWriteFont() override;
     std::array<float, 2> measure(const std::string &text) const;
     bool draw(const std::string &text, float x, float y, int baseline,
               uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color) const;

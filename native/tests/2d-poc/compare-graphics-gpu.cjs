@@ -39,8 +39,8 @@ for (const backend of [a, b]) {
 }
 for (const row of a.labelLayout) {
     const web = b.labelLayout.find(x => x.force === row.force && x.overflow === row.overflow);
-    if (Math.abs(row.height - web.height) > 0.001 || (row.overflow !== 0 && row.width !== web.width)) {
-        throw new Error('Label wrap or fixed bounds differ across platforms: ' + JSON.stringify({native:row,web}));
+    if (Math.abs(row.height - web.height) > 0.001 || Math.abs(row.width - web.width) > 0.001) {
+        throw new Error('Label layout bounds differ across platforms: ' + JSON.stringify({native:row,web}));
     }
 }
 if (!a.shrinkSizes.every((size,index) => size === b.shrinkSizes[index])) throw new Error('Windows and Web resolve different SHRINK font sizes');

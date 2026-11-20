@@ -124,12 +124,19 @@ void CanvasRenderingContext2DDelegate::stroke() {
 }
 
 void CanvasRenderingContext2DDelegate::saveContext() {
-    _savedDC = SaveDC(_DC);
+    if (const int dc = SaveDC(_DC)) {
+        _savedContexts.push_back({dc, _directWrite, _fontSize});
+    }
 }
 
 void CanvasRenderingContext2DDelegate::restoreContext() {
+    if (_savedContexts.empty()) return;
+    auto saved = std::move(_savedContexts.back());
+    _savedContexts.pop_back();
+    _directWrite = std::move(saved.directWrite);
+    _fontSize = saved.fontSize;
     _measuredText.clear();
-    BOOL ret = RestoreDC(_DC, _savedDC);
+    BOOL ret = RestoreDC(_DC, saved.dc);
     if (0 == ret) {
         SE_LOGD("CanvasRenderingContext2DImpl restore context failed.\n");
     }
@@ -250,8 +257,14 @@ void CanvasRenderingContext2DDelegate::updateFont(const ccstd::string &fontName,
             }
             if (!fontPath.empty()) {
                 removeCustomFont();
-                _directWrite = DirectWriteFont::create(fontPath, fontSize, bold, italic);
+                _directWrite = DirectWriteFont::create(fontPath, fontSize, bold, italic).release();
                 if (_directWrite) return;
+            } else {
+                _directWrite = DirectWriteFont::createSystem(_fontName, fontSize, bold, italic).release();
+                if (_directWrite) {
+                    removeCustomFont();
+                    return;
+                }
             }
             tFont.lfCharSet = DEFAULT_CHARSET;
             // A CSS family can exceed LOGFONT's limit. Let GDI select its

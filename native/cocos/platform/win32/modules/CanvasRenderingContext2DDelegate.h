@@ -31,6 +31,8 @@
 #include <memory>
 #include <regex>
 #include <string>
+#include <vector>
+#include "base/Ptr.h"
 #include "base/csscolorparser.h"
 #include "base/std/container/array.h"
 #include "cocos/bindings/jswrapper/SeApi.h"
@@ -99,14 +101,19 @@ public:
     HBITMAP _bmp{nullptr};
 
 private:
-    std::unique_ptr<DirectWriteFont> _directWrite;
+    struct SavedContext {
+        int dc;
+        IntrusivePtr<DirectWriteFont> directWrite;
+        int fontSize;
+    };
+    IntrusivePtr<DirectWriteFont> _directWrite;
     cc::Data _imageData;
     HFONT _font{static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT))};
     HWND _wnd{nullptr};
     HPEN _hpen;
     PAINTSTRUCT _paintStruct;
     ccstd::string _curFontPath;
-    int _savedDC{0};
+    std::vector<SavedContext> _savedContexts;
     float _lineWidth{1.0F};
     ccstd::string _lineJoin{"miter"};
     float _bufferWidth{0.0F};

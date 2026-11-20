@@ -3,7 +3,9 @@
 #include <array>
 #include <chrono>
 #include <cstdio>
+#include <string_view>
 #include <vector>
+#include "platform/win32/modules/DirectWriteFont.h"
 
 namespace {
 using Clock = std::chrono::steady_clock;
@@ -15,6 +17,7 @@ struct Sample {
 std::array<Sample, STAGES> samples;
 bool profileCalls = false;
 bool useExtTextOut = false;
+bool useSystemDirectWrite = false;
 
 template<class Call>
 int timed(Stage stage, Call call) {
@@ -42,7 +45,9 @@ int probeGetDIBits(HDC dc, HBITMAP bitmap, UINT start, UINT lines, void *pixels,
 #define CanvasRenderingContext2DDelegate ProfiledCanvasDelegate
 #define DrawTextW probeDrawText
 #define GetDIBits probeGetDIBits
+#define createSystem(family, size, bold, italic) createSystem(useSystemDirectWrite ? family : "", size, bold, italic)
 #include "platform/win32/modules/CanvasRenderingContext2DDelegate.cpp"
+#undef createSystem
 #undef GetDIBits
 #undef DrawTextW
 #undef CanvasRenderingContext2DDelegate
@@ -86,7 +91,19 @@ std::vector<uint8_t> render(bool alternate, const char *font, int size, int styl
 }
 } // namespace
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc == 2 && std::string_view(argv[1]) == "--system-font") {
+        for (int pair = -1; pair < 16; ++pair) {
+            double times[2]{};
+            for (int arm = 0; arm < 2; ++arm) {
+                const int variant = (pair & 1) ? 1 - arm : arm;
+                useSystemDirectWrite = variant == 1;
+                times[variant] = run(true);
+            }
+            if (pair >= 0) std::printf("system-font,%d,%.6f,%.6f\n", pair, times[0], times[1]);
+        }
+        return 0;
+    }
     for (int pair = -1; pair < 16; ++pair) {
         double us[3]{};
         for (int arm = 0; arm < 3; ++arm) {

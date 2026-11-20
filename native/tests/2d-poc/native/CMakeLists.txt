@@ -57,7 +57,7 @@ if(WIN32)
         add_executable(cc2d_ttf_${CC2D_VARIANT} EXCLUDE_FROM_ALL ../test_ttf_raster.cpp "${variant_source}")
         target_include_directories(cc2d_ttf_${CC2D_VARIANT} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../../cocos" "${CMAKE_CURRENT_LIST_DIR}/..")
         target_compile_definitions(cc2d_ttf_${CC2D_VARIANT} PRIVATE NOMINMAX CC2D_TTF_GEOMETRY_FILTERED=$<STREQUAL:${CC2D_VARIANT},geometry_filtered>)
-        target_link_libraries(cc2d_ttf_${CC2D_VARIANT} PRIVATE dwrite d2d1 ole32 windowscodecs)
+        target_link_libraries(cc2d_ttf_${CC2D_VARIANT} PRIVATE cocos_engine)
     endforeach()
 endif()
 

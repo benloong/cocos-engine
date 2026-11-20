@@ -1,0 +1,415 @@
+{
+  "priorSystemArialWidth": 79,
+  "systemArialWidth": 80.9453125,
+  "fontSize": 16,
+  "text": [
+    "one line",
+    "second line"
+  ],
+  "configurations": {
+    "Debug": {
+      "graphics": {
+        "snapshot": "a9ab9009853e813382db28d6d75c664b31f7560b4d3ba28c47f04efaad3975ef",
+        "executableSha256": "c3fc3dbb0415d794256948ec38df278e5cf69e9c638ed0283aaea6faa82b546c",
+        "labelLayout": {
+          "native": [
+            {
+              "force": false,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999694824219
+            },
+            {
+              "force": false,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.20000076293945
+            },
+            {
+              "force": true,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999694824219
+            },
+            {
+              "force": true,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.20000076293945
+            }
+          ],
+          "web": [
+            {
+              "force": false,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999999999999
+            },
+            {
+              "force": false,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.199999999999996
+            },
+            {
+              "force": true,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999999999999
+            },
+            {
+              "force": true,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.199999999999996
+            }
+          ]
+        },
+        "shrinkSizes": {
+          "native": [
+            8,
+            32,
+            8,
+            8,
+            33,
+            8,
+            7,
+            32
+          ],
+          "web": [
+            8,
+            32,
+            8,
+            8,
+            33,
+            8,
+            7,
+            32
+          ]
+        },
+        "identicalImages": 88,
+        "sceneCycles": 1000
+      },
+      "richText": {
+        "snapshot": "ce1f3379c115b7695ca59306c887fe86f66ff571385087599495aa5463b19e1d",
+        "executableSha256": "315fc5dc31c19be109b52c8ad5ec550bb0dc81450f9e3bfb568153aaee24f046",
+        "sameImagesAsBefore": 42,
+        "layoutsMatchingWeb": 42,
+        "strictImagesMatchingWeb": 39,
+        "glyphFailures": [
+          {
+            "name": "text-bold",
+            "max": 20,
+            "pixels": 448
+          },
+          {
+            "name": "text-outline",
+            "max": 30,
+            "pixels": 202
+          },
+          {
+            "name": "text-nested",
+            "max": 47,
+            "pixels": 553
+          }
+        ],
+        "fontCycles": 1000
+      }
+    },
+    "Release": {
+      "graphics": {
+        "snapshot": "a9ab9009853e813382db28d6d75c664b31f7560b4d3ba28c47f04efaad3975ef",
+        "executableSha256": "eb6c2225c6667cad37833938881c6aeaa1aa79cb2510428ad8e66a154674f62a",
+        "labelLayout": {
+          "native": [
+            {
+              "force": false,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999694824219
+            },
+            {
+              "force": false,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.20000076293945
+            },
+            {
+              "force": true,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999694824219
+            },
+            {
+              "force": true,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.20000076293945
+            }
+          ],
+          "web": [
+            {
+              "force": false,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": false,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999999999999
+            },
+            {
+              "force": false,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.199999999999996
+            },
+            {
+              "force": true,
+              "overflow": 1,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 2,
+              "width": 72,
+              "height": 80
+            },
+            {
+              "force": true,
+              "overflow": 3,
+              "width": 72,
+              "height": 65.19999999999999
+            },
+            {
+              "force": true,
+              "overflow": 0,
+              "width": 80.9453125,
+              "height": 45.199999999999996
+            }
+          ]
+        },
+        "shrinkSizes": {
+          "native": [
+            8,
+            32,
+            8,
+            8,
+            33,
+            8,
+            7,
+            32
+          ],
+          "web": [
+            8,
+            32,
+            8,
+            8,
+            33,
+            8,
+            7,
+            32
+          ]
+        },
+        "identicalImages": 88,
+        "sceneCycles": 1000
+      },
+      "richText": {
+        "snapshot": "ce1f3379c115b7695ca59306c887fe86f66ff571385087599495aa5463b19e1d",
+        "executableSha256": "eb6c2225c6667cad37833938881c6aeaa1aa79cb2510428ad8e66a154674f62a",
+        "sameImagesAsBefore": 42,
+        "layoutsMatchingWeb": 42,
+        "strictImagesMatchingWeb": 39,
+        "glyphFailures": [
+          {
+            "name": "text-bold",
+            "max": 20,
+            "pixels": 448
+          },
+          {
+            "name": "text-outline",
+            "max": 30,
+            "pixels": 202
+          },
+          {
+            "name": "text-nested",
+            "max": 47,
+            "pixels": 553
+          }
+        ],
+        "fontCycles": 1000
+      }
+    }
+  },
+  "releaseCanvasProfile": {
+    "operationsPerSample": 4000,
+    "font": "14px Arial",
+    "executableSha256": "a2c375504cf3eb1243a071ea74562da1ece26ab629c551a8d968483084b3e53e",
+    "medianGdiUs": 43.8879125,
+    "medianDirectWriteUs": 16.338175,
+    "medianPairedReductionPercent": 62.806524366115234,
+    "samples": [
+      {
+        "pair": 0,
+        "gdiUs": 43.955975,
+        "directWriteUs": 16.21435
+      },
+      {
+        "pair": 1,
+        "gdiUs": 43.9528,
+        "directWriteUs": 16.3074
+      },
+      {
+        "pair": 2,
+        "gdiUs": 43.906225,
+        "directWriteUs": 16.04225
+      },
+      {
+        "pair": 3,
+        "gdiUs": 42.87055,
+        "directWriteUs": 16.52525
+      },
+      {
+        "pair": 4,
+        "gdiUs": 43.6269,
+        "directWriteUs": 16.36895
+      },
+      {
+        "pair": 5,
+        "gdiUs": 43.56265,
+        "directWriteUs": 16.557625
+      },
+      {
+        "pair": 6,
+        "gdiUs": 43.8696,
+        "directWriteUs": 15.9808
+      },
+      {
+        "pair": 7,
+        "gdiUs": 42.963425,
+        "directWriteUs": 15.971475
+      },
+      {
+        "pair": 8,
+        "gdiUs": 43.342225,
+        "directWriteUs": 16.449225
+      },
+      {
+        "pair": 9,
+        "gdiUs": 42.940725,
+        "directWriteUs": 16.146575
+      },
+      {
+        "pair": 10,
+        "gdiUs": 43.054025,
+        "directWriteUs": 16.0594
+      },
+      {
+        "pair": 11,
+        "gdiUs": 107.03725,
+        "directWriteUs": 16.179125
+      },
+      {
+        "pair": 12,
+        "gdiUs": 164.228225,
+        "directWriteUs": 55.567525
+      },
+      {
+        "pair": 13,
+        "gdiUs": 135.3967,
+        "directWriteUs": 54.6683
+      },
+      {
+        "pair": 14,
+        "gdiUs": 116.286075,
+        "directWriteUs": 43.2728
+      },
+      {
+        "pair": 15,
+        "gdiUs": 111.1312,
+        "directWriteUs": 37.552625
+      }
+    ]
+  }
+}

@@ -946,6 +946,7 @@ void testFontAliasOwnership() {
     {
         cc::CanvasRenderingContext2D canvas(128, 64);
         canvas.setFont("16px Arial");
+        checkNear(canvas.measureText("second line").width, 80.9453125F, "system Arial preserves the fractional advance");
         const auto narrow = canvas.measureText("ii").width;
         const auto wide = canvas.measureText("WW").width;
         check(narrow > 0 && wide > narrow, "system text measurement distinguishes equal-length strings");
@@ -955,8 +956,14 @@ void testFontAliasOwnership() {
         canvas.save();
         canvas.setFont("32px Arial");
         check(canvas.measureText("WW").width > wide, "font change invalidates the previous system text measurement");
+        canvas.save();
+        canvas.setFont("48px Arial");
+        const auto largest = canvas.measureText("WW").width;
         canvas.restore();
-        checkNear(canvas.measureText("WW").width, wide, "restoring the saved DC discards its replacement font metrics");
+        check(canvas.measureText("WW").width < largest && canvas.measureText("WW").width > wide,
+              "nested restore selects the previous DirectWrite format");
+        canvas.restore();
+        checkNear(canvas.measureText("WW").width, wide, "restoring the canvas restores its prior font metrics");
         canvas.setFont("16px Arial");
         checkNear(canvas.measureText("ii").width, narrow, "restoring font and text restores the original width");
     }
@@ -1090,7 +1097,7 @@ void testFontAliasOwnership() {
 
 void testTextStroke() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
-    cc::CanvasRenderingContext2D fallback(16, 16); fallback.setFont("24px Arial");
+    cc::CanvasRenderingContext2D fallback(16, 16); fallback.setFont("24px M6UnavailableCanvasFamily");
     check(!fallback.supportsTextStroke(), "GDI font does not advertise unsupported outline stroke");
     auto bold = cc::DirectWriteFont::create(CC2D_FONT_FIXTURE, 48, true, false);
     std::vector<uint8_t> stem(64 * 64 * 4, 255);

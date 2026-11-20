@@ -351,19 +351,19 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp",
-      "sha256": "75d0a23cda3d9c18114c19da16a38a9e0f4551943ce72406d44fc74a98710b92"
+      "sha256": "e523cb2500cf194286351a6ab18d4b405d7f0663ef02878ef890d3999e57694d"
     },
     {
       "file": "native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h",
-      "sha256": "fa3c64e7cbef5ca87634a6d52a438eeabb571e802d8b16a59b8147bfab96d689"
+      "sha256": "c238f0159b4dd76cf4fd44c736d95dc20d17b2b36c032e010d4ca297b0b863e5"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
-      "sha256": "656c29a2e9fbc4eb490ab505e50942aea2093271ec3c86eaaf4602d2ef8734d6"
+      "sha256": "e6aeaef580e85ad7be9f79f5a71725333486935dac7954ba1312772fc7826adf"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
-      "sha256": "882a2066074dc4ea00c92712c9de1ad20425c2d4028ee00eb41a5101e32e66c8"
+      "sha256": "4e21e66a6bc571ca62b089eaddafb9fe89fd0b3b5b77f771479018d0fbce1ff4"
     },
     {
       "file": "native/cocos/scene/DrawBatch2D.cpp",
