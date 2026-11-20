@@ -1009,6 +1009,44 @@ void testFontAssets() {
 
 void testFontAliasOwnership() {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    const auto checkWhitespace = [](const std::string &font, bool directWrite) {
+        const std::string raw = "A\tB\nC\fD\rE";
+        const std::string spaces = "A B C D E";
+        cc::CanvasRenderingContext2D measure(192, 64);
+        measure.setFont(font);
+        check(measure.supportsTextStroke() == directWrite, "Canvas whitespace probe selected the expected backend");
+        checkNear(measure.measureText(raw).width, measure.measureText(spaces).width, "Canvas measures controls as spaces");
+        const auto verifyPixels = [&](const auto &draw, const char *message) {
+            const auto raster = [&](const std::string &text) {
+                cc::CanvasRenderingContext2D canvas(192, 64);
+                canvas.setFont(font);
+                canvas.setFillStyle("rgb(255,255,255)");
+                canvas.setStrokeStyle("rgb(255,255,255)");
+                canvas.setTextAlign("center");
+                canvas.setTextBaseline("alphabetic");
+                canvas.setLineWidth(2);
+                draw(canvas, text);
+                std::vector<uint8_t> pixels;
+                canvas.setCanvasBufferUpdatedCallback([&](const cc::Data &data) {
+                    pixels.assign(data.getBytes(), data.getBytes() + data.getSize());
+                });
+                canvas.fetchData();
+                canvas.setCanvasBufferUpdatedCallback(nullptr);
+                return pixels;
+            };
+            const auto reference = raster(spaces);
+            check(std::any_of(reference.begin(), reference.end(), [](uint8_t value) { return value != 0; })
+                      && raster(raw) == reference,
+                  message);
+        };
+        verifyPixels([](auto &canvas, const auto &text) { canvas.fillText(text, 96, 40, 0); }, "Canvas fill treats controls as spaces");
+        if (directWrite) {
+            verifyPixels([](auto &canvas, const auto &text) { canvas.strokeText(text, 96, 40, 0); },
+                         "Canvas stroke treats controls as spaces");
+            verifyPixels([](auto &canvas, const auto &text) { canvas.fillTextShadow(text, 96, 40, 2); },
+                         "Canvas shadow treats controls as spaces");
+        }
+    };
     {
         cc::CanvasRenderingContext2D canvas(128, 64);
         canvas.setFont("16px Arial");
@@ -1032,6 +1070,7 @@ void testFontAliasOwnership() {
         checkNear(canvas.measureText("WW").width, wide, "restoring the canvas restores its prior font metrics");
         canvas.setFont("16px Arial");
         checkNear(canvas.measureText("ii").width, narrow, "restoring font and text restores the original width");
+        checkWhitespace("24px Arial", true);
     }
     const auto publicBefore = getFontFamilyNameMap().size();
     const auto privateBefore = getFontAssetFamilyNameMap().size();
@@ -1049,8 +1088,10 @@ void testFontAliasOwnership() {
                   "unreadable font face falls back to GDI");
         }
         check(handles == GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS), "failed font registration releases GDI objects");
+        checkWhitespace("24px " + family, false);
         releaseFontFamilyAlias(lease);
     }
+    std::puts("Canvas whitespace DirectWrite and GDI: PASS");
     // This legacy Windows bitmap font exercises the GDI-only path when installed.
     wchar_t windowsDir[MAX_PATH]{};
     const auto length = GetWindowsDirectoryW(windowsDir, MAX_PATH);

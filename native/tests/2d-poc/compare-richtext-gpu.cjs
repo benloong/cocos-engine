@@ -17,6 +17,10 @@ if(!lifecycle?.http?.interrupted||!lifecycle.http.loaded||!lifecycle.http.cacheP
 if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||!Number.isInteger(lifecycle.cacheBefore)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
 const { wordWrapNames, richTextNames, shadowNames, captures } = require('./richtext-gpu-cases.cjs');
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
+const expectedWrap = [
+    [1, 74, 110, 24], [2, 74, 110, 25], [3, 74, 67.8, 24],
+    [3, 120, 127.8, 24], [3, 74, 157.8, 24], [3, 62, 127.8, 24], [3, 116, 127.8, 24],
+];
 for(const value of [a,b]) {
     const interaction = value.text.interaction;
     if (!interaction?.sameWithShadowTag || !interaction.repainted || !interaction.destroyed
@@ -25,8 +29,11 @@ for(const value of [a,b]) {
     }
     const wordWrap = value.text.labelWordWrap;
     if (JSON.stringify(wordWrap?.map(row => row.name)) !== JSON.stringify(wordWrapNames)
-        || wordWrap.some(({ overflow, width, height, fontSize }, index) => overflow !== index + 1 || width !== 74
-            || Math.abs(height - (index === 2 ? 67.8 : 110)) > 0.001 || fontSize !== (index === 1 ? 25 : 24))) {
+        || wordWrap.some(({ overflow, width, height, fontSize }, index) => {
+            const [expectedOverflow, expectedWidth, expectedHeight, expectedSize] = expectedWrap[index];
+            return overflow !== expectedOverflow || width !== expectedWidth || !Number.isFinite(height)
+                || Math.abs(height - expectedHeight) > 0.001 || fontSize !== expectedSize;
+        })) {
         throw Error('Incomplete TTF Label word wrap: ' + value.backend);
     }
     if (JSON.stringify(value.text.shadowLayout?.map(row=>row.name)) !== JSON.stringify(shadowNames)) throw Error('Incomplete Label shadow layouts');

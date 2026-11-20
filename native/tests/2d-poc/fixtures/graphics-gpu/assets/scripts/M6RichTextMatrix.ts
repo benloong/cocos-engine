@@ -617,14 +617,26 @@ async function checkLabelWordWrap (parent: Node, font: TTFFont, capture: (name: 
         label.enableWrapText = true;
         const rows = [];
         const cases = [
-            ['label-word-wrap-clamp', Label.Overflow.CLAMP],
-            ['label-word-wrap-shrink', Label.Overflow.SHRINK],
-            ['label-word-wrap-resize-height', Label.Overflow.RESIZE_HEIGHT],
-        ] as const;
-        for (const [name, overflow] of cases) {
+            ...([
+                ['label-word-wrap-clamp', Label.Overflow.CLAMP],
+                ['label-word-wrap-shrink', Label.Overflow.SHRINK],
+                ['label-word-wrap-resize-height', Label.Overflow.RESIZE_HEIGHT],
+            ] as const).map(([name, overflow]) => ({ name, overflow, width: 74,
+                text: 'Atlas 123', reference: 'Atlas \n123' })),
+            { name: 'label-paragraph-bidi', overflow: Label.Overflow.RESIZE_HEIGHT, width: 120,
+                text: 'A\u202E12\u202D34\u202C56\u202CB\n\nAtlas 123 Atlas 456', reference: 'A653421B\n\nAtlas 123 \nAtlas 456' },
+            { name: 'label-paragraph-thai', overflow: Label.Overflow.RESIZE_HEIGHT, width: 74,
+                text: 'Atlas 123\n\u0E01\u0E34\u0E49 \u0E19\u0E49\u0E33\nAtlas 123',
+                reference: 'Atlas \n123\n\u0E01\u0E34\u0E49 \u0E19\u0E49\u0E33\nAtlas \n123' },
+            { name: 'label-paragraph-combining', overflow: Label.Overflow.RESIZE_HEIGHT, width: 62,
+                text: 'A\u0301 Atlas\nAtlas A\u0301', reference: 'A\u0301 \nAtlas\nAtlas \nA\u0301' },
+            { name: 'label-paragraph-whitespace', overflow: Label.Overflow.RESIZE_HEIGHT, width: 116,
+                text: 'A\tB\rC\fD\r\n\r\nAtlas 123 Atlas 456', reference: 'A B C D \n \nAtlas 123 \nAtlas 456' },
+        ];
+        for (const { name, overflow, width: containerWidth, text, reference } of cases) {
             label.overflow = overflow;
-            ui.setContentSize(74, 110);
-            label.string = 'Atlas 123';
+            ui.setContentSize(containerWidth, 110);
+            label.string = text;
             await capture(name);
             const wrapped = new Uint8Array(readPixels());
             const { width, height } = ui.contentSize;
@@ -632,10 +644,10 @@ async function checkLabelWordWrap (parent: Node, font: TTFFont, capture: (name: 
             if (!submittedTextCoverage(label.ttfSpriteFrame?.texture.getGFXTexture() ?? null)) {
                 throw new Error('Wrapped TTF Label did not submit glyph pixels');
             }
-            label.string = 'Atlas \n123';
+            label.string = reference;
             await wait();
             if (ui.width !== width || ui.height !== height || label.actualFontSize !== fontSize || !samePixels(wrapped, readPixels())) {
-                throw new Error(`TTF Label split a word in overflow ${overflow}`);
+                throw new Error(`TTF Label differs from its explicit visual control: ${name} (${width}x${height}, expected ${ui.width}x${ui.height})`);
             }
             rows.push({ name, overflow, width, height, fontSize });
         }

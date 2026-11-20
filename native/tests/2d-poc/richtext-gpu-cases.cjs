@@ -1,6 +1,9 @@
 'use strict';
 
-const wordWrapNames = ['label-word-wrap-clamp', 'label-word-wrap-shrink', 'label-word-wrap-resize-height'];
+const wordWrapNames = [
+    'label-word-wrap-clamp', 'label-word-wrap-shrink', 'label-word-wrap-resize-height',
+    'label-paragraph-bidi', 'label-paragraph-thai', 'label-paragraph-combining', 'label-paragraph-whitespace',
+];
 const richTextNames = [
     'text-basic', 'text-bold', 'text-italic', 'text-underline', 'text-outline', 'text-nested', 'text-colors',
     'text-wrap-left', 'text-wrap-center', 'text-wrap-right', 'text-multiline', 'text-unicode', 'text-shadow-tag',

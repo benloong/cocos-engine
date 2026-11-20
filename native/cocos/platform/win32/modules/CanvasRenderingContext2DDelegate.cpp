@@ -29,6 +29,16 @@
 #include <cmath>
 
 namespace {
+const ccstd::string &canvasLine(const ccstd::string &text, ccstd::string &storage) {
+    // Canvas measures and draws one line. Preserve each whitespace position.
+    const auto needsSpace = [](char ch) { return ch == '\t' || ch == '\n' || ch == '\f' || ch == '\r'; };
+    const auto first = std::find_if(text.begin(), text.end(), needsSpace);
+    if (first == text.end()) return text;
+    storage = text;
+    std::replace_if(storage.begin() + (first - text.begin()), storage.end(), needsSpace, ' ');
+    return storage;
+}
+
 void fillRectWithColor(uint8_t *buf, uint32_t totalWidth, uint32_t totalHeight, float x, float y, float width, float height, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     if (!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(width) || !std::isfinite(height) || !a) return;
     if (width < 0) { x += width; width = -width; }
@@ -178,14 +188,16 @@ void CanvasRenderingContext2DDelegate::fillText(const ccstd::string &text, float
         return;
     }
 
+    ccstd::string storage;
+    const auto &line = canvasLine(text, storage);
     if (_directWrite) {
-        x = alignDirectWriteX(text, x);
-        _directWrite->draw(text, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
+        x = alignDirectWriteX(line, x);
+        _directWrite->draw(line, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
                           static_cast<uint32_t>(_bufferWidth), static_cast<uint32_t>(_bufferHeight), _fillStyle);
         return;
     }
     int length = 0;
-    wchar_t *wide = utf8ToUtf16(text, &length);
+    wchar_t *wide = utf8ToUtf16(line, &length);
     if (!wide || !length) {
         CC_SAFE_DELETE_ARRAY(wide);
         return;
@@ -208,7 +220,9 @@ bool CanvasRenderingContext2DDelegate::supportsTextStroke() const {
 bool CanvasRenderingContext2DDelegate::fillTextShadow(const ccstd::string &text, float x, float y, float blur) {
     if (!_directWrite || _bufferWidth < 1 || _bufferHeight < 1) return false;
     if (text.empty() || _fillStyle[3] == 0) return true;
-    return _directWrite->drawShadow(text, alignDirectWriteX(text, x), y, static_cast<int>(_textBaseLine),
+    ccstd::string storage;
+    const auto &line = canvasLine(text, storage);
+    return _directWrite->drawShadow(line, alignDirectWriteX(line, x), y, static_cast<int>(_textBaseLine),
                                     _imageData.getBytes(), static_cast<uint32_t>(_bufferWidth),
                                     static_cast<uint32_t>(_bufferHeight), _fillStyle, blur);
 }
@@ -216,10 +230,12 @@ bool CanvasRenderingContext2DDelegate::fillTextShadow(const ccstd::string &text,
 CanvasRenderingContext2DDelegate::Size CanvasRenderingContext2DDelegate::measureText(const ccstd::string &text) {
     if (text.empty())
         return ccstd::array<float, 2>{0.0f, 0.0f};
-    if (_directWrite) return _directWrite->measure(text);
+    ccstd::string storage;
+    const auto &line = canvasLine(text, storage);
+    if (_directWrite) return _directWrite->measure(line);
 
     int bufferLen = 0;
-    wchar_t *pwszBuffer = CanvasRenderingContext2DDelegate::utf8ToUtf16(text, &bufferLen);
+    wchar_t *pwszBuffer = CanvasRenderingContext2DDelegate::utf8ToUtf16(line, &bufferLen);
     Size size = sizeWithText(pwszBuffer, bufferLen);
     //SE_LOGD("CanvasRenderingContext2DImpl::measureText: %s, %d, %d\n", text.c_str(), size.cx, size.cy);
     CC_SAFE_DELETE_ARRAY(pwszBuffer);
@@ -530,10 +546,12 @@ void CanvasRenderingContext2DDelegate::strokeText(const ccstd::string &text,
                                                   float y,
                                                   float /* maxWidth */) {
     if (text.empty() || !_directWrite || _bufferWidth < 1 || _bufferHeight < 1) return;
-    x = alignDirectWriteX(text, x);
+    ccstd::string storage;
+    const auto &line = canvasLine(text, storage);
+    x = alignDirectWriteX(line, x);
     const auto join = _lineJoin == "round" ? DirectWriteFont::StrokeJoin::ROUND
         : _lineJoin == "bevel" ? DirectWriteFont::StrokeJoin::BEVEL : DirectWriteFont::StrokeJoin::MITER;
-    _directWrite->stroke(text, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
+    _directWrite->stroke(line, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
                         static_cast<uint32_t>(_bufferWidth), static_cast<uint32_t>(_bufferHeight), _strokeStyle, _lineWidth, join);
 }
 

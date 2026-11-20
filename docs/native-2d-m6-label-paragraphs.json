@@ -1,0 +1,131 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "44699af5ee",
+  "snapshot": "a38e221c71ac1a6edfb548b9e41d86fa9a7712f31743afb78584ecc0ec182cad",
+  "font": {
+    "path": "tests/fixtures/Thonburi.ttf",
+    "size": 24,
+    "lineHeight": 30
+  },
+  "baseline": {
+    "snapshot": "97c05853bd1d67687e155e036395d9df7b1c90e5536139bead2aa84b1bdcb75a",
+    "nativeLogSha256": "a2c823f57abc613aa05874ee097ccf9b917d4b949072162e0423de7eca6cf286",
+    "captures": [
+      {
+        "name": "label-paragraph-bidi",
+        "maxChannelDifference": 0,
+        "pixelsOverTolerance": 0,
+        "nativeSha256": "775f4d67a924f0a62e3e9cf924ff819b271ab7e2973f6c4efcadc1761b1b022a",
+        "webSha256": "775f4d67a924f0a62e3e9cf924ff819b271ab7e2973f6c4efcadc1761b1b022a"
+      },
+      {
+        "name": "label-paragraph-thai",
+        "maxChannelDifference": 0,
+        "pixelsOverTolerance": 0,
+        "nativeSha256": "8bdbe11684a012ac5c2ed5de67ceafad80c46d8bbc18632d2c8ae93afb436fcb",
+        "webSha256": "8bdbe11684a012ac5c2ed5de67ceafad80c46d8bbc18632d2c8ae93afb436fcb"
+      },
+      {
+        "name": "label-paragraph-combining",
+        "maxChannelDifference": 0,
+        "pixelsOverTolerance": 0,
+        "nativeSha256": "a07615a5ca3b040a2c0cced14589b98e61c94eeca1687a3000c06975668b8408",
+        "webSha256": "a07615a5ca3b040a2c0cced14589b98e61c94eeca1687a3000c06975668b8408"
+      },
+      {
+        "name": "label-paragraph-whitespace",
+        "maxChannelDifference": 254,
+        "pixelsOverTolerance": 1124,
+        "nativeSha256": "b8c031b50dd73e3ede187604e40d383f6bb94a91196695a5ef03d56d4e005917",
+        "webSha256": "6daef0df3c5b30a30a49d6523161b2b53326264caddd0d27c02c90409b7c0b18"
+      }
+    ]
+  },
+  "paragraphs": [
+    {
+      "name": "label-paragraph-bidi",
+      "overflow": 3,
+      "width": 120,
+      "height": 127.8,
+      "fontSize": 24,
+      "rgbaSha256": "775f4d67a924f0a62e3e9cf924ff819b271ab7e2973f6c4efcadc1761b1b022a",
+      "coloredPixels": 15360
+    },
+    {
+      "name": "label-paragraph-thai",
+      "overflow": 3,
+      "width": 74,
+      "height": 157.79999999999998,
+      "fontSize": 24,
+      "rgbaSha256": "8bdbe11684a012ac5c2ed5de67ceafad80c46d8bbc18632d2c8ae93afb436fcb",
+      "coloredPixels": 11692
+    },
+    {
+      "name": "label-paragraph-combining",
+      "overflow": 3,
+      "width": 62,
+      "height": 127.8,
+      "fontSize": 24,
+      "rgbaSha256": "a07615a5ca3b040a2c0cced14589b98e61c94eeca1687a3000c06975668b8408",
+      "coloredPixels": 7936
+    },
+    {
+      "name": "label-paragraph-whitespace",
+      "overflow": 3,
+      "width": 116,
+      "height": 127.8,
+      "fontSize": 24,
+      "rgbaSha256": "6daef0df3c5b30a30a49d6523161b2b53326264caddd0d27c02c90409b7c0b18",
+      "coloredPixels": 14848
+    }
+  ],
+  "resultsPerConfiguration": {
+    "matchingLayouts": 54,
+    "strictPixels": 51,
+    "unchangedEarlierCaptures": 50,
+    "deferredPixels": [
+      "text-bold",
+      "text-outline",
+      "text-nested"
+    ]
+  },
+  "canvasChecks": {
+    "whitespace": [
+      "TAB",
+      "LF",
+      "FF",
+      "CR"
+    ],
+    "directWrite": [
+      "measure",
+      "fill",
+      "stroke",
+      "blurred shadow"
+    ],
+    "gdi": [
+      "measure",
+      "fill"
+    ]
+  },
+  "webManifestSha256": "320e6316df5eb7e5bca0ae8287967edaaa4c1e2bc5432917a60a0e1cbc66ff91",
+  "configurations": {
+    "Debug": {
+      "applicationSha256": "d5addda3d52637b183dffd5c0cd9cf3fe03f9d2151cb0f0b65a5bc3d5e96898c",
+      "comparisonSha256": "8baa528110cf769eab7d8abab214508bcb95caa937bfa0dc398d557a07d84098",
+      "manifestSha256": "0a164e3ae642241932df4c5c385c37e24b636f385f1554e448083d1f536818ad",
+      "appLogSha256": "484354a48113010128b7bae42744773da4c3cc92e6d1f1221d7e1b4dbce8aaa4",
+      "harnessExecutableSha256": "b95591d21f8febf2253b33174b8ab5c32395bbb1b6b6ba2b14bcf8b2f2ba2863",
+      "harnessLogSha256": "3cdd8f4c94a48b322fb284336636ea202befc7cd88250858c8c1101037c8c97e",
+      "lifecycleCycles": 1000
+    },
+    "Release": {
+      "applicationSha256": "426572c16f90efd1aa277a0f720e49c271fa8b265bf12502ef2448d5b10117f6",
+      "comparisonSha256": "b540c9d4ab2dd7b0a2c2a43dd636f8135f7c613133a1011080338f0e55ff5f7a",
+      "manifestSha256": "12cf3a90698e3cd0bb5c0a4c6ab353bddc844c779671e8f0b6f65797d215b863",
+      "appLogSha256": "01a2ef266f38046b7ad5105ab7eab1dd8f9cb4d48aa1d640b5fae6f8fc6a80bb",
+      "harnessExecutableSha256": "f65ecdc91ff49dcfa69718d8355c02b9c716f520ed10c8731032a4a981b5a6cc",
+      "harnessLogSha256": "eac9a90619409f171927eb2ef1c2d9bc317a4b340ed29af8c53da24b23dd4079",
+      "lifecycleCycles": 1000
+    }
+  }
+}
