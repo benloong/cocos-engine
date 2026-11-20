@@ -923,5 +923,401 @@
         "webSha256": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9"
       }
     ]
+  },
+  "integratedWindowsHandles": {
+    "date": "2026-11-20",
+    "baseCommit": "a4379e4b63",
+    "snapshot": "4f1b780c97133bdce60f65968b9f4c30bfbaa230ef5f487cef86a8522f2df22d",
+    "localCyclesPerConfiguration": 1000,
+    "repeatedHttpCyclesPerConfiguration": 30,
+    "web": {
+      "captures": 47,
+      "requests": {
+        "interrupted": 1,
+        "complete": 1,
+        "cancelled": 1,
+        "resumed": 1
+      },
+      "manifestSha256": "db775403742df7c572b93383171e6764a977282e2479b62854a07d7b4c62eb11",
+      "logSha256": "2b9ab9d14f9dbdf12b986436562889b02af678b10cfb293cb197bd21dd6bc20f"
+    },
+    "configurations": {
+      "Debug": {
+        "executableSha256": "6118dc2014bbd940218a6c78153b69bd64cd17111bfcef558f9f3bdac5bafbcb",
+        "exclusiveReadControl": true,
+        "samples": [
+          {
+            "phase": "local-25",
+            "processHandles": 552,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-250",
+            "processHandles": 552,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-500",
+            "processHandles": 552,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-750",
+            "processHandles": 550,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-1000",
+            "processHandles": 550,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "before-http",
+            "processHandles": 550,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "http-released",
+            "processHandles": 553,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "after-http",
+            "processHandles": 553,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "http-10",
+            "processHandles": 553,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "http-30",
+            "processHandles": 553,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "after-http-repeats",
+            "processHandles": 553,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          }
+        ],
+        "fontLifecycle": {
+          "cycles": 1000,
+          "cacheHits": 1000,
+          "bytesPerLoad": 223404,
+          "assignmentFailureRolledBack": true,
+          "retrySucceeded": true,
+          "missingRejected": true,
+          "deferredDestroyFinished": true,
+          "cacheBefore": 22,
+          "cacheAfter": 22,
+          "http": {
+            "interrupted": true,
+            "loaded": true,
+            "bytes": 223404,
+            "cachePathResolved": true,
+            "width": 95.9765625,
+            "released": true,
+            "cacheRemoved": true,
+            "missingRejected": true,
+            "failedFilesRemoved": true,
+            "cancelledAndResumed": true
+          }
+        },
+        "requests": {
+          "font": {
+            "interrupted": 1,
+            "complete": 31,
+            "cancelled": 1,
+            "resumed": 1
+          },
+          "missing": 6,
+          "queued": 0
+        },
+        "visual": {
+          "layout": 47,
+          "strict": 44,
+          "unchangedSinceFractionalLabel": 47,
+          "scopedGatePass": true,
+          "deferredPixels": [
+            {
+              "name": "text-bold",
+              "maxChannelDifference": 20,
+              "pixelsOverTolerance": 448
+            },
+            {
+              "name": "text-outline",
+              "maxChannelDifference": 30,
+              "pixelsOverTolerance": 202
+            },
+            {
+              "name": "text-nested",
+              "maxChannelDifference": 47,
+              "pixelsOverTolerance": 553
+            }
+          ]
+        },
+        "hashes": {
+          "sampleReport": "78cc7e95ccf63f601b3218f15df2f4debe0550d85ff9feb56a547b20b43ce27e",
+          "applicationLog": "feeb26fbab90ba1ea6a54b456d890a4a6e4f2e9d1f2ad808c7da2b9e8416fec3",
+          "gpuManifest": "072819e8400dfb7feff0d16f04246e7fa4fe538986f9a220fdd02c9c6b10cf74",
+          "gpuComparison": "b4c7bbae2ab185a4b23cb6c377da4931f0a5ad35ca474c19b22f112b4d3cbcbc"
+        }
+      },
+      "Release": {
+        "executableSha256": "5545f9e3887bb5cd45036f717b56dbbfd579d578405f26b10301e41ff8aa2f03",
+        "exclusiveReadControl": true,
+        "samples": [
+          {
+            "phase": "local-25",
+            "processHandles": 447,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-250",
+            "processHandles": 447,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-500",
+            "processHandles": 447,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-750",
+            "processHandles": 447,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "local-1000",
+            "processHandles": 446,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "before-http",
+            "processHandles": 446,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "http-released",
+            "processHandles": 454,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "after-http",
+            "processHandles": 454,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "http-10",
+            "processHandles": 454,
+            "gdiObjects": 26,
+            "userObjects": 28,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "http-30",
+            "processHandles": 456,
+            "gdiObjects": 26,
+            "userObjects": 29,
+            "exclusiveRead": true
+          },
+          {
+            "phase": "after-http-repeats",
+            "processHandles": 456,
+            "gdiObjects": 26,
+            "userObjects": 29,
+            "exclusiveRead": true
+          }
+        ],
+        "fontLifecycle": {
+          "cycles": 1000,
+          "cacheHits": 1000,
+          "bytesPerLoad": 223404,
+          "assignmentFailureRolledBack": true,
+          "retrySucceeded": true,
+          "missingRejected": true,
+          "deferredDestroyFinished": true,
+          "cacheBefore": 22,
+          "cacheAfter": 22,
+          "http": {
+            "interrupted": true,
+            "loaded": true,
+            "bytes": 223404,
+            "cachePathResolved": true,
+            "width": 95.9765625,
+            "released": true,
+            "cacheRemoved": true,
+            "missingRejected": true,
+            "failedFilesRemoved": true,
+            "cancelledAndResumed": true
+          }
+        },
+        "requests": {
+          "font": {
+            "interrupted": 1,
+            "complete": 31,
+            "cancelled": 1,
+            "resumed": 1
+          },
+          "missing": 6,
+          "queued": 0
+        },
+        "visual": {
+          "layout": 47,
+          "strict": 44,
+          "unchangedSinceFractionalLabel": 47,
+          "scopedGatePass": true,
+          "deferredPixels": [
+            {
+              "name": "text-bold",
+              "maxChannelDifference": 20,
+              "pixelsOverTolerance": 448
+            },
+            {
+              "name": "text-outline",
+              "maxChannelDifference": 30,
+              "pixelsOverTolerance": 202
+            },
+            {
+              "name": "text-nested",
+              "maxChannelDifference": 47,
+              "pixelsOverTolerance": 553
+            }
+          ]
+        },
+        "hashes": {
+          "sampleReport": "3b46617489b0fe30fc96990ad7cf103187964e9fa0c2ee512f526c0e40c2a9dc",
+          "applicationLog": "3b058d759ddd195427a4a4d6d6d9ceea4a4a96a53f71470653ac37c1b2c4a095",
+          "gpuManifest": "4323ba4c712ba44a12ed7b39ca7ed688ef35b88740074f596938b5b6d9e8c12d",
+          "gpuComparison": "bf8f89b3615ffeea00c202b1ed94dae864f8570457aa43121e98ab5e1b516906"
+        },
+        "followUp": {
+          "samples": [
+            {
+              "phase": "local-25",
+              "processHandles": 447,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "local-250",
+              "processHandles": 447,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "local-500",
+              "processHandles": 447,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "local-750",
+              "processHandles": 447,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "local-1000",
+              "processHandles": 446,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "before-http",
+              "processHandles": 446,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "http-released",
+              "processHandles": 454,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "after-http",
+              "processHandles": 454,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "http-10",
+              "processHandles": 454,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "http-30",
+              "processHandles": 454,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            },
+            {
+              "phase": "after-http-repeats",
+              "processHandles": 454,
+              "gdiObjects": 26,
+              "userObjects": 28,
+              "exclusiveRead": true
+            }
+          ],
+          "hashes": {
+            "sampleReport": "6ed77bb77123ddd3ddf41e9ebdf1ac7b66714bcccfd0da8ddd732daddf70f829",
+            "applicationLog": "07bc2a89783feccdc52b4a0ec4b4c9327740d0676af32e29c366ca10df258b07",
+            "gpuComparison": "bf8f89b3615ffeea00c202b1ed94dae864f8570457aa43121e98ab5e1b516906"
+          }
+        }
+      }
+    }
   }
 }

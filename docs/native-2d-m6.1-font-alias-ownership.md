@@ -27,6 +27,29 @@ TTFFont 在 family 与文件来源均已就绪时取得一个原生注册记录�
 
 Debug 和 Release 各运行三个独立进程，每个进程 1000 轮。24 px 下两种字体的 `Atlas 123` 测量宽度分别为 约 95.97656 和 101.92969。每 250 轮取样，Debug 三轮的进程句柄均维持 184，Release 三轮均维持 174，两个配置的 GDI 对象均维持 0。M0 在具备 Windows 原生验收程序时执行此检查。此前集成进程曾出现总句柄从 420 增至 428，其来源仍待定位。
 
+## Windows 应用内字体句柄
+
+Windows 应用每轮通过 `assetManager.loadRemote()` 加载 Thonburi，核对缓存身份，用同一 Label 测量实际字宽，然后解绑字体并通过 `releaseAsset()` 释放。每个采样点还回读 Label 提交的字形像素。HTTP 首轮包含断流重试、源文件释放、404、主动取消与续传。后续 30 轮每轮重新下载、渲染、释放并删除缓存文件，局部服务端核对完整下载次数。
+
+父进程在应用的检查点读取总句柄数、GDI 和 USER 对象数，同时独占只读打开已释放的字体文件。先用仍打开的共享读句柄验证该检查确实能发现文件占用。Windows 本地文件和下载缓存均使用相同检查，生产 JSB 无新增诊断导出。
+
+| 配置 | 本地第 25、250、500、750、1000 轮 | 首次 HTTP 前、后 | HTTP 第 10、30 轮、清理完成 | GDI／USER |
+| --- | --- | --- | --- | --- |
+| Debug | 552、552、552、550、550 | 550、553 | 553、553、553 | 26／28 |
+| Release 首轮 | 447、447、447、447、446 | 446、454 | 454、456、456 | GDI 26，USER 从第 30 轮起由 28 增至 29 |
+| Release 复跑 | 447、447、447、447、446 | 446、454 | 454、454、454 | 26／28 |
+
+所有采样点都能独占打开字体文件。本地循环未观察到进程句柄累积。首轮 HTTP 阶段的总句柄变化在 Debug 为 +3，两次 Release 均为 +8。Release 首轮第 30 次下载另出现 +2 个总句柄及 +1 个 USER 对象，同一二进制完整复跑时未重现。采样记录保留这组变化，未定位额外句柄的所有者。
+
+两种 Windows 配置对 Web 均为布局 47/47、严格像素 44/47，三组超差按已确认范围暂缓。各端 47 张原始像素与 `95a6252786` 的同平台捕获逐字节一致。[逐阶段读数和产物哈希](./native-2d-m6.1-font-alias-ownership-results.json)
+
+构建 Windows 和 Web 测试工程后，用对应的 Windows 可执行文件顺序运行以下入口。原始 JSON、应用日志和 GPU 对照保存在 `native/tests/2d-poc/build`。
+
+```powershell
+node native/tests/2d-poc/run-font-http-native.cjs --exe $exe --handle-report $report
+node native/tests/2d-poc/compare-richtext-gpu.cjs --m6-gate
+```
+
 ## 剩余边界
 
 其他平台尚未接入此记录机制；仍须验证完整 bundle/异步资源失败回收、旧场景/Prefab、TTC/多字体/彩色字体、长期内存、跨线程与性能。只有 legacy loadFont 注册、尚未交给 TTFFont 的记录仍由 runtime cleanup 兜底，失败下载/工厂创建的逐请求撤销待补。既有 Canvas 不因公共表变化自动刷新；native Label 则通过资产 revision 重建。脚本引擎清理后仍存活资产的继续渲染不在本节点契约内，仅保证迟到释放安全。工作区已有 SpriteFrame.native 改动未纳入提交，此快照不作为 M6 最终候选验收。

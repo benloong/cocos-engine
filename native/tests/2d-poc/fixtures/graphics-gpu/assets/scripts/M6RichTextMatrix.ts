@@ -283,6 +283,34 @@ async function checkCancelledFont (origin: string, reference: string): Promise<v
 async function checkNativeFontLifecycle (url: string, parent: Node): Promise<object | null> {
     if (!sys.isNative) return null;
     if ('getFontAliasStats' in (globalThis as any).jsb) throw new Error('Test-only font diagnostics exposed by JSB');
+    const files = (globalThis as any).jsb.fileUtils;
+    const checkpointDir = (globalThis as { __m6FontHandleCheckpoints?: string }).__m6FontHandleCheckpoints;
+    const checkpoint = async (name: string, fontPath: string): Promise<void> => {
+        if (!checkpointDir) return;
+        console.log(`M6_FONT_HANDLE_CHECKPOINT ${JSON.stringify({ name, fontPath })}`);
+        const ack = `${checkpointDir}/${name}.ack`;
+        for (let attempt = 0; attempt < 125; ++attempt) {
+            if (files.isFileExist(ack)) return;
+            await wait();
+        }
+        throw new Error(`Missing Windows font handle sample: ${name}`);
+    };
+    const handleNode = checkpointDir ? new Node('font-handle-checkpoints') : null;
+    if (handleNode) { parent.addChild(handleNode); handleNode.layer = parent.layer; }
+    const handleUI = handleNode?.addComponent(UITransform);
+    const handleLabel = handleNode?.addComponent(Label);
+    if (handleLabel) handleLabel.fontSize = 24;
+    const renderAndDetach = (font: TTFFont, checkPixels: boolean): void => {
+        if (!handleLabel || !handleUI) return;
+        handleLabel.string = 'Atlas 123';
+        handleLabel.font = font;
+        if (Math.abs(handleUI.width - 95.9765625) > 0.001) throw new Error('Repeated font use did not render Thonburi');
+        if (checkPixels && !submittedTextCoverage(handleLabel.ttfSpriteFrame?.texture.getGFXTexture() ?? null)) {
+            throw new Error('Repeated font use did not submit glyph pixels');
+        }
+        handleLabel.string = '';
+        handleLabel.font = null;
+    };
     const released = (asset: any): boolean => asset.isReleased() && !asset.getFontDataSize()
         && !asset.getSourcePath() && !asset.getFontFamily();
     const cacheBefore = assetManager.assets.count;
@@ -302,7 +330,14 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
         const asset = await load();
         if ((asset as any).getFontDataSize() !== 223404) throw new Error('Reloaded font bytes missing');
         if (await load() !== asset) throw new Error('Cached remote font identity changed');
+        const cycle = iteration + 1;
+        const shouldSample = cycle === 25 || cycle % 250 === 0;
+        renderAndDetach(asset, shouldSample);
         release(asset);
+        if (checkpointDir && shouldSample) {
+            await wait();
+            await checkpoint(`local-${cycle}`, url);
+        }
         if (iteration % 100 === 0) console.log(`M6_FONT_REMOTE_CYCLE ${iteration + 1}`);
     }
     const prototype = TTFFont.prototype;
@@ -326,13 +361,13 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     }
     await wait();
     if (isValid(lastReleased)) throw new Error('Font deferred destruction did not finish');
-    const files = (globalThis as any).jsb.fileUtils;
     const origin = files.getStringFromFile('m6-font-http-origin.txt').trim();
     if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(origin)) throw new Error('HTTP font fixture origin missing');
     const httpUrl = `${origin}/m6-http-font.ttf`, cache = assetManager.cacheManager!;
     if (cache.getCache(httpUrl)) cache.removeCache(httpUrl);
     const diskEntries = (): string => JSON.stringify(files.listFiles((cache as any).cacheDir).sort());
     const entriesBefore = diskEntries();
+    await checkpoint('before-http', url);
     let interrupted = false;
     try { await load(httpUrl, { maxRetryCount: 0 }); } catch { interrupted = true; }
     if (!interrupted || diskEntries() !== entriesBefore || cache.getCache(httpUrl) || assetManager.assets.has(httpUrl)
@@ -352,12 +387,37 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     if (Math.abs(width - 95.9765625) > 0.001 || !submittedTextCoverage(texture)) throw new Error('HTTP font fallback or empty rendering');
     node.destroy(); await wait();
     release(httpFont, httpUrl);
+    await checkpoint('http-released', cachedSource);
     cache.removeCache(httpUrl); await wait();
     if (cache.getCache(httpUrl) || files.isFileExist(cachedSource)) throw new Error('Released HTTP font cache file was retained');
     let httpMissingRejected = false;
     try { await load(`${origin}/missing.ttf`); } catch { httpMissingRejected = true; }
     if (!httpMissingRejected || diskEntries() !== entriesBefore || assetManager.assets.count !== cacheBefore) throw new Error('HTTP 404 retained font state');
     await checkCancelledFont(origin, url);
+    await checkpoint('after-http', url);
+    if (checkpointDir) {
+        for (let cycle = 1; cycle <= 30; ++cycle) {
+            const font = await load(httpUrl, { maxRetryCount: 0 });
+            const source = (font as any).getSourcePath();
+            if (source !== cache.getCache(httpUrl) || (font as any).getFontDataSize() !== 223404) {
+                throw new Error('Repeated HTTP font did not load from its cache file');
+            }
+            const shouldSample = cycle === 10 || cycle === 30;
+            renderAndDetach(font, shouldSample);
+            release(font, httpUrl);
+            if (shouldSample) {
+                await wait();
+                await checkpoint(`http-${cycle}`, source);
+            }
+            cache.removeCache(httpUrl); await wait();
+            if (cache.getCache(httpUrl) || files.isFileExist(source) || diskEntries() !== entriesBefore) {
+                throw new Error('Repeated HTTP font retained a cache file');
+            }
+        }
+        handleNode!.destroy();
+        await wait();
+        await checkpoint('after-http-repeats', url);
+    }
     const http = { interrupted, loaded: true, bytes: 223404, cachePathResolved: true, width, released: true, cacheRemoved: true,
         missingRejected: true, failedFilesRemoved: true, cancelledAndResumed: true };
     return { cycles: 1000, cacheHits: 1000, bytesPerLoad: 223404, assignmentFailureRolledBack: true,

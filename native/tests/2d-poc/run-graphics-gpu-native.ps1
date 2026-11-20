@@ -4,8 +4,10 @@ param([string]$Exe = (Join-Path $PSScriptRoot 'build/gpu-win/native-2d-m6-gpu.ex
     [ValidateSet('native','js')][string]$SpriteImplementation,
     [ValidateSet('native','js')][string]$RichTextImplementation,
     [ValidateSet('native','js')][string]$LabelImplementation,
-    [ValidateSet('native','js')][string]$GraphicsMaskImplementation)
+    [ValidateSet('native','js')][string]$GraphicsMaskImplementation,
+    [string]$FontHandleReport)
 $ErrorActionPreference = 'Stop'
+if ($FontHandleReport -and $Mode -ne 'richtext') { throw 'Font handle checkpoints require RichText mode' }
 function Get-CaptureHash([string]$Path) {
     $algorithm = [Security.Cryptography.SHA256]::Create()
     try {
@@ -78,7 +80,15 @@ if($Mode -eq 'richtext') {
     New-Item -ItemType Directory -Force -Path $m6Writable | Out-Null
     $m6WritableLiteral = (($m6Writable.Replace('\','/') + '/') | ConvertTo-Json -Compress)
     $m6Main = Join-Path $resources 'main.js'
-    [IO.File]::WriteAllText($m6Main, "jsb.fileUtils.setWritablePath($m6WritableLiteral);`n" + [IO.File]::ReadAllText($m6Main), [Text.UTF8Encoding]::new($false))
+    $startup = "jsb.fileUtils.setWritablePath($m6WritableLiteral);`n"
+    if ($FontHandleReport) {
+        . (Join-Path $PSScriptRoot 'font-handle-checkpoints.ps1')
+        $fontFixture = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../../tests/fixtures/Thonburi.ttf')).Path
+        $fontSampler = New-FontHandleSampler $m6Writable $fontFixture
+        $directoryLiteral = $fontSampler.Directory.Replace('\', '/') | ConvertTo-Json -Compress
+        $startup += "globalThis.__m6FontHandleCheckpoints = $directoryLiteral;`n"
+    }
+    [IO.File]::WriteAllText($m6Main, $startup + [IO.File]::ReadAllText($m6Main), [Text.UTF8Encoding]::new($false))
 }
 $log=Join-Path $PSScriptRoot "build/$Mode-gpu-native.log"
 $err=Join-Path $PSScriptRoot "build/$Mode-gpu-native.err.log"
@@ -88,6 +98,7 @@ $process=Start-Process -FilePath $exePath -WorkingDirectory (Split-Path -Parent 
 try {
     $deadline=$started.AddSeconds(180)
     while([DateTime]::UtcNow -lt $deadline) {
+        if ($FontHandleReport -and (Test-Path -LiteralPath $log)) { Read-FontHandleCheckpoint $fontSampler $process $log }
         if((Test-Path -LiteralPath $manifest) -and (Get-Item -LiteralPath $manifest).LastWriteTimeUtc -gt $started) {
             $result=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
             if($result.backend -ne 'native') { throw 'Invalid native backend' }
@@ -109,6 +120,7 @@ try {
                 $result | Add-Member -NotePropertyName "${key}EngineSha256" -NotePropertyValue $deployed
                 $result | Add-Member -NotePropertyName executableSha256 -NotePropertyValue (Get-CaptureHash $exePath)
                 [IO.File]::WriteAllText($manifest, ($result | ConvertTo-Json -Depth 100 -Compress), [Text.UTF8Encoding]::new($false))
+                if ($FontHandleReport -and $fontSampler.Samples.Count -ne $fontSampler.Phases.Count) { throw 'Incomplete font handle samples' }
             }
             if($Mode -eq 'richtext') {
                 $lifecycle = $result.text.lifecycle
@@ -137,4 +149,10 @@ try {
         Start-Sleep -Milliseconds 250
     }
     throw "Native capture timeout: $log"
-} finally { if(-not $process.HasExited) { Stop-Process -Id $process.Id } }
+} finally {
+    if (-not $process.HasExited) { Stop-Process -Id $process.Id }
+    if ($FontHandleReport) {
+        $report = [ordered]@{ executableSha256 = (Get-CaptureHash $exePath); exclusiveReadControl = $true; samples = $fontSampler.Samples.ToArray() }
+        [IO.File]::WriteAllText($FontHandleReport, ($report | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
+    }
+}
