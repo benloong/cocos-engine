@@ -12,6 +12,30 @@ const deployed = path.resolve(process.argv[2] || path.join(root, '../cocos-m1-te
 const output = path.join(__dirname, 'build/windows-bundle-audit');
 const visualization = path.join(output, 'modules.html');
 const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const is2DModule = id => /(?:^|\/)cocos\/2d\//.test(id);
+
+function readRollupStats(file) {
+    const html = fs.readFileSync(file, 'utf8');
+    const match = /^\s*const data = (\{.*\});$/m.exec(html);
+    if (!match) throw new Error('Missing Rollup visualization data: ' + file);
+    return JSON.parse(match[1]);
+}
+
+function rendered2DModules({ nodeMetas, nodeParts }) {
+    return Object.values(nodeMetas).flatMap(module => {
+        const id = module.id.replaceAll('\\', '/');
+        if (!is2DModule(id)) return [];
+        const bytes = Object.values(module.moduleParts).reduce((sum, uid) => sum + nodeParts[uid].renderedLength, 0);
+        return [{ id, bytes }];
+    });
+}
+
+function assertNoWebAssemblers(modules) {
+    const webAssemblers = modules.filter(module => module.bytes > 0 && isWebAssembler(module.id));
+    if (webAssemblers.length) {
+        throw new Error('Native bundle contains Web assemblers: ' + webAssemblers.map(module => module.id).join(', '));
+    }
+}
 
 // Rollup cannot resolve settings, bundle prerequisites or script packages selected at runtime.
 function findRuntimeImports (file) {
@@ -52,32 +76,28 @@ async function main () {
         chunks[file] = { sha256, imports, runtimeImports: findRuntimeImports(path.join(deployed, file)) };
     }
     if (!chunks['cc.js']) throw new Error('Missing deployed engine entry');
-    const html = fs.readFileSync(visualization, 'utf8');
-    const match = /^\s*const data = (\{.*\});$/m.exec(html);
-    if (!match) throw new Error('Missing Rollup visualization data');
-    const { nodeMetas, nodeParts } = JSON.parse(match[1]);
+    const stats = readRollupStats(visualization);
+    const { nodeMetas } = stats;
     const edges = [];
-    const modules = [];
+    const modules = rendered2DModules(stats);
     const normalize = id => id.replaceAll('\\', '/');
     for (const module of Object.values(nodeMetas)) {
         const id = normalize(module.id);
-        const bytes = Object.values(module.moduleParts).reduce((sum, uid) => sum + nodeParts[uid].renderedLength, 0);
-        const in2d = id.includes('/cocos/2d/');
-        if (in2d) modules.push({ id, bytes });
+        const in2d = is2DModule(id);
         for (const edge of module.imported) {
             const target = normalize(nodeMetas[edge.uid].id);
-            if (edge.dynamic || (!in2d && target.includes('/cocos/2d/'))) {
+            if (edge.dynamic || (!in2d && is2DModule(target))) {
                 edges.push({ from: id, to: target, dynamic: !!edge.dynamic });
             }
         }
     }
     if (!modules.some(m => m.bytes > 0 && m.id.endsWith('/sprite.jsb.ts'))) throw new Error('Missing native Sprite override');
-    const webAssemblers = modules.filter(module => module.bytes > 0 && isWebAssembler(module.id));
-    if (webAssemblers.length) throw new Error('Native bundle contains Web assemblers: ' + webAssemblers.map(module => module.id).join(', '));
+    assertNoWebAssemblers(modules);
     const report = { chunks, modules, edges };
     fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
     console.log('Verified engine chunks:', Object.keys(chunks).length, '2D graph modules:', modules.length,
         'boundary imports:', edges.filter(edge => !edge.dynamic).length, 'dynamic imports:', edges.filter(edge => edge.dynamic).length);
 }
 
-main().catch(error => { console.error(error); process.exitCode = 1; });
+if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
+module.exports = { readRollupStats, rendered2DModules, assertNoWebAssemblers };

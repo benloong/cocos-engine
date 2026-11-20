@@ -6,6 +6,8 @@ const crypto = require('node:crypto');
 const ts = require('typescript');
 const { spawnSync } = require('node:child_process');
 const { buildEngine, StatsQuery } = require('@cocos/ccbuild');
+const { isWebAssembler } = require('./audit-m6.cjs');
+const { readRollupStats, rendered2DModules, assertNoWebAssemblers } = require('./audit-windows-bundle.cjs');
 
 const root = path.resolve(__dirname, '../../..');
 const output = path.join(__dirname, 'build/feature-matrix');
@@ -35,11 +37,14 @@ async function buildVariant (platform, bits) {
     require('../../../scripts/ensure-pal.cjs')();
     const selected = features.filter((_, index) => bits & (1 << index));
     const out = path.join(output, platform, String(bits));
+    const visualization = path.join(out, 'modules.html');
+    fs.rmSync(visualization, { force: true });
     const common = ['base', 'affine-transform', 'custom-pipeline', 'custom-pipeline-builtin-scripts'];
     if (platform === 'HTML5') common.push('gfx-webgl');
     const result = await buildEngine({ engine: root, out, platform, mode: 'BUILD', features: [...common, ...selected],
         flags: { DEBUG: false, NET_MODE: 0, SERVER_MODE: false }, moduleFormat: 'system', compress: false,
-        sourceMap: false, inlineEnum: true, nativeCodeBundleMode: 'wasm', targets: 'chrome 80' });
+        sourceMap: false, inlineEnum: true, nativeCodeBundleMode: 'wasm', targets: 'chrome 80',
+        visualize: { file: visualization } });
     if (!Object.hasOwn(result.chunkDepGraph, 'cc.js')) throw new Error('Missing engine entry');
     const file = path.join(out, 'cc.js');
     const names = emittedExports(file);
@@ -50,7 +55,14 @@ async function buildVariant (platform, bits) {
     for (const [index, name] of publicNames.entries()) {
         if (names.has(name) !== selected.includes(features[index])) throw new Error(platform + '/' + bits + ' unexpected export state: ' + name);
     }
-    fs.writeFileSync(path.join(out, 'result.json'), JSON.stringify({ platform, selected, exposed,
+    const modules = rendered2DModules(readRollupStats(visualization));
+    const webAssemblerBytes = modules.filter(module => isWebAssembler(module.id)).reduce((total, module) => total + module.bytes, 0);
+    if (platform === 'WINDOWS') {
+        assertNoWebAssemblers(modules);
+    } else if (selected.includes('2d') && webAssemblerBytes === 0) {
+        throw new Error('Web 2D bundle does not contain its assemblers');
+    }
+    fs.writeFileSync(path.join(out, 'result.json'), JSON.stringify({ platform, selected, exposed, webAssemblerBytes,
         sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') }));
 }
 

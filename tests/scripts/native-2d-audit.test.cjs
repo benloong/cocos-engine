@@ -36,6 +36,21 @@ test('native 2D owners do not use shared_ptr or weak_ptr', () => {
     }
 });
 
+test('emitted bundle audit counts retained assembler bytes across output chunks', () => {
+    const { rendered2DModules, assertNoWebAssemblers } = require('../../native/tests/2d-poc/audit-windows-bundle.cjs');
+    const parts = { entry: { renderedLength: 42 }, async: { renderedLength: 7 }, shaken: { renderedLength: 0 } };
+    const nodeMetas = {
+        shell: { id: 'C:\\repo\\cocos\\2d\\assembler\\index.jsb.ts', moduleParts: { 'cc.js': 'entry' } },
+        assembler: { id: 'cocos/2d/assembler/label/ttf.ts', moduleParts: { 'cc.js': 'shaken', 'dynamic.js': 'async' } },
+        outside: { id: 'cocos/ui/layout.ts', moduleParts: { 'cc.js': 'entry' } },
+    };
+    const modules = rendered2DModules({ nodeMetas, nodeParts: parts });
+    assert.deepEqual(modules.map(module => module.bytes), [42, 7]);
+    assert.throws(() => assertNoWebAssemblers(modules), /cocos\/2d\/assembler\/label\/ttf\.ts/);
+    parts.async.renderedLength = 0;
+    assert.doesNotThrow(() => assertNoWebAssemblers(rendered2DModules({ nodeMetas, nodeParts: parts })));
+});
+
 test('declaration baseline separates serialized fields from decorated accessor APIs', () => {
     const parsed = declaration('fixture.ts', `class Example extends Base {
         @serializable protected _font = null;

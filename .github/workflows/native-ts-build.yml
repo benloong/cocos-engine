@@ -40,7 +40,7 @@ jobs:
       run: |
         EXT_VERSION=`node ./.github/workflows/get-native-external-version.js`
         git clone --branch $EXT_VERSION --depth 1 https://github.com/cocos/cocos-engine-external native/external
-    - name: Verify Windows and Web Release feature exports
+    - name: Verify Windows and Web Release feature exports and assemblers
       run: node native/tests/2d-poc/check-m6-feature-matrix.cjs
     - uses: actions/upload-artifact@v4
       with:

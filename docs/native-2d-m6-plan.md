@@ -234,6 +234,7 @@
   - Label 的序列化访问器及字体、材质、CHAR 引用桥接在 TS；排版、几何、字形栅格化与上传由原生 Label 完成。RichText 在 TS 保存序列化数据和触摸监听，命中后先保存原生返回的回调名与参数，再遍历命中段与组件派发事件；解析、排版和命中测试由原生执行。两壳的逐帧渲染方法和渲染缓冲分配已纳入静态检查，33 项通过。Web RichText 和两个原生壳的 3 组 Jest 共 15 项通过。调用与配置证据见[组件](./native-2d-m6-jsb-lifecycle.json)、[资产](./native-2d-m6-jsb-assets.json)。本项覆盖薄壳约束，独立的组件行为与字体视觉门禁继续验收。
 - [x] 17 个迁移或保留类的 2D 运行时导入闭包已接入薄壳检查和现有 native-ts-build 测试。Windows Debug 部署包逐块匹配 SHA256，78 个 2D 模块中 55 个产生代码，Web Sprite、Label assembler 和 Graphics WebGL 实现均为 0 字节。公共 utils 入口仍导出 html-text-parser（13308 字节）和 text-utils（13330 字节），17 类的 2D 内部依赖链均未导入它们。部署 cc.js 为 `4702081743c4e25996b2815a2ba2266a510c68133e2e2ef260ca03e921b226d5`。源码检查 13 项与审计测试 6 项通过。闭包边界外的回流、实际每帧调用与完整 CI 仍待验证。
 - [ ] 扩展现有 `check-thin-shell.js` 等检查，覆盖全部迁移类和间接热路径；CI 执行 Web TS/Jest、native TS、native 构建与组件/场景回归。
+  - [x] Release 功能组合在 CI 检查所有 Rollup 输出 chunk 的 Web assembler 保留字节数。Windows 9 个组合均为 0；Web 的 8 个 2D 组合保留 159767 或 195159 字节。把真实 Web 全量报告交给 Windows 检查器会报错，测试还覆盖仅在异步 chunk 中保留的 assembler。本机 native TS、Web TS、198 组 Web Jest 和 Windows 双配置各六组 JSB 探针通过。[18 个构建结果](./native-2d-m6-feature-matrix.json)
   - [x] 已对 14 个迁移类逐一检查 native override、TS 帧方法和渲染数据分配。本机薄壳检查 57 项通过。在内存中的 SpriteAtlas 源码加入 `lateUpdate` 和 `new Float32Array` 后，两种违规均被检出。
   - [x] 薄壳帧方法检查覆盖 JSB 原型赋值、类字段和字符串字面量方法名。[回归用例](../tests/scripts/native-2d-audit.test.cjs)在旧检查器上漏报四个钩子，修改后按源码顺序检出全部四个，读取、比较和调用已有方法均通过检查。
   - [x] Windows Debug/Release 工作流加入 Chrome 同字体对照。正体和斜体 72 项在本机均通过，修复前程序触发其中 27 项失败。报告同时记录 36 项合成粗体结果，远程运行待验。
