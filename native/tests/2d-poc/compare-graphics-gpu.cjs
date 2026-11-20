@@ -12,7 +12,8 @@ if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set
 if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==19||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
 const legacy = a.scenes.legacyBitmap;
-if (!legacy || !['preload', 'sharedAcrossScenes', 'keptTexture', 'coldReload', 'released', 'atlasPolicy'].every(key => legacy[key] === true)
+if (!legacy || !['preload', 'cancelledAndRetried', 'sharedAcrossScenes', 'keptTexture', 'coldReload', 'released', 'atlasPolicy'].every(key => legacy[key] === true)
+    || legacy.pausedRequests !== 2 || legacy.pausedFrames !== 4
     || !Number.isFinite(legacy.width) || legacy.width <= 0 || legacy.ids?.length !== 5 || new Set(legacy.ids).size !== 5) {
     throw new Error('Incomplete legacy BMFont scene evidence');
 }

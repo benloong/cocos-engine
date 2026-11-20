@@ -9,6 +9,7 @@ async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture
     const fontUuid = '14697d7f-eddd-40c2-bb46-5cd9c361aa1c';
     const imageUuid = 'edf8a297-6e03-4a36-ace0-66403b851123';
     const ids = [prefabUuid, fontUuid, `${imageUuid}@f9941`, `${imageUuid}@6c48a`, imageUuid];
+    const published = (): boolean => ids.some(id => assetManager.assets.has(id));
     const cached = (asset: Asset): boolean => isValid(asset) && assetManager.assets.get(asset.uuid) === asset;
     const finishRelease = async (assets: Asset[], keys: string[]): Promise<void> => {
         for (let frame = 0; frame < 12 && assets.some(asset => isValid(asset)); ++frame) await nextFrame();
@@ -22,7 +23,7 @@ async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture
             reject(new Error('Legacy BMFont preload missed Prefab or font'));
         } else resolve();
     }));
-    if (ids.some(id => assetManager.assets.has(id))) throw new Error('Legacy BMFont preload published assets');
+    if (published()) throw new Error('Legacy BMFont preload published assets');
 
     const load = (): Promise<Prefab> => new Promise((resolve, reject) => resources.load(path, Prefab, (error, prefab) => {
         if (error) reject(error);
@@ -59,7 +60,45 @@ async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture
         return { label, instance, assets, texture, width };
     };
 
-    const prefab = await load();
+    const pipeline = assetManager.pipeline;
+    const cancelled = new Error('Legacy BMFont atlas image dependency cancelled by fixture');
+    let pausedRequests = 0;
+    let pausedFrames = 0;
+    pipeline.insert((task, done) => {
+        task.output = task.input;
+        if (!task.input.some((item: { uuid: string; isNative: boolean }) => item.uuid === imageUuid && item.isNative)) {
+            done();
+            return;
+        }
+        const attempt = ++pausedRequests;
+        void (async () => {
+            for (let frame = 0; frame < 2; ++frame) {
+                await nextFrame();
+                ++pausedFrames;
+                if (published()) throw new Error('Legacy BMFont published assets before its atlas image arrived');
+            }
+        })().then(() => done(attempt === 1 ? cancelled : null), done);
+    }, 1);
+    let prefab: Prefab;
+    try {
+        let rejected = false;
+        try {
+            const unexpected = await load();
+            unexpected.decRef();
+        } catch (error) {
+            if (error !== cancelled) throw error;
+            rejected = true;
+        }
+        if (!rejected || pausedRequests !== 1 || published()) {
+            throw new Error('Cancelled legacy BMFont load published an asset or resolved successfully');
+        }
+        prefab = await load();
+    } finally {
+        pipeline.remove(1);
+    }
+    if (Number(pausedRequests) !== 2 || pausedFrames !== 4 || prefab.uuid !== prefabUuid) {
+        throw new Error(`Legacy BMFont retry missed the image dependency: ${pausedRequests}/${pausedFrames}`);
+    }
     const first = await show('scene-bmfont-initial', prefab);
     const second = await show('scene-bmfont-next', prefab);
     if (isValid(first.instance) || isValid(first.label) || first.assets.some((asset, i) => asset !== second.assets[i])) {
@@ -95,7 +134,8 @@ async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture
     freshPrefab.decRef();
     await finishRelease(fresh.assets, ids);
     await capture('scene-bmfont-final-empty');
-    return { preload: true, sharedAcrossScenes: true, keptTexture: true, coldReload: true, released: true, atlasPolicy: true, width: first.width, ids };
+    return { preload: true, cancelledAndRetried: true, pausedRequests, pausedFrames, sharedAcrossScenes: true,
+        keptTexture: true, coldReload: true, released: true, atlasPolicy: true, width: first.width, ids };
 }
 
 // All render roots in this fixture are direct Scene children. A walk overwrites

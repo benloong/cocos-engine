@@ -94,5 +94,39 @@
       "coloredPixels": 0,
       "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
     }
-  ]
+  ],
+  "deferredRetry": {
+    "date": "2026-11-20",
+    "baseCommit": "6ec0bcf9b2",
+    "snapshot": "b9ccac89ac5b3d2ad9cbaea20f121de8f1fc68bad324319b807d01e57602cd00",
+    "blockedImageUuid": "edf8a297-6e03-4a36-ace0-66403b851123",
+    "cancelledAndRetried": true,
+    "pausedRequestsPerBackend": 2,
+    "pausedFramesPerBackend": 4,
+    "publishedAssetKeysDuringPauseOrAfterCancel": 0,
+    "checkedAssetKeys": [
+      "8d32029d-5446-4c2d-abce-fad14b94bc07",
+      "14697d7f-eddd-40c2-bb46-5cd9c361aa1c",
+      "edf8a297-6e03-4a36-ace0-66403b851123@f9941",
+      "edf8a297-6e03-4a36-ace0-66403b851123@6c48a",
+      "edf8a297-6e03-4a36-ace0-66403b851123"
+    ],
+    "finalCacheCleared": true,
+    "samePixelsAsUninterruptedRun": 144,
+    "webManifestSha256": "8036ceca22dcabc152aebae5e2c8746f6b18c1b60d83882e56de428bb5e5a882",
+    "configurations": {
+      "Debug": {
+        "executableSha256": "d5addda3d52637b183dffd5c0cd9cf3fe03f9d2151cb0f0b65a5bc3d5e96898c",
+        "manifestSha256": "7aa0e156600e146d5630d0625e2297b7795f38ab9c7af04cd8723edcea2bd130",
+        "comparisonSha256": "ca1052a5d90cbc801e9712c71cfcd8cf97991e374d46318d1a3c7f0b4e6ed8e1",
+        "runtimeLogSha256": "fe0d3151ee024387959c42b003a3d02300a15d9e6c8bac962563e36ea3e0c4b7"
+      },
+      "Release": {
+        "executableSha256": "426572c16f90efd1aa277a0f720e49c271fa8b265bf12502ef2448d5b10117f6",
+        "manifestSha256": "20a208b40991845312e15828f5dd3fd653af213a575df6e17b2f880ed648d20e",
+        "comparisonSha256": "ca1052a5d90cbc801e9712c71cfcd8cf97991e374d46318d1a3c7f0b4e6ed8e1",
+        "runtimeLogSha256": "7b8de46de2c3c7239359a1eee5135c3d48aaf955aa05a06792fd4a14c1631f4e"
+      }
+    }
+  }
 }
