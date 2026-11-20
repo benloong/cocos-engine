@@ -1,4 +1,4 @@
-param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory, [switch]$TextWidthProbe, [ValidatePattern('^[0-9a-f]{10}$')][string]$ProjectRevision, [switch]$LabelRasterProbe)
+param([ValidateSet('before','after','web')][Parameter(Mandatory)][string]$Target, [string]$BinaryDirectory, [switch]$TextWidthProbe, [ValidatePattern('^[0-9a-f]{10}$')][string]$ProjectRevision, [switch]$LabelRasterProbe, [string]$ResourceTemplateDirectory)
 $ErrorActionPreference = 'Stop'
 $dir = Join-Path $PSScriptRoot 'build'
 $key = if ($Target -eq 'web') { 'after' } else { $Target }
@@ -13,6 +13,7 @@ if ($LabelRasterProbe) {
     $fixture = $probe + [Environment]::NewLine + $fixture.Replace($marker, 'result.lineRasterVariants = await checkLabelLineRaster(cc, canvas, nextFrame);' + [Environment]::NewLine + $marker)
 }
 if ($Target -eq 'web') {
+    if ($ResourceTemplateDirectory) { throw 'Shared resource staging is Windows only' }
     $file = Join-Path $project 'web-mobile/index.js'
     $original = Join-Path $dir 'graphics-gpu-project/build/web-mobile/index.js'
     $hook = 'return application.init(engine);'
@@ -20,10 +21,19 @@ if ($Target -eq 'web') {
 } else {
     $bin = if ($BinaryDirectory) { (Resolve-Path -LiteralPath $BinaryDirectory).Path } else { Join-Path $dir "perf-bin-$key" }
     $exe = (Resolve-Path (Join-Path $bin 'native-2d-m6-gpu.exe')).Path
-    & robocopy "$project/windows/data" "$bin/Resources" /E /NFL /NDL /NJH /NJS /NP | Out-Null
+    $data = Join-Path $project 'windows/data'
+    $resources = Join-Path $bin 'Resources'
+    $scene = if ($ResourceTemplateDirectory) { (Resolve-Path -LiteralPath $ResourceTemplateDirectory).Path } else { $data }
+    if ($ResourceTemplateDirectory) {
+        & robocopy $scene $resources /E /XD 'cocos-js' /NFL /NDL /NJH /NJS /NP | Out-Null
+        if ($LASTEXITCODE -gt 7) { throw 'Shared scene staging failed' }
+        & robocopy (Join-Path $data 'src/cocos-js') (Join-Path $resources 'src/cocos-js') /E /NFL /NDL /NJH /NJS /NP | Out-Null
+    } else {
+        & robocopy $scene $resources /E /NFL /NDL /NJH /NJS /NP | Out-Null
+    }
     if ($LASTEXITCODE -gt 7) { throw 'Resource staging failed' }
-    $file = Join-Path $bin 'Resources/main.js'
-    $original = Join-Path $project 'windows/data/main.js'
+    $file = Join-Path $resources 'main.js'
+    $original = Join-Path $scene 'main.js'
     $result = (Join-Path $dir "m6-perf-$key-results.json").Replace('\','/')
     $hook = 'return application.init(cc);'
     $install = 'installM6Perf(cc,' + (ConvertTo-Json -InputObject $result -Compress) + ',' + $TextWidthProbe.IsPresent.ToString().ToLowerInvariant() + ');'
