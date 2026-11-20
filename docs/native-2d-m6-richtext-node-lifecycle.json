@@ -1,0 +1,120 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "6250c62eeb",
+  "baseline": {
+    "snapshot": "3863d415f0fb0f3ecad4838239b6b6156726b1b159763a9067bbf53ec62c8073",
+    "nativeFailureLogSha256": "3289e9daedf3a0696dc7510e11b0aa7d825743df663e68477a1ad3196c3811b4",
+    "webManifestSha256": "599d2e6b140db56cacb6feec66d05f2708f12ef96747d4a459597bc83b2b766b"
+  },
+  "linearSamplerObservation": {
+    "snapshot": "3ba4dac18664ed6f01d46c5eee56a6824483e5b53d612ce3748af202fd8ff12a",
+    "overTolerancePixels": 240,
+    "maxChannelDiff": 115,
+    "comparisonSha256": "62ca612adb3c9cc5a7a8dfaf1199c214fe29e01786bc2e824eb3f06e676268ee"
+  },
+  "candidate": {
+    "snapshot": "1798e15720c3a1c7e27b24ec2fbf1c4f1f5be970282540b98a233863320e0d5b",
+    "nodeJsBindingSha256": "148c4c954f4276137fbc244c0e382fb7343fa5575a288fb590a2ed484e6438bf",
+    "atlasSampler": "point",
+    "manifestSha256": "3e5d2e250c6e91e89b22fa765b02663721c793367c711be25be781235b96ccfb",
+    "scene": {
+      "rows": 8,
+      "pairsPerRow": 8,
+      "cycles": 32,
+      "checkpoints": [
+        {
+          "name": "richtext-lifecycle-grid",
+          "segments": 128,
+          "visible": true
+        },
+        {
+          "name": "richtext-lifecycle-disabled",
+          "segments": 128,
+          "visible": false
+        },
+        {
+          "name": "richtext-lifecycle-rebuilt",
+          "segments": 128,
+          "visible": true
+        },
+        {
+          "name": "richtext-lifecycle-destroyed",
+          "segments": 0,
+          "visible": false
+        }
+      ],
+      "layerChanges": [
+        1,
+        33554432
+      ],
+      "ownerReleased": true,
+      "eventPairs": 4224,
+      "atlasId": "ba29c4cd-b002-4ab8-9089-dfe715fcf63c"
+    },
+    "layoutPass": 58,
+    "strictPixelPass": 55,
+    "deferredPixels": [
+      "text-bold",
+      "text-outline",
+      "text-nested"
+    ],
+    "unchangedEarlierCaptures": 54,
+    "newCaptures": [
+      {
+        "name": "richtext-lifecycle-grid",
+        "sha256": "c8ea86c4dcb87785a5b84fe3c8005b4aa852286784cd35aaf9f832352388dc25",
+        "coloredPixels": 15216
+      },
+      {
+        "name": "richtext-lifecycle-disabled",
+        "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+        "coloredPixels": 0
+      },
+      {
+        "name": "richtext-lifecycle-rebuilt",
+        "sha256": "ec91c9ff428dfb8e6c2d3fe6767478b5c9ab470c125ca7bc2412f1d96798a53f",
+        "coloredPixels": 15216
+      },
+      {
+        "name": "richtext-lifecycle-destroyed",
+        "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+        "coloredPixels": 0
+      }
+    ]
+  },
+  "graphics": {
+    "snapshot": "2de8ebb41a5174cfa05604f539e73899cdf24381e00d5c4fb9bab42c90489302",
+    "byteIdenticalCaptures": 155,
+    "unchangedEarlierCaptures": 155,
+    "webManifestSha256": "e31ff5bde13f532a9527c6fcd084cca21449d1e83e0b07dd8cbaffea5d83a82a"
+  },
+  "configurations": {
+    "Debug": {
+      "richText": {
+        "executableSha256": "32e0f09386065c747f79ec9949f4f9cebf76c2ffc27037799c60db0ec0e17c37",
+        "manifestSha256": "497c0ea08b361753805327c39ec8a8d5c84aa742ea977fcd332874a53eb81cbb",
+        "comparisonSha256": "46cd1c2b291a94463cf7782045f21a9ad76caa1f2c7d57f7fb2a38e42929efa5",
+        "logSha256": "52e6c1c7a60348ab87e5d690b52b3bbd294c1e99ff69d4fc15ff8ee287e25de2"
+      },
+      "graphicsManifestSha256": "2a94bb277a668472cea405c4e7fe72b4e7f2da7b9b65a2c2a65af7fc0250e769",
+      "graphicsComparisonSha256": "3450732dca7187ddb3fd4d1aa900957468c90a61cf66941de48066472d4ac6b2"
+    },
+    "Release": {
+      "richText": {
+        "executableSha256": "7a97e6ed55f589e30f38cfde2783eb0b414cd7c0a32c1f9612704bf6b4b2aced",
+        "manifestSha256": "e0f78c34552c0259623c5a52528d586dcf01d21e097a54be0430e9efbdaecc04",
+        "comparisonSha256": "420411a2991c816de1c1d0dff1eaec4417cb976285ffa084636876eff2502535",
+        "logSha256": "15b958e6ae77dfec76b01815fd742becba4cf3c71bf8fdc909d3428134f9845e"
+      },
+      "graphicsManifestSha256": "2cc14782de349fa629babb57aefd13aa8ece8bf7940b99374cf97416f847315c",
+      "graphicsComparisonSha256": "3450732dca7187ddb3fd4d1aa900957468c90a61cf66941de48066472d4ac6b2"
+    }
+  },
+  "local": {
+    "jestSuites": 4,
+    "jestTests": 11,
+    "jestLogSha256": "38378f4520c34c8b8333ae219088130c946716796151541ad3430587384eca02",
+    "layoutCases": 1440,
+    "nativeTypeScript": true
+  }
+}

@@ -44,6 +44,14 @@
 
 还需完成真实字体/复杂文本与 italic 容差、shadow、完整布局/视觉和事件矩阵、旧场景/Prefab/资源生命周期、Node wrapper 的完整引擎联调，以及全平台/裁剪/线程、GPU、稳态调用与性能门禁。现有 parser/layout 的独立 Web 对照继续有效，不能替代上述运行时验收。
 
+## 真实 Node 层级与段生命周期
+
+Windows Debug 的实际应用先复现了一个层变化缺口。修改 RichText 宿主的 `Node.layer` 后，已有段仍然使用旧层。JSB 层属性改为调用现有的原生 `setLayer`，使 C++ 的 `LayerChanged` 订阅收到变化，并复用原有的 JS 通知入口。实际应用覆盖一次性和常驻监听，重复写入同一层不会多发通知。
+
+Windows Debug、Release 和 Web 使用旧 TexturePacker 图集与真实 Thonburi 字体生成 64 个文字段和 64 个图片段。32 轮清空和重建逐段检查 JS Node 的父节点、兄弟索引、激活状态、层和有限坐标。每种配置验证 4224 次添加与对应移除。启用后复用现有节点，销毁 RichText 后保留应用自己的子节点，图集最后一个引用释放后移出缓存。Windows 的内部段组件查询遵循 Native 契约，Web 通过 `getComponent` 查到对应组件。[逐配置生命周期证据](./native-2d-m6-richtext-node-lifecycle.json)
+
+四张图分别记录初始红色帧、禁用、旋转绿色帧重建和销毁。夹具的共享纹理显式使用点采样，避免旧图集无留边的红色帧混入相邻绿色 texel。Windows 和 Web 的四张 RGBA 逐字节一致，禁用及销毁帧的着色像素均为零。完整字体矩阵继续执行 58 项布局门禁和原有三个像素暂缓项。[逐图记录](./native-2d-m6-richtext-node-lifecycle.json)
+
 ## 点击回调重入补充（2026-11-16）
 
 命中几何继续由 native 计算。JS 在调用用户代码前读取本次命中段的 handler/param，作为一次事件的临时数据；回调改变 string、图集或触发布局后，不再用旧索引查询已经复用的原生片段。回调销毁、禁用组件或关闭 handleTouchEvent 时，立即停止剩余分发；已命中的事件先标记停止传播。该临时事件数据不是 JS 布局或第二份片段状态，没有新增每帧调用或 native 所有权。

@@ -20,4 +20,5 @@ for (const overflow of [0, 1, 2, 3]) {
 shadowNames.push('label-shadow-multiline-positive', 'label-shadow-multiline-negative');
 shadowNames.push('label-shadow-blur-2', 'label-shadow-blur-4', 'label-shadow-blur-8',
     'label-shadow-blur-clipped-positive', 'label-shadow-blur-clipped-negative');
-module.exports = { wordWrapNames, richTextNames, shadowNames, captures: wordWrapNames.concat(richTextNames, shadowNames) };
+const lifecycleNames = ['richtext-lifecycle-grid', 'richtext-lifecycle-disabled', 'richtext-lifecycle-rebuilt', 'richtext-lifecycle-destroyed'];
+module.exports = { wordWrapNames, richTextNames, shadowNames, lifecycleNames, captures: wordWrapNames.concat(richTextNames, shadowNames, lifecycleNames) };

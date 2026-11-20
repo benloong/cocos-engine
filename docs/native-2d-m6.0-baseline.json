@@ -23,7 +23,7 @@
     },
     {
       "file": "cocos/scene-graph/node.jsb.ts",
-      "sha256": "f9e218c797353570f86bcb7f5dd7f00450b07ff92947381e0f7ce71c50c1e62e"
+      "sha256": "148c4c954f4276137fbc244c0e382fb7343fa5575a288fb590a2ed484e6438bf"
     },
     {
       "file": "cocos/serialization/deserialize-dynamic.ts",

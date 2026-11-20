@@ -452,6 +452,11 @@ nodeProto._onMobilityChanged = function () {
 };
 
 nodeProto._onLayerChanged = function (layer) {
+    const render = this._uiProps?.uiComp;
+    if (render) {
+        render.setNodeDirty();
+        render._markForUpdateRenderData();
+    }
     this.emit(NodeEventType.LAYER_CHANGED, layer);
 };
 
@@ -1078,12 +1083,11 @@ Object.defineProperty(nodeProto, 'layer', {
         return this._sharedUint32Arr[1]; // Uint32, 1: layer
     },
     set(v) {
-        this._sharedUint32Arr[1] = v; // Uint32, 1: layer
-        if (this._uiProps && this._uiProps.uiComp) {
-            this._uiProps.uiComp.setNodeDirty();
-            this._uiProps.uiComp._markForUpdateRenderData();
-        }
-        this.emit(NodeEventType.LAYER_CHANGED, v);
+        const layer = v >>> 0;
+        if (this._sharedUint32Arr[1] === layer) return;
+        const forwardsToScript = this._registeredNodeEventTypeMask & REGISTERED_EVENT_MASK_LAYER_CHANGED;
+        this.setLayer(layer);
+        if (!forwardsToScript) this._onLayerChanged(layer);
     },
 });
 

@@ -15,13 +15,20 @@ if (!/^[0-9a-f]{64}$/.test(a.executableSha256)) throw Error('Missing native exec
 const lifecycle=a.text?.lifecycle;
 if(!lifecycle?.http?.interrupted||!lifecycle.http.loaded||!lifecycle.http.cachePathResolved||!lifecycle.http.released||!lifecycle.http.cacheRemoved||!lifecycle.http.missingRejected||!lifecycle.http.failedFilesRemoved||!lifecycle.http.cancelledAndResumed||lifecycle.http.bytes!==223404)throw Error('Incomplete HTTP font lifecycle evidence');
 if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.bytesPerLoad!==223404||!lifecycle.assignmentFailureRolledBack||!lifecycle.retrySucceeded||!lifecycle.missingRejected||!lifecycle.deferredDestroyFinished||!Number.isInteger(lifecycle.cacheBefore)||lifecycle.cacheBefore!==lifecycle.cacheAfter)throw Error('Incomplete remote font lifecycle evidence');
-const { wordWrapNames, richTextNames, shadowNames, captures } = require('./richtext-gpu-cases.cjs');
+const { wordWrapNames, richTextNames, shadowNames, lifecycleNames, captures } = require('./richtext-gpu-cases.cjs');
+const emptyCaptures = new Set(['richtext-lifecycle-disabled', 'richtext-lifecycle-destroyed']);
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 const expectedWrap = [
     [1, 74, 110, 24], [2, 74, 110, 25], [3, 74, 67.8, 24],
     [3, 120, 127.8, 24], [3, 74, 157.8, 24], [3, 62, 127.8, 24], [3, 116, 127.8, 24],
 ];
 for(const value of [a,b]) {
+    const segments = value.text.segmentLifecycle;
+    if (segments?.atlasId !== 'ba29c4cd-b002-4ab8-9089-dfe715fcf63c' || segments.rows !== 8 || segments.pairsPerRow !== 8
+        || segments.cycles !== 32 || segments.layerChanges?.join() !== '1,33554432' || !segments.ownerReleased || segments.eventPairs !== 4224
+        || JSON.stringify(segments.checkpoints?.map(x => x.name)) !== JSON.stringify(lifecycleNames)
+        || segments.checkpoints.some((item, index) => item.segments !== (index === 3 ? 0 : 128)
+            || item.visible !== !emptyCaptures.has(item.name))) throw Error('Incomplete RichText segment lifecycle: ' + value.backend);
     const interaction = value.text.interaction;
     if (!interaction?.sameWithShadowTag || !interaction.repainted || !interaction.destroyed
         || interaction.widths?.join() !== '160,96' || interaction.calls?.join() !== 'first,second') {
@@ -56,6 +63,10 @@ for (const [dir,manifest] of [[nativeDir,a],[webDir,b]]) {
     const bytes = name => fs.readFileSync(path.join(dir,name+'.rgba'));
     if (!bytes('text-bidi-override').equals(bytes('text-bidi-visual'))) throw Error('RTL override differs from its visual order: '+dir);
     if (!bytes('text-shadow-tag').equals(bytes('text-colors'))) throw Error('RichText shadow tag changed the colored control image: '+dir);
+    const green = rgba => rgba.some((value, index) => index % 4 === 1 && value > rgba[index - 1]);
+    if (green(bytes('richtext-lifecycle-grid')) || !green(bytes('richtext-lifecycle-rebuilt'))) {
+        throw Error('RichText did not replace the red image segments with green frames: ' + dir);
+    }
     const [control, edited] = ['text-colors','text-shadow-tag'].map(name=>manifest.text.metrics.find(row=>row.name===name));
     if (control.width!==edited.width || control.height!==edited.height || JSON.stringify(control.segments)!==JSON.stringify(edited.segments)) {
         throw Error('RichText edit did not restore the control layout: '+dir);
@@ -73,8 +84,8 @@ function shadowCoverage(bytes, width) {
     }
     return { pixels, minX, maxX };
 }
-const nativeMetrics = a.text.labelWordWrap.concat(a.text.metrics, a.text.shadowLayout);
-const webMetrics = b.text.labelWordWrap.concat(b.text.metrics, b.text.shadowLayout);
+const nativeMetrics = a.text.labelWordWrap.concat(a.text.metrics, a.text.shadowLayout, a.text.segmentLifecycle.checkpoints);
+const webMetrics = b.text.labelWordWrap.concat(b.text.metrics, b.text.shadowLayout, b.text.segmentLifecycle.checkpoints);
 for(let n=0;n<captures.length;n++) {
     const name=captures[n],actual=fs.readFileSync(path.join(nativeDir,name+'.rgba')),reference=fs.readFileSync(path.join(webDir,name+'.rgba'));
     if(actual.length!==256*256*4||reference.length!==actual.length)throw Error('Invalid RGBA dimensions');
@@ -100,7 +111,7 @@ for(let n=0;n<captures.length;n++) {
         if(reference[i]||reference[i+1]||reference[i+2])webColored++;
     }
     const max = Math.max(...maxByChannel);
-    if(!webColored)throw Error(`Empty Web reference: ${name}`);
+    if (emptyCaptures.has(name) ? webColored || nativeColored : !webColored) throw Error(`Unexpected pixel coverage: ${name}`);
     const layoutEqual=JSON.stringify(canonical(nativeMetrics[n]))===JSON.stringify(canonical(webMetrics[n]));
     const row = {name,max,pixels,webColored,nativeColored,layoutEqual,pass:max<=1&&layoutEqual,
         native:nativeMetrics[n],web:webMetrics[n],
@@ -120,6 +131,7 @@ for(let n=0;n<captures.length;n++) {
 }
 const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},interaction:{native:a.text.interaction,web:b.text.interaction},pass:rows.every(x=>x.pass),results:rows};
 result.executableSha256 = a.executableSha256;
+result.segmentLifecycle = { native: a.text.segmentLifecycle, web: b.text.segmentLifecycle };
 const deferredPixels = new Set();
 if (m6Gate) {
     const permitted = new Set(['text-bold', 'text-outline', 'text-nested']);

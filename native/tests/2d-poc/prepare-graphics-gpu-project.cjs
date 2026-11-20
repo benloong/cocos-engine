@@ -11,14 +11,15 @@ fs.mkdirSync(path.join(project,'build/windows/data'),{recursive:true});
 const assetsLink=path.join(project,'build/windows/assets');
 if(!fs.existsSync(assetsLink)) fs.symlinkSync(path.join(project,'build/windows/data'),assetsLink,'junction');
 fs.cpSync(fixture,project,{recursive:true});
+const resources = path.join(project, 'assets/resources');
+fs.mkdirSync(resources, {recursive:true});
+const resourceFolders = mode === 'graphics' ? ['M6StaticAtlas', 'M3BitmapFont', 'M6LabelAtlas'] : ['M6StaticAtlas'];
+for (const folder of resourceFolders) {
+    const source = path.join(__dirname, 'fixtures/acceptance/resources', folder);
+    fs.cpSync(source, path.join(resources, folder), {recursive:true});
+    fs.copyFileSync(source + '.meta', path.join(resources, folder + '.meta'));
+}
 if (mode === 'graphics') {
-    const resources = path.join(project, 'assets/resources');
-    fs.mkdirSync(resources, {recursive:true});
-    for (const folder of ['M6StaticAtlas', 'M3BitmapFont', 'M6LabelAtlas']) {
-        const source = path.join(__dirname, 'fixtures/acceptance/resources', folder);
-        fs.cpSync(source, path.join(resources, folder), {recursive:true});
-        fs.copyFileSync(source + '.meta', path.join(resources, folder + '.meta'));
-    }
     const fonts = path.join(__dirname, 'fixtures/acceptance/M6TTFBundle');
     const fontBundle = path.join(project, 'assets/M6TTFBundle');
     fs.cpSync(fonts, fontBundle, {recursive:true});

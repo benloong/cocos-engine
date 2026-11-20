@@ -1,4 +1,5 @@
 import { _decorator, assetManager, deserialize, director, gfx, Color, Component, EventTouch, instantiate, isValid, Label, Node, Prefab, RichText, sys, Touch, TTFFont, UITransform, Vec2, Vec3, view } from 'cc';
+import { checkRichTextLifecycle } from './M6RichTextLifecycle';
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
@@ -766,11 +767,12 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         node.destroy(); await wait();
     }
     const shadowLayout = await captureShadowLayout(parent, font, capture);
+    const segmentLifecycle = await checkRichTextLifecycle(parent, font, capture);
     assetManager.releaseAsset(font); await wait();
     const released = !isValid(font);
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
     return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, labelWordWrap, fractionalFontWidths,
-        hardShadowCoverage, blurredShadowCenters, shadowLayout };
+        hardShadowCoverage, blurredShadowCenters, shadowLayout, segmentLifecycle };
 }
