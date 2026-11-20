@@ -76,6 +76,7 @@ public:
 private:
     struct Segment;
     void dirty();
+    void rebuildLayout();
     void updateRenderer() override { clearRenderDirty(); updateLayout(); }
     void onUITransformChanged() override { markRenderDirty(); }
     void observeTransform(UITransform *transform);

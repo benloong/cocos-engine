@@ -29,6 +29,33 @@ async function checkRichTextResizeListener (parent: Node, font: TTFFont): Promis
     }
 }
 
+async function checkRichTextChildAddedListener (parent: Node, font: TTFFont): Promise<void> {
+    const node = new Node('rich-text-child-added-listener');
+    parent.addChild(node);
+    try {
+        const rich = node.addComponent(RichText);
+        rich.font = font;
+        rich.string = 'Initial';
+        await wait();
+        let notified = false;
+        node.once(Node.EventType.CHILD_ADDED, () => {
+            notified = true;
+            rich.string = 'Replacement during child attach';
+        });
+        rich.string = '<b>First</b><i>Second</i>';
+        await wait();
+        const backend = (rich as any)._native;
+        const text = backend ? backend.getSegmentLabel(0)?.getString() : node.children[0]?.getComponent(Label)?.string;
+        if (!notified || text !== 'Replacement during child attach' || node.children.length !== 1) {
+            throw new Error('RichText child-added listener did not replace the rendered text');
+        }
+        console.log('M6_RICHTEXT_CHILD_ADDED_LISTENER_PASS');
+    } finally {
+        node.destroy();
+        await wait();
+    }
+}
+
 async function checkRichTextPrefab (parent: Node, font: TTFFont): Promise<object> {
     const source = '<b>Atlas</b> 123';
     const prefab = deserialize([
@@ -395,6 +422,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
     const prefab = await checkRichTextPrefab(parent, font);
     await checkRichTextResizeListener(parent, font);
+    await checkRichTextChildAddedListener(parent, font);
     const cases = [
         { name: 'text-basic', value: 'Atlas 123' },
         { name: 'text-bold', value: '<b>Atlas 123</b>' },

@@ -214,6 +214,19 @@ void RichText::updateLayout() {
     if (!_transform) { if (!_segments.empty()) clearSegments(); return; }
     synchronizeDependencies(); if (!_dirty) return;
     _updating = true;
+    do {
+        // Parenting a segment can notify user code, which can invalidate this layout.
+        _dirty = false;
+        rebuildLayout();
+    } while (_dirty && _node && _transform && _enabled);
+    // Publish the completed layout before the size callback runs user code.
+    _updating = false;
+    if (_transform && _enabled) {
+        _transform->setContentSize(static_cast<float>(_layout.width), static_cast<float>(_layout.height));
+    }
+}
+
+void RichText::rebuildLayout() {
     _spans = RichTextParser::parse(_string);
     _options.anchorX = _transform->getAnchorX(); _options.anchorY = _transform->getAnchorY();
     _layer = _node->getLayer();
@@ -258,10 +271,6 @@ void RichText::updateLayout() {
     for (auto &segment : previous) if (segment) recycle(std::move(segment));
     _fontRevision = _font ? _font->getRevision() : 0;
     _atlasRevision = _atlas ? _atlas->getRevision() : 0;
-    _dirty = false;
-    // Publish the completed layout before the size callback runs user code.
-    _updating = false;
-    _transform->setContentSize(static_cast<float>(_layout.width), static_cast<float>(_layout.height));
 }
 Label *RichText::getSegmentLabel(uint32_t index) const { return index < _segments.size() ? _segments[index]->label.get() : nullptr; }
 Sprite *RichText::getSegmentSprite(uint32_t index) const { return index < _segments.size() ? _segments[index]->sprite.get() : nullptr; }

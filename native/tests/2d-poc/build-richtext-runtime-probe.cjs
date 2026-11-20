@@ -60,6 +60,18 @@ rich.string='longer line to resize';
 rendererManager.updateAllDirtyRenderers();
 check(changedDuringResize&&native.getSegmentLabel(0).getString()==='callback replacement','size listener publishes replacement RichText');
 ui.setSizeChangedCallback(()=>{pushes++;});
+node._initAndReturnSharedBuffer();
+let changedDuringChildAdded=false;
+node._onChildAdded=()=>{
+    if(changedDuringChildAdded)return;
+    changedDuringChildAdded=true;
+    rich.string='replacement during child attach';
+};
+node._onChildRemoved=()=>{};
+rich.string='<b>first</b><i>second</i>';
+rendererManager.updateAllDirtyRenderers();
+check(changedDuringChildAdded&&hasSegments(1)&&native.getSegmentLabel(0).getString()==='replacement during child attach','child-added listener publishes replacement RichText');
+node._onChildAdded=()=>{};
 rich.string='<b click="tap" param="arg">hit</b>';
 const first=node.getChildByName('RICHTEXT_CHILD'), previousPushes=pushes;
 check(first,'generated text child is reachable through the node hierarchy');
