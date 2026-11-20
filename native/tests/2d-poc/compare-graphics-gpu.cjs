@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==155) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==157) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==155) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==157) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 const legacyLabelEffects = { updates: 3, prefab: true, forwarding: true, rendered: true, destroyed: true };
@@ -222,6 +222,25 @@ for (const [shape, colored] of [['rect', 4608], ['polygon', 4032]]) {
         const frame = results.find(row => row.name === prefix + phase);
         if (!frame || frame.nativeSha256 !== source.nativeSha256 || frame.webSha256 !== source.webSha256) {
             throw new Error('Sprite and mesh sampling changed after frame transition: ' + shape + '/' + phase);
+        }
+    }
+}
+const visibleDepth = results.find(row => row.name === 'packed-polygon-mesh-depth-visible');
+const culledDepth = results.find(row => row.name === 'packed-polygon-mesh-depth-culled');
+if (visibleDepth?.colored !== 1728 || !culledDepth || culledDepth.nativeSha256 !== emptyFrame.nativeSha256
+    || culledDepth.webSha256 !== emptyFrame.webSha256) {
+    throw new Error('Polygon was not culled at the expected camera far plane');
+}
+const rowBytes = a.width * 4;
+const halfRowBytes = rowBytes / 2;
+for (const dir of [native, web]) {
+    const source = fs.readFileSync(path.join(dir, 'packed-polygon-mesh-source.rgba'));
+    const visible = fs.readFileSync(path.join(dir, 'packed-polygon-mesh-depth-visible.rgba'));
+    const empty = fs.readFileSync(path.join(dir, 'packed-polygon-mesh-depth-culled.rgba'));
+    for (let i = 0; i < visible.length; i += halfRowBytes) {
+        const reference = i % rowBytes === 0 ? empty : source;
+        if (!visible.subarray(i, i + halfRowBytes).equals(reference.subarray(i, i + halfRowBytes))) {
+            throw new Error('Visible-depth capture differs from the source mesh footprint');
         }
     }
 }

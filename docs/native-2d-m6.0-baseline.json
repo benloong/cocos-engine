@@ -15038,7 +15038,7 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "5d0a935d369fa48707f3c2caa6160c33fc61c69fd3947fddb5485d4e93eaed23",
+      "sha256": "72d4aaaf9ab6d619aa5febb0cd97419fdabf069a483dfd33927b8b1074504a83",
       "printedCodeLines": 325,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",

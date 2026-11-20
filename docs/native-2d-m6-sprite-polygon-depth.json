@@ -1,0 +1,67 @@
+{
+  "baseCommit": "76867ba059",
+  "baseline": {
+    "fixtureSnapshot": "7c3e68a714384db7d79a1759cd1310eacc3567c00aeb73aa413168e1b3fd2298",
+    "nativeMeshMinMaxZ": [
+      0,
+      0
+    ],
+    "jestLogSha256": "0771cf5185981ee3c046c64eb55b1f0f69685df7216e877a4d45c589b3c8e051",
+    "nativeLogSha256": "5eca62918609dadb247631e0dfaedb3735fb6fcc7e47b17dc3e52ac7b4dea7e8",
+    "captures": {
+      "packed-polygon-mesh-depth-visible": {
+        "colored": 0,
+        "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+      },
+      "packed-polygon-mesh-depth-culled": {
+        "colored": 0,
+        "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+      }
+    }
+  },
+  "fixed": {
+    "snapshot": "af4e65b7ca0a72c4b4ac718ffbceb310302b678bab98ce43c6b9780c06506936",
+    "authoredMeshMinMaxZ": [
+      8,
+      20
+    ],
+    "signedBoundsInJest": [
+      -3,
+      2
+    ],
+    "strictlyIdenticalCaptures": 157,
+    "unchangedEarlierCaptures": 155,
+    "newCaptures": {
+      "packed-polygon-mesh-depth-visible": {
+        "colored": 1728,
+        "sha256": "a74ba5e9a0a828438d521f947cd38e269d18e7785a1169ccf84ab9f47b4210f4"
+      },
+      "packed-polygon-mesh-depth-culled": {
+        "colored": 0,
+        "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+      }
+    },
+    "webManifestSha256": "aed7f2cda1ae90f53ef640575c75450f36d059d811c00326b104fc9790158494",
+    "webLogSha256": "630b47c7ccae7771404e6a1ba34af7ac02b5c0a3a9ff4ea9e126f7c63f20c1fb",
+    "configurations": {
+      "Debug": {
+        "executableSha256": "010bc518e6def668718abc59ae9d58efec65b6e5dcbbb34b0b07444cd5828e60",
+        "manifestSha256": "bcb07c03a20021ea0758f86bb2520dbfd59517cb2a9a1afcbdd35a5ffdca7728",
+        "comparisonSha256": "733bbe71dad4aaa0685e40be1f79fd6d69a5caf0ccf86bd8ca1baa01aee1f5ec",
+        "applicationLogSha256": "9434b6877c390e8e16509ea1411649ea95e71dd26187dddba75049f22bd57a50"
+      },
+      "Release": {
+        "executableSha256": "bc43475bf6a4c901e757ba5c39d124431efe5947f832f6b1c6ca6a6c44e8ebb7",
+        "manifestSha256": "2bd7a1136b524a83f1929915f53aac86c43b7c132b9835effa0bef6180427993",
+        "comparisonSha256": "733bbe71dad4aaa0685e40be1f79fd6d69a5caf0ccf86bd8ca1baa01aee1f5ec",
+        "applicationLogSha256": "7b7a86e99185285517084179cc15ce376c43718a265359067c01e43d16174b41"
+      }
+    }
+  },
+  "local": {
+    "targetedJestPassed": 10,
+    "typeScript": true,
+    "nativeTypeScript": true,
+    "shellLines": 299
+  }
+}

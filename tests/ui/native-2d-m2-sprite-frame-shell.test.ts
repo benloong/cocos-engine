@@ -146,16 +146,18 @@ test('destroying a Web SpriteFrame releases its mesh at frame end and leaves the
 
 test('authored polygon vertices survive Web and native serialization and cloning', () => {
     const vertices = {
-        rawPosition: [-20, -18, 1, 20, -18, 2, 0, 18, 0], indexes: [0, 2, 1],
+        rawPosition: [-20, -18, 1, 20, -18, 2, 0, 18, -3], indexes: [0, 2, 1],
         uv: [0, 36, 40, 36, 20, 0], nuv: [0, 1, 1, 1, 0.5, 0],
-        minPos: { x: -20, y: -18, z: 0 }, maxPos: { x: 20, y: 18, z: 2 },
+        minPos: { x: -20, y: -18, z: -3 }, maxPos: { x: 20, y: 18, z: 2 },
     };
     const data = {
         meshType: WebSpriteFrame.MeshType.POLYGON, vertices, pixelsToUnit: 4,
         rect: new Rect(0, 0, 40, 36), pivot: new Vec2(0.25, 0.75),
     };
-    const positions = [-2.5, -6.75, 1, 7.5, -6.75, 2, 2.5, 2.25, 0];
-    proto.transformMeshPositions = jest.fn(() => positions.slice());
+    const positions = [-2.5, -6.75, 1, 7.5, -6.75, 2, 2.5, 2.25, -3];
+    proto.transformMeshPositions = jest.fn((raw: number[]) => raw.map((value, i) => (
+        i % 3 === 0 ? value / 4 + 2.5 : i % 3 === 1 ? value / 4 - 2.25 : value
+    )));
     const frame = createFrame();
     const web = new WebSpriteFrame();
     web._deserialize(data, null);
@@ -172,6 +174,13 @@ test('authored polygon vertices survive Web and native serialization and cloning
     expect(frame.vertices.minPos.x).toBe(-20);
 
     web.ensureMeshData();
+    frame.ensureMeshData();
+    const bounds = web.mesh!.struct;
+    expect(bounds.minPosition?.z).toBe(-3);
+    expect(bounds.maxPosition?.z).toBe(2);
+    expect((global as any).jsb.MeshUtils.createMesh).toHaveBeenLastCalledWith(expect.objectContaining({
+        minPos: expect.objectContaining(bounds.minPosition), maxPos: expect.objectContaining(bounds.maxPosition),
+    }));
     expect(Array.from(web.mesh!.readIndices(0)!)).toEqual([0, 2, 1]);
     expect(Array.from(web.mesh!.readAttribute(0, AttributeName.ATTR_POSITION)!)).toEqual(positions);
     expect(Array.from(web.mesh!.readAttribute(0, AttributeName.ATTR_TEX_COORD)!)).toEqual(vertices.nuv);
@@ -193,7 +202,10 @@ test('authored polygon vertices survive Web and native serialization and cloning
 });
 
 beforeAll(() => {
-    (global as any).jsb = { Asset: { prototype: { _ctor: assetCtor } }, SpriteFrame: NativeFrame };
+    (global as any).jsb = {
+        Asset: { prototype: { _ctor: assetCtor } }, SpriteFrame: NativeFrame,
+        MeshUtils: { createMesh: jest.fn(() => ({ destroy: jest.fn() })) },
+    };
 });
 beforeEach(() => { jest.clearAllMocks(); });
 

@@ -30,6 +30,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | Sprite 与 SpriteRenderer 共用图集帧 | Web 实际打包，Windows Debug、Release 维持动态合图禁用。矩形和多边形的材质重绑、打包后首次建网格及恢复阶段均与源图相同。127 张图逐字节一致，119 张既有图各端哈希与基准相同 | [同一帧打包对照](./native-2d-m6.1-sprite-frame.md#同一帧的图集页和源纹理) |
 | SpriteFrame 生成网格释放 | Windows Debug、Release 和 Web 各通过六个帧释放用例。帧末归还原网格的 GPU 顶点与索引缓冲，独立克隆继续绘制。Web 释放仍在打包状态的原帧后，克隆可恢复到源纹理。127 张 RGBA 三端一致，逐张与上一候选哈希相同 | [帧末释放与像素证据](./native-2d-m6.1-sprite-frame.md#帧末释放生成的网格) |
 | SpriteRenderer 矩形网格方向 | Windows Debug、Release 与 Web 验证非方形旋转帧、X/Y 翻转、禁用后重新启用和 Web 打包往返。11 张新增方向图通过实际四角颜色断言，138 张图三端逐字节一致，127 张旧图逐张与上一候选哈希相同 | [方向用例与捕获证据](./native-2d-m6.1-sprite-frame.md#矩形网格的旋转与翻转) |
+| SpriteRenderer 多边形深度裁剪 | Windows Debug、Release 与 Web 保留非平面多边形的 Z 边界。相机远平面移动前后的新增图为 1728 和 0 个着色像素，155 张既有图的哈希与上轮一致。Web 验证打包中克隆和恢复源纹理。 | [实际裁剪与逐配置记录](./native-2d-m6-sprite-polygon-depth.json) |
 | 生产绑定清理 | 删除 Sprite、Label 和 RichText 的 9 个未用 JSB 读回接口。Windows 双配置各通过 6 组 JSB 探针，108 张图与 Web 及上一节点逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | PoC 与遗留测试导出 | Windows 和 Web 重建包均无旧 PoC 入口或组件。Sprite 和 Label 清理 7 个内部或测试调用，Windows 双配置各通过 6 组 JSB 探针、1000 轮场景切换，116 张 GPU 图与 Web 逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | RichText 测试导出 | 删除 getSegmentLabel 和 getSegmentSprite。Windows Debug、Release 各通过六组 JSB 探针与 M2–M5。Web 旧工程检查 9 个 Label 和 1 个 Sprite。字体矩阵 42 项布局通过，严格像素 39/42，三组历史像素超差见本轮范围说明 | [绑定与快照记录](./native-2d-m6-binding-cleanup.json) |

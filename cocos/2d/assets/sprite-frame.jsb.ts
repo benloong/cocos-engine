@@ -117,7 +117,7 @@ function rebuildFrameMesh (frame: any): void {
     }
     vertices.positions.length = 0;
     for (const position of frame.transformMeshPositions(raw)) vertices.positions.push(position);
-    const bounds = frame.transformMeshPositions([vertices.minPos.x, vertices.minPos.y, 0, vertices.maxPos.x, vertices.maxPos.y, 0]);
+    const bounds = frame.transformMeshPositions(flattenFramePositions([vertices.minPos, vertices.maxPos]));
     frame._mesh?.destroy();
     createFrameMesh(frame, new Vec3(bounds[0], bounds[1], bounds[2]), new Vec3(bounds[3], bounds[4], bounds[5]));
 }

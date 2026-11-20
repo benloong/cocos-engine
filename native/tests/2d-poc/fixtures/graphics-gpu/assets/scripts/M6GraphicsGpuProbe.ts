@@ -190,7 +190,7 @@ async function checkAuthoredPolygon (parent: Node, layer: number, material: Mate
 }
 
 async function checkPackedMeshes (
-    parent: Node, layer: number, material: Material, source: SpriteFrame, capture: (name: string) => Promise<void>,
+    parent: Node, layer: number, material: Material, source: SpriteFrame, camera: Camera, capture: (name: string) => Promise<void>,
 ): Promise<void> {
     const texture = source.texture;
     const atlasEnabled = dynamicAtlasManager.enabled;
@@ -207,16 +207,17 @@ async function checkPackedMeshes (
                 rect: { x: 2, y: 2, width: 12, height: 12 },
                 originalSize: { width: 12, height: 12 },
                 vertices: polygon ? {
-                    rawPosition: [-6, -6, 0, 6, -6, 0, 6, 0, 0, 0, 0, 0, 0, 6, 0, -6, 6, 0],
+                    rawPosition: [-6, -6, 8, 6, -6, 12, 6, 0, 16, 0, 0, 12, 0, 6, 20, -6, 6, 8],
                     indexes: [0, 1, 2, 0, 2, 3, 0, 3, 5, 3, 4, 5],
                     uv: [2, 14, 14, 14, 14, 8, 8, 8, 8, 2, 2, 2],
                     nuv: [0.0625, 0.125, 0.4375, 0.125, 0.4375, 0.5, 0.25, 0.5, 0.25, 0.875, 0.0625, 0.875],
-                    minPos: { x: -6, y: -6, z: 0 }, maxPos: { x: 6, y: 6, z: 0 },
+                    minPos: { x: -6, y: -6, z: 8 }, maxPos: { x: 6, y: 6, z: 20 },
                 } : undefined,
             }, null);
             frame._textureSource = texture;
             frame.packable = true;
             const late = frame.clone();
+            let packedClone: SpriteFrame | null = null;
             const uiNode = new Node(name + '-ui');
             uiNode.layer = layer;
             uiNode.setPosition(-48, 0);
@@ -256,6 +257,33 @@ async function checkPackedMeshes (
                 await capture(name + '-rebound');
                 model.spriteFrame = late;
                 await capture(name + '-lazy');
+                if (polygon) {
+                    packedClone = late.clone();
+                    model.spriteFrame = packedClone;
+                    const depth = camera.node.worldPosition.z;
+                    const far = camera.far;
+                    sprite.enabled = false;
+                    try {
+                        // The origin is behind the far plane, while all authored vertices are in front of it.
+                        camera.far = depth - 4;
+                        await capture(name + '-depth-visible');
+                        camera.far = depth - 24;
+                        await capture(name + '-depth-culled');
+                    } finally {
+                        camera.far = far;
+                        sprite.enabled = true;
+                    }
+                    for (const asset of [frame, late, packedClone]) {
+                        const bounds = asset.mesh!.struct;
+                        if (bounds.minPosition?.z !== 8 || bounds.maxPosition?.z !== 20) {
+                            throw new Error(`Authored polygon depth bounds changed to ${bounds.minPosition?.z},${bounds.maxPosition?.z}`);
+                        }
+                    }
+                    if (packedClone.mesh === late.mesh || packedClone.texture !== late.texture
+                        || (!sys.isNative && packedClone.original?._texture !== texture)) {
+                        throw new Error('Cloning a packed polygon lost its atlas or mesh ownership');
+                    }
+                }
                 const lateTexture = late.texture;
                 sprite.spriteFrame = late;
                 await releaseMeshedFrame(frame);
@@ -266,14 +294,18 @@ async function checkPackedMeshes (
                 if (late.original || late.texture !== texture) {
                     throw new Error('The surviving mesh frame did not return to its source texture');
                 }
+                if (packedClone && (packedClone.original || packedClone.texture !== texture
+                    || packedClone.mesh?.struct.minPosition?.z !== 8 || packedClone.mesh.struct.maxPosition?.z !== 20)) {
+                    throw new Error('Atlas reset changed the cloned polygon bounds or left it on the retired page');
+                }
                 await capture(name + '-restored');
             } finally {
                 dynamicAtlasManager.enabled = false;
                 uiNode.destroy();
                 meshNode.destroy();
                 await wait();
-                await Promise.all([frame, late].map((value) => {
-                    if (!isValid(value, true)) return undefined;
+                await Promise.all([frame, late, packedClone].map((value) => {
+                    if (!value || !isValid(value, true)) return undefined;
                     if (value.mesh) return releaseMeshedFrame(value);
                     assetManager.releaseAsset(value);
                     return undefined;
@@ -779,7 +811,7 @@ export class M6GraphicsGpuProbe extends Component {
         await wait();
 
         await checkAuthoredPolygon(canvas.node, meshLayer, material, capture);
-        await checkPackedMeshes(canvas.node, meshLayer, material, left, capture);
+        await checkPackedMeshes(canvas.node, meshLayer, material, left, camera, capture);
         await checkRectMeshOrientation(canvas.node, meshLayer, material, capture);
         const alternate = new Material();
         const variantEffect = await new Promise<EffectAsset>((resolve, reject) =>
