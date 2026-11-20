@@ -120,6 +120,7 @@
 - [x] Windows DirectWrite 水平 RTL 字形按排版后的 advance/offset 从右端定位。Thonburi 的 RTL 控制符、对应视觉顺序及泰文叠加标记在 Debug/Release 的四种字号、常规和斜体均与 Chrome 原始画布一致。三张新增 RichText GPU 图也逐字节相同。Arial 纯希伯来文及阿拉伯文各通过 7/8 组常规/斜体；12px 常规、含空格的混排和合成粗体差异另计。[双配置逐项对照](./native-2d-m6-bidi.json)
 - [x] 水平 TTF 混排的 U+0020 字距和小字号覆盖率。Windows 使用中性语言单独排普通空格，保留词内 kerning；字形齐全且无字距表的可打印 ASCII 沿用无分段布局。正体按 DirectWrite 字体推荐选择自然平滑。Debug/Release 在相同 Arial、Thonburi 文件和 Chrome 上验证 9 种文本、4 个字号，常规/斜体 72/72 均在 1 级通道容差内。40 张应用图与上轮各端哈希一致。四轮交错微基准中，24px 带空格短句的测量中位数，Thonburi 为 2.57→2.55 µs，Arial 为 198.56→219.03 µs；Arial 绘制为 317.11→345.30 µs。合成粗体原始画布仍为 0/36。[逐样本和 CPU 实测](./native-2d-m6-text-spacing.json)
 - [ ] 字体复杂布局与资产边界：补充平面 BMFont 标量字形通过 2327 个 Web/native 布局对照，Windows Debug/Release 的四种字体/旋转组合与 Web 逐像素相等，见[捕获](./native-2d-m6-bitmap-unicode.json)。bidi/shaping、任意 mesh 和其余 packed 帧状态组合、其余字体配置/元数据动态入口，以及真实旧资产/场景/Prefab 和资源生命周期矩阵继续验收；基础布局通过不关闭字体终态项。
+  - [x] 旧 SpriteFrame 多边形数据在 SpriteRenderer 生成网格时保留顶点、索引和 UV。Windows Debug、Release 与 Web 对照包含凹多边形、独立克隆和换纹理重建。[逐图证据](./native-2d-m6.1-sprite-frame.md#旧序列化多边形)
 - [x] 动态图集入口回退：拒绝不可上传的来源，满页失败保留剩余空间，同源帧复用已有页。定向 Jest 和真实 Windows Debug/Web 回退探针通过，100 份 RGBA 逐字节一致，见[回退报告](./native-2d-m6.1-atlas-fallback.md)。
 - [x] 动态图集帧所有权：删除单帧保留共享源，打包克隆随页跟踪，删除源纹理与重置先恢复帧后释放页。真实 Windows Debug/Web 探针和 100 份 RGBA 对照通过，见[所有权报告](./native-2d-m6.1-atlas-lifecycle.md)。
 - [x] 原生组件事件触发自动合图曾在 Windows Debug 与 Web 通过。该实现是禁用前的历史基线，见[触发报告](./native-2d-m6.1-atlas-automatic.md)。

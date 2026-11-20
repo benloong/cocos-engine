@@ -46,12 +46,16 @@ export interface IVerticesSerialize { // hack for format
     maxPos: Pick<Vec3, 'x' | 'y' | 'z'>;
 }
 
+export function flattenFramePositions (points: readonly Vec3[]): number[] {
+    const coordinates: number[] = [];
+    for (const { x, y, z } of points) coordinates.push(x, y, z);
+    return coordinates;
+}
+
 export function serializeFrameVertices (vertices: IVertices | null): IVerticesSerialize | undefined {
     if (!vertices) return undefined;
-    const rawPosition: number[] = [];
-    for (const point of vertices.rawPosition) rawPosition.push(point.x, point.y, point.z);
     return {
-        rawPosition,
+        rawPosition: flattenFramePositions(vertices.rawPosition),
         indexes: vertices.indexes,
         uv: vertices.uv,
         nuv: vertices.nuv,
@@ -62,7 +66,7 @@ export function serializeFrameVertices (vertices: IVertices | null): IVerticesSe
 
 export function cloneFrameVertices (vertices: IVertices | null): IVertices | null {
     return vertices && {
-        rawPosition: vertices.rawPosition.slice(),
+        rawPosition: vertices.rawPosition.map(point => point.clone()),
         positions: vertices.positions.slice(),
         indexes: vertices.indexes.slice(),
         uv: vertices.uv.slice(),
@@ -76,13 +80,19 @@ export function deserializeFrameVertices (data: IVerticesSerialize, previous: IV
     const vertices = previous ?? {
         rawPosition: [] as Vec3[],
         positions: [],
-        indexes: data.indexes,
-        uv: data.uv,
-        nuv: data.nuv,
-        minPos: new Vec3(data.minPos.x, data.minPos.y, data.minPos.z),
-        maxPos: new Vec3(data.maxPos.x, data.maxPos.y, data.maxPos.z),
+        indexes: [],
+        uv: [],
+        nuv: [],
+        minPos: new Vec3(),
+        maxPos: new Vec3(),
     };
+    vertices.indexes = data.indexes.slice();
+    vertices.uv = data.uv.slice();
+    vertices.nuv = data.nuv.slice();
+    vertices.minPos.set(data.minPos.x, data.minPos.y, data.minPos.z);
+    vertices.maxPos.set(data.maxPos.x, data.maxPos.y, data.maxPos.z);
     vertices.rawPosition.length = 0;
+    vertices.positions.length = 0;
     const raw = data.rawPosition;
     for (let i = 0; i < raw.length; i += 3) {
         vertices.rawPosition.push(new Vec3(raw[i], raw[i + 1], raw[i + 2]));

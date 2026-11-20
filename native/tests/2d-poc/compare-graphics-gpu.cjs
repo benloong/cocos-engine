@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==116) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==119) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==116) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==119) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -68,6 +68,7 @@ for (const name of Object.keys(centers)) {
 }
 const sanity={
     'prefab-atlas-sprite':1024,'prefab-atlas-mesh-left':4096,'prefab-atlas-mesh-right':1920,
+    'authored-mesh':3072,'authored-mesh-clone':3072,'authored-mesh-replaced-texture':3072,
     'sprite-batch-1':64,'sprite-batch-128':8192,
     'sprite-radial-quadrant':1008,'sprite-radial-quadrant-updated':1008,
     'sprite-radial-center':2016,'sprite-radial-center-updated':3024,
@@ -125,10 +126,24 @@ for(const name of a.captures) {
         if(expected[i]||expected[i+1]||expected[i+2]) colored++;
     }
     if (geometryCases.includes(name) && colored === 0) throw new Error('Empty geometry capture: ' + name);
+    if (name.startsWith('authored-mesh')) {
+        const replacement = name.endsWith('replaced-texture');
+        const color = replacement ? [0, 255, 0, 255] : [255, 0, 0, 255];
+        const offset = (128 * 256 + 128 + 8) * 4;
+        const notch = (128 * 256 + 128 + 32) * 4;
+        if (color.some((channel, i) => expected[offset + i] !== channel) || [0, 0, 0, 255].some((channel, i) => expected[notch + i] !== channel)) {
+            throw new Error('Authored mesh texture or notch mismatch: ' + name);
+        }
+    }
     if(name in sanity && colored!==sanity[name]) throw new Error(`Web sanity failed for ${name}: ${colored} colored pixels, expected ${sanity[name]}`);
     results.push({name,max,pixels,channels,colored,pass:max<=1,
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
+}
+const authored = results.find(row => row.name === 'authored-mesh');
+const cloned = results.find(row => row.name === 'authored-mesh-clone');
+if (authored.nativeSha256 !== cloned.nativeSha256 || authored.webSha256 !== cloned.webSha256) {
+    throw new Error('Cloning an authored mesh changed its image');
 }
 const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},shrinkSizes:{native:a.shrinkSizes,web:b.shrinkSizes},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
 for (const name of ['sprite-radial-quadrant', 'sprite-radial-rotated']) {

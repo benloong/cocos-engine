@@ -12,6 +12,77 @@ const spriteImplementation = (globalThis as { __m6SpriteImplementation?: string 
 const labelImplementation = (globalThis as { __m6LabelImplementation?: string }).__m6LabelImplementation ?? (sys.isNative ? 'native' : 'js');
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
+async function checkAuthoredPolygon (parent: Node, layer: number, material: Material, capture: (name: string) => Promise<void>): Promise<void> {
+    const makeMeshTexture = (side: number, channel: number): Texture2D => {
+        const texture = new Texture2D();
+        texture.reset({ width: side, height: side, format: Texture2D.PixelFormat.RGBA8888 });
+        const pixels = new Uint8Array(side * side * 4);
+        for (let i = 0; i < pixels.length; i += 4) {
+            pixels[i + channel] = 255;
+            pixels[i + 3] = 255;
+        }
+        texture.uploadData(pixels);
+        return texture;
+    };
+    const red = makeMeshTexture(16, 0);
+    const green = makeMeshTexture(24, 1);
+    const polygon = new SpriteFrame();
+    const indices = [0, 1, 2, 0, 2, 3, 0, 3, 5, 3, 4, 5];
+    const uvs = [0, 0, 1, 0, 1, 0.5, 0.5, 0.5, 0.5, 1, 0, 1];
+    polygon._deserialize({
+        meshType: SpriteFrame.MeshType.POLYGON, pixelsToUnit: 16, pivot: { x: 0.25, y: 0.75 },
+        rect: { x: 0, y: 0, width: 16, height: 16 }, originalSize: { width: 16, height: 16 },
+        vertices: {
+            rawPosition: [-8, -8, 0, 8, -8, 0, 8, 0, 0, 0, 0, 0, 0, 8, 0, -8, 8, 0],
+            indexes: indices, uv: uvs.map(value => value * 16), nuv: uvs,
+            minPos: { x: -8, y: -8, z: 0 }, maxPos: { x: 8, y: 8, z: 0 },
+        },
+    }, null);
+    polygon._textureSource = red;
+    const polygonNode = new Node('authored-polygon');
+    polygonNode.layer = layer;
+    polygonNode.setScale(64, 64, 1);
+    parent.addChild(polygonNode);
+    const renderer = polygonNode.addComponent(SpriteRenderer);
+    renderer.setSharedMaterial(material, 0);
+    renderer.visibility = polygonNode.layer;
+    const checkPolygon = (frame: SpriteFrame, dx: number, dy: number): void => {
+        const mesh = frame.mesh!;
+        const actualPositions = Array.from(mesh.readAttribute(0, gfx.AttributeName.ATTR_POSITION)!);
+        const expectedPositions = [-0.5 + dx, -0.5 + dy, 0, 0.5 + dx, -0.5 + dy, 0,
+            0.5 + dx, dy, 0, dx, dy, 0, dx, 0.5 + dy, 0, -0.5 + dx, 0.5 + dy, 0];
+        if (actualPositions.join() !== expectedPositions.join() || Array.from(mesh.readIndices(0)!).join() !== indices.join()
+            || Array.from(mesh.readAttribute(0, gfx.AttributeName.ATTR_TEX_COORD)!).join() !== uvs.join()
+            || mesh.struct.minPosition?.x !== -0.5 + dx || mesh.struct.minPosition?.y !== -0.5 + dy
+            || mesh.struct.maxPosition?.x !== 0.5 + dx || mesh.struct.maxPosition?.y !== 0.5 + dy) {
+            throw new Error('The authored polygon lost positions, indices, UVs or bounds');
+        }
+    };
+    renderer.spriteFrame = polygon;
+    checkPolygon(polygon, 0.25, -0.25);
+    await capture('authored-mesh');
+    const clone = polygon.clone();
+    if (clone.mesh === polygon.mesh || clone.vertices!.rawPosition[0] === polygon.vertices!.rawPosition[0]) {
+        throw new Error('The authored polygon clone borrows mutable source data');
+    }
+    renderer.spriteFrame = clone;
+    await capture('authored-mesh-clone');
+    renderer.spriteFrame = polygon;
+    clone.texture = green;
+    renderer.spriteFrame = clone;
+    checkPolygon(clone, 0.375, -0.375);
+    checkPolygon(polygon, 0.25, -0.25);
+    await capture('authored-mesh-replaced-texture');
+    polygonNode.destroy();
+    await wait();
+    clone.mesh!.destroy();
+    polygon.mesh!.destroy();
+    clone.destroy();
+    polygon.destroy();
+    red.destroy();
+    green.destroy();
+}
+
 @ccclass('M6GraphicsGpuProbe')
 export class M6GraphicsGpuProbe extends Component {
     public start (): void { this.run().catch(error => console.log(`M6_GPU_FAIL ${String(error.stack || error)}`)); }
@@ -407,8 +478,11 @@ export class M6GraphicsGpuProbe extends Component {
         await capture('prefab-atlas-mesh-left');
         meshRenderer.spriteFrame = right;
         await capture('prefab-atlas-mesh-right');
+        const meshLayer = instance.layer;
         instance.destroy();
         await wait();
+
+        await checkAuthoredPolygon(canvas.node, meshLayer, material, capture);
         const alternate = new Material();
         const variantEffect = await new Promise<EffectAsset>((resolve, reject) =>
             resources.load('VariantSprite', EffectAsset, (error, asset) => error ? reject(error) : resolve(asset)));

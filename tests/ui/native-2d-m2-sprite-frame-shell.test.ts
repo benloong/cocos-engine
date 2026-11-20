@@ -99,7 +99,10 @@ test('authored polygon vertices survive Web and native serialization and cloning
         uv: [0, 36, 40, 36, 20, 0], nuv: [0, 1, 1, 1, 0.5, 0],
         minPos: { x: -20, y: -18, z: 0 }, maxPos: { x: 20, y: 18, z: 2 },
     };
-    const data = { vertices, pixelsToUnit: 4, rect: new Rect(0, 0, 40, 36), pivot: new Vec2(0.25, 0.75) };
+    const data = {
+        meshType: WebSpriteFrame.MeshType.POLYGON, vertices, pixelsToUnit: 4,
+        rect: new Rect(0, 0, 40, 36), pivot: new Vec2(0.25, 0.75),
+    };
     const positions = [-2.5, -6.75, 1, 7.5, -6.75, 2, 2.5, 2.25, 0];
     proto.transformMeshPositions = jest.fn(() => positions.slice());
     const frame = createFrame();
@@ -116,6 +119,26 @@ test('authored polygon vertices survive Web and native serialization and cloning
     clone.vertices.minPos.x = 0;
     expect(frame.vertices.indexes).toEqual([0, 2, 1]);
     expect(frame.vertices.minPos.x).toBe(-20);
+
+    web.ensureMeshData();
+    expect(Array.from(web.mesh!.readIndices(0)!)).toEqual([0, 2, 1]);
+    expect(Array.from(web.mesh!.readAttribute(0, AttributeName.ATTR_POSITION)!)).toEqual(positions);
+    expect(Array.from(web.mesh!.readAttribute(0, AttributeName.ATTR_TEX_COORD)!)).toEqual(vertices.nuv);
+
+    const copy = web.clone();
+    copy.vertices!.rawPosition[0].x = -4;
+    copy.vertices!.nuv[0] = 0.25;
+    expect(web.vertices!.rawPosition[0].x).toBe(-20);
+    expect(web.vertices!.nuv[0]).toBe(0);
+
+    const reordered = { ...data, vertices: { ...vertices, indexes: [2, 1, 0] } };
+    web._deserialize(reordered, null);
+    frame._deserialize(reordered);
+    expect(web.mesh).toBeNull();
+    web.ensureMeshData();
+    expect(Array.from(web.mesh!.readIndices(0)!)).toEqual([2, 1, 0]);
+    expect(frame.vertices.indexes).toEqual([2, 1, 0]);
+    expect(vertices.indexes).toEqual([0, 2, 1]);
 });
 
 beforeAll(() => {

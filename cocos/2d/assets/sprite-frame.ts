@@ -1245,7 +1245,7 @@ export class SpriteFrame extends Asset {
         if (pivot) {
             self._pivot = v2(pivot.x, pivot.y);
         }
-        self._meshType = data.meshType;
+        self._meshType = data.meshType ?? MeshType.RECT;
 
         const capInsets = data.capInsets;
         if (capInsets) {
@@ -1267,11 +1267,10 @@ export class SpriteFrame extends Asset {
             self._atlasUuid = data.atlas ? data.atlas : '';
         }
 
-        const vertices = data.vertices;
-        if (vertices) {
-            self.vertices = deserializeFrameVertices(vertices, self.vertices);
-            self._updateMeshVertices();
-        }
+        self._mesh?.destroy();
+        self._mesh = null;
+        self.vertices = data.vertices ? deserializeFrameVertices(data.vertices, self.vertices) : null;
+        if (self.vertices) self._updateMeshVertices();
     }
 
     /**
@@ -1311,8 +1310,8 @@ export class SpriteFrame extends Asset {
         sp._meshType = self._meshType;
         sp._extrude = self._extrude;
         sp._customOutLine.splice(0, sp._customOutLine.length, ...self._customOutLine);
-        sp._minPos = self._minPos;
-        sp._maxPos = self._maxPos;
+        sp._minPos.set(self._minPos);
+        sp._maxPos.set(self._maxPos);
         if (self._mesh) {
             // Creates a new mesh, and 'this' creates the mesh in the same way. So we can make a copy like this.
             // It must be placed last because the mesh will depend on some of its members when it is created.
@@ -1390,6 +1389,10 @@ export class SpriteFrame extends Asset {
 
     protected _initVertices (): void {
         const self = this;
+        if (self._meshType === MeshType.POLYGON && self.vertices) {
+            self._updateMeshVertices();
+            return;
+        }
         if (!self.vertices) {
             self.vertices = {
                 rawPosition: [],

@@ -23,7 +23,7 @@
 */
 
 import { Atlas } from '../utils/dynamic-atlas/atlas';
-import { cloneFrameVertices, deserializeFrameVertices, serializeFrameVertices } from './sprite-frame-vertices';
+import { cloneFrameVertices, deserializeFrameVertices, flattenFramePositions, serializeFrameVertices } from './sprite-frame-vertices';
 import { cclegacy, isValid, js, Rect, Size, Vec2, Vec3, Vec4 } from '../../core';
 import '../../asset/assets/asset';
 import '../../3d/assets/mesh';
@@ -91,34 +91,35 @@ function detachReplacedTexture (frame: any, texture: TextureBase | null): void {
     Atlas.releaseFrame(frame);
 }
 
-function createFrameMesh (frame: any): void {
+function createFrameMesh (frame: any, minPos: Vec3, maxPos: Vec3): void {
     const vertices = frame.vertices;
     frame._mesh = jsb.MeshUtils.createMesh({
         positions: vertices.positions, indices: vertices.indexes, uvs: vertices.nuv,
-        minPos: frame._meshMin, maxPos: frame._meshMax,
+        minPos, maxPos,
     });
 }
 
 function rebuildFrameMesh (frame: any): void {
-    if (frame.meshType !== MeshType.POLYGON && !frame.texture) throw new TypeError('SpriteFrame mesh requires a texture');
-    const raw: number[] = frame.getMeshRawPositions();
+    const polygon = frame.meshType === MeshType.POLYGON;
+    if (!polygon && !frame.texture) throw new TypeError('SpriteFrame mesh requires a texture');
     const vertices = frame.vertices ??= {
         rawPosition: [], positions: [], indexes: [], uv: [], nuv: [], minPos: new Vec3(), maxPos: new Vec3(),
     };
-    vertices.rawPosition.length = 0;
-    for (let i = 0; i < raw.length; i += 3) vertices.rawPosition.push(new Vec3(raw[i], raw[i + 1], raw[i + 2]));
-    vertices.minPos.set(raw[0] ?? 0, raw[1] ?? 0, 0);
-    vertices.maxPos.set(raw[9] ?? 0, raw[10] ?? 0, 0);
-    vertices.positions.splice(0, vertices.positions.length, ...frame.transformMeshPositions(raw));
-    vertices.indexes.length = 0;
-    if (raw.length) vertices.indexes.push(0, 1, 2, 2, 1, 3);
-    vertices.uv.splice(0, vertices.uv.length, ...frame.getMeshUVs(false));
-    vertices.nuv.splice(0, vertices.nuv.length, ...frame.getMeshUVs(true));
+    const raw: number[] = polygon ? flattenFramePositions(vertices.rawPosition) : frame.getMeshRawPositions();
+    if (!polygon) {
+        vertices.rawPosition.length = 0;
+        for (let i = 0; i < raw.length; i += 3) vertices.rawPosition.push(new Vec3(raw[i], raw[i + 1], raw[i + 2]));
+        vertices.minPos.set(raw[0] ?? 0, raw[1] ?? 0, 0);
+        vertices.maxPos.set(raw[9] ?? 0, raw[10] ?? 0, 0);
+        vertices.indexes.splice(0, vertices.indexes.length, 0, 1, 2, 2, 1, 3);
+        vertices.uv.splice(0, vertices.uv.length, ...frame.getMeshUVs(false));
+        vertices.nuv.splice(0, vertices.nuv.length, ...frame.getMeshUVs(true));
+    }
+    vertices.positions.length = 0;
+    for (const position of frame.transformMeshPositions(raw)) vertices.positions.push(position);
     const bounds = frame.transformMeshPositions([vertices.minPos.x, vertices.minPos.y, 0, vertices.maxPos.x, vertices.maxPos.y, 0]);
-    frame._meshMin = new Vec3(bounds[0], bounds[1], bounds[2]);
-    frame._meshMax = new Vec3(bounds[3], bounds[4], bounds[5]);
     frame._mesh?.destroy();
-    createFrameMesh(frame);
+    createFrameMesh(frame, new Vec3(bounds[0], bounds[1], bounds[2]), new Vec3(bounds[3], bounds[4], bounds[5]));
 }
 
 spriteFrameProto.ensureMeshData = function (): void {
@@ -268,11 +269,7 @@ spriteFrameProto.clone = function (): SpriteFrame {
     const frame = new SpriteFrame();
     (frame as any).copyFrom(this);
     frame.vertices = cloneFrameVertices(this.vertices);
-    if (this._mesh) {
-        (frame as any)._meshMin = this._meshMin;
-        (frame as any)._meshMax = this._meshMax;
-        createFrameMesh(frame);
-    }
+    if (this._mesh) createFrameMesh(frame, this._mesh.getMinPosition(), this._mesh.getMaxPosition());
     Atlas.trackClone(this, frame);
     return frame;
 };
@@ -313,10 +310,10 @@ spriteFrameProto._deserialize = function (data: any, handle: any): void {
     this.pixelsToUnit = data.pixelsToUnit ?? 100;
     this.meshType = data.meshType ?? 0;
     this.pivot = data.pivot ?? new Vec2(0.5, 0.5);
-    if (data.vertices) {
-        this.vertices = deserializeFrameVertices(data.vertices, this.vertices);
-        this.vertices.positions = this.transformMeshPositions(data.vertices.rawPosition);
-    }
+    this._mesh?.destroy();
+    this._mesh = null;
+    this.vertices = data.vertices ? deserializeFrameVertices(data.vertices, this.vertices) : null;
+    if (this.vertices) this.vertices.positions = this.transformMeshPositions(data.vertices.rawPosition);
     if (data.capInsets) this.setInsets(data.capInsets[0], data.capInsets[2], data.capInsets[1], data.capInsets[3]);
     if (data.texture && handle?.result) {
         handle.result.push(this, '_textureSource', data.texture, js.getClassId(Texture2D));

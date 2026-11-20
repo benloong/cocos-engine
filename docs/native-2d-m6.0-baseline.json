@@ -14903,8 +14903,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame-vertices.ts",
-      "sha256": "ba0072d68373bcb7c7693f91e07a477131c859de582b291abb7f865b2aa174d3",
-      "printedCodeLines": 61,
+      "sha256": "e188ecc641bfb2cf5ae25bfae091083017c71a087e3712636aac455a6ed0ff0f",
+      "printedCodeLines": 70,
       "runtimeImports": [
         "../../core/math/vec3"
       ],
@@ -14912,14 +14912,14 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        52,
-        87
+        51,
+        97
       ]
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "86ab869916d23c396a72290925d7721c0a6b0c519b7d5c2a45c29fee68da670d",
-      "printedCodeLines": 321,
+      "sha256": "37db4d2318bf16214dd6f3d75c0c6b2875629d7e3c683f6edb6b40952b582039",
+      "printedCodeLines": 320,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
         "./sprite-frame-vertices",
@@ -14945,13 +14945,14 @@
       "allocations": [],
       "loops": [
         71,
-        109
+        111,
+        119
       ]
     },
     {
       "file": "cocos/2d/assets/sprite-frame.ts",
-      "sha256": "56262ff57f5aaf802b203892e9db4440a183033fac9140ed335b79a897f1a33a",
-      "printedCodeLines": 878,
+      "sha256": "700ae6f65b46c45b3e79fd5eef431ffe44fb86e4be3db29431a414a2c9818fec",
+      "printedCodeLines": 882,
       "runtimeImports": [
         "./sprite-frame-vertices",
         "../utils/dynamic-atlas/atlas",
@@ -14976,7 +14977,7 @@
         965,
         983,
         985,
-        1482
+        1485
       ]
     },
     {
