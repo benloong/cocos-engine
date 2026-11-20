@@ -1,0 +1,128 @@
+{
+  "baseCommit": "73c8cdd0a7",
+  "baseline": {
+    "fixtureSnapshot": "6641620194d2ed46ac20b7cd3ada8db35d9b8f4e2f36fc866ace292f6307bbf9",
+    "nativeEvents": [
+      [
+        3,
+        1,
+        16,
+        8,
+        0.125,
+        -0.75,
+        8
+      ]
+    ],
+    "webEvents": [
+      [
+        0,
+        0,
+        32,
+        24,
+        -0.375,
+        -0.375,
+        8
+      ],
+      [
+        3,
+        1,
+        16,
+        8,
+        0.125,
+        -0.75,
+        8
+      ]
+    ],
+    "nativeLogSha256": "e36ddeb109d21a1d8eb4011ad152420d6edccb964605c8dd65586862595488df",
+    "webLogSha256": "0257e9909d6b49bc8689617d04c23bafd3cb1737832377d1c45872da570bc45b",
+    "customCapture": {
+      "bounds": [
+        184,
+        80,
+        231,
+        127
+      ],
+      "pixels": 1728,
+      "sha256": "b607aef5e2953ee5c50b428c52fcd6eb7ee6a7c77dbe7b98ee1e0db6d5935739"
+    }
+  },
+  "fixed": {
+    "snapshot": "dbeae3606b8d7b7f2440592963d86539008883f1207c724bf92dc00445ab9198",
+    "publishedCustomReset": [
+      [
+        3,
+        1,
+        16,
+        8,
+        -0.125,
+        -0.5,
+        8
+      ]
+    ],
+    "fullResetRect": [
+      0,
+      0,
+      32,
+      24
+    ],
+    "strictlyIdenticalCaptures": 160,
+    "unchangedEarlierCaptures": 157,
+    "newCaptures": {
+      "packed-polygon-reset-custom": {
+        "bounds": [
+          168,
+          96,
+          215,
+          143
+        ],
+        "pixels": 1728,
+        "sha256": "f986027971ae2c7b5d2f69667d3e8ea00cd63a786cc63959f7541950a67ae235"
+      },
+      "packed-polygon-reset-full": {
+        "bounds": [
+          184,
+          80,
+          231,
+          127
+        ],
+        "pixels": 1728,
+        "sha256": "b607aef5e2953ee5c50b428c52fcd6eb7ee6a7c77dbe7b98ee1e0db6d5935739"
+      },
+      "packed-polygon-reset-survivor": {
+        "bounds": [
+          152,
+          104,
+          199,
+          151
+        ],
+        "pixels": 1728,
+        "sha256": "ed1ca8c8cd38e83a8c6e9ee140880de938b4ff05a0df9c3fcaba165cb759fa39"
+      }
+    },
+    "webManifestSha256": "e57449796a45db7bde96b58f01e6c112ae25b541f94631e92aa5a2fc97618955",
+    "webLogSha256": "99b4a42448bc80e89d64eb204c1ef274dc021824473b6a17b8c28ad211d7a05f",
+    "configurations": {
+      "Debug": {
+        "executableSha256": "5cc7caacb00d580f08b91e677a355db13f2f1775a1e3dd42705b14f12d9c0b0e",
+        "compileLogSha256": "b91f6e135f989df9ed9d1808ab8316626471e5184f3d39fd444b0cb5aa88ba08",
+        "comparisonSha256": "37d0ea43d37521b01b4bd80e4955c9133743f0bab4e3ce6aec53ed2eda0f1f77",
+        "manifestSha256": "6bdc97dce8468fe53b2cac22a0d77b7485c478c46b720978010bc3b8d2475eb1",
+        "applicationLogSha256": "c649cc86d139dea9a2ee332c3231c11fb383ac6548f9f4dd188fcfdde6ecd518"
+      },
+      "Release": {
+        "executableSha256": "0acfbba34e77042c4a8a8bb13786f0858577620a1430cf540f5f2b5774872881",
+        "compileLogSha256": "d87d565316330b5ad1de794a19eba2654efdfbf0bbfb2764d4946e003d923a4e",
+        "comparisonSha256": "37d0ea43d37521b01b4bd80e4955c9133743f0bab4e3ce6aec53ed2eda0f1f77",
+        "manifestSha256": "cfc297640db53a31a97b8898fe979d1c5389d7c987a61c24c77f9103cd7f48c9",
+        "applicationLogSha256": "6d2cf65caabbc0e8346ef8f2830b3ab62d40849520dcc2288b64bf3098606629"
+      }
+    }
+  },
+  "local": {
+    "jestPassed": 1479,
+    "jestLogSha256": "b454e4592388cb039f422bd1bba008089f4ab2c9e1cd660c1c6f24abdadadb3d",
+    "typeScript": true,
+    "nativeTypeScript": true,
+    "shellLines": 297
+  }
+}

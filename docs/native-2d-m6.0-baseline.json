@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "c4d90436d27071b15d78b2b106cba7ca1aee84253ae2de8acffeeac500f044d6"
+      "sha256": "5e2decd6627c440c5e3768712b615abc809ff4ddef2fad9cbb3bc6ae0f90f754"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
@@ -14477,7 +14477,8 @@
             "static": false,
             "type": "void",
             "parameters": [
-              "texture: TextureBase"
+              "texture: TextureBase",
+              "updateMesh = true"
             ],
             "default": null,
             "decorators": []
@@ -15038,8 +15039,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.jsb.ts",
-      "sha256": "72d4aaaf9ab6d619aa5febb0cd97419fdabf069a483dfd33927b8b1074504a83",
-      "printedCodeLines": 325,
+      "sha256": "61865464f5421913381253ff051b2252fb916c68a8bd19316458572b889baa04",
+      "printedCodeLines": 324,
       "runtimeImports": [
         "../utils/dynamic-atlas/atlas",
         "./sprite-frame-vertices",
@@ -15071,8 +15072,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.ts",
-      "sha256": "3a05bdb6d0d1e2b22877a0b6265aa889f15e9ddec6f2fdb9e05622b9c3e3cd83",
-      "printedCodeLines": 838,
+      "sha256": "702ff25d0eaabd228530a0a996b175ec246098790ac95b45f0a4865b6f2d0edb",
+      "printedCodeLines": 831,
       "runtimeImports": [
         "./sprite-frame-vertices",
         "../utils/dynamic-atlas/atlas",
@@ -15097,7 +15098,7 @@
         974,
         992,
         994,
-        1400
+        1386
       ]
     },
     {

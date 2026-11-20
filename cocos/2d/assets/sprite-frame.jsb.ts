@@ -243,10 +243,7 @@ spriteFrameProto.reset = function (info?: ISpriteFrameInitInfo, clearData = fals
     if (info?.texture) detachReplacedTexture(this, info.texture);
     this.resetFrame(clearData);
     if (info) {
-        if (info.texture) {
-            this.resetTexture(info.texture);
-            if (this._mesh) rebuildFrameMesh(this);
-        }
+        if (info.texture) this.resetTexture(info.texture);
         if (info.rect) nativeSetRect.call(this, info.rect.x, info.rect.y, info.rect.width, info.rect.height);
         if (info.originalSize) nativeSetOriginalSize.call(this, info.originalSize.width, info.originalSize.height);
         if (info.offset) nativeSetOffset.call(this, info.offset.x, info.offset.y);
@@ -257,6 +254,7 @@ spriteFrameProto.reset = function (info?: ISpriteFrameInitInfo, clearData = fals
         if (info.isRotate !== undefined) nativeSetRotated.call(this, !!info.isRotate);
         if (info.isFlipUv !== undefined) this.setFlipUVY(!!info.isFlipUv);
     }
+    if (this._mesh && this.texture && (clearData || info?.rect || info?.texture)) rebuildFrameMesh(this);
     this._calculateUV();
 };
 

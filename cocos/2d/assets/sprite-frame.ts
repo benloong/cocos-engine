@@ -811,8 +811,7 @@ export class SpriteFrame extends Asset {
         if (info) {
             if (info.texture) {
                 self._rect.set(0, 0, info.texture.width, info.texture.height);
-                self._refreshTexture(info.texture);
-                self.checkRect(self._texture);
+                self._refreshTexture(info.texture, false);
             }
 
             if (info.originalSize) {
@@ -855,10 +854,11 @@ export class SpriteFrame extends Asset {
             calUV = true;
         }
 
+        self._calcTrimmedBorder();
         if (calUV && self.texture) {
+            if (self._mesh && (clearData || info?.rect || info?.texture)) self._updateMesh();
             self._calculateUV();
         }
-        self._calcTrimmedBorder();
     }
 
     /**
@@ -1257,37 +1257,23 @@ export class SpriteFrame extends Asset {
         return sp;
     }
 
-    protected _refreshTexture (texture: TextureBase): void {
+    protected _refreshTexture (texture: TextureBase, updateMesh = true): void {
         const self = this;
         if (self._texture !== texture) {
             self._original = null;
             self._texture = texture;
             Atlas.releaseFrame(self);
         }
-        const tex = self._texture;
-        const config: ISpriteFrameInitInfo = {};
-        let isReset = false;
-        if (self._rect.width === 0 || self._rect.height === 0 || !self.checkRect(tex)) {
-            config.rect = rect(0, 0, tex.width, tex.height);
-            isReset = true;
-        }
-
-        // If original size is not set or rect check failed, we should reset the original size
-        if (self._originalSize.width === 0
-            || self._originalSize.height === 0
-            || isReset
-        ) {
-            config.originalSize = size(tex.width, tex.height);
-            isReset = true;
-        }
-
-        if (isReset) {
-            self.reset(config);
+        const resetRect = self._rect.width === 0 || self._rect.height === 0 || !self.checkRect(texture);
+        if (resetRect) self._rect.set(0, 0, texture.width, texture.height);
+        if (resetRect || self._originalSize.width === 0 || self._originalSize.height === 0) {
+            self._originalSize.set(texture.width, texture.height);
         }
 
         self._checkPackable();
-        if (self._mesh) {
-            self._updateMesh();
+        if (updateMesh) {
+            self._calcTrimmedBorder();
+            if (self._mesh) self._updateMesh();
         }
     }
 

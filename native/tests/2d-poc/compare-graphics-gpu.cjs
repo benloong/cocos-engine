@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==157) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==160) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==157) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==160) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 const legacyLabelEffects = { updates: 3, prefab: true, forwarding: true, rendered: true, destroyed: true };
@@ -242,6 +242,22 @@ for (const dir of [native, web]) {
         if (!visible.subarray(i, i + halfRowBytes).equals(reference.subarray(i, i + halfRowBytes))) {
             throw new Error('Visible-depth capture differs from the source mesh footprint');
         }
+    }
+    for (const [phase, dx, dy] of [['custom', 16, -8], ['full', 32, -24]]) {
+        const replaced = fs.readFileSync(path.join(dir, 'packed-polygon-reset-' + phase + '.rgba'));
+        const expected = Buffer.from(source);
+        for (let y = 0; y < a.height; ++y) {
+            for (let x = a.width / 2; x < a.width; ++x) {
+                const fromX = x - dx;
+                const fromY = y - dy;
+                const fromMesh = fromX >= a.width / 2 && fromY < a.height && source[fromY * rowBytes + fromX * 4] !== 0;
+                expected.writeUInt32BE(fromMesh ? 0x00ff00ff : 0x000000ff, y * rowBytes + x * 4);
+            }
+        }
+        if (!replaced.equals(expected)) throw new Error('Packed polygon reset did not repaint its final geometry: ' + phase);
+    }
+    if (!fs.readFileSync(path.join(dir, 'packed-polygon-reset-survivor.rgba')).equals(source)) {
+        throw new Error('The surviving clone no longer renders the source image after texture replacement');
     }
 }
 const authored = results.find(row => row.name === 'authored-mesh');

@@ -136,6 +136,7 @@
   - [x] 共享 SpriteFrame 打包后，Web 2D Sprite 更新图集 UV 和纹理提交，SpriteRenderer 的网格与材质继续采样同一源纹理。矩形和多边形各验收源图、材质重绑、打包后建网格与恢复，Windows 双配置以禁用路径对照。[同一帧打包对照](./native-2d-m6.1-sprite-frame.md#同一帧的图集页和源纹理)
   - [x] SpriteRenderer 的矩形网格遵循旋转帧的有效图集区域和 X/Y 翻转，绑定中的帧变化会刷新模型。Windows 双配置和 Web 的 11 张新增方向图均通过四角颜色检查，覆盖 Web 打包、禁用后翻转与恢复。138 张图逐字节一致。[网格方向验收](./native-2d-m6.1-sprite-frame.md#矩形网格的旋转与翻转)
   - [x] SpriteFrame 保留带深度变化的凹多边形包围盒。Windows Debug、Release 与 Web 验证原帧、懒建网格的帧和克隆的 Z 边界。相机远平面分别位于多边形后方和前方时，两张 GPU 图的着色面积为 1728 和 0 像素。Web 在已打包状态克隆，并验证恢复到源纹理。[裁剪与合图证据](./native-2d-m6-sprite-polygon-depth.json)
+  - [x] SpriteFrame 换纹理和矩形时，用最终配置重建已绑定的多边形网格，再发布 UV 事件。Windows Debug、Release 和 Web 验证带裁剪矩形、复位整张纹理、释放换图帧及幸存克隆恢复源图。Web 运行阶段实际使用动态合图页。[换图和克隆证据](./native-2d-m6-sprite-packed-reset.json)
 - [x] 动态图集入口回退：拒绝不可上传的来源，满页失败保留剩余空间，同源帧复用已有页。定向 Jest 和真实 Windows Debug/Web 回退探针通过，100 份 RGBA 逐字节一致，见[回退报告](./native-2d-m6.1-atlas-fallback.md)。
 - [x] 动态图集帧所有权：删除单帧保留共享源，打包克隆随页跟踪，删除源纹理与重置先恢复帧后释放页。真实 Windows Debug/Web 探针和 100 份 RGBA 对照通过，见[所有权报告](./native-2d-m6.1-atlas-lifecycle.md)。
 - [x] 原生组件事件触发自动合图曾在 Windows Debug 与 Web 通过。该实现是禁用前的历史基线，见[触发报告](./native-2d-m6.1-atlas-automatic.md)。

@@ -145,6 +145,7 @@ public:
     }
     void resetTexture(TextureBase *texture) {
         if (assignTexture(texture) && texture) {
+            _data.x = _data.y = 0.F;
             _data.width = static_cast<float>(texture->getWidth());
             _data.height = static_cast<float>(texture->getHeight());
             if (_data.originalWidth == 0 || _data.originalHeight == 0) {

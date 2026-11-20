@@ -189,6 +189,66 @@ async function checkAuthoredPolygon (parent: Node, layer: number, material: Mate
     green.destroy();
 }
 
+async function checkPackedFrameReset (
+    frame: SpriteFrame, clone: SpriteFrame, sprite: Sprite, model: SpriteRenderer, capture: (name: string) => Promise<void>,
+): Promise<void> {
+    const source = clone.texture;
+    const replacement = new Texture2D();
+    replacement.reset({ width: 32, height: 24, format: Texture2D.PixelFormat.RGBA8888 });
+    const rgba = new Uint8Array(32 * 24 * 4);
+    for (let i = 0; i < rgba.length; i += 4) { rgba[i + 1] = 255; rgba[i + 3] = 255; }
+    replacement.uploadData(rgba);
+    try {
+        sprite.spriteFrame = clone;
+        model.spriteFrame = frame;
+        dynamicAtlasManager.enabled = true;
+        dynamicAtlasManager.packToDynamicAtlas(sprite, clone);
+        dynamicAtlasManager.packToDynamicAtlas(null, frame);
+        const page = clone.texture;
+        if (!sys.isNative && (page === source || frame.texture !== page || frame.original?._texture !== source)) {
+            throw new Error('Frame reset fixture did not pack the shared source');
+        }
+        const originalMesh = frame.mesh;
+        const events: number[][] = [];
+        const record = (): void => {
+            const { x, y, width, height } = frame.rect;
+            const min = frame.mesh!.struct.minPosition!;
+            events.push([x, y, width, height, min.x, min.y, min.z]);
+        };
+        frame.pivot.set(.25, .75);
+        frame.on(SpriteFrame.EVENT_UV_UPDATED, record);
+        try {
+            frame.reset({ texture: replacement, rect: new Rect(3, 1, 16, 8), originalSize: new Size(20, 12) }, true);
+        } finally {
+            frame.off(SpriteFrame.EVENT_UV_UPDATED, record);
+        }
+        await capture('packed-polygon-reset-custom');
+        const mesh = frame.mesh!;
+        if (events.length !== 1 || events[0].join() !== '3,1,16,8,-0.125,-0.5,8'
+            || mesh === originalMesh || mesh.struct.maxPosition?.z !== 20 || frame.original || frame.texture !== replacement
+            || frame.originalSize.width !== 20 || frame.originalSize.height !== 12
+            || clone.texture !== page || (!sys.isNative && clone.original?._texture !== source)) {
+            throw new Error(`Packed polygon reset published stale bounds or atlas ownership: ${JSON.stringify(events)}`);
+        }
+        frame.reset({ texture: replacement });
+        await capture('packed-polygon-reset-full');
+        const { x, y, width, height } = frame.rect;
+        if (x !== 0 || y !== 0 || width !== 32 || height !== 24
+            || frame.mesh?.struct.minPosition?.x !== .125 || frame.mesh?.struct.minPosition?.y !== -.75) {
+            throw new Error(`Full texture reset kept a stale origin or mesh: ${x},${y},${width},${height}`);
+        }
+        model.spriteFrame = clone;
+        await releaseMeshedFrame(frame);
+        if (clone.texture !== page || !isValid(clone.mesh, true)) throw new Error('Releasing the reset frame invalidated its packed clone');
+        dynamicAtlasManager.enabled = false;
+        if (clone.texture !== source || clone.original) throw new Error('Clone did not restore the source after the atlas was reset');
+        await capture('packed-polygon-reset-survivor');
+    } finally {
+        model.spriteFrame = clone;
+        replacement.destroy();
+    }
+}
+
 async function checkPackedMeshes (
     parent: Node, layer: number, material: Material, source: SpriteFrame, camera: Camera, capture: (name: string) => Promise<void>,
 ): Promise<void> {
@@ -299,6 +359,7 @@ async function checkPackedMeshes (
                     throw new Error('Atlas reset changed the cloned polygon bounds or left it on the retired page');
                 }
                 await capture(name + '-restored');
+                if (packedClone) await checkPackedFrameReset(late, packedClone, sprite, model, capture);
             } finally {
                 dynamicAtlasManager.enabled = false;
                 uiNode.destroy();
