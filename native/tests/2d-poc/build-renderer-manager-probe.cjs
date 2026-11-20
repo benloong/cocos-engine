@@ -15,10 +15,11 @@ const probe = `
         throw Error('Unknown manager import: ' + name);
     };
     ${compiled}
+    if ('NativeUITransformPoc' in n2d || 'NativeSpritePoc' in n2d) throw Error('Retired M0 component binding');
     if ('getRootNodeAt' in n2d.Batcher2d.prototype || 'getRootNodeCount' in n2d.Batcher2d.prototype) throw Error('Unexpected native root inspection API');
     for (const [className, methods] of [
-        ['Sprite', ['isGrayscale', 'isTrim', 'getFillType', 'getFillStart', 'getFillRange', 'getSizeMode']],
-        ['Label', ['getCacheMode', 'getUnderlineHeight']],
+        ['Sprite', ['isGrayscale', 'isTrim', 'getType', 'getFillType', 'getFillStart', 'getFillRange', 'getSizeMode']],
+        ['Label', ['getCacheMode', 'getFontAsset', 'getUnderlineHeight', 'measureContent', 'isBold', 'isItalic', 'isUnderline', 'updateFont']],
         ['RichText', ['getString']],
     ]) {
         for (const method of methods) {

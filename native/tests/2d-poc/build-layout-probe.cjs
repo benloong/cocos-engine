@@ -54,7 +54,7 @@ check(changes===previous+1 && ui.height===ui._native.getHeight(),'layout change 
 label.setEnableWrapText(true); label.setString('several words to wrap'); rendererManager.updateAllDirtyRenderers();
 const previousHeight=ui.height; ui.setContentSize(25, ui.height); rendererManager.updateAllDirtyRenderers();
 check(ui.width===25 && ui.height>previousHeight,'native layout follows width change');
-label.setOverflow(0); label.setEnableWrapText(false); label.measureContent(); check(ui.width>25 && ui.width===ui._native.getWidth(),'explicit native measurement');
+label.setOverflow(0); label.setEnableWrapText(false); label.updateRenderData(); check(ui.width>25 && ui.width===ui._native.getWidth(),'immediate native layout updates size');
 check(label.getActualFontSize()===16,'native resolved font size');
 rendererManager.updateAllDirtyRenderers();
 label.setActualFontSize(14.123456789);

@@ -705,13 +705,6 @@ void Label::syncContentSize() {
     }
     _syncingContentSize = false;
 }
-void Label::measureContent() {
-    if (!_transform) return;
-    _transform->setContentSize(0.F, 0.F);
-    markRenderDirty();
-    updateRenderData();
-    _transform->setContentSize(_lastContentWidth, _lastContentHeight);
-}
 Size Label::measureUnwrappedText(const std::string &text) {
     const auto size = measureUnwrappedTextPrecise(text);
     return Size(static_cast<float>(size[0]), static_cast<float>(size[1]));

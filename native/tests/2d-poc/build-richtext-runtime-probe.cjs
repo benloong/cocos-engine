@@ -113,8 +113,8 @@ rich.useSystemFont=true;rich.useSystemFont=false;check(rich.font===font,'editor 
 const atlas=new jsb.SpriteAtlas(), frame=new jsb.SpriteFrame(), texture=new jsb.Texture2D();
 texture.create(4,2);frame.resetWithTexture(texture);atlas.addSpriteFrame('icon',frame);
 rich.imageAtlas=atlas;rich.string='<img src="icon"/>tail';
-check(hasSegments(2)&&native.getSegmentSprite(0).getType()===1,'actual shell native image and label');
 const heldImage=native.getSegmentSprite(0), heldLabel=native.getSegmentLabel(1);
+check(hasSegments(2)&&heldImage instanceof n2d.Sprite&&heldLabel instanceof n2d.Label,'actual shell native image and label');
 check(!('getUITransform' in heldImage),'Sprite JSB hides its borrowed layout');
 const independentLabel=new n2d.Label();
 atlas.removeSpriteFrame('icon');rendererManager.updateAllDirtyRenderers();

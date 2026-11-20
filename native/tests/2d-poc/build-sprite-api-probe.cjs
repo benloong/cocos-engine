@@ -183,7 +183,7 @@ try {
  fontMethods.forEach((name,index)=>{fontPrototype[name]=function(value){fontCalls.push(name);return originals[index].call(this,value);};});
  label.fontSize=18.25; label.fontSize=18.25;
  label.fontFamily='Verdana';
- check(label._native.getFontAsset()===bitmapForResize&&label.fontSize===18.25,'bitmap font is retained during resize');
+ check(label.font===bitmapForResize&&label.fontSize===18.25,'bitmap font is retained during resize');
  check(fontCalls.join(',')==='setFontSize,setFont','isolated Label font changes: '+fontCalls.join(','));
 } finally {fontMethods.forEach((name,index)=>{fontPrototype[name]=originals[index];});}
 label.font=null;

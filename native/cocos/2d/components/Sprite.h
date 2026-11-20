@@ -87,7 +87,6 @@ public:
     void setTrim(bool trim);
 
     void setType(int32_t type);
-    int32_t getType() const { return _type; }
 
     void setFillType(int32_t fillType);
     void setFillStart(float fillStart);

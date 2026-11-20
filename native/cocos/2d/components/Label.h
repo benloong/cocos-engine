@@ -66,7 +66,6 @@ public:
 
     void setFont(const std::string &font);
     void setFontAsset(FontAsset *font);
-    FontAsset *getFontAsset() const { return _fontAsset.get(); }
     void setFontSize(float size);
     double getActualFontSize() const { return _actualFontSize; }
     void setActualFontSize(double size) { _actualFontSize = size; }
@@ -74,10 +73,6 @@ public:
     void setIsBold(bool bold) { if (_isBold != bold) { _isBold = bold; updateFont(); markRenderDirty(); } }
     void setIsItalic(bool italic) { if (_isItalic != italic) { _isItalic = italic; updateFont(); markRenderDirty(); } }
     void setIsUnderline(bool underline) { if (_isUnderline != underline) { _isUnderline = underline; markRenderDirty(); } }
-    bool isBold() const { return _isBold; }
-    bool isItalic() const { return _isItalic; }
-    bool isUnderline() const { return _isUnderline; }
-    void updateFont();
     void setLineHeight(float height);
     void setEnableWrapText(bool wrap);
     void setOverflow(int32_t overflow);
@@ -99,7 +94,6 @@ public:
     void destroyTTFSpriteFrame();
     void updateRenderData();
     void updateRenderData(bool force);
-    void measureContent();
     Size measureUnwrappedText(const std::string &text);
     float getContentWidth() const { return _lastContentWidth; }
     double getTTFContentWidth() const { return _ttfContentWidth; }
@@ -116,6 +110,7 @@ public:
 
 private:
     void updateRenderer() override;
+    void updateFont();
     friend class RichText;
     std::array<double, 2> measureUnwrappedTextPrecise(const std::string &text);
     bool hasTextShadow() const;

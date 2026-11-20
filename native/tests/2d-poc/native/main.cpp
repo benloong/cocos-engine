@@ -1392,6 +1392,10 @@ void testRichTextRuntime() {
         check(entity != nullptr, "native RichText child has renderer");
         if (entity) { cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); check(entity->getStaticDrawInfoSize() > 0, "native RichText submits segment draw info"); }
     }
+    auto *imageEntity = rich.getSegmentSprite(1)->getRenderEntity();
+    auto *imageDraw = imageEntity->getStaticDrawInfoSize() ? imageEntity->getRenderDrawInfoAt(0) : nullptr;
+    check(imageDraw && imageDraw->getVbCount() == 16 && imageDraw->getIbCount() == 54,
+          "native RichText image submits a nine-slice mesh");
     if (rich.getSegmentLabel(0)) {
         const auto measured = rich.getSegmentLabel(0)->measureUnwrappedText("one");
         checkNear(measured.width, rich.getSegmentLabel(0)->getContentWidth(), "RichText measurement agrees with Label output");

@@ -51,5 +51,39 @@
     ],
     "spriteFrameUvParity": true,
     "targetedJestTests": 40
+  },
+  "followup": {
+    "removedBindings": [
+      "Sprite.getType",
+      "Label.getFontAsset",
+      "Label.isBold",
+      "Label.isItalic",
+      "Label.isUnderline",
+      "Label.measureContent",
+      "Label.updateFont"
+    ],
+    "generatedBindingSha256": "f8c2ffeb9d50bf105db2fe9f4b7a3a44a0419c2e3dc449220baad80c85286c9a",
+    "gpuSnapshot": "e104e3daa6d109fa56e5665671287e6805c03eb72b4398f0b010ed800b367107",
+    "rgbaFingerprintSha256": "fd0411207a7772937ae139c1d2f74f8e5146a836f4644987a030d3a0f3fa4c82",
+    "windowsBundleSha256": "ea833d9279404dfc0e39763ff52060b3f6da0766742f0341c7e6677ef0442c42",
+    "webBundleSha256": "76b69ef9c4faf4e827e2a4d4884cccf476fe7b8b27b0effb62fdc803571bfc2b",
+    "windows": {
+      "Debug": {
+        "gpuExecutableSha256": "b349a28c7c37370379fabcbad572e28a607a92d51e3a71cf9558fab239fc6e8e",
+        "jsbProbes": 6,
+        "nativeHarnessPassed": true,
+        "identicalToWeb": 116
+      },
+      "Release": {
+        "gpuExecutableSha256": "ab6ff4a73b920d3fc8d388acd0b6f86f216a9944fabf787766511e5119047c97",
+        "jsbProbes": 6,
+        "nativeHarnessPassed": true,
+        "identicalToWeb": 116
+      }
+    },
+    "sceneCyclesPerBackend": 1000,
+    "sceneAssertionsPerBackend": 4998,
+    "targetedJestTests": 33,
+    "auditTests": 10
   }
 }

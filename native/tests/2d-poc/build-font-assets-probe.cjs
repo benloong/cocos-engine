@@ -205,8 +205,7 @@ for (const FontClass of [BitmapFont, LabelAtlas]) {
     reloaded.onLoaded();
     check(reloaded.getRevision() === releasedRevision && reloaded.fntConfig === null, 'late JS configuration assignments ignore released font');
 }
-const label = new n2d.Label(); label.setFontAsset(font);
-check(label.getFontAsset() === font, 'Label native asset binding');
+const label = new n2d.Label();
 for (let i = 0; i < 1000; i++) { label.setFontAsset(ttf); label.setFontAsset(font); label.setFontAsset(null); }
 for (const FontClass of [BitmapFont, LabelAtlas]) {
     for (let i = 0; i < 1000; i++) {
