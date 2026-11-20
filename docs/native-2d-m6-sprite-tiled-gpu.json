@@ -1,0 +1,201 @@
+{
+  "before": {
+    "revision": "3b5396de7d",
+    "configuration": "Windows Debug",
+    "snapshot": "60578446580795e61c49c2010532a590ce95541e431d9662b9cb8f416b698166",
+    "cases": [
+      {
+        "name": "sprite-tiled-plain",
+        "maximum": 0,
+        "differingPixels": 0,
+        "webColoredPixels": 2880,
+        "nativeSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5",
+        "webSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5"
+      },
+      {
+        "name": "sprite-tiled-insets",
+        "maximum": 140,
+        "differingPixels": 2304,
+        "webColoredPixels": 2880,
+        "nativeSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5",
+        "webSha256": "3f35c009f5ef4199ee2597a6b267f2f456bf1e11e859fe6bd747d3f408f98066"
+      },
+      {
+        "name": "sprite-tiled-insets-updated",
+        "maximum": 140,
+        "differingPixels": 2304,
+        "webColoredPixels": 2880,
+        "nativeSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5",
+        "webSha256": "3f35c009f5ef4199ee2597a6b267f2f456bf1e11e859fe6bd747d3f408f98066"
+      },
+      {
+        "name": "sprite-tiled-compact",
+        "maximum": 140,
+        "differingPixels": 2304,
+        "webColoredPixels": 2880,
+        "nativeSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5",
+        "webSha256": "3f35c009f5ef4199ee2597a6b267f2f456bf1e11e859fe6bd747d3f408f98066"
+      },
+      {
+        "name": "sprite-tiled-compact-updated",
+        "maximum": 168,
+        "differingPixels": 114,
+        "webColoredPixels": 128,
+        "nativeSha256": "dfb32384f1579116290cb8500f967c3d782c261974345fac26e9b02e7fab05f7",
+        "webSha256": "ed79bf24314e57577e3ea47da8f2342fca2053f46b90921b8b141ae197e77da5"
+      },
+      {
+        "name": "sprite-tiled-rotated",
+        "maximum": 84,
+        "differingPixels": 512,
+        "webColoredPixels": 864,
+        "nativeSha256": "01755de7f0c647b078839b411a8c15dc99b2d94bee3736adab8108366f5f5d84",
+        "webSha256": "acf31e7111dd0fba1bffcb3c3ec171df00d6c147265b264586a447607693deb6"
+      },
+      {
+        "name": "sprite-tiled-one-axis",
+        "maximum": 140,
+        "differingPixels": 1728,
+        "webColoredPixels": 2880,
+        "nativeSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5",
+        "webSha256": "f838137e080d384e94125ae6221091de0a0091d6e6fd676a1d0a35209dd70128"
+      },
+      {
+        "name": "sprite-tiled-no-center",
+        "maximum": 168,
+        "differingPixels": 640,
+        "webColoredPixels": 1280,
+        "nativeSha256": "b9ef5be365c89e5cb161279fc47767976ee2795505cfd9445f2e4a3974a063eb",
+        "webSha256": "06f44d295b6e77e9f7f5827a9ae5e48d4189384d438735d8dd5eb2223da9eb31"
+      }
+    ]
+  },
+  "nativeGeometry": {
+    "beforeChecks": 163,
+    "beforeFailures": 4,
+    "afterChecks": 175,
+    "afterFailures": 0
+  },
+  "webJest": {
+    "spriteAndFrame": 15,
+    "dynamicAtlas": 5
+  },
+  "configurations": {
+    "Debug": {
+      "snapshot": "d70e3e5f58f5cc76043f81d6d35c5120e83f23e0cfcfd4c5032f813456257df0",
+      "gpuExecutableSha256": "485459f1459538c4f2029b229a311c2ab6279f0960c64fd0f13496701610325f",
+      "captures": 116,
+      "identicalToWeb": 116,
+      "identicalToPriorCaptures": 108,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "tiledCases": [
+        {
+          "name": "sprite-tiled-plain",
+          "coloredPixels": 2880,
+          "rgbaSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5"
+        },
+        {
+          "name": "sprite-tiled-insets",
+          "coloredPixels": 2880,
+          "rgbaSha256": "3f35c009f5ef4199ee2597a6b267f2f456bf1e11e859fe6bd747d3f408f98066"
+        },
+        {
+          "name": "sprite-tiled-insets-updated",
+          "coloredPixels": 2880,
+          "rgbaSha256": "63d4c6008bdbeeb8091a87ce4c55e90fb5615cfcc01921aef8e8befbaeb7eda0"
+        },
+        {
+          "name": "sprite-tiled-compact",
+          "coloredPixels": 2880,
+          "rgbaSha256": "3f35c009f5ef4199ee2597a6b267f2f456bf1e11e859fe6bd747d3f408f98066"
+        },
+        {
+          "name": "sprite-tiled-compact-updated",
+          "coloredPixels": 128,
+          "rgbaSha256": "ed79bf24314e57577e3ea47da8f2342fca2053f46b90921b8b141ae197e77da5"
+        },
+        {
+          "name": "sprite-tiled-rotated",
+          "coloredPixels": 864,
+          "rgbaSha256": "acf31e7111dd0fba1bffcb3c3ec171df00d6c147265b264586a447607693deb6"
+        },
+        {
+          "name": "sprite-tiled-one-axis",
+          "coloredPixels": 2880,
+          "rgbaSha256": "f838137e080d384e94125ae6221091de0a0091d6e6fd676a1d0a35209dd70128"
+        },
+        {
+          "name": "sprite-tiled-no-center",
+          "coloredPixels": 1280,
+          "rgbaSha256": "06f44d295b6e77e9f7f5827a9ae5e48d4189384d438735d8dd5eb2223da9eb31"
+        }
+      ]
+    },
+    "Release": {
+      "snapshot": "d70e3e5f58f5cc76043f81d6d35c5120e83f23e0cfcfd4c5032f813456257df0",
+      "gpuExecutableSha256": "82e39432f5694d31dff5be641f1c6105ce4ae566d44eebc28f1b4ebf2d91b26b",
+      "captures": 116,
+      "identicalToWeb": 116,
+      "identicalToPriorCaptures": 108,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "tiledCases": [
+        {
+          "name": "sprite-tiled-plain",
+          "coloredPixels": 2880,
+          "rgbaSha256": "70a0f298a3673c3e15cb5b3056dafcfdf7990ed008bb173d0686cd17c31e50d5"
+        },
+        {
+          "name": "sprite-tiled-insets",
+          "coloredPixels": 2880,
+          "rgbaSha256": "3f35c009f5ef4199ee2597a6b267f2f456bf1e11e859fe6bd747d3f408f98066"
+        },
+        {
+          "name": "sprite-tiled-insets-updated",
+          "coloredPixels": 2880,
+          "rgbaSha256": "63d4c6008bdbeeb8091a87ce4c55e90fb5615cfcc01921aef8e8befbaeb7eda0"
+        },
+        {
+          "name": "sprite-tiled-compact",
+          "coloredPixels": 2880,
+          "rgbaSha256": "3f35c009f5ef4199ee2597a6b267f2f456bf1e11e859fe6bd747d3f408f98066"
+        },
+        {
+          "name": "sprite-tiled-compact-updated",
+          "coloredPixels": 128,
+          "rgbaSha256": "ed79bf24314e57577e3ea47da8f2342fca2053f46b90921b8b141ae197e77da5"
+        },
+        {
+          "name": "sprite-tiled-rotated",
+          "coloredPixels": 864,
+          "rgbaSha256": "acf31e7111dd0fba1bffcb3c3ec171df00d6c147265b264586a447607693deb6"
+        },
+        {
+          "name": "sprite-tiled-one-axis",
+          "coloredPixels": 2880,
+          "rgbaSha256": "f838137e080d384e94125ae6221091de0a0091d6e6fd676a1d0a35209dd70128"
+        },
+        {
+          "name": "sprite-tiled-no-center",
+          "coloredPixels": 1280,
+          "rgbaSha256": "06f44d295b6e77e9f7f5827a9ae5e48d4189384d438735d8dd5eb2223da9eb31"
+        }
+      ]
+    }
+  },
+  "standardWindowsDebug": {
+    "executableSha256": "68bc9ff849f0be24763bde7ae176978b817196a27c462fd9744b0cf63c896bae",
+    "applicationProbes": [
+      "M2 Sprite",
+      "M3 Label",
+      "M4 Mask and Graphics",
+      "M4 extra",
+      "M5 RichText"
+    ],
+    "spriteFrameUvParity": true,
+    "targetedJestTests": 40
+  }
+}

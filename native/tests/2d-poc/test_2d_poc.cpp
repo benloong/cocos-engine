@@ -299,6 +299,53 @@ void testTiledMesh() {
     }
 }
 
+void testTiledInsets() {
+    cc::TiledSpriteGeometryParams params;
+    params.contentSize.set(60.F, 48.F);
+    params.anchorPoint.set(0.F, 0.F);
+    params.frameRect = cc::Rect(8.F, 4.F, 32.F, 32.F);
+    params.textureSize.set(64.F, 64.F);
+    params.insetLeft = 12.F;
+    params.insetRight = params.insetTop = params.insetBottom = 8.F;
+
+    const auto expanded = cc::buildTiledSpriteMesh(params);
+    check(expanded.valid && expanded.vertices.size() == 96 && expanded.indices.size() == 144,
+          "tiled insets preserve borders and repeat only the center");
+    if (expanded.vertices.size() == 96) {
+        checkNear(expanded.vertices[1].position.x, 12.F, "tiled left cap at original width");
+        checkNear(expanded.vertices[1].uv.x, 20.F / 64.F, "tiled left cap samples its own border");
+        checkNear(expanded.vertices[16].position.x, 48.F, "last partial tile start");
+        checkNear(expanded.vertices[17].position.x, 52.F, "last partial tile ends before right cap");
+        checkNear(expanded.vertices[17].uv.x, 24.F / 64.F, "last partial tile samples only its visible texels");
+        checkNear(expanded.vertices[20].uv.x, 32.F / 64.F, "tiled right cap samples its own border");
+    }
+
+    params.contentSize.set(16.F, 8.F);
+    const auto compact = cc::buildTiledSpriteMesh(params);
+    check(compact.valid && compact.vertices.size() == 16, "tiled insets collapse the center of undersized sprites");
+    if (compact.vertices.size() == 16) {
+        checkNear(compact.vertices[1].position.x, 9.6F, "tiled left cap shrinks in proportion");
+        checkNear(compact.vertices[2].position.y, 4.F, "tiled bottom cap shrinks in proportion");
+        checkNear(compact.vertices[1].uv.x, 20.F / 64.F, "tiled compressed cap preserves source UV");
+    }
+
+    params.contentSize.set(40.F, 8.F);
+    params.insetLeft = params.insetRight = 16.F;
+    const auto noSourceCenter = cc::buildTiledSpriteMesh(params);
+    check(noSourceCenter.valid && noSourceCenter.vertices.size() == 24, "tiled zero-width source center covers extra space");
+    if (noSourceCenter.vertices.size() == 24) {
+        checkNear(noSourceCenter.vertices[4].position.x, 16.F, "zero-width source center starts at first cap");
+        checkNear(noSourceCenter.vertices[5].position.x, 24.F, "zero-width source center ends at second cap");
+        checkNear(noSourceCenter.vertices[5].uv.x, noSourceCenter.vertices[4].uv.x, "zero-width source center keeps a constant UV");
+    }
+
+    cc::TiledSpriteGeometryParams oversized;
+    oversized.contentSize.set(1024.F, 1024.F);
+    oversized.frameRect = cc::Rect(0.F, 0.F, 4.F, 4.F);
+    oversized.textureSize.set(4.F, 4.F);
+    check(!cc::buildTiledSpriteMesh(oversized).valid, "tiled mesh rejects counts beyond 16-bit indices");
+}
+
 void testRadialMesh() {
     cc::FilledSpriteGeometryParams params;
     params.contentSize = cc::Vec2(100,100); params.anchorPoint = cc::Vec2(0.5F,0.5F);
@@ -430,6 +477,7 @@ int main() {
     testFilledMesh();
     testNegativeFilledMesh();
     testTiledMesh();
+    testTiledInsets();
     testRadialMesh();
     testRotatedSlicedMesh();
     testRotatedTiledMesh();

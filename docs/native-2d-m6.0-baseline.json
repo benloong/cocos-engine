@@ -103,7 +103,7 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "7ac15d3ebf11dd196f1d053aa4418783b0a21c936a98390ea41986982646b0a7"
+      "sha256": "82dfbffad9b1da8ab3751c49583066a2cf855c9600eb3daa4f5720fa2137d438"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
@@ -231,11 +231,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/SpriteGeometry.cpp",
-      "sha256": "cb0c782bc723bb98812a205e807ddfcecb6b67636923957134085e6d0c56cf47"
+      "sha256": "b2f0ba70c994c42779bf1ff1c669ffd59aec7dd6729521c167b02998e80ee226"
     },
     {
       "file": "native/cocos/2d/renderer/SpriteGeometry.h",
-      "sha256": "0b2a78374aa6bacc253f154490882d449ec2c1304d6a3d85887246f8e640a812"
+      "sha256": "bcb42702f9947ce00ac4cfc0132f2c7a1f90385d7c8190cc00de693f2557c1ee"
     },
     {
       "file": "native/cocos/2d/renderer/StencilManager.cpp",
@@ -3389,6 +3389,16 @@
             "visibility": "private",
             "static": false,
             "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_usesFrameInsets",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "boolean",
             "parameters": [],
             "default": null,
             "decorators": []
@@ -15940,8 +15950,8 @@
     },
     {
       "file": "cocos/2d/components/sprite.ts",
-      "sha256": "8cd1ea49bcf68556ec27f9e38d747e101d99cce9265e61c1183f6fe04c0bd3c8",
-      "printedCodeLines": 470,
+      "sha256": "351cbdf058cf702a8c3734f237edb5bfbea4d2993ab8516104477fa7ca913eeb",
+      "printedCodeLines": 469,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15959,7 +15969,7 @@
       "frameMethods": [
         {
           "name": "_render",
-          "line": 633
+          "line": 631
         }
       ],
       "nativeCalls": [],

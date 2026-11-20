@@ -258,13 +258,13 @@ export class M6GraphicsGpuProbe extends Component {
                 if (sys.isNative && !(sprite as any)._native) throw new Error('Native Sprite override not active');
                 return sprite;
             };
-            const sliced = (root: Node, spriteFrame: SpriteFrame, width: number, height: number): UITransform => {
+            const spriteWithFrame = (root: Node, spriteFrame: SpriteFrame, width: number, height: number, type: Sprite['type']): UITransform => {
                 const transform = root.getComponent(UITransform)!;
                 transform.setContentSize(width, height);
                 transform.setAnchorPoint(.25, .375);
                 const sprite = root.addComponent(Sprite);
                 sprite.sizeMode = Sprite.SizeMode.CUSTOM;
-                sprite.type = Sprite.Type.SLICED;
+                sprite.type = type;
                 sprite.spriteFrame = spriteFrame;
                 if (sys.isNative && !(sprite as any)._native) throw new Error('Native Sprite override not active');
                 return transform;
@@ -280,6 +280,13 @@ export class M6GraphicsGpuProbe extends Component {
             slicedRotatedFrame.insetRight = 4;
             slicedRotatedFrame.insetTop = 3;
             slicedRotatedFrame.insetBottom = 5;
+            const tiledEditedFrame = slicedFrame.clone();
+            const tiledOneAxisFrame = patternFrame.clone();
+            tiledOneAxisFrame.insetLeft = 12;
+            tiledOneAxisFrame.insetRight = 8;
+            const tiledNoCenterFrame = slicedFrame.clone();
+            tiledNoCenterFrame.insetLeft = 16;
+            tiledNoCenterFrame.insetRight = 16;
             cases.push(
                 { name: 'sprite-radial-quadrant', draw: root => {
                     const sprite = radial(root);
@@ -305,16 +312,36 @@ export class M6GraphicsGpuProbe extends Component {
                     return () => { sprite.fillRange = 1; };
                 } },
                 { name: 'sprite-sliced-resize', draw: root => {
-                    const transform = sliced(root, slicedFrame, 72, 56);
+                    const transform = spriteWithFrame(root, slicedFrame, 72, 56, Sprite.Type.SLICED);
                     return () => { transform.setContentSize(16, 10); };
                 } },
                 { name: 'sprite-sliced-insets', draw: root => {
-                    sliced(root, editedFrame, 16, 10);
+                    spriteWithFrame(root, editedFrame, 16, 10, Sprite.Type.SLICED);
                     return () => { editedFrame.insetLeft = 4; editedFrame.insetRight = 14; };
                 } },
                 { name: 'sprite-sliced-rotated', draw: root => {
-                    const transform = sliced(root, slicedRotatedFrame, 42, 32);
+                    const transform = spriteWithFrame(root, slicedRotatedFrame, 42, 32, Sprite.Type.SLICED);
                     return () => { transform.setContentSize(8, 6); };
+                } },
+                { name: 'sprite-tiled-plain', draw: root => {
+                    spriteWithFrame(root, patternFrame, 60, 48, Sprite.Type.TILED);
+                } },
+                { name: 'sprite-tiled-insets', draw: root => {
+                    spriteWithFrame(root, tiledEditedFrame, 60, 48, Sprite.Type.TILED);
+                    return () => { tiledEditedFrame.insetLeft = 4; tiledEditedFrame.insetRight = 14; };
+                } },
+                { name: 'sprite-tiled-compact', draw: root => {
+                    const transform = spriteWithFrame(root, slicedFrame, 60, 48, Sprite.Type.TILED);
+                    return () => { transform.setContentSize(16, 8); };
+                } },
+                { name: 'sprite-tiled-rotated', draw: root => {
+                    spriteWithFrame(root, slicedRotatedFrame, 36, 24, Sprite.Type.TILED);
+                } },
+                { name: 'sprite-tiled-one-axis', draw: root => {
+                    spriteWithFrame(root, tiledOneAxisFrame, 60, 48, Sprite.Type.TILED);
+                } },
+                { name: 'sprite-tiled-no-center', draw: root => {
+                    spriteWithFrame(root, tiledNoCenterFrame, 40, 32, Sprite.Type.TILED);
                 } },
             );
         }

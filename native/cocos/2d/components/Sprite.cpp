@@ -468,6 +468,10 @@ void Sprite::prepare(float opacity) {
             params.frameRect = _frameRect;
             params.textureSize = _textureSize;
             params.rotated = _rotated;
+            params.insetLeft = _insetLeft;
+            params.insetRight = _insetRight;
+            params.insetTop = _insetTop;
+            params.insetBottom = _insetBottom;
 
             SpriteMesh mesh = buildTiledSpriteMesh(params);
             if (!mesh.valid) {

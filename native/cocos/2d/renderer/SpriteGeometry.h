@@ -113,10 +113,15 @@ struct TiledSpriteGeometryParams final {
     Rect frameRect;
     Vec2 textureSize;
     bool rotated{false};
+    float insetLeft{0.F};
+    float insetRight{0.F};
+    float insetTop{0.F};
+    float insetBottom{0.F};
 };
 
 /**
- * Build repeated frame tiles clipped to the content rect.
+ * Tile the center between the sprite frame's fixed borders and clip partial tiles.
+ * Compress borders on axes where they cannot fit and retain their source UVs.
  */
 SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params);
 

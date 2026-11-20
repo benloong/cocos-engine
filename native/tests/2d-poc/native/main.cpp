@@ -2837,8 +2837,14 @@ void testSpritePrepare() {
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         mutableFrame->setRectWidth(0.5F);
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        if (mode == 2) {
+            // 100 x 100 content over 0.5 x 1 requires 20,000 quads.
+            check(entity->getStaticDrawInfoSize() == 0, "oversized tiling clears stale draw info");
+            transform.setContentSize(80.F, 80.F);
+            cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        }
         otherSprite.prepare(1.F);
-        auto *info = entity->getStaticRenderDrawInfo(0);
+        auto *info = entity->getStaticDrawInfoSize() == 1 ? entity->getStaticRenderDrawInfo(0) : nullptr;
         check(info && info->getVbCount() > 0, "frame revision rebuilds all sprite modes");
         if (info) {
             const float *vertices = info->getVDataBuffer();
@@ -2846,6 +2852,7 @@ void testSpritePrepare() {
                 check(vertices[i * 9 + 3] <= 0.50001F, "in-place rect mutation updates native UV");
             }
         }
+        if (mode == 2) transform.setContentSize(100.F, 100.F);
     }
     sprite.setType(0);
     mutableFrame->setFlipUVX(true);

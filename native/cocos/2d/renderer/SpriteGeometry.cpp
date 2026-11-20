@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace cc {
 
@@ -42,6 +43,59 @@ Vec2 frameUV(float fx, float fy, const Rect &rect, const Vec2 &textureSize, bool
     return Vec2(
         (rect.x + fx * rect.width) / texW,
         (rect.y + (1.F - fy) * rect.height) / texH);
+}
+
+Vec2 framePixelUV(float x, float y, const Rect &rect, const Vec2 &textureSize, bool rotated) {
+    if (rotated) {
+        return Vec2((rect.x + y) / textureSize.x, (rect.y + x) / textureSize.y);
+    }
+    return Vec2((rect.x + x) / textureSize.x, (rect.y + (rect.height - y)) / textureSize.y);
+}
+
+struct TileSpan {
+    double first;
+    double last;
+    double sourceFirst;
+    double sourceLast;
+};
+
+std::vector<TileSpan> buildTileSpans(double span, double anchor, double sourceSpan,
+                                     double firstInset, double lastInset, size_t maxCount) {
+    const double borderSpan = firstInset + lastInset;
+    if (!(span > 0 && std::isfinite(span) && sourceSpan > 0 && std::isfinite(sourceSpan) &&
+          firstInset >= 0 && lastInset >= 0 && std::isfinite(borderSpan))) {
+        return {};
+    }
+
+    const double centerSpan = std::max(span - borderSpan, 0.0);
+    const double sourceCenter = std::max(sourceSpan - borderSpan, 0.0);
+    // A zero-width source center samples its shared edge across the extra space.
+    const double tileSpan = sourceCenter > 0 ? sourceCenter : centerSpan;
+    const double repeats = centerSpan > 0 ? std::ceil(centerSpan / tileSpan) : 0;
+    const double total = repeats + (firstInset > 0) + (lastInset > 0);
+    if (total > static_cast<double>(maxCount)) {
+        return {};
+    }
+
+    std::vector<TileSpan> spans;
+    spans.reserve(static_cast<size_t>(total));
+    const double origin = -span * anchor;
+    const double borderScale = borderSpan > span ? span / borderSpan : 1.0;
+    const double centerStart = origin + firstInset * borderScale;
+    if (firstInset > 0) {
+        spans.push_back({origin, centerStart, 0, firstInset});
+    }
+
+    for (size_t i = 0; i < static_cast<size_t>(repeats); ++i) {
+        const double offset = static_cast<double>(i) * tileSpan;
+        const double length = std::min(tileSpan, centerSpan - offset);
+        const double start = centerStart + offset;
+        spans.push_back({start, start + length, firstInset, firstInset + std::min(sourceCenter, length)});
+    }
+    if (lastInset > 0) {
+        spans.push_back({centerStart + centerSpan, origin + span, sourceSpan - lastInset, sourceSpan});
+    }
+    return spans;
 }
 
 } // namespace
@@ -158,11 +212,7 @@ SpriteMesh buildSlicedSpriteMesh(const SlicedSpriteGeometryParams &params) {
         for (uint32_t col = 0; col < 4; ++col) {
             SpriteVertex vertex;
             vertex.position.set(xs[col], ys[row], 0.F);
-            if (params.rotated) {
-                vertex.uv.set((rect.x + sourceY[row]) / textureWidth, (rect.y + sourceX[col]) / textureHeight);
-            } else {
-                vertex.uv.set((rect.x + sourceX[col]) / textureWidth, (rect.y + (rect.height - sourceY[row])) / textureHeight);
-            }
+            vertex.uv = framePixelUV(sourceX[col], sourceY[row], rect, params.textureSize, params.rotated);
             mesh.vertices.push_back(vertex);
         }
     }
@@ -195,49 +245,39 @@ void transformSpriteMesh(SpriteMesh &mesh, const Mat4 &worldMatrix) {
 
 SpriteMesh buildTiledSpriteMesh(const TiledSpriteGeometryParams &params) {
     SpriteMesh mesh;
-    const float width = params.contentSize.x;
-    const float height = params.contentSize.y;
-    const float textureWidth = params.textureSize.x;
-    const float textureHeight = params.textureSize.y;
-    const Rect &rect = params.frameRect;
-    if (width <= 0.F || height <= 0.F || textureWidth <= 0.F || textureHeight <= 0.F ||
-        rect.width <= 0.F || rect.height <= 0.F) {
+    if (!(params.textureSize.x > 0.F && params.textureSize.y > 0.F)) {
         return mesh;
     }
 
-    const float appX = params.anchorPoint.x * width;
-    const float appY = params.anchorPoint.y * height;
-    const float left = -appX;
-    const float bottom = -appY;
+    constexpr size_t MAX_QUADS = (static_cast<size_t>(std::numeric_limits<uint16_t>::max()) + 1) / 4;
+    const Rect &rect = params.frameRect;
+    const auto columns = buildTileSpans(params.contentSize.x, params.anchorPoint.x, rect.width,
+                                       params.insetLeft, params.insetRight, MAX_QUADS);
+    if (columns.empty()) {
+        return mesh;
+    }
+    const auto rows = buildTileSpans(params.contentSize.y, params.anchorPoint.y, rect.height,
+                                    params.insetBottom, params.insetTop, MAX_QUADS / columns.size());
+    if (rows.empty()) {
+        return mesh;
+    }
 
-    const uint32_t columns = static_cast<uint32_t>(std::ceil(width / rect.width));
-    const uint32_t rows = static_cast<uint32_t>(std::ceil(height / rect.height));
-
-    for (uint32_t row = 0; row < rows; ++row) {
-        const float tileY = std::min(rect.height, height - static_cast<float>(row) * rect.height);
-        const float y0 = bottom + static_cast<float>(row) * rect.height;
-        const float y1 = y0 + tileY;
-        for (uint32_t col = 0; col < columns; ++col) {
-            const float tileX = std::min(rect.width, width - static_cast<float>(col) * rect.width);
-            const float x0 = left + static_cast<float>(col) * rect.width;
-            const float x1 = x0 + tileX;
-            const uint16_t base = static_cast<uint16_t>(mesh.vertices.size());
-
-            SpriteVertex v00;
-            SpriteVertex v10;
-            SpriteVertex v01;
-            SpriteVertex v11;
-            v00.position.set(x0, y0, 0.F);
-            v10.position.set(x1, y0, 0.F);
-            v01.position.set(x0, y1, 0.F);
-            v11.position.set(x1, y1, 0.F);
-            const float fx1 = tileX / rect.width;
-            const float fy1 = tileY / rect.height;
-            v00.uv = frameUV(0.F, 0.F, rect, params.textureSize, params.rotated);
-            v10.uv = frameUV(fx1, 0.F, rect, params.textureSize, params.rotated);
-            v01.uv = frameUV(0.F, fy1, rect, params.textureSize, params.rotated);
-            v11.uv = frameUV(fx1, fy1, rect, params.textureSize, params.rotated);
-            mesh.vertices.insert(mesh.vertices.end(), {v00, v10, v01, v11});
+    const size_t quads = columns.size() * rows.size();
+    mesh.vertices.reserve(quads * 4);
+    mesh.indices.reserve(quads * 6);
+    const auto vertex = [&](double x, double y, double sourceX, double sourceY) {
+        SpriteVertex result;
+        result.position.set(static_cast<float>(x), static_cast<float>(y), 0.F);
+        result.uv = framePixelUV(static_cast<float>(sourceX), static_cast<float>(sourceY), rect, params.textureSize, params.rotated);
+        return result;
+    };
+    for (const auto &y : rows) {
+        for (const auto &x : columns) {
+            const auto base = static_cast<uint16_t>(mesh.vertices.size());
+            mesh.vertices.push_back(vertex(x.first, y.first, x.sourceFirst, y.sourceFirst));
+            mesh.vertices.push_back(vertex(x.last, y.first, x.sourceLast, y.sourceFirst));
+            mesh.vertices.push_back(vertex(x.first, y.last, x.sourceFirst, y.sourceLast));
+            mesh.vertices.push_back(vertex(x.last, y.last, x.sourceLast, y.sourceLast));
             mesh.indices.insert(mesh.indices.end(), {
                 base, static_cast<uint16_t>(base + 1), static_cast<uint16_t>(base + 2),
                 static_cast<uint16_t>(base + 1), static_cast<uint16_t>(base + 3), static_cast<uint16_t>(base + 2),
