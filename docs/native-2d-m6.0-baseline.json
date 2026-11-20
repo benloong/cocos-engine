@@ -183,7 +183,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
-      "sha256": "dde814f1a9e395cb11f276716c56687b512a000684f89231c23f6794520cd8db"
+      "sha256": "00029552e58be791859643ff943781582b46ac615f784618056e2b9589e4ce57"
     },
     {
       "file": "native/cocos/2d/renderer/BitmapFontLayout.h",

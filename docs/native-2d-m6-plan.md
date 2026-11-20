@@ -183,6 +183,8 @@
 
 ### M6.4 事件、生命周期与硬化
 
+- [x] 移除 `Batcher2d` 生产头文件中的测试专用友元。Windows Debug、Release 使用正常注册和遍历入口验证重复注册、重复移除、未挂载到 Scene 的节点和 1000 次节点销毁。嵌套根节点的最终透明度可区分去重和重复遍历。Web 与薄壳的组件注册及生命周期测试共 10 项通过。[原生回归](../native/tests/2d-poc/native/main.cpp)
+
 - [x] 原生命中基础链路：Mask.isHit 仅传世界坐标；原生计算圆角/椭圆/反向边界，UITransform 筛选 Camera windowId/layer/离屏并查询当前祖先 Mask。Windows Debug/Release 绑定及生命周期回归、真实场景 19/19 命中检查通过，含 disable/reparent/destroy；见状态与命中报告。完整事件/多 root/Camera/平台矩阵仍由下一项验收。
 - [x] hit test：Windows Debug、Release 与 Web 的 22 项命中检查一致。覆盖屏幕 Camera、窗口和层过滤、旋转与非均匀缩放、跨 root 重挂、嵌套 Mask、启停及销毁。[逐项结果](./native-2d-m6-windows-web-gpu-results.json)
 - [x] RenderRoot2D 在 Windows Debug、Release 和 Web 通过多 root/Canvas/Camera 回归。11 个注册状态断言覆盖重复启用、禁用、重排、销毁；场景切换 1000 次、4998 项循环断言通过。不同注册/优先级、目标切换和跨场景常驻 root 的 GPU 中心颜色按预期变化。比较器检查命名捕获均存在，再比对 256×256 RGBA。[状态序列与图像指纹](./native-2d-m6-windows-web-gpu-results.json)。

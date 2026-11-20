@@ -85,7 +85,6 @@ public:
     void resetRenderStates();
 
 private:
-    friend struct Batcher2dTestAccess;
     struct RootNodeEntry;
     void pruneAndSortRootNodes();
     bool hasRootNode(Node* node) const;
