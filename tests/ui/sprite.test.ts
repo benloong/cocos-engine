@@ -2,8 +2,30 @@ import { Canvas, SpriteFrame, UITransform } from "../../cocos/2d";
 import { Sprite, UIOpacity } from "../../cocos/2d/components";
 import { Texture2D } from "../../cocos/asset/assets";
 import { Node } from "../../cocos/scene-graph/node";
-import { Camera, Scene, Size, Vec3, director, game } from "../../exports/base";
+import { Camera, Scene, Size, Vec3, director, game, instantiate } from "../../exports/base";
 import { Batcher2D } from "../../cocos/2d/renderer/batcher-2d";
+
+test('Sprite.fillCenter keeps its Vec2 identity and releases its owner on destruction', () => {
+    const node = new Node('radial-fill-center');
+    const sprite = node.addComponent(Sprite);
+    const center = sprite.fillCenter;
+    center.set(.25, .75);
+    expect(sprite.fillCenter).toBe(center);
+
+    const copy = instantiate(node);
+    const copiedCenter = copy.getComponent(Sprite)!.fillCenter;
+    expect(copiedCenter).not.toBe(center);
+    expect(copiedCenter.equals(center)).toBe(true);
+    copiedCenter.x = .5;
+    expect(center.x).toBe(.25);
+    copy._destroyImmediate();
+    node._destroyImmediate();
+
+    expect(Object.getOwnPropertyDescriptor(center, 'x')?.get).toBeUndefined();
+    expect(Object.getOwnPropertyDescriptor(copiedCenter, 'y')?.get).toBeUndefined();
+    expect(center.x).toBe(.25);
+    expect(copiedCenter.y).toBe(.75);
+});
 
 test('sprite.updateWorldMatrix', () => {
 

@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==92) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==102) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==92) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==102) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -69,6 +69,9 @@ for (const name of Object.keys(centers)) {
 const sanity={
     'prefab-atlas-sprite':1024,'prefab-atlas-mesh-left':4096,'prefab-atlas-mesh-right':1920,
     'sprite-batch-1':64,'sprite-batch-128':8192,
+    'sprite-radial-quadrant':1008,'sprite-radial-quadrant-updated':1008,
+    'sprite-radial-center':2016,'sprite-radial-center-updated':3024,
+    'sprite-radial-empty':0,'sprite-radial-empty-updated':4032,
     'fill-rect':6400,'large-local-coordinates':6400,'clear-and-replace':2400,
     'large-mesh-chunks':20000,'mask-rect':6400,'mask-inverted':46400,
     'mask-custom':3500,'mask-empty':52800,'mask-empty-inverted':52800,
@@ -78,7 +81,8 @@ const sanity={
     'mask-alpha-0.2':12000,'mask-alpha-0.5':6000,'mask-alpha-0.8':0,
     'mask-independent-thresholds':6400,'mask-independent-thresholds-updated':6400,
 };
-const geometryCases = ['fill-rect', 'curves', 'ellipse', 'arc', 'round-rect', 'clear-and-replace'];
+const geometryCases = ['fill-rect', 'curves', 'ellipse', 'arc', 'round-rect', 'clear-and-replace',
+    'sprite-radial-rotated', 'sprite-radial-rotated-updated', 'prefab-atlas-radial', 'prefab-atlas-radial-rotated'];
 for (let cap = 0; cap < 3; cap++) {
     for (let join = 0; join < 3; join++) geometryCases.push(`stroke-${cap}-${join}`);
 }
@@ -121,6 +125,13 @@ for(const name of a.captures) {
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
 }
 const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},shrinkSizes:{native:a.shrinkSizes,web:b.shrinkSizes},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
+for (const name of ['sprite-radial-quadrant', 'sprite-radial-rotated']) {
+    const original = results.find(row => row.name === name);
+    const updated = results.find(row => row.name === name + '-updated');
+    if (original.webSha256 !== updated.webSha256 || original.nativeSha256 !== updated.nativeSha256) {
+        throw new Error('Expected equivalent radial images before and after update: ' + name);
+    }
+}
 fs.writeFileSync(path.join(__dirname,'build/graphics-gpu-comparison.json'),JSON.stringify(result,null,2));
 for(const row of results) console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: max=${row.max}, pixels=${row.pixels}, Web colored=${row.colored}`);
 if(!result.pass) process.exitCode=1;

@@ -224,6 +224,66 @@ export class M6GraphicsGpuProbe extends Component {
                 sprite.color = i % 2 ? new Color(0, 255, 0, 255) : new Color(255, 0, 0, 255);
             }
         } });
+        if (probeMode === 'graphics') {
+            const patternTexture = new Texture2D();
+            patternTexture.reset({ width: 32, height: 32, format: Texture2D.PixelFormat.RGBA8888 });
+            patternTexture.setFilters(gfx.Filter.POINT, gfx.Filter.POINT);
+            const pixels = new Uint8Array(32 * 32 * 4);
+            for (let y = 0; y < 32; ++y) {
+                for (let x = 0; x < 32; ++x) {
+                    const offset = (y * 32 + x) * 4;
+                    pixels[offset] = (Math.floor(x / 4) + 1) * 28;
+                    pixels[offset + 1] = (Math.floor(y / 4) + 1) * 28;
+                    pixels[offset + 2] = 80;
+                    pixels[offset + 3] = 255;
+                }
+            }
+            patternTexture.uploadData(pixels);
+            const patternFrame = frame(patternTexture);
+            const rotatedFrame = frame(patternTexture);
+            rotatedFrame.rect = new Rect(3, 5, 18, 12);
+            rotatedFrame.originalSize = new Size(18, 12);
+            rotatedFrame.rotated = true;
+            const radial = (root: Node, spriteFrame = patternFrame): Sprite => {
+                const transform = root.getComponent(UITransform)!;
+                transform.setContentSize(72, 56);
+                const sprite = root.addComponent(Sprite);
+                sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+                sprite.type = Sprite.Type.FILLED;
+                sprite.fillType = Sprite.FillType.RADIAL;
+                sprite.fillCenter = new Vec2(.5, .5);
+                sprite.fillStart = 0;
+                sprite.fillRange = .25;
+                sprite.spriteFrame = spriteFrame;
+                if (sys.isNative && !(sprite as any)._native) throw new Error('Native Sprite override not active');
+                return sprite;
+            };
+            cases.push(
+                { name: 'sprite-radial-quadrant', draw: root => {
+                    const sprite = radial(root);
+                    return () => { sprite.fillStart = .25; sprite.fillRange = -.25; };
+                } },
+                { name: 'sprite-radial-center', draw: root => {
+                    const sprite = radial(root);
+                    sprite.fillStart = .75;
+                    sprite.fillRange = .5;
+                    return () => { sprite.fillCenter.x = .25; sprite.fillCenter.y = .75; };
+                } },
+                { name: 'sprite-radial-rotated', draw: root => {
+                    radial(root, rotatedFrame);
+                    root.getComponent(UITransform)!.setAnchorPoint(.25, .375);
+                    root.setPosition(10, -13, 0);
+                    root.setRotationFromEuler(0, 0, 17);
+                    root.setScale(.875, .75, 1);
+                    return () => { rotatedFrame.flipUVX = true; rotatedFrame.flipUVY = true; };
+                } },
+                { name: 'sprite-radial-empty', draw: root => {
+                    const sprite = radial(root);
+                    sprite.fillRange = 0;
+                    return () => { sprite.fillRange = 1; };
+                } },
+            );
+        }
         const batchDrawCalls: Record<string, number> = {};
         const captures: string[] = [];
         const capture = async (name: string, source = rt): Promise<void> => {
@@ -263,6 +323,15 @@ export class M6GraphicsGpuProbe extends Component {
         left.packable = right.packable = false;
         canvas.node.addChild(instance);
         await capture('prefab-atlas-sprite');
+        legacySprite.sizeMode = Sprite.SizeMode.CUSTOM;
+        legacySprite.type = Sprite.Type.FILLED;
+        legacySprite.fillType = Sprite.FillType.RADIAL;
+        legacySprite.fillCenter.set(.5, .5);
+        legacySprite.fillStart = .125;
+        legacySprite.fillRange = .625;
+        await capture('prefab-atlas-radial');
+        legacySprite.spriteFrame = right;
+        await capture('prefab-atlas-radial-rotated');
         legacySprite.enabled = false;
         instance.setScale(400, 400, 1);
         const material = new Material();

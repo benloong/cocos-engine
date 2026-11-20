@@ -291,13 +291,56 @@ export class Sprite extends UIRenderer {
     @displayOrder(6)
     @tooltip('i18n:sprite.fill_center')
     get fillCenter (): Vec2 {
-        return this._fillCenter;
+        const center = this._fillCenter;
+        if (this._fillCenterView !== center) {
+            this._releaseFillCenterView();
+            let { x, y } = center;
+            Object.defineProperties(center, {
+                x: {
+                    configurable: true,
+                    enumerable: true,
+                    get: () => x,
+                    set: (value: number) => {
+                        if (x === value) return;
+                        x = value;
+                        this._markFillCenterDirty();
+                    },
+                },
+                y: {
+                    configurable: true,
+                    enumerable: true,
+                    get: () => y,
+                    set: (value: number) => {
+                        if (y === value) return;
+                        y = value;
+                        this._markFillCenterDirty();
+                    },
+                },
+            });
+            this._fillCenterView = center;
+        }
+        return center;
     }
     set fillCenter (value) {
         this._fillCenter.x = value.x;
         this._fillCenter.y = value.y;
+        this._markFillCenterDirty();
+    }
+
+    private _markFillCenterDirty (): void {
         if (this._type === SpriteType.FILLED && this.renderData) {
             this._markForUpdateRenderData();
+        }
+    }
+
+    private _releaseFillCenterView (): void {
+        const center = this._fillCenterView;
+        if (center) {
+            Object.defineProperties(center, {
+                x: { value: center.x, writable: true },
+                y: { value: center.y, writable: true },
+            });
+            this._fillCenterView = null;
         }
     }
 
@@ -477,6 +520,8 @@ export class Sprite extends UIRenderer {
     @serializable
     protected _atlas: SpriteAtlas | null = null;
 
+    private _fillCenterView: Vec2 | null = null;
+
     public __preload (): void {
         this.changeMaterialForDefine();
         super.__preload();
@@ -513,6 +558,14 @@ export class Sprite extends UIRenderer {
             this.node.off(NodeEventType.SIZE_CHANGED, this._resized, this);
         }
         super.onDestroy();
+    }
+
+    public _onPreDestroy (): void {
+        try {
+            super._onPreDestroy();
+        } finally {
+            this._releaseFillCenterView();
+        }
     }
 
     /**

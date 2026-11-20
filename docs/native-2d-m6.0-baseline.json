@@ -2933,6 +2933,26 @@
             "decorators": []
           },
           {
+            "name": "_markFillCenterDirty",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_releaseFillCenterView",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "fillStart",
             "kind": "GetAccessor",
             "visibility": "public",
@@ -3220,6 +3240,16 @@
             ]
           },
           {
+            "name": "_fillCenterView",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "Vec2 | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
             "name": "__preload",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -3251,6 +3281,16 @@
           },
           {
             "name": "onDestroy",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_onPreDestroy",
             "kind": "MethodDeclaration",
             "visibility": "public",
             "static": false,
@@ -4281,7 +4321,9 @@
       },
       "comparison": {
         "disposition": "declarations only; inherited APIs and behavior require review",
-        "notDeclaredInShell": [],
+        "notDeclaredInShell": [
+          "_onPreDestroy"
+        ],
         "missingSerializedDeclarations": [],
         "initializerTextDifferences": [
           {
@@ -15898,8 +15940,8 @@
     },
     {
       "file": "cocos/2d/components/sprite.ts",
-      "sha256": "32f710fd5a85633a75b327da49fe508c5966b56f90380b681c866dab2928d8a1",
-      "printedCodeLines": 415,
+      "sha256": "e045b6176334299eb297bc72c4e21d9bfc7031e9224b035e0de3364abe988e0e",
+      "printedCodeLines": 467,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15917,7 +15959,7 @@
       "frameMethods": [
         {
           "name": "_render",
-          "line": 580
+          "line": 633
         }
       ],
       "nativeCalls": [],

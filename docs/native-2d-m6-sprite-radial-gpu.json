@@ -1,0 +1,137 @@
+{
+  "before": {
+    "name": "sprite-radial-center-updated",
+    "nativeColored": 3024,
+    "webColored": 2016,
+    "max": 224,
+    "differences": 1008,
+    "nativeSha256": "89c1a48e31bfa546e028e3deb9063cdf2c8a3a44ee394e5d4a81ead8bb33437c",
+    "webSha256": "cbf45ee173bc240fa5efe3f23b4da7542af70a35041101555c2dae6b75dbae66"
+  },
+  "configurations": {
+    "Debug": {
+      "snapshot": "f4af4bd50c5d33c43686549ff052c84072d167e414dcf9319dede2b3aa8d1818",
+      "executableSha256": "4223132b1d44a11a54fd2c5d5877964fd862dec5af5235565e2f099d9a1897a5",
+      "captures": 102,
+      "identicalToWeb": 102,
+      "identicalToPriorCaptures": 92,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "radialCases": [
+        {
+          "name": "prefab-atlas-radial",
+          "coloredPixels": 632,
+          "rgbaSha256": "b723e865b0e0d498b1d1d5e2a56a49efd971322575a73106419669de43458594"
+        },
+        {
+          "name": "prefab-atlas-radial-rotated",
+          "coloredPixels": 632,
+          "rgbaSha256": "aeefaa9d21b4cb56d56eb3ee606e8f20544f8541ed4bcfdc574690a3d21af232"
+        },
+        {
+          "name": "sprite-radial-quadrant",
+          "coloredPixels": 1008,
+          "rgbaSha256": "1e3a6b82dceaea559944175ccad99fada97357ec2cd68d12ad93931f23c9b2cc"
+        },
+        {
+          "name": "sprite-radial-quadrant-updated",
+          "coloredPixels": 1008,
+          "rgbaSha256": "1e3a6b82dceaea559944175ccad99fada97357ec2cd68d12ad93931f23c9b2cc"
+        },
+        {
+          "name": "sprite-radial-center",
+          "coloredPixels": 2016,
+          "rgbaSha256": "cbf45ee173bc240fa5efe3f23b4da7542af70a35041101555c2dae6b75dbae66"
+        },
+        {
+          "name": "sprite-radial-center-updated",
+          "coloredPixels": 3024,
+          "rgbaSha256": "89c1a48e31bfa546e028e3deb9063cdf2c8a3a44ee394e5d4a81ead8bb33437c"
+        },
+        {
+          "name": "sprite-radial-rotated",
+          "coloredPixels": 661,
+          "rgbaSha256": "8c0c66a134681b751ed8c5d0eab951fa044906be3d756ac85de4b347ad283406"
+        },
+        {
+          "name": "sprite-radial-rotated-updated",
+          "coloredPixels": 661,
+          "rgbaSha256": "8c0c66a134681b751ed8c5d0eab951fa044906be3d756ac85de4b347ad283406"
+        },
+        {
+          "name": "sprite-radial-empty",
+          "coloredPixels": 0,
+          "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        },
+        {
+          "name": "sprite-radial-empty-updated",
+          "coloredPixels": 4032,
+          "rgbaSha256": "a99fdb3ded4347c6b83fb83ca197d54cda9fddbd886ca4f92683e6e1cea29982"
+        }
+      ]
+    },
+    "Release": {
+      "snapshot": "f4af4bd50c5d33c43686549ff052c84072d167e414dcf9319dede2b3aa8d1818",
+      "executableSha256": "abd7adf1dfcc2850090508d46cd3cc1ee0523a05e70a989874cf941ae672ec85",
+      "captures": 102,
+      "identicalToWeb": 102,
+      "identicalToPriorCaptures": 92,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "radialCases": [
+        {
+          "name": "prefab-atlas-radial",
+          "coloredPixels": 632,
+          "rgbaSha256": "b723e865b0e0d498b1d1d5e2a56a49efd971322575a73106419669de43458594"
+        },
+        {
+          "name": "prefab-atlas-radial-rotated",
+          "coloredPixels": 632,
+          "rgbaSha256": "aeefaa9d21b4cb56d56eb3ee606e8f20544f8541ed4bcfdc574690a3d21af232"
+        },
+        {
+          "name": "sprite-radial-quadrant",
+          "coloredPixels": 1008,
+          "rgbaSha256": "1e3a6b82dceaea559944175ccad99fada97357ec2cd68d12ad93931f23c9b2cc"
+        },
+        {
+          "name": "sprite-radial-quadrant-updated",
+          "coloredPixels": 1008,
+          "rgbaSha256": "1e3a6b82dceaea559944175ccad99fada97357ec2cd68d12ad93931f23c9b2cc"
+        },
+        {
+          "name": "sprite-radial-center",
+          "coloredPixels": 2016,
+          "rgbaSha256": "cbf45ee173bc240fa5efe3f23b4da7542af70a35041101555c2dae6b75dbae66"
+        },
+        {
+          "name": "sprite-radial-center-updated",
+          "coloredPixels": 3024,
+          "rgbaSha256": "89c1a48e31bfa546e028e3deb9063cdf2c8a3a44ee394e5d4a81ead8bb33437c"
+        },
+        {
+          "name": "sprite-radial-rotated",
+          "coloredPixels": 661,
+          "rgbaSha256": "8c0c66a134681b751ed8c5d0eab951fa044906be3d756ac85de4b347ad283406"
+        },
+        {
+          "name": "sprite-radial-rotated-updated",
+          "coloredPixels": 661,
+          "rgbaSha256": "8c0c66a134681b751ed8c5d0eab951fa044906be3d756ac85de4b347ad283406"
+        },
+        {
+          "name": "sprite-radial-empty",
+          "coloredPixels": 0,
+          "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        },
+        {
+          "name": "sprite-radial-empty-updated",
+          "coloredPixels": 4032,
+          "rgbaSha256": "a99fdb3ded4347c6b83fb83ca197d54cda9fddbd886ca4f92683e6e1cea29982"
+        }
+      ]
+    }
+  }
+}
