@@ -82,10 +82,10 @@ public:
     void strokeText(const ccstd::string &text, float /*x*/, float /*y*/, float /*maxWidth*/) override;
     void rect(float x, float y, float w, float h) override;
     void updateData() override {}
-    void setShadowBlur(float blur) override {}
-    void setShadowColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) override {}
-    void setShadowOffsetX(float offsetX) override {}
-    void setShadowOffsetY(float offsetY) override {}
+    void setShadowBlur(float blur) override;
+    void setShadowColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) override;
+    void setShadowOffsetX(float offsetX) override;
+    void setShadowOffsetY(float offsetY) override;
 
 private:
     static wchar_t *utf8ToUtf16(const ccstd::string &str, int *pRetLen = nullptr);
@@ -102,10 +102,17 @@ public:
     HBITMAP _bmp{nullptr};
 
 private:
+    struct TextShadow {
+        Color4F color{0, 0, 0, 0};
+        float offsetX{0};
+        float offsetY{0};
+        float blur{0};
+    };
     struct SavedContext {
         int dc;
         IntrusivePtr<DirectWriteFont> directWrite;
         int fontSize;
+        TextShadow textShadow;
     };
     IntrusivePtr<DirectWriteFont> _directWrite;
     cc::Data _imageData;
@@ -126,6 +133,7 @@ private:
     TextBaseline _textBaseLine{TextBaseline::ALPHABETIC};
     Color4F _fillStyle{0, 0, 0, 1};
     Color4F _strokeStyle{0, 0, 0, 1};
+    TextShadow _textShadow;
 
     std::wstring _measuredText;
     Size _measuredSize{};

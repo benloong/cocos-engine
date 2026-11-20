@@ -45,3 +45,11 @@ Windows Debug 和 Release 各用同一二进制依次运行原生、TS 回退和
 旧 cocos-m1-test 工程使用相同场景配置和原有功能列表，从已有资产复制到独立项目目录构建。同步 `fixtures/acceptance/LabelSpike.ts` 后分别部署默认包和 `USE_JS_LABEL: true` 的包，运行 `run-m3-label-probe.ps1 -AppExe <exe> -Implementation <native|js>`。探针从各自的 RenderEntity 读取实际提交的几何和纹理，检查 BMFont 原始资源、CHAR 缓存、换行和 GPU 字形。这一验收保留两种实现在离屏像素覆盖上的测量差异。
 
 两种 Windows 配置的旧项目均通过原生、TS 回退、恢复原生三阶段。三组 Label 尺寸依次为 240×56.4、240×40 和 220×97.8，BMFont 提交和像素覆盖计数三阶段一致。四组系统字体与 CHAR 用例在 TS 回退时有覆盖差，例如 CJK 着色像素为 2679 → 1709 → 2679。恢复后的全部 7 组像素统计与初始原生一致。
+
+## 旧版描边与阴影复验
+
+Windows Canvas 的 `fillText` 读取 JSB 提交的阴影颜色、偏移和模糊值，使用 DirectWrite 在前景字形之前绘制阴影。Canvas 保存与恢复时同步保存这三个属性。原生 Label 已自行绘制阴影，Windows 上继续沿用显式绘制。
+
+本机 Windows Debug、Release 各在同一二进制上执行原生、TS 回退、恢复原生。两种配置的旧版描边与阴影通过 Prefab 启用、属性转发、单独启停、销毁以及与直接接口的图像等价性。独立 Canvas 用例覆盖硬阴影、模糊、恢复和透明颜色。
+
+原生和恢复阶段各 163 张图与 Chrome 逐字节一致。每个 TS 回退阶段有 160 张严格一致。`scene-ttf-bundle-first`、`scene-ttf-bundle-next`、`scene-ttf-bundle-cold` 各有 996 个像素超差，最大通道差为 209，字体宽度和资源生命周期断言通过。完整 Debug 原生探针在字体资产检查后超时，独立阴影探针已通过。[本机数据](./native-2d-m6-label-shadow-fallback.json)

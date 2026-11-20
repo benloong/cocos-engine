@@ -953,6 +953,7 @@ void Label::rebuildTexture() {
                   static_cast<unsigned>(edgeColor.b));
     context.setFillStyle(fill);
     context.fillRect(0, 0, static_cast<float>(textureWidth), static_cast<float>(textureHeight));
+#if CC_PLATFORM != CC_PLATFORM_WINDOWS
     if (drawShadow) {
         char shadow[64] = {0};
         std::snprintf(shadow, sizeof(shadow), "rgba(%u,%u,%u,%.3f)",
@@ -965,6 +966,7 @@ void Label::rebuildTexture() {
         context.setShadowOffsetX(_shadowOffsetX);
         context.setShadowOffsetY(_shadowOffsetY);
     }
+#endif
 
     auto drawLine = [&](size_t i, bool underline) {
         const std::string &line = lines[i];

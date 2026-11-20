@@ -1,0 +1,179 @@
+{
+  "baseCommit": "4347e5d663",
+  "baseline": {
+    "windowsDebugLabelFallbackError": "Legacy Label effect activation did not reach the rendered pixels",
+    "logSha256": "5fc436ba027d4099d82e8df1989b50c722d8fb53c8e42746749d09ba4c3aa8ec"
+  },
+  "snapshot": "fa535d4f8df3321db289793c97a73f0a4ffb634693d6c3ff9e66f8c2b637bfea",
+  "capturesPerRun": 163,
+  "strictMatches": {
+    "native": 163,
+    "js": 160,
+    "restored": 163
+  },
+  "unchangedImagesFromNativeBaseline": {
+    "native": 163,
+    "js": 160,
+    "restored": 163
+  },
+  "legacyLabelEffects": {
+    "updates": 3,
+    "prefab": true,
+    "forwarding": true,
+    "rendered": true,
+    "destroyed": true
+  },
+  "bitmapReloadWidths": [
+    40,
+    42,
+    37,
+    40
+  ],
+  "canvasTextShadowChecks": [
+    "disabled shadow",
+    "hard offset and color",
+    "blurred mask",
+    "save and restore",
+    "transparent shadow"
+  ],
+  "fullNativeDebugSuite": {
+    "status": "timed out after the font-assets checks",
+    "logSha256": "72b11d8b5ae00d0dc291100c4e65fc9e92e680dbfef61e6a77ac3cf308442173"
+  },
+  "webManifestSha256": "7909f6030137d7e99a03eb1653cb96e91ff354c5cd14473c170a0c954c644572",
+  "webLogSha256": "db1a9456c9542ce83dc2f4d224aa048bb684a3a0216bdc8b44131f75ec23e19f",
+  "configurations": {
+    "Debug": {
+      "executableSha256": "ddb8dc63b48965c75cb222b4b7e8161feeea2a8c42977e6fa1c00e8f8fe2f747",
+      "compileLogSha256": "e28914410bad4c5cd91c2a49ec7d426d4be7e9cb285a3eaa1ec262a27cde97b7",
+      "canvasTestExecutableSha256": "8cd4443a72c0f12ea00b0fb3e951194a7708b13d0584e648150f7a988a8bb472",
+      "canvasTestLogSha256": "987b639e311a11851cffc32aaf3288addba0f4f9f2b981741fe98aac6d655963",
+      "phases": {
+        "native": {
+          "labelEngineSha256": "14ad7840224e2e344b911b3cfdbbae196d5ff2a0bc2444d4ab6418aa74c8ff9b",
+          "manifestSha256": "4bd61039b2f9fcce3d55d0498f75deab654f966adc2576c6146b5770a0034a39",
+          "applicationLogSha256": "f8479e6755713cc917ce1e0ee5c53572e660646c3bc1e3a11de7894f55c8c23f",
+          "comparisonSha256": "28e27bdd271525d3fae6bc43dff74bfccb583cfda1d114928f914b2e10922caf",
+          "captures": 163,
+          "strictMatches": 163,
+          "differences": []
+        },
+        "js": {
+          "labelEngineSha256": "8d9468ad0c8ad92b9a4dfebb79497d8a74b56a8d43ccde818f005c15e449316a",
+          "manifestSha256": "06771b13f94fb80ec115833d8f9c5748c6b3417ab1a4758ec55a96077bd24776",
+          "applicationLogSha256": "3bd1493fb0d9f7eae2722b51993d113420d03993b2b428c485a7af34af91818e",
+          "comparisonSha256": "6bbfa43cd9d270300b8d3d2981846633d58658f851f0b1b5006724a7d4446265",
+          "captures": 163,
+          "strictMatches": 160,
+          "differences": [
+            {
+              "name": "scene-ttf-bundle-first",
+              "max": 209,
+              "pixels": 996,
+              "channels": 2988,
+              "colored": 3648,
+              "pass": false,
+              "nativeSha256": "116c9f4ebc4d44148d55fb24b320d26aa117700a2ed5cd32d6ebb484238d69cb",
+              "webSha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1"
+            },
+            {
+              "name": "scene-ttf-bundle-next",
+              "max": 209,
+              "pixels": 996,
+              "channels": 2988,
+              "colored": 3648,
+              "pass": false,
+              "nativeSha256": "116c9f4ebc4d44148d55fb24b320d26aa117700a2ed5cd32d6ebb484238d69cb",
+              "webSha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1"
+            },
+            {
+              "name": "scene-ttf-bundle-cold",
+              "max": 209,
+              "pixels": 996,
+              "channels": 2988,
+              "colored": 3648,
+              "pass": false,
+              "nativeSha256": "116c9f4ebc4d44148d55fb24b320d26aa117700a2ed5cd32d6ebb484238d69cb",
+              "webSha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1"
+            }
+          ]
+        },
+        "restored": {
+          "labelEngineSha256": "14ad7840224e2e344b911b3cfdbbae196d5ff2a0bc2444d4ab6418aa74c8ff9b",
+          "manifestSha256": "37ce2b52b5c6cff7a2c1475a417962b618e955da27fa5fe0f32b3efb48e0046c",
+          "applicationLogSha256": "f4ba51533c7a317b9225ade16b0b323b548309bb3a07839b5ed3ecebee07ee9b",
+          "comparisonSha256": "28e27bdd271525d3fae6bc43dff74bfccb583cfda1d114928f914b2e10922caf",
+          "captures": 163,
+          "strictMatches": 163,
+          "differences": []
+        }
+      }
+    },
+    "Release": {
+      "executableSha256": "9efa7916c3d276e3abac51838096cfb9411523b5cfd0cbd087409bf3bbc9a0e0",
+      "compileLogSha256": "d363771b04d78bc656dc4a84d5f0843df586f680ffc498e7acc3b88e77372fbb",
+      "canvasTestExecutableSha256": "bb4259c913cba2dcf2f469c3a616a57b721ca5f22258d253fd862af1a7d2944e",
+      "canvasTestLogSha256": "987b639e311a11851cffc32aaf3288addba0f4f9f2b981741fe98aac6d655963",
+      "phases": {
+        "native": {
+          "labelEngineSha256": "14ad7840224e2e344b911b3cfdbbae196d5ff2a0bc2444d4ab6418aa74c8ff9b",
+          "manifestSha256": "6ac9b06d149234d5db910e26fdc51806c47a4065b5a7ba5466b59325fa191316",
+          "applicationLogSha256": "b4260f6748c935086228c6188c7a537d42333873de6efaab968c7140e9b03764",
+          "comparisonSha256": "28e27bdd271525d3fae6bc43dff74bfccb583cfda1d114928f914b2e10922caf",
+          "captures": 163,
+          "strictMatches": 163,
+          "differences": []
+        },
+        "js": {
+          "labelEngineSha256": "8d9468ad0c8ad92b9a4dfebb79497d8a74b56a8d43ccde818f005c15e449316a",
+          "manifestSha256": "611b2ad5a4a458807548e13727bd60a485c14a3c165addbfc8acd0875c3409d8",
+          "applicationLogSha256": "47fe2b69905b8a8f8c53c6d20e98f945b4fef463306b6d1df7a1989596faba92",
+          "comparisonSha256": "6bbfa43cd9d270300b8d3d2981846633d58658f851f0b1b5006724a7d4446265",
+          "captures": 163,
+          "strictMatches": 160,
+          "differences": [
+            {
+              "name": "scene-ttf-bundle-first",
+              "max": 209,
+              "pixels": 996,
+              "channels": 2988,
+              "colored": 3648,
+              "pass": false,
+              "nativeSha256": "116c9f4ebc4d44148d55fb24b320d26aa117700a2ed5cd32d6ebb484238d69cb",
+              "webSha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1"
+            },
+            {
+              "name": "scene-ttf-bundle-next",
+              "max": 209,
+              "pixels": 996,
+              "channels": 2988,
+              "colored": 3648,
+              "pass": false,
+              "nativeSha256": "116c9f4ebc4d44148d55fb24b320d26aa117700a2ed5cd32d6ebb484238d69cb",
+              "webSha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1"
+            },
+            {
+              "name": "scene-ttf-bundle-cold",
+              "max": 209,
+              "pixels": 996,
+              "channels": 2988,
+              "colored": 3648,
+              "pass": false,
+              "nativeSha256": "116c9f4ebc4d44148d55fb24b320d26aa117700a2ed5cd32d6ebb484238d69cb",
+              "webSha256": "3f63b964110e84040b5e88f8a1d4612bc2d8923f463fde7133bcc84b4c7e25f1"
+            }
+          ]
+        },
+        "restored": {
+          "labelEngineSha256": "14ad7840224e2e344b911b3cfdbbae196d5ff2a0bc2444d4ab6418aa74c8ff9b",
+          "manifestSha256": "c1023cd7c2e5f3f630d2371f5805c5bd8585b72a6de847b1af7be1e82204e2b5",
+          "applicationLogSha256": "43e967e7e1b2852d9d35e141ec2ba3031d4387bf033b12c2e15ca4aee4d5d5e7",
+          "comparisonSha256": "28e27bdd271525d3fae6bc43dff74bfccb583cfda1d114928f914b2e10922caf",
+          "captures": 163,
+          "strictMatches": 163,
+          "differences": []
+        }
+      }
+    }
+  }
+}

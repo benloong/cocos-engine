@@ -135,7 +135,7 @@ void CanvasRenderingContext2DDelegate::stroke() {
 
 void CanvasRenderingContext2DDelegate::saveContext() {
     if (const int dc = SaveDC(_DC)) {
-        _savedContexts.push_back({dc, _directWrite, _fontSize});
+        _savedContexts.push_back({dc, _directWrite, _fontSize, _textShadow});
     }
 }
 
@@ -145,6 +145,7 @@ void CanvasRenderingContext2DDelegate::restoreContext() {
     _savedContexts.pop_back();
     _directWrite = std::move(saved.directWrite);
     _fontSize = saved.fontSize;
+    _textShadow = saved.textShadow;
     _measuredText.clear();
     BOOL ret = RestoreDC(_DC, saved.dc);
     if (0 == ret) {
@@ -192,8 +193,23 @@ void CanvasRenderingContext2DDelegate::fillText(const ccstd::string &text, float
     const auto &line = canvasLine(text, storage);
     if (_directWrite) {
         x = alignDirectWriteX(line, x);
-        _directWrite->draw(line, x, y, static_cast<int>(_textBaseLine), _imageData.getBytes(),
-                          static_cast<uint32_t>(_bufferWidth), static_cast<uint32_t>(_bufferHeight), _fillStyle);
+        const auto width = static_cast<uint32_t>(_bufferWidth);
+        const auto height = static_cast<uint32_t>(_bufferHeight);
+        const auto baseline = static_cast<int>(_textBaseLine);
+        auto *pixels = _imageData.getBytes();
+        if (_textShadow.color[3] > 0.F && _fillStyle[3] > 0.F
+            && (_textShadow.blur > 0.F || _textShadow.offsetX != 0.F || _textShadow.offsetY != 0.F)) {
+            const float shadowX = x + _textShadow.offsetX;
+            const float shadowY = y + _textShadow.offsetY;
+            auto color = _textShadow.color;
+            color[3] *= _fillStyle[3];
+            if (_textShadow.blur > 0.F) {
+                _directWrite->drawShadow(line, shadowX, shadowY, baseline, pixels, width, height, color, _textShadow.blur);
+            } else {
+                _directWrite->draw(line, shadowX, shadowY, baseline, pixels, width, height, color);
+            }
+        }
+        _directWrite->draw(line, x, y, baseline, pixels, width, height, _fillStyle);
         return;
     }
     int length = 0;
@@ -355,6 +371,22 @@ void CanvasRenderingContext2DDelegate::setFillStyle(uint8_t r, uint8_t g, uint8_
 
 void CanvasRenderingContext2DDelegate::setStrokeStyle(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     _strokeStyle = {r / 255.0F, g / 255.0F, b / 255.0F, a / 255.0F};
+}
+
+void CanvasRenderingContext2DDelegate::setShadowBlur(float blur) {
+    if (std::isfinite(blur) && blur >= 0.F) _textShadow.blur = blur;
+}
+
+void CanvasRenderingContext2DDelegate::setShadowColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    _textShadow.color = {r / 255.0F, g / 255.0F, b / 255.0F, a / 255.0F};
+}
+
+void CanvasRenderingContext2DDelegate::setShadowOffsetX(float offsetX) {
+    if (std::isfinite(offsetX)) _textShadow.offsetX = offsetX;
+}
+
+void CanvasRenderingContext2DDelegate::setShadowOffsetY(float offsetY) {
+    if (std::isfinite(offsetY)) _textShadow.offsetY = offsetY;
 }
 
 void CanvasRenderingContext2DDelegate::setLineWidth(float lineWidth) {

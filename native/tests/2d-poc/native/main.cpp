@@ -1227,6 +1227,44 @@ void testTextShadowCrop() {
             check(matches, "cropping a shadow preserves its convolution samples");
         }
     }
+
+    cc::CanvasRenderingContext2D canvas(96, 64);
+    canvas.setFont("24px Arial");
+    canvas.setFillStyle("#0000ff");
+    const auto draw = [&canvas]() {
+        std::vector<uint8_t> pixels;
+        canvas.resetBuffer(96, 64);
+        canvas.setCanvasBufferUpdatedCallback([&pixels](const cc::Data &data) {
+            pixels.assign(data.getBytes(), data.getBytes() + data.getSize());
+        });
+        canvas.fillText("I", 20, 32, 0);
+        canvas.fetchData();
+        canvas.setCanvasBufferUpdatedCallback(nullptr);
+        return pixels;
+    };
+    const auto countGreen = [](const auto &pixels) {
+        size_t count = 0;
+        for (size_t i = 0; i + 3 < pixels.size(); i += 4) {
+            if (pixels[i + 1] > 0 && pixels[i + 3] > 0) ++count;
+        }
+        return count;
+    };
+    const auto plain = draw();
+    check(!plain.empty() && countGreen(plain) == 0, "Canvas text starts with a transparent shadow");
+    canvas.setShadowColor("rgba(0, 255, 0, 0.5)");
+    canvas.setShadowOffsetX(24);
+    canvas.setShadowOffsetY(8);
+    const auto hard = draw();
+    const size_t hardCoverage = countGreen(hard);
+    check(hardCoverage > 0, "Canvas fillText uses the hard shadow offset and color");
+    canvas.save();
+    canvas.setShadowBlur(4);
+    canvas.setShadowOffsetY(-8);
+    check(countGreen(draw()) > hardCoverage, "Canvas fillText blurs the shadow mask");
+    canvas.restore();
+    check(draw() == hard, "Canvas restore restores the text shadow settings");
+    canvas.setShadowColor("transparent");
+    check(draw() == plain, "Transparent shadow color restores the unshadowed text pixels");
 #endif
 }
 
@@ -3271,6 +3309,11 @@ void testSpriteSceneBenchmark() {
 int main(int argc, char **argv) {
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     if (argc == 2 && std::string(argv[1]) == "--directwrite-file-probe") return runDirectWriteFileProbe();
+    if (argc == 2 && std::string(argv[1]) == "--canvas-text-shadow-probe") {
+        testTextShadowCrop();
+        std::printf("Canvas text shadow: %s\n", gFailures == 0 ? "PASS" : "FAIL");
+        return gFailures == 0 ? 0 : 1;
+    }
 #endif
     if (argc == 4 && std::string(argv[1]) == "--log-visibility-probe") {
         // A quiet child must expose completed log records before it exits.
