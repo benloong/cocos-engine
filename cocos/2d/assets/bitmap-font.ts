@@ -50,6 +50,15 @@ export interface ILetterDefinition {
     [key: string]: FontLetterDefinition;
 }
 
+function releaseAtlasTexture (atlas: FontAtlas, releaseImportedAsset = false): void {
+    const texture = atlas._texture;
+    atlas._texture = null;
+    if (!texture) return;
+    const autoRelease = releaseImportedAsset && !!texture.uuid;
+    texture.decRef(autoRelease);
+    if (!autoRelease && texture.refCount <= 0) texture.destroy();
+}
+
 export class FontAtlas {
     public letterDefinitions: ILetterDefinition = {};
     public _texture: TextureBase | null = null;
@@ -59,14 +68,8 @@ export class FontAtlas {
     }
 
     public set texture (texture: TextureBase | null) {
-        const oldTexture = this._texture;
-        if (oldTexture === texture) return;
-        if (oldTexture) {
-            oldTexture.decRef(false);
-            if (oldTexture.refCount <= 0) {
-                oldTexture.destroy();
-            }
-        }
+        if (this._texture === texture) return;
+        releaseAtlasTexture(this);
         if (texture) {
             texture.addRef();
         }
@@ -157,6 +160,7 @@ export class BitmapFont extends Font {
      * @deprecated since v3.7.0, this is an engine private interface that will be removed in the future.
      */
     public declare fontDefDictionary: FontAtlas;
+    private _ownedFontAtlas: FontAtlas | null = null;
 
     constructor () {
         super();
@@ -165,7 +169,7 @@ export class BitmapFont extends Font {
     onLoaded (): void {
         const spriteFrame = this.spriteFrame;
         if (!this.fontDefDictionary && spriteFrame) {
-            this.fontDefDictionary = new FontAtlas(spriteFrame.texture);
+            this.fontDefDictionary = this._ownedFontAtlas = new FontAtlas(spriteFrame.texture);
         }
 
         const fntConfig = this.fntConfig;
@@ -190,6 +194,11 @@ export class BitmapFont extends Font {
 
             this.fontDefDictionary.addLetterDefinitions(fontDef, letter);
         }
+    }
+
+    protected _onPreDestroy (): void {
+        // The frame's dependency release may have already skipped a texture held by this atlas.
+        if (this._ownedFontAtlas) releaseAtlasTexture(this._ownedFontAtlas, true);
     }
 }
 

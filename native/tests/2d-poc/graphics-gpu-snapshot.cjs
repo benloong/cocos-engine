@@ -19,9 +19,9 @@ module.exports=function graphicsGpuSnapshot(mode='graphics') {
     if (mode === 'graphics') {
         walk(path.join(root, 'cocos/2d/assembler/sprite'));
         walk(path.join(root, 'cocos/2d/assembler/label'));
-        const atlas = path.join(__dirname,'fixtures/acceptance/resources/M6StaticAtlas');
-        walk(atlas);
-        for (const file of [atlas+'.meta',path.join(root,'editor/assets/effects/for2d/builtin-sprite-renderer.effect'),
+        const resources = ['M6StaticAtlas', 'M3BitmapFont'].map(folder => path.join(__dirname, 'fixtures/acceptance/resources', folder));
+        for (const folder of resources) walk(folder);
+        for (const file of [...resources.map(folder => folder + '.meta'),path.join(root,'editor/assets/effects/for2d/builtin-sprite-renderer.effect'),
             path.join(root,'editor/assets/effects/for2d/builtin-sprite.effect')]) {
             fixtureHashes.push([path.relative(root,file).replaceAll('\\','/'),crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')]);
         }

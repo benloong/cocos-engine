@@ -13,6 +13,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | 项目 | 配置和结果 | 证据 |
 |---|---|---|
 | M6.4 所有权 | 已核对 17 类的组件挂接、资源借用与回调。Windows 双配置各通过 6 组 JSB 探针，Debug、Release、ASan Debug 各完成 1000 次场景切换和 88 张 Web 像素对照。 | [逐类记录](./native-2d-m6.4-ownership.md)、[快照和二进制哈希](./native-2d-m6.4-ownership-results.json) |
+| 旧 BMFont 资源 | Windows Debug、Release 和 Web 验证旧 XML FNT 通过 Prefab 预加载、跨场景使用、保留原图、完全卸载和冷重载。Web 修复自有 FontAtlas 造成的原图与 ImageAsset 缓存滞留。新增六张图三端逐字节一致。 | [生命周期与像素](./native-2d-m6-legacy-bmfont.json) |
 | Graphics 命令提交 | Windows Debug/Release 与 Web 像素对照。Release 的 256 个闭合路径从逐调用改用复用缓冲，提交耗时中位数从 581.7 降至 349.1 µs，批次和绘制次数均为 1 | [接口选择与分配实测](./native-2d-m6.3-graphics-commands.md) |
 | 混合负载 CPU | `3b6a4f3c9b` Windows Release 六对交错，混合变更帧从迁移前 7.0153 降至 2.3045 ms/帧，下降 67.2%。两端复用同一份 Windows 场景资源，Web 完成 12 项同源负载。 | [六对实测](./native-2d-m6-performance-3b6a4f3c9b.json)、[测量及复现](./native-2d-m6-performance.md#windows-release-候选-3b6a4f3c9b) |
 | JSB、堆峰值与 GC | 同六对 Windows Release 样本，JSB 为 876 → 197 次/帧，堆峰值为 30,132,734 → 17,507,898 字节，强制 GC 为 10.6235 → 4.6710 ms。GC 四对改善，两对上升。 | [逐对及中位数](./native-2d-m6-performance-3b6a4f3c9b.json)、[早期 V8 诊断](./native-2d-m6-gc-trace.json) |

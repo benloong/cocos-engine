@@ -12,11 +12,13 @@ const assetsLink=path.join(project,'build/windows/assets');
 if(!fs.existsSync(assetsLink)) fs.symlinkSync(path.join(project,'build/windows/data'),assetsLink,'junction');
 fs.cpSync(fixture,project,{recursive:true});
 if (mode === 'graphics') {
-    const atlas = path.join(__dirname, 'fixtures/acceptance/resources/M6StaticAtlas');
     const resources = path.join(project, 'assets/resources');
     fs.mkdirSync(resources, {recursive:true});
-    fs.cpSync(atlas, path.join(resources, 'M6StaticAtlas'), {recursive:true});
-    fs.copyFileSync(atlas + '.meta', path.join(resources,'M6StaticAtlas.meta'));
+    for (const folder of ['M6StaticAtlas', 'M3BitmapFont']) {
+        const source = path.join(__dirname, 'fixtures/acceptance/resources', folder);
+        fs.cpSync(source, path.join(resources, folder), {recursive:true});
+        fs.copyFileSync(source + '.meta', path.join(resources, folder + '.meta'));
+    }
     fs.copyFileSync(path.join(root, 'editor/assets/effects/for2d/builtin-sprite-renderer.effect'), path.join(resources,'AtlasMesh.effect'));
     fs.copyFileSync(path.join(root, 'editor/assets/effects/for2d/builtin-sprite.effect'), path.join(resources,'VariantSprite.effect'));
 }

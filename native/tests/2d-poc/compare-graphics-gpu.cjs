@@ -3,14 +3,19 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==138) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==144) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==138) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==144) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
 if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==19||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
+const legacy = a.scenes.legacyBitmap;
+if (!legacy || !['preload', 'sharedAcrossScenes', 'keptTexture', 'coldReload', 'released', 'atlasPolicy'].every(key => legacy[key] === true)
+    || !Number.isFinite(legacy.width) || legacy.width <= 0 || legacy.ids?.length !== 5 || new Set(legacy.ids).size !== 5) {
+    throw new Error('Incomplete legacy BMFont scene evidence');
+}
 for (const backend of [a, b]) {
     const sizes = backend.shrinkSizes;
     if (sizes?.length !== 8 || !sizes.every(Number.isInteger)
@@ -165,6 +170,18 @@ for(const name of a.captures) {
     results.push({name,max,pixels,channels,colored,pass:max<=1,
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
+}
+const legacyFrame = results.find(row => row.name === 'scene-bmfont-initial');
+const emptyFrame = results.find(row => row.name === 'scene-final-empty');
+if (!legacyFrame?.colored) throw new Error('Legacy BMFont did not render');
+for (const [phase, reference] of [
+    ['next', legacyFrame], ['reloaded', legacyFrame], ['cold-reload', legacyFrame],
+    ['retained-empty', emptyFrame], ['final-empty', emptyFrame],
+]) {
+    const frame = results.find(row => row.name === 'scene-bmfont-' + phase);
+    if (!frame || frame.nativeSha256 !== reference.nativeSha256 || frame.webSha256 !== reference.webSha256) {
+        throw new Error('Legacy BMFont rendered unexpected pixels at ' + phase);
+    }
 }
 for (const [shape, colored] of [['rect', 4608], ['polygon', 4032]]) {
     const prefix = 'packed-' + shape + '-mesh-';

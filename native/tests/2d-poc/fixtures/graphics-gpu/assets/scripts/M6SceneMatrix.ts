@@ -1,7 +1,102 @@
-import { Camera, Color, Director, director, Graphics, instantiate, isValid, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
+import { Asset, BitmapFont, Camera, Color, Director, director, Graphics, instantiate, isValid, Label, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, UITransform } from 'cc';
 
 type Check = { name: string; actual: boolean | number; expected: boolean | number };
 const nextFrame = (): Promise<void> => new Promise(resolve => director.once(Director.EVENT_AFTER_DRAW, resolve));
+
+async function runLegacyBitmapScenes (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {
+    const path = 'M3BitmapFont/LegacyBitmapLabel';
+    const prefabUuid = '8d32029d-5446-4c2d-abce-fad14b94bc07';
+    const fontUuid = '14697d7f-eddd-40c2-bb46-5cd9c361aa1c';
+    const imageUuid = 'edf8a297-6e03-4a36-ace0-66403b851123';
+    const ids = [prefabUuid, fontUuid, `${imageUuid}@f9941`, `${imageUuid}@6c48a`, imageUuid];
+    const cached = (asset: Asset): boolean => isValid(asset) && assetManager.assets.get(asset.uuid) === asset;
+    const finishRelease = async (assets: Asset[], keys: string[]): Promise<void> => {
+        for (let frame = 0; frame < 12 && assets.some(asset => isValid(asset)); ++frame) await nextFrame();
+        if (assets.some(asset => isValid(asset) || asset.refCount !== 0) || keys.some(id => assetManager.assets.has(id))) {
+            throw new Error('Legacy BMFont dependencies survived release: ' + keys.filter(id => assetManager.assets.has(id)).join(','));
+        }
+    };
+    await new Promise<void>((resolve, reject) => resources.preload(path, Prefab, (error, requests) => {
+        if (error) reject(error);
+        else if (![prefabUuid, fontUuid].every(uuid => requests.some(request => request.uuid === uuid && request.file))) {
+            reject(new Error('Legacy BMFont preload missed Prefab or font'));
+        } else resolve();
+    }));
+    if (ids.some(id => assetManager.assets.has(id))) throw new Error('Legacy BMFont preload published assets');
+
+    const load = (): Promise<Prefab> => new Promise((resolve, reject) => resources.load(path, Prefab, (error, prefab) => {
+        if (error) reject(error);
+        else resolve(prefab.addRef());
+    }));
+    const show = async (name: string, prefab: Prefab) => {
+        const parent = openScene(name);
+        const instance = instantiate(prefab);
+        instance.layer = parent.layer;
+        parent.addChild(instance);
+        const label = instance.getComponent(Label);
+        const font = label?.font;
+        if (!label || !(font instanceof BitmapFont) || label.useSystemFont || label.string !== 'AV 20' || label.fontSize !== 20) {
+            throw new Error('Legacy Prefab did not bind its serialized BMFont Label');
+        }
+        const frame = font.spriteFrame;
+        const texture = frame?.original?._texture ?? frame?.texture;
+        if (!(frame instanceof SpriteFrame) || !(texture instanceof Texture2D) || !texture.image
+            || !font.fontDefDictionary || font.fontSize !== 20 || texture.width !== 128 || texture.height !== 128) {
+            throw new Error('Legacy BMFont did not restore its imported atlas and glyph configuration');
+        }
+        if (sys.isNative ? !!frame.original || frame.texture !== texture : !frame.original || frame.texture === texture) {
+            throw new Error('Legacy BMFont did not follow the backend dynamic atlas policy');
+        }
+        const assets = [prefab, font, frame, texture, texture.image];
+        if (assets.some((asset, index) => asset.uuid !== ids[index] || !cached(asset))) {
+            throw new Error('Legacy BMFont dependency UUID or cache identity changed');
+        }
+        await capture(name);
+        const { width, height } = instance.getComponent(UITransform)!;
+        if (label.spriteFrame !== frame || width <= 0 || height !== 20 || label.actualFontSize !== 20) {
+            throw new Error('Legacy BMFont Label did not use the loaded frame');
+        }
+        return { label, instance, assets, texture, width };
+    };
+
+    const prefab = await load();
+    const first = await show('scene-bmfont-initial', prefab);
+    const second = await show('scene-bmfont-next', prefab);
+    if (isValid(first.instance) || isValid(first.label) || first.assets.some((asset, i) => asset !== second.assets[i])) {
+        throw new Error('Legacy BMFont did not preserve shared assets across the scene switch');
+    }
+    const texture = second.texture.addRef();
+    openScene('scene-bmfont-retained-empty');
+    await nextFrame();
+    if (isValid(second.label)) throw new Error('Old BMFont Label survived its scene');
+    prefab.decRef();
+    await finishRelease(second.assets.slice(0, 3), ids.slice(0, 3));
+    if (!cached(texture) || !cached(second.assets[4])) throw new Error('Explicitly retained legacy texture was released');
+    await capture('scene-bmfont-retained-empty');
+
+    const replacement = await load();
+    const reused = await show('scene-bmfont-reloaded', replacement);
+    if (reused.texture !== texture || reused.assets.slice(0, 3).some((asset, i) => asset === second.assets[i])) {
+        throw new Error('Legacy BMFont reload failed to create new owners and reuse the retained texture');
+    }
+    openScene('scene-bmfont-unloaded');
+    await nextFrame();
+    replacement.decRef();
+    texture.decRef();
+    await finishRelease(reused.assets, ids);
+
+    const freshPrefab = await load();
+    const fresh = await show('scene-bmfont-cold-reload', freshPrefab);
+    if (fresh.assets.some((asset, i) => asset === reused.assets[i]) || [second, reused, fresh].some(state => state.width !== first.width)) {
+        throw new Error('Legacy BMFont cold reload recovered stale wrappers or changed layout');
+    }
+    openScene('scene-bmfont-final-empty');
+    await nextFrame();
+    freshPrefab.decRef();
+    await finishRelease(fresh.assets, ids);
+    await capture('scene-bmfont-final-empty');
+    return { preload: true, sharedAcrossScenes: true, keptTexture: true, coldReload: true, released: true, atlasPolicy: true, width: first.width, ids };
+}
 
 // All render roots in this fixture are direct Scene children. A walk overwrites
 // final opacity even when a root has no drawable components or visible pixels.
@@ -166,5 +261,12 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
     check('atlas-all-cache-keys-released', ids.every(id => !assetManager.assets.has(id)), true);
     check('atlas-final-root-count', await countTraversedRoots(), 0);
     await capture('scene-atlas-unloaded');
-    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks };
+    const legacyBitmap = await runLegacyBitmapScenes(name => {
+        const scene = new Scene(name);
+        const content = root(scene, 'bmfont-root', layer);
+        camera(scene, 'bmfont-camera', layer, 0, 7, rt);
+        director.runSceneImmediate(scene);
+        return content;
+    }, capture);
+    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks, legacyBitmap };
 }

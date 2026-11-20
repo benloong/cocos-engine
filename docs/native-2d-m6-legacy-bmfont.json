@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "3bb5a2cf29",
+  "snapshot": "938bf365f38e39b7bfdb43b248b42da0aa67bc809b2980caf0660fd802c1d0cb",
+  "baseline": {
+    "snapshot": "9a1c2dc5a692961f9a68fe4972f17d12e15d6d73b545b3bb8b3423bd222dbe06",
+    "webRetainedDependencies": [
+      "texture",
+      "image"
+    ],
+    "webLogSha256": "91b24368ff99283dc0b9f4042b9eaf24de219b75ffab42cd0ccd212a8b7ea2cc"
+  },
+  "oldProjectResources": {
+    "M3BitmapFont.meta": "e37eb077bbb07f785bdbdc43fee059b3be8a95bdb17509d6107e439967d8c4b6",
+    "M3BitmapFont/OpenSans-Bold.fnt": "1c1062dad86f8feec011939499705d33076595cac676f22535b79ddf9bd9955f",
+    "M3BitmapFont/OpenSans-Bold.fnt.meta": "bd89d765fa8b1cdaca554a13267da5cf9cadc5a983d0fe1f05057f1a35ab2c8e",
+    "M3BitmapFont/OpenSans-Bold_0.png": "38cf0dd0754aa2bcd5a9a659cf7e52f1593cac88c9863b63c25565c47cb746cf",
+    "M3BitmapFont/OpenSans-Bold_0.png.meta": "414d4b6b27da3f99487a805fa054b651389b8f90ae709db1f94cfa4e5459e268"
+  },
+  "regressionPrefab": {
+    "LegacyBitmapLabel.prefab": "18c924c207ffa1479b0bfe0af62ab958be9e4266f009eef9387dafb147a1b504",
+    "LegacyBitmapLabel.prefab.meta": "1a464d14e9027bedbd206be65fc16991a95f901ee225a766b4275da765ba5a30"
+  },
+  "legacyBitmap": {
+    "preload": true,
+    "sharedAcrossScenes": true,
+    "keptTexture": true,
+    "coldReload": true,
+    "released": true,
+    "atlasPolicy": true,
+    "width": 40,
+    "ids": [
+      "8d32029d-5446-4c2d-abce-fad14b94bc07",
+      "14697d7f-eddd-40c2-bb46-5cd9c361aa1c",
+      "edf8a297-6e03-4a36-ace0-66403b851123@f9941",
+      "edf8a297-6e03-4a36-ace0-66403b851123@6c48a",
+      "edf8a297-6e03-4a36-ace0-66403b851123"
+    ]
+  },
+  "dynamicAtlas": {
+    "windows": "source frame",
+    "web": "packed frame"
+  },
+  "capturedGlyphString": "AV 20",
+  "fontSize": 20,
+  "captureCount": 144,
+  "byteIdenticalPerWindowsConfiguration": 144,
+  "earlierCapturesByteIdentical": 138,
+  "sceneCyclesPerBackend": 1000,
+  "hitChecksPerBackend": 22,
+  "webManifestSha256": "43886af659d0aa169bb591ddfdfbf62ef4f2951f90c33a9bc78756ef344dac3d",
+  "configurations": {
+    "Debug": {
+      "executableSha256": "d5addda3d52637b183dffd5c0cd9cf3fe03f9d2151cb0f0b65a5bc3d5e96898c",
+      "manifestSha256": "c068b0203687c2a116ec29d3c723edddde4d555d058b534be1fd6e837ea3a8d0",
+      "comparisonSha256": "cee72f48d9e89cb611adfd764f70ebe1145af0c788054295d353a45180e35aee",
+      "runtimeLogSha256": "b071fdd52414205ee6a8643acce944e9ec98530cf20e7a77e426443ee680fa2c"
+    },
+    "Release": {
+      "executableSha256": "426572c16f90efd1aa277a0f720e49c271fa8b265bf12502ef2448d5b10117f6",
+      "manifestSha256": "b6b7b3ec76b8271699ffede00440da7291b7672b5c963389501f4de5da9541d7",
+      "comparisonSha256": "cee72f48d9e89cb611adfd764f70ebe1145af0c788054295d353a45180e35aee",
+      "runtimeLogSha256": "0c1d3ed862b8916efe5e2d804a2960d60315381efa3827723cdfe43260ffeb66"
+    }
+  },
+  "legacyCaptures": [
+    {
+      "name": "scene-bmfont-initial",
+      "coloredPixels": 283,
+      "rgbaSha256": "913bc04364514d131168dfa66b2feb3d6f3b5849270bea2d0a19d3692e745901"
+    },
+    {
+      "name": "scene-bmfont-next",
+      "coloredPixels": 283,
+      "rgbaSha256": "913bc04364514d131168dfa66b2feb3d6f3b5849270bea2d0a19d3692e745901"
+    },
+    {
+      "name": "scene-bmfont-retained-empty",
+      "coloredPixels": 0,
+      "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    },
+    {
+      "name": "scene-bmfont-reloaded",
+      "coloredPixels": 283,
+      "rgbaSha256": "913bc04364514d131168dfa66b2feb3d6f3b5849270bea2d0a19d3692e745901"
+    },
+    {
+      "name": "scene-bmfont-cold-reload",
+      "coloredPixels": 283,
+      "rgbaSha256": "913bc04364514d131168dfa66b2feb3d6f3b5849270bea2d0a19d3692e745901"
+    },
+    {
+      "name": "scene-bmfont-final-empty",
+      "coloredPixels": 0,
+      "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+    }
+  ]
+}

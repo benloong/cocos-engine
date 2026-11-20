@@ -1,6 +1,10 @@
 import { Label, LabelOutline, LabelShadow } from "../../cocos/2d/components";
 import { Node } from "../../cocos/scene-graph/node";
 import { Color, Vec2 } from "../../exports/base";
+import { BitmapFont, FontAtlas } from '../../cocos/2d/assets/bitmap-font';
+import { SpriteFrame } from '../../cocos/2d/assets/sprite-frame';
+import { Texture2D } from '../../cocos/asset/assets/texture-2d';
+import { CCObject } from '../../cocos/core/data/object';
 
 test('label.string.setter', () => {
     let node = new Node();
@@ -72,4 +76,34 @@ test('labelShadow.setter', () => {
     labelShadow.enabled = true;
     labelShadow.onEnable();
     expect(label.enableShadow).toStrictEqual(true);
+});
+
+test('BitmapFont destroys its own runtime atlas texture and preserves a caller-supplied atlas', () => {
+    const font = new BitmapFont();
+    const texture = new Texture2D();
+    const frame = new SpriteFrame();
+    frame.texture = texture;
+    font.spriteFrame = frame;
+    font.fntConfig = { fontDefDictionary: {} };
+    font.onLoaded();
+    const owned = font.fontDefDictionary;
+    expect(owned.texture).toBe(texture);
+    expect(texture.refCount).toBe(1);
+
+    const external = new FontAtlas(new Texture2D());
+    const externalTexture = external.texture!;
+    font.fontDefDictionary = external;
+    font.destroy();
+    CCObject._deferredDestroy();
+    CCObject._deferredDestroy();
+    expect(owned.texture).toBeNull();
+    expect(texture.refCount).toBe(0);
+    expect(texture.isValid).toBe(false);
+    expect(external.texture).toBe(externalTexture);
+    expect(externalTexture.refCount).toBe(1);
+    expect(externalTexture.isValid).toBe(true);
+
+    external.texture = null;
+    frame.destroy();
+    CCObject._deferredDestroy();
 });

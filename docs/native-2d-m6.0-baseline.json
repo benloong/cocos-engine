@@ -13308,9 +13308,29 @@
             "decorators": []
           },
           {
+            "name": "_ownedFontAtlas",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "FontAtlas | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
             "name": "onLoaded",
             "kind": "MethodDeclaration",
             "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_onPreDestroy",
+            "kind": "MethodDeclaration",
+            "visibility": "protected",
             "static": false,
             "type": "void",
             "parameters": [],
@@ -14823,8 +14843,8 @@
     },
     {
       "file": "cocos/2d/assets/bitmap-font.ts",
-      "sha256": "649480d612f9855692408bf2118b5d6cabfc6ac23094f8a30c5fbefc31c66920",
-      "printedCodeLines": 126,
+      "sha256": "177b0f0dde0a92448bb426a4833ba0f62ae8e8854cd82f0fdf6dd3e68cc8e68b",
+      "printedCodeLines": 135,
       "runtimeImports": [
         "cc.decorator",
         "./font",
@@ -14838,8 +14858,8 @@
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        86,
-        178
+        89,
+        182
       ]
     },
     {
