@@ -12,6 +12,11 @@ if(!lifecycle||lifecycle.cycles!==1000||lifecycle.cacheHits!==1000||lifecycle.by
 const { richTextNames, shadowNames, captures } = require('./richtext-gpu-cases.cjs');
 if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||a.snapshot!==require('./graphics-gpu-snapshot.cjs')('richtext').snapshot)throw Error('Stale/source/backend mismatch');
 for(const value of [a,b]) {
+    const interaction = value.text.interaction;
+    if (!interaction?.sameWithShadowTag || !interaction.repainted || !interaction.destroyed
+        || interaction.widths?.join() !== '160,96' || interaction.calls?.join() !== 'first,second') {
+        throw Error('Incomplete styled RichText interaction: ' + value.backend);
+    }
     if (JSON.stringify(value.text.shadowLayout?.map(row=>row.name)) !== JSON.stringify(shadowNames)) throw Error('Incomplete Label shadow layouts');
     const coverage = value.text.hardShadowCoverage;
     const centers = value.text.blurredShadowCenters;
@@ -94,7 +99,7 @@ for(let n=0;n<captures.length;n++) {
     }
     rows.push(row);
 }
-const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},pass:rows.every(x=>x.pass),results:rows};
+const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},interaction:{native:a.text.interaction,web:b.text.interaction},pass:rows.every(x=>x.pass),results:rows};
 result.executableSha256 = a.executableSha256;
 fs.writeFileSync(path.join(base,'richtext-gpu-comparison.json'),JSON.stringify(result,null,2)+'\n');
 for(const row of rows)console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: layout=${row.layoutEqual}, max=${row.max}, pixels=${row.pixels}, colored=${row.nativeColored}/${row.webColored}`);

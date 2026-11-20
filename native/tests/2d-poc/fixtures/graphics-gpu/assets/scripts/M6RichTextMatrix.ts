@@ -1,9 +1,102 @@
-import { assetManager, deserialize, director, gfx, Color, instantiate, isValid, Label, Node, Prefab, RichText, sys, TTFFont, UITransform, Vec2 } from 'cc';
+import { _decorator, assetManager, deserialize, director, gfx, Color, Component, EventTouch, instantiate, isValid, Label, Node, Prefab, RichText, sys, Touch, TTFFont, UITransform, Vec2, Vec3, view } from 'cc';
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
 function samePixels (a: Uint8Array, b: Uint8Array): boolean {
     return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+@_decorator.ccclass('M6StyledRichTextEvents')
+class StyledClickReceiver extends Component {
+    public readonly calls: string[] = [];
+
+    public recordClick (event: EventTouch, param: string): void {
+        if (event.type !== Node.EventType.TOUCH_END) throw new Error('Wrong styled RichText event type');
+        this.calls.push(param);
+    }
+}
+
+async function checkStyledInteraction (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<object> {
+    const node = new Node('styled-richtext-events');
+    node.layer = parent.layer;
+    parent.addChild(node);
+    try {
+        const ui = node.addComponent(UITransform);
+        const receiver = node.addComponent(StyledClickReceiver);
+        const rich = node.addComponent(RichText);
+        rich.font = font;
+        rich.fontSize = 24;
+        rich.lineHeight = 30;
+        rich.maxWidth = 160;
+        rich.horizontalAlign = 1;
+        const first = "<on click='recordClick' param='first'><i><color=#ff0000>Atlas</color></i></on>";
+        const shadowed = "<shadow color=#114477 blur=4>" + first + '</shadow>';
+        const second = (word: string): string =>
+            "<br/><on click='recordClick' param='second'><u><size=18><color=#00ff00>" + word + '</color></size></u></on>';
+        const verifyLayout = (width: number): void => {
+            if (ui.width !== width || node.children.length !== 2 || node.children[0].position.y <= node.children[1].position.y) {
+                throw new Error('Styled RichText failed to produce two aligned lines');
+            }
+        };
+        const locate = (index: number): Vec2 => {
+            const child = node.children[index];
+            const transform = child.getComponent(UITransform);
+            if (transform) {
+                const box = transform.getBoundingBoxToWorld();
+                return new Vec2(box.x + box.width / 2, box.y + box.height / 2);
+            }
+            const world = Vec3.transformMat4(new Vec3(), new Vec3(1, 1, 0), child.worldMatrix);
+            return new Vec2(world.x, world.y);
+        };
+        const touch = (point: Vec2, stopped: boolean): void => {
+            const viewport = view.getViewportRect();
+            const input = new Touch(viewport.x + point.x * view.getScaleX(), viewport.y + point.y * view.getScaleY());
+            const event = new EventTouch([input], true, Node.EventType.TOUCH_END, [input]);
+            event.touch = input;
+            node.dispatchEvent(event);
+            if (event.propagationStopped !== stopped) throw new Error('Wrong styled RichText event propagation');
+        };
+        rich.string = shadowed + second('Green');
+        await wait();
+        verifyLayout(160);
+        const shadowPixels = new Uint8Array(readPixels());
+        rich.string = first + second('Green');
+        await wait();
+        if (!samePixels(shadowPixels, readPixels())) throw new Error('Unknown shadow tag changed the styled event scene');
+        rich.string = shadowed + second('Green');
+        await wait();
+        const firstPoint = locate(0);
+        touch(firstPoint, true);
+        touch(new Vec2(firstPoint.x - 1000, firstPoint.y), false);
+
+        const previousX = node.children[0].position.x;
+        rich.maxWidth = 96;
+        rich.horizontalAlign = 2;
+        rich.string = shadowed + second('Beta');
+        await wait();
+        verifyLayout(96);
+        const edited = readPixels();
+        if (previousX === node.children[0].position.x || samePixels(shadowPixels, edited)
+            || !edited.some((value, i) => i % 4 === 0 && value > edited[i + 1] + 16)
+            || !edited.some((value, i) => i % 4 === 1 && value > edited[i - 1] + 16)) {
+            throw new Error('Styled RichText edit did not move and repaint both colors');
+        }
+        const secondPoint = locate(1);
+        rich.handleTouchEvent = false;
+        touch(secondPoint, false);
+        rich.handleTouchEvent = true;
+        touch(secondPoint, true);
+        rich.destroy();
+        await wait();
+        touch(secondPoint, false);
+        if (isValid(rich) || node.children.length !== 0 || receiver.calls.join(',') !== 'first,second') {
+            throw new Error('Styled RichText edit or teardown left a stale click handler');
+        }
+        return { widths: [160, 96], sameWithShadowTag: true, repainted: true, calls: receiver.calls, destroyed: true };
+    } finally {
+        node.destroy();
+        await wait();
+    }
 }
 
 async function checkRenderedReplacement (rich: RichText, expected: string, readPixels: () => Uint8Array): Promise<void> {
@@ -476,6 +569,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     const prefab = await checkRichTextPrefab(parent, font, readPixels);
     await checkRichTextResizeListener(parent, font, readPixels);
     await checkRichTextChildAddedListener(parent, font, readPixels);
+    const interaction = await checkStyledInteraction(parent, font, readPixels);
     const cases = [
         { name: 'text-basic', value: 'Atlas 123' },
         { name: 'text-bold', value: '<b>Atlas 123</b>' },
@@ -533,5 +627,5 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
-    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, hardShadowCoverage, blurredShadowCenters, shadowLayout };
+    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, hardShadowCoverage, blurredShadowCenters, shadowLayout };
 }

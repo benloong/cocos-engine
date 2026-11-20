@@ -46,3 +46,9 @@ CLI 的引擎缓存曾在项目开启 rich-text 后仍未提供导出，导致 a
 使用已构建的 `gpu-win/native-2d-m6-gpu.exe` 时，先按 Graphics 步骤构建当前 native 二进制；只替换脚本不能验证 C++ 修复。原始日志及 RGBA 位于忽略目录 `native/tests/2d-poc/build/richtext-gpu-*`。当前仅 Windows Debug 应用和 Chrome；Release GPU、复杂输入/点击与 Mask/Camera、其他字体、资源循环及平台矩阵继续待验收。
 
 共享工具回归：同一当前源码的 Graphics/Scene 模式快照 4af809aac2ee7f4a5273e0b2477b966400486705877f321f30dc8d0d2e441300，普通 Windows Debug 与 Web 74 图像最大通道差值均为 0，1000 次 Scene/动态纹理循环通过；10 项静态检查及 RichText 夹具 TS（skipLibCheck）通过。该控制组不改变上述字体视觉失败结论。
+
+## 样式、重排与触摸组合
+
+Windows Debug、Release 与 Web 在同一个 Thonburi 场景中绘制红色斜体和绿色小字号下划线。带未知 `shadow` 标签与直接排版的 GPU 回读逐字节相同。容器从居中 160 px 改为右对齐 96 px 后，子段位置和图像均发生变化，两种颜色都保留。命中两行依次收到 `first`、`second`，未命中、关闭触摸和销毁后的事件均继续传播。销毁后内部子节点数为 0。
+
+独立场景包快照为 `4312fbde78f5354cbe835395cc206d8cf1c2f3739b34f57bba67145d210d7ba5`。Windows Debug 和 Release 复用 [已验收的引擎二进制](./native-2d-m6-label-blur.json)，重新部署该场景包并对照 Web。每个配置与上一节点的 47 张图哈希逐一相同，布局 47/47，严格图像 44/47。Windows 粗体、描边及嵌套样式三张图仍超差。
