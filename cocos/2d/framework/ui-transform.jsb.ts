@@ -25,22 +25,16 @@
 import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displayOrder, serializable, disallowMultiple } from 'cc.decorator';
 import { EDITOR } from 'internal:constants';
 import { Component } from '../../scene-graph';
-import { Rect, Size, Vec2, Vec3, geometry, Mat4, visibleRect } from '../../core';
+import { Rect, Size, Vec2, Vec3, geometry, Mat4, visibleRect, warnID } from '../../core';
 import { director } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
+import { queueUITransformParentChange, queueUITransformSiblingOrder } from './ui-transform-sibling-order';
 
 declare const n2d: any;
 
 const _isHitWorld = new Vec2();
 const _isHitMat4 = new Mat4();
 
-/**
- * Native M1 shell for UITransform.
- *
- * Serialization/editor metadata stay in JS. Native UITransform owns content
- * size, anchor, priority, bounds, conversions and hit test. Enabled in the
- * NATIVE cc.config override after the real Creator scene regression.
- */
 @ccclass('cc.UITransform')
 @help('i18n:cc.UITransform')
 @executionOrder(110)
@@ -131,8 +125,13 @@ export class UITransform extends Component {
         if (this._priority === value) {
             return;
         }
+        if (this.node.getComponent('cc.RenderRoot2D')) {
+            warnID(6706);
+            return;
+        }
         this._priority = value;
         this._native?.setPriority(value);
+        queueUITransformSiblingOrder(this.node.parent);
     }
 
     get visibility (): number {
@@ -150,6 +149,7 @@ export class UITransform extends Component {
     }
 
     public onLoad (): void {
+        queueUITransformSiblingOrder(this.node.parent);
         this._native = new n2d.UITransform(this.node);
         this._native.setContentSizeXY(this._contentSize.width, this._contentSize.height);
         this._native.setAnchorPointXY(this._anchorPoint.x, this._anchorPoint.y);
@@ -159,6 +159,14 @@ export class UITransform extends Component {
             this._contentSize.set(width, height);
             this.node.emit(NodeEventType.SIZE_CHANGED, previous);
         });
+    }
+
+    public onEnable (): void {
+        this.node.on(NodeEventType.PARENT_CHANGED, queueUITransformParentChange, this);
+    }
+
+    public onDisable (): void {
+        this.node.off(NodeEventType.PARENT_CHANGED, queueUITransformParentChange, this);
     }
 
     public onDestroy (): void {

@@ -543,6 +543,41 @@ export class M6GraphicsGpuProbe extends Component {
             if (update) { update(); await capture(`${item.name}-updated`); }
             root.destroy(); await wait(40);
         }
+        const priorityRoot = node(canvas.node, 'ui-priority');
+        const priorityRed = node(priorityRoot, 'red');
+        const priorityBlue = node(priorityRoot, 'blue');
+        const redShape = graphics(priorityRed);
+        const blueShape = graphics(priorityBlue);
+        redShape.fillColor = Color.RED;
+        blueShape.fillColor = Color.BLUE;
+        redShape.fillRect(-40, -40, 80, 80);
+        blueShape.fillRect(-40, -40, 80, 80);
+        const redTransform = priorityRed.getComponent(UITransform)!;
+        const blueTransform = priorityBlue.getComponent(UITransform)!;
+        const checkPriorityOrder = (first: Node, last: Node): void => {
+            if (priorityRoot.children[0] !== first || priorityRoot.children[1] !== last
+                || first.siblingIndex !== 0 || last.siblingIndex !== 1) {
+                throw new Error('UITransform.priority did not update sibling order');
+            }
+        };
+        await capture('ui-priority-original');
+        checkPriorityOrder(priorityRed, priorityBlue);
+        redTransform.priority = .25;
+        await capture('ui-priority-updated');
+        checkPriorityOrder(priorityBlue, priorityRed);
+        blueTransform.priority = .25;
+        await capture('ui-priority-equal');
+        checkPriorityOrder(priorityBlue, priorityRed);
+        const detachedParent = node(canvas.node, 'ui-priority-reparent');
+        priorityBlue.parent = detachedParent;
+        blueTransform.priority = .125;
+        await wait();
+        priorityBlue.parent = priorityRoot;
+        await capture('ui-priority-reparented');
+        checkPriorityOrder(priorityBlue, priorityRed);
+        priorityRoot.destroy();
+        detachedParent.destroy();
+        await wait(40);
         const roots: { name: string; actual: number; expected: number }[] = [];
         const checkRootTraversal = async (name: string, expected: number): Promise<void> => {
             const actual = await countTraversedRoots();

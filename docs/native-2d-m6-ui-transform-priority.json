@@ -1,0 +1,77 @@
+{
+  "reproduction": {
+    "configuration": "Windows Debug",
+    "case": "ui-priority-updated",
+    "expectedCenter": [
+      255,
+      0,
+      0,
+      255
+    ],
+    "actualCenter": [
+      0,
+      0,
+      255,
+      255
+    ],
+    "failure": "UITransform.priority did not update sibling order"
+  },
+  "configurations": {
+    "Debug": {
+      "snapshot": "3e22a6a276f2520a38efb9aef83c6de42852979cb95ac55e29d1b598e8bdade4",
+      "executableSha256": "4223132b1d44a11a54fd2c5d5877964fd862dec5af5235565e2f099d9a1897a5",
+      "captures": 92,
+      "identicalToWeb": 92,
+      "identicalToPriorCaptures": 88,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "priorityCases": [
+        {
+          "name": "ui-priority-original",
+          "rgbaSha256": "7fa2f4f34c88e0a7934a38dd3287d71ef034be9fbe1918b9eeaa39634e437405"
+        },
+        {
+          "name": "ui-priority-updated",
+          "rgbaSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "ui-priority-equal",
+          "rgbaSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "ui-priority-reparented",
+          "rgbaSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        }
+      ]
+    },
+    "Release": {
+      "snapshot": "3e22a6a276f2520a38efb9aef83c6de42852979cb95ac55e29d1b598e8bdade4",
+      "executableSha256": "abd7adf1dfcc2850090508d46cd3cc1ee0523a05e70a989874cf941ae672ec85",
+      "captures": 92,
+      "identicalToWeb": 92,
+      "identicalToPriorCaptures": 88,
+      "maximumChannelDifference": 0,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "priorityCases": [
+        {
+          "name": "ui-priority-original",
+          "rgbaSha256": "7fa2f4f34c88e0a7934a38dd3287d71ef034be9fbe1918b9eeaa39634e437405"
+        },
+        {
+          "name": "ui-priority-updated",
+          "rgbaSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "ui-priority-equal",
+          "rgbaSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "ui-priority-reparented",
+          "rgbaSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        }
+      ]
+    }
+  }
+}

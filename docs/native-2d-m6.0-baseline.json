@@ -452,6 +452,7 @@
       "cocos/2d/framework/ui-component.ts",
       "cocos/2d/framework/ui-renderer-manager.ts",
       "cocos/2d/framework/ui-renderer.ts",
+      "cocos/2d/framework/ui-transform-sibling-order.ts",
       "cocos/2d/framework/ui-transform.jsb.ts",
       "cocos/2d/index.ts",
       "cocos/2d/renderer/base.ts",
@@ -490,6 +491,7 @@
       "cocos/asset/assets/material.jsb.ts",
       "cocos/asset/assets/texture-2d.jsb.ts",
       "cocos/asset/assets/texture-base.jsb.ts",
+      "cocos/core/data/object.ts",
       "cocos/core/global-exports.ts",
       "cocos/core/index.ts",
       "cocos/core/math/vec2.ts",
@@ -1023,40 +1025,6 @@
             "decorators": []
           },
           {
-            "name": "priorityChangeNodeMap",
-            "kind": "PropertyDeclaration",
-            "visibility": "private",
-            "static": true,
-            "type": null,
-            "parameters": [],
-            "default": "new Map<string, Node>()",
-            "decorators": []
-          },
-          {
-            "name": "insertChangeMap",
-            "kind": "MethodDeclaration",
-            "visibility": "private",
-            "static": true,
-            "type": "void",
-            "parameters": [
-              "node: Node"
-            ],
-            "default": null,
-            "decorators": []
-          },
-          {
-            "name": "_sortChildrenSibling",
-            "kind": "MethodDeclaration",
-            "visibility": "private",
-            "static": true,
-            "type": "void",
-            "parameters": [
-              "node: Node"
-            ],
-            "default": null,
-            "decorators": []
-          },
-          {
             "name": "_sortSiblings",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -1361,6 +1329,26 @@
             "decorators": []
           },
           {
+            "name": "onEnable",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "onDisable",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "onDestroy",
             "kind": "MethodDeclaration",
             "visibility": "public",
@@ -1589,18 +1577,17 @@
       },
       "comparison": {
         "disposition": "declarations only; inherited APIs and behavior require review",
-        "notDeclaredInShell": [
-          "onDisable",
-          "onEnable"
-        ],
+        "notDeclaredInShell": [],
         "missingSerializedDeclarations": [],
         "initializerTextDifferences": []
       },
       "imports": {
         "within2d": [
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts"
         ],
         "boundaries": [
+          "cocos/core/data/object.ts",
           "cocos/core/index.ts",
           "cocos/game/director.ts",
           "cocos/scene-graph/index.jsb.ts",
@@ -2567,6 +2554,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -2593,6 +2581,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -2775,9 +2764,11 @@
       "imports": {
         "within2d": [
           "cocos/2d/framework/render-root-2d.jsb.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts"
         ],
         "boundaries": [
+          "cocos/core/data/object.ts",
           "cocos/core/index.ts",
           "cocos/game/director.ts",
           "cocos/scene-graph/component.ts",
@@ -4336,6 +4327,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -4362,6 +4354,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
@@ -7455,6 +7448,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -7482,6 +7476,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
@@ -8763,6 +8758,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -8789,6 +8785,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
@@ -10261,6 +10258,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -10287,6 +10285,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
@@ -12211,6 +12210,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -12238,6 +12238,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
@@ -12652,6 +12653,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -12679,6 +12681,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
@@ -12880,6 +12883,7 @@
           "cocos/2d/framework/ui-component.ts",
           "cocos/2d/framework/ui-renderer-manager.ts",
           "cocos/2d/framework/ui-renderer.ts",
+          "cocos/2d/framework/ui-transform-sibling-order.ts",
           "cocos/2d/framework/ui-transform.jsb.ts",
           "cocos/2d/renderer/base.ts",
           "cocos/2d/renderer/batcher-2d.ts",
@@ -12907,6 +12911,7 @@
           "cocos/asset/assets/material.jsb.ts",
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
+          "cocos/core/data/object.ts",
           "cocos/core/global-exports.ts",
           "cocos/core/index.ts",
           "cocos/core/math/vec3.ts",
@@ -16424,30 +16429,47 @@
       ]
     },
     {
+      "file": "cocos/2d/framework/ui-transform-sibling-order.ts",
+      "sha256": "e772c218db8f3cfedb136e2c8c571aa650ea10730e9e7f1b734d26d39175d1d3",
+      "printedCodeLines": 46,
+      "runtimeImports": [
+        "internal:constants",
+        "../../core/data/object",
+        "../../game/director"
+      ],
+      "frameMethods": [],
+      "nativeCalls": [],
+      "allocations": [],
+      "loops": [
+        26
+      ]
+    },
+    {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "579a021d79dcf60f7414a751dc8c41d7fbccb16ba365bbc6ad1239c14fb43bc0",
-      "printedCodeLines": 219,
+      "sha256": "c32b96538ac9a48862f677ad924ec031ca62d00ff76ef1350ac9df5658bc4e94",
+      "printedCodeLines": 232,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
         "../../scene-graph",
         "../../core",
         "../../game/director",
-        "../../scene-graph/node-event"
+        "../../scene-graph/node-event",
+        "./ui-transform-sibling-order"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native.setContentSizeXY",
-          "line": 74
+          "line": 68
         },
         {
           "expression": "this._native?.setAnchorPointXY",
-          "line": 107
+          "line": 101
         },
         {
           "expression": "this._native?.setPriority",
-          "line": 135
+          "line": 133
         },
         {
           "expression": "this._native.setContentSizeXY",
@@ -16467,90 +16489,90 @@
         },
         {
           "expression": "this._native?.detach",
-          "line": 165
+          "line": 173
         },
         {
           "expression": "this._native.containsWorldPointXY",
-          "line": 210
-        },
-        {
-          "expression": "this._native.hitTestXY",
           "line": 218
         },
         {
-          "expression": "this._native.convertToNodeSpaceARX",
-          "line": 225
-        },
-        {
-          "expression": "this._native.convertToNodeSpaceARY",
+          "expression": "this._native.hitTestXY",
           "line": 226
         },
         {
+          "expression": "this._native.convertToNodeSpaceARX",
+          "line": 233
+        },
+        {
+          "expression": "this._native.convertToNodeSpaceARY",
+          "line": 234
+        },
+        {
           "expression": "this._native.convertToWorldSpaceARX",
-          "line": 239
+          "line": 247
         },
         {
           "expression": "this._native.convertToWorldSpaceARY",
-          "line": 240
+          "line": 248
         },
         {
           "expression": "this._native.getBoundingBoxX",
-          "line": 252
+          "line": 260
         },
         {
           "expression": "this._native.getBoundingBoxY",
-          "line": 253
+          "line": 261
         },
         {
           "expression": "this._native.getBoundingBoxWidth",
-          "line": 254
+          "line": 262
         },
         {
           "expression": "this._native.getBoundingBoxHeight",
-          "line": 255
+          "line": 263
         },
         {
           "expression": "this._native.getBoundingBoxToWorldX",
-          "line": 264
+          "line": 272
         },
         {
           "expression": "this._native.getBoundingBoxToWorldY",
-          "line": 265
+          "line": 273
         },
         {
           "expression": "this._native.getBoundingBoxToWorldWidth",
-          "line": 266
+          "line": 274
         },
         {
           "expression": "this._native.getBoundingBoxToWorldHeight",
-          "line": 267
+          "line": 275
         },
         {
           "expression": "this._native.getBoundingBoxToX",
-          "line": 278
+          "line": 286
         },
         {
           "expression": "this._native.getBoundingBoxToY",
-          "line": 279
+          "line": 287
         },
         {
           "expression": "this._native.getBoundingBoxToWidth",
-          "line": 280
+          "line": 288
         },
         {
           "expression": "this._native.getBoundingBoxToHeight",
-          "line": 281
+          "line": 289
         }
       ],
       "allocations": [],
       "loops": [
-        196
+        204
       ]
     },
     {
       "file": "cocos/2d/framework/ui-transform.ts",
-      "sha256": "6e0f4823865c07c9802622afe2881031398c318cab5cba16a86f4d91e1d45e0b",
-      "printedCodeLines": 482,
+      "sha256": "631fb5faa8daef82471e2a57b76551852c54e7c907b320167f39f59d8166db75",
+      "printedCodeLines": 445,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16558,17 +16580,18 @@
         "../../core",
         "../../game/director",
         "../../scene-graph/node-event",
-        "../../scene-graph/node-event-processor"
+        "../../scene-graph/node-event-processor",
+        "./ui-transform-sibling-order"
       ],
       "frameMethods": [],
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        420,
-        468,
-        506,
-        628,
-        676
+        417,
+        465,
+        503,
+        625,
+        673
       ]
     },
     {

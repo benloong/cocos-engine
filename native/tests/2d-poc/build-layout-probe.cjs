@@ -26,6 +26,7 @@ function require(id) {
  if (id === '../../core') return {Size,Vec2,Mat4:class {}};
  if (id === '../../game/director') return {director:{}};
  if (id === '../../scene-graph/node-event') return {NodeEventType:{SIZE_CHANGED:'size-changed'}};
+ if (id === './ui-transform-sibling-order') return {queueUITransformSiblingOrder() {}};
  throw new Error(id);
 }
 const exports = {};

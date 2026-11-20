@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==88) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==92) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==88) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==92) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -46,6 +46,8 @@ for (const row of a.labelLayout) {
 if (!a.shrinkSizes.every((size,index) => size === b.shrinkSizes[index])) throw new Error('Windows and Web resolve different SHRINK font sizes');
 const centers={
     'prefab-atlas-sprite':[255,0,0,255],'prefab-atlas-mesh-left':[255,0,0,255],'prefab-atlas-mesh-right':[0,255,0,255],
+    'ui-priority-original':[0,0,255,255],'ui-priority-updated':[255,0,0,255],
+    'ui-priority-equal':[255,0,0,255],'ui-priority-reparented':[255,0,0,255],
     'root-order-registration':[64,0,128,255],'root-order-reordered':[128,0,64,255],
     'root-first-disabled':[0,0,128,255],'root-first-enabled':[128,0,64,255],
     'root-first-destroyed':[0,0,128,255],'root-both-disabled':[0,0,0,255],

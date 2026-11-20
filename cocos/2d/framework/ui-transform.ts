@@ -26,10 +26,11 @@ import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displa
 import { EDITOR } from 'internal:constants';
 import { Component, Node } from '../../scene-graph';
 import { Mat4, Rect, Size, Vec2, Vec3, geometry, warnID, visibleRect, approx, EPSILON } from '../../core';
-import { director, DirectorEvent } from '../../game/director';
+import { director } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
 import { IMask } from '../../scene-graph/node-event-processor';
 import type { Mask } from '../components/mask';
+import { applyUITransformSiblingOrder, clearUITransformSiblingOrder, queueUITransformParentChange, queueUITransformSiblingOrder } from './ui-transform-sibling-order';
 
 const _vec2a = new Vec2();
 const _vec2b = new Vec2();
@@ -228,9 +229,7 @@ export class UITransform extends Component {
         }
 
         this._priority = value;
-        if (this.node.parent) {
-            UITransform.insertChangeMap(this.node.parent);
-        }
+        queueUITransformSiblingOrder(this.node.parent);
     }
 
     protected _priority = 0;
@@ -266,9 +265,7 @@ export class UITransform extends Component {
     }
 
     public onLoad (): void {
-        if (this.node.parent) {
-            UITransform.insertChangeMap(this.node.parent);
-        }
+        queueUITransformSiblingOrder(this.node.parent);
     }
 
     public onEnable (): void {
@@ -752,13 +749,7 @@ export class UITransform extends Component {
     }
 
     protected _parentChanged (node: Node): void {
-        if (this.node.getComponent('cc.RenderRoot2D')) {
-            return;
-        }
-
-        if (this.node.parent) {
-            UITransform.insertChangeMap(this.node.parent);
-        }
+        queueUITransformParentChange.call(this);
     }
 
     private _markRenderDataDirty (): void {
@@ -768,42 +759,13 @@ export class UITransform extends Component {
         }
     }
 
-    private static priorityChangeNodeMap = new Map<string, Node>();
-
-    private static insertChangeMap (node: Node): void {
-        const key = node.uuid;
-        if (!UITransform.priorityChangeNodeMap.has(key)) {
-            UITransform.priorityChangeNodeMap.set(key, node);
-        }
-    }
-
-    private static _sortChildrenSibling (node: Node): void {
-        const siblings = node.children;
-        if (siblings) {
-            siblings.sort((a: Node, b: Node): number => {
-                const aComp = a._getUITransformComp();
-                const bComp = b._getUITransformComp();
-                const ca = aComp ? aComp._priority : 0;
-                const cb = bComp ? bComp._priority : 0;
-                const diff = ca - cb;
-                if (diff === 0) return a.siblingIndex - b.siblingIndex;
-                return diff;
-            });
-        }
-    }
-
     /**
      * @deprecated Since v3.7.0, this is an engine private interface that will be removed in the future.
      * @engineInternal
      * @mangle
      */
     public static _sortSiblings (): void {
-        UITransform.priorityChangeNodeMap.forEach((node, ID): void => {
-            UITransform._sortChildrenSibling(node);
-            node._updateSiblingIndex();
-            node.emit('childrenSiblingOrderChanged');
-        });
-        UITransform.priorityChangeNodeMap.clear();
+        applyUITransformSiblingOrder();
     }
 
     /**
@@ -812,10 +774,6 @@ export class UITransform extends Component {
      * @mangle
      */
     public static _cleanChangeMap (): void {
-        UITransform.priorityChangeNodeMap.clear();
+        clearUITransformSiblingOrder();
     }
 }
-
-// HACK
-director.on(DirectorEvent.AFTER_UPDATE, UITransform._sortSiblings);
-director.on(DirectorEvent.BEFORE_SCENE_LAUNCH, UITransform._cleanChangeMap);
