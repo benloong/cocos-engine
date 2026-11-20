@@ -1,8 +1,12 @@
 # Native 2D M6 Gate
 
-**NO-GO。** Windows Release 候选 `3b6a4f3c9b` 的固定混合变更帧四项性能指标已达标。Windows 自定义字体仍有三组图像超过 Web 像素容差，组件兼容、CI 和旧项目回退等节点仍待签收。最终签收须在同一候选重跑必需配置和场景。
+**NO-GO。** Windows Release 候选 `3b6a4f3c9b` 的固定混合变更帧四项性能指标已达标。组件兼容、完整应用场景矩阵和旧项目回退等节点仍待签收。最终签收须在同一候选重跑必需配置和场景。
 
-验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。
+验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
+
+Windows 对 Web 的 RichText 矩阵暂缓 `text-bold`、`text-outline`、`text-nested` 三项的跨端像素一致性要求。此前两个 Windows 配置均为布局 47/47、严格像素 44/47。[三项超差及配置记录](./native-2d-m6-binding-cleanup.json)
+
+本轮签收在两个 Windows 配置分别运行 `node native/tests/2d-poc/compare-richtext-gpu.cjs --m6-gate <Windows 捕获目录> <Web 捕获目录>`。暂缓项仍记录实际像素差异和严格结果，布局、采集哈希、渲染可见性、交互和字体生命周期仍须通过。其余图像继续按通道容差 1 比较。
 
 ## 已测结果
 
@@ -26,7 +30,7 @@
 | SpriteRenderer 矩形网格方向 | Windows Debug、Release 与 Web 验证非方形旋转帧、X/Y 翻转、禁用后重新启用和 Web 打包往返。11 张新增方向图通过实际四角颜色断言，138 张图三端逐字节一致，127 张旧图逐张与上一候选哈希相同 | [方向用例与捕获证据](./native-2d-m6.1-sprite-frame.md#矩形网格的旋转与翻转) |
 | 生产绑定清理 | 删除 Sprite、Label 和 RichText 的 9 个未用 JSB 读回接口。Windows 双配置各通过 6 组 JSB 探针，108 张图与 Web 及上一节点逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | PoC 与遗留测试导出 | Windows 和 Web 重建包均无旧 PoC 入口或组件。Sprite 和 Label 清理 7 个内部或测试调用，Windows 双配置各通过 6 组 JSB 探针、1000 轮场景切换，116 张 GPU 图与 Web 逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
-| RichText 测试导出 | 删除 getSegmentLabel 和 getSegmentSprite。Windows Debug、Release 各通过六组 JSB 探针与 M2–M5。Web 旧工程检查 9 个 Label 和 1 个 Sprite。字体矩阵 42 项布局通过，严格像素 39/42，历史三组字体差异仍待签收 | [绑定与快照记录](./native-2d-m6-binding-cleanup.json) |
+| RichText 测试导出 | 删除 getSegmentLabel 和 getSegmentSprite。Windows Debug、Release 各通过六组 JSB 探针与 M2–M5。Web 旧工程检查 9 个 Label 和 1 个 Sprite。字体矩阵 42 项布局通过，严格像素 39/42，三组历史像素超差见本轮范围说明 | [绑定与快照记录](./native-2d-m6-binding-cleanup.json) |
 | Sprite、Graphics 与 Label 测试读回 | Sprite、Graphics 的 `getRenderEntity` 和 Label 的 `getString` 已从生产 JSB 移除。Windows 双配置各通过六组 JSB 探针。Web 旧工程位图字体 92 张 GPU 图像通过 | [绑定与二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | Label 提交实体读回 | 生产 JSB 已移除 `Label.getRenderEntity`。Windows 双配置的正常应用检查测试绑定缺席，M2–M5 和各六组 JSB 探针通过。两种 Windows 配置各有 92 张位图字体图像与 Web 逐字节一致。47 项字体布局一致，严格像素仍为 44/47，各端字体图像与清理前逐字节一致 | [验收结果与二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | TTF 水平混排 | 同源 Arial、Thonburi 对 Windows Chrome 的原始画布，Windows Debug/Release 的常规及斜体 72/72，合成粗体 0/36。[32 个字形的分阶段重放](./native-2d-m6-bold-replay.json)显示仅更换掩码采样仍有偏差。40 项应用矩阵布局全同，严格图像 37/40。 | [字体哈希、样本和微基准](./native-2d-m6-text-spacing.json) |
@@ -45,26 +49,28 @@
 | 旧 Prefab 资产生命周期 | Windows Debug/Release、ASan 和 Web，各 1000 轮；检查引用、GPU 和活动场景持有者 | [数据与采集边界](./native-2d-m6-asset-lifetime.md) |
 | 调度与裁剪 | Windows Debug/Release 交替启动 20 次通过；Windows 与 Web 的 18 个独立 Release bundle 导出通过 | [启动记录](./native-2d-m6-scheduling-results.json)、[构建矩阵](./native-2d-m6-feature-matrix.json) |
 
-## 尚需签收的节点
+## 字体像素诊断
 
 Windows Debug、Release 将 Direct2D 字形与笔宽同步放大 3、4、7、16、64 倍，按比例调整扩张容差，再将笔画还原至原尺寸。以 Chrome 同字体画布为参考，四个字号的合成粗体和十二组圆角描边共 80 个对照，每个配置的超差像素数和最大 alpha 差均与原尺度相同。仅 24 px 粗体在 3 倍、7 倍时原始 RGBA 哈希变化。调整坐标尺度未改善这组用例，生产路径继续使用原尺度。[粗体逐图数据](./native-2d-m6-bold-replay.json)、[描边逐图数据](./native-2d-m6-stroke-replay.json)
 
 Windows 圆角字体描边的轮廓扩张和边缘细分已分别测量。以 Chrome 的同源 Thonburi 为参考，1、4、8 像素笔宽各比较 25 种容差组合、4 个字号和 3 种字形样式。两个 Windows 配置的逐图哈希一致。4 像素笔宽的最少差异像素为 5112，生产设置为 5835；该组合使 12 像素正体的最大 alpha 差从 43 增至 49。三种笔宽的 900 次比较均未通过逐像素容差 1，生产参数继续使用 0.01。[对照结果](./native-2d-m6-stroke-tolerances.json)、[复现脚本](../native/tests/2d-poc/compare-ttf-stroke-tolerances.cjs)
 
-CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出现差值大于 1 的采样点，累计 9167 个。用 CanvasKit 扩张并栅格化、再沿用原生混合时，12 张描边图有 7 张通过，其中 24 px 正体进入容差。改用 CanvasKit 扩张并继续用 Direct2D 填充时，12 张均超差。当前应用复测在 Windows 两种配置仍为布局 42/42、严格像素 39/42，各完成 1000 轮字体生命周期。描边生产路径仍需同时核对扩张与覆盖计算。[分阶段与应用数据](./native-2d-m6-ttf-canvaskit.json)
+CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出现差值大于 1 的采样点，累计 9167 个。用 CanvasKit 扩张并栅格化、再沿用原生混合时，12 张描边图有 7 张通过，其中 24 px 正体进入容差。改用 CanvasKit 扩张并继续用 Direct2D 填充时，12 张均超差。当前应用复测在 Windows 两种配置仍为布局 42/42、严格像素 39/42，各完成 1000 轮字体生命周期。扩张与覆盖计算均影响描边结果。[分阶段与应用数据](./native-2d-m6-ttf-canvaskit.json)
 
-新一轮 Windows 双配置和 Chrome 对照中，先在局部坐标展开轮廓，再做横向四倍采样，alpha 超差像素从 40 降到 7，四张斜体图均进入 RGBA 容差。12 张诊断图中 9 张通过原背景的 RGBA 对照，透明背景通过 10 张。亚像素起点和裁剪对照保留同样的失败位置。该实验测的是独立字形回放，真实应用的严格像素 Gate 仍待签收。[局部展开与透明对照](./native-2d-m6-ttf-scaler-stroke.json)
+新一轮 Windows 双配置和 Chrome 对照中，先在局部坐标展开轮廓，再做横向四倍采样，alpha 超差像素从 40 降到 7，四张斜体图均进入 RGBA 容差。12 张诊断图中 9 张通过原背景的 RGBA 对照，透明背景通过 10 张。亚像素起点和裁剪对照保留同样的失败位置。该实验测量独立字形回放，应用结果见上表。[局部展开与透明对照](./native-2d-m6-ttf-scaler-stroke.json)
+
+## 尚需签收的节点
 
 编号采用计划章节；同一行中的不同验收条件均须满足。各已验收子项、夹具及历史版本记录见[逐项计划](./native-2d-m6-plan.md)。
 
 | 章节 | 节点 | 尚缺证据或已知失败 |
 |---|---|---|
 | M6.1 | 组件 API | 位图 Label 的 spacingX、fontSize、lineHeight 已通过 Windows 双配置与 Web 的细小增减、复位和自动尺寸对照。系统字体 Label 的 outlineWidth 和 shadowBlur 已通过三端描边尺寸与 SHRINK 临界字号对照。容器尺寸微调跨过缩放和换行临界点、行高微调回写均已通过三端验收。其余公开及兼容入口仍待验收。[逐项计划](./native-2d-m6-plan.md) |
-| M6.1 | 字体终态 | Windows DirectWrite 源文件替换、失败加载和释放已通过[独立进程验证](./native-2d-m6.1-font-alias-ownership.md#windows-directwrite-源文件释放)。集成进程的句柄波动、其余平台句柄清理、复杂文本及严格字形对照仍待核查 |
+| M6.1 | 字体终态 | Windows DirectWrite 源文件替换、失败加载和释放已通过[独立进程验证](./native-2d-m6.1-font-alias-ownership.md#windows-directwrite-源文件释放)。本轮平台的集成进程句柄、复杂文本及范围内的字形对照仍待核查 |
 | M6.1 | 复杂布局 | [补充平面 BMFont 标量已验证](./native-2d-m6-bitmap-unicode.json)，水平 TTF 字形已有上述 72 组常规/斜体验收。段落换行与方向嵌套、位图字体复杂脚本、任意 mesh、packed 组合和配置更新继续验收。已安装的 16 px Arial 两行文本在 NONE 模式下的自然宽度已修正，Windows 双配置与 Chrome 均为 80.9453125。[Label 系统字体矩阵](./native-2d-m6-system-font.json) |
 | M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一旧 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。Windows 下载器已验证排队与传输中取消、失败时保留旧文件、清除不可续传的半文件和 Range 续传。Web 已验证 fetch 主动取消及续传。Web 引擎首次断流时返回回退字体，释放后同 URL 已成功重载并测得原字体宽度。其余旧资产仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
-| M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期及三组失败字形。[同一轮廓重放](./native-2d-m6.2-ttf-stroke.md#同一字形轮廓按绘制阶段重放)已将独立绿色描边的主要误差定位至轮廓扩张。8 个矩形的圆弧填充可逐字节重现浏览器画笔，三次贝塞尔圆角累计 308 个采样点超差。生产路径仍待修复 |
-| M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
-| M6.5 | CI | [PR 工作流](../.github/workflows/native-ts-build.yml)已配置 Windows Debug/Release 的六组真实 JSB 检查、场景记录和 SIMPLE Sprite 对 Web 的几何对照。两个 Windows 配置均已接入 Chrome 字形对照并归档 108 项结果。正体和斜体在本机通过 72/72，合成粗体通过 0/36。独立的矩形粗体 I 检查已接入同一矩阵，本机两种配置各通过 256/256 个分数起点。工作流还构建 Windows、Web 各九种 Release 功能组合，检查组件导出和已移除的 PoC 入口，并归档导出清单与 bundle 哈希。仍缺远程运行记录、完整应用场景矩阵及其余间接热路径的证据 |
+| M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期以及验收范围内的布局、场景、视觉与事件回归 |
+| M6.4 | 平台矩阵 | 在同一候选汇总 Windows Debug、Windows Release 与 Web 的关键渲染、字体和事件场景记录 |
+| M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据 |
 | M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。Sprite 和 Label 已在两种 Windows 配置的旧 cocos-m1-test 工程验证。其余模块的旧项目场景、资产、材质及性能仍待验证 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

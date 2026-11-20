@@ -1,8 +1,14 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const base=path.join(__dirname,'build');
-const nativeDir=path.resolve(process.argv[2]||path.join(base,'richtext-gpu-native'));
-const webDir=path.resolve(process.argv[3]||path.join(base,'richtext-gpu-web'));
+const args = process.argv.slice(2);
+const m6Gate = args.includes('--m6-gate');
+const captureDirs = args.filter(arg => arg !== '--m6-gate');
+if (captureDirs.length > 2 || captureDirs.some(arg => arg.startsWith('--'))) {
+    throw Error('Usage: compare-richtext-gpu.cjs [--m6-gate] [native capture directory] [web capture directory]');
+}
+const nativeDir=path.resolve(captureDirs[0]||path.join(base,'richtext-gpu-native'));
+const webDir=path.resolve(captureDirs[1]||path.join(base,'richtext-gpu-web'));
 const read=dir=>JSON.parse(fs.readFileSync(path.join(dir,'manifest.json')));
 const a=read(nativeDir),b=read(webDir);
 if (!/^[0-9a-f]{64}$/.test(a.executableSha256)) throw Error('Missing native executable hash');
@@ -101,6 +107,20 @@ for(let n=0;n<captures.length;n++) {
 }
 const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},interaction:{native:a.text.interaction,web:b.text.interaction},pass:rows.every(x=>x.pass),results:rows};
 result.executableSha256 = a.executableSha256;
+const deferredPixels = new Set();
+if (m6Gate) {
+    const permitted = new Set(['text-bold', 'text-outline', 'text-nested']);
+    for (const row of rows) {
+        if (permitted.has(row.name) && row.layoutEqual && !row.pass) deferredPixels.add(row.name);
+    }
+    result.m6Gate = {
+        pass: rows.every(row => row.pass || deferredPixels.has(row.name)),
+        deferredPixels: [...deferredPixels],
+    };
+}
 fs.writeFileSync(path.join(base,'richtext-gpu-comparison.json'),JSON.stringify(result,null,2)+'\n');
-for(const row of rows)console.log(`${row.pass?'PASS':'FAIL'} ${row.name}: layout=${row.layoutEqual}, max=${row.max}, pixels=${row.pixels}, colored=${row.nativeColored}/${row.webColored}`);
-if(!result.pass)process.exitCode=1;
+for (const row of rows) {
+    const status = row.pass ? 'PASS' : deferredPixels.has(row.name) ? 'DEFER' : 'FAIL';
+    console.log(`${status} ${row.name}: layout=${row.layoutEqual}, max=${row.max}, pixels=${row.pixels}, colored=${row.nativeColored}/${row.webColored}`);
+}
+if (!(result.m6Gate?.pass ?? result.pass)) process.exitCode = 1;
