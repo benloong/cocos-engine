@@ -1,5 +1,5 @@
 import { _decorator, assetManager, deserialize, director, gfx, Color, Component, EventTouch, instantiate, isValid, Label, Node, Prefab, RichText, sys, Touch, TTFFont, UITransform, Vec2, Vec3, view } from 'cc';
-import { checkRichTextLifecycle } from './M6RichTextLifecycle';
+import { checkRichTextActivation, checkRichTextLifecycle } from './M6RichTextLifecycle';
 import { checkFontAliasSources } from './M6FontAliasMatrix';
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
@@ -709,6 +709,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
+    const activation = await checkRichTextActivation(parent, font, readPixels);
     const labelWordWrap = await checkLabelWordWrap(parent, font, capture, readPixels);
     const fractionalFontWidths = await checkFractionalFontSizes(parent, font, readPixels);
     const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
@@ -776,5 +777,5 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
     return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, labelWordWrap, fractionalFontWidths,
-        hardShadowCoverage, blurredShadowCenters, shadowLayout, segmentLifecycle, fontAliasSources };
+        hardShadowCoverage, blurredShadowCenters, shadowLayout, segmentLifecycle, fontAliasSources, activation };
 }

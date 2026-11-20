@@ -1,0 +1,59 @@
+{
+  "baseCommit": "27f6e03ad3",
+  "baseline": {
+    "snapshot": "0ffaa8cfb38ccf8c2f0e2c42f73f3ae9b55573ecd44e5a28d5dfde9062d5fb96",
+    "nativeResult": "process exited after changing RichText from the segment activation event",
+    "eventMarker": "M6_RICH_TEXT_REACTIVATE_REBUILD",
+    "executableSha256": "32e0f09386065c747f79ec9949f4f9cebf76c2ffc27037799c60db0ec0e17c37",
+    "nativeLogSha256": "b2ebbf2ccb3288e2bbc5f9d33749446055a55ca84f8dd93c7d6c5e6164518579",
+    "webManifestSha256": "a7453891e048b02cf09a34f517fb5ee604ca6b2a3099908bd443b32d660a9009",
+    "webActivationPassed": true
+  },
+  "fixed": {
+    "snapshot": "fdd02de75833add778c50fc39bc21bd070bbc80e1d024eee43b76a3d43e737f9",
+    "activation": {
+      "initial": 3,
+      "callbacks": 1,
+      "cleared": true,
+      "replacement": 1,
+      "reparented": true,
+      "destroyed": true
+    },
+    "layoutPass": 62,
+    "strictPixelPass": 59,
+    "deferredPixels": [
+      "text-bold",
+      "text-outline",
+      "text-nested"
+    ],
+    "unchangedEarlierCaptures": 62,
+    "webManifestSha256": "70051018fb71a0838e211cac66087d0ada712c9fde83dfc0587bbb4a42e7ae84",
+    "webLogSha256": "5ee3c95c418c599683b86ac611dd2c9263d4517e9ed56fa8931e8c93db196817",
+    "windows": {
+      "Debug": {
+        "executableSha256": "b03d468e7101f84604f07ec26aeb24cee9f7350c22683be31a9d5910f5fd7ed0",
+        "compileLogSha256": "95f0b05e7523c7b44ea161c0335a16efbeb2a02e621466e8e1a92e7d88968cd1",
+        "manifestSha256": "528d82f48d1ed42d612533abe66a03e0d8ff1e39cf4cd446abab21d162c3cd30",
+        "comparisonSha256": "498033976f17151e27e2a026dedb7bd3dcd5b0d14c1110b4d9e70bccb4505d15",
+        "applicationLogSha256": "42dcdaf4450e6b3fe11612024e6b3bfd9ad82da0397f308492a0a03034d878c1",
+        "httpLogSha256": "5a35d15d43e431504a82f844f0adf8525fae3b607c8b7a1f0207e8b6d7cba14c",
+        "fontLoadReleaseCycles": 1000
+      },
+      "Release": {
+        "executableSha256": "e9dfcb1d918e8efa05952cdd8194af88eb36a1f2ec0483e8b40218184d3e0de8",
+        "compileLogSha256": "d4128d5e3584b2fe83eea76d04be69e7cf8e4edcf12360c4a6d9a7c4d518597d",
+        "manifestSha256": "c07e8e808f869ff876dee6e4643d1543e6c99e278c586c0219bd0c7cb30fb458",
+        "comparisonSha256": "ec471b39023e7badd012f61c1332adec4c2d8be923e4ff7c5d10c770b6b3a4e8",
+        "applicationLogSha256": "ca6b5317a47742af5ddc5512a50c7ef5937f9a3202041b19b188e15e52b61bb6",
+        "httpLogSha256": "5a35d15d43e431504a82f844f0adf8525fae3b607c8b7a1f0207e8b6d7cba14c",
+        "fontLoadReleaseCycles": 1000
+      }
+    }
+  },
+  "local": {
+    "targetedJestPassed": 11,
+    "jestLogSha256": "7f873ba6866ffc427c0bec3ffce4ce02611dbe8ba7a1835e7ee3e73a53fa3c3c",
+    "typeScript": true,
+    "nativeTypeScript": true
+  }
+}

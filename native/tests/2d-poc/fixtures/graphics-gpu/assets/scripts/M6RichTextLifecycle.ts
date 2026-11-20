@@ -6,6 +6,70 @@ const loadAtlas = (): Promise<SpriteAtlas> => new Promise((resolve, reject) => {
     resources.load(atlasPath, SpriteAtlas, (error, asset) => error ? reject(error) : resolve(asset!));
 });
 
+export async function checkRichTextActivation (
+    parent: Node, font: TTFFont, readPixels: () => Uint8Array,
+): Promise<object> {
+    const host = new Node('richtext-reactivation');
+    host.layer = parent.layer;
+    parent.addChild(host);
+    const inactiveParent = new Node('richtext-inactive-parent');
+    const rich = host.addComponent(RichText);
+    const hasColor = (rgba: Uint8Array): boolean => rgba.some((value, i) => i % 4 < 3 && value !== 0);
+    try {
+        rich.font = font;
+        rich.fontSize = 24;
+        rich.lineHeight = 30;
+        rich.string = 'I<b>I</b><i>I</i>';
+        const initial = host.children.slice();
+        if (initial.length !== 3 || initial.some(child => !child.activeInHierarchy)) throw new Error('Missing active RichText children');
+        rich.enabled = false;
+        if (initial.some(child => child.active || child.activeInHierarchy)) throw new Error('RichText retained active children when disabled');
+        let callbacks = 0;
+        initial[0].once(Node.EventType.ACTIVE_IN_HIERARCHY_CHANGED, (child: Node) => {
+            if (!child.activeInHierarchy || child.parent !== host) throw new Error('RichText activation event published stale hierarchy');
+            callbacks++;
+            console.log('M6_RICH_TEXT_REACTIVATE_REBUILD');
+            rich.string = '';
+        });
+        rich.enabled = true;
+        await nextFrame();
+        if (callbacks !== 1 || host.children.length !== 0 || initial.some(child => child.parent || child.activeInHierarchy)
+            || hasColor(readPixels())) {
+            throw new Error('RichText activation listener left a retired segment attached, active or rendered');
+        }
+        rich.string = '<color=#ff0000>I</color>';
+        await nextFrame();
+        const replacement = host.children[0];
+        const restored = new Uint8Array(readPixels());
+        if (host.children.length !== 1 || replacement.parent !== host || !replacement.activeInHierarchy
+            || !restored.some((value, i) => i % 4 === 0 && value > restored[i + 1])) {
+            throw new Error('RichText did not recover after rebuilding during activation');
+        }
+        inactiveParent.active = false;
+        parent.addChild(inactiveParent);
+        host.parent = inactiveParent;
+        await nextFrame();
+        if (replacement.activeInHierarchy || hasColor(readPixels())) throw new Error('RichText drew under an inactive ancestor');
+        host.parent = parent;
+        await nextFrame();
+        const reattached = readPixels();
+        if (host.children[0] !== replacement || !replacement.activeInHierarchy || !restored.every((byte, i) => byte === reattached[i])) {
+            throw new Error('RichText lost its child or rendering after reparenting');
+        }
+        host.destroy();
+        await nextFrame();
+        if (isValid(host) || isValid(rich) || (isValid(replacement) && (replacement.parent || replacement.activeInHierarchy))
+            || hasColor(readPixels())) {
+            throw new Error('RichText host destruction left an active segment');
+        }
+        return { initial: initial.length, callbacks, cleared: true, replacement: 1, reparented: true, destroyed: true };
+    } finally {
+        if (isValid(host)) host.destroy();
+        inactiveParent.destroy();
+        await nextFrame();
+    }
+}
+
 export async function checkRichTextLifecycle (
     parent: Node, font: TTFFont, capture: (name: string) => Promise<void>,
 ): Promise<object> {

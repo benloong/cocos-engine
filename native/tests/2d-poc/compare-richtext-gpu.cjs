@@ -23,6 +23,11 @@ const expectedWrap = [
     [3, 120, 127.8, 24], [3, 74, 157.8, 24], [3, 62, 127.8, 24], [3, 116, 127.8, 24],
 ];
 for(const value of [a,b]) {
+    const activation = value.text.activation;
+    if (activation?.initial !== 3 || activation.callbacks !== 1 || !activation.cleared || activation.replacement !== 1
+        || !activation.reparented || !activation.destroyed) {
+        throw Error('Incomplete reentrant RichText activation evidence: ' + value.backend);
+    }
     const aliases = value.text.fontAliasSources;
     const widths = [[95.9765625, 101.9296875], [101.9296875], [95.9765625, 101.9296875], [95.9765625]];
     if (aliases?.released !== 4 || JSON.stringify(aliases.checkpoints?.map(x => x.name)) !== JSON.stringify(aliasNames)
@@ -147,6 +152,7 @@ for(let n=0;n<captures.length;n++) {
 const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../../../tests/fixtures/Thonburi.ttf'))).digest('hex'),bytes:a.text.nativeBytes,loaded:true,released:true,lifecycle},environment:{native:a.environment,web:b.environment},interaction:{native:a.text.interaction,web:b.text.interaction},pass:rows.every(x=>x.pass),results:rows};
 result.executableSha256 = a.executableSha256;
 result.segmentLifecycle = { native: a.text.segmentLifecycle, web: b.text.segmentLifecycle };
+result.activation = { native: a.text.activation, web: b.text.activation };
 result.fontAliasSources = { native: a.text.fontAliasSources, web: b.text.fontAliasSources };
 const deferredPixels = new Set();
 if (m6Gate) {

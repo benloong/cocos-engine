@@ -52,6 +52,12 @@ Windows Debug、Release 和 Web 使用旧 TexturePacker 图集与真实 Thonburi
 
 四张图分别记录初始红色帧、禁用、旋转绿色帧重建和销毁。夹具的共享纹理显式使用点采样，避免旧图集无留边的红色帧混入相邻绿色 texel。Windows 和 Web 的四张 RGBA 逐字节一致，禁用及销毁帧的着色像素均为零。完整字体矩阵继续执行 58 项布局门禁和原有三个像素暂缓项。[逐图记录](./native-2d-m6-richtext-node-lifecycle.json)
 
+## 段节点激活事件重入
+
+`Node::setActive` 会同步分发激活事件。监听器改写 RichText 内容时，布局可当场替换段列表。旧 Windows Debug 候选在回调退出后停止运行。原生启停遍历现在只在回调期间持有当前 Node，回调返回后重新读取段列表，并核对宿主、启停状态和节点归属。
+
+真实应用在 Windows Debug、Release 和 Chrome 上从三个文字段开始，在第一段重新激活时清空文本。用例检查旧段脱离且画面清空，随后恢复一个文字段。宿主经停用父节点重挂接后，原节点和像素恢复，销毁宿主后无可见段存留。[运行记录](./native-2d-m6-richtext-reactivation.json)
+
 ## 点击回调重入补充（2026-11-16）
 
 命中几何继续由 native 计算。JS 在调用用户代码前读取本次命中段的 handler/param，作为一次事件的临时数据；回调改变 string、图集或触发布局后，不再用旧索引查询已经复用的原生片段。回调销毁、禁用组件或关闭 handleTouchEvent 时，立即停止剩余分发；已命中的事件先标记停止传播。该临时事件数据不是 JS 布局或第二份片段状态，没有新增每帧调用或 native 所有权。

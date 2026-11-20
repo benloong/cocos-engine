@@ -84,6 +84,7 @@ private:
     FontAsset::FontChanged::EventID _fontChanged;
     SpriteAtlas::AtlasChanged::EventID _atlasChanged;
     void clearSegments();
+    void setSegmentsActive(bool active);
     void configureLabel(Label &label, size_t spanIndex);
     void synchronizeDependencies();
     std::unique_ptr<Segment> acquire(bool image);

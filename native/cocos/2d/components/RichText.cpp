@@ -123,12 +123,24 @@ void RichText::onDetach() {
 }
 void RichText::onEnable() {
     UIRenderer::onEnable();
-    for (auto &segment : _segments) { segment->node->setActive(true); segment->node->setActiveInHierarchy(true); }
+    setSegmentsActive(true);
     updateLayout();
 }
 void RichText::onDisable() {
     UIRenderer::onDisable();
-    for (auto &segment : _segments) { segment->node->setActive(false); segment->node->setActiveInHierarchy(false); }
+    setSegmentsActive(false);
+}
+void RichText::setSegmentsActive(bool active) {
+    const auto attachment = _attachmentVersion;
+    for (size_t i = 0; i < _segments.size(); ++i) {
+        // Node activation can run listeners that rebuild or detach the segment list.
+        const auto node = _segments[i]->node;
+        node->setActive(active);
+        if (_attachmentVersion != attachment || _enabled != active) return;
+        if (node->getParent() == _node && node->isActive() == active) {
+            node->setActiveInHierarchy(active);
+        }
+    }
 }
 void RichText::observeTransform(UITransform *transform) {
     if (transform == _transform) return;
