@@ -224,8 +224,12 @@ export class SpriteRenderer extends ModelRenderer {
             return;
         }
 
-        const texture = this._spriteFrame.getGFXTexture()!;
-        const sampler = this._spriteFrame.getGFXSampler();
+        // Mesh UVs address the source texture even while 2D sprites use an atlas page.
+        const frame = this._spriteFrame;
+        const source = frame.original?._texture ?? frame.texture;
+        const texture = source?.getGFXTexture();
+        if (!texture) return;
+        const sampler = source.getGFXSampler();
         // We need a api like updateLocalDescriptors(texture,sampler,binding) from model
         const subModels = this._model.subModels;
         const binding = ModelLocalBindings.SAMPLER_SPRITE;

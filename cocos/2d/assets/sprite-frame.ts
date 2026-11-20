@@ -1420,14 +1420,15 @@ export class SpriteFrame extends Asset {
             // Use Bayazit to generate vertices and assign values
         } else { // Rect mode
             // default center is 0.5，0.5
-            const tex = self.texture;
+            const original = self._original;
+            const tex = original?._texture ?? self.texture;
             const texw = tex.width;
             const texh = tex.height;
             const rect = self.rect;
             const width = rect.width;
             const height = rect.height;
-            const rectX = rect.x;
-            const rectY = texh - rect.y - height;
+            const rectX = original?._x ?? rect.x;
+            const rectY = texh - (original?._y ?? rect.y) - height;
             const halfWidth = width / 2;
             const halfHeight = height / 2;
 

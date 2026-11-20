@@ -289,6 +289,8 @@ void testSpriteFrameData() {
     const auto sourceRefs = texture->getRefCount();
     const auto packedRefs = packed->getRefCount();
     const auto restoredUV = frame->getUV();
+    const auto meshUV = frame->getMeshUVs(true);
+    const auto meshPixelUV = frame->getMeshUVs(false);
     for (int i = 0; i < 1000; ++i) {
         const auto revision = frame->getRevision();
         frame->setDynamicAtlasFrame(packed, 101, 103);
@@ -300,8 +302,11 @@ void testSpriteFrameData() {
               "packing updates active texture and consumer revision");
         check(texture->getRefCount() == sourceRefs && packed->getRefCount() == packedRefs + 1,
               "packing transfers source reference to backup and owns atlas");
+        check(frame->getUV() != restoredUV && frame->getMeshUVs(true) == meshUV && frame->getMeshUVs(false) == meshPixelUV,
+              "packed UI UV addresses the atlas while mesh UV addresses the original texture");
         cc::IntrusivePtr<cc::SpriteFrame> clone(new cc::SpriteFrame());
         clone->copyFrom(frame);
+        check(clone->getMeshUVs(true) == meshUV && clone->getMeshUVs(false) == meshPixelUV, "packed clone retains source mesh UV");
         clone->resetDynamicAtlasFrame();
         check(clone->getTexture() == texture && clone->getUV() != frame->getUV(),
               "packed clone restores independently");

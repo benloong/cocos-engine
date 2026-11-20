@@ -79,3 +79,31 @@ Windows Debug、Release 与 Web 的同一场景执行反序列化、纹理依赖
 [场景与实际 Mesh 缓冲断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)通过既有 SpriteFrame 和 SpriteRenderer API 执行。JSB 薄壳检查为 295/300 行，复用已生成 Mesh 的边界。
 
 标准旧工程在 Windows Debug、Release 通过 M2–M5。Debug 完整 M0 和 Release 六组真实 JSB 探针通过，Web 旧工程完成 92 张位图、旧图集与 RichText 检查。
+
+## 同一帧的图集页和源纹理
+
+SpriteFrame 在打包时保留源纹理和源坐标。Web 的 2D Sprite 接收帧 UV 事件，标记 UV 所在的几何数据和纹理提交为待刷新。SpriteRenderer 的矩形网格按源图尺寸与源坐标生成 UV，序列化多边形沿用作者提供的 UV。材质绑定采样同一源纹理，打包和恢复时已生成的网格可以继续使用。
+
+夹具从旧 plist 和 PNG 加载纹理。矩形与多边形各使用两个节点共享帧，分别绘制 2D Sprite 和 SpriteRenderer。Web 将同一源纹理的原帧与懒加载克隆打入同一页。Windows Debug 和 Release 提交同样的启用和打包请求，动态合图维持禁用。Windows 两种配置的 C++ 探针各做 1000 次直接打包、克隆和独立恢复，验证 UI UV 随图集坐标改变，网格的像素 UV 与归一化 UV 均沿用源图。Web 定向回归覆盖普通、九宫格、平铺、横向填充和径向填充的帧通知，以及换帧、禁用和销毁解绑。
+
+| Web 相对同场景源图 | 重绑材质的差异像素 | 打包后首次建网格的差异像素 | 恢复源图后的差异像素 |
+|---|---:|---:|---:|
+| 修复前，矩形 | 4608 | 2304 | 2304 |
+| 修复前，多边形 | 4032 | 4032 | 1728 |
+| 修复后，两种形状 | 0 | 0 | 0 |
+
+修复前使用 998f57e283147615865c65b5b02f5bbe00105667b467a2ab50f955e07c60977f 的测试包。修复后的三端快照为 831ef9686ecceb2ad53435a11577ceac747a9fd7ca2dd31facaf299ac528236e。新增八张图逐字节一致，119 张旧图在各端分别与上一候选哈希相同。Windows 两种配置与 Web 各完成 1000 次场景切换。
+
+| 形状 | 四个状态共同的 RGBA SHA256 |
+|---|---|
+| rect | 729ea170a2ac49e3528fe3ce41dbeb222d55f4f4ad0762b93063ba37dc620efc |
+| polygon | ed1ca8c8cd38e83a8c6e9ee140880de938b4ff05a0df9c3fcaba165cb759fa39 |
+
+[共享帧场景与打包状态断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)、[严格图像比较器](../native/tests/2d-poc/compare-graphics-gpu.cjs)。
+
+Windows Debug 完整 M0、Windows 双配置旧工程 M2–M5 和各六组真实 JSB 探针均通过。Web 旧工程通过 92 张位图捕获、旧图集及 RichText 检查。
+
+| Windows GPU 候选 | 可执行文件 SHA256 |
+|---|---|
+| Debug | bdc71bd41c48b0dce2857efdf8169159588e0fc5d586f1a8b8de8aef94e556ea |
+| Release | 84d417c0be38c6a6f2231a2d8dcb6a0365b52618d8e2788be14cc890f53228a8 |

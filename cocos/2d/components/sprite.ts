@@ -540,15 +540,13 @@ export class Sprite extends UIRenderer {
         const spriteFrame = this._spriteFrame;
         if (spriteFrame) {
             this._updateUVs();
-            if (this._usesFrameInsets()) {
-                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, this._updateUVs, this);
-            }
+            spriteFrame.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
         }
     }
 
     public onDisable (): void {
         super.onDisable();
-        this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._updateUVs, this);
+        this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
     }
 
     public onDestroy (): void {
@@ -665,15 +663,6 @@ export class Sprite extends UIRenderer {
                 self._updateColor();
             }
         }
-
-        const spriteFrame = self._spriteFrame;
-        if (spriteFrame) {
-            if (self.enabledInHierarchy && self._usesFrameInsets()) {
-                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
-            } else {
-                spriteFrame.off(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
-            }
-        }
     }
 
     private _applySpriteSize (): void {
@@ -732,8 +721,10 @@ export class Sprite extends UIRenderer {
         }
     }
 
-    private _usesFrameInsets (): boolean {
-        return this._type === SpriteType.SLICED || this._type === SpriteType.TILED;
+    private _onFrameUVChanged (): void {
+        const renderData = this.renderData;
+        if (renderData) renderData.textureDirty = true;
+        this._markForUpdateRenderData();
     }
 
     private _updateUVs (): void {
@@ -750,7 +741,7 @@ export class Sprite extends UIRenderer {
         const self = this;
         const spriteFrame = self._spriteFrame;
 
-        oldFrame?.off(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
+        oldFrame?.off(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
 
         let textureChanged = false;
         if (spriteFrame) {
@@ -769,8 +760,8 @@ export class Sprite extends UIRenderer {
                 self.changeMaterialForDefine();
             }
             self._applySpriteSize();
-            if (self.enabledInHierarchy && self._usesFrameInsets()) {
-                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
+            if (self.enabledInHierarchy) {
+                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
             }
         }
     }

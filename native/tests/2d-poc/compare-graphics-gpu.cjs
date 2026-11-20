@@ -3,9 +3,9 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==119) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==127) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==119) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==127) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
@@ -139,6 +139,17 @@ for(const name of a.captures) {
     results.push({name,max,pixels,channels,colored,pass:max<=1,
         nativeSha256:crypto.createHash('sha256').update(actual).digest('hex'),
         webSha256:crypto.createHash('sha256').update(expected).digest('hex')});
+}
+for (const [shape, colored] of [['rect', 4608], ['polygon', 4032]]) {
+    const prefix = 'packed-' + shape + '-mesh-';
+    const source = results.find(row => row.name === prefix + 'source');
+    if (!source || source.colored !== colored) throw new Error('Missing or incomplete mesh source: ' + shape);
+    for (const phase of ['rebound', 'lazy', 'restored']) {
+        const frame = results.find(row => row.name === prefix + phase);
+        if (!frame || frame.nativeSha256 !== source.nativeSha256 || frame.webSha256 !== source.webSha256) {
+            throw new Error('Sprite and mesh sampling changed after frame transition: ' + shape + '/' + phase);
+        }
+    }
 }
 const authored = results.find(row => row.name === 'authored-mesh');
 const cloned = results.find(row => row.name === 'authored-mesh-clone');

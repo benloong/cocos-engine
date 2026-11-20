@@ -21,6 +21,7 @@
 | Sprite 九宫格 | 两端对小于边距总和的节点按轴压缩边框。运行中改边距后更新顶点分区。Windows Debug 和 Release 各 108 张图与 Web 逐字节一致，含缩小、改边距及旋转帧的 6 张图 | [修复前后对照](./native-2d-m6-sprite-sliced-gpu.json) |
 | Sprite 平铺 | Windows 原生按帧边距平铺中心区。Windows Debug、Release 各 116 张图与 Web 逐字节一致，新增 8 张涵盖尺寸、旋转、零宽中心、单轴边距及运行时改边距 | [修复前后数据](./native-2d-m6-sprite-tiled-gpu.json) |
 | SpriteFrame 自定义多边形 | Windows Debug、Release 与 Web 通过旧序列化拓扑、独立克隆、换纹理与实际 SpriteRenderer 像素检查。119 张图逐字节一致，116 张既有图各端哈希与基准相同 | [输入与逐图证据](./native-2d-m6.1-sprite-frame.md#旧序列化多边形) |
+| Sprite 与 SpriteRenderer 共用图集帧 | Web 实际打包，Windows Debug、Release 维持动态合图禁用。矩形和多边形的材质重绑、打包后首次建网格及恢复阶段均与源图相同。127 张图逐字节一致，119 张既有图各端哈希与基准相同 | [同一帧打包对照](./native-2d-m6.1-sprite-frame.md#同一帧的图集页和源纹理) |
 | 生产绑定清理 | 删除 Sprite、Label 和 RichText 的 9 个未用 JSB 读回接口。Windows 双配置各通过 6 组 JSB 探针，108 张图与 Web 及上一节点逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | PoC 与遗留测试导出 | Windows 和 Web 重建包均无旧 PoC 入口或组件。Sprite 和 Label 清理 7 个内部或测试调用，Windows 双配置各通过 6 组 JSB 探针、1000 轮场景切换，116 张 GPU 图与 Web 逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | RichText 测试导出 | 删除 getSegmentLabel 和 getSegmentSprite。Windows Debug、Release 各通过六组 JSB 探针与 M2–M5。Web 旧工程检查 9 个 Label 和 1 个 Sprite。字体矩阵 42 项布局通过，严格像素 39/42，历史三组字体差异仍待签收 | [绑定与快照记录](./native-2d-m6-binding-cleanup.json) |

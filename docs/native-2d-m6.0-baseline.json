@@ -59,7 +59,7 @@
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrame.h",
-      "sha256": "cb0ced472621c6237a69481552e082960b0b8f4bfc9019e748c343429e4ad3a7"
+      "sha256": "a9afd694a9a545f8696f26866423d39b0f8b39617b52189f787bcbefb754b3fa"
     },
     {
       "file": "native/cocos/2d/assets/SpriteFrameData.h",
@@ -3398,11 +3398,11 @@
             "decorators": []
           },
           {
-            "name": "_usesFrameInsets",
+            "name": "_onFrameUVChanged",
             "kind": "MethodDeclaration",
             "visibility": "private",
             "static": false,
-            "type": "boolean",
+            "type": "void",
             "parameters": [],
             "default": null,
             "decorators": []
@@ -14951,8 +14951,8 @@
     },
     {
       "file": "cocos/2d/assets/sprite-frame.ts",
-      "sha256": "700ae6f65b46c45b3e79fd5eef431ffe44fb86e4be3db29431a414a2c9818fec",
-      "printedCodeLines": 882,
+      "sha256": "3fa924dd8d83d879a89b50e8b5dae653119f0e269622d905bcb6eba115d094e0",
+      "printedCodeLines": 883,
       "runtimeImports": [
         "./sprite-frame-vertices",
         "../utils/dynamic-atlas/atlas",
@@ -14977,7 +14977,7 @@
         965,
         983,
         985,
-        1485
+        1486
       ]
     },
     {
@@ -15995,8 +15995,8 @@
     },
     {
       "file": "cocos/2d/components/sprite.ts",
-      "sha256": "351cbdf058cf702a8c3734f237edb5bfbea4d2993ab8516104477fa7ca913eeb",
-      "printedCodeLines": 469,
+      "sha256": "d233324f6e4352f3db3562c7fb3056f21b92b278171f6723ef48ff2029c3ee6c",
+      "printedCodeLines": 461,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16014,7 +16014,7 @@
       "frameMethods": [
         {
           "name": "_render",
-          "line": 631
+          "line": 629
         }
       ],
       "nativeCalls": [],
@@ -16408,8 +16408,8 @@
     },
     {
       "file": "cocos/2d/framework/sprite-renderer.ts",
-      "sha256": "5fd244ad0760268eb54055159a70d74378e17bd60f42db9411bd6021a9f346c7",
-      "printedCodeLines": 194,
+      "sha256": "cbd85c61468751c06fafa59df5676b3d8c9ee419c76ab91968eea1e20c44ce17",
+      "printedCodeLines": 198,
       "runtimeImports": [
         "cc.decorator",
         "../../asset/asset-manager",
@@ -16426,7 +16426,7 @@
       "allocations": [],
       "loops": [
         186,
-        232
+        236
       ]
     },
     {

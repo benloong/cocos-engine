@@ -187,12 +187,13 @@ public:
         return {-w, -h, 0, w, -h, 0, -w, h, 0, w, h, 0};
     }
     std::vector<double> getMeshUVs(bool normalized) const {
-        if (_data.meshType == 1 || !_texture) return {};
-        const double width = _texture->getWidth();
-        const double height = _texture->getHeight();
-        const double left = _data.x;
+        const auto *source = _originalTexture ? _originalTexture.get() : _texture.get();
+        if (_data.meshType == 1 || !source) return {};
+        const double width = source->getWidth();
+        const double height = source->getHeight();
+        const double left = _originalTexture ? _originalX : _data.x;
         const double right = left + _data.width;
-        const double top = height - _data.y;
+        const double top = height - (_originalTexture ? _originalY : _data.y);
         const double bottom = top - _data.height;
         if (!normalized) return {left, top, right, top, left, bottom, right, bottom};
         const double l = width ? left / width : 0;

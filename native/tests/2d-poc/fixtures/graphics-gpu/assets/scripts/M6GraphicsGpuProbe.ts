@@ -1,4 +1,4 @@
-import { _decorator, BitmapFont, Camera, Canvas, Color, Component, deserialize, Director, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, BitmapFont, Camera, Canvas, Color, Component, deserialize, Director, director, dynamicAtlasManager, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { countTraversedRoots, runSceneMatrix } from './M6SceneMatrix';
 import { EffectAsset, gfx, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
@@ -81,6 +81,95 @@ async function checkAuthoredPolygon (parent: Node, layer: number, material: Mate
     polygon.destroy();
     red.destroy();
     green.destroy();
+}
+
+async function checkPackedMeshes (
+    parent: Node, layer: number, material: Material, source: SpriteFrame, capture: (name: string) => Promise<void>,
+): Promise<void> {
+    const texture = source.texture;
+    const atlasEnabled = dynamicAtlasManager.enabled;
+    dynamicAtlasManager.enabled = false;
+    const rebound = new Material();
+    rebound.copy(material);
+    try {
+        for (const meshType of [SpriteFrame.MeshType.RECT, SpriteFrame.MeshType.POLYGON]) {
+            const polygon = meshType === SpriteFrame.MeshType.POLYGON;
+            const name = polygon ? 'packed-polygon-mesh' : 'packed-rect-mesh';
+            const frame = new SpriteFrame();
+            frame._deserialize({
+                meshType, pixelsToUnit: 16,
+                rect: { x: 2, y: 2, width: 12, height: 12 },
+                originalSize: { width: 12, height: 12 },
+                vertices: polygon ? {
+                    rawPosition: [-6, -6, 0, 6, -6, 0, 6, 0, 0, 0, 0, 0, 0, 6, 0, -6, 6, 0],
+                    indexes: [0, 1, 2, 0, 2, 3, 0, 3, 5, 3, 4, 5],
+                    uv: [2, 14, 14, 14, 14, 8, 8, 8, 8, 2, 2, 2],
+                    nuv: [0.0625, 0.125, 0.4375, 0.125, 0.4375, 0.5, 0.25, 0.5, 0.25, 0.875, 0.0625, 0.875],
+                    minPos: { x: -6, y: -6, z: 0 }, maxPos: { x: 6, y: 6, z: 0 },
+                } : undefined,
+            }, null);
+            frame._textureSource = texture;
+            frame.packable = true;
+            const late = frame.clone();
+            const uiNode = new Node(name + '-ui');
+            uiNode.layer = layer;
+            uiNode.setPosition(-48, 0);
+            parent.addChild(uiNode);
+            const transform = uiNode.addComponent(UITransform);
+            const sprite = uiNode.addComponent(Sprite);
+            sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+            sprite.spriteFrame = frame;
+            transform.setContentSize(48, 48);
+
+            const meshNode = new Node(name + '-model');
+            meshNode.layer = layer;
+            meshNode.setPosition(48, 0);
+            meshNode.setScale(64, 64, 1);
+            parent.addChild(meshNode);
+            const model = meshNode.addComponent(SpriteRenderer);
+            model.visibility = layer;
+            model.setSharedMaterial(material, 0);
+            model.spriteFrame = frame;
+            try {
+                await capture(name + '-source');
+                if (late.mesh || frame.original) throw new Error('Expected unpacked source and lazy clone');
+                dynamicAtlasManager.enabled = true;
+                dynamicAtlasManager.packToDynamicAtlas(sprite, frame);
+                dynamicAtlasManager.packToDynamicAtlas(null, late);
+                if (sys.isNative) {
+                    if (dynamicAtlasManager.enabled || dynamicAtlasManager.atlasCount !== 0
+                        || frame.original || late.original || frame.texture !== texture || late.texture !== texture) {
+                        throw new Error('Windows admitted a runtime dynamic atlas mesh');
+                    }
+                } else if (!dynamicAtlasManager.enabled || frame.original?._texture !== texture
+                    || late.original?._texture !== texture || frame.texture !== late.texture || frame.texture === texture) {
+                    throw new Error('Shared Web mesh frames did not enter the same atlas page');
+                }
+
+                model.setSharedMaterial(rebound, 0);
+                await capture(name + '-rebound');
+                model.spriteFrame = late;
+                await capture(name + '-lazy');
+                dynamicAtlasManager.enabled = false;
+                if (late.original || frame.original || frame.texture !== texture || late.texture !== texture) {
+                    throw new Error('Both mesh frames must return to their source texture');
+                }
+                await capture(name + '-restored');
+            } finally {
+                dynamicAtlasManager.enabled = false;
+                uiNode.destroy();
+                meshNode.destroy();
+                await wait();
+                frame.mesh?.destroy();
+                late.mesh?.destroy();
+                frame.destroy();
+                late.destroy();
+            }
+        }
+    } finally {
+        rebound.destroy();
+        dynamicAtlasManager.enabled = atlasEnabled;
+    }
 }
 
 @ccclass('M6GraphicsGpuProbe')
@@ -483,6 +572,7 @@ export class M6GraphicsGpuProbe extends Component {
         await wait();
 
         await checkAuthoredPolygon(canvas.node, meshLayer, material, capture);
+        await checkPackedMeshes(canvas.node, meshLayer, material, left, capture);
         const alternate = new Material();
         const variantEffect = await new Promise<EffectAsset>((resolve, reject) =>
             resources.load('VariantSprite', EffectAsset, (error, asset) => error ? reject(error) : resolve(asset)));
