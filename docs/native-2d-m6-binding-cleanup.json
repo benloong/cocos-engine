@@ -85,5 +85,94 @@
     "sceneAssertionsPerBackend": 4998,
     "targetedJestTests": 33,
     "auditTests": 10
+  },
+  "richTextSegments": {
+    "removedBindings": [
+      "RichText.getSegmentLabel",
+      "RichText.getSegmentSprite"
+    ],
+    "bundleCombinations": {
+      "WINDOWS": 9,
+      "HTML5": 9
+    },
+    "gpuSnapshot": "766421d8acd200553d91c75b4e3a1d1d5e5dfb22a6db37c0798d765e55d659bd",
+    "configurations": {
+      "Debug": {
+        "generatedBindingSha256": "75be8a19d9cb65b1c7fac86e3850b726ca4e729154b26ae7751747e05c6f7418",
+        "jsbExecutableSha256": "bb0e7a5e8239f67349d4fb10dfadefa2c29cf140040cc23cc4f148aa4bf6c0d3",
+        "gpuExecutableSha256": "4f66af0314543bded0221701f231490adeb01524768a39174cc7bdd5950ccf9d",
+        "standardExecutableSha256": "86c63f07982933474138307b55fb7ace3737994ffdf0b40ac229ef4e8dc1491c",
+        "jsbProbes": 6,
+        "standardApplicationProbes": [
+          "M2 Sprite",
+          "M3 Label",
+          "M4 Mask and Graphics",
+          "M4 extra",
+          "M5 RichText"
+        ],
+        "fontLifecycleCycles": 1000,
+        "layoutsMatchedWeb": 42,
+        "strictPixelsMatchedWeb": 39,
+        "capturesIdenticalToPrior": 42,
+        "strictPixelFailures": [
+          {
+            "name": "text-bold",
+            "max": 20,
+            "pixels": 448
+          },
+          {
+            "name": "text-outline",
+            "max": 30,
+            "pixels": 202
+          },
+          {
+            "name": "text-nested",
+            "max": 47,
+            "pixels": 553
+          }
+        ]
+      },
+      "Release": {
+        "generatedBindingSha256": "75be8a19d9cb65b1c7fac86e3850b726ca4e729154b26ae7751747e05c6f7418",
+        "jsbExecutableSha256": "a392e3602161d98391f162506c8a258609185274c21a7ab21cd7f68bcf6bb1d8",
+        "gpuExecutableSha256": "44452c4878d244fd9ac9ca5b1a4ddab05a3a7621bb1a27f7e04ea41c08967f74",
+        "standardExecutableSha256": "fbac73c614b75c4f6c69da5a6ccb77bf6f9573e1ec50ee46064ea3509710c32e",
+        "jsbProbes": 6,
+        "standardApplicationProbes": [
+          "M2 Sprite",
+          "M3 Label",
+          "M4 Mask and Graphics",
+          "M4 extra",
+          "M5 RichText"
+        ],
+        "fontLifecycleCycles": 1000,
+        "layoutsMatchedWeb": 42,
+        "strictPixelsMatchedWeb": 39,
+        "capturesIdenticalToPrior": 42,
+        "strictPixelFailures": [
+          {
+            "name": "text-bold",
+            "max": 20,
+            "pixels": 448
+          },
+          {
+            "name": "text-outline",
+            "max": 30,
+            "pixels": 202
+          },
+          {
+            "name": "text-nested",
+            "max": 47,
+            "pixels": 553
+          }
+        ]
+      }
+    },
+    "web": {
+      "oldProjectLabelComponents": 9,
+      "oldProjectSpriteComponents": 1,
+      "oldProjectBitmapCaptures": 92,
+      "targetedJestTests": 16
+    }
   }
 }

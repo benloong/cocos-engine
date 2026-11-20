@@ -295,8 +295,6 @@ void RichText::rebuildLayout() {
     _fontRevision = _font ? _font->getRevision() : 0;
     _atlasRevision = _atlas ? _atlas->getRevision() : 0;
 }
-Label *RichText::getSegmentLabel(uint32_t index) const { return index < _segments.size() ? _segments[index]->label.get() : nullptr; }
-Sprite *RichText::getSegmentSprite(uint32_t index) const { return index < _segments.size() ? _segments[index]->sprite.get() : nullptr; }
 std::string RichText::getSegmentClickHandler(uint32_t index) const { return index < _segments.size() ? _segments[index]->handler : ""; }
 std::string RichText::getSegmentClickParam(uint32_t index) const { return index < _segments.size() ? _segments[index]->param : ""; }
 std::vector<uint32_t> RichText::getHitSegments(float worldX, float worldY) {

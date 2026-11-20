@@ -92,10 +92,8 @@ async function checkRichTextEvents (parent: Node): Promise<string[]> {
         rich.string = "<on click='received' param='" + param + "'>word</on>";
         await settle();
         const child = host.children[0];
-        const backend = (rich as any)._native;
-        if (backend) {
-            const local = new Vec3(backend.getSegmentLabel(0).getTTFContentWidth() / 2, 0, 0);
-            const p = Vec3.transformMat4(new Vec3(), local, child.worldMatrix);
+        if ((rich as any)._native) {
+            const p = Vec3.transformMat4(new Vec3(), new Vec3(1, 1, 0), child.worldMatrix);
             return new Vec2(p.x, p.y);
         }
         const rect = child.getComponent(UITransform)!.getBoundingBoxToWorld();
@@ -193,7 +191,7 @@ export class RichTextProbe {
             const children = node.children;
             const backend = (richText as any)._native;
             const native = !!backend;
-            const nativeLabels = native ? children.map((_, i) => backend.getSegmentLabel(i)).filter(Boolean) : [];
+            const nativeLabels = native ? children.filter(child => child.name === 'RICHTEXT_CHILD') : [];
             const jsLabels = children.filter((child) => !!child.getComponent(Label));
             const jsSprites = children.filter(child => !!child.getComponent(Sprite));
             const queryMatches = node.getComponent(RichText) === richText
@@ -203,15 +201,13 @@ export class RichTextProbe {
                 throw new Error('RichText segment component query contract failed');
             }
             const labels = native ? nativeLabels.length : jsLabels.length;
-            const sprites = native ? children.filter((_, i) => !!backend.getSegmentSprite(i)).length
+            const sprites = native ? children.filter(child => child.name === 'RICHTEXT_Image_CHILD').length
                 : jsSprites.length;
             if (native && (labels + sprites !== children.length
-                || backend.getSegmentLabel(children.length) || backend.getSegmentSprite(children.length))) {
+                || 'getSegmentLabel' in backend || 'getSegmentSprite' in backend)) {
                 throw new Error('Native RichText segment graph is incomplete');
             }
-            const styles = native ? nativeLabels.map((label: any) => ({
-                fontSize: label.getActualFontSize(), bold: label.isBold(), italic: label.isItalic(), underline: label.isUnderline(),
-            })) : jsLabels.map((child) => child.getComponent(Label)!).map((label: Label) => ({
+            const styles = jsLabels.map((child) => child.getComponent(Label)!).map((label: Label) => ({
                 fontSize: label.fontSize,
                 outline: label.enableOutline,
                 outlineWidth: label.outlineWidth,
@@ -237,9 +233,8 @@ export class RichTextProbe {
             let hit = false;
             let miss = false;
             if (native && nativeLabels.length) {
-                const index = children.findIndex((_, i) => !!backend.getSegmentLabel(i));
-                const label = backend.getSegmentLabel(index);
-                const point = Vec3.transformMat4(new Vec3(), new Vec3(label.getTTFContentWidth() / 2, 0, 0), children[index].worldMatrix);
+                const index = children.indexOf(nativeLabels[0]);
+                const point = Vec3.transformMat4(new Vec3(), new Vec3(1, 1, 0), nativeLabels[0].worldMatrix);
                 hit = backend.getHitSegments(point.x, point.y).includes(index);
                 miss = backend.getHitSegments(point.x - 1000, point.y - 1000).includes(index);
             } else if (hitSegment) {
@@ -254,11 +249,9 @@ export class RichTextProbe {
                     new Vec2(box.x - 1000, box.y - 1000),
                 );
             }
-            const segments = children.map((child, i) => {
+            const segments = children.map((child) => {
                 if (native) {
-                    const label = backend.getSegmentLabel(i);
-                    return { name: child.name, text: label?.getString() ?? '', x: child.position.x, y: child.position.y,
-                        w: label?.getTTFContentWidth() ?? null };
+                    return { name: child.name, x: child.position.x, y: child.position.y };
                 }
                 const label = child.getComponent(Label);
                 const t = child.getComponent(UITransform);

@@ -36,6 +36,7 @@
 #include "base/Log.h"
 #include "bindings/manual/jsb_scene_manual.h"
 #include "bindings/auto/jsb_2d_auto.h"
+#include "bindings/auto/jsb_scene_auto.h"
 #include "2d/components/Sprite.h"
 #include "2d/components/Label.h"
 #include "scene/DrawBatch2D.h"
@@ -154,6 +155,26 @@ bool readLabelCoverage(se::State &state) {
     return true;
 }
 SE_BIND_FUNC(readLabelCoverage)
+
+template <class T>
+T *getChildRenderer(const cc::Node &host, size_t index) {
+    const auto &children = host.getChildren();
+    if (index >= children.size()) return nullptr;
+    return static_cast<T *>(children[index]->getUIComponent(T::TYPE_ID));
+}
+
+bool readRichTextSegment(se::State &state) {
+    const auto &args = state.args();
+    if (args.size() != 3 || !args[0].isObject() || !args[1].isNumber() || !args[2].isBoolean()) return false;
+    const auto *object = args[0].toObject();
+    if (object->_getClass() != __jsb_cc_Node_class) return false;
+    const auto *host = static_cast<cc::Node *>(object->getPrivateData());
+    if (!host) return false;
+    const auto index = args[1].toUint32();
+    if (args[2].toBoolean()) return nativevalue_to_se(getChildRenderer<cc::Sprite>(*host, index), state.rval(), nullptr);
+    return nativevalue_to_se(getChildRenderer<cc::Label>(*host, index), state.rval(), nullptr);
+}
+SE_BIND_FUNC(readRichTextSegment)
 
 void checkNear(float actual, float expected, const char *message) {
     if (std::fabs(actual - expected) > 1e-4F) {
@@ -1374,32 +1395,32 @@ void testRichTextRuntime() {
     auto *segmentEntity = static_cast<cc::RenderEntity *>(node.getChildren()[0]->getUserData());
     check(segmentEntity->isEnabled(), "RichText font segment remains eligible for Batcher prepare");
     if (segmentEntity->isEnabled()) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(countLabelCoverage(*rich.getSegmentLabel(0)) > 0, "Batcher prepare renders native RichText font segment");
-    check(rich.getSegmentLabel(0) && rich.getSegmentSprite(1) && rich.getSegmentLabel(2), "native RichText creates Label and Sprite segments");
+    check(countLabelCoverage(*getChildRenderer<cc::Label>(node, 0)) > 0, "Batcher prepare renders native RichText font segment");
+    check(getChildRenderer<cc::Label>(node, 0) && getChildRenderer<cc::Sprite>(node, 1) && getChildRenderer<cc::Label>(node, 2), "native RichText creates Label and Sprite segments");
     check((node.getChildren()[0]->getHideFlags() & cc::CCObject::Flags::DONT_SAVE) != cc::CCObject::Flags::ZERO, "RichText generated children are not serialized");
     check(frame->getRefCount() > frameRefs && font->getRefCount() > fontRefs, "RichText segments retain native assets");
     se::Value imageLayout;
-    auto *transform = rich.getSegmentSprite(1)->getUITransform();
+    auto *transform = getChildRenderer<cc::Sprite>(node, 1)->getUITransform();
     const bool hasWrapper = transform && nativevalue_to_se(transform, imageLayout, nullptr) && imageLayout.isObject();
     check(hasWrapper, "wrap the image segment layout");
     auto *first = node.getChildren()[0].get();
-    rich.getSegmentLabel(0)->setString("idle marker");
+    getChildRenderer<cc::Label>(node, 0)->setString("idle marker");
     for (int i = 0; i < 1000; ++i) cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-    check(node.getChildren()[0].get() == first && rich.getSegmentLabel(0)->getString() == "idle marker", "idle RichText preserves segment identity and content");
-    rich.getSegmentLabel(0)->setString("one");
+    check(node.getChildren()[0].get() == first && getChildRenderer<cc::Label>(node, 0)->getString() == "idle marker", "idle RichText preserves segment identity and content");
+    getChildRenderer<cc::Label>(node, 0)->setString("one");
     for (uint32_t i = 0; i < node.getChildren().size(); ++i) {
         auto *entity = static_cast<cc::RenderEntity *>(node.getChildren()[i]->getUserData());
         check(entity != nullptr, "native RichText child has renderer");
         if (entity) { cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); check(entity->getStaticDrawInfoSize() > 0, "native RichText submits segment draw info"); }
     }
-    auto *imageEntity = rich.getSegmentSprite(1)->getRenderEntity();
+    auto *imageEntity = getChildRenderer<cc::Sprite>(node, 1)->getRenderEntity();
     auto *imageDraw = imageEntity->getStaticDrawInfoSize() ? imageEntity->getRenderDrawInfoAt(0) : nullptr;
     check(imageDraw && imageDraw->getVbCount() == 16 && imageDraw->getIbCount() == 54,
           "native RichText image submits a nine-slice mesh");
-    if (rich.getSegmentLabel(0)) {
-        const auto measured = rich.getSegmentLabel(0)->measureUnwrappedText("one");
-        checkNear(measured.width, rich.getSegmentLabel(0)->getContentWidth(), "RichText measurement agrees with Label output");
-        check(countLabelCoverage(*rich.getSegmentLabel(0)) > 0, "RichText text raster is visible");
+    if (getChildRenderer<cc::Label>(node, 0)) {
+        const auto measured = getChildRenderer<cc::Label>(node, 0)->measureUnwrappedText("one");
+        checkNear(measured.width, getChildRenderer<cc::Label>(node, 0)->getContentWidth(), "RichText measurement agrees with Label output");
+        check(countLabelCoverage(*getChildRenderer<cc::Label>(node, 0)) > 0, "RichText text raster is visible");
     }
     check(rich.getSegmentClickHandler(0) == "tap" && rich.getSegmentClickParam(0) == "hello", "native RichText stores click metadata");
     const auto &placement = rich.getLayout().placements[0];
@@ -1407,15 +1428,15 @@ void testRichTextRuntime() {
     check(hits.size() == 1 && hits[0] == 0 && rich.getHitSegments(-1000,-1000).empty(), "native RichText hit and miss use segment geometry");
     rich.setEnabled(false); check(!first->isActive() && rich.getHitSegments(1,1).empty(), "disabled RichText hides children and ignores hits");
     rich.setString("changed");
-    check(node.getChildren().size() == 3 && rich.getSegmentLabel(0)->getString() == "one", "disabled RichText defers layout");
+    check(node.getChildren().size() == 3 && getChildRenderer<cc::Label>(node, 0)->getString() == "one", "disabled RichText defers layout");
     rich.setEnabled(true);
-    check(node.getChildren().size() == 1 && node.getChildren()[0].get() == first && rich.getSegmentLabel(0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
+    check(node.getChildren().size() == 1 && node.getChildren()[0].get() == first && getChildRenderer<cc::Label>(node, 0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
     if (hasWrapper) check(imageLayout.toObject()->getPrivateData() == transform, "pooled image layout wrapper stays valid");
     check(frame->getRefCount() == frameRefs, "recycled image releases frame and texture references");
     rich.setFontAsset(nullptr); check(font->getRefCount() == fontRefs, "RichText clears font references including measurement cache");
     rich.setString("<img src=\"icon\"/>");
     const auto imageWidth = rich.getLayout().placements[0].width;
-    rich.getSegmentSprite(0)->setSharedMaterial(nullptr, 0);
+    getChildRenderer<cc::Sprite>(node, 0)->setSharedMaterial(nullptr, 0);
     node.setActiveInHierarchy(true);
     cc::Batcher2d batcher;
     frame->setRectWidth(2); cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); batcher.walk(&node, 1.F, false);
@@ -1423,7 +1444,7 @@ void testRichTextRuntime() {
     atlas->removeSpriteFrame("icon"); cc::UIRendererManager::getInstance().updateAllDirtyRenderers(); batcher.walk(&node, 1.F, false);
     check(node.getChildren().empty(), "RichText follows atlas table revision");
     rich.setString("final"); rich.setNode(nullptr); rich.setImageAtlas(nullptr);
-    check(node.getChildren().empty() && !rich.getSegmentLabel(0) && !rich.getSegmentSprite(0), "RichText detach releases active and pooled native children");
+    check(node.getChildren().empty(), "RichText detach releases active and pooled native children");
     if (hasWrapper) check(!imageLayout.toObject()->getPrivateData(), "detaching RichText invalidates the borrowed layout wrapper");
     cc::Node lateNode("rich-text-late-transform"); cc::RichText late;
     late.setString("late"); late.setNode(&lateNode);
@@ -1450,7 +1471,7 @@ void testRichTextRuntime() {
     });
     resizeRich.setString("longer line to resize");
     manager.updateAllDirtyRenderers();
-    const auto *resized = resizeRich.getSegmentLabel(0);
+    const auto *resized = getChildRenderer<cc::Label>(resizeNode, 0);
     check(changedDuringResize && resized && resized->getString() == "callback replacement",
           "RichText applies text changed by its size notification");
     std::printf("rich text runtime: PASS\n");
@@ -2259,6 +2280,7 @@ void testJsBindings(se::ScriptEngine *scriptEngine) {
     check(register_all_scene_manual(globalObject), "register_all_scene_manual");
     check(register_all_native2d(globalObject), "register_all_native2d");
     globalObject->defineFunction("readLabelCoverage", _SE(readLabelCoverage));
+    globalObject->defineFunction("readRichTextSegment", _SE(readRichTextSegment));
     check(register_platform_bindings(globalObject), "register_platform_bindings");
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
     se::Value namespaceValue, loadValue, family;

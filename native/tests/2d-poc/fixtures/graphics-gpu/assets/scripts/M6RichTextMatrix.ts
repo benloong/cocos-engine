@@ -2,8 +2,28 @@ import { assetManager, deserialize, director, gfx, Color, instantiate, isValid, 
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
 
-async function checkRichTextResizeListener (parent: Node, font: TTFFont): Promise<void> {
+function samePixels (a: Uint8Array, b: Uint8Array): boolean {
+    return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+async function checkRenderedReplacement (rich: RichText, expected: string, readPixels: () => Uint8Array): Promise<void> {
+    if (rich.string !== expected || rich.node.children.length !== 1) throw new Error('RichText replacement did not publish one line');
+    if (!(rich as any)._native) {
+        if (rich.node.children[0].getComponent(Label)?.string !== expected) throw new Error('RichText replacement did not reach its Label');
+        return;
+    }
+    const replacement = new Uint8Array(readPixels());
+    rich.string = 'Control';
+    await wait();
+    if (samePixels(replacement, readPixels())) throw new Error('RichText replacement did not change rendered text');
+    rich.string = expected;
+    await wait();
+    if (!samePixels(replacement, readPixels())) throw new Error('RichText callback rendered different text from a direct update');
+}
+
+async function checkRichTextResizeListener (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<void> {
     const node = new Node('rich-text-size-listener');
+    node.layer = parent.layer;
     parent.addChild(node);
     try {
         const rich = node.addComponent(RichText);
@@ -17,11 +37,8 @@ async function checkRichTextResizeListener (parent: Node, font: TTFFont): Promis
         });
         rich.string = 'A wider line';
         await wait();
-        const backend = (rich as any)._native;
-        const text = backend ? backend.getSegmentLabel(0)?.getString() : node.children[0]?.getComponent(Label)?.string;
-        if (!notified || text !== 'Callback replacement' || node.children.length !== 1) {
-            throw new Error('RichText resize listener did not replace the rendered text');
-        }
+        if (!notified) throw new Error('RichText resize listener was not notified');
+        await checkRenderedReplacement(rich, 'Callback replacement', readPixels);
         console.log('M6_RICHTEXT_RESIZE_LISTENER_PASS');
     } finally {
         node.destroy();
@@ -29,8 +46,9 @@ async function checkRichTextResizeListener (parent: Node, font: TTFFont): Promis
     }
 }
 
-async function checkRichTextChildAddedListener (parent: Node, font: TTFFont): Promise<void> {
+async function checkRichTextChildAddedListener (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<void> {
     const node = new Node('rich-text-child-added-listener');
+    node.layer = parent.layer;
     parent.addChild(node);
     try {
         const rich = node.addComponent(RichText);
@@ -44,11 +62,8 @@ async function checkRichTextChildAddedListener (parent: Node, font: TTFFont): Pr
         });
         rich.string = '<b>First</b><i>Second</i>';
         await wait();
-        const backend = (rich as any)._native;
-        const text = backend ? backend.getSegmentLabel(0)?.getString() : node.children[0]?.getComponent(Label)?.string;
-        if (!notified || text !== 'Replacement during child attach' || node.children.length !== 1) {
-            throw new Error('RichText child-added listener did not replace the rendered text');
-        }
+        if (!notified) throw new Error('RichText child-added listener was not notified');
+        await checkRenderedReplacement(rich, 'Replacement during child attach', readPixels);
         console.log('M6_RICHTEXT_CHILD_ADDED_LISTENER_PASS');
 
         const unrelated = new Node('user-child');
@@ -66,8 +81,9 @@ async function checkRichTextChildAddedListener (parent: Node, font: TTFFont): Pr
     }
 }
 
-async function checkRichTextPrefab (parent: Node, font: TTFFont): Promise<object> {
+async function checkRichTextPrefab (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<object> {
     const source = '<b>Atlas</b> 123';
+    const edited = '<b>World</b> 456';
     const prefab = deserialize([
         { __type__: 'cc.Prefab', data: { __id__: 1 } },
         { __type__: 'cc.Node', _name: 'RichTextRollback', _components: [{ __id__: 2 }, { __id__: 3 }] },
@@ -81,18 +97,29 @@ async function checkRichTextPrefab (parent: Node, font: TTFFont): Promise<object
     rich.font = font;
     await wait();
     const backend = (rich as any)._native;
-    const segments = (): string[] => node.children.map((child, i) => backend
-        ? backend.getSegmentLabel(i).getString() : child.getComponent(Label)!.string);
-    if (rich.string !== source || rich.font !== font || segments().join('|') !== 'Atlas| 123') throw new Error('RichText prefab restoration failed');
+    const segments = () => node.children.map(child => ({ name: child.name, x: child.position.x, y: child.position.y }));
+    const initialSegments = segments();
+    if (rich.string !== source || rich.font !== font || initialSegments.length !== 2
+        || initialSegments.some(segment => segment.name !== 'RICHTEXT_CHILD')
+        || initialSegments[1].x <= initialSegments[0].x || initialSegments[1].y !== initialSegments[0].y) {
+        throw new Error('RichText prefab restoration failed');
+    }
+    const restoredPixels = new Uint8Array(readPixels());
+    rich.string = edited;
+    await wait();
+    if (samePixels(restoredPixels, readPixels())) throw new Error('RichText prefab edit did not render');
     const samples: number[] = [];
     for (let batch = 0; batch < 41; ++batch) {
         const start = performance.now();
-        for (let i = 0; i < 8; ++i) rich.string = i % 2 ? source : '<b>World</b> 456';
+        for (let i = 0; i < 8; ++i) rich.string = i % 2 ? source : edited;
         const elapsed = performance.now() - start;
         if (batch >= 10) samples.push(elapsed);
     }
-    if (segments().join('|') !== 'Atlas| 123') throw new Error('RichText update lost prefab segments');
-    const result = { implementation: backend ? 'native' : 'js', segments: segments(), updatesPerBatch: 8, samples };
+    await wait();
+    if (JSON.stringify(segments()) !== JSON.stringify(initialSegments) || !samePixels(restoredPixels, readPixels())) {
+        throw new Error('RichText update lost prefab segments');
+    }
+    const result = { implementation: backend ? 'native' : 'js', segments: initialSegments, restoredPixels: true, updatesPerBatch: 8, samples };
     node.destroy(); prefab.destroy(); await wait();
     if (isValid(node) || isValid(prefab)) throw new Error('RichText prefab was retained');
     return result;
@@ -430,9 +457,9 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
     const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
-    const prefab = await checkRichTextPrefab(parent, font);
-    await checkRichTextResizeListener(parent, font);
-    await checkRichTextChildAddedListener(parent, font);
+    const prefab = await checkRichTextPrefab(parent, font, readPixels);
+    await checkRichTextResizeListener(parent, font, readPixels);
+    await checkRichTextChildAddedListener(parent, font, readPixels);
     const cases = [
         { name: 'text-basic', value: 'Atlas 123' },
         { name: 'text-bold', value: '<b>Atlas 123</b>' },
@@ -472,30 +499,14 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
         const expectNative = sys.isNative && !(globalThis as any).__m6JsRichText;
         if (!!backend !== expectNative) throw new Error('Unexpected RichText implementation');
         await capture(item.name);
-        if (sys.isNative) {
-            const labels = [];
-            if (backend && (backend.getSegmentLabel(node.children.length) || backend.getSegmentSprite(node.children.length))) {
-                throw new Error('Native RichText has a segment without a child node');
-            }
-            for (let i = 0; i < node.children.length; ++i) {
-                const label = backend ? backend.getSegmentLabel(i) : (node.children[i].getComponent(Label) as any)?._native;
-                if (!label) throw new Error(`Missing native Label in ${item.name}/${i}`);
-                const texture = submittedTextTexture(label);
-                const opaque = submittedTextCoverage(texture);
-                if (!texture || !opaque) throw new Error(`Batcher did not prepare visible text: ${item.name}/${i}`);
-                labels.push({ opaque, width: texture.width, height: texture.height });
-            }
-            raster.push({ name: item.name, labels });
-        } else {
-            raster.push({ name: item.name, labels: node.children.map(child => {
-                const label: any = child.getComponent(Label);
-                const canvas = label.assemblerData.canvas;
-                return { width: canvas.width, height: canvas.height, font: label.assemblerData.context.font,
-                    actualFontSize: label.textStyle.actualFontSize, fontScale: label.textStyle.fontScale,
-                    canvasSize: { width: label.textLayoutData.canvasSize.width, height: label.textLayoutData.canvasSize.height },
-                    start: { x: label.textLayoutData.startPosition.x, y: label.textLayoutData.startPosition.y } };
-            }) });
+        if (backend && ('getSegmentLabel' in backend || 'getSegmentSprite' in backend || !node.children.length
+            || node.children.some(child => child.name !== 'RICHTEXT_CHILD' || child.getComponent(Label)))) {
+            throw new Error('Native segments must be queryable only in C++: ' + item.name);
         }
+        const pixels = readPixels();
+        const visible = pixels.some((value, index) => index % 4 < 3 && value !== pixels[index % 4]);
+        if (!visible) throw new Error('Missing rendered RichText: ' + item.name);
+        raster.push({ name: item.name, visible });
         metrics.push({ name: item.name, width: ui.width, height: ui.height,
             segments: node.children.map(child => ({ name: child.name, x: child.position.x, y: child.position.y })) });
         node.destroy(); await wait();

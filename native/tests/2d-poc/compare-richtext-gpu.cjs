@@ -25,7 +25,7 @@ for(const value of [a,b]) {
     if(value.width!==256||value.height!==256||JSON.stringify(value.captures)!==JSON.stringify(captures)||!value.text.loaded||!value.text.released||JSON.stringify(value.text.metrics.map(x=>x.name))!==JSON.stringify(richTextNames))throw Error('Incomplete RichText capture/font lifecycle evidence');
 }
 if(a.text.nativeBytes!==223404||b.text.nativeBytes!==null)throw Error('Unexpected TTF source size');
-if(a.text.raster?.length!==richTextNames.length||a.text.raster.some((row,index)=>row.name!==richTextNames[index]||row.labels.length!==a.text.metrics[index].segments.length||row.labels.some(label=>!(label.opaque>0&&label.width>0&&label.height>0))))throw Error('Native Batcher did not prepare every visible text segment');
+if(a.text.raster?.length!==richTextNames.length||a.text.raster.some((row,index)=>row.name!==richTextNames[index]||!row.visible))throw Error('Native Batcher did not render every RichText case');
 const rows=[];
 // Web RichText treats shadow as an unknown tag and retains the nested color spans.
 for (const [dir,manifest] of [[nativeDir,a],[webDir,b]]) {

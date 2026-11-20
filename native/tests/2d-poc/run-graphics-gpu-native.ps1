@@ -107,7 +107,7 @@ try {
                 $lifecycle = $result.text.lifecycle
                 $expected = if ($RichTextImplementation -eq 'js') { 'js' } else { 'native' }
                 $prefab = $result.text.prefab
-                if ($prefab.implementation -ne $expected -or ($prefab.segments -join '|') -cne 'Atlas| 123' -or
+                if ($prefab.implementation -ne $expected -or $prefab.segments.Count -ne 2 -or !$prefab.restoredPixels -or
                     $prefab.updatesPerBatch -ne 8 -or $prefab.samples.Count -ne 31) { throw "Invalid $expected RichText prefab result" }
                 if(($result.captures -join '|') -cne $expectedCaptures -or $result.text.loaded -ne $true -or $result.text.released -ne $true -or $lifecycle.cycles -ne 1000 -or $lifecycle.cacheHits -ne 1000 -or $lifecycle.bytesPerLoad -ne 223404 -or $lifecycle.assignmentFailureRolledBack -ne $true -or $lifecycle.retrySucceeded -ne $true -or $lifecycle.missingRejected -ne $true -or $lifecycle.deferredDestroyFinished -ne $true) { throw 'Invalid native RichText manifest' }
                 if($null -eq $lifecycle.cacheBefore -or $lifecycle.cacheBefore -ne $lifecycle.cacheAfter) { throw 'Native font lifecycle did not restore its baseline' }

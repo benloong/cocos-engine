@@ -101,6 +101,7 @@
 - [x] Sprite、Label 和 RichText 清理 9 个引擎未调用的 JSB 读回接口。Sprite 夹具通过公开属性、材质和原生 setter 验证原有行为，C++ 夹具继续检查填充范围和 Label 缓存模式。Windows Debug、Release 各通过 6 组 JSB 探针和 1000 轮场景切换。各 108 张图与 Web 及清理前逐字节一致。[导出清单和运行结果](./native-2d-m6-binding-cleanup.json)
   复核 `cocos/2d/poc`、`native/cocos/2d/poc` 及 `exports/native-2d-poc.ts` 已退出生产源码。继续移除 Sprite 类型读取、Label 字体和样式读取以及独立测量入口，并将 Label 字体更新方法收回到类内。Windows 双配置各通过六组 JSB 探针并检查七个入口缺席。RichText 图片改用原生提交的 16 个顶点、54 个索引验证九宫格。Windows 双配置各 116 张 GPU 图与 Web 逐字节一致。
   [功能裁剪测试](../native/tests/2d-poc/check-m6-feature-matrix.cjs) 同时检查可用模块列表和生成的 `cc.js`。模块列表不得包含 `native-2d-poc`，Windows 与 Web 各九种组合均须排除 `NativeUITransformPoc` 和 `NativeSpritePoc`。
+  RichText 的 getSegmentLabel 和 getSegmentSprite 已从 C++ 与 JSB 删除。独立测试通过 Native Node 的组件注册验证 Label/Sprite、池化包装与释放。旧工程按节点布局、GPU 回读与点击事件验收。Windows 与 Web 各九种 Release bundle 检查旧 PoC 路径、模块和组件导出。[绑定与快照记录](./native-2d-m6-binding-cleanup.json)
   BitmapFont 的测试计数方法已从 C++ 和 JSB 删除。Windows Debug/Release 的字体探针直接检查生产路径读取的字形数据，并验证 JSB 实例上没有 `getGlyphCount`。[字体绑定回归](../native/tests/2d-poc/build-font-assets-probe.cjs)
   SpriteAtlas 的测试计数方法已从 C++ 和 JSB 删除。Windows 双配置的[绑定探针](../native/tests/2d-poc/build-sprite-atlas-probe.cjs)检查导出缺席，并用有序帧名、帧查找和纹理验证空槽及释放。Windows Debug、Release 与 Web 的[真实图集场景](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)各完成 1000 轮、5000 项资产检查和 22 次像素回读。
   TTFFont 的原始字节 getter/setter 已从 C++ 和 JSB 移除。原生生命周期测试通过文件加载、释放、重载和销毁后拒绝读入同一有效文件来检查所有权。Windows Debug/Release 的[绑定回归](../native/tests/2d-poc/build-font-assets-probe.cjs)检查两个方法均未导出，两种配置各完成 1000 轮真实远程字体加载释放。37 项布局与图像结果均与清理前一致。

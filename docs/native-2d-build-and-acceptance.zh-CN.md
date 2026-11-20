@@ -49,7 +49,7 @@ cd C:\Users\wangbenlong\Works\cocos-engine-worktrees\v4
 node native/tests/2d-poc/sync-acceptance-probes.cjs
 ```
 
-M4 Graphics 已使用原生几何；探针以隔离的 GPU readPixels 检查 80×80 填充，不依赖旧 CPU 纹理的 getFrame/getOpaquePixels。GRAPHICS_STENCIL 使用 Mask.subComp 的真实路径；原有像素阈值保持不变。M5 在 native 下直接检查原生 Label/Sprite 段，另行记录 JS 子组件数量；不为探针创建重复 JS 渲染组件。内部节点的 JS 组件查询兼容性仍按 M6 单列验收。
+M4 Graphics 探针通过原生几何与隔离的 GPU readPixels 检查 80×80 填充。GRAPHICS_STENCIL 使用 Mask.subComp，沿用原有像素阈值。M5 应用通过子节点位置、GPU 回读和触摸事件验证 Native RichText，独立原生测试通过 Node 的组件注册验证 Label/Sprite 段和包装对象生命周期。Windows 的应用查询返回零个内部 JS Label/Sprite，Web 返回对应组件。
 
 ## 3. CLI 构建
 

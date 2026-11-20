@@ -69,6 +69,9 @@ async function buildVariant (platform, bits) {
 async function main () {
     const query = await StatsQuery.create(root);
     if (query.getFeatureUnits().includes('native-2d-poc')) throw new Error('Retired M0 export entry is available');
+    for (const retired of ['cocos/2d/poc', 'native/cocos/2d/poc', 'exports/native-2d-poc.ts']) {
+        if (fs.existsSync(path.join(root, retired))) throw new Error('Retired M0 source exists: ' + retired);
+    }
     if (process.argv[2]) return buildVariant(process.argv[2], Number(process.argv[3]));
     const results = [];
     for (const platform of ['WINDOWS', 'HTML5']) {

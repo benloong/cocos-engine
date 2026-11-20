@@ -72,22 +72,30 @@ try {
     if ($data.labels -lt 1) { throw 'RichText produced no Label segments' }
     if ($data.colored -le 0) { throw 'RichText produced no colored pixels' }
     if ($data.hit -ne $true -or $data.miss -ne $false) { throw 'RichText hit/miss checks failed' }
-    if (-not @($data.styles | Where-Object { $_.fontSize -eq 20 }).Count -or
-        -not @($data.styles | Where-Object { $_.bold }).Count -or
-        -not @($data.styles | Where-Object { $_.italic }).Count -or
-        -not @($data.styles | Where-Object { $_.underline }).Count) { throw 'RichText segment styles missing' }
-
     # System Arial, 40 px, synthetic italic. M5 accepted a 9.748 px GDI width difference.
-    $italic = @($data.segments | Where-Object text -CEQ 'Italic')
-    if ($italic.Count -ne 1 -or $null -eq $italic[0].w -or [Math]::Abs($italic[0].w - 90.748) -gt 9.749) {
+    if ($data.native) {
+        if ($data.labels -ne 9 -or $data.sprites -ne 1 -or $data.children -ne 10) { throw 'Unexpected native RichText segment layout' }
+        $italic, $space, $underline = $data.segments[6..8]
+        $italicWidth = $space.x - $italic.x
+        if (@($italic, $space, $underline | Where-Object name -CNE 'RICHTEXT_CHILD').Count) { throw 'Missing native text segment' }
+    } else {
+        if (-not @($data.styles | Where-Object { $_.fontSize -eq 20 }).Count -or
+            -not @($data.styles | Where-Object { $_.bold }).Count -or
+            -not @($data.styles | Where-Object { $_.italic }).Count -or
+            -not @($data.styles | Where-Object { $_.underline }).Count) { throw 'RichText segment styles missing' }
+        $matches = @($data.segments | Where-Object text -CEQ 'Italic')
+        if ($matches.Count -ne 1 -or $null -eq $matches[0].w) { throw 'Missing Italic width' }
+        $italic = $matches[0]
+        $italicWidth = $italic.w
+        $italicIndex = [array]::IndexOf($data.segments, $italic)
+        $space, $underline = $data.segments[($italicIndex + 1)..($italicIndex + 2)]
+        if ($space.text -cne ' ' -or $underline.text -cne 'Underline') { throw 'Missing space or underlined text' }
+    }
+    if ([Math]::Abs($italicWidth - 90.748) -gt 9.749) {
         throw 'M5 system Arial Italic segment exceeds its Windows layout tolerance'
     }
-    Write-Host ("  system Arial Italic width={0}" -f $italic[0].w)
-    $italicIndex = [array]::IndexOf($data.segments, $italic[0])
-    $space = $data.segments[$italicIndex + 1]
-    $underline = $data.segments[$italicIndex + 2]
-    if ($space.text -cne ' ' -or $space.y -ne $italic[0].y -or
-        $underline.text -cne 'Underline' -or $underline.y -ge $space.y) {
+    Write-Host ("  system Arial Italic width={0}" -f $italicWidth)
+    if ($space.y -ne $italic.y -or $underline.y -ge $space.y) {
         throw 'The trailing space must fit after Italic before Underline wraps'
     }
     Write-Host ("  segments={0}, labels={1}, sprites={2}" -f $data.children, $data.labels, $data.sprites)
