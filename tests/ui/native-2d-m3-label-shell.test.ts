@@ -131,6 +131,11 @@ test('Label reports the original bitmap font size as its assigned asset changes'
         bitmap.fontSize = 18;
         label.font = bitmap;
         expect(label._bmFontOriginalSize).toBe(18);
+        label.fontSize = 18.25;
+        label.fontFamily = 'Verdana';
+        expect(label.font).toBe(bitmap);
+        expect(label.fontSize).toBe(18.25);
+        expect(label._bmFontOriginalSize).toBe(18);
         bitmap.fontSize = 32;
         expect(label._bmFontOriginalSize).toBe(32);
         label.font = new Font();
@@ -208,7 +213,9 @@ test('Label M3 shell attaches and forwards text properties', () => {
     label.cacheMode = 2;
 
     expect(nativeLabel.setString).toHaveBeenLastCalledWith('Hello');
-    expect(nativeLabel.setFont).toHaveBeenLastCalledWith('24px Arial');
+    expect(nativeLabel.setFontSize).toHaveBeenLastCalledWith(24);
+    label.fontFamily = 'Verdana';
+    expect(nativeLabel.setFont).toHaveBeenLastCalledWith('24px Verdana');
     expect(nativeLabel.setLineHeight).toHaveBeenLastCalledWith(30);
     expect(nativeLabel.setEnableWrapText).toHaveBeenLastCalledWith(true);
     expect(nativeLabel.setOverflow).toHaveBeenLastCalledWith(Overflow.RESIZE_HEIGHT);

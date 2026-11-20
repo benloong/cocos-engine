@@ -166,6 +166,23 @@ label._color.r=96;labelAssembler.updateColor(label);
 labelAssembler.updateRenderData(label);
 check(readLabelCoverage(label._native)>0,'native Label still renders after assembler color update');
 label.sharedMaterials=[custom,normal];
+const bitmapForResize=new jsb.BitmapFont();
+label.font=bitmapForResize;
+const fontCalls=[];
+const fontPrototype=n2d.Label.prototype;
+const fontMethods=['setFont','setFontSize','setFontAsset'];
+const originals=fontMethods.map(name=>fontPrototype[name]);
+try {
+ fontMethods.forEach((name,index)=>{fontPrototype[name]=function(value){fontCalls.push(name);return originals[index].call(this,value);};});
+ label.fontSize=18.25; label.fontSize=18.25;
+ label.fontFamily='Verdana';
+ check(label._native.getFontAsset()===bitmapForResize&&label.fontSize===18.25,'bitmap font is retained during resize');
+ check(fontCalls.join(',')==='setFontSize,setFont','isolated Label font changes: '+fontCalls.join(','));
+} finally {fontMethods.forEach((name,index)=>{fontPrototype[name]=originals[index];});}
+label.font=null;
+label.fontSize=23.75;
+label.updateRenderData(true);
+check(label.actualFontSize===23.75&&readLabelCoverage(label._native)>0,'fractional resize renders after switching back to the system font');
 for (const key of ['isBold','isItalic','isUnderline','underlineHeight','enableOutline','outlineWidth','enableShadow','shadowBlur']) {
  const setter='set'+key[0].toUpperCase()+key.slice(1);
  const prototype=n2d.Label.prototype;

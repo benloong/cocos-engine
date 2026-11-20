@@ -15106,7 +15106,7 @@
     },
     {
       "file": "cocos/2d/components/label.jsb.ts",
-      "sha256": "3144c895fee779923c23bbb241bfdd1b7839d06fdc14c183c652f0604a872602",
+      "sha256": "54560602e2a62fe52bc7ca1ad18192839d449f8afe6edf060788021ae4a1149f",
       "printedCodeLines": 433,
       "runtimeImports": [
         "cc.decorator",
@@ -15211,8 +15211,16 @@
           "line": 281
         },
         {
+          "expression": "this._native?.setFontSize",
+          "line": 289
+        },
+        {
           "expression": "this._native?.setLineHeight",
           "line": 301
+        },
+        {
+          "expression": "this._native?.setFont",
+          "line": 313
         },
         {
           "expression": "this._native?.setOverflow",

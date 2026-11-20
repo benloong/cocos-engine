@@ -286,7 +286,7 @@ export class Label extends UIRenderer {
             return;
         }
         this._fontSize = value;
-        this._syncFont();
+        this._native?.setFontSize(value);
     }
 
     get lineHeight (): number {
@@ -310,7 +310,7 @@ export class Label extends UIRenderer {
             return;
         }
         this._fontFamily = value;
-        this._syncFont();
+        this._native?.setFont(`${this._fontSize}px ${value}`);
     }
 
     @type(Font)
