@@ -438,8 +438,9 @@ export class TextProcessing {
         const canvas = this._canvas!;
         const context = this._context!;
 
-        canvas.width = canvasSize.width;
-        canvas.height = canvasSize.height;
+        // Match the browser canvas when the JSB adapter receives fractional layout dimensions.
+        canvas.width = Math.trunc(canvasSize.width);
+        canvas.height = Math.trunc(canvasSize.height);
 
         context.font = style.fontDesc;
         // align

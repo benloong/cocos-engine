@@ -34,6 +34,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | SpriteFrame 换纹理与网格复位 | Windows Debug、Release 和 Web 一次发布最终矩形与网格边界，整图复位从 `(0,0)` 开始。Web 在原帧换图和卸载后验证同页克隆仍可绘制并恢复源图。160 张图三端逐字节一致。 | [事件和像素记录](./native-2d-m6-sprite-packed-reset.json) |
 | BMFont 配置实时重载 | Windows Debug、Release 和 Web 使用旧 XML FNT 与序列化 Prefab，保持 Label 绑定并依次重载字距、删除字形和恢复配置。布局宽度为 40、42、37、40 像素。163 张图三端逐字节一致。 | [布局、生命周期和图像](./native-2d-m6-bitmap-config-reload.json) |
 | Windows Label 回退的旧版描边和阴影 | Debug 和 Release 的序列化旧特效均通过启停、销毁及直接调用等价性。两种配置回退后均有 160 张图与 Chrome 逐字节一致。原生与恢复阶段各 163 张一致。 | [特效与矩阵记录](./native-2d-m6-label-shadow-fallback.json) |
+| Windows Label 回退的捆绑 TTF | Windows Debug、Release 各在原生、TS 回退和恢复阶段通过 163 张与 Chrome 的逐字节对照。修复回退纹理的整数尺寸后，三张捆绑 TTF 图通过，原有 160 张的哈希保持一致。 | [六次本机运行及旧版本差异](./native-2d-m6-label-ttf-canvas-size.json) |
 | 生产绑定清理 | 删除 Sprite、Label 和 RichText 的 9 个未用 JSB 读回接口。Windows 双配置各通过 6 组 JSB 探针，108 张图与 Web 及上一节点逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | PoC 与遗留测试导出 | Windows 和 Web 重建包均无旧 PoC 入口或组件。Sprite 和 Label 清理 7 个内部或测试调用，Windows 双配置各通过 6 组 JSB 探针、1000 轮场景切换，116 张 GPU 图与 Web 逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
 | RichText 测试导出 | 删除 getSegmentLabel 和 getSegmentSprite。Windows Debug、Release 各通过六组 JSB 探针与 M2–M5。Web 旧工程检查 9 个 Label 和 1 个 Sprite。字体矩阵 42 项布局通过，严格像素 39/42，三组历史像素超差见本轮范围说明 | [绑定与快照记录](./native-2d-m6-binding-cleanup.json) |
@@ -90,6 +91,6 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一旧 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。Windows 下载器已验证排队与传输中取消、失败时保留旧文件、清除不可续传的半文件和 Range 续传。Web 已验证 fetch 主动取消及续传。Web 引擎首次断流时返回回退字体，释放后同 URL 已成功重载并测得原字体宽度。其余旧资产仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
 | M6.2 | RichText 终态 | 固定布局、场景、视觉和输入回归已通过当前范围。剩余资源与极限对象生命周期、Node wrapper 联调及最终候选复验。 |
 | M6.4 | 平台矩阵 | 三端 RichText 字体应用矩阵与小数字号回归已通过当前范围。本轮最终候选仍须汇总关键渲染、字体与事件场景记录 |
-| M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据 |
-| M6.5 | 最终候选回退复测 | 两种 Windows 配置已分别完成旧项目中的 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。当前 Label 回退在 Windows Debug、Release 各有三张捆绑 TTF 图超差，每张有 996 个像素超差，最大通道差为 209。最终候选须重跑整组回退矩阵。[本次结果](./native-2d-m6-label-shadow-fallback.json) |
+| M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据。完整原生测试程序在字体别名用例中仍待排查，Debug 超时，Release 发生访问冲突。[本机记录](./native-2d-m6-label-ttf-canvas-size.json) |
+| M6.5 | 最终候选回退复测 | 两种 Windows 配置已分别完成旧项目中的 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。当前候选的 Label 回退及恢复已通过 Windows 双配置的完整 163 张图对照。最终签收仍须在同一候选上重跑其余组件回退，并汇总 Label 证据。[当前 Label 回退结果](./native-2d-m6-label-ttf-canvas-size.json) |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

@@ -53,3 +53,9 @@ Windows Canvas 的 `fillText` 读取 JSB 提交的阴影颜色、偏移和模糊
 本机 Windows Debug、Release 各在同一二进制上执行原生、TS 回退、恢复原生。两种配置的旧版描边与阴影通过 Prefab 启用、属性转发、单独启停、销毁以及与直接接口的图像等价性。独立 Canvas 用例覆盖硬阴影、模糊、恢复和透明颜色。
 
 原生和恢复阶段各 163 张图与 Chrome 逐字节一致。每个 TS 回退阶段有 160 张严格一致。`scene-ttf-bundle-first`、`scene-ttf-bundle-next`、`scene-ttf-bundle-cold` 各有 996 个像素超差，最大通道差为 209，字体宽度和资源生命周期断言通过。完整 Debug 原生探针在字体资产检查后超时，独立阴影探针已通过。[本机数据](./native-2d-m6-label-shadow-fallback.json)
+
+## 捆绑 TTF 的小数尺寸
+
+Web 的 Canvas 将小数像素尺寸截为整数，Windows 的 JSB Canvas 适配器向上取整。TS Label 在设置 Canvas 宽高时显式按照 Web 的规则取整，布局仍保留小数。旧矩阵里的 TTF 宽度 95.9765625 和高度 37.8 在改动前后均通过。
+
+Windows Debug、Release 各在原生、TS 回退和恢复三个阶段完成 163 张 RGBA 读回，每个阶段均与 Chrome 逐字节一致。同一配置的恢复引擎哈希与初始原生一致。旧回退超差的三张捆绑 TTF 图均通过，另外 160 张的哈希维持一致。[比较与二进制记录](./native-2d-m6-label-ttf-canvas-size.json)
