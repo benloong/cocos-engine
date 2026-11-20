@@ -71,6 +71,12 @@ outlinedLabel.setNode(outlinedNode);
 outlinedLabel.setFontAsset(ttf); outlinedLabel.setFontSize(24); outlinedLabel.setLineHeight(30); outlinedLabel.setString('Atlas 123');
 outlinedLabel.updateRenderData();
 check(Math.abs(outlinedTransform.getWidth() - 95.9765625) < 0.001, 'Label consumes the registered custom font: ' + outlinedTransform.getWidth());
+for (const [size, width] of [[24.25, 96.97625732421875], [24.75, 98.975830078125], [25, 99.97552490234375], [24, 95.9765625]]) {
+    outlinedLabel.setFontSize(size);
+    outlinedLabel.updateRenderData();
+    check(outlinedLabel.getActualFontSize() === size && Math.abs(outlinedTransform.getWidth() - width) < 0.001,
+        'Label preserves the fractional Canvas font size ' + size + ': ' + outlinedTransform.getWidth());
+}
 const baseCoverage = readLabelCoverage(outlinedLabel);
 const originalPath = ttf.getSourcePath(), originalSize = ttf.getFontDataSize(), originalRevision = ttf.getRevision();
 ttf._nativeUrl = originalPath + '.missing';

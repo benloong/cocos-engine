@@ -135,7 +135,7 @@ static CanvasFont parseLegacyCanvasFont(const std::string &font) {
     std::regex re(R"(\s*((\d+)([\.]\d+)?)px\s+([^\r\n]*))");
     std::match_results<std::string::const_iterator> results;
     if (std::regex_search(font.cbegin(), font.cend(), results, re)) {
-        fontSizeStr = results[2].str();
+        fontSizeStr = results[1].str();
         // support get font name from `60px American` or `60px "American abc-abc_abc"`
         // support get font name contain space,example `times new roman`
         // if regex rule that does not conform to the rules,such as Chinese,it defaults to Arial

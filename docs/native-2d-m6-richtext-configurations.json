@@ -224,5 +224,67 @@
         }
       }
     }
+  },
+  "fractionalFontSizes": {
+    "snapshot": "fd16d4172d7df6117855147ff367157e2a31af97ae573df90de5d4977100ef44",
+    "font": "tests/fixtures/Thonburi.ttf",
+    "fontSizes": [
+      24,
+      24.25,
+      24.75,
+      25,
+      24
+    ],
+    "windowsPriorWidths": [
+      95.9765625,
+      95.9765625,
+      95.9765625,
+      99.97557830810547,
+      95.9765625
+    ],
+    "webWidths": [
+      95.9765625,
+      96.97625732421875,
+      98.975830078125,
+      99.97552490234375,
+      95.9765625
+    ],
+    "webManifestSha256": "9e4c2d8c825b7c577f860b5036f8882752b3401fe5ba5fa8eb1cd8078f9482fa",
+    "maximumWidthDifference": 5.340576171875e-05,
+    "redrawAndRestoreVerifiedOnAllBackends": true,
+    "configurations": {
+      "Debug": {
+        "executableSha256": "9c14536c25217d50cbf6fd250bffb5b3491f45ad1f8294b42f9b6a8a1a96c0a9",
+        "comparisonSha256": "8d9cf6f5ad75009023ea498d9ab1e29702d98fa7746522448434a5d0558148c6",
+        "widths": [
+          95.9765625,
+          96.97631072998047,
+          98.975830078125,
+          99.97557830810547,
+          95.9765625
+        ],
+        "existingImagesIdenticalToPriorPerPlatform": 47,
+        "m6GatePassed": true,
+        "standardExecutableSha256": "0150075a8f1e9298a497572730fb302189b506eb2440ec6541153f065c0d1178",
+        "oldProjectBitmapCapturesIdenticalToWeb": 92,
+        "oldProjectBitmapMaximumChannelDifference": 0
+      },
+      "Release": {
+        "executableSha256": "4332ceb7ddf5668d54698c2fbba50cd35cce1f5ba646f0609fcb513fd091c9f3",
+        "comparisonSha256": "5ad63044a817c2b678e20095879e4981c35d1c971f7a32bff916c16bc683fedf",
+        "widths": [
+          95.9765625,
+          96.97631072998047,
+          98.975830078125,
+          99.97557830810547,
+          95.9765625
+        ],
+        "existingImagesIdenticalToPriorPerPlatform": 47,
+        "m6GatePassed": true,
+        "standardExecutableSha256": "6f7680b40f5c4101f4b40500f1329e0096b3531fe416e6d38e9244557aa36af2",
+        "oldProjectBitmapCapturesIdenticalToWeb": 92,
+        "oldProjectBitmapMaximumChannelDifference": 0
+      }
+    }
   }
 }

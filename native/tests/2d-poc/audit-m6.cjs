@@ -194,6 +194,7 @@ function build(root = ROOT) {
     for (const backend of ['v8','sm','napi','jsvm']) nativeFiles.push('native/cocos/bindings/jswrapper/'+backend+'/Object.h');
     nativeFiles.push('native/cocos/base/Log.cpp', 'native/cocos/core/assets/SimpleTexture.cpp', 'native/cocos/scene/DrawBatch2D.cpp', 'native/cocos/scene/DrawBatch2D.h');
     nativeFiles.push('native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.h','native/cocos/platform/win32/modules/CanvasRenderingContext2DDelegate.cpp','native/cocos/platform/win32/modules/DirectWriteFont.h','native/cocos/platform/win32/modules/DirectWriteFont.cpp');
+    nativeFiles.push('native/cocos/platform/interfaces/modules/canvas/CanvasFont.h', 'native/cocos/platform/interfaces/modules/canvas/CanvasFont.cpp');
     nativeFiles.push('native/cocos/platform/interfaces/modules/canvas/ICanvasRenderingContext2D.h','native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.h','native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp','native/cocos/bindings/manual/jsb_platform_win32.cpp','native/cocos/bindings/manual/jsb_platform.h');
     nativeFiles.push('cocos/2d/utils/font-loader.ts','cocos/asset/asset-manager/factory.ts');
     nativeFiles.push('native/cocos/core/component/Component.h','native/cocos/core/component/Component.cpp','native/cocos/core/scene-graph/Node.h','native/cocos/core/scene-graph/Node.cpp','native/cocos/core/Root.h','native/cocos/core/Root.cpp');

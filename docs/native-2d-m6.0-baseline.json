@@ -79,7 +79,7 @@
     },
     {
       "file": "native/cocos/2d/components/Label.cpp",
-      "sha256": "05aefae4c3ddb623d2278de0e6ac01dac6150067114489f2dc104990181489db"
+      "sha256": "ef4be8f75608229e61d0373c06892c0b1af0cf5965f4ab75273c69ca0fe155b7"
     },
     {
       "file": "native/cocos/2d/components/Label.h",
@@ -332,6 +332,14 @@
     {
       "file": "native/cocos/network/Downloader-curl.cpp",
       "sha256": "f047d00c7cc09e459f000520968767acc6f7c7a9c7faf61dd9b2e494ab5eb913"
+    },
+    {
+      "file": "native/cocos/platform/interfaces/modules/canvas/CanvasFont.cpp",
+      "sha256": "c0d2e4670c40465e3e5413925ef10f90e160c0a3ccf1c45574ffc2e5d459bf09"
+    },
+    {
+      "file": "native/cocos/platform/interfaces/modules/canvas/CanvasFont.h",
+      "sha256": "f387d09b03235b8fbc34cd42710a77960989417e3f99ffb51805fee646e2fc96"
     },
     {
       "file": "native/cocos/platform/interfaces/modules/canvas/CanvasRenderingContext2D.cpp",

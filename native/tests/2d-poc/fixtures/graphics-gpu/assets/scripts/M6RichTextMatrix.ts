@@ -365,6 +365,37 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
         cacheBefore, cacheAfter: assetManager.assets.count, http };
 }
 
+async function checkFractionalFontSizes (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<number[]> {
+    const node = new Node('fractional-font-size');
+    parent.addChild(node);
+    node.layer = parent.layer;
+    const ui = node.addComponent(UITransform);
+    const label = node.addComponent(Label);
+    label.font = font;
+    label.string = 'Atlas 123';
+    label.lineHeight = 30;
+    const widths: number[] = [];
+    let firstImage: Uint8Array | undefined;
+    let previousImage: Uint8Array | undefined;
+    for (const [size, width] of [[24, 95.9765625], [24.25, 96.97625732421875], [24.75, 98.975830078125],
+        [25, 99.97552490234375], [24, 95.9765625]]) {
+        label.fontSize = size;
+        label.updateRenderData(true);
+        await wait();
+        if (Math.abs(ui.width - width) > 0.001) throw new Error(`Label at ${size}px has width ${ui.width}, expected ${width}`);
+        const pixels = readPixels();
+        if (!pixels.some((value, index) => index % 4 === 0 && value > 127)) throw new Error(`Label at ${size}px did not render`);
+        if (previousImage && samePixels(previousImage, pixels)) throw new Error(`Label at ${size}px did not redraw`);
+        firstImage ??= pixels;
+        previousImage = pixels;
+        widths.push(ui.width);
+    }
+    if (!samePixels(firstImage!, previousImage!)) throw new Error('Restoring the original Label font size changed its pixels');
+    node.destroy();
+    await wait();
+    return widths;
+}
+
 async function checkShadowOffsets (parent: Node, font: TTFFont, readPixels: () => Uint8Array): Promise<{
     hardShadowCoverage: number[]; blurredShadowCenters: { sign: number; dx: number; dy: number }[];
 }> {
@@ -561,6 +592,7 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     }
     const bytes = sys.isNative ? (font as any).getFontDataSize() : null;
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
+    const fractionalFontWidths = await checkFractionalFontSizes(parent, font, readPixels);
     const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
     const prefab = await checkRichTextPrefab(parent, font, readPixels);
     await checkRichTextResizeListener(parent, font, readPixels);
@@ -623,5 +655,5 @@ export async function runRichTextMatrix (parent: Node, capture: (name: string) =
     if (!released) throw new Error('TTF release did not destroy asset');
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
-    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, hardShadowCoverage, blurredShadowCenters, shadowLayout };
+    return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, fractionalFontWidths, hardShadowCoverage, blurredShadowCenters, shadowLayout };
 }

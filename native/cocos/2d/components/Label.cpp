@@ -41,6 +41,7 @@
 #include "core/scene-graph/Node.h"
 #include "platform/interfaces/modules/canvas/CanvasRenderingContext2D.h"
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+#include <charconv>
 #include "application/ApplicationManager.h"
 #include "bindings/manual/jsb_platform.h"
 #include "platform/interfaces/modules/canvas/CanvasFont.h"
@@ -333,7 +334,15 @@ std::string Label::fontDescription(float size) const {
     std::string font;
     if (_isBold) { font += "bold "; }
     if (_isItalic) { font += "italic "; }
-    font += std::to_string(static_cast<int>(size)) + "px ";
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    // The Canvas parser accepts decimal sizes without exponent notation.
+    char sizeText[64]; // Fixed notation for every Windows float fits.
+    const auto formatted = std::to_chars(sizeText, sizeText + sizeof(sizeText), size, std::chars_format::fixed);
+    font.append(sizeText, formatted.ptr);
+#else
+    font += std::to_string(static_cast<int>(size));
+#endif
+    font += "px ";
     auto *ttf = dynamic_cast<TTFFont *>(_fontAsset.get());
     if (ttf && !ttf->isReleased() && !ttf->getFontFamily().empty()) {
         font += '\"';
