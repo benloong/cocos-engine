@@ -15,19 +15,24 @@ jsb.Asset.prototype._ctor = function () { initialized++; };
 Object.defineProperty(jsb.Asset.prototype, 'nativeUrl', { get () { return this._nativeUrl || ''; } });
 Object.defineProperty(jsb.SpriteFrame.prototype, 'texture', { get () { return this.getTexture(); } });
 jsb.Asset.prototype.destroy = function () { return this._destroy(); };
-let createFontAsset;
+let downloadFontAsset, createFontAsset;
 const modules = { ${modules}, './font-loader': function (require, exports) { ${loaderModule} } }, cache = {};
 function require(id) {
+    if (id === 'internal:constants') return { JSB: true };
     if (id === '../../core') return { cclegacy, js, path: { extname: s => s.slice(s.lastIndexOf('.')) }, warnID: () => {} };
     if (id === '../../asset/assets/asset') return {};
     if (id === './sprite-frame') return { SpriteFrame: jsb.SpriteFrame };
     if (id === './font-family') return {};
     if (id === '../../core/global-exports') return { ccwindow: { document: {} } };
-    if (id === '../../asset/asset-manager/downloader') return { default: { register() {} } };
+    if (id === '../../asset/asset-manager/downloader') return { default: { register(handlers) { downloadFontAsset = handlers['.ttf']; } } };
     if (id === '../../asset/asset-manager/factory') return { default: { register(handlers) { createFontAsset = handlers['.ttf']; } } };
     if (id === '../assets/ttf-font') return require('./ttf-font');
     if (id === '../../native-binding/decorators') return { patch_cc_Font() {}, patch_cc_TTFFont() {}, patch_cc_BitmapFont() {}, patch_cc_LabelAtlas() {} };
-    if (!cache[id]) { cache[id] = {}; modules[id](require, cache[id]); }
+    if (!cache[id]) {
+        if (typeof modules[id] !== 'function') throw new Error('Missing font probe module: ' + id);
+        cache[id] = {};
+        modules[id](require, cache[id]);
+    }
     return cache[id];
 }
 function check(value, message) { if (!value) throw new Error(message); }
@@ -100,7 +105,8 @@ check(Math.abs(outlinedTransform.getWidth() - 101.9765625) < 0.001 && readLabelC
     'Label renders a real native text stroke with preserved layout margins');
 outlinedLabel.setFontAsset(null);
 outlinedLabel.setNode(null);
-require('./font-loader');
+const { loadFont } = require('./font-loader');
+check(downloadFontAsset === loadFont, 'JSB downloads pass a family string to the font factory');
 const originalNativeAsset = Object.getOwnPropertyDescriptor(TTFFont.prototype, '_nativeAsset');
 const assignmentFailure = new Error('injected font assignment failure');
 let partialFont, completionCount = 0;

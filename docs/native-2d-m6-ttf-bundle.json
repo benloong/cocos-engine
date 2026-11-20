@@ -141,5 +141,25 @@
     "tests": 28,
     "logSha256": "77763fffc44e4c21df90602765f882c9ca7d6bd4c738297b48cece9492e919d8",
     "tscNoEmit": true
+  },
+  "jsbProbeRegression": {
+    "windowsProbeScope": "renderer-manager, sprite-api, sprite-atlas, font-assets, layout, richtext-runtime",
+    "missingDependencyBeforeFix": "internal:constants",
+    "previousDebugLogSha256": "fe7b113276389d1609b17d278dd879344594d184f08bac8e468aa89e7a3d82df",
+    "nativeDownloaderUsesStringLoader": true,
+    "configurations": {
+      "Debug": {
+        "passingShells": 6,
+        "passingScenes": 6,
+        "executableSha256": "663c7e1a85a5e12293cdefc89b9aa37831056116d1d611b25caedef5a54db2b9",
+        "logSha256": "23c77b3f344f5fa0b4b19a3642dfea73383edb895db140d7d436958629c0a0c9"
+      },
+      "Release": {
+        "passingShells": 6,
+        "passingScenes": 6,
+        "executableSha256": "a8882bbb78df442dd142c1964c7c1eb40e7c07a73c83ac016ede50232b31ff70",
+        "logSha256": "39a14cf9afeac61cbcc5f8760ade3b7d908dd49768ddd445cd9f1f10a72e1065"
+      }
+    }
   }
 }
