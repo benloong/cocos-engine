@@ -164,6 +164,10 @@ export class UITransform extends Component {
     public onDestroy (): void {
         this._native?.detach();
         this._native = null;
+        const uiProps = this.node._uiProps;
+        if ((uiProps?.uiTransformComp as unknown) === this) {
+            uiProps.uiTransformComp = null;
+        }
     }
 
     public setContentSize (size: Size): void;

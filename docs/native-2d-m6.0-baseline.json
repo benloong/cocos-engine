@@ -16425,8 +16425,8 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "dd5473941be8270dfdabfe5a75abf9fca273ee1c5148a51530e1a10e6a9e27c3",
-      "printedCodeLines": 215,
+      "sha256": "579a021d79dcf60f7414a751dc8c41d7fbccb16ba365bbc6ad1239c14fb43bc0",
+      "printedCodeLines": 219,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16471,80 +16471,80 @@
         },
         {
           "expression": "this._native.containsWorldPointXY",
-          "line": 206
+          "line": 210
         },
         {
           "expression": "this._native.hitTestXY",
-          "line": 214
+          "line": 218
         },
         {
           "expression": "this._native.convertToNodeSpaceARX",
-          "line": 221
+          "line": 225
         },
         {
           "expression": "this._native.convertToNodeSpaceARY",
-          "line": 222
+          "line": 226
         },
         {
           "expression": "this._native.convertToWorldSpaceARX",
-          "line": 235
+          "line": 239
         },
         {
           "expression": "this._native.convertToWorldSpaceARY",
-          "line": 236
+          "line": 240
         },
         {
           "expression": "this._native.getBoundingBoxX",
-          "line": 248
+          "line": 252
         },
         {
           "expression": "this._native.getBoundingBoxY",
-          "line": 249
+          "line": 253
         },
         {
           "expression": "this._native.getBoundingBoxWidth",
-          "line": 250
+          "line": 254
         },
         {
           "expression": "this._native.getBoundingBoxHeight",
-          "line": 251
+          "line": 255
         },
         {
           "expression": "this._native.getBoundingBoxToWorldX",
-          "line": 260
+          "line": 264
         },
         {
           "expression": "this._native.getBoundingBoxToWorldY",
-          "line": 261
+          "line": 265
         },
         {
           "expression": "this._native.getBoundingBoxToWorldWidth",
-          "line": 262
+          "line": 266
         },
         {
           "expression": "this._native.getBoundingBoxToWorldHeight",
-          "line": 263
+          "line": 267
         },
         {
           "expression": "this._native.getBoundingBoxToX",
-          "line": 274
+          "line": 278
         },
         {
           "expression": "this._native.getBoundingBoxToY",
-          "line": 275
+          "line": 279
         },
         {
           "expression": "this._native.getBoundingBoxToWidth",
-          "line": 276
+          "line": 280
         },
         {
           "expression": "this._native.getBoundingBoxToHeight",
-          "line": 277
+          "line": 281
         }
       ],
       "allocations": [],
       "loops": [
-        192
+        196
       ]
     },
     {

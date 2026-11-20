@@ -34,8 +34,10 @@ function check(value,message) { if (!value) throw new Error(message); }
 check(!('TextMetrics' in n2d), 'standalone measurement probe leaked into JSB');
 const rendererManager = new n2d.UIRendererManager();
 const node = new jsb.Node('layout-push'); let changes=0;
+node._uiProps = { uiTransformComp: null };
 node.emit = function(type) { check(type === 'size-changed','size event'); changes++; };
-const ui = new exports.UITransform(); ui.node=node; ui.onLoad();
+const ui = new exports.UITransform(); ui.node=node; ui.__preload(); ui.onLoad();
+check(node._uiProps.uiTransformComp===ui,'preload registers the shell with its node');
 ui.setContentSize(100,10);
 check(ui.height===10 && changes===1,'shell setter notifies once');
 const label = new n2d.Label(); label.setNode(node);
@@ -65,8 +67,14 @@ check(readLabelCoverage(label)>thin,'native underline height changes raster outp
 label.setString(''); rendererManager.updateAllDirtyRenderers(); check(label.getActualFontSize()===0,'empty text clears actual font size');
 const native = ui._native;
 label.setNode(null); ui.onDestroy();
+check(node._uiProps.uiTransformComp===null,'destroy clears the node UITransform slot');
 previous=changes; native.setContentSizeXY(50,50);
 check(changes===previous,'detach releases callback');
+const replacement = new exports.UITransform(); replacement.node=node; replacement.__preload(); replacement.onLoad();
+ui.onDestroy();
+check(node._uiProps.uiTransformComp===replacement,'destroying the old shell preserves its replacement');
+replacement.onDestroy();
+check(node._uiProps.uiTransformComp===null,'replacement releases the node slot');
 return 'OK';
 } catch(error) { return String(error.stack||error); } })()`;
 fs.mkdirSync(path.dirname(output), {recursive:true});

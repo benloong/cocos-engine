@@ -23,6 +23,21 @@ test('UITransform is a registered component', function () {
     expect(transform.anchorPoint).toEqual(new Vec2(0.25, 0.75));
 });
 
+test('UITransform releases its node slot when the component is removed', function () {
+    const node = new Node('replace-ui-transform');
+    const transform = node.addComponent(UITransform);
+    transform.__preload();
+    expect(node._getUITransformComp()).toBe(transform);
+
+    transform.onDestroy();
+    transform._destroyImmediate();
+    expect(node._getUITransformComp()).toBeNull();
+
+    const replacement = node.addComponent(UITransform);
+    replacement.__preload();
+    expect(node._getUITransformComp()).toBe(replacement);
+});
+
 test('UITransform deserializes from a scene record', function () {
     const data = [{
         __type__: 'cc.UITransform',
