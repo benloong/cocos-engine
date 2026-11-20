@@ -2835,9 +2835,7 @@ void testSpritePrepare() {
     check(sprite.getMaterialInstance(0)->getParent() == material, "ui renderer creates a native material instance");
     check(sprite.getTypeId() == cc::Sprite::TYPE_ID, "sprite type id");
     sprite.setColorRGBA(10.F, 20.F, 30.F, 255.F);
-    check(sprite.getColor().r == 10 && sprite.getColor().g == 20 && sprite.getColor().b == 30, "ui renderer color");
     sprite.setPriority(7);
-    check(sprite.getPriority() == 7, "ui renderer priority");
     sprite.setSizeMode(0);
     sprite.setFrame(makeSquareFrame(texture, 1.F));
 
@@ -2866,6 +2864,9 @@ void testSpritePrepare() {
     }
     // The manager prepares draw information before the scene walk.
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+    const auto color = entity->getColor();
+    check(color.r == 10 && color.g == 20 && color.b == 30 && color.a == 255, "sprite submits its renderer color");
+    check(entity->getPriority() == 7, "sprite submits its renderer priority");
     check(entity->getStaticDrawInfoSize() == 1, "sprite draw info count");
     if (entity->getStaticDrawInfoSize() != 1) {
         return;

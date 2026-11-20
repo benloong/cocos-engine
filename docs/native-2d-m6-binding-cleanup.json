@@ -304,5 +304,42 @@
       }
     },
     "fontSnapshot": "5993f35ddd3d9a04a36aa6cacd90f42075bfdacc88b31fa4e2da9227f1988607"
+  },
+  "rendererReadbacks": {
+    "removedBindings": [
+      "Component.onWorldTransformDirty",
+      "UIRenderer.getColor",
+      "UIRenderer.getMaterial",
+      "UIRenderer.getPriority",
+      "UIRenderer.getSrcBlendFactor",
+      "UIRenderer.getDstBlendFactor",
+      "Sprite.prototype.getNode"
+    ],
+    "inheritedNodeBinding": "Component.getNode",
+    "removedWebTestGlobal": "cclegacy._Test.HtmlTextParser",
+    "generatedBindingSha256": "654d774c122979421842168a7dc552fd43ac6a5e13d8705ec552da47d75ee86c",
+    "standardWindowsEngineSha256": "bce9644eaece06ff6a25f17617fa9110c38c001dc9a7e2868e413977fd0d5da6",
+    "featureMatrixSha256": "c9b5c6de5865b37fcb62c9ad9436d56f62dac7d61b37eabe24f376c69d592567",
+    "featureVariants": { "Windows": 9, "Web": 9 },
+    "richTextParserCases": 3871,
+    "legacyParserInputsPreserved": 65,
+    "configurations": {
+      "Debug": {
+        "standardExecutableSha256": "f74d742137279ecd65f32882f392d11183f5147d9cc64846cc6a0a8cff075184",
+        "standaloneExecutableSha256": "728c634c3fefd5e07c38a87962fc50c49d85219e7ce7d525326955fe5a90f1b9",
+        "jsbProbes": 6,
+        "standardApplicationProbes": ["M0", "M2", "M3", "M4", "M4 extra", "M5"],
+        "bitmapCapturesIdenticalToWeb": 92,
+        "bitmapMaximumChannelDifference": 0
+      },
+      "Release": {
+        "standardExecutableSha256": "5355f99f823ff6380432c61bdd05a7ac982ce1bfd0f4b1c646259b25a5d7a456",
+        "standaloneExecutableSha256": "b3e8289e659c8ffacf18cee40a4175de7b0c4e242911f06b2a8201e629cbab91",
+        "jsbProbes": 6,
+        "standardApplicationProbes": ["M2", "M3", "M4", "M4 extra", "M5"],
+        "bitmapCapturesIdenticalToWeb": 92,
+        "bitmapMaximumChannelDifference": 0
+      }
+    }
   }
 }

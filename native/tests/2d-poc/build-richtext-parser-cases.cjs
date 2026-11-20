@@ -7,7 +7,10 @@ const repo = path.resolve(__dirname, '../../..');
 const cases = [], historical = [];
 vm.runInNewContext(fs.readFileSync(path.join(repo, 'tests/utils/test-html-text-parser.js'), 'utf8'), {
     largeModule() {},
-    cc: { _Test: { HtmlTextParser: class { parse(input) { return input; } } } },
+    require(id) {
+        if (id !== '../../cocos/2d/utils/html-text-parser') throw new Error('Unexpected parser fixture module: ' + id);
+        return { HtmlTextParser: class { parse(input) { return input; } } };
+    },
     test(_name, run) { run(); },
     deepEqual(input, expected, label) {
         historical.push({ input, expected, label });

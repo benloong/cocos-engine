@@ -1,8 +1,10 @@
 /*global test, deepEqual, largeModule, strictEqual */
 
+const { HtmlTextParser } = require('../../cocos/2d/utils/html-text-parser');
+
 largeModule('HtmlTextParser');
 
-var parser = new cc._Test.HtmlTextParser();
+var parser = new HtmlTextParser();
 
 test('Basic Test', function() {
 

@@ -23,9 +23,6 @@
  THE SOFTWARE.
 */
 
-import { TEST } from 'internal:constants';
-import { cclegacy } from '../../core';
-
 /**
  * @deprecated since v3.5.0, this is an engine private interface that will be removed in the future.
  */
@@ -432,8 +429,4 @@ export class HtmlTextParser {
 
         return str;
     }
-}
-
-if (TEST) {
-    cclegacy._Test.HtmlTextParser = HtmlTextParser;
 }

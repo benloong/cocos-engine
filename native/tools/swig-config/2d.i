@@ -100,6 +100,8 @@
 %ignore cc::RenderEntity::useSpriteVertexOpacity;
 %ignore cc::RenderEntity::updateInheritedOpacity;
 %ignore cc::Component::onUITransformChanged;
+%ignore cc::Component::onWorldTransformDirty;
+%ignore cc::UIRenderer::getMaterial;
 %ignore cc::RenderEntity::getDynamicRenderDrawInfo;
 %ignore cc::RenderEntity::getDynamicRenderDrawInfos;
 %ignore cc::RenderEntity::getRenderEntityType;

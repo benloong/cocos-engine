@@ -61,7 +61,6 @@ public:
 
     void setColor(const Color &color);
     void setColorRGBA(float red, float green, float blue, float alpha);
-    const Color &getColor() const { return _color; }
 
     void setMaterial(Material *material);
     Material *getMaterial() const { return _material.get(); }
@@ -80,12 +79,9 @@ public:
     uint32_t getMaterialInstanceCount() const { return static_cast<uint32_t>(_extraMaterialInstances.size()); }
 
     void setPriority(int32_t priority);
-    int32_t getPriority() const { return _priority; }
 
     void setSrcBlendFactor(uint32_t factor) { _srcBlendFactor = factor; }
-    uint32_t getSrcBlendFactor() const { return _srcBlendFactor; }
     void setDstBlendFactor(uint32_t factor) { _dstBlendFactor = factor; }
-    uint32_t getDstBlendFactor() const { return _dstBlendFactor; }
 
 protected:
     virtual RenderEntity *getRenderEntity() const { return nullptr; }

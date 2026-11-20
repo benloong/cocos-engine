@@ -107,7 +107,7 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "5bcdba4ef6c0f948dcf5e6f5e4f2d3307aed4085c41b1cae85e23b82d30514ed"
+      "sha256": "0ba08e7ebe4af1b1dda6fba1cc662a7dbde5b709389b8f13b3cdd2aeae057d16"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -135,7 +135,7 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "85a9199ad7ae043837c383f9af27d32d044045a4246a2069b6b21ed7ff1e614d"
+      "sha256": "f9bbc4d41a891efcb91a0ca0fc411160a781120a9df19ea651d658ab7b34dcc0"
     },
     {
       "file": "native/cocos/2d/framework/UIRendererManager.cpp",
@@ -375,7 +375,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "3131a910a3713d415f76fa303b6c81d3179266cad548ad3fc7f775ab6e4627e3"
+      "sha256": "eec3a4ff2e78d401b5c65b792eeeb212d193cbd54e204021d9832ce8ac7e3fa5"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -17254,22 +17254,19 @@
     },
     {
       "file": "cocos/2d/utils/html-text-parser.ts",
-      "sha256": "26d8e0032606ae6089dc6c477b36d0ca62c4fc844b8dd1f0fbd98283d13c961c",
-      "printedCodeLines": 370,
-      "runtimeImports": [
-        "internal:constants",
-        "../../core"
-      ],
+      "sha256": "cd83ae253996d90342036975cce0dbc05dc1f73b1087267d2c4426fdf78f51a0",
+      "printedCodeLines": 365,
+      "runtimeImports": [],
       "frameMethods": [],
       "nativeCalls": [],
       "allocations": [],
       "loops": [
-        91,
-        186,
-        263,
-        350,
-        403,
-        426
+        88,
+        183,
+        260,
+        347,
+        400,
+        423
       ]
     },
     {

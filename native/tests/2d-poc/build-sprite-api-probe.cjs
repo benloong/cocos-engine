@@ -84,6 +84,10 @@ node.getComponent=()=>({_native:transform}); node.emit=()=>{events++;};
 const sprite=new exports.Sprite();sprite.node=node;sprite.onLoad();
 check(cclegacy.Sprite===exports.Sprite&&sprite.fillRange===0,'native shell identity/default');
 check(!('prepare' in sprite._native),'native Sprite preparation stays internal');
+for(const name of ['getColor','getMaterial','getPriority','getSrcBlendFactor','getDstBlendFactor','onWorldTransformDirty']){
+    check(!(name in sprite._native),'native renderer keeps '+name+' internal');
+}
+check(!Object.hasOwn(n2d.Sprite.prototype,'getNode')&&sprite._native.getNode()===node,'Sprite inherits the Component node binding');
 const normal=sprite.getSharedMaterial(0); check(normal,'default builtin material');
 sprite.grayscale=true;
 const gray=sprite.getSharedMaterial(0);check(gray&&gray!==normal&&sprite.grayscale,'grayscale selects a different native material');

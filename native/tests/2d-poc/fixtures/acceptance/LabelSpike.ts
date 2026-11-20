@@ -24,6 +24,10 @@ export class LabelSpike {
                 if ('getRenderEntity' in component.prototype) throw new Error('Renderer inspection binding in the application');
             }
             if ('getString' in n2d.Label.prototype) throw new Error('Label text inspection binding in the application');
+            for (const name of ['getColor', 'getMaterial', 'getPriority', 'getSrcBlendFactor', 'getDstBlendFactor', 'onWorldTransformDirty']) {
+                if (name in n2d.Sprite.prototype) throw new Error('Internal renderer binding in the application: ' + name);
+            }
+            if (Object.prototype.hasOwnProperty.call(n2d.Sprite.prototype, 'getNode')) throw new Error('Duplicate Sprite node binding in the application');
             for (const name of ['readLabelCoverage', 'readLabelText', 'readRendererEntity', 'readRichTextSegment']) {
                 if (name in globalThis) throw new Error('Standalone test binding in the application: ' + name);
             }

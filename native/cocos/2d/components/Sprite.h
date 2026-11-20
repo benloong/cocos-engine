@@ -65,7 +65,6 @@ public:
 
     void setNode(Node *node) override;
     void onDetach() override;
-    Node *getNode() const { return Component::getNode(); }
 
     void setUITransform(UITransform *transform);
     UITransform *getUITransform() const { return _transform; }
