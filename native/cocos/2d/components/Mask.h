@@ -18,7 +18,7 @@ public:
     void setNode(Node *node) override;
     uint32_t getTypeId() const override { return TYPE_ID; }
     void onDetach() override;
-    void setType(int32_t type);
+    void setType(int32_t type, bool useSpriteComponent = false);
     void setSpriteFrame(SpriteFrame *frame);
     void setGraphics(Graphics *graphics);
     void setSegments(uint32_t segments);
@@ -36,19 +36,20 @@ private:
     void updateRenderer() override;
     void onUITransformChanged() override { markRenderDirty(); }
     void attach();
+    Sprite *getSprite() const;
+    void clearSpriteStencil();
     Sprite _sprite;
     Graphics _graphics;
     UITransform *_transform{nullptr};
     UITransform::LayoutChanged::EventID _layoutChanged;
     UITransform::LayoutDestroyed::EventID _layoutDestroyed;
-    IntrusivePtr<SpriteFrame> _frame;
-    IntrusivePtr<Material> _material;
     int32_t _type{0};
     int32_t _priority{0};
     uint32_t _segments{64};
     float _alphaThreshold{0.1F};
     float _radius{0.F};
     bool _inverted{false};
+    bool _useSpriteComponent{false};
     bool _shapeDirty{true};
     float _width{0};
     float _height{0};

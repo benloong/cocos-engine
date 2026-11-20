@@ -87,11 +87,11 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "a519996db82916eced0af9ca6aff248b4af3c20789ed89994163ed1471989ebd"
+      "sha256": "0e3a21979abe8ab7b8a997688801f743037e1bd983a22cc8921628b7983e9272"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "73f6ff1c95cf4f7915411709a9a793ca0eb5d787110423e87fa86691fa57016e"
+      "sha256": "f8129fc5849b763cc90d6b6a9cd1651b56463f318f028c32de76ce5639798c1b"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
@@ -4032,6 +4032,28 @@
             "type": null,
             "parameters": [
               "value: Material | null"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_mask",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "{ setType (type: number, useSpriteComponent: boolean): void } | null",
+            "parameters": [],
+            "default": "null",
+            "decorators": []
+          },
+          {
+            "name": "_setMask",
+            "kind": "MethodDeclaration",
+            "visibility": "public",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "mask: { setType (type: number, useSpriteComponent: boolean): void } | null"
             ],
             "default": null,
             "decorators": []
@@ -8364,7 +8386,17 @@
             "kind": "PropertyDeclaration",
             "visibility": "private",
             "static": false,
-            "type": "SpriteFrame | null",
+            "type": "SpriteFrame | null | undefined",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_sprite",
+            "kind": "PropertyDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "Sprite | null",
             "parameters": [],
             "default": "null",
             "decorators": []
@@ -8500,7 +8532,7 @@
             "kind": "GetAccessor",
             "visibility": "public",
             "static": false,
-            "type": "Graphics | null",
+            "type": "Graphics | Sprite | null",
             "parameters": [],
             "default": null,
             "decorators": []
@@ -8510,7 +8542,17 @@
             "kind": "GetAccessor",
             "visibility": "public",
             "static": false,
-            "type": "Graphics | null",
+            "type": "Graphics | Sprite | null",
+            "parameters": [],
+            "default": null,
+            "decorators": []
+          },
+          {
+            "name": "_getSprite",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "Sprite",
             "parameters": [],
             "default": null,
             "decorators": []
@@ -8706,6 +8748,7 @@
           "cocos/2d/assets/ttf-font.jsb.ts",
           "cocos/2d/components/graphics.jsb.ts",
           "cocos/2d/components/mask.jsb.ts",
+          "cocos/2d/components/sprite.jsb.ts",
           "cocos/2d/components/ui-mesh-renderer.ts",
           "cocos/2d/components/ui-static-batch.ts",
           "cocos/2d/framework/canvas.ts",
@@ -8747,6 +8790,7 @@
           "cocos/asset/assets/texture-2d.jsb.ts",
           "cocos/asset/assets/texture-base.jsb.ts",
           "cocos/core/index.ts",
+          "cocos/core/math/vec2.ts",
           "cocos/core/math/vec3.ts",
           "cocos/game/director.ts",
           "cocos/game/index.ts",
@@ -15412,8 +15456,8 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "0f626302de347167a98c911860a50aabf3b0c897febbb2cd51d6db804e64d28b",
-      "printedCodeLines": 139,
+      "sha256": "1440e8fde5a3d163cce333ea46a13e13c87aa91e89f001829ca112c78b4b772c",
+      "printedCodeLines": 185,
       "runtimeImports": [
         "cc.decorator",
         "../assets/sprite-frame",
@@ -15421,48 +15465,45 @@
         "../../scene-graph/node",
         "../framework/ui-transform",
         "./graphics",
+        "./sprite",
         "../../core"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
-          "expression": "this._native.setNode",
-          "line": 75
-        },
-        {
           "expression": "this._native.setType",
-          "line": 76
-        },
-        {
-          "expression": "this._native.setSegments",
           "line": 77
         },
         {
-          "expression": "this._native.setRadius",
+          "expression": "this._native.setNode",
           "line": 78
         },
         {
+          "expression": "this._native.setSegments",
+          "line": 79
+        },
+        {
+          "expression": "this._native.setRadius",
+          "line": 80
+        },
+        {
           "expression": "this._native.setInverted",
-          "line": 82
+          "line": 86
         },
         {
           "expression": "this._native.setAlphaThreshold",
-          "line": 83
-        },
-        {
-          "expression": "this._native.setSpriteFrame",
-          "line": 85
-        },
-        {
-          "expression": "this._native.setPriority",
           "line": 87
         },
         {
-          "expression": "this._native.setEnabled",
-          "line": 88
+          "expression": "this._native.setSpriteFrame",
+          "line": 89
         },
         {
-          "expression": "this._native?.setEnabled",
+          "expression": "this._native.setPriority",
+          "line": 91
+        },
+        {
+          "expression": "this._native.setEnabled",
           "line": 92
         },
         {
@@ -15470,40 +15511,44 @@
           "line": 96
         },
         {
+          "expression": "this._native?.setEnabled",
+          "line": 101
+        },
+        {
           "expression": "this._native.setEnabled",
-          "line": 102
+          "line": 109
         },
         {
           "expression": "this._native.setNode",
-          "line": 103
+          "line": 110
         },
         {
           "expression": "this._native?.setType",
-          "line": 117
-        },
-        {
-          "expression": "this._native?.setInverted",
           "line": 127
         },
         {
+          "expression": "this._native?.setInverted",
+          "line": 144
+        },
+        {
           "expression": "this._native?.setSegments",
-          "line": 136
+          "line": 153
         },
         {
           "expression": "this._native?.setSpriteFrame",
-          "line": 170
+          "line": 211
         },
         {
           "expression": "this._native?.setRadius",
-          "line": 179
+          "line": 220
         },
         {
           "expression": "this._native?.isHitWorldPointXY",
-          "line": 183
+          "line": 224
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 192
+          "line": 233
         }
       ],
       "allocations": [],
@@ -15690,8 +15735,8 @@
     },
     {
       "file": "cocos/2d/components/sprite.jsb.ts",
-      "sha256": "bfe093174040c8f57cf24a5631f4bd01972c07b075ba552d002efd683e3a69ee",
-      "printedCodeLines": 245,
+      "sha256": "401b25b705d8bb92b0403e57c036fa43a2e4fc08c512b4f7a5da9090a0be503f",
+      "printedCodeLines": 259,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -15752,103 +15797,103 @@
         },
         {
           "expression": "this._native.setNode",
-          "line": 204
-        },
-        {
-          "expression": "this._native.setTrim",
-          "line": 207
-        },
-        {
-          "expression": "this._native.setGrayscale",
-          "line": 208
-        },
-        {
-          "expression": "this._native.setType",
-          "line": 209
-        },
-        {
-          "expression": "this._native.setFillType",
-          "line": 210
-        },
-        {
-          "expression": "this._native.setFillStart",
-          "line": 211
-        },
-        {
-          "expression": "this._native.setFillRange",
-          "line": 212
-        },
-        {
-          "expression": "this._native.setFillCenter",
           "line": 213
         },
         {
-          "expression": "this._native.setSizeMode",
-          "line": 215
-        },
-        {
-          "expression": "this._native.setSrcBlendFactor",
+          "expression": "this._native.setTrim",
           "line": 216
         },
         {
-          "expression": "this._native.setDstBlendFactor",
+          "expression": "this._native.setGrayscale",
           "line": 217
         },
         {
-          "expression": "this._native.setPriority",
+          "expression": "this._native.setType",
           "line": 218
         },
         {
-          "expression": "this._native.setEnabled",
+          "expression": "this._native.setFillType",
+          "line": 219
+        },
+        {
+          "expression": "this._native.setFillStart",
           "line": 220
         },
         {
-          "expression": "this._native?.setEnabled",
+          "expression": "this._native.setFillRange",
+          "line": 221
+        },
+        {
+          "expression": "this._native.setFillCenter",
+          "line": 222
+        },
+        {
+          "expression": "this._native.setSizeMode",
           "line": 224
         },
         {
-          "expression": "this._native?.setEnabled",
-          "line": 228
+          "expression": "this._native.setSrcBlendFactor",
+          "line": 225
+        },
+        {
+          "expression": "this._native.setDstBlendFactor",
+          "line": 226
+        },
+        {
+          "expression": "this._native.setPriority",
+          "line": 227
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 235
+          "line": 229
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 234
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 238
+        },
+        {
+          "expression": "this._native.setEnabled",
+          "line": 246
         },
         {
           "expression": "this._native.setNode",
-          "line": 236
+          "line": 247
         },
         {
           "expression": "this._native.getFillCenterX",
-          "line": 251
+          "line": 262
         },
         {
           "expression": "this._native?.setFillCenter",
-          "line": 252
+          "line": 263
         },
         {
           "expression": "this._native.getFillCenterY",
-          "line": 254
+          "line": 265
         },
         {
           "expression": "this._native?.setFillCenter",
-          "line": 255
+          "line": 266
         },
         {
           "expression": "this._native.setColorRGBA",
-          "line": 264
+          "line": 275
         },
         {
           "expression": "this._native.setMaterial",
-          "line": 270
-        },
-        {
-          "expression": "this._native.clearFrame",
           "line": 281
         },
         {
+          "expression": "this._native.clearFrame",
+          "line": 292
+        },
+        {
           "expression": "this._native.setFrame",
-          "line": 284
+          "line": 295
         }
       ],
       "allocations": [],

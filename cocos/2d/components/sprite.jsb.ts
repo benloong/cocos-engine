@@ -194,6 +194,15 @@ export class Sprite extends UIRenderer {
         this._syncMaterial();
     }
 
+    private _mask: { setType (type: number, useSpriteComponent: boolean): void } | null = null;
+
+    /** @engineInternal */
+    public _setMask (mask: { setType (type: number, useSpriteComponent: boolean): void } | null): void {
+        if (this._mask === mask) return;
+        this._mask = mask;
+        if (this._native) this._mask?.setType(3, true);
+    }
+
     public __preload (): void {
         // Native lifecycle owns the render entity; avoid the JS assembler path.
     }
@@ -218,6 +227,7 @@ export class Sprite extends UIRenderer {
         this._native.setPriority(this.priority);
         this._syncFrame();
         this._native.setEnabled(this.enabledInHierarchy);
+        this._mask?.setType(3, true);
     }
 
     public onEnable (): void {
@@ -229,6 +239,7 @@ export class Sprite extends UIRenderer {
     }
 
     public onDestroy (): void {
+        this._mask = null;
         releaseNativeMaterialSlots(this);
         const center = this._fillCenter, x = center.x, y = center.y;
         if (this._native) {

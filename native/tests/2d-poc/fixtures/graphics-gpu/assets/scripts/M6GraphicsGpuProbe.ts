@@ -51,6 +51,14 @@ export class M6GraphicsGpuProbe extends Component {
             if (sys.isNative && !(m as any)._native) throw new Error('Native Mask override not active');
             return { n, m };
         };
+        const stencilSprite = (node: Node, mask: Mask): Sprite => {
+            const sprite = mask.subComp;
+            if (!(sprite instanceof Sprite) || node.getComponent(Sprite) !== sprite || node.getComponents(Sprite).length !== 1) {
+                throw new Error('Sprite stencil must use the host Sprite component');
+            }
+            sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+            return sprite;
+        };
         type Case = { name: string; draw: (root: Node) => void | (() => void) };
         const cases: Case[] = [
             { name: 'fill-rect', draw: root => graphics(root).fillRect(-40, -40, 80, 80) },
@@ -91,15 +99,10 @@ export class M6GraphicsGpuProbe extends Component {
             } },
             { name: 'mask-mixed-frame', draw: root => {
                 const { n, m } = mask(root, 120, 100, Mask.Type.SPRITE_STENCIL);
-                const setFrame = (value: SpriteFrame): void => {
-                    if (sys.isNative) (m as any).spriteFrame = value;
-                    else {
-                        const source = m.subComp as Sprite;
-                        source.sizeMode = Sprite.SizeMode.CUSTOM;
-                        source.spriteFrame = value;
-                    }
-                };
-                setFrame(whiteFrame); m.alphaThreshold = .5; red(n);
+                const source = stencilSprite(n, m);
+                source.spriteFrame = whiteFrame;
+                if (m.spriteFrame !== whiteFrame) throw new Error('Mask.spriteFrame must reflect its Sprite');
+                m.alphaThreshold = .5; red(n);
                 const shape = graphics(node(n, 'blue'));
                 shape.fillColor = new Color(0, 0, 255, 255); shape.fillRect(-40, -20, 32, 40);
                 const font = new BitmapFont(); font.fontSize = 16; font.spriteFrame = whiteFrame;
@@ -170,20 +173,32 @@ export class M6GraphicsGpuProbe extends Component {
                 tinyNode.destroy();
                 const sibling = graphics(node(root, 'yellow'));
                 sibling.fillColor = new Color(255, 255, 0, 255); sibling.fillRect(70, -10, 20, 20);
-                return () => { setFrame(alphaFrame); };
+                return () => {
+                    m.spriteFrame = alphaFrame;
+                    if (source.spriteFrame !== alphaFrame) throw new Error('Mask.spriteFrame did not update its Sprite');
+                };
             } },
         ];
         cases.push({ name: 'mask-independent-thresholds', draw: root => {
             const makeStencil = (x: number, threshold: number): Mask => {
-                const { n, m } = mask(root, 80, 80, Mask.Type.SPRITE_STENCIL);
+                const n = node(root, 'mask');
+                n.active = false;
+                n.getComponent(UITransform)!.setContentSize(80, 80);
+                const existing = n.addComponent(Sprite);
+                existing.sizeMode = Sprite.SizeMode.CUSTOM;
+                existing.spriteFrame = alphaFrame;
+                const m = n.addComponent(Mask);
+                m.type = Mask.Type.SPRITE_STENCIL;
+                n.active = true;
                 n.setPosition(x, 0);
-                if (sys.isNative) (m as any).spriteFrame = alphaFrame;
-                else {
-                    const sprite = m.subComp as Sprite;
-                    sprite.sizeMode = Sprite.SizeMode.CUSTOM;
-                    sprite.spriteFrame = alphaFrame;
+                if (stencilSprite(n, m) !== existing || m.spriteFrame !== alphaFrame) {
+                    throw new Error('Sprite stencil must preserve the existing Sprite and its frame');
                 }
                 m.alphaThreshold = threshold;
+                m.enabled = false;
+                if (existing.enabled) throw new Error('Disabling the Mask must also disable its Sprite stencil');
+                m.enabled = true;
+                if (!existing.enabled || m.subComp !== existing) throw new Error('Enabling the Mask must reuse its Sprite stencil');
                 red(n);
                 return m;
             };
@@ -193,8 +208,7 @@ export class M6GraphicsGpuProbe extends Component {
         } });
         for (const threshold of [.2, .5, .8]) cases.push({ name: `mask-alpha-${threshold}`, draw: root => {
             const { n, m } = mask(root, 120, 100, 3);
-            if (sys.isNative) (m as any).spriteFrame = alphaFrame;
-            else { const sprite = m.subComp as Sprite; sprite.sizeMode = Sprite.SizeMode.CUSTOM; sprite.spriteFrame = alphaFrame; }
+            stencilSprite(n, m).spriteFrame = alphaFrame;
             m.alphaThreshold = threshold; red(n);
         } });
         for (let cap = 0; cap < 3; ++cap) for (let join = 0; join < 3; ++join) cases.push({

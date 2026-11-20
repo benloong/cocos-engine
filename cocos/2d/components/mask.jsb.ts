@@ -28,7 +28,8 @@ import { Component } from '../../scene-graph/component';
 import { Node } from '../../scene-graph/node';
 import { UITransform } from '../framework/ui-transform';
 import { Graphics } from './graphics';
-import { CCObject, clamp, Vec2 } from '../../core';
+import { Sprite } from './sprite';
+import { CCObject, clamp, isValid, Vec2 } from '../../core';
 
 declare const n2d: any;
 
@@ -66,18 +67,21 @@ export class Mask extends Component {
     protected _alphaThreshold = 0.1;
 
     private _native: any = null;
-    private _spriteFrame: SpriteFrame | null = null;
+    private _spriteFrame: SpriteFrame | null | undefined;
+    private _sprite: Sprite | null = null;
     private _graphics: Graphics | null = null;
     private _graphicsNode: Node | null = null;
 
     public onLoad (): void {
         this._native = new n2d.Mask();
+        this._native.setType(this._type, this._type === MaskType.SPRITE_STENCIL);
         this._native.setNode(this.node);
-        this._native.setType(this._type);
         this._native.setSegments(this._segments);
         this._native.setRadius(this._radius);
         if (this._type === MaskType.GRAPHICS_STENCIL) {
             this._getGraphics();
+        } else if (this._type === MaskType.SPRITE_STENCIL) {
+            this._getSprite().enabled = this.enabled;
         }
         this._native.setInverted(this._inverted);
         this._native.setAlphaThreshold(this._alphaThreshold);
@@ -90,14 +94,17 @@ export class Mask extends Component {
 
     public onEnable (): void {
         this._native?.setEnabled(true);
+        if (this._type === MaskType.SPRITE_STENCIL) this._getSprite().enabled = true;
     }
 
     public onDisable (): void {
         this._native?.setEnabled(false);
+        if (this._sprite && this.node.activeInHierarchy) this._sprite.enabled = false;
     }
 
     public onDestroy (): void {
         this._graphics?._setMask(null);
+        this._sprite?._setMask(null);
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
@@ -106,6 +113,7 @@ export class Mask extends Component {
         this._graphicsNode?.destroy();
         this._graphicsNode = null;
         this._graphics = null;
+        this._sprite = null;
     }
 
     get type (): MaskType {
@@ -113,8 +121,17 @@ export class Mask extends Component {
     }
 
     set type (value: MaskType) {
+        if (this._type === value) return;
+        const spriteStencil = value === MaskType.SPRITE_STENCIL;
         this._type = value;
-        this._native?.setType(value);
+        this._native?.setType(value, spriteStencil);
+        if (spriteStencil) {
+            this._getSprite().enabled = this.enabled;
+        } else if (this._sprite) {
+            this._sprite._setMask(null);
+            this._sprite._destroyImmediate();
+            this._sprite = null;
+        }
         if (value === MaskType.GRAPHICS_STENCIL) this._getGraphics();
     }
 
@@ -136,12 +153,32 @@ export class Mask extends Component {
         this._native?.setSegments(this._segments);
     }
 
-    get graphics (): Graphics | null {
+    get graphics (): Graphics | Sprite | null {
         return this.subComp;
     }
 
-    get subComp (): Graphics | null {
-        return this._type === MaskType.SPRITE_STENCIL ? null : this._getGraphics();
+    get subComp (): Graphics | Sprite | null {
+        if (this._type !== MaskType.SPRITE_STENCIL) return this._getGraphics();
+        return isValid(this._sprite, true) ? this._sprite : null;
+    }
+
+    private _getSprite (): Sprite {
+        let sprite = this._sprite;
+        if (!sprite || !isValid(sprite, true)) {
+            sprite = this.node.getComponent(Sprite);
+            if (!sprite || !isValid(sprite, true)) {
+                sprite = this.node.addComponent(Sprite);
+                sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+            }
+            this._sprite = sprite;
+            if (this._spriteFrame !== undefined) {
+                const frame = this._spriteFrame;
+                this._spriteFrame = undefined;
+                sprite.spriteFrame = frame;
+            }
+        }
+        sprite._setMask(this._native);
+        return sprite;
     }
 
     private _getGraphics (): Graphics {
@@ -162,10 +199,14 @@ export class Mask extends Component {
     }
 
     get spriteFrame (): SpriteFrame | null {
-        return this._spriteFrame;
+        return this._sprite?.spriteFrame ?? this._spriteFrame ?? null;
     }
 
     set spriteFrame (value: SpriteFrame | null) {
+        if (this._type === MaskType.SPRITE_STENCIL) {
+            this._getSprite().spriteFrame = value;
+            return;
+        }
         this._spriteFrame = value;
         this._native?.setSpriteFrame(value);
     }

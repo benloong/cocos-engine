@@ -11,28 +11,63 @@
 #include "core/builtin/BuiltinResMgr.h"
 
 namespace cc {
+namespace {
+Material *getStencilMaterial() {
+    auto *resources = BuiltinResMgr::getInstance();
+    return resources ? resources->get<Material>("ui-alpha-test-material") : nullptr;
+}
+} // namespace
+
 Mask::Mask() { _sprite.setSizeMode(0); }
 Mask::~Mask() { setUITransform(nullptr); setNode(nullptr); }
-RenderEntity *Mask::getRenderEntity() const { return _type == 3 ? _sprite.getRenderEntity() : _graphics.getRenderEntity(); }
+Sprite *Mask::getSprite() const {
+    if (!_useSpriteComponent) return const_cast<Sprite *>(&_sprite);
+    return _node ? static_cast<Sprite *>(_node->getUIComponent(Sprite::TYPE_ID)) : nullptr;
+}
+RenderEntity *Mask::getRenderEntity() const {
+    if (_type != 3) return _graphics.getRenderEntity();
+    auto *sprite = getSprite();
+    return sprite ? sprite->getRenderEntity() : nullptr;
+}
+void Mask::clearSpriteStencil() {
+    if (!_useSpriteComponent) return;
+    if (auto *sprite = getSprite()) {
+        sprite->getRenderEntity()->setMaskMode(MaskMode::NONE);
+        if (auto *stencil = getStencilMaterial(); stencil && sprite->getMaterial() == stencil) {
+            sprite->setMaterial(nullptr);
+        }
+    }
+}
 void Mask::attach() {
     _sprite.setNode(nullptr);
     _graphics.setNode(nullptr);
     if (_type == 3) {
-        if (_node && !_material) {
-            auto *resources = BuiltinResMgr::getInstance();
-            auto *stencil = resources ? resources->get<Material>("ui-alpha-test-material") : nullptr;
-            if (stencil) setMaterial(stencil);
+        if (!_useSpriteComponent) {
+            _sprite.setNode(_node);
         }
-        _sprite.setNode(_node);
+        if (auto *sprite = getSprite(); sprite && (!_useSpriteComponent || _enabled)) {
+            if (_node && !sprite->getMaterial()) {
+                if (auto *stencil = getStencilMaterial()) sprite->setMaterial(stencil);
+            }
+            setAlphaThreshold(_alphaThreshold);
+            sprite->getRenderEntity()->setNode(_node);
+        }
     } else {
         _graphics.setNode(_node);
     }
     auto *entity = getRenderEntity();
-    entity->setMaskMode(_inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK);
-    entity->setPriority(_priority);
-    entity->setEnabled(_enabled);
+    if (entity) {
+        if (!_useSpriteComponent || _enabled) {
+            entity->setMaskMode(_inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK);
+        }
+        if (!_useSpriteComponent) {
+            entity->setPriority(_priority);
+            entity->setEnabled(_enabled);
+        }
+    }
 }
 void Mask::setNode(Node *node) {
+    if (node != _node) clearSpriteStencil();
     Component::setNode(node);
     _shapeDirty = true;
     markRenderDirty();
@@ -66,9 +101,16 @@ void Mask::setUITransform(UITransform *transform) {
     markRenderDirty();
     if(!transform && _type!=2) _graphics.clear();
 }
-void Mask::setType(int32_t type) {
-    if (_type == type) return;
+void Mask::setType(int32_t type, bool useSpriteComponent) {
+    useSpriteComponent = type == 3 && useSpriteComponent;
+    if (_type == type && _useSpriteComponent == useSpriteComponent) {
+        // The Sprite shell can finish loading after the Mask shell.
+        if (useSpriteComponent) attach();
+        return;
+    }
+    clearSpriteStencil();
     _type = type;
+    _useSpriteComponent = useSpriteComponent;
     _shapeDirty = true;
     markRenderDirty();
     _graphics.clear();
@@ -76,9 +118,7 @@ void Mask::setType(int32_t type) {
     attach();
 }
 void Mask::setSpriteFrame(SpriteFrame *frame) {
-    _frame = frame;
-    _sprite.setFrame(frame);
-    _sprite.setEnabled(_enabled);
+    if (auto *sprite = getSprite()) sprite->setFrame(frame);
 }
 void Mask::setGraphics(Graphics *graphics) {
     _graphics.setGeometrySource(graphics);
@@ -127,25 +167,36 @@ bool Mask::isHitWorldPointXY(float x, float y) const {
 }
 void Mask::setAlphaThreshold(float value) {
     _alphaThreshold = value;
-    if (_material) _material->setPropertyFloat32("alphaThreshold", value);
+    if (_type == 3 && (!_useSpriteComponent || _enabled)) {
+        if (auto *sprite = getSprite()) {
+            // The shared parent may be used by other masks with different thresholds.
+            if (auto *material = sprite->getMaterialInstance()) material->setPropertyFloat32("alphaThreshold", value);
+        }
+    }
 }
 void Mask::setInverted(bool value) {
     _inverted = value;
-    getRenderEntity()->setMaskMode(value ? MaskMode::MASK_INVERTED : MaskMode::MASK);
+    if (_useSpriteComponent && !_enabled) return;
+    if (auto *entity = getRenderEntity()) entity->setMaskMode(value ? MaskMode::MASK_INVERTED : MaskMode::MASK);
 }
 void Mask::setEnabled(bool value) {
+    if (_useSpriteComponent && _enabled != value && !value) clearSpriteStencil();
+    const bool enableSpriteStencil = _useSpriteComponent && !_enabled && value;
     Component::setEnabled(value);
+    if (enableSpriteStencil) attach();
     _sprite.setEnabled(value);
     _graphics.setEnabled(value);
 }
 void Mask::setMaterial(Material *material) {
-    _sprite.setMaterial(material);
-    _material = _sprite.getMaterialInstance(); // per-Mask threshold must not mutate the shared parent
+    if (auto *sprite = getSprite()) sprite->setMaterial(material);
     setAlphaThreshold(_alphaThreshold);
 }
 void Mask::setPriority(int32_t value) {
     _priority = value;
     _sprite.setPriority(value);
+    if (_useSpriteComponent) {
+        if (auto *sprite = getSprite()) sprite->setPriority(value);
+    }
     _graphics.setPriority(value);
 }
 void Mask::updateRenderer() {
@@ -156,7 +207,7 @@ void Mask::updateRenderer() {
     auto *transform = _node ? static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)) : nullptr;
     if (transform != _transform) setUITransform(transform);
     if (_type == 3) {
-        _sprite.updateRenderer();
+        if (!_useSpriteComponent) _sprite.updateRenderer();
         return;
     }
     if (_type != 2 && transform) {

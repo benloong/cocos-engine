@@ -1,0 +1,94 @@
+{
+  "configurations": {
+    "Debug": {
+      "snapshot": "bc26f56e749d72ad44a08cbe93b79ac0c985909a486719a835f2154224e5b840",
+      "executableSha256": "432f0188e2b23fb5b7c80cc2f61bb23e3c912e034a9fe14b064f6891ebe88c54",
+      "captures": 88,
+      "identicalToWeb": 88,
+      "identicalToPriorCaptures": 88,
+      "maximumChannelDifference": 0,
+      "hitAssertions": 22,
+      "rootAssertions": 11,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "spriteStencilCaptures": [
+        {
+          "name": "mask-mixed-frame",
+          "rgbaSha256": "cf922b53c3315d762b10a262443e06a5282ad4aa13dc4d85b337c2d7b2ff9fec"
+        },
+        {
+          "name": "mask-mixed-frame-updated",
+          "rgbaSha256": "8ccab45440c18795c0de0fdf33d07d99db7ef317bc3b2034407d19139b3fdfe6"
+        },
+        {
+          "name": "mask-independent-thresholds",
+          "rgbaSha256": "5117cfd953f24ea777a0ea2636aa6d94764cd4ef574007563c0a23495d60c0c7"
+        },
+        {
+          "name": "mask-independent-thresholds-updated",
+          "rgbaSha256": "4024f7419d2cab0ebafb27f15674ef09e244b594791c0bdc68cf4868d17ab4b9"
+        },
+        {
+          "name": "mask-alpha-0.2",
+          "rgbaSha256": "dce9f05c15d64088420fb6ce94278f55110190a794518cd055648ee89f322672"
+        },
+        {
+          "name": "mask-alpha-0.5",
+          "rgbaSha256": "ed09c3e640ec44e0833fb8561f06f04772c6a231a54ea97c6af645c6cd6cf0c3"
+        },
+        {
+          "name": "mask-alpha-0.8",
+          "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        }
+      ]
+    },
+    "Release": {
+      "snapshot": "bc26f56e749d72ad44a08cbe93b79ac0c985909a486719a835f2154224e5b840",
+      "executableSha256": "c74c3e870e1e59974428933bd26fa3d70074133217b1ba22d51d99ade61342ea",
+      "captures": 88,
+      "identicalToWeb": 88,
+      "identicalToPriorCaptures": 88,
+      "maximumChannelDifference": 0,
+      "hitAssertions": 22,
+      "rootAssertions": 11,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "spriteStencilCaptures": [
+        {
+          "name": "mask-mixed-frame",
+          "rgbaSha256": "cf922b53c3315d762b10a262443e06a5282ad4aa13dc4d85b337c2d7b2ff9fec"
+        },
+        {
+          "name": "mask-mixed-frame-updated",
+          "rgbaSha256": "8ccab45440c18795c0de0fdf33d07d99db7ef317bc3b2034407d19139b3fdfe6"
+        },
+        {
+          "name": "mask-independent-thresholds",
+          "rgbaSha256": "5117cfd953f24ea777a0ea2636aa6d94764cd4ef574007563c0a23495d60c0c7"
+        },
+        {
+          "name": "mask-independent-thresholds-updated",
+          "rgbaSha256": "4024f7419d2cab0ebafb27f15674ef09e244b594791c0bdc68cf4868d17ab4b9"
+        },
+        {
+          "name": "mask-alpha-0.2",
+          "rgbaSha256": "dce9f05c15d64088420fb6ce94278f55110190a794518cd055648ee89f322672"
+        },
+        {
+          "name": "mask-alpha-0.5",
+          "rgbaSha256": "ed09c3e640ec44e0833fb8561f06f04772c6a231a54ea97c6af645c6cd6cf0c3"
+        },
+        {
+          "name": "mask-alpha-0.8",
+          "rgbaSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        }
+      ]
+    }
+  },
+  "checks": [
+    "Host Sprite identity and reuse",
+    "Frame updates through Mask and Sprite",
+    "Disable and re-enable through Mask",
+    "Independent thresholds with a shared texture"
+  ]
+}
