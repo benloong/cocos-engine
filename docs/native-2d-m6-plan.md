@@ -222,6 +222,7 @@
 - [ ] Windows Release 固定混合变更帧达到总计划 KPI。2D 组件准备、更新与合批 CPU 时间下降 ≥50%，每帧 JSB 调用下降 ≥70%，JS 堆峰值下降 ≥30%，强制 GC 改善。计入 native `Batcher2d` 成本。当前候选前三项达标，GC 待复核。
   - [x] `76b9679ae9` 对迁移前 `7e83734299` 与 Web 完成三轮交错复测。混合变更帧 CPU 下降 56.8%，JSB 下降 77.5%，JS 堆峰值下降 43.0%。每轮每场景每阶段执行一次强制 GC，该负载的中位数由 6.465 升至 10.744 ms。纯 Sprite 静止和改色的 CPU 仍高于迁移前。[逐轮结果](./native-2d-m6-performance-76b9679ae9.json)
   - [x] Windows Release 的六轮 V8 诊断记录了 144 次强制主回收。混合变更帧的调用耗时中位数为 7.996 → 8.152 ms，V8 主回收中位数为 7.989 → 8.142 ms。候选在三轮上升、三轮下降，普通 Windows 与 Web 的 12 项负载均通过。GC 性能 Gate 继续待签收。[诊断数据](./native-2d-m6-gc-trace.json)
+  - [x] 同一对无诊断 Windows Release 二进制追加六轮交错。混合变更的 CPU、JSB、JS 堆峰值分别下降 50.8%、77.5%、42.9%，强制 GC 中位数为 10.255 → 10.169 ms。计入此前三轮后，GC 中位数为 9.755 → 10.536 ms，九对样本仅三对改善，性能 Gate 保持待签收。[无诊断复测](./native-2d-m6-gc-repeat.json)
   - [x] Win32 Canvas 在透明目标或不透明源完全覆盖时直接写入 RGBA。三轮混合变更帧中位数从 4.8806 降至 4.1284 ms，两个 Windows 配置通过像素与句柄回归。[测量结果](./native-2d-m6-canvas-fill-performance.json)
   - [x] Windows Label 用测量上下文直接绘字。Debug/Release 通过重复重绘、GDI 句柄与图像回归。Release 混合变更帧从改动前的 4.5218 降至 3.8502 ms，同轮迁移前为 4.5154 ms。[测量方法及各负载结果](./native-2d-m6-performance.md)
   - [x] 从完整候选 `211c790b7d` 重建 Windows Release，与迁移前和绘字隔离版本三轮交错对跑。Web 同版本完成 12 组负载。混合变更帧为 4.0039 ms，较迁移前下降 8.1%，CPU 门禁仍开放。[分段与逐轮证据](./native-2d-m6-performance.md)
