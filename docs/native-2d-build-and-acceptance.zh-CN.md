@@ -315,7 +315,7 @@ foreach ($config in 'Debug', 'Release') {
 }
 ```
 
-每份图像必须为 256×256 RGBA。Web 打包/恢复与 Web 原图逐字节相同，Windows 各配置的三个状态也须逐字节相同。与 Web 对照的通道容差为 1。完成标记、字形数、实际 GPU 纹理绑定、大字形分块和清空检查均须通过。比较器从所选配置的 `m6-bitmap-captures` 目录读取 RGBA 和 `layout-metrics.json`，核对 80 组内容尺寸、actualFontSize、字形数及记录的帧状态，数值容差为 0.0001。M0 另运行 run-m6-bitmap-layout-parity.ps1，对照实际 Web TextProcessing、BmfontUtils 与原生布局及四顶点位置和 UV。
+每份图像必须为 256×256 RGBA。Web 打包/恢复与 Web 原图逐字节相同，Windows 各配置的三个状态也须逐字节相同。与 Web 对照的通道容差为 1。应用清空并恢复 GPU 源纹理，确认位图字体随源纹理变化。Windows 还读取 70000 字形文本的末尾，并确认清空文本后字形消失。比较器从所选配置的 `m6-bitmap-captures` 目录读取 RGBA 和 `layout-metrics.json`，核对 80 组内容尺寸、actualFontSize 和记录的帧状态，数值容差为 0.0001。M0 另运行 `run-m6-bitmap-layout-parity.ps1`，对照实际 Web TextProcessing、BmfontUtils 与原生字形布局、四顶点位置和 UV。独立 C++ 测试核对字形数、五个提交分块、清空后的资源释放和 CHAR 纹理复用。
 
 ## 8. 完整验收顺序
 

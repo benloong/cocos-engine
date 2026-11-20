@@ -45,7 +45,7 @@ try {
     if ($bitmapLine.Count -ne 1) { throw 'Bitmap GPU completion missing' }
     $bitmap = $bitmapLine[0].Line.Substring($bitmapLine[0].Line.IndexOf('M6_BITMAP_GPU_READY ') + 20) | ConvertFrom-Json
     if ($bitmap.captures -ne 12 -or $bitmap.native -ne $true -or $bitmap.checks.Count -ne 4 -or
-        @($bitmap.checks | Where-Object { -not $_.gpuOnly -or $_.quads -ne 2 }).Count) { throw 'Bitmap GPU submission checks failed' }
+        @($bitmap.checks | Where-Object { -not $_.samplesSourceUpdates }).Count) { throw 'Bitmap GPU sampling checks failed' }
     $bitmapCaptures = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_CAPTURE ' | ForEach-Object {
         ($_.Line.Substring($_.Line.IndexOf('M6_BITMAP_CAPTURE ') + 18) | ConvertFrom-Json).name
     })
@@ -65,7 +65,7 @@ try {
     $largeLine = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M6_BITMAP_LARGE ')
     if ($largeLine.Count -ne 1) { throw 'Large bitmap GPU completion missing' }
     $large = $largeLine[0].Line.Substring($largeLine[0].Line.IndexOf('M6_BITMAP_LARGE ') + 16) | ConvertFrom-Json
-    if ($large.glyphs -ne 70000 -or $large.chunks -ne 5 -or $large.cleared -ne $true) { throw 'Large bitmap GPU checks failed' }
+    if ($large.layoutWidth -ne 1119996 -or -not $large.tailVisible -or -not $large.cleared) { throw 'Large bitmap GPU checks failed' }
     $data = $lines[0].Line.Substring($lines[0].Line.IndexOf('M5_RICHTEXT ') + 12) | ConvertFrom-Json
     if (($data.clicks -join ',') -cne 'first,second,second') { throw 'RichText click dispatch or teardown failed' }
     if ($data.children -lt 1) { throw 'RichText produced no segments' }

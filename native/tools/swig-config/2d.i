@@ -119,6 +119,7 @@
 %ignore cc::Sprite::getRenderEntity;
 %ignore cc::Label::setUITransform;
 %ignore cc::Label::getString;
+%ignore cc::Label::getRenderEntity;
 %ignore cc::Label::getCacheMode;
 %ignore cc::Label::getContentWidth;
 %ignore cc::Label::getContentHeight;

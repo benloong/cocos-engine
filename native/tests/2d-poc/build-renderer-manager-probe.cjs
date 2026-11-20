@@ -19,7 +19,7 @@ const probe = `
     if ('getRootNodeAt' in n2d.Batcher2d.prototype || 'getRootNodeCount' in n2d.Batcher2d.prototype) throw Error('Unexpected native root inspection API');
     for (const [className, methods] of [
         ['Sprite', ['isGrayscale', 'isTrim', 'getType', 'getFillType', 'getFillStart', 'getFillRange', 'getSizeMode', 'getRenderEntity']],
-        ['Label', ['getCacheMode', 'getFontAsset', 'getUnderlineHeight', 'measureContent', 'isBold', 'isItalic', 'isUnderline', 'updateFont', 'getString']],
+        ['Label', ['getCacheMode', 'getFontAsset', 'getUnderlineHeight', 'measureContent', 'isBold', 'isItalic', 'isUnderline', 'updateFont', 'getString', 'getRenderEntity']],
         ['Graphics', ['getRenderEntity']],
         ['RichText', ['getString']],
     ]) {

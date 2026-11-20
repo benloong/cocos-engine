@@ -2,13 +2,8 @@ import { BitmapFont, builtinResMgr, Camera, Canvas, Color, director, DirectorEve
 
 declare const n2d: any;
 
-function submittedDraw (label: any): any {
-    const entity = label._native?.getRenderEntity() ?? label.renderEntity?.nativeObj ?? label.getRenderEntity?.();
-    return entity?.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0) : null;
-}
-
-function submittedTextureSize (label: any): { textureWidth: number; textureHeight: number } {
-    const texture = submittedDraw(label)?.texture;
+function textureSize (source: Label['spriteFrame']): { textureWidth: number; textureHeight: number } {
+    const texture = source instanceof SpriteFrame ? source.texture : source;
     return { textureWidth: texture?.width ?? 0, textureHeight: texture?.height ?? 0 };
 }
 
@@ -24,6 +19,15 @@ interface LabelCase {
 /** Measures scene Labels and captures their rendered pixels. */
 export class LabelSpike {
     public static run (parent: Node): void {
+        if (typeof n2d !== 'undefined') {
+            for (const component of [n2d.Sprite, n2d.Label, n2d.Graphics]) {
+                if ('getRenderEntity' in component.prototype) throw new Error('Renderer inspection binding in the application');
+            }
+            if ('getString' in n2d.Label.prototype) throw new Error('Label text inspection binding in the application');
+            for (const name of ['readLabelCoverage', 'readLabelText', 'readRendererEntity', 'readRichTextSegment']) {
+                if (name in globalThis) throw new Error('Standalone test binding in the application: ' + name);
+            }
+        }
         const cases: LabelCase[] = [
             { name: 'english', text: 'Hello Label', width: 240, fontSize: 32, lineHeight: 40, wrap: false },
             { name: 'cjk', text: '你好，世界', width: 240, fontSize: 32, lineHeight: 40, wrap: false },
@@ -156,12 +160,9 @@ export class LabelSpike {
             bitmapLabel.font = bitmapFont;
             bitmapLabel.string = 'ABBA';
             setTimeout(() => {
-                const draw = submittedDraw(bitmapLabel);
                 console.log(`M3_BITMAP_LABEL ${JSON.stringify({
                     width: bitmapTransform.width, height: bitmapTransform.height, actualFontSize: bitmapLabel.actualFontSize,
-                    glyphs: draw ? draw.vbCount / 4 : undefined, vertices: draw?.vbCount, indices: draw?.ibCount,
-                    ...submittedTextureSize(bitmapLabel),
-                    samplesFontAtlas: !!draw?.texture && draw.texture === bitmapFont.spriteFrame?.texture.getGFXTexture(),
+                    ...textureSize(bitmapLabel.spriteFrame), usesFontFrame: bitmapLabel.spriteFrame === frame,
                 })}`);
             }, 500);
         }
@@ -190,7 +191,7 @@ export class LabelSpike {
             setTimeout(() => {
                 console.log(`M3_NATIVE_LABEL ${JSON.stringify({
                     contentSize: nativeTransform.contentSize,
-                    ...submittedTextureSize(nativeLabel),
+                    ...textureSize(nativeLabel.getTTFSpriteFrame()),
                 })}`);
             }, 300);
         }
@@ -232,12 +233,10 @@ export class LabelSpike {
             realLabel.font = realFont;
             realLabel.string = 'Hello BMFont';
             setTimeout(() => {
-                const draw = submittedDraw(realLabel);
                 console.log(`M3_REAL_BMFONT ${JSON.stringify({
-                    ...submittedTextureSize(realLabel),
-                    vertices: draw?.vbCount, samplesFontAtlas: !!draw?.texture && draw.texture === realFont.spriteFrame?.texture.getGFXTexture(),
+                    ...textureSize(realLabel.spriteFrame), usesFontFrame: realLabel.spriteFrame === realFont.spriteFrame,
                 })}`);
-                if (draw) bitmapNodes.push(realNode);
+                bitmapNodes.push(realNode);
                 finishLoadingBitmap();
             }, 500);
         });
@@ -253,7 +252,7 @@ export class LabelSpike {
         asciiCharLabel.string = 'Hello ASCII';
         setTimeout(() => {
             console.log(`M3_CHAR_ASCII ${JSON.stringify({
-                ...submittedTextureSize(asciiCharLabel),
+                ...textureSize(asciiCharLabel.spriteFrame),
             })}`);
         }, 700);
         const bitmapNodeA = new Node('M3BitmapAtlasA');
@@ -278,10 +277,9 @@ export class LabelSpike {
 
         setTimeout(() => {
             const source = [bitmapLabelA, bitmapLabelB].map(label => label.ttfSpriteFrame);
-            const submitted = [bitmapLabelA, bitmapLabelB].map(label => submittedDraw(label)?.texture);
+            const textures = source.map(frame => frame?.texture.getGFXTexture());
             console.log(`M3_BITMAP_ATLAS ${JSON.stringify({
-                drawsOwnTexture: source.every((frame, i) => !!submitted[i] && submitted[i] === frame?.texture.getGFXTexture()),
-                distinctTextures: !!submitted[0] && submitted[0] !== submitted[1],
+                distinctTextures: textures.every(texture => !!texture) && textures[0] !== textures[1],
                 fullFrames: source.every(frame => frame && !frame.original && frame.rect.x === 0 && frame.rect.y === 0
                     && frame.rect.width > 0 && frame.rect.height > 0
                     && frame.rect.width === frame.texture.width && frame.rect.height === frame.texture.height),
@@ -330,12 +328,12 @@ export class LabelSpike {
             setTimeout(() => {
                 if (typeof n2d !== 'undefined') {
                     if (item.name === 'cjk') {
-                        console.log(`M3_CHAR_LABEL ${JSON.stringify(submittedTextureSize(label))}`);
+                        console.log(`M3_CHAR_LABEL ${JSON.stringify(textureSize(label.spriteFrame))}`);
                     }
                     console.log(`M3_SHELL_LABEL ${JSON.stringify({
                         name: item.name,
                         implementation: (label as any)._native ? 'native' : 'js',
-                        ...submittedTextureSize(label),
+                        ...textureSize(label.spriteFrame),
                     })}`);
                 }
                 const size = node.getComponent(UITransform)?.contentSize;

@@ -218,11 +218,6 @@ async function checkRichTextPrefab (parent: Node, font: TTFFont, readPixels: () 
     return result;
 }
 
-function submittedTextTexture (label: any): gfx.Texture | null {
-    const entity = label.getRenderEntity();
-    return entity.staticDrawInfoSize ? entity.getStaticRenderDrawInfo(0).texture : null;
-}
-
 function submittedTextCoverage (texture: gfx.Texture | null): number {
     if (!texture) return 0;
     const pixels = new Uint8Array(texture.width * texture.height * 4);
@@ -353,7 +348,8 @@ async function checkNativeFontLifecycle (url: string, parent: Node): Promise<obj
     label.useSystemFont = false; label.font = httpFont; label.fontSize = 24; label.string = 'Atlas 123';
     await wait();
     const width = ui.width;
-    if (Math.abs(width - 95.9765625) > 0.001 || !submittedTextCoverage(submittedTextTexture((label as any)._native))) throw new Error('HTTP font fallback or empty rendering');
+    const texture = label.ttfSpriteFrame?.texture.getGFXTexture() ?? null;
+    if (Math.abs(width - 95.9765625) > 0.001 || !submittedTextCoverage(texture)) throw new Error('HTTP font fallback or empty rendering');
     node.destroy(); await wait();
     release(httpFont, httpUrl);
     cache.removeCache(httpUrl); await wait();

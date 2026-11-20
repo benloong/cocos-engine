@@ -213,5 +213,96 @@
       "oldProjectBitmapCaptures": 92,
       "targetedJestTests": 16
     }
+  },
+  "labelRenderEntity": {
+    "removedBinding": "Label.getRenderEntity",
+    "generatedBindingSha256": "45f5e61e7d2be77f38764229eaf13e5c1e6807da86070f7f6a50ef39ebda38f7",
+    "applicationVerifiedTestExportsAbsent": true,
+    "web": {
+      "bitmapCaptures": 92,
+      "bitmapCapturesIdenticalToPrior": 92,
+      "fontCapturesIdenticalToPrior": 47
+    },
+    "configurations": {
+      "Debug": {
+        "standardExecutableSha256": "726b1cd71f2973d2faea20da973e1d833b291298ad93669d9a3090ed50914269",
+        "standaloneExecutableSha256": "b06bf1942883e38b306bcb9e74f7cb20cca86a1559304f3765f3ab42f25c9275",
+        "fontGpuExecutableSha256": "6a5ddf8e510964da063d83b66144adb9ee1cf61ece395100bffac5e04b9a450d",
+        "jsbProbes": 6,
+        "standardApplicationProbes": [
+          "M2 Sprite",
+          "M3 Label",
+          "M4 Mask and Graphics",
+          "M4 extra",
+          "M5 RichText"
+        ],
+        "bitmapCapturesIdenticalToWeb": 92,
+        "bitmapCapturesIdenticalToPrior": 92,
+        "bitmapMaximumChannelDifference": 0,
+        "bitmapTailGlyphsVisibleAndClear": true,
+        "charRasterTextureReuse": true,
+        "fontLayoutsMatchedWeb": 47,
+        "fontCapturesIdenticalToPrior": 47,
+        "fontStrictPixelsMatchedWeb": 44,
+        "fontLifecycleCycles": 1000,
+        "fontStrictFailures": [
+          {
+            "name": "text-bold",
+            "max": 20,
+            "pixels": 448
+          },
+          {
+            "name": "text-outline",
+            "max": 30,
+            "pixels": 202
+          },
+          {
+            "name": "text-nested",
+            "max": 47,
+            "pixels": 553
+          }
+        ]
+      },
+      "Release": {
+        "standardExecutableSha256": "77beadef3e8acef611d6f5ce9db6a9581be43c4e7ba724f2aa0e1383b01316c2",
+        "standaloneExecutableSha256": "8bb14b952fc7219d2f5624786f578b6e596cba413d3cc5072e3825c7d32556de",
+        "fontGpuExecutableSha256": "6501dfee3347152725b30acfa31354f1a75cfcd5b963b376049f6849842cb095",
+        "jsbProbes": 6,
+        "standardApplicationProbes": [
+          "M2 Sprite",
+          "M3 Label",
+          "M4 Mask and Graphics",
+          "M4 extra",
+          "M5 RichText"
+        ],
+        "bitmapCapturesIdenticalToWeb": 92,
+        "bitmapCapturesIdenticalToPrior": 92,
+        "bitmapMaximumChannelDifference": 0,
+        "bitmapTailGlyphsVisibleAndClear": true,
+        "charRasterTextureReuse": true,
+        "fontLayoutsMatchedWeb": 47,
+        "fontCapturesIdenticalToPrior": 47,
+        "fontStrictPixelsMatchedWeb": 44,
+        "fontLifecycleCycles": 1000,
+        "fontStrictFailures": [
+          {
+            "name": "text-bold",
+            "max": 20,
+            "pixels": 448
+          },
+          {
+            "name": "text-outline",
+            "max": 30,
+            "pixels": 202
+          },
+          {
+            "name": "text-nested",
+            "max": 47,
+            "pixels": 553
+          }
+        ]
+      }
+    },
+    "fontSnapshot": "5993f35ddd3d9a04a36aa6cacd90f42075bfdacc88b31fa4e2da9227f1988607"
   }
 }

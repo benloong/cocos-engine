@@ -54,11 +54,8 @@ try {
     $bitmapLines = @(Get-Content $log | Select-String -Pattern 'M3_BITMAP_LABEL ')
     if ($bitmapLines.Count -lt 1) { throw 'BMFont label missing' }
     $bitmap = $bitmapLines[0].Line.Substring($bitmapLines[0].Line.IndexOf('M3_BITMAP_LABEL ') + 16) | ConvertFrom-Json
-    if ($bitmap.textureWidth -le 0 -or -not $bitmap.samplesFontAtlas) { throw 'BMFont atlas path produced no pixels' }
-    # Kerning GPU pixels are compared in the fixed M5 BitmapGpuProbe matrix.
-    # This fixture now observes actual scaled layout and submissions, not a CPU texture-width proxy.
-    if ($bitmap.width -ne 80 -or $bitmap.height -ne 20 -or $bitmap.actualFontSize -ne 16 -or
-        $bitmap.glyphs -ne 4 -or $bitmap.vertices -ne 16 -or $bitmap.indices -ne 24) { throw 'BMFont layout or glyph submission mismatch' }
+    if ($bitmap.textureWidth -le 0 -or -not $bitmap.usesFontFrame) { throw 'BMFont source frame missing' }
+    if ($bitmap.width -ne 80 -or $bitmap.height -ne 20 -or $bitmap.actualFontSize -ne 16) { throw 'BMFont layout mismatch' }
 
     $charAsciiLines = @(Get-Content $log | Select-String -Pattern 'M3_CHAR_ASCII ')
     if ($charAsciiLines.Count -lt 1) { throw 'ASCII CHAR Label missing' }
@@ -73,14 +70,14 @@ try {
     $bitmapAtlasLines = @(Get-Content $log | Select-String -Pattern 'M3_BITMAP_ATLAS ')
     if ($bitmapAtlasLines.Count -lt 1) { throw 'BITMAP atlas label missing' }
     $bitmapAtlas = $bitmapAtlasLines[0].Line.Substring($bitmapAtlasLines[0].Line.IndexOf('M3_BITMAP_ATLAS ') + 16) | ConvertFrom-Json
-    if (!$bitmapAtlas.drawsOwnTexture -or !$bitmapAtlas.distinctTextures -or !$bitmapAtlas.fullFrames) {
+    if (!$bitmapAtlas.distinctTextures -or !$bitmapAtlas.fullFrames) {
         throw 'BITMAP Labels must draw their own full raster textures when native atlas packing is disabled'
     }
 
     $realLines = @(Get-Content $log | Select-String -Pattern 'M3_REAL_BMFONT ')
     if ($realLines.Count -lt 1) { throw 'real BitmapFont label missing' }
     $realFont = $realLines[0].Line.Substring($realLines[0].Line.IndexOf('M3_REAL_BMFONT ') + 15) | ConvertFrom-Json
-    if ($realFont.textureWidth -le 0 -or -not $realFont.samplesFontAtlas -or $realFont.vertices -le 0) { throw 'real BitmapFont produced no pixels' }
+    if ($realFont.textureWidth -le 0 -or -not $realFont.usesFontFrame) { throw 'real BitmapFont source frame missing' }
 
     $pixelLines = @(Get-Content $log | Select-String -Pattern 'M3_LABEL_PIXEL ')
     $pixels = @{}
@@ -107,11 +104,11 @@ try {
 
     Write-Host 'M3 Label probe: PASS'
     Write-Host ("  GPU english colored={0}, wrap colored={1}, cjk colored={2}" -f $pixels['M3Label-english'].colored, $pixels['M3Label-wrap'].colored, $pixels['M3Label-cjk'].colored)
-    Write-Host ("  BMFont {0}x{1}, samples font atlas={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $bitmap.samplesFontAtlas)
-    Write-Host ("  Real BMFont {0}x{1}, samples font atlas={2}" -f $realFont.textureWidth, $realFont.textureHeight, $realFont.samplesFontAtlas)
+    Write-Host ("  BMFont {0}x{1}, GPU colored={2}" -f $bitmap.textureWidth, $bitmap.textureHeight, $pixels['M3BitmapLabel'].colored)
+    Write-Host ("  Real BMFont {0}x{1}, GPU colored={2}" -f $realFont.textureWidth, $realFont.textureHeight, $pixels['M3RealBitmapLabel'].colored)
     Write-Host ("  CHAR Label {0}x{1}, GPU colored={2}" -f $charLabel.textureWidth, $charLabel.textureHeight, $pixels['M3Label-cjk'].colored)
     Write-Host ("  CHAR ASCII {0}x{1}, GPU colored={2}" -f $charAscii.textureWidth, $charAscii.textureHeight, $pixels['M3CharAscii'].colored)
-    Write-Host '  BITMAP Labels sample distinct full-size source textures'
+    Write-Host '  BITMAP Labels have distinct full-size source textures'
     $byName.Values | ForEach-Object {
         Write-Host ("  {0}: {1}x{2}, visible height={3}" -f $_.name, $_.textureWidth, $_.textureHeight, $pixels["M3Label-$($_.name)"].inkHeight)
     }

@@ -43,8 +43,7 @@ async function checkLabelTextureUpdates (parent: Node): Promise<void> {
     try {
         const transform = host.addComponent(UITransform);
         const label = host.addComponent(Label);
-        const backend = (label as any)._native;
-        if (!backend) return;
+        if (!(label as any)._native) return;
         label.overflow = Label.Overflow.CLAMP;
         label.fontSize = 16;
         label.lineHeight = 20;
@@ -54,8 +53,8 @@ async function checkLabelTextureUpdates (parent: Node): Promise<void> {
             for (let i = 0; i < 2; ++i) {
                 await new Promise<void>(resolve => director.once(DirectorEvent.END_FRAME, () => resolve()));
             }
-            const texture = backend.getRenderEntity().getStaticRenderDrawInfo(0).texture;
-            if (!texture) throw new Error('Missing submitted Label texture');
+            const texture = label.ttfSpriteFrame?.texture.getGFXTexture();
+            if (!texture) throw new Error('Missing Label texture');
             const pixels = new Uint8Array(texture.width * texture.height * 4);
             const region = new gfx.BufferTextureCopy();
             region.texExtent.width = texture.width;
@@ -64,19 +63,15 @@ async function checkLabelTextureUpdates (parent: Node): Promise<void> {
             if (!pixels.some((value, i) => i % 4 === 3 && value > 1)) throw new Error('Empty Label texture');
             return { id: texture.objectID, pixels, width: texture.width };
         };
-        for (const mode of [Label.CacheMode.NONE, Label.CacheMode.CHAR]) {
-            label.cacheMode = mode;
-            transform.setContentSize(100, 32);
-            const before = await render('AB');
-            const updated = await render('BA');
-            if (before.id !== updated.id || before.pixels.every((value, i) => value === updated.pixels[i])) {
-                throw new Error('Equal-size Label upload lost texture identity or pixels: ' + mode);
-            }
-            transform.setContentSize(160, 32);
-            const resized = await render('A longer string');
-            if (resized.width === updated.width || resized.id === updated.id) {
-                throw new Error('Resized Label texture did not reallocate: ' + mode);
-            }
+        const before = await render('AB');
+        const updated = await render('BA');
+        if (before.id !== updated.id || before.pixels.every((value, i) => value === updated.pixels[i])) {
+            throw new Error('Equal-size Label upload lost texture identity or pixels');
+        }
+        transform.setContentSize(160, 32);
+        const resized = await render('A longer string');
+        if (resized.width === updated.width || resized.id === updated.id) {
+            throw new Error('Resized Label texture did not reallocate');
         }
         console.log('M6_LABEL_TEXTURE_REUSE_PASS');
     } finally { host.destroy(); }

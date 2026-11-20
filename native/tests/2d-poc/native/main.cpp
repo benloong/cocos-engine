@@ -551,6 +551,7 @@ void testBitmapGpuGeometry() {
     checkGlyphDraws(70000, 5);
     check(entity->getRenderDrawInfoAt(4) == entity->getStaticRenderDrawInfo(4), "Batcher indexed access reaches owned overflow DrawInfo");
     auto *overflow = entity->getStaticRenderDrawInfo(4);
+    check(overflow->getVbCount() == 17872 && overflow->getIbCount() == 26808, "Final bitmap chunk contains all remaining glyphs");
     entity->updateInheritedOpacity(.25F);
     for (uint32_t i = 0; i < entity->getStaticDrawInfoSize(); ++i) {
         auto *chunk = entity->getStaticRenderDrawInfo(i);
@@ -1387,6 +1388,40 @@ void testLabelRasterMapping() {
     std::printf("Canvas GDI cycles: %lu -> %lu\n", before, after);
 #endif
     std::printf("label raster mapping: PASS\n");
+}
+
+void testCharLabelRasterReuse() {
+    cc::Node node("char-label-raster-reuse");
+    cc::UITransform transform(&node);
+    cc::Label label;
+    label.setNode(&node);
+    label.setUITransform(&transform);
+    cc::IntrusivePtr<cc::Material> material(new cc::Material());
+    label.setMaterial(material);
+    label.setCacheMode(2);
+    label.setFontSize(16);
+    label.setLineHeight(20);
+    auto *entity = label.getRenderEntity();
+    label.setString("AB");
+    const auto before = submittedTexturePixels(entity);
+    if (before.empty()) return;
+    const auto *texture = entity->getStaticRenderDrawInfo(0)->getTexture();
+    const auto initialId = texture->getObjectID();
+    const auto initialWidth = texture->getWidth();
+    label.setString("BA");
+    const auto after = submittedTexturePixels(entity);
+    if (after.empty()) return;
+    texture = entity->getStaticRenderDrawInfo(0)->getTexture();
+    check(texture && texture->getObjectID() == initialId && texture->getWidth() == initialWidth
+              && after.size() == before.size() && after != before && countLabelCoverage(label) > 0,
+          "Equal-size CHAR redraw uploads new pixels to the same GPU texture");
+    label.setString("A longer string");
+    const auto resized = submittedTexturePixels(entity);
+    if (resized.empty()) return;
+    texture = entity->getStaticRenderDrawInfo(0)->getTexture();
+    check(texture && texture->getObjectID() != initialId && texture->getWidth() != initialWidth
+              && resized.size() != after.size() && countLabelCoverage(label) > 0,
+          "Resized CHAR redraw reallocates and uploads visible glyphs");
 }
 
 void testRichTextParser() {
@@ -3218,6 +3253,7 @@ int main(int argc, char **argv) {
         testTextShadowCrop();
         testLabelStyleExtents();
         testLabelRasterMapping();
+        testCharLabelRasterReuse();
         testRichTextParser();
         testRichTextLayout();
         testLayoutAndMaterials();

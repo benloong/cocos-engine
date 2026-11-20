@@ -1,15 +1,12 @@
 import { BitmapFont, LabelAtlas, Canvas, Color, director, DynamicAtlasManager, dynamicAtlasManager, ImageAsset,
     Label, native, Node, Rect, RenderTexture, Size, SpriteFrame, sys, Texture2D, UITransform, Vec2 } from 'cc';
 
-function submittedGlyphCount (entity: any): number {
-    let glyphs = 0;
-    for (let i = 0; i < entity.staticDrawInfoSize; ++i) {
-        const draw = entity.getStaticRenderDrawInfo(i);
-        const quads = draw.vbCount / 4;
-        if (!Number.isInteger(quads) || draw.ibCount !== quads * 6) throw new Error('Invalid bitmap draw topology');
-        glyphs += quads;
+function coloredPixels (data: Uint8Array): number {
+    let colored = 0;
+    for (let i = 0; i < data.length; i += 4) {
+        if (data[i] !== data[i + 1] || data[i + 1] !== data[i + 2]) colored++;
     }
-    return glyphs;
+    return colored;
 }
 
 /** Real GPU font source/packed/restored captures. No CPU diagnostic getter is used. */
@@ -27,6 +24,11 @@ export class BitmapGpuProbe {
         const rt = new RenderTexture(); rt.reset({ width: 256, height: 256 });
         camera.targetTexture = rt; camera.orthoHeight = 128;
         const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 100));
+        const readPixels = (): Uint8Array => {
+            const raw = rt.readPixels();
+            if (!raw || raw.length !== 262144) throw new Error('Invalid bitmap capture');
+            return new Uint8Array(raw);
+        };
         const names: string[] = [];
         const checks: any[] = [];
         const layoutMetrics: any[] = [];
@@ -114,24 +116,13 @@ export class BitmapGpuProbe {
                 const refresh = (): void => { if (!sys.isNative) label.markForUpdateRenderData(); };
                 const name = kind + '-' + (rotated ? 'rotated' : 'flat');
                 let baseline: Uint8Array;
-                const capture = async (stage: string): Promise<void> => {
+                const capture = async (stage: string): Promise<Uint8Array> => {
                     await wait();
-                    const raw = rt.readPixels();
-                    if (!raw || raw.length !== 262144) throw new Error('Invalid bitmap capture');
-                    const data = new Uint8Array(raw);
-                    let colored = 0;
-                    for (let i = 0; i < data.length; i += 4) if (data[i] !== data[i + 1] || data[i + 1] !== data[i + 2]) colored++;
+                    const data = readPixels();
+                    const colored = coloredPixels(data);
                     if (colored < 200) throw new Error('Bitmap glyphs are empty');
                     if (stage === 'source') baseline = data;
                     else if (!data.every((v, i) => v === baseline[i])) throw new Error('Bitmap pack/restore changes pixels: ' + name + '/' + stage);
-                    const backend = (label as any)._native;
-                    if (sys.isNative) {
-                        const entity = backend.getRenderEntity();
-                        if (entity.staticDrawInfoSize !== 1) throw new Error('Expected one bitmap draw');
-                        const draw = entity.getStaticRenderDrawInfo(0);
-                        if (draw.vbCount !== 8 || draw.ibCount !== 12
-                            || draw.texture !== frame.texture.getGFXTexture()) throw new Error('Bitmap is not sampling its current GPU atlas directly: ' + JSON.stringify({ stage, draws: entity.staticDrawInfoSize, vertices: draw.vbCount, indices: draw.ibCount, textureMatches: draw.texture === frame.texture.getGFXTexture(), submittedId: draw.texture?.objectID, expectedId: frame.texture.getGFXTexture()?.objectID, submittedNull: draw.texture == null, expectedNull: frame.texture.getGFXTexture() == null }));
-                    }
                     const file = name + '-' + stage;
                     if (sys.isNative) {
                         const output = native.fileUtils.getDefaultResourceRootPath() + 'm6-bitmap-captures';
@@ -142,9 +133,19 @@ export class BitmapGpuProbe {
                     }
                     names.push(file);
                     console.log('M6_BITMAP_CAPTURE ' + JSON.stringify({ name: file, colored }));
+                    return data;
                 };
                 try {
-                    await capture('source');
+                    const source = await capture('source');
+                    // Modify the GPU texture in place while keeping the Label and font intact.
+                    texture.uploadData(new Uint8Array(pixels.length));
+                    await wait();
+                    if (coloredPixels(readPixels())) throw new Error('Bitmap did not sample the cleared GPU texture: ' + name);
+                    texture.uploadData(pixels);
+                    await wait();
+                    if (!readPixels().every((value, index) => value === source[index])) {
+                        throw new Error('Restoring the source texture changed bitmap pixels: ' + name);
+                    }
                     manager.packToDynamicAtlas(label, frame); refresh();
                     if (sys.isNative) {
                         if (manager.enabled || manager.atlasCount !== 0 || frame.original || frame.texture !== texture) {
@@ -189,37 +190,35 @@ export class BitmapGpuProbe {
                         for (const key of Object.keys(settings)) if (key !== 'id' && key !== 'width' && key !== 'height' && key !== 'sourceSize') (label as any)[key] = settings[key];
                         transform.setContentSize(settings.width ?? 64, settings.height ?? 32);
                         await wait();
-                        const raw = rt.readPixels();
-                        if (!raw || raw.length !== 262144) throw new Error('Invalid bitmap layout capture');
-                        const data = new Uint8Array(raw), file = name + '-layout-' + settings.id;
+                        const data = readPixels(), file = name + '-layout-' + settings.id;
                         if (sys.isNative) {
                             const output = native.fileUtils.getDefaultResourceRootPath() + 'm6-bitmap-captures/';
                             if (!native.fileUtils.writeDataToFile(data.buffer, output + file + '.rgba')) throw new Error('Bitmap layout output failed');
                         } else if (!(await fetch('/m6-bitmap-capture?name=' + file, { method: 'POST', body: data })).ok) throw new Error('Bitmap layout collector failed');
-                        const glyphs = sys.isNative ? submittedGlyphCount((label as any)._native.getRenderEntity()) : (label as any).renderData.vertexCount / 4;
-                        if (settings.id === 'unicode-scalar' && glyphs !== 4) throw new Error('Missing supplementary BMFont glyph');
-                        const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, glyphs, metadataFontSize: font.fontSize,
+                        const metric = { name: file, width: transform.width, height: transform.height, actualFontSize: label.actualFontSize, metadataFontSize: font.fontSize,
                             sourceFontSize: sys.isNative ? (font as any).getSourceFontSize() : font.fntConfig!.fontSize,
                             frameProfile: profile.id, rectX: frame.rect.x, rectY: frame.rect.y, originalWidth: frame.originalSize.width,
                             originalHeight: frame.originalSize.height, offsetX: frame.offset.x, offsetY: frame.offset.y };
                         layoutMetrics.push(metric); console.log('M6_BITMAP_LAYOUT ' + JSON.stringify(metric));
                     }
                     if (sys.isNative && kind === 'bitmap' && !rotated) {
-                        const backend = (label as any)._native;
                         frame.rect = new Rect(4, 6, 32, 16); frame.originalSize = new Size(32, 16); frame.offset = new Vec2();
                         reloadSource(16);
                         label.overflow = Label.Overflow.NONE; label.enableWrapText = false; label.fontSize = 16; label.lineHeight = 16;
-                        label.string = 'A'.repeat(70000); await wait();
-                        const entity = backend.getRenderEntity();
-                        if (entity.staticDrawInfoSize !== 5) throw new Error('Expected five bitmap draw chunks');
-                        const overflow = entity.getStaticRenderDrawInfo(4);
-                        if (submittedGlyphCount(entity) !== 70000
-                            || overflow.vbCount !== 17872 || overflow.ibCount !== 26808) throw new Error('Large bitmap GPU chunks truncated');
+                        label.string = 'A'.repeat(69968) + 'B'.repeat(32);
+                        await wait();
+                        // 70000 advances of 16 px, with one -4 px AB kerning pair.
+                        if (transform.width !== 1119996) throw new Error('Large bitmap layout truncated');
+                        node.setPosition(-transform.width * 0.5 + 8, 0);
+                        await wait();
+                        const tail = readPixels();
+                        const tailVisible = tail.some((value, index) => index % 4 === 1 && value > 100 && tail[index - 1] < 48);
+                        if (!tailVisible) throw new Error('Large bitmap GPU tail truncated');
                         label.string = ''; await wait();
-                        if (entity.staticDrawInfoSize !== 0 || overflow.texture || overflow.material) throw new Error('Bitmap clear retains submissions');
-                        console.log('M6_BITMAP_LARGE ' + JSON.stringify({ glyphs: 70000, chunks: 5, cleared: true }));
+                        if (coloredPixels(readPixels())) throw new Error('Bitmap clear retained visible glyphs');
+                        console.log('M6_BITMAP_LARGE ' + JSON.stringify({ layoutWidth: 1119996, tailVisible, cleared: true }));
                     }
-                    checks.push({ name, gpuOnly: sys.isNative, quads: 2 });
+                    checks.push({ name, samplesSourceUpdates: true });
                 } finally {
                     manager.enabled = false;
                     node.destroy(); await wait();
