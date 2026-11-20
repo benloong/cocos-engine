@@ -5,11 +5,13 @@ const { createHash } = require('crypto');
 const benchmark = process.argv.includes('--perf');
 const mode=process.argv.includes('--richtext')?'richtext':'graphics';
 const graphicsProbe=['graphics-metrics','graphics-command'].find(name => process.argv.includes('--'+name));
+const fontPolling = process.argv.includes('--font-polling');
+if (fontPolling && (mode !== 'graphics' || benchmark || graphicsProbe)) throw new Error('Font polling requires the graphics fixture');
 const projectArg = process.argv.find(arg => arg.startsWith('--project='));
 const perfProject = projectArg ? projectArg.slice('--project='.length) : 'perf-project-after';
 if (!/^perf-project-after(?:-[0-9a-f]{10})?$/.test(perfProject)) throw new Error('Invalid benchmark project');
 const root=path.join(__dirname,'build',graphicsProbe?`${graphicsProbe}-web/app`:benchmark?`${perfProject}/build/web-mobile`:`${mode}-gpu-project/build/web-mobile`);
-const output=path.join(__dirname,'build',graphicsProbe?`${graphicsProbe}-web/results`:benchmark?'perf-web':`${mode}-gpu-web`);
+const output=path.join(__dirname,'build',graphicsProbe?`${graphicsProbe}-web/results`:benchmark?'perf-web':fontPolling?'graphics-gpu-polling-web':`${mode}-gpu-web`);
 const chrome=process.env.CC_GPU_CHROME||'C:/Program Files/Google/Chrome/Application/chrome.exe';
 if(!fs.existsSync(path.join(root,'index.html'))) throw new Error('Build the Web fixture first');
 fs.mkdirSync(output,{recursive:true});
@@ -56,6 +58,14 @@ const server=http.createServer(async(req,res)=>{
         if(!file.startsWith(path.resolve(root)+path.sep)) { res.writeHead(403);res.end();return; }
         if(!fs.existsSync(file)||!fs.statSync(file).isFile()) { res.writeHead(404);res.end();return; }
         const mime={'.html':'text/html','.js':'application/javascript','.json':'application/json','.wasm':'application/wasm','.png':'image/png'}[path.extname(file)]||'application/octet-stream';
+        if (fontPolling && relative === '/index.html') {
+            const page = fs.readFileSync(file, 'utf8');
+            if (!page.includes('<head>')) throw new Error('Graphics fixture has no document head');
+            const disableFontFace = '<script>delete window.FontFace; if ("FontFace" in window) throw new Error("M6_GPU_FAIL could not disable FontFace"); console.log("M6_FONT_POLLING_READY");</script>';
+            res.writeHead(200, { 'Content-Type': mime });
+            res.end(page.replace('<head>', '<head>' + disableFontFace));
+            return;
+        }
         res.writeHead(200,{'Content-Type':mime});fs.createReadStream(file).pipe(res);
     } catch(error) { res.writeHead(500);res.end(String(error));doneReject(error); }
 });
@@ -80,7 +90,7 @@ const server=http.createServer(async(req,res)=>{
                 const msg=JSON.parse(event.data);
                 if(msg.method==='Runtime.consoleAPICalled') {
                     const text=msg.params.args.map(x=>x.value??x.description??'').join(' ');logs.push(text);
-                    if(text.includes('M6_GPU_CAPTURE')||text.includes('M6_SCENE_PROGRESS')) console.log(text);
+                    if(text.includes('M6_GPU_CAPTURE')||text.includes('M6_SCENE_PROGRESS')||text === 'M6_FONT_POLLING_READY') console.log(text);
                     if(text.includes('M6_GPU_FAIL')) doneReject(new Error(text));
                 }
                 if(msg.method==='Runtime.exceptionThrown') logs.push(JSON.stringify(msg.params.exceptionDetails));
@@ -90,6 +100,7 @@ const server=http.createServer(async(req,res)=>{
     const timeout=setTimeout(()=>doneReject(new Error('Web capture timeout')),180000);
     try {
         const result = await done;
+        if (fontPolling && !logs.includes('M6_FONT_POLLING_READY')) throw new Error('FontFace was not disabled for the font polling run');
         if (interruptedFont) {
             const { requests, aliasRequests } = interruptedFont;
             if (requests.interrupted !== 1 || requests.complete !== 1 || requests.cancelled !== 1 || requests.resumed !== 1

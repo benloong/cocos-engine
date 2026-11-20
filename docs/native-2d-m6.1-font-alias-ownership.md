@@ -51,6 +51,12 @@ Web 资产加载按来源合并请求。来自同一 URL 的资产共享活跃�
 
 Windows Debug、Release 和 Chrome 按两个顺序加载和释放两份实际 TTF。两种字体的宽度分别为 95.9765625 和 101.9296875 px。释放其中一份后，另一份保持原宽度与原图。Chrome 的两个 URL 各有两次完整请求，四个字体资产最终均释放，浏览器注册和资产缓存均通过清理检查。四张新增图在三端逐字节一致。[逐图哈希与验收结果](./native-2d-m6-font-source-isolation.json)
 
+## Web 预加载与字体注册
+
+带序列化 Prefab 的真实 Bundle 复现了预加载后存在一条 `FontFace` 注册，此时资产缓存中尚无 TTFFont。现在 Web 下载完成后由原始文件缓存持有字体数据。TTFFont 首次接管时才向浏览器注册，最后一个持有者释放时移除注册。CSS 轮询分支在探测结束后移除临时样式，接管时恢复该样式。[失败基线与验收证据](./native-2d-m6-font-preload-ownership.json)
+
+Windows Debug、Release 与 Chrome 均通过预加载、丢弃文件缓存、再次预加载及消费缓存的真实 Bundle 流程。Chrome 在默认 FontFace 和隐藏该 API 的 CSS 轮询路径下都通过无主注册检查，并在两条路径得到相同的 155 张 RGBA。轮询复现使用 `run-graphics-gpu-web.cjs --font-polling`。同一候选还完成 62 图字体矩阵和 HTTP 恢复回归。[三端与轮询证据](./native-2d-m6-font-preload-ownership.json)
+
 构建 Windows 和 Web 测试工程后，用对应的 Windows 可执行文件顺序运行以下入口。原始 JSON、应用日志和 GPU 对照保存在 `native/tests/2d-poc/build`。
 
 ```powershell

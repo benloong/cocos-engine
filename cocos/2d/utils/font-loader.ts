@@ -124,13 +124,7 @@ function checkFontLoaded (): void {
     }
 }
 
-function registerFontFace (
-    key: string, name: string, family: string, attach: () => void, detach: () => void, discard?: () => void,
-): void {
-    if (_fontFaces.has(key)) {
-        discard?.();
-        return;
-    }
+function prepareFontFace (key: string, name: string, family: string, attach: () => void, detach: () => void): BrowserFont {
     let owners = 0;
     const font: BrowserFont = {
         name,
@@ -139,7 +133,7 @@ function registerFontFace (
             const active = _fontFaces.get(key);
             if (active && active !== font) return active.retain();
             if (!active) {
-                // A preloaded asset may still hold these bytes after the previous owner released the face.
+                // Preloaded data stays detached until a TTFFont adopts it.
                 attach();
                 _fontFaces.set(key, font);
             }
@@ -158,8 +152,7 @@ function registerFontFace (
             };
         },
     };
-    attach();
-    _fontFaces.set(key, font);
+    return font;
 }
 
 export function loadFont (url: string, options: Record<string, any>, onComplete: FontCallback): void {
@@ -188,11 +181,19 @@ function loadFontData (url: string, browserAsset: boolean, onComplete: FontDataC
     // A new source or reload must not reuse another font's Canvas measurement cache key.
     const fontFamilyName = browserAsset ? `__cocos_font_${++browserFamilySerial}` : name;
     _pendingFaces.set(key, callbacks);
-    const finish = (): void => {
+    const finish = (prepared?: BrowserFont): void => {
         _pendingFaces.delete(key);
-        const font = _fontFaces.get(key);
+        const font = _fontFaces.get(key) ?? prepared;
         if (!font) warnID(4933, name);
         for (const callback of callbacks) callback(null, font ?? fontFamilyName);
+    };
+    const completeFace = (attach: () => void, detach: () => void): void => {
+        const font = prepareFontFace(key, name, fontFamilyName, attach, detach);
+        if (!browserAsset) {
+            attach();
+            _fontFaces.set(key, font);
+        }
+        finish(font);
     };
     if (useNativeCheck()) {
         // A fresh FontFace can reload the original URL after a failed document stylesheet fetch.
@@ -205,9 +206,10 @@ function loadFontData (url: string, browserAsset: boolean, onComplete: FontDataC
                     add (value: LoadableFontFace): void;
                     delete (value: LoadableFontFace): void;
                 } }).fonts;
-                registerFontFace(key, name, fontFamilyName, () => fonts.add(face), () => fonts.delete(face));
+                completeFace(() => fonts.add(face), () => fonts.delete(face));
+            } else {
+                finish();
             }
-            finish();
         };
         try {
             const face = new ccwindow.FontFace(fontFamilyName, `url(${JSON.stringify(url)})`);
@@ -255,12 +257,14 @@ function loadFontData (url: string, browserAsset: boolean, onComplete: FontDataC
         onComplete: (loaded: boolean): void => {
             preloadDiv.parentNode?.removeChild(preloadDiv);
             const detach = (): void => { fontStyle.parentNode?.removeChild(fontStyle); };
+            if (browserAsset || !loaded) detach();
             if (loaded) {
-                registerFontFace(key, name, fontFamilyName, () => {
+                completeFace(() => {
                     if (!fontStyle.parentNode) ccdocument.body.appendChild(fontStyle);
-                }, detach, detach);
-            } else detach();
-            finish();
+                }, detach);
+            } else {
+                finish();
+            }
         },
     });
     if (_intervalId === -1) _intervalId = setInterval(checkFontLoaded, 100);

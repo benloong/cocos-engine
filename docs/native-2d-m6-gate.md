@@ -46,6 +46,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | 本机 RichText 字体应用矩阵 | 候选 `244decdeb0` 重建 Windows 双配置与 Web。两种 Windows 配置各通过 47 项布局、44 项严格像素和 1000 次字体加载释放；三项已知超差按当前范围暂缓。三端的 47 张图各自与上一轮逐字节一致。HTTP 断流、主动取消及同 URL 重试通过 | [同一快照与构建哈希](./native-2d-m6-richtext-configurations.json) |
 | 独立 TTF Bundle | 序列化 Label Prefab 在 Windows Debug、Release 和 Web 通过预加载、跨场景引用、完全卸载及冷重载。Web 修复最后一个资产释放后残留的 `FontFace` 注册。五张新增场景图和原有 150 张图均逐字节一致。 | [本地三端证据](./native-2d-m6-ttf-bundle.json) |
 | 同名 HTTP TTF | 同名的 Thonburi 和 Open Sans 在 Windows 双配置与 Web 分别加载、独立渲染。两种释放顺序均保留存活字体的测宽，四张新增图逐字节一致。 | [请求和生命周期记录](./native-2d-m6-font-source-isolation.json) |
+| TTF 预加载注册 | Web 仅预加载或丢弃 TTF 时均无注册，TTFFont 接管时注册并在最后释放时移除。Windows 双配置及 Web 通过真实 Bundle 缓存消费，Chrome 默认路径和强制 CSS 轮询的 155 张图逐字节一致。 | [预载和像素证据](./native-2d-m6-font-preload-ownership.json) |
 | RichText 段节点与生命周期 | Windows Debug、Release 和 Web 各验证 64 个文字段、64 个图片段、32 轮回收重建和图集缓存释放。宿主换层时段跟随更新，四张新增图逐字节一致。 | [三端验收](./native-2d-m6-richtext-node-lifecycle.json) |
 | Label 的 TTF 小数字号 | Windows 双配置与 Web 用同一 Thonburi，依次设置 24、24.25、24.75、25、24 px。三端宽度最大差小于 0.000054 px，各次切换重绘，复位与初始图逐字节一致。既有 47 张图的各端哈希与上一轮一致，当前字体门禁通过 | [字号与快照数据](./native-2d-m6-richtext-configurations.json) |
 | Label 零模糊阴影 | 固定尺寸、正负偏移两组，Windows Debug/Release 与 Web 的 GPU 轮廓检查均通过。原 13 张 RichText 图的各端哈希与上轮相同 | [场景及断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts) |

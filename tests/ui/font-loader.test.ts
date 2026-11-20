@@ -115,7 +115,11 @@ test('Web font assets share one registration and can reuse preloaded data after 
             downloader.download(id, url, '.ttf', {},
                 (error, content) => error ? reject(error) : resolve(content));
         });
+        const discarded = await download('discarded-preload');
+        expect(add).not.toHaveBeenCalled();
         const data = await download('bundle-owner-test');
+        expect(data).not.toBe(discarded);
+        expect(add).not.toHaveBeenCalled();
         const first = new TTFFont();
         const second = new TTFFont();
         first._nativeAsset = data;
@@ -145,6 +149,7 @@ test('Web font assets share one registration and can reuse preloaded data after 
             download('fresh-owner'), download('other-owner', 'other/BundleOwnerTest.ttf'), download('same-source-waiter'),
         ]);
         expect(waiter).toBe(fresh);
+        expect(add).toHaveBeenCalledTimes(2);
         const current = new TTFFont(), stale = new TTFFont(), independent = new TTFFont();
         current._nativeAsset = fresh;
         stale._nativeAsset = data;

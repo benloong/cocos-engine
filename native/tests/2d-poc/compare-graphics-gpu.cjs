@@ -20,7 +20,7 @@ for (const [kind, width] of [['legacyBitmap', 40], ['labelAtlas', 64]]) {
     }
 }
 const bundled = a.scenes.bundledTTF;
-if (!bundled || !['preload', 'shared', 'retainedAlias', 'aliasesReleased', 'cacheCleared', 'coldReloaded']
+if (!bundled || !['preload', 'discardedPreload', 'consumedPreload', 'shared', 'retainedAlias', 'aliasesReleased', 'cacheCleared', 'coldReloaded']
     .every(key => bundled[key] === true) || bundled.ids?.length !== 2 || new Set(bundled.ids).size !== 2) {
     throw new Error('Incomplete bundled TTF scene evidence');
 }

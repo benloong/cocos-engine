@@ -1,0 +1,85 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "d27f45dedd",
+  "baseline": {
+    "snapshot": "542aa24b239032d1fe025cedb67fa60c40a38de229995f685b40ec599a71f5ca",
+    "webFailure": "Bundled TTF registered 1 faces after owner state false",
+    "webLogSha256": "955b523f882f01396aa1ee5e7f1e7fa4e772b16c1822098b971fed18639fa807",
+    "jestLogSha256": "b62d607767a7685757dcbba44cde8ff4ecc92214badf26750681fd2cb68366ad"
+  },
+  "bundle": {
+    "snapshot": "b7f0d5b4d105f248e525bfbd1f2eb4ada305377f02974faa884518b0650df62a",
+    "lifecycle": {
+      "preload": true,
+      "discardedPreload": true,
+      "consumedPreload": true,
+      "shared": true,
+      "retainedAlias": true,
+      "aliasesReleased": true,
+      "cacheCleared": true,
+      "coldReloaded": true,
+      "ids": [
+        "fa1ba389-cd23-4275-90c4-6863fdcf15f3",
+        "748bb085-20ec-4ee9-8792-c41c97d006ee"
+      ]
+    },
+    "strictIdenticalCaptures": 155,
+    "unchangedEarlierCaptures": 155,
+    "webManifestSha256": "c650ee092d36eaa31e1fb73d16689ad4480bcbbfa4fe129efae506e0431c360f",
+    "webLogSha256": "1d1459e062111e1aedd9a75f1a54781829b94db958abee1c68a5d9df800bc7b6",
+    "cssPolling": {
+      "environment": "Chrome with FontFace API hidden",
+      "identicalCaptures": 155,
+      "manifestSha256": "62f447d248de4da91e5385f9cf9b0bc14c985fbf8039bae7ada5e1c531cab2a1",
+      "logSha256": "960cd42851079f0e3941b64cc2d191ef510d22f9a71fb890715f907a7250a2e3"
+    }
+  },
+  "richText": {
+    "snapshot": "a35c7bf0b9309810d648fbe1b0d73394cccb93bf2cae25744b0144761a5d6d16",
+    "layoutPass": 62,
+    "strictPixelPass": 59,
+    "deferredPixels": [
+      "text-bold",
+      "text-outline",
+      "text-nested"
+    ],
+    "unchangedEarlierCaptures": 62,
+    "webManifestSha256": "47333c06b86ed46429646b30265ceafe23d6ce50428a29e063338df977787a0b",
+    "webLogSha256": "5ee3c95c418c599683b86ac611dd2c9263d4517e9ed56fa8931e8c93db196817"
+  },
+  "configurations": {
+    "Debug": {
+      "graphics": {
+        "executableSha256": "d5addda3d52637b183dffd5c0cd9cf3fe03f9d2151cb0f0b65a5bc3d5e96898c",
+        "manifestSha256": "a6738e8a7283436d0aec9af083cb2c032d451a168ab30c553bd88000f01744f8",
+        "comparisonSha256": "c90fa5b16b1a06cd6168a91e23a002f2f8981d0034c7ade97c5e7fb7728c9c89"
+      },
+      "richText": {
+        "executableSha256": "32e0f09386065c747f79ec9949f4f9cebf76c2ffc27037799c60db0ec0e17c37",
+        "manifestSha256": "4961a0688ed2495be442dd79dc3506795e0c44b6b32a35866b36ff58825ab454",
+        "comparisonSha256": "86f8884aac11f3be919fc9f2d1f3c29068cd3699302e0e71bba0776ffa5e3740",
+        "httpLogSha256": "5a35d15d43e431504a82f844f0adf8525fae3b607c8b7a1f0207e8b6d7cba14c"
+      }
+    },
+    "Release": {
+      "graphics": {
+        "executableSha256": "426572c16f90efd1aa277a0f720e49c271fa8b265bf12502ef2448d5b10117f6",
+        "manifestSha256": "02d0771b4bb3c2466d870e48e38115de58ab15c0c123d0d31ece1cf2e3e02ed2",
+        "comparisonSha256": "c90fa5b16b1a06cd6168a91e23a002f2f8981d0034c7ade97c5e7fb7728c9c89"
+      },
+      "richText": {
+        "executableSha256": "7a97e6ed55f589e30f38cfde2783eb0b414cd7c0a32c1f9612704bf6b4b2aced",
+        "manifestSha256": "1b230071f3d925b8b1af1faaada592db5d95a0d1706edc9ba892fe8c64f43feb",
+        "comparisonSha256": "0f1b4df31eed1741a7fe4a4a32631eb79412badfb79f28933a2a1d0bb37c7fca",
+        "httpLogSha256": "5a35d15d43e431504a82f844f0adf8525fae3b607c8b7a1f0207e8b6d7cba14c"
+      }
+    }
+  },
+  "local": {
+    "fontTests": 28,
+    "fontLogSha256": "45fb2a09c3f9bdd130ef3882c2a7dc976e47f7fc068863db86fb7c7e5150e8d2",
+    "allWebTestsPassed": 1478,
+    "allWebLogSha256": "e9681a09cdec715e354aef87ac52067dc8c2a0786100736f613fa7a4065e22fd",
+    "nativeTypeScript": true
+  }
+}

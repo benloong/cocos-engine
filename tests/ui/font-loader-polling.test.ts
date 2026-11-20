@@ -1,4 +1,5 @@
 import { loadFont } from '../../cocos/2d/utils/font-loader';
+import type { BrowserFont } from '../../cocos/2d/utils/font-loader';
 import downloader from '../../cocos/asset/asset-manager/downloader';
 import { TTFFont } from '../../cocos/2d/assets/ttf-font';
 import { CCObject } from '../../cocos/core/data/object';
@@ -64,15 +65,19 @@ test('Web polling observes new font metrics and permits retry from the timeout c
         expect(jest.getTimerCount()).toBe(0);
 
         const owner = new TTFFont();
+        let prepared: BrowserFont | null = null;
         loaded = false;
         downloader.download('polling-owner-test', 'fonts/PollingOwnerTest.ttf', '.ttf', {}, (error, data) => {
             expect(error).toBeNull();
-            owner._nativeAsset = data;
+            prepared = data;
         });
         loaded = true;
         jest.advanceTimersByTime(100);
-        expect(owner._fontFamily).toBe('PollingOwnerTest_LABEL');
         const ownedStyle = nodes.filter(node => node.tagName === 'STYLE').pop()!;
+        expect(prepared).not.toBeNull();
+        expect(ownedStyle.isConnected).toBe(false);
+        owner._nativeAsset = prepared;
+        expect(owner._fontFamily).toBe('PollingOwnerTest_LABEL');
         expect(ownedStyle.textContent).toContain(`font-family:"${owner._nativeAsset}"`);
         expect(ownedStyle.isConnected).toBe(true);
         owner.destroy();

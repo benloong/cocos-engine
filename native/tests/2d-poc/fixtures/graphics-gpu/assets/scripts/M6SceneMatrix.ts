@@ -67,15 +67,35 @@ async function runBundledTTFScenes (openScene: (name: string) => Node, capture: 
         verifyAlias(family, false);
     };
     const bundle = await loadBundle();
-    await new Promise<void>((resolve, reject) => bundle.preload(prefabPath, Prefab, (error, items) => {
-        if (error) reject(error);
-        else if (!items.some(item => item.uuid === ids[1] && item.isNative && item.file)) reject(new Error('TTF preload missed bundled font'));
-        else resolve();
-    }));
-    if (ids.some(id => assetManager.assets.has(id))) throw new Error('TTF preload published bundled assets');
+    const preload = (): Promise<{ id: string; file: unknown; family?: string }> => new Promise((resolve, reject) => {
+        bundle.preload(prefabPath, Prefab, (error, items) => {
+            if (error) { reject(error); return; }
+            const item = items.find(entry => entry.uuid === ids[1] && entry.isNative && entry.file);
+            if (!item || assetManager.files.get(item.id) !== item.file || ids.some(id => assetManager.assets.has(id))) {
+                reject(new Error('TTF preload did not cache only the bundled font data'));
+                return;
+            }
+            const family = sys.isNative ? undefined : (item.file as { family?: string }).family;
+            if (!sys.isNative && !family) { reject(new Error('TTF preload did not yield a browser descriptor')); return; }
+            resolve({ id: item.id, file: item.file, family });
+        });
+    });
+    const abandoned = await preload();
+    if (abandoned.family) verifyAlias(abandoned.family, false);
+    assetManager.files.remove(abandoned.id);
+    if (assetManager.files.has(abandoned.id)) throw new Error('Discarded TTF stayed in the file cache');
+    if (abandoned.family) verifyAlias(abandoned.family, false);
+    const prepared = await preload();
+    if (prepared.id !== abandoned.id || (!sys.isNative && prepared.file === abandoned.file)) {
+        throw new Error('TTF preload reused a discarded browser descriptor');
+    }
+    if (prepared.family) verifyAlias(prepared.family, false);
     const prefab = await loadPrefab(bundle);
     const first = await show('scene-ttf-bundle-first', prefab);
     const family = first.font._nativeAsset!;
+    if (assetManager.files.has(prepared.id) || (prepared.family && prepared.family !== family)) {
+        throw new Error('Bundled TTF did not consume its preloaded data');
+    }
     verifyAlias(family, true);
     const second = await show('scene-ttf-bundle-next', prefab);
     const held = await loadFont(bundle);
@@ -109,7 +129,8 @@ async function runBundledTTFScenes (openScene: (name: string) => Node, capture: 
     assetManager.removeBundle(coldBundle);
     if (assetManager.getBundle(bundleName)) throw new Error('Cold TTF bundle remained cached');
     await capture('scene-ttf-bundle-final');
-    return { preload: true, shared: true, retainedAlias: true, aliasesReleased: true, cacheCleared: true, coldReloaded: true, ids };
+    return { preload: true, discardedPreload: true, consumedPreload: true, shared: true, retainedAlias: true,
+        aliasesReleased: true, cacheCleared: true, coldReloaded: true, ids };
 }
 
 interface ImportedFontCase {
