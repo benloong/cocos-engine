@@ -8,6 +8,10 @@ const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gp
 if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==155) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
+const legacyLabelEffects = { updates: 3, prefab: true, forwarding: true, rendered: true, destroyed: true };
+if ([a, b].some(({ legacyLabelEffects: actual }) => JSON.stringify(actual) !== JSON.stringify(legacyLabelEffects))) {
+    throw new Error('Incomplete legacy Label effect API and rendering evidence');
+}
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
 if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==19||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
@@ -234,7 +238,7 @@ for (const [name, reference] of [['mesh-rect-packed', 'mesh-rect-rotated-3'],
         throw new Error('Packing, flipping or restoring changed an oriented mesh image: ' + name);
     }
 }
-const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},shrinkSizes:{native:a.shrinkSizes,web:b.shrinkSizes},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},tolerance:1,pass:results.every(x=>x.pass),results};
+const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},shrinkSizes:{native:a.shrinkSizes,web:b.shrinkSizes},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},legacyLabelEffects,tolerance:1,pass:results.every(x=>x.pass),results};
 for (const name of ['sprite-radial-quadrant', 'sprite-radial-rotated']) {
     const original = results.find(row => row.name === name);
     const updated = results.find(row => row.name === name + '-updated');

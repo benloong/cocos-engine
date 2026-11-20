@@ -1,0 +1,46 @@
+{
+  "baseCommit": "d27c90164a",
+  "baseline": {
+    "snapshot": "941bfe660b1605db4324f163389d620f3091da2b1e82311b71072a7ee0b48617",
+    "failure": "Legacy Label effects expected three updates, received 9",
+    "nativeLogSha256": "3a8ad47b454d4de20b13da4173734867189b4882671155658b4effc6ea88e7d6",
+    "jestLogSha256": "b80fa7107308cb7b67a5bb78803ff75eb1ac2a7522502faecca87382ea077e01"
+  },
+  "graphics": {
+    "snapshot": "76f01a8e12a97e6033eabb915f2a751331bd86f9fb0514ca9bb8c2a98aee057f",
+    "legacyLabelEffects": {
+      "updates": 3,
+      "prefab": true,
+      "forwarding": true,
+      "rendered": true,
+      "destroyed": true
+    },
+    "strictlyIdenticalCaptures": 155,
+    "unchangedEarlierCaptures": 155,
+    "web": {
+      "manifestSha256": "7c7f8826bf51038c6f88abb14bb895ba4eb1a1126971958ff783ee83845a5e48",
+      "applicationLogSha256": "1d1459e062111e1aedd9a75f1a54781829b94db958abee1c68a5d9df800bc7b6"
+    },
+    "windows": {
+      "Debug": {
+        "executableSha256": "d5addda3d52637b183dffd5c0cd9cf3fe03f9d2151cb0f0b65a5bc3d5e96898c",
+        "manifestSha256": "23f7e15f502f680b66b576c1c051b9494a830a917160018bde9f2dc3ce446327",
+        "comparisonSha256": "65a3d0c068442a59a3c38afcb3d8c7326a712ae3e21d0fc68988cce4cb278fe1",
+        "applicationLogSha256": "a397aec334d6204fc4a6fbfa10237bf6c252d95761d11b17ad04cd39c2403245"
+      },
+      "Release": {
+        "executableSha256": "426572c16f90efd1aa277a0f720e49c271fa8b265bf12502ef2448d5b10117f6",
+        "manifestSha256": "05c6324fcdebbb65ab22aeacd26798b45ca967288e20264ca793f75e8c1bb079",
+        "comparisonSha256": "65a3d0c068442a59a3c38afcb3d8c7326a712ae3e21d0fc68988cce4cb278fe1",
+        "applicationLogSha256": "911ad27894247749db1dfe077eb46ba9ac7876766b698c230ab2139c00ce524e"
+      }
+    }
+  },
+  "local": {
+    "labelTestsPassed": 14,
+    "jestLogSha256": "b5bb087015b7a475744750b23d1b8d379560132525aa0179eae033aaeb1b568f",
+    "typeScript": true,
+    "nativeTypeScript": true,
+    "labelShellLines": 499
+  }
+}

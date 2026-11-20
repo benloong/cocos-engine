@@ -451,8 +451,9 @@ export class Label extends UIRenderer {
         this._native?.setEnableOutline(value);
     }
 
-    get outlineColor (): Readonly<Color> { return this._outlineColor; }
+    get outlineColor (): Color { return this._outlineColor; }
     set outlineColor (value: Readonly<Color>) {
+        if (this._outlineColor === value) return;
         this._outlineColor.set(value);
         this._native?.setOutlineColor(value);
     }
@@ -471,8 +472,9 @@ export class Label extends UIRenderer {
         this._native?.setEnableShadow(value);
     }
 
-    get shadowColor (): Readonly<Color> { return this._shadowColor; }
+    get shadowColor (): Color { return this._shadowColor; }
     set shadowColor (value: Readonly<Color>) {
+        if (this._shadowColor === value) return;
         this._shadowColor.set(value);
         this._native?.setShadowColor(value);
     }
@@ -486,6 +488,7 @@ export class Label extends UIRenderer {
 
     get shadowOffset (): Vec2 { return this._shadowOffset; }
     set shadowOffset (value: Vec2) {
+        if (this._shadowOffset === value) return;
         this._shadowOffset.set(value);
         this._native?.setShadowOffset(value.x, value.y);
     }

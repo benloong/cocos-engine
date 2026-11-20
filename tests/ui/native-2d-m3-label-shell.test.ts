@@ -9,6 +9,7 @@ import { mockEnv } from '../utils/mock-cc-env';
 import { deserialize, Details } from '../../cocos/serialization/deserialize';
 import { instantiate } from '../../exports/base';
 import { Color } from '../../cocos/core/math/color';
+import { Vec2 } from '../../cocos/core/math/vec2';
 import { Material } from '../../cocos/asset/assets/material';
 
 let shared: any[] = [], instances: any[] = [];
@@ -118,6 +119,32 @@ test('Web Label scalar styles invalidate render data only on transitions', () =>
         dirty.mockClear();
         for (const value of [initial, initial + 0.25, initial + 0.25, initial]) label[key] = value;
         expect(dirty).toHaveBeenCalledTimes(2);
+    }
+});
+
+test('Label effect setters keep their value objects and skip self-assignment', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const web = new WebLabel();
+    const native = new Label();
+    Object.assign(native, { _native: nativeLabel });
+    const dirty = jest.spyOn(web as any, '_markForUpdateRenderData').mockImplementation(() => {});
+    const cases = [
+        ['outlineColor', new Color(255, 0, 0, 255), nativeLabel.setOutlineColor],
+        ['shadowColor', new Color(0, 255, 0, 255), nativeLabel.setShadowColor],
+        ['shadowOffset', new Vec2(4, -8), nativeLabel.setShadowOffset],
+    ] as const;
+    for (const [key, value, setter] of cases) {
+        dirty.mockClear();
+        for (const label of [web, native]) {
+            const initial = label[key];
+            label[key] = initial;
+            label[key] = value;
+            label[key] = label[key];
+            expect(label[key]).toBe(initial);
+            expect(label[key]).toEqual(value);
+        }
+        expect(dirty).toHaveBeenCalledTimes(1);
+        expect(setter).toHaveBeenCalledTimes(1);
     }
 });
 

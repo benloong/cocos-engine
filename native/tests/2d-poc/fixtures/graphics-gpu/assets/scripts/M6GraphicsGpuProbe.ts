@@ -1,4 +1,4 @@
-import { _decorator, BitmapFont, Camera, Canvas, Color, Component, deserialize, Director, director, dynamicAtlasManager, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, BitmapFont, Camera, Canvas, Color, Component, deserialize, Director, director, dynamicAtlasManager, Graphics, Label, LabelOutline, LabelShadow, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { countTraversedRoots, runSceneMatrix } from './M6SceneMatrix';
 import { assetManager, EffectAsset, gfx, ImageAsset, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
@@ -12,6 +12,91 @@ const spriteImplementation = (globalThis as { __m6SpriteImplementation?: string 
 const labelImplementation = (globalThis as { __m6LabelImplementation?: string }).__m6LabelImplementation ?? (sys.isNative ? 'native' : 'js');
 const graphicsMaskImplementation = (globalThis as { __m6GraphicsMaskImplementation?: string }).__m6GraphicsMaskImplementation ?? (sys.isNative ? 'native' : 'js');
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+
+async function checkLegacyLabelEffects (parent: Node, target: RenderTexture): Promise<object> {
+    const prefab = deserialize([
+        { __type__: 'cc.Prefab', data: { __id__: 1 } },
+        { __type__: 'cc.Node', _name: 'LegacyLabelEffects', _components: [2, 3, 4, 5].map(__id__ => ({ __id__ })) },
+        { __type__: 'cc.UITransform', node: { __id__: 1 } },
+        { __type__: 'cc.Label', node: { __id__: 1 }, _string: 'Atlas', _fontSize: 32, _lineHeight: 40 },
+        { __type__: 'cc.LabelOutlineComponent', node: { __id__: 1 } },
+        { __type__: 'cc.LabelShadow', node: { __id__: 1 } },
+    ]) as Prefab;
+    const instance = instantiate(prefab);
+    instance.layer = parent.layer;
+    parent.addChild(instance);
+    const label = instance.getComponent(Label)!;
+    const outline = instance.getComponent(LabelOutline);
+    const shadow = instance.getComponent(LabelShadow);
+    const pixels = async (): Promise<Uint8Array> => {
+        await wait();
+        const rgba = target.readPixels();
+        if (!rgba) throw new Error('Legacy Label effects could not read the render target');
+        return new Uint8Array(rgba);
+    };
+    const equal = (a: Uint8Array, b: Uint8Array): boolean => a.every((byte, i) => byte === b[i]);
+    const hasColor = (rgba: Uint8Array, channel: 0 | 1): boolean => {
+        for (let i = 0; i < rgba.length; i += 4) {
+            if (rgba[i + channel] > 32 + Math.max(rgba[i + 1 - channel], rgba[i + 2])) return true;
+        }
+        return false;
+    };
+    try {
+        if (!outline || !shadow || !label.enableOutline || !label.enableShadow) throw new Error('Legacy Label effects did not activate from the Prefab');
+        outline.width = 2;
+        shadow.blur = 0;
+        const outlineColor = new Color(255, 0, 0, 255);
+        const shadowColor = new Color(0, 255, 0, 255);
+        const offset = new Vec2(16, 14);
+        const holder = (label as any)._native ?? label;
+        const keys = holder === label ? ['_markForUpdateRenderData'] : ['setOutlineColor', 'setShadowColor', 'setShadowOffset'];
+        const original = keys.map(key => holder[key]);
+        let updates = 0;
+        try {
+            keys.forEach((key, i) => {
+                holder[key] = function (...args: unknown[]): void { ++updates; original[i].apply(this, args); };
+            });
+            outline.color = outline.color;
+            shadow.color = shadow.color;
+            shadow.offset = shadow.offset;
+            outline.color = outlineColor;
+            shadow.color = shadowColor;
+            shadow.offset = offset;
+            outline.color = outline.color;
+            shadow.color = shadow.color;
+            shadow.offset = shadow.offset;
+        } finally {
+            keys.forEach((key, i) => { holder[key] = original[i]; });
+        }
+        if (updates !== 3) throw new Error(`Legacy Label effects expected three updates, received ${updates}`);
+        if (outline.color !== label.outlineColor || shadow.color !== label.shadowColor || shadow.offset !== label.shadowOffset
+            || label.outlineWidth !== outline.width || label.shadowBlur !== shadow.blur) throw new Error('Legacy effect getters did not forward to Label');
+        const both = await pixels();
+        outline.enabled = false;
+        const shadowOnly = await pixels();
+        outline.enabled = true;
+        shadow.enabled = false;
+        const outlineOnly = await pixels();
+        shadow.enabled = true;
+        if (!equal(both, await pixels()) || !hasColor(both, 0) || !hasColor(both, 1)
+            || hasColor(shadowOnly, 0) || !hasColor(shadowOnly, 1) || !hasColor(outlineOnly, 0) || hasColor(outlineOnly, 1)) {
+            throw new Error('Legacy Label effect activation did not reach the rendered pixels');
+        }
+        outline.destroy();
+        shadow.destroy();
+        const plain = await pixels();
+        if (isValid(outline) || isValid(shadow) || label.enableOutline || label.enableShadow || hasColor(plain, 0) || hasColor(plain, 1)) {
+            throw new Error('Destroying the legacy effects did not remove their rendering');
+        }
+        label.enableOutline = label.enableShadow = true;
+        if (!equal(both, await pixels())) throw new Error('Legacy and direct Label effects rendered differently');
+        return { updates, prefab: true, forwarding: true, rendered: true, destroyed: true };
+    } finally {
+        instance.destroy();
+        prefab.destroy();
+        await wait();
+    }
+}
 
 async function releaseMeshedFrame (frame: SpriteFrame): Promise<void> {
     const mesh = frame.mesh!;
@@ -991,6 +1076,7 @@ export class M6GraphicsGpuProbe extends Component {
         labelPrefab.destroy();
         await wait();
         if (isValid(labelInstance) || isValid(labelPrefab)) throw new Error('Label rollback Prefab was retained');
+        const legacyLabelEffects = await checkLegacyLabelEffects(canvas.node, rt);
         for (const item of cases) {
             const root = node(canvas.node, item.name);
             const update = item.draw(root);
@@ -1209,7 +1295,8 @@ export class M6GraphicsGpuProbe extends Component {
         const device = director.root!.device;
         const result = { backend: sys.isNative ? 'native' : 'web', snapshot, spriteImplementation, spriteBenchmark, labelImplementation, labelBenchmark,
             graphicsMaskImplementation, graphicsMaskBenchmark, captures,
-            scenes, roots, hits, batchDrawCalls, labelLayout, shrinkSizes, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
+            scenes, roots, hits, batchDrawCalls, labelLayout, shrinkSizes, legacyLabelEffects, width: 256, height: 256,
+            environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });
         console.log(`M6_GPU_DONE ${JSON.stringify(result)}`);
