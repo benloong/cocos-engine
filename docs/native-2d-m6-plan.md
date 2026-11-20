@@ -178,6 +178,7 @@
 - [x] Windows Debug/Release、Web 验证四类 Mask、反转、嵌套和 stencil 恢复、阈值、尺寸与资产切换。椭圆从 4 段改为 64 段，着色面积从 8000 增至 12560；混合场景从不透明帧换为左右透明度不同的帧，着色面积从 12400 降至 6400，后继 Graphics 保持黄色。[逐图结果](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Graphics 在原生端选择内置绘制材质。Mask 在挂接 Sprite stencil 时选择内置 alpha-test 材质，各实例持有独立阈值。两个 Mask 共享一张纹理并交换阈值，Windows Debug/Release 与 Web 逐像素一致，销毁其中一个 Mask 后材质引用数恢复。[GPU 对照](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Sprite stencil 的 `Mask.subComp` 在 Windows 返回宿主节点上的 Sprite，复用已有组件。Windows Debug、Release 和 Web 验证组件身份、帧双向同步、禁用与恢复、共享纹理阈值隔离。两种 Windows 配置的 88 张图均与 Web 逐字节一致。[验证结果](./native-2d-m6-mask-sprite-stencil.json)
+- [x] 移除 Mask 内嵌的重复 Sprite，图像 stencil 统一使用宿主组件。清理 `n2d.Mask.getRenderEntity`、`n2d.Mask.setSpriteFrame`、`n2d.UITransform.hitTestWorldXY` 绑定。Windows Debug/Release 的 V8 探针检查导出，C++ 检查 stencil 几何，三端复测 88 张图。[清理验证](./native-2d-m6-mask-sprite-stencil.json)
 - [x] Windows Debug、Release 和 Web 完成 Graphics/Mask 创建、静止和变更测量。32 个矩形在单组件与 32 个组件中分别产生 1、32 个批次，单层与双层 Mask 分别产生 3、5 个批次。三端以 4096 字节纹理上传校准计数，覆盖全部 189 个采样窗口。[成本与复现](./native-2d-m6.3-graphics-cost.md)
 
 交付：M4.3 补充报告、像素对照与性能结论。兼容光栅化基础通过不等于本项完成。

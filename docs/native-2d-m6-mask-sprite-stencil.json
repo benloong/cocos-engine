@@ -90,5 +90,46 @@
     "Frame updates through Mask and Sprite",
     "Disable and re-enable through Mask",
     "Independent thresholds with a shared texture"
-  ]
+  ],
+  "cleanup": {
+    "absentFromRuntimeBundles": [
+      "NativeUITransformPoc",
+      "NativeSpritePoc"
+    ],
+    "removedBindings": [
+      "n2d.Mask.getRenderEntity",
+      "n2d.Mask.setSpriteFrame",
+      "n2d.UITransform.hitTestWorldXY"
+    ],
+    "configurations": {
+      "Debug": {
+        "snapshot": "c2f48ddb01ade8bd653e85d65d8999f0091623f7b182328803b11f940118382c",
+        "executableSha256": "4223132b1d44a11a54fd2c5d5877964fd862dec5af5235565e2f099d9a1897a5",
+        "captures": 88,
+        "identicalToWeb": 88,
+        "identicalToPriorCaptures": 88,
+        "maximumChannelDifference": 0,
+        "hitAssertions": 22,
+        "rootAssertions": 11,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "nativeHarnessPassed": true,
+        "v8ExportCheckPassed": true
+      },
+      "Release": {
+        "snapshot": "c2f48ddb01ade8bd653e85d65d8999f0091623f7b182328803b11f940118382c",
+        "executableSha256": "abd7adf1dfcc2850090508d46cd3cc1ee0523a05e70a989874cf941ae672ec85",
+        "captures": 88,
+        "identicalToWeb": 88,
+        "identicalToPriorCaptures": 88,
+        "maximumChannelDifference": 0,
+        "hitAssertions": 22,
+        "rootAssertions": 11,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "nativeHarnessPassed": true,
+        "v8ExportCheckPassed": true
+      }
+    }
+  }
 }

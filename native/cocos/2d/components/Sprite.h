@@ -110,7 +110,6 @@ public:
     void onWorldTransformDirty() override { markRenderDirty(); }
 
 private:
-    friend class Mask;
     void onUITransformChanged() override;
     void bindUITransform(UITransform *transform);
     void updateRenderer() override;

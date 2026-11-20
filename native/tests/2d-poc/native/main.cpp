@@ -545,10 +545,13 @@ void testFrameConsumers() {
     mask.setNode(&maskNode);
     mask.setAlphaThreshold(0.25F);
     check(material->getRefCount() == initialRefs, "geometry Mask does not retain the Sprite stencil material");
+    cc::Sprite stencil;
+    stencil.setSizeMode(0);
+    stencil.setNode(&maskNode);
+    stencil.setFrame(frame);
     mask.setType(3);
-    mask.setSpriteFrame(frame);
     auto *entity = static_cast<cc::RenderEntity *>(maskNode.getUserData());
-    check(entity != nullptr, "sprite stencil has native entity");
+    check(entity == stencil.getRenderEntity() && entity->getIsMask(), "Mask uses the existing Sprite entity as stencil");
     if (entity) {
         cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(entity->getStaticDrawInfoSize() == 1, "Mask consumes native SpriteFrame");
@@ -558,10 +561,13 @@ void testFrameConsumers() {
         {
             cc::Node peerNode("peer-mask");
             cc::UITransform peerTransform(&peerNode);
+            cc::Sprite peerStencil;
+            peerStencil.setSizeMode(0);
+            peerStencil.setNode(&peerNode);
+            peerStencil.setFrame(frame);
             cc::Mask peer;
             peer.setType(3);
             peer.setNode(&peerNode);
-            peer.setSpriteFrame(frame);
             peer.setAlphaThreshold(0.75F);
             cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
             auto *peerEntity = peer.getRenderEntity();
@@ -1573,6 +1579,9 @@ void testGraphicsMeshes() {
     {
         cc::Graphics source;source.rect(0,0,20,40);source.fill();mask.setGraphics(&source);cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask consumes Graphics directly without frame texture");
+        if (auto *draw = mask.getRenderEntity()->getRenderDrawInfoAt(0)) {
+            check(draw->getVbCount() == 4 && draw->getIbCount() == 6, "Rectangle stencil submits four vertices and six indices");
+        }
         source.clear();cc::UIRendererManager::getInstance().updateAllDirtyRenderers();check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Mask observes source clear in native");
         source.circle(0,0,10);source.fill();cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask observes new source geometry");

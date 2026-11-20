@@ -84,11 +84,6 @@ export class M4ExtraProbe {
             gGraphics.rect(-20, -20, 40, 40);
             gGraphics.fill();
             setTimeout(() => {
-                const entity = (gMask as any)._native?.getRenderEntity();
-                if (entity) {
-                    const draw = entity.getRenderDrawInfosSize() ? entity.getRenderDrawInfoAt(0) : null;
-                    console.log(`M4_GRAPHICS_GEOMETRY ${JSON.stringify({ vertices: draw?.vbCount ?? 0, indices: draw?.ibCount ?? 0 })}`);
-                }
                 let graphicsRed = 0;
                 try {
                     const data = rt.readPixels();

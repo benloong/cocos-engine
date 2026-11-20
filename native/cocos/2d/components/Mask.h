@@ -4,22 +4,19 @@
 ****************************************************************************/
 #pragma once
 #include "2d/framework/UIComponentType.h"
+#include "2d/framework/UITransform.h"
 #include "2d/components/Graphics.h"
-#include "2d/components/Sprite.h"
 namespace cc {
-class UITransform;
-class SpriteFrame;
+class Sprite;
 
 class Mask final : public UIRenderer {
 public:
     static constexpr uint32_t TYPE_ID = static_cast<uint32_t>(UIComponentTypeId::Mask);
-    Mask();
     ~Mask() override;
     void setNode(Node *node) override;
     uint32_t getTypeId() const override { return TYPE_ID; }
     void onDetach() override;
-    void setType(int32_t type, bool useSpriteComponent = false);
-    void setSpriteFrame(SpriteFrame *frame);
+    void setType(int32_t type);
     void setGraphics(Graphics *graphics);
     void setSegments(uint32_t segments);
     void setRadius(float radius);
@@ -27,7 +24,6 @@ public:
     void setAlphaThreshold(float threshold);
     void setInverted(bool inverted);
     void setEnabled(bool enabled);
-    void setMaterial(Material *material);
     void setPriority(int32_t priority);
     RenderEntity *getRenderEntity() const override;
 
@@ -36,9 +32,8 @@ private:
     void updateRenderer() override;
     void onUITransformChanged() override { markRenderDirty(); }
     void attach();
-    Sprite *getSprite() const;
+    Sprite *getStencilSprite() const;
     void clearSpriteStencil();
-    Sprite _sprite;
     Graphics _graphics;
     UITransform *_transform{nullptr};
     UITransform::LayoutChanged::EventID _layoutChanged;
@@ -49,7 +44,6 @@ private:
     float _alphaThreshold{0.1F};
     float _radius{0.F};
     bool _inverted{false};
-    bool _useSpriteComponent{false};
     bool _shapeDirty{true};
     float _width{0};
     float _height{0};

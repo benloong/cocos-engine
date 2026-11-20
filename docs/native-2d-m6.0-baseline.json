@@ -87,11 +87,11 @@
     },
     {
       "file": "native/cocos/2d/components/Mask.cpp",
-      "sha256": "0e3a21979abe8ab7b8a997688801f743037e1bd983a22cc8921628b7983e9272"
+      "sha256": "d4b1a257ab944a494113e9e7febd62ccce8026557c8d1e36b39f8989096412ff"
     },
     {
       "file": "native/cocos/2d/components/Mask.h",
-      "sha256": "f8129fc5849b763cc90d6b6a9cd1651b56463f318f028c32de76ce5639798c1b"
+      "sha256": "cac1570528a12821b85565d0c8bfbc1803910b2ac6bb824c9798d7d73db3356f"
     },
     {
       "file": "native/cocos/2d/components/RichText.cpp",
@@ -107,7 +107,7 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "8ff2ac284e08cda93015a8ec214e802f889b244f3fb4a5815f5e3874f4ee608f"
+      "sha256": "857d714e38cffe33401f02fe6103f5ed379e662e060418e00ccbe027625b0522"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -375,7 +375,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "eaf852f442cf928942270015419478e74dce94cea427902adb9630d85475dc6a"
+      "sha256": "9babbb9e7b65de167ca41ba38f604ef7bb2048c78818efc975fbeb7059fd0c0b"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -4041,7 +4041,7 @@
             "kind": "PropertyDeclaration",
             "visibility": "private",
             "static": false,
-            "type": "{ setType (type: number, useSpriteComponent: boolean): void } | null",
+            "type": "{ setType (type: number): void } | null",
             "parameters": [],
             "default": "null",
             "decorators": []
@@ -4053,7 +4053,7 @@
             "static": false,
             "type": "void",
             "parameters": [
-              "mask: { setType (type: number, useSpriteComponent: boolean): void } | null"
+              "mask: { setType (type: number): void } | null"
             ],
             "default": null,
             "decorators": []
@@ -15456,8 +15456,8 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "1440e8fde5a3d163cce333ea46a13e13c87aa91e89f001829ca112c78b4b772c",
-      "printedCodeLines": 185,
+      "sha256": "9fb17cfcb6ec33b5d5445e4f629943913734e509ad8fc9f874a3fc433a13f3e8",
+      "printedCodeLines": 181,
       "runtimeImports": [
         "cc.decorator",
         "../assets/sprite-frame",
@@ -15495,60 +15495,52 @@
           "line": 87
         },
         {
-          "expression": "this._native.setSpriteFrame",
+          "expression": "this._native.setPriority",
+          "line": 88
+        },
+        {
+          "expression": "this._native.setEnabled",
           "line": 89
         },
         {
-          "expression": "this._native.setPriority",
-          "line": 91
-        },
-        {
-          "expression": "this._native.setEnabled",
-          "line": 92
+          "expression": "this._native?.setEnabled",
+          "line": 93
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 96
-        },
-        {
-          "expression": "this._native?.setEnabled",
-          "line": 101
+          "line": 98
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 109
+          "line": 106
         },
         {
           "expression": "this._native.setNode",
-          "line": 110
+          "line": 107
         },
         {
           "expression": "this._native?.setType",
-          "line": 127
+          "line": 124
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 144
+          "line": 141
         },
         {
           "expression": "this._native?.setSegments",
-          "line": 153
-        },
-        {
-          "expression": "this._native?.setSpriteFrame",
-          "line": 211
+          "line": 150
         },
         {
           "expression": "this._native?.setRadius",
-          "line": 220
+          "line": 216
         },
         {
           "expression": "this._native?.isHitWorldPointXY",
-          "line": 224
+          "line": 220
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 233
+          "line": 229
         }
       ],
       "allocations": [],
@@ -15735,7 +15727,7 @@
     },
     {
       "file": "cocos/2d/components/sprite.jsb.ts",
-      "sha256": "401b25b705d8bb92b0403e57c036fa43a2e4fc08c512b4f7a5da9090a0be503f",
+      "sha256": "792552b4ff758e15fa54f4fc12b90e7875efea38cba0dcb26ed9687f8d1b3475",
       "printedCodeLines": 259,
       "runtimeImports": [
         "cc.decorator",

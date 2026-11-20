@@ -121,6 +121,7 @@
 %ignore cc::Graphics::getGeometry;
 %ignore cc::Graphics::setGeometrySource;
 %ignore cc::Graphics::setUseGeometrySource;
+%ignore cc::Mask::getRenderEntity;
 
 %ignore cc::UITransform::getBoundingBox;
 %ignore cc::UITransform::getBoundingBoxToWorld;
@@ -132,6 +133,7 @@
 %ignore cc::UITransform::convertToNodeSpaceAR;
 %ignore cc::UITransform::convertToWorldSpaceAR;
 %ignore cc::UITransform::containsWorldPoint;
+%ignore cc::UITransform::hitTestWorldXY;
 
 // ----- Rename Section ------
 // Brief: Classes, methods or attributes needs to be renamed

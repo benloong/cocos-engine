@@ -74,7 +74,7 @@ export class Mask extends Component {
 
     public onLoad (): void {
         this._native = new n2d.Mask();
-        this._native.setType(this._type, this._type === MaskType.SPRITE_STENCIL);
+        this._native.setType(this._type);
         this._native.setNode(this.node);
         this._native.setSegments(this._segments);
         this._native.setRadius(this._radius);
@@ -85,9 +85,6 @@ export class Mask extends Component {
         }
         this._native.setInverted(this._inverted);
         this._native.setAlphaThreshold(this._alphaThreshold);
-        if (this._spriteFrame) {
-            this._native.setSpriteFrame(this._spriteFrame);
-        }
         this._native.setPriority(0);
         this._native.setEnabled(this.enabledInHierarchy);
     }
@@ -124,7 +121,7 @@ export class Mask extends Component {
         if (this._type === value) return;
         const spriteStencil = value === MaskType.SPRITE_STENCIL;
         this._type = value;
-        this._native?.setType(value, spriteStencil);
+        this._native?.setType(value);
         if (spriteStencil) {
             this._getSprite().enabled = this.enabled;
         } else if (this._sprite) {
@@ -208,7 +205,6 @@ export class Mask extends Component {
             return;
         }
         this._spriteFrame = value;
-        this._native?.setSpriteFrame(value);
     }
 
     get radius (): number {

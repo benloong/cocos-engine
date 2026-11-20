@@ -194,13 +194,13 @@ export class Sprite extends UIRenderer {
         this._syncMaterial();
     }
 
-    private _mask: { setType (type: number, useSpriteComponent: boolean): void } | null = null;
+    private _mask: { setType (type: number): void } | null = null;
 
     /** @engineInternal */
-    public _setMask (mask: { setType (type: number, useSpriteComponent: boolean): void } | null): void {
+    public _setMask (mask: { setType (type: number): void } | null): void {
         if (this._mask === mask) return;
         this._mask = mask;
-        if (this._native) this._mask?.setType(3, true);
+        if (this._native) this._mask?.setType(3);
     }
 
     public __preload (): void {
@@ -227,7 +227,7 @@ export class Sprite extends UIRenderer {
         this._native.setPriority(this.priority);
         this._syncFrame();
         this._native.setEnabled(this.enabledInHierarchy);
-        this._mask?.setType(3, true);
+        this._mask?.setType(3);
     }
 
     public onEnable (): void {

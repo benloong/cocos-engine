@@ -3,11 +3,9 @@ import { UITransform } from '../../cocos/2d/framework/ui-transform';
 
 const nativeMask = {
     setNode: jest.fn(),
-    setMaterial: jest.fn(),
     setType: jest.fn(),
     setInverted: jest.fn(),
     setAlphaThreshold: jest.fn(),
-    setSpriteFrame: jest.fn(),
     setPriority: jest.fn(),
     setEnabled: jest.fn(),
     setSegments: jest.fn(), setGraphics: jest.fn(), setRadius: jest.fn(), isHitWorldPointXY: jest.fn(() => true),
@@ -49,23 +47,32 @@ test('Mask binds a disabled Graphics helper when its native backend becomes read
     } finally { graphicsModule.Graphics=originalGraphics; }
 });
 
-test('Mask forwards SpriteFrame directly during load, replacement and clearing', () => {
-    const { Mask } = require('../../cocos/2d/components/mask.jsb');
-    const node = new Node('mask');
-    node.addComponent(UITransform);
-    const mask = node.addComponent(Mask) as any;
-    const frame = { texture: {} };
-    mask.spriteFrame = frame;
+test('Mask stores a pending SpriteFrame and uses its host Sprite for replacement and clearing', () => {
+    const spriteModule = require('../../cocos/2d/components/sprite');
+    const originalSprite = spriteModule.Sprite;
+    spriteModule.Sprite = require('../../cocos/2d/components/sprite.jsb').Sprite;
+    try {
+        const { Mask, MaskType } = require('../../cocos/2d/components/mask.jsb');
+        const node = new Node('mask');
+        node.addComponent(UITransform);
+        const mask = node.addComponent(Mask) as any;
+        const sprite = node.addComponent(spriteModule.Sprite);
+        const frame = { texture: {} };
+        mask.spriteFrame = frame;
+        mask.type = MaskType.SPRITE_STENCIL;
+        mask.onLoad();
 
-    mask.onLoad();
-    expect(nativeMask.setSpriteFrame).toHaveBeenLastCalledWith(frame);
-
-    const replacement = { texture: {} };
-    mask.spriteFrame = replacement;
-    expect(nativeMask.setSpriteFrame).toHaveBeenLastCalledWith(replacement);
-    mask.spriteFrame = null;
-    expect(nativeMask.setSpriteFrame).toHaveBeenLastCalledWith(null);
-    mask.onDestroy();
+        expect(mask.subComp).toBe(sprite);
+        expect(sprite.spriteFrame).toBe(frame);
+        const replacement = { texture: {} };
+        sprite.spriteFrame = replacement;
+        expect(mask.spriteFrame).toBe(replacement);
+        mask.spriteFrame = null;
+        expect(sprite.spriteFrame).toBeNull();
+        mask.onDestroy();
+    } finally {
+        spriteModule.Sprite = originalSprite;
+    }
 });
 
 test('Mask clamps geometric state and forwards world-space hit testing to native', () => {

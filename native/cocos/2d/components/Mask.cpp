@@ -5,7 +5,7 @@
 #include "2d/components/Mask.h"
 #include <algorithm>
 #include <cmath>
-#include "2d/assets/SpriteFrame.h"
+#include "2d/components/Sprite.h"
 #include "2d/framework/UITransform.h"
 #include "core/assets/Material.h"
 #include "core/builtin/BuiltinResMgr.h"
@@ -18,20 +18,18 @@ Material *getStencilMaterial() {
 }
 } // namespace
 
-Mask::Mask() { _sprite.setSizeMode(0); }
 Mask::~Mask() { setUITransform(nullptr); setNode(nullptr); }
-Sprite *Mask::getSprite() const {
-    if (!_useSpriteComponent) return const_cast<Sprite *>(&_sprite);
+Sprite *Mask::getStencilSprite() const {
     return _node ? static_cast<Sprite *>(_node->getUIComponent(Sprite::TYPE_ID)) : nullptr;
 }
 RenderEntity *Mask::getRenderEntity() const {
     if (_type != 3) return _graphics.getRenderEntity();
-    auto *sprite = getSprite();
+    auto *sprite = getStencilSprite();
     return sprite ? sprite->getRenderEntity() : nullptr;
 }
 void Mask::clearSpriteStencil() {
-    if (!_useSpriteComponent) return;
-    if (auto *sprite = getSprite()) {
+    if (_type != 3) return;
+    if (auto *sprite = getStencilSprite()) {
         sprite->getRenderEntity()->setMaskMode(MaskMode::NONE);
         if (auto *stencil = getStencilMaterial(); stencil && sprite->getMaterial() == stencil) {
             sprite->setMaterial(nullptr);
@@ -39,32 +37,25 @@ void Mask::clearSpriteStencil() {
     }
 }
 void Mask::attach() {
-    _sprite.setNode(nullptr);
     _graphics.setNode(nullptr);
+    const auto maskMode = _inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK;
     if (_type == 3) {
-        if (!_useSpriteComponent) {
-            _sprite.setNode(_node);
-        }
-        if (auto *sprite = getSprite(); sprite && (!_useSpriteComponent || _enabled)) {
-            if (_node && !sprite->getMaterial()) {
+        if (auto *sprite = getStencilSprite(); sprite && _enabled) {
+            if (!sprite->getMaterial()) {
                 if (auto *stencil = getStencilMaterial()) sprite->setMaterial(stencil);
             }
             setAlphaThreshold(_alphaThreshold);
-            sprite->getRenderEntity()->setNode(_node);
+            auto *entity = sprite->getRenderEntity();
+            entity->setNode(_node);
+            entity->setMaskMode(maskMode);
         }
-    } else {
-        _graphics.setNode(_node);
+        return;
     }
-    auto *entity = getRenderEntity();
-    if (entity) {
-        if (!_useSpriteComponent || _enabled) {
-            entity->setMaskMode(_inverted ? MaskMode::MASK_INVERTED : MaskMode::MASK);
-        }
-        if (!_useSpriteComponent) {
-            entity->setPriority(_priority);
-            entity->setEnabled(_enabled);
-        }
-    }
+    _graphics.setNode(_node);
+    auto *entity = _graphics.getRenderEntity();
+    entity->setMaskMode(maskMode);
+    entity->setPriority(_priority);
+    entity->setEnabled(_enabled);
 }
 void Mask::setNode(Node *node) {
     if (node != _node) clearSpriteStencil();
@@ -75,7 +66,6 @@ void Mask::setNode(Node *node) {
 }
 void Mask::onDetach() {
     UIRenderer::onDetach();
-    _sprite.setNode(nullptr);
     _graphics.setNode(nullptr);
     setUITransform(nullptr);
     _shapeDirty = true;
@@ -101,24 +91,19 @@ void Mask::setUITransform(UITransform *transform) {
     markRenderDirty();
     if(!transform && _type!=2) _graphics.clear();
 }
-void Mask::setType(int32_t type, bool useSpriteComponent) {
-    useSpriteComponent = type == 3 && useSpriteComponent;
-    if (_type == type && _useSpriteComponent == useSpriteComponent) {
+void Mask::setType(int32_t type) {
+    if (_type == type) {
         // The Sprite shell can finish loading after the Mask shell.
-        if (useSpriteComponent) attach();
+        if (type == 3) attach();
         return;
     }
     clearSpriteStencil();
     _type = type;
-    _useSpriteComponent = useSpriteComponent;
     _shapeDirty = true;
     markRenderDirty();
     _graphics.clear();
     _graphics.setUseGeometrySource(_type == 2);
     attach();
-}
-void Mask::setSpriteFrame(SpriteFrame *frame) {
-    if (auto *sprite = getSprite()) sprite->setFrame(frame);
 }
 void Mask::setGraphics(Graphics *graphics) {
     _graphics.setGeometrySource(graphics);
@@ -167,8 +152,8 @@ bool Mask::isHitWorldPointXY(float x, float y) const {
 }
 void Mask::setAlphaThreshold(float value) {
     _alphaThreshold = value;
-    if (_type == 3 && (!_useSpriteComponent || _enabled)) {
-        if (auto *sprite = getSprite()) {
+    if (_type == 3 && _enabled) {
+        if (auto *sprite = getStencilSprite()) {
             // The shared parent may be used by other masks with different thresholds.
             if (auto *material = sprite->getMaterialInstance()) material->setPropertyFloat32("alphaThreshold", value);
         }
@@ -176,27 +161,18 @@ void Mask::setAlphaThreshold(float value) {
 }
 void Mask::setInverted(bool value) {
     _inverted = value;
-    if (_useSpriteComponent && !_enabled) return;
+    if (_type == 3 && !_enabled) return;
     if (auto *entity = getRenderEntity()) entity->setMaskMode(value ? MaskMode::MASK_INVERTED : MaskMode::MASK);
 }
 void Mask::setEnabled(bool value) {
-    if (_useSpriteComponent && _enabled != value && !value) clearSpriteStencil();
-    const bool enableSpriteStencil = _useSpriteComponent && !_enabled && value;
+    if (_type == 3 && _enabled && !value) clearSpriteStencil();
+    const bool enableSpriteStencil = _type == 3 && !_enabled && value;
     Component::setEnabled(value);
     if (enableSpriteStencil) attach();
-    _sprite.setEnabled(value);
     _graphics.setEnabled(value);
-}
-void Mask::setMaterial(Material *material) {
-    if (auto *sprite = getSprite()) sprite->setMaterial(material);
-    setAlphaThreshold(_alphaThreshold);
 }
 void Mask::setPriority(int32_t value) {
     _priority = value;
-    _sprite.setPriority(value);
-    if (_useSpriteComponent) {
-        if (auto *sprite = getSprite()) sprite->setPriority(value);
-    }
     _graphics.setPriority(value);
 }
 void Mask::updateRenderer() {
@@ -206,10 +182,7 @@ void Mask::updateRenderer() {
     // UITransform is replaced/destroyed or added later.
     auto *transform = _node ? static_cast<UITransform *>(_node->getUIComponent(UITransform::TYPE_ID)) : nullptr;
     if (transform != _transform) setUITransform(transform);
-    if (_type == 3) {
-        if (!_useSpriteComponent) _sprite.updateRenderer();
-        return;
-    }
+    if (_type == 3) return;
     if (_type != 2 && transform) {
         const auto size = transform->getContentSize();
         const auto anchor = transform->getAnchorPoint();
