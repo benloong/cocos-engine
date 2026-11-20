@@ -88,14 +88,17 @@ test('UIOpacity shell attaches and forwards to native', () => {
 
     opacity.onLoad();
     expect((global as any).n2d.UIOpacity).toHaveBeenCalledWith(node);
+    expect(nativeUIOpacity.setActive).toHaveBeenLastCalledWith(false);
+    expect(nativeUIOpacity.setOpacity).not.toHaveBeenCalled();
+
+    opacity.onEnable();
     expect(nativeUIOpacity.setOpacity).toHaveBeenCalledWith(255);
+    expect(nativeUIOpacity.setActive).toHaveBeenLastCalledWith(true);
 
     opacity.opacity = 128;
     expect(nativeUIOpacity.setOpacity).toHaveBeenLastCalledWith(128);
-    opacity.onEnable();
     opacity.onDisable();
-    expect(nativeUIOpacity.setActive).toHaveBeenCalledWith(true);
-    expect(nativeUIOpacity.setActive).toHaveBeenCalledWith(false);
+    expect(nativeUIOpacity.setActive).toHaveBeenLastCalledWith(false);
 
     opacity.onDestroy();
     expect(nativeUIOpacity.detach).toHaveBeenCalled();

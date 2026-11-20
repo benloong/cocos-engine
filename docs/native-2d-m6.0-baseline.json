@@ -16191,8 +16191,8 @@
     },
     {
       "file": "cocos/2d/components/ui-opacity.jsb.ts",
-      "sha256": "a3d6c11fb9bb7dee09fb760b11a3f98c1fa9c924752d76174dbce043b32041d1",
-      "printedCodeLines": 48,
+      "sha256": "6031005bf6c51333a667ed0f100583dcd55c6ad2ebf7ce0c60256746ac97b05d",
+      "printedCodeLines": 49,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16206,20 +16206,24 @@
           "line": 55
         },
         {
-          "expression": "this._native.setOpacity",
+          "expression": "this._native.setActive",
           "line": 71
         },
         {
-          "expression": "this._native?.setActive",
+          "expression": "this._native?.setOpacity",
           "line": 75
         },
         {
           "expression": "this._native?.setActive",
-          "line": 79
+          "line": 76
+        },
+        {
+          "expression": "this._native?.setActive",
+          "line": 80
         },
         {
           "expression": "this._native?.detach",
-          "line": 83
+          "line": 84
         }
       ],
       "allocations": [],

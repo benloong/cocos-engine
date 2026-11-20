@@ -68,10 +68,11 @@ export class UIOpacity extends Component {
 
     public onLoad (): void {
         this._native = new n2d.UIOpacity(this.node);
-        this._native.setOpacity(this._opacity);
+        this._native.setActive(false);
     }
 
     public onEnable (): void {
+        this._native?.setOpacity(this._opacity);
         this._native?.setActive(true);
     }
 
