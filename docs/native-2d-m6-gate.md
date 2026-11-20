@@ -55,5 +55,5 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.2 | RichText 固定回归 | shadow、样式、布局、用户事件和销毁解绑的完整组合 |
 | M6.4 | 平台矩阵 | Windows 两种配置的严格字体检查失败 |
 | M6.5 | CI | [PR 工作流](../.github/workflows/native-ts-build.yml)已配置 Windows Debug/Release 的六组真实 JSB 检查、场景记录和 SIMPLE Sprite 对 Web 的几何对照。两个 Windows 配置均已接入 Chrome 字形对照并归档 108 项结果。正体和斜体在本机通过 72/72，合成粗体通过 0/36。独立的矩形粗体 I 检查已接入同一矩阵，本机两种配置各通过 256/256 个分数起点。工作流还构建 Windows、Web 各九种 Release 功能组合，检查组件导出和已移除的 PoC 入口，并归档导出清单与 bundle 哈希。仍缺远程运行记录、完整应用场景矩阵及其余间接热路径的证据 |
-| M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md) 和 [RichText](./native-2d-m6-richtext-rollback.md) 回退与恢复。其余模块与真实旧项目的场景、资产、材质及性能仍待验证 |
+| M6.5 | 回退 | 已验证 [UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md) 和 [Sprite](./native-2d-m6-sprite-rollback.md) 回退与恢复。Sprite 已在两种 Windows 配置的旧 cocos-m1-test 工程验证。其余模块的旧项目场景、资产、材质及性能仍待验证 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

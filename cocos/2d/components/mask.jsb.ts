@@ -29,6 +29,8 @@ import { Node } from '../../scene-graph/node';
 import { UITransform } from '../framework/ui-transform';
 import { Graphics } from './graphics';
 import { Sprite } from './sprite';
+import { MaskMode } from '../renderer/render-entity';
+import { Stage } from '../renderer/stencil-manager';
 import { CCObject, clamp, isValid, Vec2 } from '../../core';
 
 declare const n2d: any;
@@ -96,12 +98,15 @@ export class Mask extends Component {
 
     public onDisable (): void {
         this._native?.setEnabled(false);
-        if (this._sprite && this.node.activeInHierarchy) this._sprite.enabled = false;
+        if (isValid(this._sprite, true)) {
+            this._setSpriteMask(this._sprite, false);
+            if (this.node.activeInHierarchy) this._sprite.enabled = false;
+        }
     }
 
     public onDestroy (): void {
         this._graphics?._setMask(null);
-        this._sprite?._setMask(null);
+        if (this._sprite) this._setSpriteMask(this._sprite, false);
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
@@ -125,7 +130,7 @@ export class Mask extends Component {
         if (spriteStencil) {
             this._getSprite().enabled = this.enabled;
         } else if (this._sprite) {
-            this._sprite._setMask(null);
+            this._setSpriteMask(this._sprite, false);
             this._sprite._destroyImmediate();
             this._sprite = null;
         }
@@ -139,6 +144,7 @@ export class Mask extends Component {
     set inverted (value: boolean) {
         this._inverted = value;
         this._native?.setInverted(value);
+        if (this._sprite && this.enabledInHierarchy) this._setSpriteMask(this._sprite, true);
     }
 
     get segments (): number {
@@ -174,8 +180,31 @@ export class Mask extends Component {
                 sprite.spriteFrame = frame;
             }
         }
-        sprite._setMask(this._native);
+        this._setSpriteMask(sprite, true);
         return sprite;
+    }
+
+    private _setSpriteMask (sprite: Sprite, attached: boolean): void {
+        if (!isValid(sprite, true)) return;
+        const nativeSprite = sprite as Sprite & { _setMask?: (mask: { setType (type: number): void } | null) => void };
+        if (nativeSprite._setMask) {
+            nativeSprite._setMask(attached ? this._native : null);
+            return;
+        }
+
+        // The rollback Sprite submits its own RenderEntity to the native batcher.
+        const active = attached && this.enabledInHierarchy;
+        const mode = active ? (this._inverted ? MaskMode.MASK_INVERTED : MaskMode.MASK) : MaskMode.NONE;
+        const stage = active ? (this._inverted ? Stage.ENTER_LEVEL_INVERTED : Stage.ENTER_LEVEL) : Stage.DISABLED;
+        sprite.renderEntity.setMaskMode(mode);
+        if (sprite.stencilStage !== stage) {
+            sprite.stencilStage = stage;
+            if (!active) {
+                sprite.setSharedMaterial(sprite.getSharedMaterial(0), 0, true);
+            }
+            sprite.updateMaterial();
+        }
+        if (active) sprite.getMaterialInstance(0)?.setProperty('alphaThreshold', this._alphaThreshold);
     }
 
     private _getGraphics (): Graphics {
@@ -227,6 +256,7 @@ export class Mask extends Component {
     set alphaThreshold (value: number) {
         this._alphaThreshold = value;
         this._native?.setAlphaThreshold(value);
+        if (this._sprite && this.enabledInHierarchy) this._setSpriteMask(this._sprite, true);
     }
 
 

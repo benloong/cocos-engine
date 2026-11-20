@@ -1,4 +1,4 @@
-import { _decorator, BitmapFont, Camera, Canvas, Color, Component, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, BitmapFont, Camera, Canvas, Color, Component, Director, director, Graphics, Label, Mask, native, Node, Rect, RenderRoot2D, RenderTexture, Size, Sprite, SpriteFrame, sys, Texture2D, UIOpacity, UITransform, Vec2, Vec3 } from 'cc';
 import { countTraversedRoots, runSceneMatrix } from './M6SceneMatrix';
 import { EffectAsset, gfx, instantiate, isValid, Material, Prefab, resources, SpriteRenderer } from 'cc';
 import { runRichTextMatrix } from './M6RichTextMatrix';
@@ -8,6 +8,7 @@ const { ccclass } = _decorator;
 const outputRoot = '__M6_GPU_OUTPUT__';
 const snapshot = '__M6_GPU_SNAPSHOT__';
 const probeMode: string = '__M6_GPU_MODE__';
+const spriteImplementation = (globalThis as { __m6SpriteImplementation?: string }).__m6SpriteImplementation ?? (sys.isNative ? 'native' : 'js');
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 @ccclass('M6GraphicsGpuProbe')
@@ -255,7 +256,7 @@ export class M6GraphicsGpuProbe extends Component {
                 sprite.fillStart = 0;
                 sprite.fillRange = .25;
                 sprite.spriteFrame = spriteFrame;
-                if (sys.isNative && !(sprite as any)._native) throw new Error('Native Sprite override not active');
+                if (Boolean((sprite as any)._native) !== (spriteImplementation === 'native')) throw new Error('Unexpected Sprite implementation');
                 return sprite;
             };
             const spriteWithFrame = (root: Node, spriteFrame: SpriteFrame, width: number, height: number, type: Sprite['type']): UITransform => {
@@ -266,7 +267,7 @@ export class M6GraphicsGpuProbe extends Component {
                 sprite.sizeMode = Sprite.SizeMode.CUSTOM;
                 sprite.type = type;
                 sprite.spriteFrame = spriteFrame;
-                if (sys.isNative && !(sprite as any)._native) throw new Error('Native Sprite override not active');
+                if (Boolean((sprite as any)._native) !== (spriteImplementation === 'native')) throw new Error('Unexpected Sprite implementation');
                 return transform;
             };
             const slicedFrame = patternFrame.clone();
@@ -384,6 +385,7 @@ export class M6GraphicsGpuProbe extends Component {
         left.packable = right.packable = false;
         canvas.node.addChild(instance);
         await capture('prefab-atlas-sprite');
+        if (Boolean((legacySprite as any)._native) !== (spriteImplementation === 'native')) throw new Error('Unexpected legacy Sprite implementation');
         legacySprite.sizeMode = Sprite.SizeMode.CUSTOM;
         legacySprite.type = Sprite.Type.FILLED;
         legacySprite.fillType = Sprite.FillType.RADIAL;
@@ -673,6 +675,45 @@ export class M6GraphicsGpuProbe extends Component {
             if (update) { update(); await capture(`${item.name}-updated`); }
             root.destroy(); await wait(40);
         }
+        const benchmarkRoot = node(canvas.node, 'sprite-rollback-workload');
+        const sprites = Array.from({ length: 128 }, (_, i) => {
+            const n = node(benchmarkRoot, 'sprite');
+            n.setPosition((i % 16 - 7.5) * 12, (Math.floor(i / 16) - 3.5) * 12);
+            n.getComponent(UITransform)!.setContentSize(8, 8);
+            const sprite = n.addComponent(Sprite);
+            sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+            sprite.spriteFrame = whiteFrame;
+            return sprite;
+        });
+        const tints = [new Color(64, 128, 255), new Color(255, 64, 128)];
+        const samples: number[] = [];
+        const warmupFrames = 30;
+        await new Promise<void>(resolve => {
+            let frame = 0;
+            let start = 0;
+            const beforeDraw = (): void => {
+                start = performance.now();
+                for (let i = 0; i < sprites.length; ++i) {
+                    const sprite = sprites[i];
+                    sprite.node.setPosition((i % 16 - 7.5) * 12 + (frame & 1), (Math.floor(i / 16) - 3.5) * 12);
+                    sprite.color = tints[frame & 1];
+                }
+            };
+            const afterDraw = (): void => {
+                if (frame++ >= warmupFrames) samples.push(performance.now() - start);
+                if (samples.length === 60) {
+                    director.off(Director.EVENT_BEFORE_DRAW, beforeDraw);
+                    director.off(Director.EVENT_AFTER_DRAW, afterDraw);
+                    resolve();
+                }
+            };
+            director.on(Director.EVENT_BEFORE_DRAW, beforeDraw);
+            director.on(Director.EVENT_AFTER_DRAW, afterDraw);
+        });
+        const spriteBenchmark = { spriteCount: sprites.length, warmupFrames, samples };
+        benchmarkRoot.destroy();
+        await wait(40);
+
         const priorityRoot = node(canvas.node, 'ui-priority');
         const priorityRed = node(priorityRoot, 'red');
         const priorityBlue = node(priorityRoot, 'blue');
@@ -810,7 +851,7 @@ export class M6GraphicsGpuProbe extends Component {
         hitRoot.destroy(); await wait(40);
         const scenes = await runSceneMatrix(rt, capture);
         const device = director.root!.device;
-        const result = { backend: sys.isNative ? 'native' : 'web', snapshot, captures,
+        const result = { backend: sys.isNative ? 'native' : 'web', snapshot, spriteImplementation, spriteBenchmark, captures,
             scenes, roots, hits, batchDrawCalls, labelLayout, shrinkSizes, width: 256, height: 256, environment: { os: sys.os, renderer: device.renderer, vendor: device.vendor } };
         if (sys.isNative) native.fileUtils.writeStringToFile(JSON.stringify(result), `${outputRoot}/manifest.json`);
         else await fetch('/m6-result', { method: 'POST', body: JSON.stringify(result) });

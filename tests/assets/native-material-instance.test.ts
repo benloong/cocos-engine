@@ -8,6 +8,7 @@ class NativeInstance extends NativeMaterial {
     passes = [];
     getPasses () { return this.passes; }
     _registerListeners () { register(this); }
+    _destroy () { this.passes.length = 0; return true; }
 }
 beforeAll(() => {
     (NativeMaterial.prototype as any)._ctor=materialCtor;
@@ -26,6 +27,17 @@ test('native-created MaterialInstance initializes without constructor arguments'
     expect(instance._passes).toBe(instance.passes);
     instance._parent=null;
     expect(instance.parent).toBe(parent);
+});
+
+test('destroying a MaterialInstance delegates to native pass disposal', () => {
+    const instance: any = new NativeInstance(new NativeMaterial());
+    instance._ctor();
+    instance.passes.push({});
+    const dispose = jest.spyOn(instance, '_destroy');
+    expect(instance.destroy()).toBe(true);
+    expect(dispose).toHaveBeenCalledTimes(1);
+    expect(instance.passes).toHaveLength(0);
+    expect(instance._objFlags).toBeUndefined();
 });
 
 test('JS-created MaterialInstance retains owner and PSO notifications',()=>{

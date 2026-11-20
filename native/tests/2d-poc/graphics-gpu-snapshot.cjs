@@ -13,7 +13,13 @@ module.exports=function graphicsGpuSnapshot(mode='graphics') {
         }
     }
     walk(fixture);
+    for (const file of ['cc.config.json', 'cocos/render-scene/core/material-instance.jsb.ts']) {
+        fixtureHashes.push([file, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex')]);
+    }
     if (mode === 'graphics') {
+        walk(path.join(root, 'cocos/2d/assembler/sprite'));
+        const spriteRollbackEntry = 'cocos/2d/assembler/index.js-sprite.ts';
+        fixtureHashes.push([spriteRollbackEntry, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, spriteRollbackEntry))).digest('hex')]);
         const atlas = path.join(__dirname,'fixtures/acceptance/resources/M6StaticAtlas');
         walk(atlas);
         for (const file of [atlas+'.meta',path.join(root,'editor/assets/effects/for2d/builtin-sprite-renderer.effect'),

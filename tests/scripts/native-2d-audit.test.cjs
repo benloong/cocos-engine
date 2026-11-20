@@ -14,7 +14,7 @@ test('component rollback removes only the selected Windows overrides and preserv
         const buildTimeConstants = query.constantManager.genBuildTimeConstants({ mode, platform, flags });
         return query.evaluateModuleOverrides({ platform, mode, buildTimeConstants });
     }
-    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d', USE_JS_RICH_TEXT: 'components/rich-text' };
+    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d', USE_JS_RICH_TEXT: 'components/rich-text', USE_JS_SPRITE: 'components/sprite' };
     for (const selected of [...Object.keys(components).map(flag => [flag]), Object.keys(components)]) {
         const windows = overrides('WINDOWS', {});
         const flags = {};
@@ -23,6 +23,11 @@ test('component rollback removes only the selected Windows overrides and preserv
             const base = path.join(root, 'cocos/2d', components[flag]);
             assert.equal(windows[base + '.ts'], base + '.jsb.ts');
             delete windows[base + '.ts'];
+            if (flag === 'USE_JS_SPRITE') {
+                const assembler = path.join(root, 'cocos/2d/assembler/index');
+                assert.equal(windows[assembler + '.ts'], assembler + '.jsb.ts');
+                windows[assembler + '.ts'] = assembler + '.js-sprite.ts';
+            }
         }
         assert.deepEqual(overrides('WINDOWS', flags), windows);
         assert.deepEqual(overrides('HTML5', flags), overrides('HTML5', {}));

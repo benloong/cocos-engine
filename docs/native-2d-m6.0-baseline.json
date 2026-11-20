@@ -3,7 +3,7 @@
   "nativeSourceHashes": [
     {
       "file": "cc.config.json",
-      "sha256": "2597e20feccb57035eaab2df8d98606e742fd5ee8ffdaf7e06d969224c9f3828"
+      "sha256": "a7ce7b13be3794069f92834faee99a4753fd14144a06ec68f4781cbe725c6a14"
     },
     {
       "file": "cocos/2d/utils/font-loader.ts",
@@ -19,7 +19,7 @@
     },
     {
       "file": "cocos/render-scene/core/material-instance.jsb.ts",
-      "sha256": "2f250424236c8805080a7a167ba0d739fc09eda49a5f07dc3bfc2d7b5998ba8a"
+      "sha256": "433e7ab3f5a582049d5b3748975a0dd1cf0912c3383683588191ea91468c2539"
     },
     {
       "file": "cocos/scene-graph/node.jsb.ts",
@@ -8605,6 +8605,19 @@
             "decorators": []
           },
           {
+            "name": "_setSpriteMask",
+            "kind": "MethodDeclaration",
+            "visibility": "private",
+            "static": false,
+            "type": "void",
+            "parameters": [
+              "sprite: Sprite",
+              "attached: boolean"
+            ],
+            "default": null,
+            "decorators": []
+          },
+          {
             "name": "_getGraphics",
             "kind": "MethodDeclaration",
             "visibility": "private",
@@ -15513,8 +15526,8 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "9fb17cfcb6ec33b5d5445e4f629943913734e509ad8fc9f874a3fc433a13f3e8",
-      "printedCodeLines": 181,
+      "sha256": "236e9025707597f5bca65d1cba5b68675f54d893eecf93497172a045f0ed1fd2",
+      "printedCodeLines": 217,
       "runtimeImports": [
         "cc.decorator",
         "../assets/sprite-frame",
@@ -15523,81 +15536,83 @@
         "../framework/ui-transform",
         "./graphics",
         "./sprite",
+        "../renderer/render-entity",
+        "../renderer/stencil-manager",
         "../../core"
       ],
       "frameMethods": [],
       "nativeCalls": [
         {
           "expression": "this._native.setType",
-          "line": 77
-        },
-        {
-          "expression": "this._native.setNode",
-          "line": 78
-        },
-        {
-          "expression": "this._native.setSegments",
           "line": 79
         },
         {
-          "expression": "this._native.setRadius",
+          "expression": "this._native.setNode",
           "line": 80
         },
         {
+          "expression": "this._native.setSegments",
+          "line": 81
+        },
+        {
+          "expression": "this._native.setRadius",
+          "line": 82
+        },
+        {
           "expression": "this._native.setInverted",
-          "line": 86
-        },
-        {
-          "expression": "this._native.setAlphaThreshold",
-          "line": 87
-        },
-        {
-          "expression": "this._native.setPriority",
           "line": 88
         },
         {
-          "expression": "this._native.setEnabled",
+          "expression": "this._native.setAlphaThreshold",
           "line": 89
         },
         {
-          "expression": "this._native?.setEnabled",
-          "line": 93
-        },
-        {
-          "expression": "this._native?.setEnabled",
-          "line": 98
+          "expression": "this._native.setPriority",
+          "line": 90
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 106
+          "line": 91
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 95
+        },
+        {
+          "expression": "this._native?.setEnabled",
+          "line": 100
+        },
+        {
+          "expression": "this._native.setEnabled",
+          "line": 111
         },
         {
           "expression": "this._native.setNode",
-          "line": 107
+          "line": 112
         },
         {
           "expression": "this._native?.setType",
-          "line": 124
+          "line": 129
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 141
+          "line": 146
         },
         {
           "expression": "this._native?.setSegments",
-          "line": 150
+          "line": 156
         },
         {
           "expression": "this._native?.setRadius",
-          "line": 216
+          "line": 245
         },
         {
           "expression": "this._native?.isHitWorldPointXY",
-          "line": 220
+          "line": 249
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 229
+          "line": 258
         }
       ],
       "allocations": [],

@@ -67,6 +67,11 @@ materialInstanceProto._ctor = function (info?: IMaterialInstanceInfo) {
     this._passes = this.getPasses();
 };
 
+// Match MaterialInstance::destroy: discard its passes without scheduling Asset destruction.
+materialInstanceProto.destroy = function (): boolean {
+    return this._destroy();
+};
+
 materialInstanceProto._onRebuildPSO = function () {
     if (this._owner) {
         this._owner._onRebuildPSO(this._subModelIdx, this);
