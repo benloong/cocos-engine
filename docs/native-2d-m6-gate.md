@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**NO-GO。** Windows Release 候选 `3b6a4f3c9b` 的固定混合变更帧四项性能指标已达标。组件兼容、完整应用场景矩阵和旧项目回退等节点仍待签收。最终签收须在同一候选重跑必需配置和场景。
+**NO-GO。** Windows Release 候选 `3b6a4f3c9b` 的固定混合变更帧四项性能指标已达标。组件兼容与完整应用场景矩阵仍待签收。最终签收须在同一候选重跑必需配置、场景和回退矩阵。
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
 
@@ -56,6 +56,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | 调度与裁剪 | Windows Debug/Release 交替启动 20 次通过；Windows 与 Web 的 18 个独立 Release bundle 导出通过 | [启动记录](./native-2d-m6-scheduling-results.json)、[构建矩阵](./native-2d-m6-feature-matrix.json) |
 | Graphics／Mask 回退 | Windows Debug 和 Release 各运行默认、TS 回退、恢复三阶段。每次 138 张图均与 Web 逐字节一致，22 项命中和 1000 轮场景切换通过。回退同时切换宿主 Sprite 的模板提交路径 | [三阶段构建哈希与耗时](./native-2d-m6-graphics-mask-rollback.json) |
 | 旧工程 UIOpacity 回退 | 原始 `m1-test.scene` 和 `M1Prefab` 在 Windows Debug、Release 各完成原生、TS 回退及恢复，每次 18 块 GPU 回读与 Web 逐字节一致。修复了禁用组件挂接时提前应用透明度。 | [旧工程复验](./native-2d-m6-ui-opacity-rollback.md#旧工程复验) |
+| 旧工程 RenderRoot2D 回退 | 原始 Canvas 和独立 Prefab 根在 Windows 双配置各完成原生、TS 回退和恢复。每次的 10 个遍历检查点和 20 块 RGBA 与 Web 一致。 | [旧工程复验](./native-2d-m6-render-root-rollback.md#旧工程复验) |
 
 ## 字体像素诊断
 
@@ -80,5 +81,5 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.2 | RichText 终态 | 完整 Node wrapper、极限对象生命周期以及验收范围内的布局、场景、视觉与事件回归 |
 | M6.4 | 平台矩阵 | 三端 RichText 字体应用矩阵与小数字号回归已通过当前范围。本轮最终候选仍须汇总关键渲染、字体与事件场景记录 |
 | M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据 |
-| M6.5 | 回退 | 两种 Windows 配置已在旧项目中验证 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 的回退与恢复。[RenderRoot2D](./native-2d-m6-render-root-rollback.md) 已通过应用夹具，旧项目的场景、资产和材质联动仍待验收。最终候选须重跑回退矩阵。 |
+| M6.5 | 最终候选回退复测 | 两种 Windows 配置已分别完成旧项目中的 [Graphics／Mask](./native-2d-m6.3-graphics-gpu.md)、[UIOpacity](./native-2d-m6-ui-opacity-rollback.md)、[RenderRoot2D](./native-2d-m6-render-root-rollback.md)、[RichText](./native-2d-m6-richtext-rollback.md)、[Sprite](./native-2d-m6-sprite-rollback.md) 和 [Label](./native-2d-m6-label-rollback.md) 回退与恢复。最终候选须重跑整组回退矩阵。 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

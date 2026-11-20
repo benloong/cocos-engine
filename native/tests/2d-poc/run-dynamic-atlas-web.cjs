@@ -6,9 +6,12 @@ const { spawn } = require('child_process');
 const bitmap = process.argv.includes('--bitmap');
 const stress = process.argv.includes('--static-atlas-stress');
 const oldOpacity = process.argv.includes('--old-ui-opacity');
+const oldRoot = process.argv.includes('--old-render-root');
+const oldProbe = oldRoot ? { name: 'old-render-root', marker: 'M6_OLD_ROOT' }
+    : oldOpacity ? { name: 'old-ui-opacity', marker: 'M6_OLD_OPACITY' } : null;
 const heapSnapshots = process.argv.includes('--heap-snapshots');
 const noOptimizingJit = process.argv.includes('--no-optimizing-jit');
-if ([bitmap, stress, oldOpacity].filter(Boolean).length > 1) throw new Error('Select one Web probe mode');
+if ([bitmap, stress, oldOpacity, oldRoot].filter(Boolean).length > 1) throw new Error('Select one Web probe mode');
 if ((heapSnapshots && !stress) || (noOptimizingJit && !heapSnapshots)) {
     throw new Error('Heap snapshots require Web static atlas stress, and disabling optimizing JIT requires heap snapshots');
 }
@@ -17,7 +20,7 @@ const root = path.resolve(projectArg || path.join(__dirname, '../../../../cocos-
 const stressOutput = heapSnapshots
     ? (noOptimizingJit ? 'static-atlas-heap-no-opt' : 'static-atlas-heap')
     : 'static-atlas-stress-web';
-const output = path.join(__dirname, 'build', oldOpacity ? 'old-ui-opacity-web' : stress ? stressOutput : bitmap ? 'bitmap-web-captures' : 'atlas-web-captures');
+const output = path.join(__dirname, 'build', oldProbe ? `${oldProbe.name}-web` : stress ? stressOutput : bitmap ? 'bitmap-web-captures' : 'atlas-web-captures');
 if (!fs.existsSync(path.join(root, 'index.html'))) throw new Error('Build the acceptance Web project first');
 fs.mkdirSync(output, { recursive: true });
 const manifestPath = path.join(output, 'manifest.json');
@@ -110,10 +113,11 @@ const server = http.createServer(async (req, res) => {
                 if (message.method !== 'Runtime.consoleAPICalled') return;
                 const text = message.params.args.map(arg => arg.value ?? arg.description ?? '').join(' ');
                 logs.push(text);
-                if (oldOpacity) {
-                    if (text.startsWith('M6_OLD_OPACITY_FAIL ')) rejectDone(new Error(text));
-                    if (text.startsWith('M6_OLD_OPACITY_DONE ')) {
-                        results.push(JSON.parse(text.slice('M6_OLD_OPACITY_DONE '.length)));
+                if (oldProbe) {
+                    const endMarker = `${oldProbe.marker}_DONE `;
+                    if (text.startsWith(`${oldProbe.marker}_FAIL `)) rejectDone(new Error(text));
+                    if (text.startsWith(endMarker)) {
+                        results.push(JSON.parse(text.slice(endMarker.length)));
                         resolveDone();
                     }
                     return;
@@ -207,13 +211,13 @@ const server = http.createServer(async (req, res) => {
             };
         } catch (error) { rejectDone(error); }
     });
-    const timeout = setTimeout(() => rejectDone(new Error(oldOpacity ? 'Web old UIOpacity capture timeout' : 'Web atlas capture timeout')), stress ? 600000 : 90000);
+    const timeout = setTimeout(() => rejectDone(new Error(`Web ${oldProbe?.name ?? 'atlas'} capture timeout`)), stress ? 600000 : 90000);
     try {
         await done;
         const manifest = stress ? { result: results[0], samples, ...(heapSnapshots && { snapshots, noOptimizingJit }) }
             : { captures: [...captures].sort(), results, layoutMetrics };
         fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
-        console.log(oldOpacity ? 'Web old UIOpacity capture complete' : stress ? 'Web static atlas: PASS (1000 cycles)'
+        console.log(oldProbe ? `Web ${oldProbe.name} capture complete` : stress ? 'Web static atlas: PASS (1000 cycles)'
             : 'Web ' + (bitmap ? 'bitmap' : 'dynamic atlas') + ' captures: PASS (' + captures.size + ')');
     } finally {
         clearTimeout(timeout);

@@ -43,3 +43,31 @@ foreach ($config in 'gpu-win', 'gpu-win-release-m6-mask-fresh') {
 Windows 发布绑定已移除 `Batcher2d.getRootNodeCount()`。图形夹具的全部渲染根都是场景的直接子节点。Windows 和 Web 均在绘制前标记这些节点，绘制后读取遍历写回的透明度，从而检查启停、销毁以及场景切换时实际参与遍历的根。重叠半透明图形的最终颜色用于验证绘制顺序。C++ 单元测试独立检查重复注册、注销和连续 1000 次节点销毁后的容器大小。
 
 清理后的场景快照为 `8712eb4cb80fc6a05423272fc832ba94faaeb81a665889d7d02c4471c2e4f2e7`。Debug、Release 的原生与 TS 回退四组均通过 11 个根遍历检查点和 4998 项场景断言，每组 88 张图像均与 Web 逐字节一致。
+
+## 旧工程复验
+
+在 `cocos-m1-test` 的隔离副本中启动原始 `m1-test.scene`，保留序列化的 Canvas、Camera、SpriteFrame 和 `M1Prefab`。运行时给独立 Prefab 实例挂接 `RenderRoot2D`，子 Sprite 复用原帧和 Sprite 材质。原 Canvas 管理红色 Sprite，Prefab 的根管理绿色 Sprite。
+
+测试同时检查两组后代是否参与遍历，以及各自 8×8 区域的实际 RGBA。覆盖挂接时禁用、两个根同时启用、各自启停、Prefab 节点停用再激活、移除组件、缓存释放和冷重载。两个根启用时红、绿通道各为 121。禁用一个根后，对应区域为不透明黑色。Windows Debug 和 Release 各用同一可执行文件完成原生、TS 回退与恢复，六次运行各有 20 块 GPU 回读与 Web 逐字节一致。恢复后的引擎包哈希与初始原生相同。[逐阶段像素与构建哈希](./native-2d-m6-old-render-root.json)
+
+运行 `prepare-old-ui-rollback-project.cjs --render-root [旧项目路径]`。按[本机构建流程](./native-2d-build-and-acceptance.zh-CN.md)用副本内的 `build-windows.json` 和 `build-web-mobile.json` 构建原场景。在同一候选编译 Windows 旧项目的 Debug 与 Release，`$oldNativeBuild` 指向包含两种配置目录的 Windows 构建目录。
+
+```powershell
+$harness = 'native/tests/2d-poc'
+foreach ($mode in 'default', 'fallback', 'web') {
+    node "$harness/prepare-old-ui-rollback-project.cjs" --render-root "--build-$mode"
+    if ($LASTEXITCODE) { throw "Engine build failed for $mode" }
+}
+node "$harness/run-dynamic-atlas-web.cjs" "$harness/build/old-render-root-project/build/web-mobile" --old-render-root
+foreach ($config in 'Debug', 'Release') {
+    $exe = Join-Path $oldNativeBuild "$config/cocos-m1-test.exe"
+    foreach ($phase in 'native-before', 'js', 'native-restored') {
+        & "$harness/run-old-ui-rollback-native.ps1" -Executable $exe -Configuration $config -Phase $phase -Probe render-root
+    }
+}
+node "$harness/compare-old-ui-rollback.cjs" --render-root
+```
+
+计时使用冷重载的同一 Prefab，每批记录 256 对禁用和启用。预热 10 批后记录 31 批。Windows Release 原生、TS 回退和恢复后的中位数分别为 0.116、0.322 和 0.119 ms。[逐批计时](./native-2d-m6-old-render-root.json)
+
+同一候选的综合场景在两个 Windows 配置分别完成三阶段回退。每阶段 155 张图与 Web 逐字节一致，另通过 11 个渲染根检查点、22 项命中和 1000 轮场景切换。[综合矩阵和日志哈希](./native-2d-m6-old-render-root.json)

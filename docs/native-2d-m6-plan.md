@@ -276,7 +276,7 @@
   - [x] SIMPLE Sprite 的[四边形对照](../native/tests/2d-poc/run-sprite-quad-parity.ps1)读取 Web assembler 实际写入的 UV 和索引区间，并按各端提交的索引栅格化。Windows Debug/Release 对 Web 各 13 项通过，100×100 图像逐像素一致。将 Web 索引全部置零会产生 10000 个差异像素；单独颠倒绕序或改变 UV，即使纯色图像相同也会判为失败。
   - native-ts-build 的 PR 检查已接入位图字体布局和径向 Sprite 的 C++/Web assembler 对照。本机运行同一对入口，2327 个布局和 3024 个几何用例通过；Windows 完整应用矩阵另行验收。
   - [x] [Windows PR 矩阵](../.github/workflows/native-ts-build.yml)分别构建 Debug/Release 引擎、生成 SWIG 绑定并运行[六组 JSB 用例](../native/tests/2d-poc/run-windows-jsb-probes.ps1)，覆盖 renderer manager、Sprite API、SpriteAtlas、字体资产、布局和 RichText。每次运行同时检查场景记录的节点挂接。两种配置均在本机从空目录编译通过，六组用例与 SIMPLE Sprite 对 Web 的 13 项检查全部通过。Web 全量检查通过 TypeScript 编译和 197 组 Jest（1467 项通过、8 项跳过、16 项待实现），native TS 编译通过。完整应用场景仍待签收。
-- [ ] 按组件/模块演练回退，验证 override、依赖资产、材质与旧场景可用；回退后记录行为与性能。
+- [x] 按组件/模块完成独立回退演练，验证 override、依赖资产、材质与旧场景并记录行为和耗时。最终候选复测归入最终签收。
   - [x] Graphics／Mask 与其 Sprite 模板依赖使用同一个回退标志。Windows 双配置各通过默认、TS 回退和恢复的 138 张严格像素对照、22 项命中及 1000 轮场景切换。TS Mask 的圆角命中走实时祖先查询，JSB UITransform 发出锚点变更事件后，回退包与 Web 的动态模板形状一致。[步骤与采样](./native-2d-m6.3-graphics-gpu.md)、[逐配置数据](./native-2d-m6-graphics-mask-rollback.json)
   - [x] RichText 42 项应用矩阵在 Windows 双配置分别完成原生、TS 回退、恢复原生三次启动。各次通过实现类型、Prefab、字体生命周期和布局检查，各配置切换前后的 RGBA 一致。对 Web 严格像素 39/42。[完整回退实测](./native-2d-m6-richtext-rollback.md#42-项应用矩阵回退与恢复)
   - [x] Sprite 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。各 Windows 配置在同一二进制上执行原生、TS 回退、恢复原生，三次各 116 张图与 Web 和上一候选逐字节一致。旧 cocos-m1-test 两种配置回退后通过 Sprite、Mask、RichText，恢复后重新通过 Sprite 五种模式。128 个 Sprite 改色和位移的帧样本另行记录。[回退流程及数据](./native-2d-m6-sprite-rollback.md)
@@ -284,6 +284,7 @@
   - [x] UIOpacity 支持独立切回 JS 并恢复原生实现。Windows Debug/Release 各验证两种实现、Prefab 字段、组件生命周期、85 张 Web 对照图与 setter 耗时。[复现和采样](./native-2d-m6-ui-opacity-rollback.md)
   - [x] 旧 cocos-m1-test 的 UIOpacity 回退。修复挂接前禁用的组件在原生首帧提前应用透明度。原始场景、Prefab、SpriteFrame 和材质在 Windows Debug、Release 各完成原生、TS 回退及恢复，每次 18 块 GPU 回读均与 Web 逐字节一致。[像素与恢复证据](./native-2d-m6-ui-opacity-rollback.md#旧工程复验)
   - [x] RenderRoot2D 支持独立切回 JS 并恢复原生注册。Windows Debug/Release 各验证两种实现、Prefab 实例化、11 个根注册检查点、85 张 Web 对照图与组件启停耗时。[复现和采样](./native-2d-m6-render-root-rollback.md)
+  - [x] 旧 cocos-m1-test 的 RenderRoot2D 回退。原始 Canvas、Camera 和 SpriteFrame 与独立 Prefab 根在 Windows Debug、Release 各完成原生、TS 回退和恢复。六次运行的 10 个遍历检查点和 20 块 RGBA 均与 Web 一致，覆盖两个根独立启停、组件移除及 Prefab 释放和冷重载。[旧工程复验](./native-2d-m6-render-root-rollback.md#旧工程复验)
   - [x] RichText 支持独立切回 TS 并恢复原生实现。Windows 双配置覆盖序列化 Prefab、字体与图集、旧混合场景换行和点击、段查询与样式更新计时。12 个场景比较切换前后的布局和图像，跨端字形差异单列。[复现和数据](./native-2d-m6-richtext-rollback.md)
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
 

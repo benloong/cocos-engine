@@ -46,22 +46,22 @@ foreach ($config in 'gpu-win', 'gpu-win-release-m6-mask-fresh') {
 
 修复前 Windows Debug 挂接已禁用的 `UIOpacity` 时，Prefab 子 Sprite 的绿色通道为 121，Web 为 242。JSB 现在在 `onEnable` 应用序列化透明度。修复后禁用挂接为 242，启用后为 121。Windows Debug 和 Release 各使用同一可执行文件完成原生、TS 回退、恢复原生三次运行。六次运行每次的 18 块 RGBA 与 Web 逐字节一致，恢复后引擎包哈希与初始原生相同。三端另外通过 155 张综合场景图像对照，逐图哈希与上一候选相同。[逐阶段像素、综合对照及 setter 样本](./native-2d-m6-old-ui-opacity.json)
 
-运行 `prepare-old-ui-opacity-project.cjs [旧项目路径]` 生成测试副本。按[本机构建流程](./native-2d-build-and-acceptance.zh-CN.md)用副本内的 `build-windows.json` 和 `build-web-mobile.json` 构建旧场景资产，并用当前引擎编译 Windows 旧工程应用的 Debug 和 Release。随后从引擎根目录运行以下命令。
+运行 `prepare-old-ui-rollback-project.cjs [旧项目路径]` 生成测试副本。按[本机构建流程](./native-2d-build-and-acceptance.zh-CN.md)用副本内的 `build-windows.json` 和 `build-web-mobile.json` 构建旧场景资产，并用当前引擎编译 Windows 旧工程应用的 Debug 和 Release。随后从引擎根目录运行以下命令。
 
 ```powershell
 $harness = 'native/tests/2d-poc'
 foreach ($mode in 'default', 'fallback', 'web') {
-    node "$harness/prepare-old-ui-opacity-project.cjs" "--build-$mode"
+    node "$harness/prepare-old-ui-rollback-project.cjs" "--build-$mode"
     if ($LASTEXITCODE) { throw "Engine build failed for $mode" }
 }
 node "$harness/run-dynamic-atlas-web.cjs" "$harness/build/old-ui-opacity-project/build/web-mobile" --old-ui-opacity
 foreach ($config in 'Debug', 'Release') {
     $exe = Join-Path $oldNativeBuild "$config/cocos-m1-test.exe"
     foreach ($phase in 'native-before', 'js', 'native-restored') {
-        & "$harness/run-old-ui-opacity-native.ps1" -Executable $exe -Configuration $config -Phase $phase
+        & "$harness/run-old-ui-rollback-native.ps1" -Executable $exe -Configuration $config -Phase $phase
     }
 }
-node "$harness/compare-old-ui-opacity.cjs"
+node "$harness/compare-old-ui-rollback.cjs"
 ```
 
 `$oldNativeBuild` 指向旧工程的 Windows 构建目录。setter 样本按每批 8192 次计时，在同一个 Prefab 实例上交替写入 127 和 128。Windows Release 的三阶段中位数为 0.411、0.095 和 0.424 ms。

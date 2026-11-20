@@ -1,14 +1,16 @@
 param(
     [Parameter(Mandatory)][string]$Executable,
     [Parameter(Mandatory)][ValidateSet('Debug', 'Release')][string]$Configuration,
-    [Parameter(Mandatory)][ValidateSet('native-before', 'js', 'native-restored')][string]$Phase
+    [Parameter(Mandatory)][ValidateSet('native-before', 'js', 'native-restored')][string]$Phase,
+    [ValidateSet('ui-opacity', 'render-root')][string]$Probe = 'ui-opacity'
 )
 
 $ErrorActionPreference = 'Stop'
 $build = Join-Path $PSScriptRoot 'build'
-$projectData = Join-Path $build 'old-ui-opacity-project/build/windows/data'
-$fallback = Join-Path $build 'old-ui-opacity-fallback'
-$application = Join-Path $build "old-ui-opacity-$Configuration-$Phase"
+$projectData = Join-Path $build "old-$Probe-project/build/windows/data"
+$fallback = Join-Path $build "old-$Probe-fallback"
+$application = Join-Path $build "old-$Probe-$Configuration-$Phase"
+$marker = if ($Probe -eq 'render-root') { 'M6_OLD_ROOT' } else { 'M6_OLD_OPACITY' }
 $resources = Join-Path $application 'Resources'
 if (!(Test-Path -LiteralPath "$projectData/src/cocos-js/cc.js")) { throw 'Build the old Windows project first' }
 if ($Phase -eq 'js' -and !(Test-Path -LiteralPath "$fallback/cc.js")) { throw 'Build the old project fallback engine first' }
@@ -29,11 +31,11 @@ try {
     $deadline = [DateTime]::UtcNow.AddSeconds(60)
     do {
         Start-Sleep -Milliseconds 250
-        $complete = Select-String -LiteralPath $log -Pattern 'M6_OLD_OPACITY_(DONE|FAIL) ' | Select-Object -Last 1
+        $complete = Select-String -LiteralPath $log -Pattern "${marker}_(DONE|FAIL) " | Select-Object -Last 1
     } until ($complete -or $process.HasExited -or [DateTime]::UtcNow -ge $deadline)
-    if (!$complete -or $complete.Line -match 'M6_OLD_OPACITY_FAIL ') {
+    if (!$complete -or $complete.Line -match "${marker}_FAIL ") {
         Get-Content -LiteralPath $log -Tail 12
-        throw "Old UIOpacity probe failed for $Configuration/$Phase"
+        throw "Old $Probe failed for $Configuration/$Phase"
     }
     $identity = [ordered]@{
         executableSha256 = (Get-FileHash -LiteralPath $app).Hash.ToLowerInvariant()
