@@ -1,3 +1,6 @@
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+import ts from 'typescript';
 import { Node } from '../../cocos/scene-graph/node';
 import { Batcher2D } from '../../cocos/2d/renderer/batcher-2d';
 import * as constants from 'internal:constants';
@@ -24,11 +27,11 @@ test('native RenderRoot2D creates one backend and detaches it through disable/de
     node._destroyImmediate();
 });
 
-test('Web batcher deduplicates root registration and sorts by sibling index', () => {
+test('Web batcher sorts roots by sibling index', () => {
     const batcher: any = Object.create(Batcher2D.prototype);
     batcher._screens = [];
     const first = { node: { siblingIndex: 2 } }, second = { node: { siblingIndex: 1 } };
-    batcher.addScreen(first); batcher.addScreen(second); batcher.addScreen(first);
+    batcher.addScreen(first); batcher.addScreen(second);
     expect(batcher._screens).toEqual([second, first]);
     first.node.siblingIndex = 0;
     batcher.sortScreens();
@@ -38,15 +41,39 @@ test('Web batcher deduplicates root registration and sorts by sibling index', ()
 });
 
 test('native sortScreens sorts the live registry without replacing it from the empty JS screen list', () => {
+    const filename = resolve(__dirname, '../../cocos/root.jsb.ts');
+    const source = ts.createSourceFile(filename, readFileSync(filename, 'utf8'), ts.ScriptTarget.Latest, true);
+    let createBatcher: ts.FunctionExpression | undefined;
+    source.forEachChild((statement) => {
+        if (ts.isExpressionStatement(statement) && ts.isBinaryExpression(statement.expression)
+            && statement.expression.left.getText(source) === 'rootProto._createBatcher2D'
+            && ts.isFunctionExpression(statement.expression.right)) {
+            createBatcher = statement.expression.right;
+        }
+    });
+    expect(createBatcher).toBeDefined();
+    const javascript = ts.transpileModule(`exports.create = ${createBatcher!.getText(source)};`, {
+        compilerOptions: { target: ts.ScriptTarget.ES2019, module: ts.ModuleKind.CommonJS },
+    }).outputText;
+    const exported: any = {};
     const original = constants.JSB;
     (constants as any).JSB = true;
     const batcher: any = Object.create(Batcher2D.prototype);
     batcher._screens = [];
-    batcher._nativeObj = { sortRootNodes: jest.fn(), syncRootNodesToNative: jest.fn() };
+    const nativeBatcher = { sortRootNodes: jest.fn(), syncRootNodesToNative: jest.fn() };
+    const root = { _batcher: null, getBatcher2D: () => nativeBatcher };
     try {
+        new Function('exports', 'cclegacy', javascript)(exported, { internal: { Batcher2D: jest.fn(() => batcher) } });
+        exported.create.call(root);
+        expect(root._batcher).toBe(batcher);
         batcher.sortScreens();
-        expect(batcher._nativeObj.sortRootNodes).toHaveBeenCalledTimes(1);
-        expect(batcher._nativeObj.syncRootNodesToNative).not.toHaveBeenCalled();
+        expect(nativeBatcher.sortRootNodes).toHaveBeenCalledTimes(1);
+        expect(nativeBatcher.syncRootNodesToNative).not.toHaveBeenCalled();
+        const screen = { node: { siblingIndex: 0 } };
+        batcher.addScreen(screen);
+        batcher.addScreen(screen);
+        expect(batcher._screens).toEqual([screen]);
+        expect(nativeBatcher.syncRootNodesToNative).toHaveBeenCalledTimes(1);
     } finally {
         (constants as any).JSB = original;
     }
