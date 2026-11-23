@@ -1,0 +1,102 @@
+{
+  "snapshot": "089b4b28213854f464500e63eaac53692c3d0cc0b8f20f3c5f9b4fc8bcd3d33f",
+  "regressionBeforeFix": {
+    "actualX": 0,
+    "expectedX": -22.226563,
+    "logSha256": "673151b21842b35352234fb72a9f46bfe368d0779911c12a15604b4f39e04fa3"
+  },
+  "web": {
+    "manifestSha256": "56c6538891b12abafa8a2f34ad3223115dee42d24d6f22e35db92268f6cb0255",
+    "anchorDuringAttach": {
+      "segments": 2,
+      "childIdentity": true,
+      "anchorDuringAttach": true,
+      "laterAnchor": true
+    }
+  },
+  "runs": {
+    "Debug": {
+      "executableSha256": "1b0548377485f07318595f4aea1f8ef9f65875a011448ecd698dc292d55c73ad",
+      "manifestSha256": "9df249453919cbb9e20603d79ab434f202390488bba5dac9bcd84b5aa239805c",
+      "comparisonSha256": "c01ab95a57f94a1e9a48633ca8df8b96d8fc959887c32d9a804dbf97afb21a5a",
+      "anchorDuringAttach": {
+        "segments": 2,
+        "childIdentity": true,
+        "anchorDuringAttach": true,
+        "laterAnchor": true
+      },
+      "layoutPassed": 62,
+      "pixelPassed": 59,
+      "captureCount": 62,
+      "fontCycles": 1000,
+      "deferredPixels": [
+        {
+          "name": "text-bold",
+          "max": 20,
+          "pixels": 448
+        },
+        {
+          "name": "text-outline",
+          "max": 30,
+          "pixels": 202
+        },
+        {
+          "name": "text-nested",
+          "max": 47,
+          "pixels": 553
+        }
+      ]
+    },
+    "Release": {
+      "executableSha256": "a0bbb1391e6a13d783c782aa96da4b141ca33afbae9d3996feb6101b07a1e022",
+      "manifestSha256": "1437fb66d76ae75c6ee44570c710c71b1eabc590559c9a2ad7c76d85ed98b23b",
+      "comparisonSha256": "8189ef81afed188c3ac1acde1d8280548712fcf9413e872a77c8969e1a906f19",
+      "anchorDuringAttach": {
+        "segments": 2,
+        "childIdentity": true,
+        "anchorDuringAttach": true,
+        "laterAnchor": true
+      },
+      "layoutPassed": 62,
+      "pixelPassed": 59,
+      "captureCount": 62,
+      "fontCycles": 1000,
+      "deferredPixels": [
+        {
+          "name": "text-bold",
+          "max": 20,
+          "pixels": 448
+        },
+        {
+          "name": "text-outline",
+          "max": 30,
+          "pixels": 202
+        },
+        {
+          "name": "text-nested",
+          "max": 47,
+          "pixels": 553
+        }
+      ]
+    }
+  },
+  "nativeByteIdentical": 62,
+  "earlierDebugAppExits": [
+    {
+      "logSha256": "3994395b6d71128b6829ecc98dd29fea385f7c77aafd0cb3eb6d2346f323f838"
+    },
+    {
+      "logSha256": "3994395b6d71128b6829ecc98dd29fea385f7c77aafd0cb3eb6d2346f323f838"
+    }
+  ],
+  "runtime": {
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "nativePoc": 2,
+    "jsbProbes": 2,
+    "jestTests": 11,
+    "logSha256": "0774959886d0603192ff7d5451eee3591da864e90ca342d72660302fc1eaa4fe"
+  }
+}
