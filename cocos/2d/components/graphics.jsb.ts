@@ -23,10 +23,11 @@
 */
 
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
-import { Color } from '../../core';
+import { Color, warnID } from '../../core';
+import type { Material } from '../../asset/assets';
 import { UIRenderer } from '../framework/ui-renderer';
 import { LineCap, LineJoin } from '../assembler/graphics/types';
-import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterialSlots } from '../framework/native-ui-materials';
+import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterialSlots, syncNativeMaterialSlots } from '../framework/native-ui-materials';
 
 declare const n2d: any;
 
@@ -96,6 +97,20 @@ export class Graphics extends UIRenderer {
         this._mask?.setGraphics(this._native);
     }
 
+    public onRestore (): void {
+        if (this._native) this._syncNativeStyles();
+    }
+
+    /** @deprecated Since v3.7.0, this is an engine private interface. */
+    public updateRenderer (): void {
+        this._native?.flushRenderData();
+    }
+
+    /** @deprecated Since v3.7.0, this is an engine private interface. */
+    public activeSubModel (idx: number, vertexCount = 1, indexCount = 1): void {
+        warnID(4500, this.node?.name ?? '');
+    }
+
     public onEnable (): void {
         this._native?.setEnabled(true);
     }
@@ -135,8 +150,17 @@ export class Graphics extends UIRenderer {
     set lineCap (value: LineCap) { this._lineCap = value; this._native?.setLineCap(value); }
     get miterLimit (): number { return this._miterLimit; }
     set miterLimit (value: number) { this._miterLimit = value; this._native?.setMiterLimit(value); }
-    get customMaterial (): any { return this._customMaterial; }
-    set customMaterial (value: any) { this._customMaterial = value; this._native?.setMaterial(value); }
+    get customMaterial (): Material | null { return this._customMaterial; }
+    set customMaterial (value: Material | null) {
+        this._customMaterial = value;
+        this.updateMaterial();
+    }
+
+    public updateMaterial (): void {
+        if (!this._native) return;
+        this._native.setMaterial(this._customMaterial);
+        syncNativeMaterialSlots(this);
+    }
     get color (): Readonly<Color> { return this._color; }
     set color (value: Readonly<Color>) {
         this._color.set(value);

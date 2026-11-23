@@ -32,6 +32,22 @@ for(const value of [a,b]) {
         || !activation.reparented || !activation.destroyed) {
         throw Error('Incomplete reentrant RichText activation evidence: ' + value.backend);
     }
+    const anchor = value.text.anchorDuringAttach;
+    if (anchor?.segments !== 2 || !anchor.childIdentity || !anchor.anchorDuringAttach || !anchor.laterAnchor) {
+        throw Error('Incomplete RichText anchor change during child attachment: ' + value.backend);
+    }
+    const retired = value.text.retiredNodes;
+    const nativeRichText = value.backend === 'native' && value.text.prefab.implementation === 'native';
+    const collected = value.text.collectedWrappers;
+    if (nativeRichText ? collected?.cycles !== 4 || collected.collected !== 8
+        || collected.reusedNativeNodes !== 8 || collected.layerEvents !== 8 : collected !== null) {
+        throw Error('Incomplete RichText wrapper collection evidence: ' + value.backend);
+    }
+    if (nativeRichText ? retired?.owners !== 4 || retired.cycles !== 64 || retired.segments !== 96
+        || retired.destroyedWhilePooled !== 4 || retired.tracked <= 96 || retired.reused <= 0 || !retired.atlasReleased
+        || retired.retained !== 0 || retired.reusedAcrossOwners !== 0 : retired !== null) {
+        throw Error('Incomplete RichText retired-node evidence: ' + value.backend);
+    }
     const aliases = value.text.fontAliasSources;
     const widths = [[95.9765625, 101.9296875], [101.9296875], [95.9765625, 101.9296875], [95.9765625]];
     if (aliases?.released !== 4 || JSON.stringify(aliases.checkpoints?.map(x => x.name)) !== JSON.stringify(aliasNames)
@@ -157,6 +173,9 @@ const result={snapshot:a.snapshot,font:{source:'tests/fixtures/Thonburi.ttf',sha
 result.executableSha256 = a.executableSha256;
 result.segmentLifecycle = { native: a.text.segmentLifecycle, web: b.text.segmentLifecycle };
 result.activation = { native: a.text.activation, web: b.text.activation };
+result.anchorDuringAttach = { native: a.text.anchorDuringAttach, web: b.text.anchorDuringAttach };
+result.retiredNodes = { native: a.text.retiredNodes, web: b.text.retiredNodes };
+result.collectedWrappers = { native: a.text.collectedWrappers, web: b.text.collectedWrappers };
 result.projectedInput = { native: a.text.projectedInput, web: b.text.projectedInput };
 result.fontAliasSources = { native: a.text.fontAliasSources, web: b.text.fontAliasSources };
 const deferredPixels = new Set();

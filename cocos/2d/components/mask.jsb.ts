@@ -25,13 +25,16 @@
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
 import { SpriteFrame } from '../assets/sprite-frame';
 import { Component } from '../../scene-graph/component';
+import type { Material } from '../../asset/assets';
+import type { MaterialInstance } from '../../render-scene';
+import type { Color } from '../../core';
 import { Node } from '../../scene-graph/node';
 import { UITransform } from '../framework/ui-transform';
 import { Graphics } from './graphics';
 import { Sprite } from './sprite';
 import { MaskMode } from '../renderer/render-entity';
 import { Stage } from '../renderer/stencil-manager';
-import { CCObject, clamp, isValid, Vec2 } from '../../core';
+import { CCObject, clamp, isValid, Vec2, warnID } from '../../core';
 
 declare const n2d: any;
 
@@ -78,17 +81,24 @@ export class Mask extends Component {
         this._native = new n2d.Mask();
         this._native.setType(this._type);
         this._native.setNode(this.node);
-        this._native.setSegments(this._segments);
-        this._native.setRadius(this._radius);
-        if (this._type === MaskType.GRAPHICS_STENCIL) {
-            this._getGraphics();
-        } else if (this._type === MaskType.SPRITE_STENCIL) {
-            this._getSprite().enabled = this.enabled;
-        }
-        this._native.setInverted(this._inverted);
-        this._native.setAlphaThreshold(this._alphaThreshold);
+        this._bindStencil();
+        this._syncStencilSettings();
         this._native.setPriority(0);
         this._native.setEnabled(this.enabledInHierarchy);
+    }
+
+    public onRestore (): void {
+        this._native?.setType(this._type);
+        this._bindStencil();
+        this._syncStencilSettings();
+    }
+
+    private _syncStencilSettings (): void {
+        if (!this._native) return;
+        this._native.setSegments(this._segments);
+        this._native.setRadius(this._radius);
+        this.inverted = this._inverted;
+        this.alphaThreshold = this._alphaThreshold;
     }
 
     public onEnable (): void {
@@ -124,17 +134,24 @@ export class Mask extends Component {
 
     set type (value: MaskType) {
         if (this._type === value) return;
-        const spriteStencil = value === MaskType.SPRITE_STENCIL;
         this._type = value;
         this._native?.setType(value);
-        if (spriteStencil) {
+        this._bindStencil();
+    }
+
+    private _bindStencil (): void {
+        if (this._type === MaskType.SPRITE_STENCIL) {
             this._getSprite().enabled = this.enabled;
         } else if (this._sprite) {
             this._setSpriteMask(this._sprite, false);
             this._sprite._destroyImmediate();
             this._sprite = null;
         }
-        if (value === MaskType.GRAPHICS_STENCIL) this._getGraphics();
+        if (this._type === MaskType.GRAPHICS_STENCIL) this._getGraphics();
+    }
+
+    private _invalidateStencil (): void {
+        this._native?.invalidateStencil();
     }
 
     get inverted (): boolean {
@@ -259,5 +276,161 @@ export class Mask extends Component {
         if (this._sprite && this.enabledInHierarchy) this._setSpriteMask(this._sprite, true);
     }
 
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    get customMaterial (): Material | null {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.customMaterial;
+        }
+        return null;
+    }
+    set customMaterial (val) {
+        warnID(9007);
+        if (this.subComp) {
+            this.subComp.customMaterial = val;
+        }
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    get color (): Color | null {
+        warnID(9007);
+        if (this.subComp) {
+            // FIXME: the type of subComp is Sprite | graphics, and Sprite.color returns Readonly<Color>.
+            // so have to use as Color here. And i don't want to change the return type to Readonly<Color>
+            // as it will break compatibility.
+            return this.subComp.color as Color;
+        }
+        return null;
+    }
+    set color (value) {
+        warnID(9007);
+        if (this.subComp && value) {
+            this.subComp.color = value;
+        }
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public markForUpdateRenderData (enable = true): void {
+        warnID(9007);
+        this.subComp?._markForUpdateRenderData(enable);
+        if (enable) this._invalidateStencil();
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public requestRenderData (any): void {
+        warnID(9007);
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public destroyRenderData (): void {
+        warnID(9007);
+    }
 
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public updateRenderer (): void {
+        warnID(9007);
+        this.subComp?.updateRenderer();
+        this._invalidateStencil();
+    }
+
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public fillBuffers (render: any): void {
+        warnID(9007);
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public postUpdateAssembler (render: any): void {
+        warnID(9007);
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public setNodeDirty (): void {
+        warnID(9007);
+        this.subComp?.setNodeDirty();
+        this._invalidateStencil();
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public setTextureDirty (): void {
+        warnID(9007);
+        this.subComp?.setTextureDirty();
+        this._invalidateStencil();
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    get sharedMaterial (): Material | null {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.sharedMaterial;
+        }
+        return null;
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    get sharedMaterials (): (Material | null)[] | null {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.sharedMaterials;
+        }
+        return null;
+    }
+    set sharedMaterials (val) {
+        warnID(9007);
+        if (this.subComp && val) {
+            this.subComp.sharedMaterials = val;
+        }
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    get material (): any {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.material;
+        }
+        return null;
+    }
+    set material (val: any) {
+        warnID(9007);
+        if (this.subComp) {
+            this.subComp.material = val;
+        }
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    get materials (): (any)[] {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.materials;
+        }
+        return [null];
+    }
+    set materials (val: (any)[]) {
+        warnID(9007);
+        if (this.subComp) {
+            this.subComp.materials = val;
+        }
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public getMaterial (idx: number): any {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.getSharedMaterial(idx);
+        }
+        return null;
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public setMaterial (material: Material | MaterialInstance | null, index: number): void {
+        warnID(9007);
+        this.subComp?.setMaterial(material, index);
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public getMaterialInstance (idx: number): any {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.getMaterialInstance(idx);
+        }
+        return null;
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public setMaterialInstance (matInst: Material | MaterialInstance | null, index: number): void {
+        warnID(9007);
+        this.subComp?.setMaterialInstance(matInst, index);
+    }
+    /** @deprecated Since v3.6, use the stencil renderer directly. */
+    public getRenderMaterial (index: number): any {
+        warnID(9007);
+        if (this.subComp) {
+            return this.subComp.getRenderMaterial(index);
+        }
+        return null;
+    }
 }

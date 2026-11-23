@@ -23,9 +23,11 @@ test('actual Node JSB constructor preserves native initialized shared memory', (
         const flags = new Uint32Array(memory, 0, 3); flags.set([17, layer, 31]);
         const opacity = new Float32Array(memory, 20, 4); opacity.set([0, 0, 0.5, 0.75]);
         const before = new Uint8Array(memory).slice();
-        const node: any = { _initAndReturnSharedBuffer: () => memory };
+        const scene = {};
+        const node: any = { _initAndReturnSharedBuffer: () => memory, getScene: () => scene };
         exported.ctor.call(node);
         expect(new Uint8Array(memory)).toEqual(before);
         expect(node._sharedUint32Arr[1]).toBe(layer);
+        expect(node._scene).toBe(scene);
     }
 });

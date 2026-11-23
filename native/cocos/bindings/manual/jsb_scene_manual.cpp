@@ -39,14 +39,28 @@
     #define JSB_FREE(ptr) delete ptr
 #endif
 
-#define DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emmiter)              \
-    se::Object *jsObject = emitter->getScriptObject();           \
-    if (jsObject == nullptr) {                                   \
-        jsObject = se::NativePtrToObjectMap::findFirst(emitter); \
-        emmiter->setScriptObject(jsObject);                      \
-    }
+#define DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter) \
+    auto *jsObject = findLiveNodeWrapper(emitter);  \
+    if (!jsObject) return;
 
 namespace {
+
+se::Object *findLiveNodeWrapper(cc::Node *node) {
+    auto *engine = se::ScriptEngine::getInstance();
+    if (!se::NativePtrToObjectMap::isValid() || engine->isInCleanup() || engine->isGarbageCollecting()) return nullptr;
+    // A detached native node can survive finalization of its previous wrapper.
+    return se::NativePtrToObjectMap::findFirst(node);
+}
+
+enum NodeScriptListener : uint8_t {
+    BASE_LISTENERS = 1 << 0,
+    TRANSFORM_CHANGED = 1 << 1,
+    PARENT_CHANGED = 1 << 2,
+    MOBILITY_CHANGED = 1 << 3,
+    LAYER_CHANGED = 1 << 4,
+    SIBLING_ORDER_CHANGED = 1 << 5,
+    LIGHT_PROBE_BAKING_CHANGED = 1 << 6,
+};
 
 class TempFloatArray final {
 public:
@@ -139,6 +153,7 @@ static bool js_root_registerListeners(se::State &s) // NOLINT(readability-identi
 SE_BIND_FUNC(js_root_registerListeners) // NOLINT(readability-identifier-naming)
 
 static void registerOnTransformChanged(cc::Node *node) {
+    if (!node->registerScriptListener(TRANSFORM_CHANGED)) return;
     node->on<cc::Node::TransformChanged>(
         +[](cc::Node *emitter, cc::TransformBit transformBit) {
             DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter)
@@ -151,6 +166,7 @@ static void registerOnTransformChanged(cc::Node *node) {
 }
 
 static void registerOnParentChanged(cc::Node *node) {
+    if (!node->registerScriptListener(PARENT_CHANGED)) return;
     node->on<cc::Node::ParentChanged>(
         +[](cc::Node *emitter, cc::Node *oldParent) {
             DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter)
@@ -163,6 +179,7 @@ static void registerOnParentChanged(cc::Node *node) {
 }
 
 static void registerOnMobilityChanged(cc::Node *node) {
+    if (!node->registerScriptListener(MOBILITY_CHANGED)) return;
     node->on<cc::Node::MobilityChanged>(
         +[](cc::Node *emitter) {
             DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter)
@@ -173,6 +190,7 @@ static void registerOnMobilityChanged(cc::Node *node) {
 }
 
 static void registerOnLayerChanged(cc::Node *node) {
+    if (!node->registerScriptListener(LAYER_CHANGED)) return;
     node->on<cc::Node::LayerChanged>(
         +[](cc::Node *emitter, uint32_t layer) {
             DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter)
@@ -209,6 +227,7 @@ static void registerOnChildAdded(cc::Node *node) {
 }
 
 static void registerOnSiblingOrderChanged(cc::Node *node) {
+    if (!node->registerScriptListener(SIBLING_ORDER_CHANGED)) return;
     node->on<cc::Node::SiblingOrderChanged>(
         +[](cc::Node *emitter) {
             DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter)
@@ -240,6 +259,16 @@ static void registerOnBatchCreated(cc::Node *node) {
             nativevalue_to_se(dontChildPrefab, arg0);
             se::ScriptEngine::getInstance()->callFunction(jsObject, "_onBatchCreated", 1, &arg0);
         });
+}
+
+static void notifyScriptLocalRTS(se::Object *wrapper, const cc::Vec3 &position, const cc::Quaternion &rotation, const cc::Vec3 &scale) {
+    se::AutoHandleScope scope;
+    ccstd::array<se::Value, 10> args{
+        se::Value(position.x), se::Value(position.y), se::Value(position.z),
+        se::Value(rotation.x), se::Value(rotation.y), se::Value(rotation.z), se::Value(rotation.w),
+        se::Value(scale.x), se::Value(scale.y), se::Value(scale.z),
+    };
+    se::ScriptEngine::getInstance()->callFunction(wrapper, "_onLocalPositionRotationScaleUpdated", static_cast<uint32_t>(args.size()), args.data());
 }
 
 static void registerLocalPositionRotationScaleUpdated(cc::Node *node) {
@@ -283,29 +312,15 @@ static void registerLocalPositionRotationScaleUpdated(cc::Node *node) {
     node->on<cc::Node::LocalRTSUpdated>(
         +[](cc::Node *emitter, float px, float py, float pz, float rx, float ry, float rz, float rw, float sx, float sy, float sz) {
             DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter)
-
-            se::AutoHandleScope hs;
-            ccstd::array<se::Value, 10> args;
-            nativevalue_to_se(px, args[0]);
-            nativevalue_to_se(py, args[1]);
-            nativevalue_to_se(pz, args[2]);
-
-            nativevalue_to_se(rx, args[3]);
-            nativevalue_to_se(ry, args[4]);
-            nativevalue_to_se(rz, args[5]);
-            nativevalue_to_se(rw, args[6]);
-
-            nativevalue_to_se(sx, args[7]);
-            nativevalue_to_se(sy, args[8]);
-            nativevalue_to_se(sz, args[9]);
-
-            se::ScriptEngine::getInstance()->callFunction(jsObject, "_onLocalPositionRotationScaleUpdated", static_cast<uint32_t>(args.size()), args.data());
+            notifyScriptLocalRTS(jsObject, {px, py, pz}, {rx, ry, rz, rw}, {sx, sy, sz});
         });
 }
 
-static void registerOnLightProbeBakingChanged(cc::Node *node, se::Object *jsObject) {
+static void registerOnLightProbeBakingChanged(cc::Node *node) {
+    if (!node->registerScriptListener(LIGHT_PROBE_BAKING_CHANGED)) return;
     node->on<cc::Node::LightProbeBakingChanged>(
-        [jsObject](cc::Node * /*emitter*/) {
+        +[](cc::Node *emitter) {
+            DEFINE_JS_OBJECT_IN_EVENT_CALLBACK(emitter)
             se::AutoHandleScope hs;
             se::ScriptEngine::getInstance()->callFunction(jsObject, "_onLightProbeBakingChanged", 0, nullptr);
         });
@@ -313,6 +328,7 @@ static void registerOnLightProbeBakingChanged(cc::Node *node, se::Object *jsObje
 
 static bool js_scene_Node_registerListeners(cc::Node *cobj) // NOLINT(readability-identifier-naming)
 {
+    if (!cobj->registerScriptListener(BASE_LISTENERS)) return true;
 #define NODE_DISPATCH_EVENT_TO_JS(eventType, jsFuncName)                                      \
     cobj->on<eventType>(                                                                      \
         +[](cc::Node *emitter) {                                                              \
@@ -374,6 +390,7 @@ static bool js_cc_Node_initAndReturnSharedBuffer(se::State &s) // NOLINT(readabi
 
     auto *result = cobj->_getSharedArrayBufferObject();
     js_scene_Node_registerListeners(cobj);
+    notifyScriptLocalRTS(s.thisObject(), cobj->getPosition(), cobj->getRotation(), cobj->getScale());
     s.rval().setObject(result);
     return true;
 }
@@ -433,9 +450,7 @@ static bool js_scene_Node_registerOnLightProbeBakingChanged(se::State &s) // NOL
     auto *cobj = SE_THIS_OBJECT<cc::Node>(s);
     SE_PRECONDITION2(cobj, false, "Invalid Native Object");
 
-    auto *jsObject = s.thisObject();
-
-    registerOnLightProbeBakingChanged(cobj, jsObject);
+    registerOnLightProbeBakingChanged(cobj);
     return true;
 }
 SE_BIND_FUNC(js_scene_Node_registerOnLightProbeBakingChanged) // NOLINT(readability-identifier-naming)
@@ -822,12 +837,23 @@ SE_BIND_FUNC(js_assets_MaterialInstance_registerListeners) // NOLINT(readability
 
 bool register_all_scene_manual(se::Object *obj) // NOLINT(readability-identifier-naming)
 {
-    cc::RichText::setSegmentDisposeCallback([](void *component) {
+    cc::RichText::setSegmentDisposeCallback([](cc::Node *node, cc::UITransform *transform, cc::Label *label, cc::Sprite *sprite) {
         if (!se::NativePtrToObjectMap::isValid()) return;
-        se::NativePtrToObjectMap::forEach(component, [](se::Object *wrapper) {
-            wrapper->invalidateBorrowedObject();
-        });
-        se::NativePtrToObjectMap::erase(component);
+        for (void *component : {static_cast<void *>(transform), static_cast<void *>(label), static_cast<void *>(sprite)}) {
+            if (!component) continue;
+            se::NativePtrToObjectMap::forEach(component, [](se::Object *wrapper) {
+                wrapper->invalidateBorrowedObject();
+            });
+            se::NativePtrToObjectMap::erase(component);
+        }
+        if (auto *wrapper = findLiveNodeWrapper(node); wrapper && cc::isObjectValid(node, true)) {
+            se::AutoHandleScope scope;
+            se::Value destroy;
+            if (wrapper->getProperty("destroy", &destroy) && destroy.isObject() && destroy.toObject()->isFunction()) {
+                // Let the script queue run Node's event and component cleanup after this segment is released.
+                se::ScriptEngine::getInstance()->callFunction(wrapper, "destroy", 0, nullptr);
+            }
+        }
     });
     // Get the ns
     se::Value nsVal;

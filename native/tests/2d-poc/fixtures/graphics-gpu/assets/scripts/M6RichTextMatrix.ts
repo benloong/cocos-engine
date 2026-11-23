@@ -1,5 +1,5 @@
 import { _decorator, assetManager, Camera, deserialize, director, gfx, Color, Component, EventTouch, input, instantiate, isValid, Label, Mask, Node, Prefab, RichText, sys, Touch, TTFFont, UITransform, Vec2, Vec3, view } from 'cc';
-import { checkRichTextActivation, checkRichTextLifecycle } from './M6RichTextLifecycle';
+import { checkRichTextActivation, checkRichTextAnchorDuringAttach, checkRichTextCollectedWrappers, checkRichTextLifecycle, checkRichTextRetiredNodes } from './M6RichTextLifecycle';
 import { checkFontAliasSources } from './M6FontAliasMatrix';
 
 const wait = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 80));
@@ -789,6 +789,7 @@ export async function runRichTextMatrix (parent: Node, camera: Camera, capture: 
     if (sys.isNative && bytes !== 223404) throw new Error(`TTF native byte count: ${bytes}`);
     const projectedInput = await checkProjectedInput(parent, camera, font);
     const activation = await checkRichTextActivation(parent, font, readPixels);
+    const anchorDuringAttach = await checkRichTextAnchorDuringAttach(parent, font);
     const labelWordWrap = await checkLabelWordWrap(parent, font, capture, readPixels);
     const fractionalFontWidths = await checkFractionalFontSizes(parent, font, readPixels);
     const { hardShadowCoverage, blurredShadowCenters } = await checkShadowOffsets(parent, font, readPixels);
@@ -849,6 +850,8 @@ export async function runRichTextMatrix (parent: Node, camera: Camera, capture: 
     }
     const shadowLayout = await captureShadowLayout(parent, font, capture);
     const segmentLifecycle = await checkRichTextLifecycle(parent, font, capture);
+    const retiredNodes = await checkRichTextRetiredNodes(parent, font);
+    const collectedWrappers = await checkRichTextCollectedWrappers(parent, font);
     const fontAliasSources = await checkFontAliasSources(parent, capture);
     assetManager.releaseAsset(font); await wait();
     const released = !isValid(font);
@@ -856,5 +859,6 @@ export async function runRichTextMatrix (parent: Node, camera: Camera, capture: 
     if (sys.isNative && (!(font as any).isReleased() || (font as any).getFontDataSize() !== 0)) throw new Error('TTF native release retained bytes');
     const lifecycle = await checkNativeFontLifecycle(url, parent);
     return { loaded: true, released, nativeBytes: bytes, metrics, raster, lifecycle, prefab, interaction, labelWordWrap, fractionalFontWidths,
-        hardShadowCoverage, blurredShadowCenters, shadowLayout, segmentLifecycle, fontAliasSources, activation, projectedInput };
+        hardShadowCoverage, blurredShadowCenters, shadowLayout, segmentLifecycle, retiredNodes, collectedWrappers,
+        fontAliasSources, activation, anchorDuringAttach, projectedInput };
 }

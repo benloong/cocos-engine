@@ -25,6 +25,7 @@ public:
     void setEnabled(bool enabled);
     void setColor(const Color &color);
     void setColorRGBA(float r, float g, float b, float a);
+    void flushRenderData() { updateRenderer(); }
     void clear();
     void moveTo(double x, double y) { _geometry.moveTo(x, y); }
     void lineTo(double x, double y) { _geometry.lineTo(x, y); }
@@ -52,8 +53,7 @@ public:
     void setFillColor(const Color &color);
     void setStrokeColor(const Color &color);
     RenderEntity *getRenderEntity() const override { return _entity.get(); }
-    // Source owns its geometry. Consumers borrow it, register with that owner,
-    // and are invalidated synchronously before the owner is destroyed.
+    // Stencil consumers use the source material and can also borrow its geometry.
     void setGeometrySource(Graphics *source);
     void setUseGeometrySource(bool useSource);
     const GraphicsGeometry &getGeometry() const;
@@ -71,7 +71,7 @@ private:
     };
     void rebuildChunks();
     void geometryChanged();
-    void onMaterialChanged() override { markRenderDirty(COLOR); }
+    void onMaterialChanged() override;
     GraphicsGeometry _geometry;
     Graphics *_source{nullptr};         // borrowed; registered in source->_consumers
     std::vector<Graphics *> _consumers; // borrowed observers; never deleted here

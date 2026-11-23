@@ -423,6 +423,7 @@ nodeProto._onParentChanged = function (oldParent) {
 };
 
 nodeProto._onReAttach = function () {
+    this._parentRef = this.getParent();
     this._eventProcessor.reattach();
 };
 
@@ -1553,6 +1554,10 @@ nodeProto._ctor = function (name?: string) {
     this._components = [];
     this._eventProcessor = new NodeEventProcessor(this);
     this._uiProps = new NodeUIProperties(this);
+    this._lpos = new Vec3();
+    this._lrot = new Quat();
+    this._lscale = new Vec3(1, 1, 1);
+    this._euler = new Vec3();
 
     const sharedArrayBuffer = this._initAndReturnSharedBuffer();
     // Uint32Array with 3 elements: eventMask, layer, dirtyFlags
@@ -1566,18 +1571,13 @@ nodeProto._ctor = function (name?: string) {
 
     // Native Node initializes its default layer. Preserve an existing layer
     // when a native-created child gets its JS wrapper for the first time.
-    this._scene = null;
+    this._scene = this.getScene();
     this._prefab = null;
     // record scene's id when set this node as persist node
     this._originalSceneId = '';
 
     this._children = [];
     // this._isChildrenRedefined = false;
-
-    this._lpos = new Vec3();
-    this._lrot = new Quat();
-    this._lscale = new Vec3(1, 1, 1);
-    this._euler = new Vec3();
 
     this._registeredNodeEventTypeMask = 0;
 };

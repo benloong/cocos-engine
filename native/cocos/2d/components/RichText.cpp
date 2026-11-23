@@ -34,7 +34,7 @@
 
 namespace cc {
 namespace {
-void (*segmentDisposeCallback)(void *) = nullptr;
+void (*segmentDisposeCallback)(Node *, UITransform *, Label *, Sprite *) = nullptr;
 Color literalColor(std::string value) {
     for (auto &ch : value) if (ch >= 'a' && ch <= 'z') ch -= 'a' - 'A';
     static const std::map<std::string, Color> names = {
@@ -86,14 +86,14 @@ struct RichText::Segment {
     ~Segment() {
         bindFrame(nullptr, nullptr);
         node->removeFromParent();
+        if (isObjectValid(node, true)) node->setActive(false);
         if (segmentDisposeCallback) {
-            segmentDisposeCallback(transform.get());
-            if (label) segmentDisposeCallback(label.get());
-            if (sprite) segmentDisposeCallback(sprite.get());
+            segmentDisposeCallback(node, transform.get(), label.get(), sprite.get());
         }
+        if (isObjectValid(node, true)) node->destroyImmediate();
     }
 };
-void RichText::setSegmentDisposeCallback(void (*callback)(void *)) {
+void RichText::setSegmentDisposeCallback(void (*callback)(Node *, UITransform *, Label *, Sprite *)) {
     segmentDisposeCallback = callback;
 }
 RichText::RichText() {
@@ -148,9 +148,10 @@ void RichText::observeTransform(UITransform *transform) {
     _transform = transform;
     if (!transform) return;
     _layoutChanged = transform->on<UITransform::LayoutChanged>([this](UITransform *layout) {
-        if (!_updating && (_options.anchorX != layout->getAnchorX() || _options.anchorY != layout->getAnchorY())) {
-            markRenderDirty();
-        }
+        if (_options.anchorX == layout->getAnchorX() && _options.anchorY == layout->getAnchorY()) return;
+        // A child event can change the host anchor while its segments are being attached.
+        _dirty = true;
+        if (!_updating) markRenderDirty();
     });
     _layoutDestroyed = transform->on<UITransform::LayoutDestroyed>([this](UITransform *) { _transform = nullptr; _dirty = true; markRenderDirty(); });
 }
@@ -200,15 +201,19 @@ void RichText::configureLabel(Label &label, size_t spanIndex) {
 }
 std::unique_ptr<RichText::Segment> RichText::acquire(bool image) {
     auto &pool = image ? _imagePool : _labelPool;
-    if (pool.empty()) return std::make_unique<Segment>(image);
-    auto segment = std::move(pool.back()); pool.pop_back(); return segment;
+    while (!pool.empty()) {
+        auto segment = std::move(pool.back());
+        pool.pop_back();
+        if (isObjectValid(segment->node, true) && !segment->node->getParent()) return segment;
+    }
+    return std::make_unique<Segment>(image);
 }
 void RichText::recycle(std::unique_ptr<Segment> segment) {
     const auto attachment = _attachmentVersion;
     segment->node->removeFromParent();
-    if (_attachmentVersion != attachment) return;
+    if (_attachmentVersion != attachment || !isObjectValid(segment->node, true) || segment->node->getParent()) return;
     segment->node->setActive(false);
-    if (_attachmentVersion != attachment) return;
+    if (_attachmentVersion != attachment || !isObjectValid(segment->node, true) || segment->node->getParent()) return;
     if (segment->label) {
         segment->label->setString(""); segment->label->setFontAsset(nullptr); segment->label->setCacheMode(0); segment->label->updateRenderData();
     } else segment->sprite->clearFrame();
@@ -265,7 +270,8 @@ void RichText::rebuildLayout() {
     for (size_t i = 0; i < _layout.placements.size(); ++i) {
         const auto &placement = _layout.placements[i];
         std::unique_ptr<Segment> segment;
-        if (i < previous.size() && bool(previous[i]->sprite) == placement.image) segment = std::move(previous[i]);
+        if (i < previous.size() && bool(previous[i]->sprite) == placement.image
+            && isObjectValid(previous[i]->node, true) && previous[i]->node->getParent() == _node) segment = std::move(previous[i]);
         else segment = acquire(placement.image);
         const auto &style = _spans[placement.spanIndex].style;
         segment->handler.clear(); segment->param.clear();

@@ -108,6 +108,14 @@ void Mask::setType(int32_t type) {
 void Mask::setGraphics(Graphics *graphics) {
     _graphics.setGeometrySource(graphics);
 }
+void Mask::invalidateStencil() {
+    if (_type == 3) {
+        if (auto *sprite = getStencilSprite()) sprite->setDirty();
+    } else {
+        _graphics.markRenderDirty();
+        markRenderDirty();
+    }
+}
 void Mask::setSegments(uint32_t segments) {
     _segments = std::clamp(segments, 3U, 10000U);
     _shapeDirty = true;

@@ -18,6 +18,7 @@ public:
     void onDetach() override;
     void setType(int32_t type);
     void setGraphics(Graphics *graphics);
+    void invalidateStencil();
     void setSegments(uint32_t segments);
     void setRadius(float radius);
     bool isHitWorldPointXY(float x, float y) const;

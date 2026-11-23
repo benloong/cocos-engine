@@ -621,6 +621,12 @@ public:
 
     inline se::Object *_getSharedArrayBufferObject() const { return _sharedMemoryActor.getSharedArrayBufferObject(); } // NOLINT
 
+    bool registerScriptListener(uint8_t mask) {
+        if (_scriptListenerMask & mask) return false;
+        _scriptListenerMask |= mask;
+        return true;
+    }
+
     inline float _getLocalOpacity() const { return _localOpacity; } // NOLINT
     inline void _setLocalOpacity(float v) { _localOpacity = v; }    // NOLINT
 
@@ -708,6 +714,7 @@ private:
 
     ccstd::vector<IntrusivePtr<Node>> _children;
     bindings::NativeMemorySharedToScriptActor _sharedMemoryActor;
+    uint8_t _scriptListenerMask{0};
     // local transform
     Vec3 _localPosition{Vec3::ZERO};
     Vec3 _localScale{Vec3::ONE};

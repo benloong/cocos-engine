@@ -61,6 +61,13 @@ void Graphics::geometryChanged() {
         if (consumer->_useSource) consumer->markRenderDirty();
     }
 }
+void Graphics::onMaterialChanged() {
+    markRenderDirty(COLOR);
+    for (auto *consumer : _consumers) {
+        consumer->_entity->clearDynamicRenderDrawInfos();
+        consumer->markRenderDirty(COLOR);
+    }
+}
 void Graphics::clear() {
     _geometry.clear();
     geometryChanged();
@@ -120,10 +127,11 @@ void Graphics::rebuildChunks() {
 }
 void Graphics::updateRenderer() {
     if (!renderDirtyFlags()) return;
+    // A material refresh reuses the retained mesh chunks and only replaces their draw state.
     if (renderDirtyFlags() & GEOMETRY) rebuildChunks();
     clearRenderDirty();
     _entity->clearDynamicRenderDrawInfos();
-    auto *material = getRenderMaterial();
+    auto *material = _source ? _source->getRenderMaterial() : getRenderMaterial();
     for (auto &item : _chunks) {
         auto &c = *item;
         // Match Web's VERTEX fill-color mode: geometry owns its alpha.

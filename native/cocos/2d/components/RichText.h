@@ -46,7 +46,7 @@ public:
     ~RichText() override;
 #ifndef SWIG
     // Called for components owned exclusively by a segment, just before their destruction.
-    static void setSegmentDisposeCallback(void (*callback)(void *));
+    static void setSegmentDisposeCallback(void (*callback)(Node *, UITransform *, Label *, Sprite *));
 #endif
     uint32_t getTypeId() const override { return TYPE_ID; }
     void onAttach() override;
