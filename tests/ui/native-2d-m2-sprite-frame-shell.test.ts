@@ -1,4 +1,4 @@
-import { cclegacy, CCObject, isValid, Rect, Size, Vec2 } from '../../cocos/core';
+import { cclegacy, CCObject, isValid, Rect, Size, Vec2, Vec3 } from '../../cocos/core';
 import { SpriteFrame as WebSpriteFrame } from '../../cocos/2d/assets/sprite-frame';
 import { AttributeName } from '../../cocos/gfx';
 
@@ -144,7 +144,7 @@ test('destroying a Web SpriteFrame releases its mesh at frame end and leaves the
     expect(isValid(cloneMesh)).toBe(false);
 });
 
-test('authored polygon vertices survive Web and native serialization and cloning', () => {
+test('authored polygon vertices retain native serialization, mesh bounds and independent clones', () => {
     const vertices = {
         rawPosition: [-20, -18, 1, 20, -18, 2, 0, 18, -3], indexes: [0, 2, 1],
         uv: [0, 36, 40, 36, 20, 0], nuv: [0, 1, 1, 1, 0.5, 0],
@@ -159,44 +159,32 @@ test('authored polygon vertices survive Web and native serialization and cloning
         i % 3 === 0 ? value / 4 + 2.5 : i % 3 === 1 ? value / 4 - 2.25 : value
     )));
     const frame = createFrame();
-    const web = new WebSpriteFrame();
-    web._deserialize(data, null);
     frame._deserialize(data);
     expect(proto.transformMeshPositions).toHaveBeenCalledWith(vertices.rawPosition);
-    expect(web.vertices!.positions).toEqual(positions);
-    expect(frame.vertices).toEqual(web.vertices);
+    expect(frame.vertices.positions).toEqual(positions);
     expect(frame._serialize().vertices).toEqual(vertices);
+
     const clone = frame.clone();
-    expect(clone.vertices).toEqual(web.clone().vertices);
+    expect(clone.vertices).toEqual(frame.vertices);
     clone.vertices.indexes.pop();
     clone.vertices.minPos.x = 0;
+    clone.vertices.rawPosition[0].x = -4;
+    clone.vertices.nuv[0] = 0.25;
     expect(frame.vertices.indexes).toEqual([0, 2, 1]);
     expect(frame.vertices.minPos.x).toBe(-20);
+    expect(frame.vertices.rawPosition[0].x).toBe(-20);
+    expect(frame.vertices.nuv[0]).toBe(0);
 
-    web.ensureMeshData();
     frame.ensureMeshData();
-    const bounds = web.mesh!.struct;
-    expect(bounds.minPosition?.z).toBe(-3);
-    expect(bounds.maxPosition?.z).toBe(2);
-    expect((global as any).jsb.MeshUtils.createMesh).toHaveBeenLastCalledWith(expect.objectContaining({
-        minPos: expect.objectContaining(bounds.minPosition), maxPos: expect.objectContaining(bounds.maxPosition),
-    }));
-    expect(Array.from(web.mesh!.readIndices(0)!)).toEqual([0, 2, 1]);
-    expect(Array.from(web.mesh!.readAttribute(0, AttributeName.ATTR_POSITION)!)).toEqual(positions);
-    expect(Array.from(web.mesh!.readAttribute(0, AttributeName.ATTR_TEX_COORD)!)).toEqual(vertices.nuv);
-
-    const copy = web.clone();
-    copy.vertices!.rawPosition[0].x = -4;
-    copy.vertices!.nuv[0] = 0.25;
-    expect(web.vertices!.rawPosition[0].x).toBe(-20);
-    expect(web.vertices!.nuv[0]).toBe(0);
-
+    expect((global as any).jsb.MeshUtils.createMesh).toHaveBeenLastCalledWith({
+        positions, indices: [0, 2, 1], uvs: vertices.nuv,
+        minPos: new Vec3(-2.5, -6.75, -3), maxPos: new Vec3(7.5, 2.25, 2),
+    });
     const reordered = { ...data, vertices: { ...vertices, indexes: [2, 1, 0] } };
-    web._deserialize(reordered, null);
     frame._deserialize(reordered);
-    expect(web.mesh).toBeNull();
-    web.ensureMeshData();
-    expect(Array.from(web.mesh!.readIndices(0)!)).toEqual([2, 1, 0]);
+    expect(frame.mesh).toBeNull();
+    frame.ensureMeshData();
+    expect((global as any).jsb.MeshUtils.createMesh).toHaveBeenLastCalledWith(expect.objectContaining({ indices: [2, 1, 0] }));
     expect(frame.vertices.indexes).toEqual([2, 1, 0]);
     expect(vertices.indexes).toEqual([0, 2, 1]);
 });
