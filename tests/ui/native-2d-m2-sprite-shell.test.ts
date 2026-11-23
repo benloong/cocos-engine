@@ -8,6 +8,7 @@ import { SpriteAtlas } from '../../cocos/2d/assets/sprite-atlas';
 import { Vec2 } from '../../cocos/core/math/vec2';
 import { Color } from '../../cocos/core/math/color';
 import { Material } from '../../cocos/asset/assets/material';
+import { CCObject } from '../../cocos/core';
 
 const builtinMaterial = {} as any;
 const nativeMaterial = { parent: builtinMaterial } as any;
@@ -207,6 +208,21 @@ test('fillCenter is a native writable view, with independent clone and detached 
     clone.onDestroy();
     expect(Object.getOwnPropertyDescriptor(cloneCenter, 'x')!.get).toBeUndefined();
     expect(cloneCenter.x).toBe(0);
+});
+
+test('destroying an inactive Sprite detaches a fillCenter view retained before onLoad', () => {
+    const { Sprite } = require('../../cocos/2d/components/sprite.jsb');
+    for (const Type of [WebSprite, Sprite]) {
+        const node = new Node('inactive-sprite');
+        node.active = false;
+        const sprite = node.addComponent(Type) as WebSprite;
+        const center = sprite.fillCenter;
+        center.set(0.25, 0.75);
+        node.destroy();
+        CCObject._deferredDestroy();
+        expect(Object.getOwnPropertyDescriptor(center, 'x')?.get).toBeUndefined();
+        expect(center).toEqual(new Vec2(0.25, 0.75));
+    }
 });
 
 test('material arrays retain staged slots, replace instances and release truncated owners', () => {

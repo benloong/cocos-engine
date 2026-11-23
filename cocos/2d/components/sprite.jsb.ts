@@ -241,14 +241,26 @@ export class Sprite extends UIRenderer {
     public onDestroy (): void {
         this._mask = null;
         releaseNativeMaterialSlots(this);
-        const center = this._fillCenter, x = center.x, y = center.y;
+        this._releaseFillCenterView();
         if (this._native) {
             this._native.setEnabled(false);
             this._native.setNode(null);
             this._native = null;
         }
-        if (this._fillCenterView) {
-            Object.defineProperties(center, { x: { value: x, writable: true }, y: { value: y, writable: true } });
+    }
+
+    public _onPreDestroy (): void {
+        try {
+            super._onPreDestroy();
+        } finally {
+            this._releaseFillCenterView();
+        }
+    }
+
+    private _releaseFillCenterView (): void {
+        const center = this._fillCenterView;
+        if (center) {
+            Object.defineProperties(center, { x: { value: center.x, writable: true }, y: { value: center.y, writable: true } });
             this._fillCenterView = null;
         }
     }
@@ -256,6 +268,7 @@ export class Sprite extends UIRenderer {
     private _bindFillCenter (): Vec2 {
         const center = this._fillCenter;
         if (this._fillCenterView !== center) {
+            this._releaseFillCenterView();
             let x = center.x, y = center.y;
             Object.defineProperties(center, {
                 x: { configurable: true, enumerable: true,
@@ -279,6 +292,7 @@ export class Sprite extends UIRenderer {
     private _syncMaterial (): void {
         if (this._native) {
             this._native.setMaterial(this._customMaterial);
+            if (!this._customMaterial) this._mask?.setType(3);
             syncNativeMaterialSlots(this);
         }
     }
