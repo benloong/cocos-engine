@@ -66,7 +66,7 @@ void UIOpacity::onDisable() {
 }
 
 void UIOpacity::applyToNode() {
-    if (_node != nullptr) {
+    if (_node != nullptr && isEnabled()) {
         _node->_setLocalOpacity(_opacity / 255.F);
     }
 }

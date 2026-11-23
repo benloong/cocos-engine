@@ -2485,8 +2485,13 @@ void testUIOpacity() {
     opacity.setEnabled(false);
     checkNear(node._getLocalOpacity(), 1.F, "UIOpacity disable resets node opacity");
 
+    opacity.setOpacity(64.F);
+    checkNear(opacity.getOpacity(), 64.F, "disabled UIOpacity stores its new value");
+    checkNear(node._getLocalOpacity(), 1.F, "disabled UIOpacity mutation preserves neutral node opacity");
+
     opacity.setEnabled(true);
-    checkNear(node._getLocalOpacity(), 128.F / 255.F, "UIOpacity enable reapplies");
+    checkNear(node._getLocalOpacity(), 64.F / 255.F, "UIOpacity enable applies the value saved while disabled");
+    opacity.setOpacity(128.F);
     cc::Node next("next-opacity-host");
     opacity.setNode(&next);
     checkNear(node._getLocalOpacity(), 1.F, "moving UIOpacity restores its previous host");
