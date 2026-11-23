@@ -6,7 +6,7 @@
 > 所有权约束：M6 原生 2D 代码禁止 shared_ptr/weak_ptr。值成员、unique_ptr、IntrusivePtr 与非 owning 指针分别标明拥有者；借用者必须在拥有者销毁前解绑或收到同步失效通知。
 > 构建验收约束：后续改动统一按 [Cocos CLI 构建与验收流程](./native-2d-build-and-acceptance.zh-CN.md) 第 8 节构建 cocos-m1-test、重建 override、同步资源、编译 Debug app 并执行全部门禁，通过后再提交。定向 PoC/GPU/ASAN 仅作补充证据；不得替代文档规定的测试工程验收。
 
-> 本轮验收平台为 Windows Debug/Release，使用 Web 作行为与像素对照。macOS、iOS、Android、OHOS 暂缓验收，保留待验证状态。本轮使用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
+> 本轮验收平台为 Windows Debug/Release，使用 Web 作行为与像素对照。macOS、iOS、Android、OHOS 暂缓验收，保留待验证状态。迁移测试通过本机入口单独运行，验收采用本机记录。迁移前的 GitHub Actions 工作流继续沿用。
 > 场景、Prefab 和资产按现行序列化格式验收。旧版本序列化数据的加载、迁移和兼容不列入本轮签收，详见 [M6 Gate](./native-2d-m6-gate.md)。
 
 - [ ] 同一候选复验现行格式夹具。覆盖 Label 字体与材质更新、未加载组件销毁、Sprite 独立图片与图集生命周期、Mask 模板切换和 Graphics 材质恢复。[Label 与 Sprite](./native-2d-m6-label-renderer-compat.md) [Mask](./native-2d-m6-mask-compat.md) [Graphics](./native-2d-m6-graphics-compat.md)
@@ -37,7 +37,7 @@
 - [x] 修复 graphics 功能导出的 Web 三角化重入。Windows 原生 assembler manager 将显式 fill/stroke 转发给组件，保留 getAssembler、静态注册和 renderData 更新入口。部署包重新审计后有 76 个 2D 图模块、53 个产生代码，Web Graphics assembler 和 Earcut 的产物字节归零。cc.js SHA256 为 `4dedfd6dc092664879ecb219a4f72cc2bfb5620bcb1b8cf5e2b92bf702d69d60`。native TS、2 项 manager 测试、真实 JSB manager 绘制 80×80 矩形、完整串行门禁及 32 项定向 Jest 通过。
 - [x] Windows V8 逐组件 JSB 基线已采集。空 Canvas 与 13 组组件/资产消费者各预热 12 帧、记录 60 个原生 frameMove，并以显式 getter 控制计数完整性。迁移类稳态直接调用为零，排除 GC 析构后各方法计数与 Canvas 相同。见[采集方法](./native-2d-m6.0-windows-jsb-trace.md)与[逐方法计数](./native-2d-m6.0-windows-jsb-trace.json)。
 - [x] 已观察到的壳残留：移除 Label lateUpdate 高度轮询；原生统一管理布局尺寸并由 UITransform 在变化时推送缓存/事件；Label/Graphics 内置材质由原生解析。Windows Debug/Release 实际 JSB、1000 次静止 prepare 与定向测试通过，见 [报告](./native-2d-m6.0-layout-material.md)。全模块稳态调用门禁继续归 M6.5。
-- [x] 新增 2D 元数据维护入口：仓库内脚本从六个 Web 资产声明生成补丁，由 native-binding/decorators 重导出；补齐产物检查、生成器/元数据测试与 native-ts-build CI。组件壳使用源码装饰器；历史外部生成器归属未推断，见 [维护说明](./native-2d-m6.0-metadata.md)。
+- [x] 新增 2D 元数据维护入口：仓库内脚本从六个 Web 资产声明生成补丁，由 native-binding/decorators 重导出；补齐本机产物检查及生成器、元数据测试。组件壳使用源码装饰器；历史外部生成器归属未推断，见 [维护说明](./native-2d-m6.0-metadata.md)。
 
 交付：组件矩阵、残留清单、基线版本/环境/命令和原始数据。
 
@@ -274,21 +274,21 @@
   - [x] 在 2df0c7bfd9 复测迁移前和当前 Windows Release，加入当前版本的分段计时构建。六种启动顺序下，混合变更帧均有 24 次字体栅格化。绘字占栅格化耗时的 53%–57%，布局占 27%–30%；普通计时 CPU 降幅为 26.5%，50% Gate 仍未通过。[数据与计时边界](./native-2d-m6-performance.md#当前候选的字体准备耗时)
   - [x] Windows GDI 在相同字体和文本下复用上一次测量，切换字体或恢复 DC 时清空。六轮交错实测，混合变更帧中位数为迁移前 5.1198、改动前 4.2558、候选 3.9670 ms/帧，候选在三轮逐对更快。CPU Gate 仍待签收。[逐轮证据与微基准](./native-2d-m6-gdi-measure-performance.json)
   - [x] 同帧单行 Label 复用。固定混合变更帧六轮中位数的 CPU 下降 61.8%，JSB 次数下降 77.5%，JS 堆峰值下降 43.2%，强制 GC 从 6.5685 降至 4.6475 ms。每帧 24 次请求命中 22 次，独立文本负载每帧零命中。[性能和逐像素验证](./native-2d-m6-performance.md#windows-同帧复用单行-label-的栅格像素)
-- [x] M0 和 native-ts-build 检查 Native override、TS 帧方法、渲染数据分配和热路径依赖。UIRenderer、LabelOutline、LabelShadow 沿用共享实现，其 2D 依赖也纳入审计。
+- [x] 本机 M0 薄壳检查覆盖 Native override、TS 帧方法、渲染数据分配和热路径依赖。UIRenderer、LabelOutline、LabelShadow 沿用共享实现，其 2D 依赖也纳入审计。
 - [x] Windows Debug/Release 各完成 14 组场景的创建、稳态、显式 API、同步变更、下一帧、禁用、启用和延迟销毁统计。224 个窗口逐个校验 V8 原生总数；两种配置的迁移类直接调用数逐格一致，稳态为 0，共享 manager 每帧 1 次。[逐组计数与覆盖边界](./native-2d-m6.0-windows-jsb-trace.md)
 - [x] 六种独立资产的创建、同步属性变更、destroy 与三帧延迟清理，在 Windows Debug/Release 共 48 个窗口通过 V8 总数校验；记录 TTF 数据释放、位图字体帧解绑和共享资源存活。[逐资产调用与边界](./native-2d-m6.0-windows-jsb-trace.md)
 - [x] 迁移组件稳态每帧 JSB 调用 0；属性变更、生命周期和用户显式 API 调用单独统计。
   - Label 的序列化访问器及字体、材质、CHAR 引用桥接在 TS；排版、几何、字形栅格化与上传由原生 Label 完成。RichText 在 TS 保存序列化数据和触摸监听，命中后先保存原生返回的回调名与参数，再遍历命中段与组件派发事件；解析、排版和命中测试由原生执行。两壳的逐帧渲染方法和渲染缓冲分配已纳入静态检查，33 项通过。Web RichText 和两个原生壳的 3 组 Jest 共 15 项通过。调用与配置证据见[组件](./native-2d-m6-jsb-lifecycle.json)、[资产](./native-2d-m6-jsb-assets.json)。本项覆盖薄壳约束，独立的组件行为与字体视觉门禁继续验收。
-- [x] 17 个迁移或保留类的 2D 运行时导入闭包已接入薄壳检查和现有 native-ts-build 测试。Windows Debug 部署包逐块匹配 SHA256，78 个 2D 模块中 55 个产生代码，Web Sprite、Label assembler 和 Graphics WebGL 实现均为 0 字节。公共 utils 入口仍导出 html-text-parser（13308 字节）和 text-utils（13330 字节），17 类的 2D 内部依赖链均未导入它们。部署 cc.js 为 `4702081743c4e25996b2815a2ba2266a510c68133e2e2ef260ca03e921b226d5`。源码检查 13 项与审计测试 6 项通过。闭包边界外的回流与实际每帧调用仍待验证。
+- [x] 17 个迁移或保留类的 2D 运行时导入闭包由本机薄壳检查覆盖。Windows Debug 部署包逐块匹配 SHA256，78 个 2D 模块中 55 个产生代码，Web Sprite、Label assembler 和 Graphics WebGL 实现均为 0 字节。公共 utils 入口仍导出 html-text-parser（13308 字节）和 text-utils（13330 字节），17 类的 2D 内部依赖链均未导入它们。部署 cc.js 为 `4702081743c4e25996b2815a2ba2266a510c68133e2e2ef260ca03e921b226d5`。源码检查 13 项与审计测试 6 项通过。闭包边界外的回流与实际每帧调用仍待验证。
 - [ ] 扩展现有 `check-thin-shell.js` 等检查，覆盖全部迁移类和间接热路径；用本机 Web TS/Jest、native TS、Windows 双配置构建和完整应用场景提供证据。
-  - [x] Release 功能组合在 CI 检查所有 Rollup 输出 chunk 的 Web assembler 保留字节数。Windows 9 个组合均为 0；Web 的 8 个 2D 组合保留 159767 或 195159 字节。把真实 Web 全量报告交给 Windows 检查器会报错，测试还覆盖仅在异步 chunk 中保留的 assembler。本机 native TS、Web TS、198 组 Web Jest 和 Windows 双配置各六组 JSB 探针通过。[18 个构建结果](./native-2d-m6-feature-matrix.json)
+  - [x] 本机 Release 功能组合检查所有 Rollup 输出 chunk 的 Web assembler 保留字节数。Windows 9 个组合均为 0；Web 的 8 个 2D 组合保留 159767 或 195159 字节。把真实 Web 全量报告交给 Windows 检查器会报错，测试还覆盖仅在异步 chunk 中保留的 assembler。本机 native TS、Web TS、198 组 Web Jest 和 Windows 双配置各六组 JSB 探针通过。[18 个构建结果](./native-2d-m6-feature-matrix.json)
   - [x] 已对 14 个迁移类逐一检查 native override、TS 帧方法和渲染数据分配。本机薄壳检查 57 项通过。在内存中的 SpriteAtlas 源码加入 `lateUpdate` 和 `new Float32Array` 后，两种违规均被检出。
   - [x] 薄壳帧方法检查覆盖 JSB 原型赋值、类字段和字符串字面量方法名。[回归用例](../tests/scripts/native-2d-audit.test.cjs)在旧检查器上漏报四个钩子，修改后按源码顺序检出全部四个，读取、比较和调用已有方法均通过检查。
-  - [x] Windows Debug/Release 工作流加入 Chrome 同字体对照。正体和斜体 72 项在本机均通过，修复前程序触发其中 27 项失败。报告同时记录 36 项合成粗体结果。
-  - [x] Windows CI 独立检查 Thonburi 合成粗体 I。四个字号各 64 个分数起点，本机 Debug 和 Release 各有 256 张字形与 Chrome 逐字节一致。关闭边缘量化和矩形覆盖处理的负例有 256 张不同，检查以失败退出。每种配置归档按字号的哈希、通过数及最大 alpha 差。[检查入口](../native/tests/2d-poc/compare-ttf-origins.cjs)
+  - [x] 本机 Windows Debug/Release 运行 Chrome 同字体对照。正体和斜体 72 项在本机均通过，修复前程序触发其中 27 项失败。报告同时记录 36 项合成粗体结果。
+  - [x] 本机独立检查 Thonburi 合成粗体 I。四个字号各 64 个分数起点，本机 Debug 和 Release 各有 256 张字形与 Chrome 逐字节一致。关闭边缘量化和矩形覆盖处理的负例有 256 张不同，检查以失败退出。每种配置归档按字号的哈希、通过数及最大 alpha 差。[检查入口](../native/tests/2d-poc/compare-ttf-origins.cjs)
   - [x] SIMPLE Sprite 的[四边形对照](../native/tests/2d-poc/run-sprite-quad-parity.ps1)读取 Web assembler 实际写入的 UV 和索引区间，并按各端提交的索引栅格化。Windows Debug/Release 对 Web 各 13 项通过，100×100 图像逐像素一致。将 Web 索引全部置零会产生 10000 个差异像素；单独颠倒绕序或改变 UV，即使纯色图像相同也会判为失败。
-  - native-ts-build 的 PR 检查已接入位图字体布局和径向 Sprite 的 C++/Web assembler 对照。本机运行同一对入口，2327 个布局和 3024 个几何用例通过；Windows 完整应用矩阵另行验收。
-  - [x] [Windows PR 矩阵](../.github/workflows/native-ts-build.yml)分别构建 Debug/Release 引擎、生成 SWIG 绑定并运行[六组 JSB 用例](../native/tests/2d-poc/run-windows-jsb-probes.ps1)，覆盖 renderer manager、Sprite API、SpriteAtlas、字体资产、布局和 RichText。每次运行同时检查场景记录的节点挂接。两种配置均在本机从空目录编译通过，六组用例与 SIMPLE Sprite 对 Web 的 13 项检查全部通过。Web 全量检查通过 TypeScript 编译和 197 组 Jest（1467 项通过、8 项跳过、16 项待实现），native TS 编译通过。完整应用场景仍待签收。
+  - 本机单独运行位图字体布局和径向 Sprite 的 C++/Web assembler 对照，2327 个布局和 3024 个几何用例通过；Windows 完整应用矩阵另行验收。
+  - [x] 本机分别构建 Windows Debug/Release 引擎、生成 SWIG 绑定并运行[六组 JSB 用例](../native/tests/2d-poc/run-windows-jsb-probes.ps1)，覆盖 renderer manager、Sprite API、SpriteAtlas、字体资产、布局和 RichText。每次运行同时检查场景记录的节点挂接。两种配置均在本机从空目录编译通过，六组用例与 SIMPLE Sprite 对 Web 的 13 项检查全部通过。Web 全量检查通过 TypeScript 编译和 197 组 Jest（1467 项通过、8 项跳过、16 项待实现），native TS 编译通过。完整应用场景仍待签收。
   - 历史候选 `68af105c8d` 的 Windows Debug、Release 完整原生测试各通过 3 次，每次完成 1000 轮字体别名生命周期。字体资产、布局、RichText、Sprite API、SpriteAtlas 和 Graphics 几何的脚本均从构建子目录启动通过。Web 和 native TypeScript、全量 1480 项 Jest 和 57 项薄壳检查通过。[本机复测数据](./native-2d-m6-label-ttf-canvas-size.json)
 - 历史记录 `68af105c8d` 包含当时的组件级 TS 回退与恢复。最终候选验收使用默认 Native 实现和现行 Web 对照。[历史快照与部署包指纹](./native-2d-m6-candidate-recheck.json)
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
