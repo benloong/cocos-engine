@@ -14,7 +14,7 @@
 
 ## 1. 已有基础与验收边界
 
-2026-11-23 在 `5cdc896f3c` 重新执行本机验收。Windows 双配置原生测试与完整应用、Windows/Web 场景及引擎包构建成功，Web/Native TypeScript、基础静态检查及 Release 六组 JSB 探针通过。同候选六对交错性能采样的四项门槛通过，混合变更帧 CPU、JSB、JS 堆峰值和强制 GC 分别下降 52.5%、77.5%、41.9% 和 34.5%。原始全量 Jest 有 25 项失败，范围调整后需逐项核对其中 JSB／Native 断言。位图字体跨端布局及 Web 应用失败保留为范围外参考。Debug Label 透明度、Graphics 双配置应用以及 Release RichText 失败仍为 Native 阻断项。M6.4 平台矩阵和 M6.5 最终签收继续待办。当前结果与未重跑的功能裁剪、调用追踪、ASan 及文档工程门禁见 [M6 Gate](./native-2d-m6-gate.md#当前候选-5cdc896f3c-的本机复验)。
+2026-11-23 在 `5cdc896f3c` 重新执行本机验收。Windows 双配置原生测试与完整应用、Windows/Web 场景及引擎包构建成功，Web/Native TypeScript、基础静态检查及 Release 六组 JSB 探针通过。同候选六对交错性能采样的四项门槛通过，混合变更帧 CPU、JSB、JS 堆峰值和强制 GC 分别下降 52.5%、77.5%、41.9% 和 34.5%。原始全量 Jest 有 25 项失败，范围调整后的 Native 定向修复已逐项验证并提交。干净提交快照中的 8 个 Native Jest 套件共 63 项通过，六组 Debug JSB 探针通过。MSVC/Ninja 依赖前缀修复后，干净重建的 Label 透明度、Graphics 双配置及 Release RichText 检查均通过。Graphics 两种配置各完成 175 张捕获，RichText 各完成 62 张捕获和 1000 轮字体生命周期。Web 及跨端差异保留为范围外参考。M6.4 平台矩阵和 M6.5 最终签收继续待办。当前结果与未重跑的功能裁剪、调用追踪、ASan 及文档工程门禁见 [M6 Gate](./native-2d-m6-gate.md#当前候选-5cdc896f3c-的本机复验)。
 
 | 阶段 | 已有记录 | 留给 M6 的边界 |
 |---|---|---|

@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**NO-GO。** 2026-11-23 对候选 `5cdc896f3c` 重新进行本机验收，Windows Debug Label 透明度、Graphics 双配置应用及 RichText Release 存在失败。现有 Web 实现已按用户决定退出 M6 验收，原始全量 Jest 和跨端对照结果按下述范围重新解释。M6.4 平台矩阵和 M6.5 最终签收继续待办。`68af105c8d` 的应用、回退、裁剪与性能结果保留为历史记录。
+**NO-GO。** 2026-11-23 已列出的 JSB／Native 定向失败已完成修复复验。Jest 入口修正后通过 63 项 Native 检查，Windows Debug Label 透明度、Graphics 双配置和 RichText Release 在干净重建后通过。旧增量构建遗漏头文件依赖的问题已修复。M6.4 完整矩阵、Native 裁剪、调用追踪、ASan、文档工程 Windows 门禁及 M6.5 最终签收继续待办。现有 Web 实现退出 M6 验收，历史结果继续保留。
 
 验收范围为 Windows Debug、Windows Release 的 JSB 薄层和 Native 实现。JSB + Native 禁用动态合图。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
 
@@ -14,7 +14,7 @@
 
 ## 当前候选 5cdc896f3c 的本机复验
 
-源码基于 `5cdc896f3ccd5ab552a090a9e61328f98dea33a2`。Windows Debug、Release 原生测试程序与完整应用均完成重建，Graphics、RichText 的 Windows/Web 场景资源及四份当前引擎包均构建成功。本机记录见[候选复验数据](./native-2d-m6-candidate-recheck.json)中的 `localRechecks`。
+源码基于 `5cdc896f3ccd5ab552a090a9e61328f98dea33a2`。Windows Debug、Release 原生测试程序与完整应用均完成重建，Graphics、RichText 的 Windows/Web 场景资源及四份当前引擎包均构建成功。本机记录见[候选复验数据](./native-2d-m6-candidate-recheck.json)中的 `localRechecks`。以下保留修复前的原始结果，修复后的定向验证见下一节。
 
 | 项目 | 本轮结果 |
 |---|---|
@@ -26,7 +26,23 @@
 | RichText 完整应用 | Debug 完成 62 张捕获与 1000 轮字体加载释放，HTTP 断流、取消续传和重试通过。Release 在激活期间重建后未恢复。Web 字体重试后宽度仍为 108 的结果归为范围外观察。Native 双配置的独立视觉与生命周期签收仍待完成。 |
 | 同候选性能 | Windows Release 对迁移前 `7e83734299` 完成六对交错采样，Web 完成 12 项负载。混合变更帧 CPU 为 4.30625 → 2.043675 ms/帧，下降 52.5%；JSB 为 876 → 197 次/帧，下降 77.5%；JS 堆峰值为 30,044,958 → 17,458,212 字节，下降 41.9%；强制 GC 为 6.9365 → 4.5440 ms，下降 34.5%。四项性能门槛通过，GC 六对中五对改善。比较器已核对 29 份场景资源、V8 DLL 和渲染器一致，计时包含 Native 脏队列刷新。 |
 
-本轮采用现行格式和默认 Native 路径。此前候选的图像、裁剪和调用追踪结果继续作为阶段记录，当前候选范围内的失败项及尚未重跑的 Native 功能裁剪、调用追踪、ASan 和文档工程 Windows 门禁继续待签收。
+本轮采用现行格式和默认 Native 路径。此前候选的图像、裁剪和调用追踪结果继续作为阶段记录，已列出的 Native 失败项已完成下述定向复验，尚未重跑的 Native 功能裁剪、调用追踪、ASan 和文档工程 Windows 门禁继续待签收。
+
+## 已提交修复与定向复验
+
+| 修复 | 提交 | 验证 |
+|---|---|---|
+| Native 字体壳测试使用 JSB 分支 | `b11d592dac` | 普通与 JIT 两套共 41 项通过。 |
+| Native 资产工厂异常处理测试使用 JSB 分支 | `efae6564c9` | 5 项通过，覆盖异常通知、迟到回调、重复完成及重入。 |
+| nullable 反序列化测试使用 JSB 分支 | `5f05528228` | 普通与 JIT 两套共 7 项通过。 |
+| Native 字体创建失败用例隔离平台与原生销毁钩子 | `3b2a52ee67` | 两项通过，真实 Native 字体探针另验证失败释放和重试。 |
+| 多边形混合用例使用独立 Native 期望 | `0072f9c8c1` | 7 项 Native 检查通过，验证顶点、索引、UV、Z 边界及克隆独立性。 |
+| 补充平面字形独立指标检查 | `4be65d470b` | 四种溢出模式通过。U+1F642 的步进 17、缩放 0.5，对应行宽 8.5。 |
+| 修复 Ninja 的 MSVC 头文件依赖前缀解码 | `4773a636bb`、`d91cd90f12` | 按原始字节提取前缀，英文／中文及两种路径分隔符四组检查通过。测试入口记录 616 个头文件依赖，头文件变更可触发重编译。 |
+
+在干净提交快照 `4773a636bb` 中，8 个 Native Jest 套件共 63 项通过，11 项 Web／跨端参考检查排除，六组真实 Debug JSB 探针通过。Windows Debug、Release 的完整图形应用各完成 175 张捕获、22 个命中检查、11 个根节点检查和 1000 轮场景循环。两个配置的 RichText 各完成 62 张捕获、1000 轮字体加载释放及 HTTP 断流、取消续传和重试，原有激活重建失败已消除。Native 双配置共 237 对图像逐张字节一致，已归档每张图像的 SHA-256。
+
+本轮已提交的 TS/C++ 运行时源码与 `5cdc896f3c` 相同，应用复用了该版本的既有验收引擎包，C++ 在独立空目录重建。验证过程的引擎包与二进制指纹、日志和捕获记录见[复验数据](./native-2d-m6-candidate-recheck.json)中的 `fixRechecks`。本轮定向结果覆盖上述失败项，完整 M6 最终签收继续待办。
 
 ## 此前阶段结果
 
