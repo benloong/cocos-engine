@@ -1,6 +1,11 @@
 import { Asset } from '../../cocos/asset/assets/asset';
 import { Factory } from '../../cocos/asset/asset-manager/factory';
 import { assets } from '../../cocos/asset/asset-manager/shared';
+import * as constants from 'internal:constants';
+
+const previousJSB = constants.JSB;
+beforeAll(() => { (constants as any).JSB = true; });
+afterAll(() => { (constants as any).JSB = previousJSB; });
 
 test('a producer exception completes all joined requests and permits a same-ID retry', () => {
     const factory = new Factory();
