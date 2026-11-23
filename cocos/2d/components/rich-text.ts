@@ -789,7 +789,7 @@ export class RichText extends Component {
         this._segments.forEach((seg) => {
             const clickHandler = seg.clickHandler;
             const clickParam = seg.clickParam;
-            if (clickHandler && this._containsTouchLocation(seg, event._hitTestWorldPoint ?? event.touch!.getUILocation())) {
+            if (clickHandler && this._containsTouchLocation(seg, (NATIVE ? event._hitTestWorldPoint : null) ?? event.touch!.getUILocation())) {
                 components.forEach((component) => {
                     const func = component[clickHandler];
                     if (component.enabledInHierarchy && func) {
@@ -1358,8 +1358,10 @@ this._measureText(styleIndex) as unknown as (s: string) => number,
         label.isBold = false;
         label.isItalic = false;
         label.isUnderline = false;
-        label.enableOutline = false;
-        label.outlineWidth = 0;
+        if (NATIVE) {
+            label.enableOutline = false;
+            label.outlineWidth = 0;
+        }
     }
 }
 

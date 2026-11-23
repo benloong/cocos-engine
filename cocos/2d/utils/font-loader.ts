@@ -22,8 +22,8 @@
  THE SOFTWARE.
 */
 
-import { warnID } from '../../core';
 import { JSB } from 'internal:constants';
+import { warnID } from '../../core';
 import { buildFontDesc, quoteFontFamily } from './font-family';
 import downloader from '../../asset/asset-manager/downloader';
 import factory from '../../asset/asset-manager/factory';
@@ -33,27 +33,12 @@ import { ccwindow } from '../../core/global-exports';
 const ccdocument = ccwindow.document;
 
 type FontCallback = (err: Error | null, family?: string) => void;
-export interface BrowserFontLease {
-    readonly family: string;
-    release (): void;
-}
-export interface BrowserFont {
-    readonly name: string;
-    readonly family: string;
-    retain (): BrowserFontLease;
-}
-type FontData = string | BrowserFont;
-type FontDataCallback = (err: Error | null, data?: FontData) => void;
-
-// The native DOM declarations omit the browser's CSS Font Loading API.
-interface LoadableFontFace {
-    load (): Promise<LoadableFontFace>;
-}
 
 interface IFontLoadHandle {
+    fontFamilyName: string;
     fontDesc: string;
     refWidth: number;
-    onComplete: (loaded: boolean) => void;
+    onComplete: FontCallback;
     startTime: number;
 }
 
@@ -62,9 +47,7 @@ let _intervalId = -1;
 // letter symbol number CJK
 const _testString = 'BES bswy:->@123\u4E01\u3041\u1101';
 
-const _pendingFaces = new Map<string, FontDataCallback[]>();
-const _fontFaces = new Map<string, BrowserFont>();
-let browserFamilySerial = 0;
+const _fontFaces = Object.create(null);
 
 const _loadingFonts: IFontLoadHandle[] = [];
 // 3 seconds timeout
@@ -96,14 +79,17 @@ const useNativeCheck = ((): () => boolean => {
 })();
 
 function checkFontLoaded (): void {
+    let allFontsLoaded = true;
     const now = Date.now();
 
     for (let i = _loadingFonts.length - 1; i >= 0; i--) {
         const fontLoadHandle = _loadingFonts[i];
+        const fontFamily = fontLoadHandle.fontFamilyName;
         // load timeout
         if (now - fontLoadHandle.startTime > _timeout) {
+            warnID(4933, fontFamily);
+            fontLoadHandle.onComplete(null, fontFamily);
             _loadingFonts.splice(i, 1);
-            fontLoadHandle.onComplete(false);
             continue;
         }
 
@@ -114,109 +100,65 @@ function checkFontLoaded (): void {
         // loaded successfully
         if (oldWidth !== newWidth) {
             _loadingFonts.splice(i, 1);
-            fontLoadHandle.onComplete(true);
+            fontLoadHandle.onComplete(null, fontFamily);
+        } else {
+            allFontsLoaded = false;
         }
     }
 
-    if (!_loadingFonts.length) {
+    if (allFontsLoaded) {
         clearInterval(_intervalId);
         _intervalId = -1;
     }
 }
 
-function prepareFontFace (key: string, name: string, family: string, attach: () => void, detach: () => void): BrowserFont {
-    let owners = 0;
-    const font: BrowserFont = {
-        name,
-        family,
-        retain (): BrowserFontLease {
-            const active = _fontFaces.get(key);
-            if (active && active !== font) return active.retain();
-            if (!active) {
-                // Preloaded data stays detached until a TTFFont adopts it.
-                attach();
-                _fontFaces.set(key, font);
-            }
-            ++owners;
-            let released = false;
-            return {
-                family,
-                release (): void {
-                    if (released) return;
-                    released = true;
-                    if (--owners === 0) {
-                        _fontFaces.delete(key);
-                        detach();
+// refer to https://github.com/typekit/webfontloader/blob/master/src/core/nativefontwatchrunner.js
+function nativeCheckFontLoaded (start: number, font: string, fontDesc: string, callback: FontCallback): void {
+    const loader = new Promise<void>((resolve, reject) => {
+        const check = (): void => {
+            const now = Date.now();
+
+            if (now - start >= _timeout) {
+                reject();
+            } else {
+                (ccdocument as any).fonts.load(fontDesc).then((fonts) => {
+                    if (fonts.length >= 1) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 100);
                     }
-                },
-            };
-        },
-    };
-    return font;
+                }, () => {
+                    reject();
+                });
+            }
+        };
+
+        check();
+    });
+
+    let timeoutId: number | null = null;
+    const timer = new Promise((resolve, reject) => {
+        timeoutId = setTimeout(reject, _timeout);
+    });
+
+    Promise.race([timer, loader]).then(() => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+
+        callback(null, font);
+    }, () => {
+        warnID(4933, font);
+        callback(null, font);
+    });
 }
 
 export function loadFont (url: string, options: Record<string, any>, onComplete: FontCallback): void {
-    loadFontData(url, false, (err, data) => onComplete(err, typeof data === 'string' ? data : data?.family));
-}
-
-function loadFontAsset (url: string, options: Record<string, any>, onComplete: FontDataCallback): void {
-    loadFontData(url, true, onComplete);
-}
-
-function loadFontData (url: string, browserAsset: boolean, onComplete: FontDataCallback): void {
-    const name = getFontFamily(url);
-    const key = browserAsset ? `source:${url}` : `family:${name}`;
-    const existing = _fontFaces.get(key);
-    if (existing) {
-        onComplete(null, existing);
-        return;
-    }
-    const pending = _pendingFaces.get(key);
-    if (pending) {
-        pending.push(onComplete);
-        return;
-    }
-
-    const callbacks = [onComplete];
-    // A new source or reload must not reuse another font's Canvas measurement cache key.
-    const fontFamilyName = browserAsset ? `__cocos_font_${++browserFamilySerial}` : name;
-    _pendingFaces.set(key, callbacks);
-    const finish = (prepared?: BrowserFont): void => {
-        _pendingFaces.delete(key);
-        const font = _fontFaces.get(key) ?? prepared;
-        if (!font) warnID(4933, name);
-        for (const callback of callbacks) callback(null, font ?? fontFamilyName);
-    };
-    const completeFace = (attach: () => void, detach: () => void): void => {
-        const font = prepareFontFace(key, name, fontFamilyName, attach, detach);
-        if (!browserAsset) {
-            attach();
-            _fontFaces.set(key, font);
-        }
-        finish(font);
-    };
-    if (useNativeCheck()) {
-        // A fresh FontFace can reload the original URL after a failed document stylesheet fetch.
-        const timeout = setTimeout(finish, _timeout);
-        const settle = (face?: LoadableFontFace): void => {
-            if (_pendingFaces.get(key) !== callbacks) return;
-            clearTimeout(timeout);
-            if (face) {
-                const fonts = (ccdocument as Document & { fonts: {
-                    add (value: LoadableFontFace): void;
-                    delete (value: LoadableFontFace): void;
-                } }).fonts;
-                completeFace(() => fonts.add(face), () => fonts.delete(face));
-            } else {
-                finish();
-            }
-        };
-        try {
-            const face = new ccwindow.FontFace(fontFamilyName, `url(${JSON.stringify(url)})`);
-            face.load().then(() => settle(face), () => settle());
-        } catch {
-            settle();
-        }
+    const fontFamilyName = getFontFamily(url);
+    // Already loaded fonts
+    if (_fontFaces[fontFamilyName]) {
+        onComplete(null, fontFamilyName);
         return;
     }
 
@@ -249,25 +191,25 @@ function loadFontData (url: string, browserAsset: boolean, onComplete: FontDataC
     divStyle.top = '-100px';
     ccdocument.body.appendChild(preloadDiv);
 
-    _canvasContext!.font = fontDesc;
-    _loadingFonts.push({
-        fontDesc,
-        refWidth: _canvasContext!.measureText(_testString).width,
-        startTime: Date.now(),
-        onComplete: (loaded: boolean): void => {
-            preloadDiv.parentNode?.removeChild(preloadDiv);
-            const detach = (): void => { fontStyle.parentNode?.removeChild(fontStyle); };
-            if (browserAsset || !loaded) detach();
-            if (loaded) {
-                completeFace(() => {
-                    if (!fontStyle.parentNode) ccdocument.body.appendChild(fontStyle);
-                }, detach);
-            } else {
-                finish();
-            }
-        },
-    });
-    if (_intervalId === -1) _intervalId = setInterval(checkFontLoaded, 100);
+    if (useNativeCheck()) {
+        nativeCheckFontLoaded(Date.now(), fontFamilyName, fontDesc, onComplete);
+    } else {
+        _canvasContext!.font = fontDesc;
+        const refWidth = _canvasContext!.measureText(_testString).width;
+        // Save loading font
+        const fontLoadHandle = {
+            fontFamilyName,
+            fontDesc,
+            refWidth,
+            onComplete,
+            startTime: Date.now(),
+        };
+        _loadingFonts.push(fontLoadHandle);
+        if (_intervalId === -1) {
+            _intervalId = setInterval(checkFontLoaded, 100);
+        }
+    }
+    _fontFaces[fontFamilyName] = fontStyle;
 }
 
 export function getFontFamily (fontHandle: string): string {
@@ -284,33 +226,35 @@ export function getFontFamily (fontHandle: string): string {
     return fontFamilyName;
 }
 
-function createFont (id: string, data: FontData, options: Record<string, any>, onComplete: ((err: Error | null, data?: TTFFont | null) => void)): void {
-    let out: TTFFont | null = null;
-    try {
-        out = new TTFFont();
-        out._nativeUrl = id;
-        out._nativeAsset = data;
-        const nativeFont = out as TTFFont & { getFontDataSize?: () => number };
-        if (nativeFont.getFontDataSize && !nativeFont.getFontDataSize()) {
-            throw new Error(`Font data unavailable: ${id}`);
+function createFont (id: string, data: string, options: Record<string, any>, onComplete: ((err: Error | null, data?: TTFFont | null) => void)): void {
+    const out = new TTFFont();
+    out._nativeUrl = id;
+    if (JSB) {
+        try {
+            out._nativeAsset = data;
+            const nativeFont = out as TTFFont & { getFontDataSize?: () => number };
+            if (nativeFont.getFontDataSize && !nativeFont.getFontDataSize()) {
+                throw new Error(`Font data unavailable: ${id}`);
+            }
+        } catch (error) {
+            out.destroy();
+            onComplete(error instanceof Error ? error : new Error(String(error)), null);
+            return;
         }
-    } catch (error) {
-        out?.destroy();
-        onComplete(error instanceof Error ? error : new Error(String(error)), null);
-        return;
+    } else {
+        out._nativeAsset = data;
     }
     onComplete(null, out);
 }
 
-const downloadFont = JSB ? loadFont : loadFontAsset;
 downloader.register({
     // font
-    '.font': downloadFont,
-    '.eot': downloadFont,
-    '.ttf': downloadFont,
-    '.woff': downloadFont,
-    '.svg': downloadFont,
-    '.ttc': downloadFont,
+    '.font': loadFont,
+    '.eot': loadFont,
+    '.ttf': loadFont,
+    '.woff': loadFont,
+    '.svg': loadFont,
+    '.ttc': loadFont,
 });
 
 factory.register({

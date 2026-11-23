@@ -437,8 +437,7 @@ export class Mask extends Component {
         }
         this._sprite!.stencilStage = this.inverted ? Stage.ENTER_LEVEL_INVERTED : Stage.ENTER_LEVEL;
         this._sprite!.updateMaterial();
-        // A new/refreshed stencil material must reflect the component default too.
-        this._sprite!.getMaterialInstance(0)?.setProperty('alphaThreshold', this._alphaThreshold);
+        if (JSB) this._sprite!.getMaterialInstance(0)?.setProperty('alphaThreshold', this._alphaThreshold);
     }
 
     protected _createGraphics (): void {

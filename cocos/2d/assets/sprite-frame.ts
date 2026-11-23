@@ -25,11 +25,9 @@
  THE SOFTWARE.
 */
 
-import { cloneFrameVertices, deserializeFrameVertices, serializeFrameVertices, type IVertices, type IVerticesSerialize } from './sprite-frame-vertices';
-import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { ccclass } from 'cc.decorator';
 import { EDITOR, NODEJS, TEST, BUILD } from 'internal:constants';
-import { Rect, Size, Vec2, Vec3, Vec4, cclegacy, errorID, warnID, isValid, js, v3, mat4, rect, v4, v2, size } from '../../core';
+import { Rect, Size, Vec2, Vec3, Vec4, cclegacy, errorID, warnID, js, v3, mat4, rect, v4, v2, size } from '../../core';
 import { Asset } from '../../asset/assets/asset';
 import { TextureBase } from '../../asset/assets/texture-base';
 import { ImageAsset, ImageSource } from '../../asset/assets/image-asset';
@@ -44,7 +42,6 @@ const INSET_LEFT = 0;
 const INSET_TOP = 1;
 const INSET_RIGHT = 2;
 const INSET_BOTTOM = 3;
-const temp_meshUV: number[] = [];
 const temp_vec3 = v3();
 const temp_matrix = mat4();
 
@@ -62,6 +59,25 @@ enum MeshType {
 export interface IUV {
     u: number;
     v: number;
+}
+
+interface IVertices {
+    rawPosition: Vec3[]; // Original position of the vertex, pixel value
+    positions: number[]; // The position of the vertex after being affected by the attribute
+    indexes: number[]; // IB
+    uv: number[]; // Pixel uv value
+    nuv: number[]; // Normalized uv value
+    minPos: Vec3;
+    maxPos: Vec3;
+}
+
+interface IVerticesSerialize { // hack for format
+    rawPosition: number[];
+    indexes: number[];
+    uv: number[];
+    nuv: number[];
+    minPos: Vec3;
+    maxPos: Vec3;
 }
 
 interface ISpriteFramesSerializeData {
@@ -811,7 +827,8 @@ export class SpriteFrame extends Asset {
         if (info) {
             if (info.texture) {
                 self._rect.set(0, 0, info.texture.width, info.texture.height);
-                self._refreshTexture(info.texture, false);
+                self._refreshTexture(info.texture);
+                self.checkRect(self._texture);
             }
 
             if (info.originalSize) {
@@ -854,11 +871,10 @@ export class SpriteFrame extends Asset {
             calUV = true;
         }
 
-        self._calcTrimmedBorder();
         if (calUV && self.texture) {
-            if (self._mesh && (clearData || info?.rect || info?.texture)) self._updateMesh();
             self._calculateUV();
         }
+        self._calcTrimmedBorder();
     }
 
     /**
@@ -917,23 +933,17 @@ export class SpriteFrame extends Asset {
      * @zh 确保 mesh 可用，你应该在使用 mesh 之前调用它。
      */
     public ensureMeshData (): void {
-        if (!isValid(this)) return;
-        if (this._mesh) {
-            if (this._meshType === MeshType.POLYGON || !this._texture) return;
-            this._writeRectMeshUV(temp_meshUV, true);
-            if (temp_meshUV.every((uv, index) => uv === this.vertices!.nuv[index])) return;
-        }
-        this._updateMesh();
+        if (this._mesh) return;
+        // If SpriteFrame from load, we need init vertices when use mesh
+        this._initVertices();
+        this._createMesh();
     }
 
     public destroy (): boolean {
-        Atlas.releaseFrame(this);
+        if (this._packable && dynamicAtlasManager) {
+            dynamicAtlasManager.deleteAtlasSpriteFrame(this);
+        }
         return super.destroy();
-    }
-
-    protected _onPreDestroy (): void {
-        this._mesh?.destroy();
-        this._mesh = null;
     }
 
     /**
@@ -1013,42 +1023,114 @@ export class SpriteFrame extends Asset {
      * @mangle
      */
     public _calculateUV (): void {
-        const { x, y, width, height } = this._rect;
-        const { width: textureWidth, height: textureHeight } = this.texture;
-        const l = textureWidth === 0 ? 0 : x / textureWidth;
-        const r = textureWidth === 0 ? 1 : (x + (this._rotated ? height : width)) / textureWidth;
-        const t = textureHeight === 0 ? 0 : y / textureHeight;
-        const b = textureHeight === 0 ? 1 : (y + (this._rotated ? width : height)) / textureHeight;
-        this._writeQuadUV(this.uv, l, r, t, b);
-        this._writeQuadUV(this.unbiasUV, l, r, t, b);
-        this._calculateSlicedUV();
-    }
+        const arrayFill = js.array.fillItems;
+        const self = this;
+        const rect = self._rect;
+        const uv = self.uv;
+        const unbiasUV = self.unbiasUV;
+        const tex = self.texture;
+        const texw = tex.width;
+        const texh = tex.height;
 
-    private _writeQuadUV (target: number[], l: number, r: number, t: number, b: number): void {
-        if (this._isFlipUVX) { const u = l; l = r; r = u; }
-        if (this._isFlipUVY) { const v = t; t = b; b = v; }
-        if (this._rotated) {
-            js.array.fillItems(target, l, t, l, b, r, t, r, b);
-        } else {
-            js.array.fillItems(target, l, b, r, b, l, t, r, t);
-        }
-    }
+        if (self._rotated) {
+            const l = texw === 0 ? 0 : rect.x / texw;
+            const r = texw === 0 ? 1 : (rect.x + rect.height) / texw;
+            const t = texh === 0 ? 0 : rect.y / texh;
+            const b = texh === 0 ? 1 : (rect.y + rect.width) / texh;
 
-    private _writeRectMeshUV (target: number[], normalized: boolean): void {
-        const original = this._original;
-        const texture = original?._texture ?? this.texture;
-        const { width, height } = this._rect;
-        const left = original?._x ?? this._rect.x;
-        const right = left + (this._rotated ? height : width);
-        const top = texture.height - (original?._y ?? this._rect.y);
-        const bottom = top - (this._rotated ? width : height);
-        if (normalized) {
-            this._writeQuadUV(target, texture.width === 0 ? 0 : left / texture.width, texture.width === 0 ? 1 : right / texture.width,
-                texture.height === 0 ? 1 : top / texture.height, texture.height === 0 ? 0 : bottom / texture.height);
+            if (self._isFlipUVX && self._isFlipUVY) {
+                /*
+                3 - 1
+                |   |
+                2 - 0
+                */
+                arrayFill(uv, r, b, r, t, l, b, l, t);
+            } else if (self._isFlipUVX) {
+                /*
+                2 - 0
+                |   |
+                3 - 1
+                */
+                arrayFill(uv, r, t, r, b, l, t, l, b);
+            } else if (self._isFlipUVY) {
+                /*
+                1 - 3
+                |   |
+                0 - 2
+                */
+                arrayFill(uv, l, b, l, t, r, b, r, t);
+            } else {
+                /*
+                0 - 2
+                |   |
+                1 - 3
+                */
+                arrayFill(uv, l, t, l, b, r, t, r, b);
+            }
+
+            const ul = texw === 0 ? 0 : rect.x / texw;
+            const ur = texw === 0 ? 1 : (rect.x + rect.height) / texw;
+            const ut = texh === 0 ? 0 : rect.y / texh;
+            const ub = texh === 0 ? 1 : (rect.y + rect.width) / texh;
+            if (self._isFlipUVX && self._isFlipUVY) {
+                arrayFill(unbiasUV, ur, ub, ur, ut, ul, ub, ul, ut);
+            } else if (self._isFlipUVX) {
+                arrayFill(unbiasUV, ur, ut, ur, ub, ul, ut, ul, ub);
+            } else if (self._isFlipUVY) {
+                arrayFill(unbiasUV, ul, ub, ul, ut, ur, ub, ur, ut);
+            } else {
+                arrayFill(unbiasUV, ul, ut, ul, ub, ur, ut, ur, ub);
+            }
         } else {
-            // Preserve the legacy pixel V ordering. The sprite-renderer effect flips normalized V.
-            this._writeQuadUV(target, left, right, bottom, top);
+            const l = texw === 0 ? 0 : rect.x / texw;
+            const r = texw === 0 ? 1 : (rect.x + rect.width) / texw;
+            const b = texh === 0 ? 1 : (rect.y + rect.height) / texh;
+            const t = texh === 0 ? 0 : rect.y / texh;
+            if (self._isFlipUVX && self._isFlipUVY) {
+                /*
+                1 - 0
+                |   |
+                3 - 2
+                */
+                arrayFill(uv, r, t, l, t, r, b, l, b);
+            } else if (self._isFlipUVX) {
+                /*
+                3 - 2
+                |   |
+                1 - 0
+                */
+                arrayFill(uv, r, b, l, b, r, t, l, t);
+            } else if (self._isFlipUVY) {
+                /*
+                0 - 1
+                |   |
+                2 - 3
+                */
+                arrayFill(uv, l, t, r, t, l, b, r, b);
+            } else {
+                /*
+                2 - 3
+                |   |
+                0 - 1
+                */
+                arrayFill(uv, l, b, r, b, l, t, r, t);
+            }
+            const ul = texw === 0 ? 0 : rect.x / texw;
+            const ur = texw === 0 ? 1 : (rect.x + rect.width) / texw;
+            const ub = texh === 0 ? 1 : (rect.y + rect.height) / texh;
+            const ut = texh === 0 ? 0 : rect.y / texh;
+            if (self._isFlipUVX && self._isFlipUVY) {
+                arrayFill(unbiasUV, ur, ut, ul, ut, ur, ub, ul, ub);
+            } else if (self._isFlipUVX) {
+                arrayFill(unbiasUV, ur, ub, ul, ub, ur, ut, ul, ut);
+            } else if (self._isFlipUVY) {
+                arrayFill(unbiasUV, ul, ut, ur, ut, ul, ub, ur, ub);
+            } else {
+                arrayFill(unbiasUV, ul, ub, ur, ub, ul, ut, ur, ut);
+            }
         }
+
+        self._calculateSlicedUV();
     }
 
     /**
@@ -1082,7 +1164,6 @@ export class SpriteFrame extends Asset {
         this._rect.y = this._original._y;
         this._texture = this._original._texture;
         this._original = null;
-        Atlas.releaseFrame(this);
         this._calculateUV();
     }
 
@@ -1131,6 +1212,23 @@ export class SpriteFrame extends Asset {
                 }
             }
 
+            let vertices;
+            if (this.vertices) {
+                const posArray = [];
+                for (let i = 0; i < this.vertices.rawPosition.length; i++) {
+                    const pos = this.vertices.rawPosition[i];
+                    vec3ToArray(posArray, pos, 3 * i);
+                }
+                vertices = {
+                    rawPosition: posArray,
+                    indexes: this.vertices.indexes,
+                    uv: this.vertices.uv,
+                    nuv: this.vertices.nuv,
+                    minPos: { x: this.vertices.minPos.x, y: this.vertices.minPos.y, z: this.vertices.minPos.z },
+                    maxPos: { x: this.vertices.maxPos.x, y: this.vertices.maxPos.y, z: this.vertices.maxPos.z },
+                };
+            }
+
             const serialize = {
                 name: this._name,
                 atlas: ctxForExporting ? undefined : this._atlasUuid,  // strip from json if exporting
@@ -1139,7 +1237,7 @@ export class SpriteFrame extends Asset {
                 originalSize,
                 rotated: this._rotated,
                 capInsets: this._capInsets,
-                vertices: serializeFrameVertices(this.vertices),
+                vertices,
                 texture: (!ctxForExporting && texture) || undefined,
                 packable: this._packable,
                 pixelsToUnit: this._pixelsToUnit,
@@ -1182,7 +1280,7 @@ export class SpriteFrame extends Asset {
         if (pivot) {
             self._pivot = v2(pivot.x, pivot.y);
         }
-        self._meshType = data.meshType ?? MeshType.RECT;
+        self._meshType = data.meshType;
 
         const capInsets = data.capInsets;
         if (capInsets) {
@@ -1204,10 +1302,26 @@ export class SpriteFrame extends Asset {
             self._atlasUuid = data.atlas ? data.atlas : '';
         }
 
-        self._mesh?.destroy();
-        self._mesh = null;
-        self.vertices = data.vertices ? deserializeFrameVertices(data.vertices, self.vertices) : null;
-        if (self.vertices) self._updateMeshVertices();
+        const vertices = data.vertices;
+        if (vertices) {
+            if (!self.vertices) {
+                self.vertices = {
+                    rawPosition: [],
+                    positions: [],
+                    indexes: vertices.indexes,
+                    uv: vertices.uv,
+                    nuv: vertices.nuv,
+                    minPos: v3(vertices.minPos.x, vertices.minPos.y, vertices.minPos.z),
+                    maxPos: v3(vertices.maxPos.x, vertices.maxPos.y, vertices.maxPos.z),
+                };
+            }
+            self.vertices.rawPosition.length = 0;
+            const rawPosition = vertices.rawPosition;
+            for (let i = 0; i < rawPosition.length; i += 3) {
+                self.vertices.rawPosition.push(v3(rawPosition[i], rawPosition[i + 1], rawPosition[i + 2]));
+            }
+            self._updateMeshVertices();
+        }
     }
 
     /**
@@ -1217,7 +1331,16 @@ export class SpriteFrame extends Asset {
     public clone (): SpriteFrame {
         const self = this;
         const sp = new SpriteFrame();
-        sp.vertices = cloneFrameVertices(self.vertices);
+        const v = self.vertices;
+        sp.vertices = v ? {
+            rawPosition: v.rawPosition.slice(0),
+            positions: v.positions.slice(0),
+            indexes: v.indexes.slice(0),
+            uv: v.uv.slice(0),
+            nuv: v.nuv.slice(0),
+            minPos: v.minPos.clone(),
+            maxPos: v.maxPos.clone(),
+        } : null as any;
         sp.uv.splice(0, sp.uv.length, ...self.uv);
         sp.unbiasUV.splice(0, sp.unbiasUV.length, ...self.unbiasUV);
         sp.uvSliced.splice(0, sp.uvSliced.length, ...self.uvSliced);
@@ -1240,15 +1363,14 @@ export class SpriteFrame extends Asset {
         } else {
             sp._original = null;
         }
-        Atlas.trackClone(self, sp);
         sp._packable = self._packable;
         sp._pixelsToUnit = self._pixelsToUnit;
         sp._pivot.set(self._pivot);
         sp._meshType = self._meshType;
         sp._extrude = self._extrude;
         sp._customOutLine.splice(0, sp._customOutLine.length, ...self._customOutLine);
-        sp._minPos.set(self._minPos);
-        sp._maxPos.set(self._maxPos);
+        sp._minPos = self._minPos;
+        sp._maxPos = self._maxPos;
         if (self._mesh) {
             // Creates a new mesh, and 'this' creates the mesh in the same way. So we can make a copy like this.
             // It must be placed last because the mesh will depend on some of its members when it is created.
@@ -1257,23 +1379,33 @@ export class SpriteFrame extends Asset {
         return sp;
     }
 
-    protected _refreshTexture (texture: TextureBase, updateMesh = true): void {
+    protected _refreshTexture (texture: TextureBase): void {
         const self = this;
-        if (self._texture !== texture) {
-            self._original = null;
-            self._texture = texture;
-            Atlas.releaseFrame(self);
+        self._texture = texture;
+        const tex = self._texture;
+        const config: ISpriteFrameInitInfo = {};
+        let isReset = false;
+        if (self._rect.width === 0 || self._rect.height === 0 || !self.checkRect(tex)) {
+            config.rect = rect(0, 0, tex.width, tex.height);
+            isReset = true;
         }
-        const resetRect = self._rect.width === 0 || self._rect.height === 0 || !self.checkRect(texture);
-        if (resetRect) self._rect.set(0, 0, texture.width, texture.height);
-        if (resetRect || self._originalSize.width === 0 || self._originalSize.height === 0) {
-            self._originalSize.set(texture.width, texture.height);
+
+        // If original size is not set or rect check failed, we should reset the original size
+        if (self._originalSize.width === 0
+            || self._originalSize.height === 0
+            || isReset
+        ) {
+            config.originalSize = size(tex.width, tex.height);
+            isReset = true;
+        }
+
+        if (isReset) {
+            self.reset(config);
         }
 
         self._checkPackable();
-        if (updateMesh) {
-            self._calcTrimmedBorder();
-            if (self._mesh) self._updateMesh();
+        if (self._mesh) {
+            self._updateMesh();
         }
     }
 
@@ -1312,10 +1444,6 @@ export class SpriteFrame extends Asset {
 
     protected _initVertices (): void {
         const self = this;
-        if (self._meshType === MeshType.POLYGON && self.vertices) {
-            self._updateMeshVertices();
-            return;
-        }
         if (!self.vertices) {
             self.vertices = {
                 rawPosition: [],
@@ -1342,27 +1470,49 @@ export class SpriteFrame extends Asset {
         if (self._meshType === MeshType.POLYGON) {
             // Use Bayazit to generate vertices and assign values
         } else { // Rect mode
-            const halfWidth = self.rect.width / 2;
-            const halfHeight = self.rect.height / 2;
-            self._writeRectMeshUV(thisVertices.uv, false);
-            self._writeRectMeshUV(thisVertices.nuv, true);
+            // default center is 0.5，0.5
+            const tex = self.texture;
+            const texw = tex.width;
+            const texh = tex.height;
+            const rect = self.rect;
+            const width = rect.width;
+            const height = rect.height;
+            const rectX = rect.x;
+            const rectY = texh - rect.y - height;
+            const halfWidth = width / 2;
+            const halfHeight = height / 2;
 
+            const l = texw === 0 ? 0 : rectX / texw;
+            const r = texw === 0 ? 1 : (rectX + width) / texw;
+            const t = texh === 0 ? 1 : (rectY + height) / texh;
+            const b = texh === 0 ? 0 : rectY / texh;
+
+            const uv = thisVertices.uv;
+            const nuv = thisVertices.nuv;
             const rawPosition = thisVertices.rawPosition;
             const indexes = thisVertices.indexes;
 
             // left bottom
             temp_vec3.set(-halfWidth, -halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
+            uv.push(rectX, rectY + height);
+            nuv.push(l, b);
             thisVertices.minPos.set(temp_vec3);
             // right bottom
             temp_vec3.set(halfWidth, -halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
+            uv.push(rectX + width, rectY + height);
+            nuv.push(r, b);
             // left top
             temp_vec3.set(-halfWidth, halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
+            uv.push(rectX, rectY);
+            nuv.push(l, t);
             // right top
             temp_vec3.set(halfWidth, halfHeight, 0);
             rawPosition.push(temp_vec3.clone());
+            uv.push(rectX + width, rectY);
+            nuv.push(r, t);
             thisVertices.maxPos.set(temp_vec3);
 
             indexes.push(0, 1, 2, 2, 1, 3);

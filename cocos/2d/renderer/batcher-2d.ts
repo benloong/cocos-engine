@@ -225,7 +225,7 @@ export class Batcher2D implements IBatcher {
      *             @zh 2d 渲染入口组件。
      */
     public addScreen (comp: RenderRoot2D): void {
-        if (this._screens.includes(comp)) return;
+        if (JSB && this._screens.includes(comp)) return;
         this._screens.push(comp);
         this._screens.sort(this._screenSort);
         if (JSB) {
@@ -911,8 +911,6 @@ export class Batcher2D implements IBatcher {
         const children = node.children;
         const uiProps = node._uiProps;
         const render = uiProps.uiComp as UIRenderer | null;
-        const isMask = render && (render.stencilStage === Stage.ENTER_LEVEL || render.stencilStage === Stage.ENTER_LEVEL_INVERTED);
-        let maskStackSize = isMask ? StencilManager.sharedManager!.getMaskStackSize() : 0;
 
         // Save opacity
         const parentOpacity = this._pOpacity;
@@ -931,9 +929,8 @@ export class Batcher2D implements IBatcher {
             }
             if (render) {
                 if (USE_SORTING_2D && sorting2DCount > 0) {
-                    if (isMask) {
+                    if (render.stencilStage === Stage.ENTER_LEVEL || render.stencilStage === Stage.ENTER_LEVEL_INVERTED) {
                         this._flushRecordedUIRenderers();
-                        maskStackSize = StencilManager.sharedManager!.getMaskStackSize();
 
                         this.autoMergeBatches(this._currComponent!);
                         this.resetRenderStates();
@@ -967,14 +964,12 @@ export class Batcher2D implements IBatcher {
             if (!USE_SORTING_2D) {
                 render.postUpdateAssembler(this);
             }
-            if (visable && isMask) {
+            if (visable && (render.stencilStage === Stage.ENTER_LEVEL || render.stencilStage === Stage.ENTER_LEVEL_INVERTED)) {
                 if (USE_SORTING_2D && sorting2DCount > 0) {
                     this._flushRecordedUIRenderers();
                 }
 
-                // Empty renderers never enter a level. Only pop a level that
-                // this renderer added, preserving an enclosing mask.
-                if (StencilManager.sharedManager!.getMaskStackSize() > maskStackSize) {
+                if (StencilManager.sharedManager!.getMaskStackSize() > 0) {
                     this.autoMergeBatches(this._currComponent!);
                     this.resetRenderStates();
                     StencilManager.sharedManager!.exitMask();

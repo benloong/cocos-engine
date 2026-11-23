@@ -137,7 +137,7 @@ function compileDeserializeJIT (self: _Deserializer, klass: CCClassConstructor<u
         const userType = attrs[propName + POSTFIX_TYPE] as AnyFunction | string | undefined;
         // A null default can also represent a nullable primitive (for example
         // TTFFont._fontFamily); inspect the serialized value in that case.
-        if (fastMode && defaultValue !== null && (defaultValue !== undefined || userType)) {
+        if (fastMode && (!JSB || defaultValue !== null) && (defaultValue !== undefined || userType)) {
             const isPrimitiveTypeInFastMode = isPrimitivePropertyByDefaultOrType(defaultValue, userType);
             if (isPrimitiveTypeInFastMode) {
                 sources.push(`o${accessorToSet}=prop;`);
@@ -221,7 +221,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
                     advancedPropsToRead.push(propNameToRead);
                 }
                 advancedPropsValueType.push((defaultValue instanceof cclegacy.ValueType) && defaultValue.constructor);
-                advancedPropsNullable.push(defaultValue === null);
+                if (JSB) advancedPropsNullable.push(defaultValue === null);
             }
         }
     })();
@@ -239,7 +239,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
             if (prop === undefined) {
                 continue;
             }
-            if ((!fastMode || advancedPropsNullable[i]) && typeof prop !== 'object') {
+            if ((!fastMode || (JSB && advancedPropsNullable[i])) && typeof prop !== 'object') {
                 o[propName] = prop;
             } else {
                 // fastMode (so will not simpleProp) or object

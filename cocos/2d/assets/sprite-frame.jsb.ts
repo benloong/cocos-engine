@@ -22,7 +22,6 @@
  THE SOFTWARE.
 */
 
-import { Atlas } from '../utils/dynamic-atlas/atlas';
 import { cloneFrameVertices, deserializeFrameVertices, flattenFramePositions, serializeFrameVertices } from './sprite-frame-vertices';
 import { cclegacy, isValid, js, Rect, Size, Vec2, Vec3, Vec4 } from '../../core';
 import '../../asset/assets/asset';
@@ -88,7 +87,6 @@ spriteFrameProto._ctor = function () {
 function detachReplacedTexture (frame: any, texture: TextureBase | null): void {
     if (frame.getTexture() === texture) return;
     if (frame.hasDynamicAtlasFrame()) frame.resetDynamicAtlasFrame();
-    Atlas.releaseFrame(frame);
 }
 
 function createFrameMesh (frame: any, minPos: Vec3, maxPos: Vec3): void {
@@ -218,7 +216,6 @@ spriteFrameProto._setDynamicAtlasFrame = function (frame): void {
 spriteFrameProto._resetDynamicAtlasFrame = function (): void {
     if (!this.hasDynamicAtlasFrame()) return;
     this.resetDynamicAtlasFrame();
-    Atlas.releaseFrame(this);
     this._calculateUV();
 };
 spriteFrameProto._calculateUV = function (): void {
@@ -261,7 +258,6 @@ spriteFrameProto.reset = function (info?: ISpriteFrameInitInfo, clearData = fals
 const onPreDestroy = spriteFrameProto._onPreDestroy;
 spriteFrameProto._onPreDestroy = function (): void {
     this.clearTextureReferences();
-    Atlas.releaseFrame(this);
     this._mesh?.destroy();
     this._mesh = null;
     onPreDestroy?.call(this);
@@ -272,7 +268,6 @@ spriteFrameProto.clone = function (): SpriteFrame {
     (frame as any).copyFrom(this);
     frame.vertices = cloneFrameVertices(this.vertices);
     if (this._mesh) createFrameMesh(frame, this._mesh.getMinPosition(), this._mesh.getMaxPosition());
-    Atlas.trackClone(this, frame);
     return frame;
 };
 

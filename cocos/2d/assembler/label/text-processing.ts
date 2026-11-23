@@ -439,8 +439,8 @@ export class TextProcessing {
         const context = this._context!;
 
         // Match the browser canvas when the JSB adapter receives fractional layout dimensions.
-        canvas.width = Math.trunc(canvasSize.width);
-        canvas.height = Math.trunc(canvasSize.height);
+        canvas.width = JSB ? Math.trunc(canvasSize.width) : canvasSize.width;
+        canvas.height = JSB ? Math.trunc(canvasSize.height) : canvasSize.height;
 
         context.font = style.fontDesc;
         // align
@@ -743,6 +743,17 @@ export class TextProcessing {
             return;
         }
 
+        if (!JSB) {
+            let previous = -1;
+            for (let i = 0; i < stringLen; ++i) {
+                const key = string.charCodeAt(i);
+                const kerningAmount = kerningDict[(previous << 16) | (key & 0xffff)] || 0;
+                horizontalKerning[i] = i < stringLen - 1 ? kerningAmount : 0;
+                previous = key;
+            }
+            return;
+        }
+
         let previous = -1;
         let symbol = 0;
         for (let offset = 0; offset < stringLen;) {
@@ -963,7 +974,7 @@ export class TextProcessing {
 
         const char = getSymbolCodeAt(character, 0);
         let key = `${char}${shareLabelInfo.hash}`;
-        if (character.length === 2 && character.codePointAt(0)! > 0xffff && !shareLabelInfo.fontAtlas!.getLetter(key)) {
+        if (JSB && character.length === 2 && character.codePointAt(0)! > 0xffff && !shareLabelInfo.fontAtlas!.getLetter(key)) {
             key = String(character.codePointAt(0));
         }
 

@@ -23,6 +23,7 @@
 */
 
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable, type, visible } from 'cc.decorator';
+import { JSB } from 'internal:constants';
 import { builtinResMgr } from '../../asset/asset-manager';
 import { Material } from '../../asset/assets';
 import { Color, Vec2, cclegacy } from '../../core';
@@ -67,7 +68,7 @@ export class SpriteRenderer extends ModelRenderer {
             return;
         }
 
-        this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+        if (JSB) this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
         this._spriteFrame = value;
         if (this._spriteFrame) {
             this._spriteFrame.ensureMeshData(); // Make sure the mesh is available, you should call it before using the mesh
@@ -76,7 +77,7 @@ export class SpriteRenderer extends ModelRenderer {
         }
         this._updateModels();
         if (this.enabledInHierarchy) {
-            this._spriteFrame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+            if (JSB) this._spriteFrame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
             this._attachToScene();
         }
         // TODO Update on Editor
@@ -105,18 +106,18 @@ export class SpriteRenderer extends ModelRenderer {
     protected _size: Vec2 = new Vec2(); // todo for sliced & tiled
 
     private _model: Model | null = null;
-    private _boundMesh: SpriteFrame['mesh'] = null;
+    private declare _boundMesh?: SpriteFrame['mesh'];
 
     public onLoad (): void {
         if (this._spriteFrame) {
-            this._spriteFrame.ensureMeshData();
+            if (JSB || !this._spriteFrame.mesh) this._spriteFrame.ensureMeshData();
             this._spriteFrame.mesh!.initialize();
         }
         this._updateModels();
     }
 
     public onRestore (): void {
-        this._spriteFrame?.ensureMeshData();
+        if (JSB) this._spriteFrame?.ensureMeshData();
         this._updateModels();
         if (this.enabledInHierarchy) {
             this._attachToScene();
@@ -126,16 +127,18 @@ export class SpriteRenderer extends ModelRenderer {
     public onEnable (): void {
         super.onEnable();
         const frame = this._spriteFrame;
-        frame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
-        frame?.ensureMeshData();
-        if (!this._model || (frame?.mesh && frame.mesh !== this._boundMesh)) {
+        if (JSB) {
+            frame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+            frame?.ensureMeshData();
+        }
+        if (!this._model || (JSB && frame?.mesh && frame.mesh !== this._boundMesh)) {
             this._updateModels();
         }
         this._attachToScene();
     }
 
     public onDisable (): void {
-        this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+        if (JSB) this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
         if (this._model) {
             this._detachFromScene();
         }
@@ -147,7 +150,7 @@ export class SpriteRenderer extends ModelRenderer {
             this._model = null;
             this._models.length = 0;
         }
-        this._boundMesh = null;
+        if (JSB) this._boundMesh = null;
     }
 
     private _onFrameUVChanged (): void {
@@ -175,8 +178,10 @@ export class SpriteRenderer extends ModelRenderer {
 
         if (this._model) {
             const mesh = this._spriteFrame.mesh!;
-            this._model.visFlags = this.visibility;
-            this._boundMesh = mesh;
+            if (JSB) {
+                this._model.visFlags = this.visibility;
+                this._boundMesh = mesh;
+            }
             this._model.createBoundingShape(mesh.struct.minPosition, mesh.struct.maxPosition);
             this._updateModelParams();
             this._onUpdateLocalDescriptorSet();
@@ -185,6 +190,7 @@ export class SpriteRenderer extends ModelRenderer {
 
     protected _createModel (): void {
         const model = this._model = (cclegacy.director.root as Root).createModel<Model>(Model);
+        if (!JSB) model.visFlags = this.visibility;
         model.node = model.transform = this.node;
         this._models.length = 0;
         this._models.push(this._model);
@@ -192,6 +198,7 @@ export class SpriteRenderer extends ModelRenderer {
 
     protected _updateModelParams (): void {
         if (!this._spriteFrame || !this._model) { return; }
+        if (!JSB) this._spriteFrame.ensureMeshData();
         const mesh = this._spriteFrame.mesh!;
         this.node.hasChangedFlags |= TransformBit.POSITION; // Same as model, Maybe a hack
         this._model.transform.hasChangedFlags |= TransformBit.POSITION;
@@ -241,16 +248,16 @@ export class SpriteRenderer extends ModelRenderer {
 
         // Mesh UVs address the source texture even while 2D sprites use an atlas page.
         const frame = this._spriteFrame;
-        const source = frame.original?._texture ?? frame.texture;
+        const source = JSB ? frame.original?._texture ?? frame.texture : frame;
         const texture = source?.getGFXTexture();
-        if (!texture) return;
-        const sampler = source.getGFXSampler();
+        if (JSB && !texture) return;
+        const sampler = source!.getGFXSampler();
         // We need a api like updateLocalDescriptors(texture,sampler,binding) from model
         const subModels = this._model.subModels;
         const binding = ModelLocalBindings.SAMPLER_SPRITE;
         for (let i = 0; i < subModels.length; i++) {
             const { descriptorSet } = subModels[i];
-            descriptorSet.bindTexture(binding, texture);
+            descriptorSet.bindTexture(binding, texture!);
             descriptorSet.bindSampler(binding, sampler);
             descriptorSet.update();
         }

@@ -22,19 +22,66 @@
  THE SOFTWARE.
 */
 
-import { CanvasPool, type ISharedLabelData } from '../../utils/label-canvas-pool';
+import { JSB } from 'internal:constants';
 import { FontAtlas, FontLetterDefinition } from '../../assets/bitmap-font';
-import { Color, warnID } from '../../../core';
-import { ImageAsset } from '../../../asset/assets';
-import { LetterRenderTexture } from '../../assets/letter-render-texture';
+import { Color, macro, warnID } from '../../../core';
+import { ImageAsset, Texture2D } from '../../../asset/assets';
+import { PixelFormat } from '../../../asset/assets/asset-enum';
 import { BufferTextureCopy } from '../../../gfx';
 import { safeMeasureText, BASELINE_RATIO, MIDDLE_RATIO, getBaselineOffset, getSymbolCodeAt } from '../../utils/text-utils';
 import { director, DirectorEvent } from '../../../game/director';
+import { ccwindow } from '../../../core/global-exports';
 import { TextureBase } from '../../../asset/assets/texture-base';
 import { buildFontDesc, CssFontFamily, DEFAULT_FONT_FAMILY } from '../../utils/font-family';
 
-export { CanvasPool, LetterRenderTexture };
-export type { ISharedLabelData };
+export interface ISharedLabelData {
+    canvas: HTMLCanvasElement;
+    context: CanvasRenderingContext2D | null;
+}
+
+let _canvasPool: CanvasPool;
+
+export class CanvasPool {
+    static getInstance (): CanvasPool {
+        if (!_canvasPool) {
+            _canvasPool = new CanvasPool();
+        }
+        return _canvasPool;
+    }
+
+    private constructor () {}
+
+    public pool: ISharedLabelData[] = [];
+    public get (): ISharedLabelData {
+        let data = this.pool.pop();
+
+        if (!data) {
+            const canvas = ccwindow.document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            data = {
+                canvas,
+                context,
+            };
+        }
+
+        return data;
+    }
+
+    public put (canvas: ISharedLabelData): void {
+        if (this.pool.length >= macro.MAX_LABEL_CANVAS_POOL_SIZE) {
+            if (JSB) {
+                const c = canvas.canvas as any;
+                if (c && c._destroy) {
+                    c._destroy();
+                }
+                canvas.canvas = null!;
+                canvas.context = null;
+            }
+            return;
+        }
+        this.pool.push(canvas);
+    }
+}
 
 // export function packToDynamicAtlas(comp, frame) {
 //     // TODO: Material API design and export from editor could affect the material activation process
@@ -167,6 +214,52 @@ class LetterTexture {
 
         // this.texture.handleLoadedTexture();
         // (this.image as Texture2D).updateImage();
+    }
+}
+
+export class LetterRenderTexture extends Texture2D {
+    /**
+     * @en
+     * Init the render texture with size.
+     * @zh
+     * 初始化 render texture。
+     * @param [width]
+     * @param [height]
+     * @param [string]
+     */
+    public initWithSize (width: number, height: number, format: number = PixelFormat.RGBA8888): void {
+        this.reset({
+            width,
+            height,
+            format,
+        });
+    }
+
+    /**
+     * @en Draw a texture to the specified position
+     * @zh 将指定的图片渲染到指定的位置上。
+     * @param {Texture2D} image
+     * @param {Number} x
+     * @param {Number} y
+     */
+    public drawTextureAt (image: ImageAsset, x: number, y: number): void {
+        const gfxTexture = this.getGFXTexture();
+        if (!image || !gfxTexture) {
+            return;
+        }
+
+        const gfxDevice = this._getGFXDevice();
+        if (!gfxDevice) {
+            warnID(16363);
+            return;
+        }
+
+        const region = new BufferTextureCopy();
+        region.texOffset.x = x;
+        region.texOffset.y = y;
+        region.texExtent.width = image.width;
+        region.texExtent.height = image.height;
+        gfxDevice.copyTexImagesToTexture([image.data as HTMLCanvasElement], gfxTexture, [region]);
     }
 }
 

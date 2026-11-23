@@ -292,6 +292,7 @@ export class Sprite extends UIRenderer {
     @tooltip('i18n:sprite.fill_center')
     get fillCenter (): Vec2 {
         const center = this._fillCenter;
+        if (!JSB) return center;
         if (this._fillCenterView !== center) {
             this._releaseFillCenterView();
             let { x, y } = center;
@@ -330,6 +331,7 @@ export class Sprite extends UIRenderer {
     private _markFillCenterDirty (): void {
         if (this._type === SpriteType.FILLED && this.renderData) {
             this._markForUpdateRenderData();
+            if (!JSB) this._updateUVs();
         }
     }
 
@@ -520,7 +522,7 @@ export class Sprite extends UIRenderer {
     @serializable
     protected _atlas: SpriteAtlas | null = null;
 
-    private _fillCenterView: Vec2 | null = null;
+    private declare _fillCenterView?: Vec2 | null;
 
     public __preload (): void {
         this.changeMaterialForDefine();
@@ -540,13 +542,21 @@ export class Sprite extends UIRenderer {
         const spriteFrame = this._spriteFrame;
         if (spriteFrame) {
             this._updateUVs();
-            spriteFrame.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+            if (JSB) {
+                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+            } else if (this._type === SpriteType.SLICED) {
+                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, this._updateUVs, this);
+            }
         }
     }
 
     public onDisable (): void {
         super.onDisable();
-        this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+        if (JSB) {
+            this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+        } else if (this._spriteFrame && this._type === SpriteType.SLICED) {
+            this._spriteFrame.off(SpriteFrameEvent.UV_UPDATED, this._updateUVs, this);
+        }
     }
 
     public onDestroy (): void {
@@ -560,7 +570,7 @@ export class Sprite extends UIRenderer {
         try {
             super._onPreDestroy();
         } finally {
-            this._releaseFillCenterView();
+            if (JSB) this._releaseFillCenterView();
         }
     }
 
@@ -663,6 +673,16 @@ export class Sprite extends UIRenderer {
                 self._updateColor();
             }
         }
+
+        // On Web, only sliced sprites update UVs when the frame insets change.
+        const spriteFrame = self._spriteFrame;
+        if (!JSB && spriteFrame) {
+            if (self._type === SpriteType.SLICED) {
+                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
+            } else {
+                spriteFrame.off(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
+            }
+        }
     }
 
     private _applySpriteSize (): void {
@@ -731,7 +751,7 @@ export class Sprite extends UIRenderer {
         if (this._assembler) {
             this._assembler.updateUVs!(this);
             // The same insets determine the nine-slice position grid and its UVs.
-            if (this._type === SpriteType.SLICED && this.renderData) {
+            if (JSB && this._type === SpriteType.SLICED && this.renderData) {
                 this._markForUpdateRenderData();
             }
         }
@@ -741,7 +761,11 @@ export class Sprite extends UIRenderer {
         const self = this;
         const spriteFrame = self._spriteFrame;
 
-        oldFrame?.off(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
+        if (JSB) {
+            oldFrame?.off(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
+        } else if (oldFrame && self._type === SpriteType.SLICED) {
+            oldFrame.off(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
+        }
 
         let textureChanged = false;
         if (spriteFrame) {
@@ -760,8 +784,10 @@ export class Sprite extends UIRenderer {
                 self.changeMaterialForDefine();
             }
             self._applySpriteSize();
-            if (self.enabledInHierarchy) {
-                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
+            if (JSB) {
+                if (self.enabledInHierarchy) spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
+            } else if (self._type === SpriteType.SLICED) {
+                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
             }
         }
     }

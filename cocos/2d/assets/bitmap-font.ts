@@ -50,15 +50,6 @@ export interface ILetterDefinition {
     [key: string]: FontLetterDefinition;
 }
 
-function releaseAtlasTexture (atlas: FontAtlas, releaseImportedAsset = false): void {
-    const texture = atlas._texture;
-    atlas._texture = null;
-    if (!texture) return;
-    const autoRelease = releaseImportedAsset && !!texture.uuid;
-    texture.decRef(autoRelease);
-    if (!autoRelease && texture.refCount <= 0) texture.destroy();
-}
-
 export class FontAtlas {
     public letterDefinitions: ILetterDefinition = {};
     public _texture: TextureBase | null = null;
@@ -68,8 +59,14 @@ export class FontAtlas {
     }
 
     public set texture (texture: TextureBase | null) {
-        if (this._texture === texture) return;
-        releaseAtlasTexture(this);
+        const oldTexture = this._texture;
+        if (oldTexture === texture) return;
+        if (oldTexture) {
+            oldTexture.decRef(false);
+            if (oldTexture.refCount <= 0) {
+                oldTexture.destroy();
+            }
+        }
         if (texture) {
             texture.addRef();
         }
@@ -108,9 +105,6 @@ export class FontAtlas {
         let letter: FontLetterDefinition | null = null;
         if (hasKey) {
             letter = this.letterDefinitions[key];
-        } else if (char.length === 2 && char.codePointAt(0)! > 0xffff) {
-            // BMFont files store supplementary characters by Unicode scalar value.
-            letter = this.letterDefinitions[char.codePointAt(0)!] ?? null;
         }
         return letter;
     }
@@ -126,9 +120,8 @@ export class FontAtlas {
  */
 @ccclass('cc.BitmapFont')
 export class BitmapFont extends Font {
-    /** @engineInternal */
-    public static EVENT_CONFIG_RELOAD = 'bitmap_font_config_reload';
-
+    /** @engineInternal Emitted by the JSB asset for the native Label fallback. */
+    public declare static EVENT_CONFIG_RELOAD: string;
     /**
      * @deprecated since v3.7.0, Useless Code.
      */
@@ -163,8 +156,6 @@ export class BitmapFont extends Font {
      * @deprecated since v3.7.0, this is an engine private interface that will be removed in the future.
      */
     public declare fontDefDictionary: FontAtlas;
-    private _ownedFontAtlas: FontAtlas | null = null;
-    private _borrowedDefinitions: { atlas: FontAtlas; glyphs: ILetterDefinition } | null = null;
 
     constructor () {
         super();
@@ -173,45 +164,31 @@ export class BitmapFont extends Font {
     onLoaded (): void {
         const spriteFrame = this.spriteFrame;
         if (!this.fontDefDictionary && spriteFrame) {
-            this.fontDefDictionary = this._ownedFontAtlas = new FontAtlas(spriteFrame.texture);
+            this.fontDefDictionary = new FontAtlas(spriteFrame.texture);
         }
 
-        const previous = this._borrowedDefinitions;
-        if (previous) {
-            for (const key in previous.glyphs) {
-                if (previous.atlas.getLetter(key) === previous.glyphs[key]) delete previous.atlas.letterDefinitions[key];
-            }
-        }
-
-        const atlas = this.fontDefDictionary;
-        if (atlas && atlas === this._ownedFontAtlas) atlas.clear();
-        this._borrowedDefinitions = atlas && atlas !== this._ownedFontAtlas ? { atlas, glyphs: js.createMap() } : null;
         const fntConfig = this.fntConfig;
-        if (!fntConfig) warnID(16376);
-        else if (atlas) {
-            const fontDict = fntConfig.fontDefDictionary;
-            for (const fontDef in fontDict) {
-                const info = fontDict[fontDef];
-                const letter = new FontLetterDefinition();
-                const rect = info.rect;
-                letter.offsetX = info.xOffset;
-                letter.offsetY = info.yOffset;
-                letter.w = rect.width;
-                letter.h = rect.height;
-                letter.u = rect.x;
-                letter.v = rect.y;
-                letter.valid = true;
-                letter.xAdvance = info.xAdvance;
-                atlas.addLetterDefinitions(fontDef, letter);
-                if (this._borrowedDefinitions) this._borrowedDefinitions.glyphs[fontDef] = letter;
-            }
+        if (!fntConfig) {
+            warnID(16376);
+            return;
         }
-        this.emit(BitmapFont.EVENT_CONFIG_RELOAD);
-    }
 
-    protected _onPreDestroy (): void {
-        // The frame's dependency release may have already skipped a texture held by this atlas.
-        if (this._ownedFontAtlas) releaseAtlasTexture(this._ownedFontAtlas, true);
+        const fontDict = fntConfig.fontDefDictionary;
+        for (const fontDef in fontDict) {
+            const info = fontDict[fontDef];
+            const letter = new FontLetterDefinition();
+            const rect = info.rect;
+            letter.offsetX = info.xOffset;
+            letter.offsetY = info.yOffset;
+            letter.w = rect.width;
+            letter.h = rect.height;
+            letter.u = rect.x;
+            letter.v = rect.y;
+            letter.valid = true;
+            letter.xAdvance = info.xAdvance;
+
+            this.fontDefDictionary.addLetterDefinitions(fontDef, letter);
+        }
     }
 }
 

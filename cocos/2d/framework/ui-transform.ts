@@ -26,11 +26,10 @@ import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displa
 import { EDITOR } from 'internal:constants';
 import { Component, Node } from '../../scene-graph';
 import { Mat4, Rect, Size, Vec2, Vec3, geometry, warnID, visibleRect, approx, EPSILON } from '../../core';
-import { director } from '../../game/director';
+import { director, DirectorEvent } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
 import { IMask } from '../../scene-graph/node-event-processor';
 import type { Mask } from '../components/mask';
-import { applyUITransformSiblingOrder, clearUITransformSiblingOrder, queueUITransformParentChange, queueUITransformSiblingOrder } from './ui-transform-sibling-order';
 
 const _vec2a = new Vec2();
 const _vec2b = new Vec2();
@@ -229,7 +228,9 @@ export class UITransform extends Component {
         }
 
         this._priority = value;
-        queueUITransformSiblingOrder(this.node.parent);
+        if (this.node.parent) {
+            UITransform.insertChangeMap(this.node.parent);
+        }
     }
 
     protected _priority = 0;
@@ -265,7 +266,9 @@ export class UITransform extends Component {
     }
 
     public onLoad (): void {
-        queueUITransformSiblingOrder(this.node.parent);
+        if (this.node.parent) {
+            UITransform.insertChangeMap(this.node.parent);
+        }
     }
 
     public onEnable (): void {
@@ -453,10 +456,8 @@ export class UITransform extends Component {
      * @en Hit test with point in Screen Space.
      *
      * @param screenPoint @en point in Screen Space. @zh 屏幕坐标中的点。
-     * @param windowId @en System window receiving the input. @zh 接收输入的系统窗口。
-     * @param worldPoint @en Receives the world point on a hit. @zh 命中时写入世界坐标。
      */
-    public hitTest (screenPoint: Vec2, windowId = 0, worldPoint?: Vec2): boolean {
+    public hitTest (screenPoint: Vec2, windowId = 0): boolean {
         const w = this._contentSize.width;
         const h = this._contentSize.height;
         const v3WorldPt = _vec3a;
@@ -490,7 +491,6 @@ export class UITransform extends Component {
                 hit = this._maskTest(v2WorldPt);
             }
             if (hit) {
-                worldPoint?.set(v2WorldPt);
                 return true;
             }
         }
@@ -752,7 +752,13 @@ export class UITransform extends Component {
     }
 
     protected _parentChanged (node: Node): void {
-        queueUITransformParentChange.call(this);
+        if (this.node.getComponent('cc.RenderRoot2D')) {
+            return;
+        }
+
+        if (this.node.parent) {
+            UITransform.insertChangeMap(this.node.parent);
+        }
     }
 
     private _markRenderDataDirty (): void {
@@ -762,13 +768,42 @@ export class UITransform extends Component {
         }
     }
 
+    private static priorityChangeNodeMap = new Map<string, Node>();
+
+    private static insertChangeMap (node: Node): void {
+        const key = node.uuid;
+        if (!UITransform.priorityChangeNodeMap.has(key)) {
+            UITransform.priorityChangeNodeMap.set(key, node);
+        }
+    }
+
+    private static _sortChildrenSibling (node: Node): void {
+        const siblings = node.children;
+        if (siblings) {
+            siblings.sort((a: Node, b: Node): number => {
+                const aComp = a._getUITransformComp();
+                const bComp = b._getUITransformComp();
+                const ca = aComp ? aComp._priority : 0;
+                const cb = bComp ? bComp._priority : 0;
+                const diff = ca - cb;
+                if (diff === 0) return a.siblingIndex - b.siblingIndex;
+                return diff;
+            });
+        }
+    }
+
     /**
      * @deprecated Since v3.7.0, this is an engine private interface that will be removed in the future.
      * @engineInternal
      * @mangle
      */
     public static _sortSiblings (): void {
-        applyUITransformSiblingOrder();
+        UITransform.priorityChangeNodeMap.forEach((node, ID): void => {
+            UITransform._sortChildrenSibling(node);
+            node._updateSiblingIndex();
+            node.emit('childrenSiblingOrderChanged');
+        });
+        UITransform.priorityChangeNodeMap.clear();
     }
 
     /**
@@ -777,6 +812,10 @@ export class UITransform extends Component {
      * @mangle
      */
     public static _cleanChangeMap (): void {
-        clearUITransformSiblingOrder();
+        UITransform.priorityChangeNodeMap.clear();
     }
 }
+
+// HACK
+director.on(DirectorEvent.AFTER_UPDATE, UITransform._sortSiblings);
+director.on(DirectorEvent.BEFORE_SCENE_LAUNCH, UITransform._cleanChangeMap);

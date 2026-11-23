@@ -22,7 +22,7 @@
  THE SOFTWARE.
 */
 
-import { EDITOR, NODEJS } from 'internal:constants';
+import { EDITOR, JSB, NODEJS } from 'internal:constants';
 import { ImageAsset } from '../assets/image-asset';
 import JsonAsset from '../assets/json-asset';
 import { TextAsset } from '../assets/text-asset';
@@ -164,8 +164,10 @@ export class Factory {
         this._creating.add(id, [onComplete]);
         let completed = false;
         const complete: Parameters<CreateHandler>[3] = (err, result): void => {
-            if (completed) { return; }
-            completed = true;
+            if (JSB) {
+                if (completed) { return; }
+                completed = true;
+            }
             if (!err && result instanceof Asset) {
                 result._uuid = id;
                 cache(id, result, options.cacheAsset);
@@ -175,6 +177,10 @@ export class Factory {
                 callbacks![i](err, result);
             }
         };
+        if (!JSB) {
+            handler(id, data, options, complete);
+            return;
+        }
         try {
             handler(id, data, options, complete);
         } catch (error) {

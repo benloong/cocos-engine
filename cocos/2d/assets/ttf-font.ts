@@ -24,9 +24,8 @@
 */
 
 import { ccclass, string, override, serializable } from 'cc.decorator';
-import { path, cclegacy, isValid } from '../../core';
+import { path, cclegacy } from '../../core';
 import { Font } from './font';
-import type { BrowserFont, BrowserFontLease } from '../utils/font-loader';
 
 /**
  * @en Class for TTFFont asset.
@@ -39,7 +38,6 @@ export class TTFFont extends Font {
      */
     @serializable
     public _fontFamily: string | null = null;
-    private _browserFont: BrowserFontLease | null = null;
 
     constructor () {
         super();
@@ -51,20 +49,10 @@ export class TTFFont extends Font {
     @override
     @string
     get _nativeAsset (): string | null {
-        return this._browserFont?.family ?? this._fontFamily;
+        return this._fontFamily;
     }
-    set _nativeAsset (value: string | BrowserFont | null) {
-        if (!isValid(this, true)) return;
-        const font = typeof value === 'object' ? value : null;
-        const lease = font?.retain() ?? null;
-        this._browserFont?.release();
-        this._browserFont = lease;
-        this._fontFamily = font?.name ?? (typeof value === 'string' && value ? value : 'Arial');
-    }
-
-    protected _onPreDestroy (): void {
-        this._browserFont?.release();
-        this._browserFont = null;
+    set _nativeAsset (value) {
+        this._fontFamily = value || 'Arial';
     }
 
     /**
@@ -87,7 +75,7 @@ export class TTFFont extends Font {
      * @deprecated since v3.7.0, this is an engine private interface that will be removed in the future.
      */
     public initDefault (uuid?: string): void {
-        this._nativeAsset = 'Arial';
+        this._fontFamily = 'Arial';
         super.initDefault(uuid);
     }
 }
