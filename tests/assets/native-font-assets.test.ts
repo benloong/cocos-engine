@@ -1,5 +1,8 @@
 import { deserialize, Details } from '../../cocos/serialization/deserialize';
 import { cclegacy, js } from '../../cocos/core';
+import * as constants from 'internal:constants';
+
+const previousJSB = constants.JSB;
 
 const assetCtor = jest.fn();
 class NativeFont {
@@ -43,6 +46,7 @@ class NativeBitmap extends NativeFont {
 class NativeLabelAtlas extends NativeBitmap {}
 
 beforeAll(() => {
+    (constants as any).JSB = true;
     (global as any).jsb = {
         Asset: { prototype: { _ctor: assetCtor } }, Font: NativeFont,
         TTFFont: NativeTTF, BitmapFont: NativeBitmap, LabelAtlas: NativeLabelAtlas,
@@ -52,6 +56,8 @@ beforeAll(() => {
     require('../../cocos/2d/assets/bitmap-font.jsb');
     require('../../cocos/2d/assets/label-atlas.jsb');
 });
+
+afterAll(() => { (constants as any).JSB = previousJSB; });
 
 test('font shells retain native identity, constructor initialization and serialized metadata', () => {
     const ttf: any = new NativeTTF(), bitmap: any = new NativeBitmap(), atlas = new NativeLabelAtlas();
