@@ -57,7 +57,7 @@ export class FontAtlas {
     }
 }
 export type BitmapFont = JsbBitmapFont;
-export const BitmapFont: typeof JsbBitmapFont = jsb.BitmapFont;
+export const BitmapFont: typeof JsbBitmapFont & { EVENT_CONFIG_RELOAD: string } = jsb.BitmapFont;
 BitmapFont.EVENT_CONFIG_RELOAD = 'bitmap_font_config_reload';
 cclegacy.BitmapFont = BitmapFont;
 const proto: any = BitmapFont.prototype;
