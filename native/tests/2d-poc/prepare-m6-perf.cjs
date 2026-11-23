@@ -83,8 +83,19 @@ instrument('native/cocos/bindings/manual/jsb_global.cpp', [
     ['__jsbObj->defineFunction("garbageCollect"', '\n#if defined(_MSC_VER) && defined(_DEBUG)\n    __jsbObj->defineFunction("saveM6HeapSnapshot", _SE(js_saveM6HeapSnapshot));\n    __jsbObj->defineFunction("readM6CrtHeap", _SE(js_readM6CrtHeap));\n#endif\n    __jsbObj->defineFunction("readM6Perf", _SE(js_readM6Perf));\n' + traceRegistration + '    __jsbObj->defineFunction("garbageCollect"'],
 ]);
 const update = 'uiRendererManager.updateAllDirtyRenderers();';
-instrument('cocos/game/director.ts', [[update, 'const m6Start = performance.now();\n            ' + update
-    + '\n            (globalThis as any).__m6PrepareMs = performance.now() - m6Start;']]);
+const nativeUpdate = 'nativeUIRendererManager.updateAllDirtyRenderers();';
+const rootShell = 'cocos/root.jsb.ts';
+const nativePrepareInRoot = platform === 'WINDOWS' && key === 'after'
+    && execFileSync('git', ['-C', source, 'show', 'HEAD:' + rootShell], { encoding: 'utf8' }).includes(nativeUpdate);
+if (nativePrepareInRoot) {
+    // Measure both dirty queues across the JSB frame hook with one timer pair.
+    instrument('cocos/game/director.ts', [[update, '(globalThis as any).__m6PrepareStart = performance.now();\n            ' + update]]);
+    instrument(rootShell, [[nativeUpdate, nativeUpdate
+        + '\n    (globalThis as any).__m6PrepareMs = performance.now() - (globalThis as any).__m6PrepareStart;']]);
+} else {
+    instrument('cocos/game/director.ts', [[update, 'const m6Start = performance.now();\n            ' + update
+        + '\n            (globalThis as any).__m6PrepareMs = performance.now() - m6Start;']]);
+}
 instrument('cocos/root.ts', [
     ['this._batcher.update();', 'const m6Begin = performance.now();\n                this._batcher.update();'],
     ['this._batcher.uploadBuffers();', 'this._batcher.uploadBuffers();\n                (globalThis as any).__m6BatchMs = performance.now() - m6Begin;'],
