@@ -68,7 +68,7 @@ test('RichText forwards initial state and explicit properties without JS segment
     expect(native.setImageAtlas).toHaveBeenLastCalledWith(null);
 });
 
-test('legacy RichText dependencies deserialize and instantiate without copying native state', () => {
+test('RichText dependencies deserialize and instantiate without copying native state', () => {
     const { RichText } = require('../../cocos/2d/components/rich-text.jsb');
     const details = new Details(); details.init();
     const rich: any = deserialize([{ __type__: 'cc.RichText', _string: 'legacy', _font: { __uuid__: 'font' },

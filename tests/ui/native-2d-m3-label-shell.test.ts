@@ -303,7 +303,7 @@ test('native Label retains Web serialized field names and defaults', () => {
     for (const field of fields) expect(label[field]).toEqual(web[field]);
 });
 
-test('legacy records preserve font dependency and styles through load and instantiate', () => {
+test('serialized Label preserves its font dependency and styles through load and instantiate', () => {
     const { Label } = require('../../cocos/2d/components/label.jsb');
     const details = new Details(); details.init();
     const label: any = deserialize([{__type__: 'cc.Label', _string: 'legacy font', _font: {__uuid__: 'font-id'},

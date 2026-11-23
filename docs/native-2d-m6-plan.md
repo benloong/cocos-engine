@@ -1,12 +1,13 @@
 # Native 2D M6 剩余任务与终态验收
 
-> 更新：2026-11-20。范围沿用[总计划](./native-2d-module-sinking-plan.zh-CN.md)，仅 `cocos/2d` 及必要的 native/绑定/构建支持。
+> 更新：2026-11-23。范围沿用[总计划](./native-2d-module-sinking-plan.zh-CN.md)，仅 `cocos/2d` 及必要的 native/绑定/构建支持。
 > 状态：**未收口**。M2、M3、M4、M5 的阶段通过记录不代表整个模块满足终态薄壳契约。SpriteFrame 数据/UV、SpriteAtlas map/native 表已有 Windows 定向证据，不代表全平台、完整资源场景或性能 KPI 通过。
 > 本文是 M6 剩余任务与终态门禁的统一清单；历史数据保留在各阶段 report/gate 中。
 > 所有权约束：M6 原生 2D 代码禁止 shared_ptr/weak_ptr。值成员、unique_ptr、IntrusivePtr 与非 owning 指针分别标明拥有者；借用者必须在拥有者销毁前解绑或收到同步失效通知。
 > 构建验收约束：后续改动统一按 [Cocos CLI 构建与验收流程](./native-2d-build-and-acceptance.zh-CN.md) 第 8 节构建 cocos-m1-test、重建 override、同步资源、编译 Debug app 并执行全部门禁，通过后再提交。定向 PoC/GPU/ASAN 仅作补充证据；不得替代文档规定的测试工程验收。
 
 > 本轮验收平台为 Windows Debug/Release，使用 Web 作行为与像素对照。macOS、iOS、Android、OHOS 暂缓验收，保留待验证状态。本轮使用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
+> 场景、Prefab 和资产按现行序列化格式验收。旧版本序列化数据的加载、迁移和兼容不列入本轮签收。历史兼容结果保留供参考，详见 [M6 Gate](./native-2d-m6-gate.md)。
 > RichText 的 `text-bold`、`text-outline`、`text-nested` 暂缓 Windows 对 Web 的像素一致性签收。保留实际比较结果，布局和其他检查继续验收。签收命令及历史差值见 [M6 Gate](./native-2d-m6-gate.md)。
 
 ## 1. 已有基础与验收边界
@@ -89,7 +90,7 @@
 - [x] 字体重载一致性补充：独立配置版本使同内容原生重载失效旧 JS 视图，同时保留依赖回填期间的编辑；released 后忽略迟到 onLoaded。Windows Debug/Release C++ 与实际 JSB 探针、7 个 Jest suite（58 项）通过，见字体资产报告。
 - [x] 字体重复生命周期补充：released 后的 JS 配置/TTF 加载赋值直接忽略；三类字体各 1000 次 native 创建、清空、重载、销毁，以及 BitmapFont/LabelAtlas 各 1000 次实际 JSB 循环通过 Windows Debug/Release。当时字体测试入口为 7 个 suite、64 项，后续新增测试见字体资产报告；直接创建资产的循环不替代 asset-manager 加载卸载或泄漏验收。
 - [x] Windows 自定义字体选择：GDI 拒绝真实 Thonburi.ttf 后回退，现以私有 DirectWrite collection 加载、shaping 和绘制；明确 COM/缓冲区所有权，Debug/Release 各 1000 次释放计数及 64 项 Jest、ASAN 应用通过。该节点 RichText 当时为 9/12 布局一致、严格图像 0/12，见 [报告与未关闭门禁](./native-2d-m6.1-directwrite-fonts.md)。
-- [ ] 字体终态验收：真实字体资源/旧场景/Prefab、完整资源加载释放、跨平台 alias/字体句柄与注册表清理、复杂文本和 GPU 对照。TTF 原生字节已持有，渲染仍使用现有 Canvas 平台后端，基础数据通过不替代这些验收。
+- [ ] 字体终态验收：真实字体资源、现行格式场景和 Prefab、完整资源加载释放、跨平台 alias/字体句柄与注册表清理、复杂文本和 GPU 对照。TTF 原生字节已持有，渲染仍使用现有 Canvas 平台后端，基础数据通过不替代这些验收。
   - [x] Windows 应用字体文件释放。Debug、Release 各完成 1000 轮本地 TTF 加载、Label 渲染、解绑和释放，另完成 30 轮 HTTP 重新下载和缓存清理。采样点均可独占打开已释放的字体文件，GDI 对象数保持稳定。进程总句柄和 USER 对象数逐阶段记录。三端应用矩阵的 47 组布局一致，严格像素 44 组通过，其余三组按已确认范围暂缓。[检查点与复现](./native-2d-m6.1-font-alias-ownership.md#windows-应用内字体句柄)
   - [x] 独立 Bundle 的真实 TTF 与序列化 Label Prefab 通过预加载、跨场景复用、独立持有、最后持有者释放及冷重载。Windows Debug、Release 和 Web 的 155 张场景图逐字节一致。Web 在最后一次释放时移除 `FontFace` 注册，Windows 归还原生字体字节，三种配置均清除 Prefab 和字体的资产缓存。[生命周期和逐图哈希](./native-2d-m6-ttf-bundle.json)
   - [x] 同名不同源的 HTTP TTF 在 Windows Debug、Release 和 Web 并存、按两种顺序释放并重载。Web 按来源合并下载，渲染别名隔离测宽缓存。两份同名字体测宽为 95.9765625 和 101.9296875 px，四张新增图在三端逐字节一致。[来源与释放证据](./native-2d-m6-font-source-isolation.json)
@@ -130,7 +131,7 @@
 - [x] BMFont/LabelAtlas 帧转换：2307 组 Web 帧矩形、顶点位置和 UV 对照通过，真实 GPU 覆盖非零帧原点、trim/offset 和旋转组合。原生 UI 批次持有 IA 和使用的缓冲区直至清理，确定性回归和完整工程门禁通过，见[帧转换报告](./native-2d-m6.1-bitmap-frame.md)。
 - [x] Windows DirectWrite 水平 RTL 字形按排版后的 advance/offset 从右端定位。Thonburi 的 RTL 控制符、对应视觉顺序及泰文叠加标记在 Debug/Release 的四种字号、常规和斜体均与 Chrome 原始画布一致。三张新增 RichText GPU 图也逐字节相同。Arial 纯希伯来文及阿拉伯文各通过 7/8 组常规/斜体；12px 常规、含空格的混排和合成粗体差异另计。[双配置逐项对照](./native-2d-m6-bidi.json)
 - [x] 水平 TTF 混排的 U+0020 字距和小字号覆盖率。Windows 使用中性语言单独排普通空格，保留词内 kerning；字形齐全且无字距表的可打印 ASCII 沿用无分段布局。正体按 DirectWrite 字体推荐选择自然平滑。Debug/Release 在相同 Arial、Thonburi 文件和 Chrome 上验证 9 种文本、4 个字号，常规/斜体 72/72 均在 1 级通道容差内。40 张应用图与上轮各端哈希一致。四轮交错微基准中，24px 带空格短句的测量中位数，Thonburi 为 2.57→2.55 µs，Arial 为 198.56→219.03 µs；Arial 绘制为 317.11→345.30 µs。合成粗体原始画布仍为 0/36。[逐样本和 CPU 实测](./native-2d-m6-text-spacing.json)
-- [ ] 字体复杂布局与资产边界：补充平面 BMFont 标量字形通过 2327 个 Web/native 布局对照，Windows Debug/Release 的四种字体/旋转组合与 Web 逐像素相等，见[捕获](./native-2d-m6-bitmap-unicode.json)。bidi/shaping、任意 mesh 和其余 packed 帧状态组合、其余字体配置/元数据动态入口，以及真实旧资产/场景/Prefab 和资源生命周期矩阵继续验收；基础布局通过不关闭字体终态项。
+- [ ] 字体复杂布局与资产边界：补充平面 BMFont 标量字形通过 2327 个 Web/native 布局对照，Windows Debug/Release 的四种字体/旋转组合与 Web 逐像素相等，见[捕获](./native-2d-m6-bitmap-unicode.json)。bidi/shaping、任意 mesh 和其余 packed 帧状态组合、其余字体配置/元数据动态入口，以及现行格式的资产、场景、Prefab 和资源生命周期矩阵继续验收。字体终态项仍待签收。
   - [x] 普通 TTF Label 与原生 RichText 共用整词分段。74 px 宽的 `Atlas 123` 在 CLAMP、SHRINK 和 RESIZE_HEIGHT 下，自动换行图与显式拆成 `Atlas `、`123` 两行的图逐字节相同。Windows Debug、Release 和 Web 的三组布局及 RGBA 均一致。旧 Windows Debug 在 CLAMP 图像断言处失败。[验收结果](./native-2d-m6-label-word-wrap.json)
   - [x] 普通 TTF Label 在多段落换行中验证嵌套书写方向、泰文叠加标记、拉丁组合音标及控制空白。Windows Canvas 的测量、填充、描边和阴影将单行 TAB、LF、FF、CR 逐个作为空格处理。旧 Debug 的混合空白段落有 1124 个超差像素，修复后四组新增图在 Windows Debug、Release 和 Web 逐字节一致。独立原生测试另验证 DirectWrite 和 GDI 回退。[验收结果](./native-2d-m6-label-paragraphs.json)
   - [x] 旧 SpriteFrame 多边形数据在 SpriteRenderer 生成网格时保留顶点、索引和 UV。Windows Debug、Release 与 Web 对照包含凹多边形、独立克隆和换纹理重建。[逐图证据](./native-2d-m6.1-sprite-frame.md#旧序列化多边形)
@@ -148,7 +149,7 @@
 - [x] SpriteAtlas 帧末释放原生帧表：分别覆盖 C++ 和 JSB 销毁队列，拒绝迟到写入，Debug/Release 1000 轮引用计数复归。真实 Prefab 保留 wrapper 的释放断言和连续文档门禁通过。见[所有权验收](./native-2d-m6.1-sprite-atlas.md#6-原生帧引用随延迟销毁释放)。
 - [x] SpriteFrame 帧末归还当前纹理和原图。C++ 与 JSB 的销毁队列共用清理入口，迟到依赖不能重新绑定。Debug/Release 各 1000 轮和 Windows Debug 真实资产释放、完整串行门禁及像素对照通过。见[验收报告](./native-2d-m6.1-sprite-frame.md#帧末归还纹理引用)。
   - [x] SpriteFrame 延迟销毁时归还自身生成的 Mesh 和 GPU 缓冲。Windows Debug、Release 与 Web 通过六个帧释放用例，存活克隆仍能绘制，Web 同页克隆可恢复到源纹理。127 张图与清理前逐字节一致。[网格所有权验收](./native-2d-m6.1-sprite-frame.md#帧末释放生成的网格)
-- [ ] 补其余旧资产和场景、异步取消与延迟依赖、clone、跨场景重复加载释放及长期生命周期。
+- [ ] 补其余现行格式资产和场景、异步取消与延迟依赖、clone、跨场景重复加载释放及长期生命周期。
   - [x] 旧 XML BMFont 跨场景加载、释放与冷重载。回归 Prefab 通过保留的 UUID 使用旧工程 Open Sans FNT、PNG 和元数据。修复 Web BitmapFont 销毁时归还自有 FontAtlas 的纹理引用。三端验证预加载后缓存未发布资产、跨场景共享、持有原图后重载、五个缓存键清理及冷重载。Windows 使用原图，Web 使用动态合图页。六张新增图逐字节一致。[应用结果](./native-2d-m6-legacy-bmfont.json)
   - [x] 旧 BMFont 图集依赖延迟、取消与重试。预加载后在实际资产管线暂停图集图像依赖，每次等待两个帧末。Windows Debug、Release 与 Web 在等待和首次取消后均查不到五个资产缓存键。同一 Prefab UUID 重试成功，跨场景、释放和冷重载断言通过，144 张图与上轮逐字节一致。[场景与缓存记录](./native-2d-m6-legacy-bmfont.json)
   - [x] 旧式 `.labelatlas` 资源通过 Creator 导入并绑定序列化 Prefab。Windows Debug、Release 与 Web 验证 8 个 16×25 字格，`1076` 的四个中心像素与源图一致。三端通过图集依赖取消和重试、跨场景共享、显式保留原图、最终清理五个缓存键及冷重载。Windows 使用原图，Web 使用动态合图页。[序列化资源及像素记录](./native-2d-m6-legacy-label-atlas.json)

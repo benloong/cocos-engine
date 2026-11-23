@@ -160,7 +160,7 @@ test('Sprite API forwards trim/grayscale, clamps fill values, switches atlas fra
     sprite.onDestroy();
 });
 
-test('legacy Sprite atlas/style fields deserialize and clone independently of native objects', () => {
+test('Sprite atlas and style fields deserialize and clone independently of native objects', () => {
     const {Sprite}=require('../../cocos/2d/components/sprite.jsb');
     const details=new Details(); details.init();
     const sprite: any=deserialize([{__type__:'cc.Sprite',_atlas:{__uuid__:'atlas-id'},_isTrimmedMode:false,_useGrayscale:true,_fillRange:-0.5}], details, {classFinder:()=>Sprite});

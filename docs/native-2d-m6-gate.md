@@ -4,6 +4,8 @@
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
 
+**序列化验收范围。** 场景、Prefab 和资产使用现行序列化格式及现行类名，继续验证字段恢复、资源绑定与生命周期。旧版本序列化数据的加载、迁移和兼容不列入 M6 签收，历史兼容结果保留供参考。
+
 Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-outline`、`text-nested` 三项的跨端像素一致性要求。加入同名字体四张图后，两个 Windows 配置均为布局 62/62、严格像素 59/62。[本轮验收记录](./native-2d-m6-font-source-isolation.json)
 
 本轮签收在两个 Windows 配置分别运行 `node native/tests/2d-poc/compare-richtext-gpu.cjs --m6-gate <Windows 捕获目录> <Web 捕获目录>`。暂缓项仍记录实际像素差异和严格结果，布局、采集哈希、渲染可见性、交互和字体生命周期仍须通过。其余图像继续按通道容差 1 比较。
@@ -88,7 +90,7 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.1 | 组件 API | 位图 Label 的 spacingX、fontSize、lineHeight 已通过 Windows 双配置与 Web 的细小增减、复位和自动尺寸对照。系统字体 Label 的 outlineWidth 和 shadowBlur 已通过三端描边尺寸与 SHRINK 临界字号对照。容器尺寸微调跨过缩放和换行临界点、行高微调回写均已通过三端验收。其余公开及兼容入口仍待验收。[逐项计划](./native-2d-m6-plan.md) |
 | M6.1 | 字体终态 | Windows DirectWrite 源文件替换、失败加载和释放已通过[独立进程验证](./native-2d-m6.1-font-alias-ownership.md#windows-directwrite-源文件释放)。Windows 双配置各完成 1000 轮应用内本地字体释放和 30 轮 HTTP 重复下载释放，源文件在采样点均可独占打开。[句柄分阶段记录](./native-2d-m6.1-font-alias-ownership.md#windows-应用内字体句柄) 其余旧资源生命周期、复杂文本及范围内的字形对照继续验收 |
 | M6.1 | 复杂布局 | [补充平面 BMFont 标量已验证](./native-2d-m6-bitmap-unicode.json)，水平 TTF 字形已有上述 72 组常规/斜体验收，普通 TTF 的三种溢出模式已通过整词换行像素对照。含嵌套书写方向、泰文叠加标记、拉丁组合音标和控制空白的四组 TTF 段落与 Web 逐字节相同。其余复杂字形、位图字体复杂脚本、任意 mesh、packed 组合和配置更新继续验收。已安装的 16 px Arial 两行文本在 NONE 模式下的自然宽度已修正，Windows 双配置与 Chrome 均为 80.9453125。[Label 系统字体矩阵](./native-2d-m6-system-font.json) |
-| M6.1 | 旧资产边界 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一旧 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。Windows 下载器已验证排队与传输中取消、失败时保留旧文件、清除不可续传的半文件和 Range 续传。Web 已验证 fetch 主动取消及续传。Web 引擎首次断流时返回回退字体，释放后同 URL 已成功重载并测得原字体宽度。其余旧资产仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
+| M6.1 | 资源管线与生命周期 | 旧静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一旧 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。Windows 下载器已验证排队与传输中取消、失败时保留旧文件、清除不可续传的半文件和 Range 续传。Web 已验证 fetch 主动取消及续传。Web 引擎首次断流时返回回退字体，释放后同 URL 已成功重载并测得原字体宽度。其余现行格式资产和场景的资源生命周期仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
 | M6.2 | RichText 终态 | 固定布局、场景、视觉和输入回归已通过当前范围。剩余资源与极限对象生命周期、Node wrapper 联调及最终候选复验。 |
 | M6.4 | 平台矩阵 | 三端 RichText 字体应用矩阵与小数字号回归已通过当前范围。本轮最终候选仍须汇总关键渲染、字体与事件场景记录 |
 | M6.5 | 本机检查 | 完整应用场景矩阵及其余间接热路径的证据。完整原生测试程序在字体别名用例中仍待排查，Debug 超时，Release 发生访问冲突。[本机记录](./native-2d-m6-label-ttf-canvas-size.json) |

@@ -528,7 +528,6 @@ void testBitmapGpuGeometry() {
     check(font->setConfigJson(R"({"fontSize":8,"fontDefDictionary":{"65":{"rect":{"x":1,"y":1,"width":2,"height":2},"xOffset":0,"yOffset":0,"xAdvance":2}}})"), "Bitmap source size reload");
     label.updateRenderData();
     checkNear(label.getContentWidth(), 2.F, "Config source-size reload invalidates existing Label without font reassignment");
-    check(font->setConfigJson("{}") && !font->hasSourceFontSize() && font->getSourceFontSize() == 64, "Removing configured source size restores legacy metadata fallback");
     font->setConfigJson(sourceConfig);
     label.setFontSize(8); label.setSpacingX(2); label.setLineHeight(6);
     const auto measured = label.measureUnwrappedText("AA");

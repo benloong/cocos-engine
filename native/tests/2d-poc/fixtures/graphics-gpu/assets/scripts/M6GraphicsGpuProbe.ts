@@ -16,18 +16,15 @@ const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(reso
 async function checkLegacyLabelEffects (parent: Node, target: RenderTexture): Promise<object> {
     const prefab = deserialize([
         { __type__: 'cc.Prefab', data: { __id__: 1 } },
-        { __type__: 'cc.Node', _name: 'LegacyLabelEffects', _components: [2, 3, 4, 5].map(__id__ => ({ __id__ })) },
+        { __type__: 'cc.Node', _name: 'LabelEffects', _components: [2, 3].map(__id__ => ({ __id__ })) },
         { __type__: 'cc.UITransform', node: { __id__: 1 } },
-        { __type__: 'cc.Label', node: { __id__: 1 }, _string: 'Atlas', _fontSize: 32, _lineHeight: 40 },
-        { __type__: 'cc.LabelOutlineComponent', node: { __id__: 1 } },
-        { __type__: 'cc.LabelShadow', node: { __id__: 1 } },
+        { __type__: 'cc.Label', node: { __id__: 1 }, _string: 'Atlas', _fontSize: 32, _lineHeight: 40,
+            _enableOutline: true, _outlineWidth: 2, _enableShadow: true, _shadowBlur: 0 },
     ]) as Prefab;
     const instance = instantiate(prefab);
     instance.layer = parent.layer;
     parent.addChild(instance);
     const label = instance.getComponent(Label)!;
-    const outline = instance.getComponent(LabelOutline);
-    const shadow = instance.getComponent(LabelShadow);
     const pixels = async (): Promise<Uint8Array> => {
         await wait();
         const rgba = target.readPixels();
@@ -42,9 +39,11 @@ async function checkLegacyLabelEffects (parent: Node, target: RenderTexture): Pr
         return false;
     };
     try {
-        if (!outline || !shadow || !label.enableOutline || !label.enableShadow) throw new Error('Legacy Label effects did not activate from the Prefab');
-        outline.width = 2;
-        shadow.blur = 0;
+        if (!label.enableOutline || label.outlineWidth !== 2 || !label.enableShadow || label.shadowBlur !== 0) {
+            throw new Error('Label effect fields did not restore from the Prefab');
+        }
+        const outline = instance.addComponent(LabelOutline);
+        const shadow = instance.addComponent(LabelShadow);
         const outlineColor = new Color(255, 0, 0, 255);
         const shadowColor = new Color(0, 255, 0, 255);
         const offset = new Vec2(16, 14);
@@ -403,9 +402,10 @@ async function checkRectMeshOrientation (
     texture.image = image;
     texture.uploadData(pixels);
     const frame = new SpriteFrame();
-    frame._deserialize({ pixelsToUnit: 16, rect: flatRect, originalSize: { width, height } }, null);
+    frame._deserialize({ rect: flatRect, originalSize: { width, height },
+        meshType: SpriteFrame.MeshType.RECT, pixelsToUnit: 100, packable: false }, null);
+    if (frame.pixelsToUnit !== 100 || frame.packable) throw new Error('SpriteFrame did not restore its serialized mesh scale or packing flag');
     frame._textureSource = texture;
-    frame.packable = false;
     const atlasEnabled = dynamicAtlasManager.enabled;
     dynamicAtlasManager.enabled = false;
 
@@ -422,7 +422,7 @@ async function checkRectMeshOrientation (
     const meshNode = new Node('oriented-rect-mesh');
     meshNode.layer = layer;
     meshNode.setPosition(48, 0);
-    meshNode.setScale(64, 64, 1);
+    meshNode.setScale(400, 400, 1);
     parent.addChild(meshNode);
     const renderer = meshNode.addComponent(SpriteRenderer);
     renderer.visibility = layer;

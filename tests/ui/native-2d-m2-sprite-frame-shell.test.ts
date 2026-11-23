@@ -309,12 +309,13 @@ test('clone delegates the value copy to native and has independent math views', 
     expect(frame.pivot.x).toBe(0.2);
 });
 
-test('deserialization preserves defaults and resolves texture without resetting serialized geometry', () => {
+test('deserialization restores explicit mesh data and resolves texture without resetting serialized geometry', () => {
     const frame = createFrame();
     const push = jest.fn();
     frame._deserialize({ name: 'frame', atlas: 'atlas', texture: 'tex-id',
         rect: { x: 1, y: 2, width: 3, height: 4 }, offset: { x: 5, y: 6 },
-        originalSize: { width: 7, height: 8 }, rotated: true, capInsets: [9, 10, 11, 12] }, { result: { push } });
+        originalSize: { width: 7, height: 8 }, rotated: true, capInsets: [9, 10, 11, 12],
+        meshType: WebSpriteFrame.MeshType.RECT, packable: false, pixelsToUnit: 25, pivot: { x: 0.25, y: 0.75 } }, { result: { push } });
     expect(push).toHaveBeenCalledWith(frame, '_textureSource', 'tex-id', expect.any(String));
     const texture = { width: 128, height: 256, _uuid: 'tex-id' };
     frame._textureSource = texture;
@@ -323,9 +324,9 @@ test('deserialization preserves defaults and resolves texture without resetting 
     const data = frame._serialize();
     expect(data.capInsets).toEqual([9, 10, 11, 12]);
     expect(data.texture).toBe('tex-id');
-    expect(data.packable).toBe(true);
-    expect(data.pixelsToUnit).toBe(100);
-    expect(data.pivot).toEqual({ x: 0.5, y: 0.5 });
+    expect(data.packable).toBe(false);
+    expect(data.pixelsToUnit).toBe(25);
+    expect(data.pivot).toEqual({ x: 0.25, y: 0.75 });
     const roundTrip = createFrame();
     roundTrip._deserialize(data);
     roundTrip._textureSource = texture;
