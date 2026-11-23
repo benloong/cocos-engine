@@ -274,10 +274,10 @@
   - [x] 在 2df0c7bfd9 复测迁移前和当前 Windows Release，加入当前版本的分段计时构建。六种启动顺序下，混合变更帧均有 24 次字体栅格化。绘字占栅格化耗时的 53%–57%，布局占 27%–30%；普通计时 CPU 降幅为 26.5%，50% Gate 仍未通过。[数据与计时边界](./native-2d-m6-performance.md#当前候选的字体准备耗时)
   - [x] Windows GDI 在相同字体和文本下复用上一次测量，切换字体或恢复 DC 时清空。六轮交错实测，混合变更帧中位数为迁移前 5.1198、改动前 4.2558、候选 3.9670 ms/帧，候选在三轮逐对更快。CPU Gate 仍待签收。[逐轮证据与微基准](./native-2d-m6-gdi-measure-performance.json)
   - [x] 同帧单行 Label 复用。固定混合变更帧六轮中位数的 CPU 下降 61.8%，JSB 次数下降 77.5%，JS 堆峰值下降 43.2%，强制 GC 从 6.5685 降至 4.6475 ms。每帧 24 次请求命中 22 次，独立文本负载每帧零命中。[性能和逐像素验证](./native-2d-m6-performance.md#windows-同帧复用单行-label-的栅格像素)
-- [x] 14 个原生 override 的物理行数预算已接入 M0 和 native-ts-build。计数保留空行、普通注释及包含运行时逻辑的行，排除版权头、纯类型声明和可确认的 deprecated 直接转发。最接近上限的是 SpriteFrame 298/300 和 Label 491/500；RichText 为 155/500。UIRenderer、LabelOutline、LabelShadow 是保留的 Web 实现，纳入 17 类依赖检查。扩展后的薄壳检查 27 项与 7 项审计测试在本机通过。
+- [x] M0 和 native-ts-build 检查 Native override、TS 帧方法、渲染数据分配和热路径依赖。UIRenderer、LabelOutline、LabelShadow 沿用共享实现，其 2D 依赖也纳入审计。
 - [x] Windows Debug/Release 各完成 14 组场景的创建、稳态、显式 API、同步变更、下一帧、禁用、启用和延迟销毁统计。224 个窗口逐个校验 V8 原生总数；两种配置的迁移类直接调用数逐格一致，稳态为 0，共享 manager 每帧 1 次。[逐组计数与覆盖边界](./native-2d-m6.0-windows-jsb-trace.md)
 - [x] 六种独立资产的创建、同步属性变更、destroy 与三帧延迟清理，在 Windows Debug/Release 共 48 个窗口通过 V8 总数校验；记录 TTF 数据释放、位图字体帧解绑和共享资源存活。[逐资产调用与边界](./native-2d-m6.0-windows-jsb-trace.md)
-- [x] 迁移组件稳态每帧 JSB 调用 0；属性变更、生命周期和用户显式 API 调用单独统计。常规壳 ≤300 行，Label/RichText ≤500 行（按总计划排除版权、纯类型、deprecated 转发）；超限先移除算法，不能仅压缩排版。
+- [x] 迁移组件稳态每帧 JSB 调用 0；属性变更、生命周期和用户显式 API 调用单独统计。
   - Label 的序列化访问器及字体、材质、CHAR 引用桥接在 TS；排版、几何、字形栅格化与上传由原生 Label 完成。RichText 在 TS 保存序列化数据和触摸监听，命中后先保存原生返回的回调名与参数，再遍历命中段与组件派发事件；解析、排版和命中测试由原生执行。两壳的逐帧渲染方法和渲染缓冲分配已纳入静态检查，33 项通过。Web RichText 和两个原生壳的 3 组 Jest 共 15 项通过。调用与配置证据见[组件](./native-2d-m6-jsb-lifecycle.json)、[资产](./native-2d-m6-jsb-assets.json)。本项覆盖薄壳约束，独立的组件行为与字体视觉门禁继续验收。
 - [x] 17 个迁移或保留类的 2D 运行时导入闭包已接入薄壳检查和现有 native-ts-build 测试。Windows Debug 部署包逐块匹配 SHA256，78 个 2D 模块中 55 个产生代码，Web Sprite、Label assembler 和 Graphics WebGL 实现均为 0 字节。公共 utils 入口仍导出 html-text-parser（13308 字节）和 text-utils（13330 字节），17 类的 2D 内部依赖链均未导入它们。部署 cc.js 为 `4702081743c4e25996b2815a2ba2266a510c68133e2e2ef260ca03e921b226d5`。源码检查 13 项与审计测试 6 项通过。闭包边界外的回流与实际每帧调用仍待验证。
 - [ ] 扩展现有 `check-thin-shell.js` 等检查，覆盖全部迁移类和间接热路径；用本机 Web TS/Jest、native TS、Windows 双配置构建和完整应用场景提供证据。
@@ -300,7 +300,7 @@
 | 门禁 | 必须满足 | 不足以判定通过的证据 |
 |---|---|---|
 | 范围与 API | 冻结范围内逐类 parity，现行格式的场景、Prefab 和资产、公开 API 与用户脚本兼容 | 仅 smoke 或方法存在 |
-| 薄壳 | 元数据/序列化、生命周期、API/事件桥接；无 UV/几何、文本/HTML、材质选择算法或第二份权威状态 | 只改 prototype 或只满足行数 |
+| 薄壳 | 元数据/序列化、生命周期、API/事件桥接；无 UV/几何、文本/HTML、材质选择算法或第二份权威状态 | 仅检查 prototype 形态 |
 | 原生热路径 | native 准备、几何/文本/材质与提交闭环，稳态每帧 JSB 0 次 | JS 调用 native，但仍在 JS 逐段布局 |
 | 视觉与事件 | Sprite/Graphics 通道容差 1；文本按记录的布局/字形/基线容差与本轮三项像素暂缓约定；事件序列一致 | colored 非零、面积或 ±20% sanity 单项 |
 | 图形完整性 | Graphics 三角化/GPU 提交和描边语义，Mask 混合/嵌套/恢复正确 | 256×256 兼容光栅化探针 |

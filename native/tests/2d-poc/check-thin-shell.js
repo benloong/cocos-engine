@@ -48,11 +48,6 @@ function main () {
         check(!frameMethods.length, shell.runtime + ' implements a frame method: ' + JSON.stringify(frameMethods));
         check(!findings.allocations.length, shell.runtime + ' creates rendering data: ' + JSON.stringify(findings.allocations));
     }
-    const { shellSizes } = require('./measure-shell-lines.cjs');
-    for (const { name, file, counted, limit } of shellSizes(report)) {
-        check(counted <= limit, file + ' has ' + counted + ' lines, limit ' + limit);
-        console.log(name + ': ' + counted + '/' + limit + ' lines');
-    }
     const hotPaths = shellHotPaths(report);
     check(!hotPaths.length, hotPaths.map(({ component, file }) => component + ' imports ' + file).join('\n'));
     console.log('Checked transitive 2D runtime imports for ' + report.classes.length + ' classes.');

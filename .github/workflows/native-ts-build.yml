@@ -28,7 +28,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci --ignore-scripts
-    - name: Verify native 2D metadata, shell budgets and runtime imports
+    - name: Verify native 2D metadata, shell boundaries and runtime imports
       run: |
         node scripts/generate-native-2d-decorators.cjs --check
         node native/tests/2d-poc/check-thin-shell.js

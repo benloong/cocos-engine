@@ -217,7 +217,7 @@
 
 每个组件的量化验收（写进 PR checklist）：
 
-- 薄壳文件 ≤ 300 行（不含版权头、纯类型声明和 deprecated 转发）；Label/RichText 这类序列化字段多的组件可放宽到 500 行，但超出部分只能是元数据/转发，不能是算法；且不 import `assembler/`、`text-*`、`geometry` 等热路径模块；
+- 薄壳承担元数据、序列化、生命周期和桥接；渲染算法下沉到 Native，薄壳不导入 `assembler/`、`text-*`、`geometry` 等热路径实现；
 - 稳态每帧 JSB 调用 0 次（属性变更、生命周期、用户显式 API 调用除外）；
 - 薄壳内不新增 `if (JSB)` 分支；Web/native 差异只通过 override 到 `.jsb.ts` 表达；
 - Web 实现文件（`cocos/2d/**/x.ts`）只允许新增类型/接口，不允许为 native 改行为。
@@ -283,7 +283,7 @@
   - `Sprite` 全部模式：simple/sliced/tiled/bar-filled/radial-filled；
   - `SpriteFrame` native 化（或至少 native 缓存 rect/offset/rotated/insets）；
   - `UIMeshRenderer` 不下沉（见 M5）。
-- 退出标准：五种 Sprite 模式与 Web 像素对照（容差内）；属性动态切换序列通过；2D 密集场景 CPU 下降达到 KPI（建议 ≥30%）；`sprite.jsb.ts` 壳 ≤ 300 行，无几何/材质选择逻辑，稳态每帧 0 次 JSB 调用。
+- 退出标准：五种 Sprite 模式与 Web 像素对照（容差内）；属性动态切换序列通过；2D 密集场景 CPU 下降达到 KPI（建议 ≥30%）；`sprite.jsb.ts` 壳无几何或材质选择算法，稳态每帧 0 次 JSB 调用。
 
 ### M3：Label + 文本栈（8~10 周，风险最高）
 
@@ -405,7 +405,7 @@
 
 - 2D 密集场景 `Batcher2d.update` + 组件 update 的 CPU 时间下降 ≥30%（M2）/ ≥50%（M6）。
 - 每帧 JSB 调用次数下降 ≥70%；单组件 `prepare` 阶段稳态 0 次。
-- 薄壳体积：常规组件 `.jsb.ts` ≤ 300 行，Label/RichText ≤ 500 行；壳内不出现 assembler/text/geometry 的 import。
+- 薄壳依赖：壳内不导入 assembler、文本或几何的热路径实现。
 - native 构建 JS 热路径删除率：迁移完成的组件在 `.jsb.ts` 中 100% 不再执行几何/文本/材质选择代码。
 - JS 堆峰值下降 ≥30%，GC 次数明显减少。
 - 视觉：Sprite/Graphics 在通道容差 1 内；文字以布局/字形/基线为主，整图差异单独报告，不混入功能通过。

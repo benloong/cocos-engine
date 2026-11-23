@@ -42,11 +42,11 @@ node --test tests/scripts/native-2d-audit.test.cjs
 | SpriteFrame | override | 211 | 绑定复核 | 绑定复核 | M6.1 |
 | SpriteAtlas | override | 148 | 绑定复核 | 绑定复核 | M6.1 |
 
-¹ AST 打印行数排除注释但没有实现最终“纯类型/deprecated 转发”扣除，仅作体积线索。M6.5 须独立执行正式行数/算法门禁，不能靠压缩排版解决超限。
+¹ AST 打印行数用于描述源码体积。M6.5 检查薄壳职责和运行时依赖。
 
 入库基线保留 SpriteFrame 的无 native 属性版本（211 行）。历史审计快照中曾有未提交的 native getter，使当时 AST 为 215 行并触发检查失败。该 getter 后续已按用户决定移除；当前继续采用无 native property 方案，旧失败记录不能再表述为当前工作区阻塞。整体 M6 终态 Gate 仍未关闭。
 
-Sprite/Label 共用的 `native-ui-materials.ts` 为 134 行 AST，已纳入文件/导入审计；它安装显式材质 API 桥接，须与叶子壳一起复核，不能只用叶子行数认定最终薄壳门禁通过。
+Sprite/Label 共用的 `native-ui-materials.ts` 为 134 行 AST，已纳入文件与导入审计。它安装显式材质 API 桥接，须与叶子壳一起核对运行时职责。
 
 ## 当前残留与修复顺序
 
