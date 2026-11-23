@@ -4,10 +4,14 @@ const path = require('node:path');
 
 const repo = path.resolve(__dirname, '../../..');
 const args = process.argv.slice(2);
-const rootProbe = args[0] === '--render-root';
-const name = rootProbe ? 'old-render-root' : 'old-ui-opacity';
+const alternateProbes = new Map([
+    ['--render-root', { name: 'old-render-root', fixture: 'OldRenderRootProbe.ts' }],
+    ['--graphics-m4', { name: 'm6-graphics-old', fixture: null }],
+]);
+const alternateProbe = alternateProbes.get(args[0]);
+const { name, fixture } = alternateProbe ?? { name: 'old-ui-opacity', fixture: 'OldUIOpacityProbe.ts' };
 const project = path.join(__dirname, 'build', `${name}-project`);
-const arg = args[rootProbe ? 1 : 0];
+const arg = args[alternateProbe ? 1 : 0];
 const bundles = ['--build-default', '--build-web'];
 if (arg === '--build-fallback') throw new Error('Component TS rollback is no longer supported');
 
@@ -43,8 +47,17 @@ if (bundles.includes(arg)) {
     for (const name of ['assets', 'assets.meta', 'settings', 'native', 'package.json', 'tsconfig.json']) {
         fs.cpSync(path.join(source, name), path.join(project, name), { recursive: true });
     }
-    const fixture = rootProbe ? 'OldRenderRootProbe.ts' : 'OldUIOpacityProbe.ts';
-    fs.copyFileSync(path.join(__dirname, 'fixtures/acceptance', fixture), path.join(project, 'assets/scripts/M1Test.ts'));
+    if (fixture) {
+        fs.copyFileSync(path.join(__dirname, 'fixtures/acceptance', fixture), path.join(project, 'assets/scripts/M1Test.ts'));
+    } else {
+        // MSBuild's SWIG command changes directory to the engine root. Use the
+        // physical checkout so it can start in a workspace with path restrictions.
+        const engine = fs.realpathSync.native(path.join(repo, 'native')).replaceAll('\\', '/');
+        const local = 'native/engine/common/localCfg.cmake';
+        const original = path.join(source, local);
+        const config = fs.existsSync(original) ? fs.readFileSync(original, 'utf8').trimEnd() + '\n' : '';
+        fs.writeFileSync(path.join(project, local), `${config}set(COCOS_X_PATH "${engine}")\n`);
+    }
     const config = JSON.parse(fs.readFileSync(path.join(source, 'm1-build-config.json'), 'utf8'));
     for (const platform of ['windows', 'web-mobile']) {
         const output = { ...config, platform, outputName: platform };
