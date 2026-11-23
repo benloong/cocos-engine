@@ -28,6 +28,8 @@ import { Device, deviceManager } from './gfx';
 import { settings, Settings, warnID, Pool, macro, log, debug } from './core';
 import { PipelineEventProcessor } from './rendering/pipeline-event';
 import type { Root as JsbRoot } from './root';
+import type { RenderRoot2D } from './2d/framework/render-root-2d';
+import type { Batcher2D } from './2d/renderer/batcher-2d';
 
 declare const nr: any;
 declare const jsb: any;
@@ -54,15 +56,33 @@ export interface IRootInfo {
 
 const rootProto: any = Root.prototype;
 
+interface NativeBatcher extends Pick<Batcher2D, 'initialize' | 'addScreen' | 'sortScreens'> {
+    _nativeObj: Batcher2D['nativeObj'];
+    _screens: RenderRoot2D[];
+    _screenSort (a: RenderRoot2D, b: RenderRoot2D): number;
+}
+
 rootProto._createBatcher2D = function () {
     if (!this._batcher && cclegacy.internal.Batcher2D) {
-        this._batcher = new cclegacy.internal.Batcher2D(this);
-        if (!this._batcher!.initialize()) {
+        const batcher: NativeBatcher = new cclegacy.internal.Batcher2D(this);
+        this._batcher = batcher;
+        if (!batcher.initialize()) {
             this._batcher = null;
             this.destroy();
             return;
         }
-        this._batcher._nativeObj = this.getBatcher2D();
+        batcher._nativeObj = this.getBatcher2D();
+        const addScreen = batcher.addScreen;
+        batcher.addScreen = function (this: NativeBatcher, screen: RenderRoot2D): void {
+            if (!this._screens.includes(screen)) {
+                addScreen.call(this, screen);
+            }
+        };
+        batcher.sortScreens = function (this: NativeBatcher): void {
+            this._screens.sort(this._screenSort);
+            // Native RenderRoot2D registers directly, so the JS list can be empty.
+            this._nativeObj.sortRootNodes();
+        };
     }
 }
 

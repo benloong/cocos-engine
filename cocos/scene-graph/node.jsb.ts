@@ -28,7 +28,7 @@ import { NodeEventType } from './node-event';
 import { CCObjectFlags } from '../core/data/object';
 import { NodeUIProperties } from './node-ui-properties';
 import { MobilityMode, NodeSpace, TransformBit } from './node-enum';
-import { IVec2Like, Mat4, Quat, Vec3 } from '../core/math';
+import { IVec2Like, Mat4, Quat, Vec2, Vec3 } from '../core/math';
 import { Layers } from './layers';
 import { editorExtrasTag, SerializationContext, SerializationOutput, serializeTag } from '../core/data';
 import { _tempFloatArray, fillMat4WithTempFloatArray } from './utils.jsb';
@@ -38,7 +38,8 @@ import { nodePolyfill } from './node-dev';
 import * as js from '../core/utils/js';
 import { patch_cc_Node } from '../native-binding/decorators';
 import type { Node as JsbNode } from './node';
-import { DispatcherEventType, NodeEventProcessor } from './node-event-processor';
+import { DispatcherEventType, NodeEventProcessor as SharedNodeEventProcessor } from './node-event-processor';
+import type { EventTouch, Touch } from '../input/types';
 
 const reserveContentsForAllSyncablePrefabTag = Symbol('ReserveContentsForAllSyncablePrefab');
 
@@ -50,6 +51,40 @@ export type Node = JsbNode;
 cclegacy.Node = Node;
 
 const tempVec3 = new Vec3();
+const touchEndScreenPoint = new Vec2();
+
+interface TouchEndProcessor {
+    readonly node: Node;
+    _dispatchingTouch: Touch | null;
+}
+
+function handleNativeTouchEnd (this: TouchEndProcessor, event: EventTouch): void {
+    const node = this.node;
+    const uiTransform = node?._getUITransformComp();
+    if (!uiTransform) return;
+
+    event.getLocation(touchEndScreenPoint);
+    const worldPoint = Vec2.set(new Vec2(), Number.NaN, Number.NaN);
+    const transform = uiTransform as typeof uiTransform & {
+        hitTest (point: Vec2, windowId: number, hitPoint: Vec2): boolean;
+    };
+    const hit = transform.hitTest(touchEndScreenPoint, event.windowId, worldPoint);
+    const previousWorldPoint = event._hitTestWorldPoint;
+    event._hitTestWorldPoint = hit && Number.isFinite(worldPoint.x) && Number.isFinite(worldPoint.y) ? worldPoint : null;
+    event.type = hit ? NodeEventType.TOUCH_END : NodeEventType.TOUCH_CANCEL;
+    event.bubbles = true;
+    try {
+        node.dispatchEvent(event);
+    } finally {
+        event._hitTestWorldPoint = previousWorldPoint;
+        this._dispatchingTouch = null;
+    }
+}
+
+class NodeEventProcessor extends SharedNodeEventProcessor {}
+
+// SharedNodeEventProcessor dispatches to this private hook on the instance.
+Object.assign(NodeEventProcessor.prototype, { _handleTouchEnd: handleNativeTouchEnd });
 
 const NodeCls: any = Node;
 

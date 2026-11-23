@@ -22,7 +22,6 @@
  THE SOFTWARE.
 */
 
-import { JSB } from 'internal:constants';
 import { CallbacksInvoker } from '../core/event/callbacks-invoker';
 import { Event, EventMouse, EventTouch, Touch } from '../input/types';
 import { Vec2 } from '../core/math/vec2';
@@ -678,27 +677,14 @@ export class NodeEventProcessor {
 
         event.getLocation(pos);
 
-        if (!JSB) {
-            event.type = uiTransformComp.hitTest(pos, event.windowId) ? NodeEventType.TOUCH_END : NodeEventType.TOUCH_CANCEL;
-            event.bubbles = true;
-            node.dispatchEvent(event);
-            this._dispatchingTouch = null;
-            return;
+        if (uiTransformComp.hitTest(pos, event.windowId)) {
+            event.type = NodeEventType.TOUCH_END;
+        } else {
+            event.type = NodeEventType.TOUCH_CANCEL;
         }
-
-        const worldPoint = Vec2.set(new Vec2(), Number.NaN, Number.NaN);
-        const transform = uiTransformComp as typeof uiTransformComp & { hitTest (screenPoint: Vec2, windowId: number, hitPoint: Vec2): boolean };
-        const hit = transform.hitTest(pos, event.windowId, worldPoint);
-        const previousWorldPoint = event._hitTestWorldPoint;
-        event._hitTestWorldPoint = hit && Number.isFinite(worldPoint.x) && Number.isFinite(worldPoint.y) ? worldPoint : null;
-        event.type = hit ? NodeEventType.TOUCH_END : NodeEventType.TOUCH_CANCEL;
         event.bubbles = true;
-        try {
-            node.dispatchEvent(event);
-        } finally {
-            event._hitTestWorldPoint = previousWorldPoint;
-            this._dispatchingTouch = null;
-        }
+        node.dispatchEvent(event);
+        this._dispatchingTouch = null;
     }
 
     private _handleTouchCancel (event: EventTouch): void {
