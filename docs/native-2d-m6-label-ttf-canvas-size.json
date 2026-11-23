@@ -43,6 +43,50 @@
       "logSha256": "7137ba751ae834f4549a9f128bef60c5dad32833caf17c679252952c73e5f943"
     }
   },
+  "nativeHarnessRecheck": {
+    "commit": "68af105c8ddd439dc0b23785659653f669d07222",
+    "fontAliasCyclesPerRun": 1000,
+    "attemptsPerConfiguration": 3,
+    "workingDirectories": ["executable", "repository", "executable"],
+    "historicalFailureReproduced": false,
+    "localChecks": {
+      "jestPassed": 1480,
+      "jestLogSha256": "ca1fc4f29683bca8d179a1373d583375cbce28a2ba58903034fec497b509578d",
+      "webTypeScript": true,
+      "nativeTypeScript": true,
+      "nativeTypeScriptLogSha256": "cee5bebc72611b313cbfc574babcd94eca5a7cbd27cb0814ca2d039ed431918e",
+      "thinShellChecksPassed": 57,
+      "scriptsStartedFrom": "native/tests/2d-poc/build",
+      "scriptResults": {
+        "fontAssets": { "nativePassed": 2, "jestPassed": 81, "logSha256": "0a6bc017a7451b8d929f4f8b9da9904b7efd04548379726a6cbf4b525688d7e0" },
+        "layout": { "nativePassed": 2, "jestPassed": 16, "logSha256": "a031a4b8051d0b764fe3de402d1443a57dc4fdd3c16d138c9423e1601218a034" },
+        "richText": { "nativePassed": 2, "jestPassed": 11, "logSha256": "776b5590fc63d3a119b238df14fbdb5b9c38012e13598af32122b7ac043a2775" },
+        "spriteApi": { "nativePassed": 2, "jestPassed": 31, "logSha256": "ae42fd6f9e2f873231440b13d014399079861c34004f31ee51b09d40c5c1b58d" },
+        "spriteAtlas": { "nativePassed": 2, "jestPassed": 10, "logSha256": "f2a52d49ae738551cab84c0a38bae7eb995067c692b450aa3b976326dc2f8c43" },
+        "graphicsGeometry": { "fixtures": 786, "jestPassed": 1, "logSha256": "0382008ed789cf9814c7570b303399062502dbd1f15a7211cc29621f652f6ad5" }
+      }
+    },
+    "configurations": {
+      "Debug": {
+        "passed": 3,
+        "executableSha256": "ad1f039da9af3e30de17685f1f8a6779a1016011ff38fe77c2b51766445f37eb",
+        "logSha256": [
+          "5d2aab18a297c6152da1656ee9d09e00324b5fefe2bbac842b6b8f310f17b161",
+          "1de95121764532e63d796746899684f7777b9dca53db56340644c6d304063987",
+          "f0b9391927945625f65e71a2f3425afa98701bb57506db1a72a0bed85bde762a"
+        ]
+      },
+      "Release": {
+        "passed": 3,
+        "executableSha256": "baa787d8b2875b4f071daab1183094e76cb0f9bc06ea1a0ae3d229dc1ec465a6",
+        "logSha256": [
+          "540deb3983b50511708c29b32c6d446492b0d8bd0f1652446b997de377a157f6",
+          "c1315cd825e109ebd2db42aafffe28bedcf2cc993c9cfb65528164102f0240ea",
+          "b163ef0294f090c08632f50565da393d274a444d2131e6870adf61e2319d7a2f"
+        ]
+      }
+    }
+  },
   "webManifestSha256": "56b03709bcfa893078413cdd7f896ea37e76acad7caaf1417c505cbe0ab025b4",
   "webLogSha256": "db1a9456c9542ce83dc2f4d224aa048bb684a3a0216bdc8b44131f75ec23e19f",
   "configurations": {
