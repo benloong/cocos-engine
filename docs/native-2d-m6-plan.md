@@ -65,7 +65,7 @@
 - [x] Label._canvasPool 显式兼容入口。Web 和 native 使用同一画布池实现，借出两个独立画布、测量文字、归还后获取相同上下文及字体状态在 Web、Windows Debug/Release 均通过，三端 85 张图像逐字节一致。Windows 部署 cc.js 哈希为 `45073de1a593f50274e1a5dd88e8103681b97a42b0afba6821106fcc8864594e`，画布池模块贡献 990 字节，Web Label assembler 未进入部署包。完整串行验收与 23 项定向 Jest 通过。[GPU 快照与配置](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Label 启用时恢复字体。无字体资产且关闭系统字体时，按 Web 行为恢复系统字体；系统字体族为空时恢复 Arial。已配置的字体族和有效字体资产保留。修复前定向用例复现 useSystemFont 仍为 false，修复后 6 项 Label 契约测试通过。Web 与 Windows Debug/Release 实际场景验证重新启用及保留 Verdana，85 张图像逐字节一致，标准工程串行门禁通过。[当前快照与像素结果](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Sprite 和 Label 的 JSB 壳继承 UIRenderer.color。编辑器改色在同步原生颜色后派发一次 COLOR_CHANGED，监听器收到独立副本；运行时改色和重复赋相同值的事件数均为 0。Web 类和 JSB 壳的编辑器/运行时契约由[定向测试](../tests/ui/native-2d-m3-label-shell.test.ts)覆盖，三端运行时赋值由[实际场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)覆盖。
-- [ ] 完整组件 parity：Label 其余公开/兼容接口，以及真实场景/Prefab 和资源管线继续验收。
+- [ ] 完整组件 parity：继续核对其余组件的公开及兼容接口、真实场景与资源管线。
   - [x] 已绑定 BitmapFont 的 Label 改为 18.25 px、重复写入该字号、再更换字体族。旧 Windows Debug 调用六次字体 setter；现版 Debug/Release 均只调用一次 `setFontSize` 和一次 `setFont`，仍持有同一 BitmapFont。切回系统字体后以 23.75 px 实际绘制并回读到非空字形。Web 同序列保留位图字体身份、原始字号和目标字号。[Windows 探针](../native/tests/2d-poc/build-sprite-api-probe.cjs)、[Web 对照](../tests/ui/native-2d-m3-label-shell.test.ts)
   - [x] Windows DirectWrite Label 接收 TTF 小数字号。修复前 24、24.25 和 24.75 px 的自然宽度均为 95.9765625。修复后 24.25 和 24.75 px 的 Windows Debug/Release 宽度分别为 96.9763107 和 98.9758301，与 Web 的最大差小于 0.000054 px。三端在同一场景验证重绘、恢复 24 px 及 47 张既有图的逐图哈希。[复测记录](./native-2d-m6-richtext-configurations.json)
   - [x] Label 的粗体、斜体、下划线及其高度、描边开关与宽度、阴影开关与模糊值均在值改变时更新。对每个属性依次写入初值、新值、相同新值和初值，Windows Debug/Release 均只调用两次原生 setter，Web 同样触发两次渲染数据更新。[真实 JSB 探针](../native/tests/2d-poc/build-sprite-api-probe.cjs)、[Web 对照](../tests/ui/native-2d-m3-label-shell.test.ts)
@@ -187,6 +187,7 @@
   - [x] `CHILD_ADDED` 回调内解绑 RichText 或把它移到另一个宿主时，原布局停止提交。Windows Debug、Release 的真实 JSB 探针验证旧宿主的段全部移除、旧 Label 包装失效、重新挂接和换宿主后只在当前宿主生成段。三端应用验证在同一回调调用 `destroy()` 后只留下用户创建的子节点。两种 Windows 配置各完成 1000 轮字体生命周期，42 张图与上轮逐字节相同。场景快照为 `5ac028e993b85ea55d44c720b341282ed34b9b524426bac4c8378b3245df0f59`。[JSB 探针](../native/tests/2d-poc/build-richtext-runtime-probe.cjs)、[应用夹具](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6RichTextMatrix.ts)
   - [x] 真实应用中的 128 段 RichText 生命周期。修复 JSB `Node.layer` 绕过原生通知后段层未更新的问题。Windows 双配置和 Web 各通过 32 轮重建、4224 对增删事件、层和启停同步、内部组件查询契约及图集缓存释放。四张新增图逐字节一致。[生命周期和像素证据](./native-2d-m6-richtext-node-lifecycle.json)
   - [x] RichText 重新启用时，段节点的激活监听器可以同步清空文本。Windows Debug 的旧候选在回调后退出，修复后 Windows 双配置和 Web 都移除三个旧段，生成一个新的可见段。整组移动到停用的父节点后隐藏，重挂接后复用新段并恢复原像素，销毁宿主后无残留。[重入与场景证据](./native-2d-m6-richtext-reactivation.json)
+  - [x] RichText 在 `CHILD_ADDED` 回调中修改宿主锚点时，原生布局会在发布尺寸前应用新锚点。直接读取首段坐标的原生回归从旧值 0 恢复到预期的 −22.226563。应用夹具同时核对实际 Node 包装对象的身份、父节点、激活状态和再次改变锚点后的坐标。[回归说明](./native-2d-m6.2-richtext-runtime.md#段节点挂接时修改宿主锚点)
 - [x] 固定 Web/native 回归覆盖 color/b/i/u、size/br/outline、img/imageAtlas、contentSize、hit/miss，以及 shadow、嵌套样式、对齐和最大宽度、动态编辑、输入派发和销毁解绑。Windows Debug、Release 和 Web 布局 62/62，严格像素 59/62，按当前范围暂缓三项字形像素差。[输入及完整回归](./native-2d-m6-richtext-projected-input.json)
   - [x] Windows 双配置与 Web 的同一 RichText 场景验证未知 shadow 标签、斜体与下划线、居中转右对齐、两行点击、关闭触摸和销毁解绑。场景自身验证 GPU 重绘，47 张固定图与上一节点逐字节一致。[组合场景证据](./native-2d-m6.2-richtext-gpu.md#样式重排与触摸组合)
   - [x] Windows Debug、Release 与 Web 通过输入派发器验证 RichText 点击。在平移相机与旋转、缩放的祖先 Mask 下，使用宿主命中投影出的世界坐标选段。覆盖从遮罩外按下、按下后移出取消、Mask 反转和错误窗口 ID。两条可见链接按 `first`、`second` 顺序各触发一次。[触摸与渲染回归](./native-2d-m6-richtext-projected-input.json)
@@ -250,7 +251,8 @@
 - [x] 完成同场景 Web 千轮堆增长归因。默认与关闭 V8 优化编译各运行 1000 轮，比较第 100 和 1000 轮堆快照。默认快照增长的 90.5% 落在 V8 `code` 类，对照的总自身字节基本持平，两组关键资产实例计数均下降。见[堆快照对照](./native-2d-m6.1-sprite-atlas.md#8-web-堆快照归因)。
 - [x] Windows Debug/Release、完整工程 ASan、CRT/V8 诊断主机与 Web 均通过真实 Prefab 连续加载卸载 1000 次，每份报告含 5000 项资产和 22 项 GPU 检查。每 100 轮显式 GC、核查 500 个弱引用；Windows 双堆和 Web 快照中 Prefab、图集、精灵帧、纹理、图片实例均减少。Web 新增绘图对象全部追到当前活动场景，Windows ASan stderr 为空。[配置、覆盖限制与复现](./native-2d-m6-asset-lifetime.md)及[逐轮数据](./native-2d-m6-asset-lifetime.json)。
 - [x] Windows MSVC Release 应用项目构建与基础渲染矩阵。使用同一套 Debug 验收脚本资源，Release 原生二进制完成 M2 五模式、M3 Label、M4 Mask/Graphics 和 M5 RichText，M5 计入 9 个 Label、1 个 Sprite，着色像素为 8725。Release 输出的 12 份图集与 88 份字体 RGBA 和 Debug 同名捕获逐字节一致。Release 应用 SHA256 为 `ed9de14382436006389b64a9b23928b4dba834766993aec429666ee4e816b6b4`；日志见 `native/tests/2d-poc/build/m6-release-*.log` 和 `m6-windows-release-build.log`。此处 Release 指 C++ 配置，发布脚本与完整事件矩阵继续验收。
-- [ ] Windows Debug/Release 构建和关键渲染、字体、事件场景逐格验收。macOS、iOS、Android、OHOS 的 Debug/Release 标为暂缓、待验证。
+- [ ] M6.4 平台矩阵。用同一最终候选完成 Windows Debug、Release 构建和 Web 对照，逐项验收现行场景的渲染、字体、事件和资源生命周期。macOS、iOS、Android 和 OHOS 的 Debug/Release 暂缓、待验证。
+  - 历史记录 `68af105c8d` 在 Windows Debug、Release 分别完成 163 张通用图的 Web 逐字节对照，RichText 布局 62/62，严格像素 59/62。[历史应用、回退与调用追踪](./native-2d-m6-candidate-recheck.json)
   - [x] 候选 `244decdeb0` 的 Windows Debug、Release 与 Web 重建后通过同一快照的 RichText 字体应用矩阵。Windows 双配置各通过 47 项布局、44 项严格像素和 1000 次加载释放，三项像素差异按当前范围暂缓。[本机矩阵记录](./native-2d-m6-richtext-configurations.json)
 - [x] 模块裁剪通过。Windows 和 Web 的 Release 引擎分别构建 9 种组合：无 2D，以及 2D 加 rich-text、mask、graphics 三个独立特性的全部 8 种组合。检查每个实际 cc.js 的公开导出，逐类核对启用及移除结果。[18 个 bundle 的 SHA256 和导出清单](./native-2d-m6-feature-matrix.json)。复现命令为 node native/tests/2d-poc/check-m6-feature-matrix.cjs。
 
@@ -261,6 +263,7 @@
 - [x] 已固定 7e83734299 迁移前版本、7045a76a35 候选、硬件和构建模式；Windows Release 与 Web 完成五种负载三轮对照。每个场景预热 30 帧，稳态及 10% 变更态各采样 120 帧。[方法、环境和数据](./native-2d-m6-performance.md)。
 - [x] Windows 文本行宽复用。Label 布局与绘制共享行宽，GDI 复用同一次测量，DirectWrite 左对齐省去定位测量。六轮混合变更帧从 4.2690 降至 3.6188 ms，系统字体和自定义字体在 Windows 的优化前后像素一致。[测量和回归](./native-2d-m6-text-width-reuse.json)
 - [x] Windows Release 候选 `3b6a4f3c9b` 的固定混合变更帧达到性能 KPI。六对交错采样使用相同的 Windows 场景资源和 V8 DLL。包含原生 `Batcher2d` 的 CPU 时间下降 67.2%，每帧 JSB 调用下降 77.5%，堆峰值下降 41.9%，强制 GC 中位数下降 56.0%（六对中四对改善）。Web 完成 12 项同源负载。最终 Gate 在统一候选上重跑。[实测数据](./native-2d-m6-performance-3b6a4f3c9b.json)
+  - 历史候选 `68af105c8d` 记录了 Windows Release 六对和 Web 12 项负载。混合变更帧 CPU、JSB、JS 堆峰值与强制 GC 中位数分别下降 59.3%、77.5%、41.7% 和 1.8%。两端 29 份场景与启动资源逐字节一致。[实测数据](./native-2d-m6-performance-68af105c8d.json)
   - [x] `76b9679ae9` 对迁移前 `7e83734299` 与 Web 完成三轮交错复测。混合变更帧 CPU 下降 56.8%，JSB 下降 77.5%，JS 堆峰值下降 43.0%。每轮每场景每阶段执行一次强制 GC，该负载的中位数由 6.465 升至 10.744 ms。纯 Sprite 静止和改色的 CPU 仍高于迁移前。[逐轮结果](./native-2d-m6-performance-76b9679ae9.json)
   - [x] Windows Release 的六轮 V8 诊断记录了 144 次强制主回收。混合变更帧的调用耗时中位数为 7.996 → 8.152 ms，V8 主回收中位数为 7.989 → 8.142 ms。候选在三轮上升、三轮下降，普通 Windows 与 Web 的 12 项负载均通过。GC 性能 Gate 继续待签收。[诊断数据](./native-2d-m6-gc-trace.json)
   - [x] 同一对无诊断 Windows Release 二进制追加六轮交错。混合变更的 CPU、JSB、JS 堆峰值分别下降 50.8%、77.5%、42.9%，强制 GC 中位数为 10.255 → 10.169 ms。计入此前三轮后，GC 中位数为 9.755 → 10.536 ms，九对样本仅三对改善，性能 Gate 保持待签收。[无诊断复测](./native-2d-m6-gc-repeat.json)
@@ -286,15 +289,18 @@
   - [x] SIMPLE Sprite 的[四边形对照](../native/tests/2d-poc/run-sprite-quad-parity.ps1)读取 Web assembler 实际写入的 UV 和索引区间，并按各端提交的索引栅格化。Windows Debug/Release 对 Web 各 13 项通过，100×100 图像逐像素一致。将 Web 索引全部置零会产生 10000 个差异像素；单独颠倒绕序或改变 UV，即使纯色图像相同也会判为失败。
   - native-ts-build 的 PR 检查已接入位图字体布局和径向 Sprite 的 C++/Web assembler 对照。本机运行同一对入口，2327 个布局和 3024 个几何用例通过；Windows 完整应用矩阵另行验收。
   - [x] [Windows PR 矩阵](../.github/workflows/native-ts-build.yml)分别构建 Debug/Release 引擎、生成 SWIG 绑定并运行[六组 JSB 用例](../native/tests/2d-poc/run-windows-jsb-probes.ps1)，覆盖 renderer manager、Sprite API、SpriteAtlas、字体资产、布局和 RichText。每次运行同时检查场景记录的节点挂接。两种配置均在本机从空目录编译通过，六组用例与 SIMPLE Sprite 对 Web 的 13 项检查全部通过。Web 全量检查通过 TypeScript 编译和 197 组 Jest（1467 项通过、8 项跳过、16 项待实现），native TS 编译通过。完整应用场景仍待签收。
+  - 历史候选 `68af105c8d` 的 Windows Debug、Release 完整原生测试各通过 3 次，每次完成 1000 轮字体别名生命周期。字体资产、布局、RichText、Sprite API、SpriteAtlas 和 Graphics 几何的脚本均从构建子目录启动通过。Web 和 native TypeScript、全量 1480 项 Jest 和 57 项薄壳检查通过。[本机复测数据](./native-2d-m6-label-ttf-canvas-size.json)
 - [x] 按组件/模块完成独立回退演练，验证 override、依赖资产、材质与旧场景并记录行为和耗时。最终候选复测归入最终签收。
+  - 历史候选 `68af105c8d` 复验了 Windows 双配置的组件回退。Sprite、Label、Graphics／Mask、UIOpacity、RenderRoot2D 的回退与恢复各保持 163 张图逐字节一致。RichText 的三阶段各通过 62 项布局，严格像素 59/62，切换实现与恢复后各配置的 62 张原生图均与默认运行相同。[逐配置快照和部署包指纹](./native-2d-m6-candidate-recheck.json)
   - [x] Graphics／Mask 与其 Sprite 模板依赖使用同一个回退标志。Windows 双配置各通过默认、TS 回退和恢复的 138 张严格像素对照、22 项命中及 1000 轮场景切换。TS Mask 的圆角命中走实时祖先查询，JSB UITransform 发出锚点变更事件后，回退包与 Web 的动态模板形状一致。[步骤与采样](./native-2d-m6.3-graphics-gpu.md)、[逐配置数据](./native-2d-m6-graphics-mask-rollback.json)
   - [x] RichText 42 项应用矩阵在 Windows 双配置分别完成原生、TS 回退、恢复原生三次启动。各次通过实现类型、Prefab、字体生命周期和布局检查，各配置切换前后的 RGBA 一致。对 Web 严格像素 39/42。[完整回退实测](./native-2d-m6-richtext-rollback.md#42-项应用矩阵回退与恢复)
   - [x] Sprite 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。各 Windows 配置在同一二进制上执行原生、TS 回退、恢复原生，三次各 116 张图与 Web 和上一候选逐字节一致。旧 cocos-m1-test 两种配置回退后通过 Sprite、Mask、RichText，恢复后重新通过 Sprite 五种模式。128 个 Sprite 改色和位移的帧样本另行记录。[回退流程及数据](./native-2d-m6-sprite-rollback.md)
   - [x] Label 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。六次 Windows 运行各 116 张对照图与 Web 逐字节一致。旧 cocos-m1-test 的真实 BMFont、CHAR 缓存、换行及 GPU 字形三阶段通过。系统字体在 TS 回退时的像素覆盖变化及同一 Prefab 的同步更新耗时已归档。[复现和数据](./native-2d-m6-label-rollback.md)
-    - [x] TS Label 归一化 Canvas 的整数尺寸。捆绑 TTF 首次加载、跨场景复用和冷重载的三张图恢复像素一致。Windows Debug、Release 的原生、TS 回退、恢复三阶段各 163 张图与 Chrome 严格一致。[当前回退证据](./native-2d-m6-label-ttf-canvas-size.json)
+    - [x] TS Label 归一化 Canvas 的整数尺寸。捆绑 TTF 首次加载、跨场景复用和冷重载的三张图恢复像素一致。Windows Debug、Release 的原生、TS 回退、恢复三阶段各 163 张图与 Chrome 严格一致。[历史 Label 回退记录](./native-2d-m6-label-ttf-canvas-size.json)
   - [x] UIOpacity 支持独立切回 JS 并恢复原生实现。Windows Debug/Release 各验证两种实现、Prefab 字段、组件生命周期、85 张 Web 对照图与 setter 耗时。[复现和采样](./native-2d-m6-ui-opacity-rollback.md)
   - [x] RenderRoot2D 支持独立切回 JS 并恢复原生注册。Windows Debug/Release 各验证两种实现、Prefab 实例化、11 个根注册检查点、85 张 Web 对照图与组件启停耗时。[复现和采样](./native-2d-m6-render-root-rollback.md)
   - [x] RichText 支持独立切回 TS 并恢复原生实现。Windows 双配置覆盖序列化 Prefab、字体与图集、混合场景换行和点击、段查询与样式更新计时。12 个场景比较切换前后的布局和图像，跨端字形差异单列。[复现和数据](./native-2d-m6-richtext-rollback.md)
+- [ ] M6.5 最终候选回退复验。在同一最终候选上，用 Windows Debug、Release 分别验证 Sprite、Label、Graphics／Mask、UIOpacity、RenderRoot2D 和 RichText 的默认原生、TS 回退、恢复原生三阶段。按现行用例集核对实现身份、资源生命周期、GPU 图像和恢复后的部署包，并记录各配置的日志与产物。
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
 
 交付：性能报告、回退记录、M6 Gate。原计划 4–5 周是早期估算，未包含当前列出的全部 M4/M5 终态欠项；完成 M6.0 后重新排期。
