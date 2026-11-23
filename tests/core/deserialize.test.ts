@@ -3,6 +3,7 @@ import { property } from '../../cocos/core/data/class-decorator';
 import { ccclass, type } from '../../cocos/core/data/decorators';
 import { deserialize } from '../../cocos/serialization/deserialize';
 import { BitMask } from '../../cocos/core/value-types/bitmask';
+import * as constants from 'internal:constants';
 
 describe('Deserialize', () => {
     test('Builtin nullable defaults preserve primitives and objects', () => {
@@ -13,14 +14,20 @@ describe('Deserialize', () => {
             @property enabled: boolean | null = null;
             @property data: object | null = null;
         }
-        for (const values of [
-            { text: 'Font_LABEL', count: 18, enabled: true, data: { nested: [1, 'A'] } },
-            { text: '', count: 0, enabled: false, data: null },
-            { text: null, count: null, enabled: null, data: null },
-        ]) {
-            expect(deserialize({ __type__: 'cc.NullableDeserializeRegression', ...values })).toEqual(values);
+        const previousJSB = constants.JSB;
+        (constants as any).JSB = true;
+        try {
+            for (const values of [
+                { text: 'Font_LABEL', count: 18, enabled: true, data: { nested: [1, 'A'] } },
+                { text: '', count: 0, enabled: false, data: null },
+                { text: null, count: null, enabled: null, data: null },
+            ]) {
+                expect(deserialize({ __type__: 'cc.NullableDeserializeRegression', ...values })).toEqual(values);
+            }
+            expect(deserialize({ __type__: 'cc.NullableDeserializeRegression' })).toEqual(new Nullable());
+        } finally {
+            (constants as any).JSB = previousJSB;
         }
-        expect(deserialize({ __type__: 'cc.NullableDeserializeRegression' })).toEqual(new Nullable());
     });
 
     test('Object array element', () => {
