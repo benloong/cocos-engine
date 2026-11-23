@@ -1,3 +1,26 @@
+if(MSVC AND CMAKE_GENERATOR MATCHES "Ninja")
+    # Ninja matches the compiler's raw /showIncludes prefix. Decoding UTF-8
+    # diagnostics with the console code page can silently lose header dependencies.
+    set(cc_msvc_prefix_probe "${CMAKE_BINARY_DIR}/cc-msvc-prefix.cpp")
+    file(WRITE "${cc_msvc_prefix_probe}" "#include <cstdint>\n")
+    execute_process(
+        COMMAND "${CMAKE_CXX_COMPILER}" /nologo /showIncludes /c "${cc_msvc_prefix_probe}"
+                "/Fo${CMAKE_BINARY_DIR}/cc-msvc-prefix.obj"
+        RESULT_VARIABLE cc_msvc_prefix_result
+        OUTPUT_VARIABLE cc_msvc_prefix_output
+        ERROR_VARIABLE cc_msvc_prefix_error
+        ENCODING NONE
+    )
+    string(REGEX MATCH "[^\r\n]*[A-Za-z]:[^\r\n]*[\\/]cstdint"
+           cc_msvc_prefix_line "${cc_msvc_prefix_output}${cc_msvc_prefix_error}")
+    if(NOT cc_msvc_prefix_result EQUAL 0 OR NOT cc_msvc_prefix_line)
+        message(FATAL_ERROR "Could not identify the MSVC header dependency prefix: ${cc_msvc_prefix_error}")
+    endif()
+    string(REGEX REPLACE "[A-Za-z]:.*$" "" cc_msvc_prefix "${cc_msvc_prefix_line}")
+    set(CMAKE_CL_SHOWINCLUDES_PREFIX "${cc_msvc_prefix}")
+    set(CMAKE_C_CL_SHOWINCLUDES_PREFIX "${cc_msvc_prefix}")
+    set(CMAKE_CXX_CL_SHOWINCLUDES_PREFIX "${cc_msvc_prefix}")
+endif()
 
 set(CC_PLATFORM_IOS 1)
 set(CC_PLATFORM_WINDOWS 2)

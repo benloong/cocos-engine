@@ -125,6 +125,18 @@ robocopy $data $res /E /NFL /NDL /NJH /NJS /NP
 
 ## 5. 编译 native app
 
+Windows Ninja 构建会从 MSVC 的原始 `/showIncludes` 输出提取依赖前缀。2026-11-23 发现 UTF-8 输出被旧 CMake 缓存按本机代码页解码，导致头文件依赖遗漏。旧增量构建出现 Label 透明度及 Graphics 提交错误，干净重建后相应检查通过。
+
+已有错误前缀的构建目录需要在更新引擎后重新配置并执行一次干净构建，重新建立依赖记录。`$sourceDir` 和 `$buildDir` 分别指向对应的 CMake 源目录和 Ninja 构建目录。
+
+```powershell
+cmake -S $sourceDir -B $buildDir
+cmake --build $buildDir --clean-first --parallel 8
+ninja -C $buildDir -t deps
+```
+
+本机验证中，原生测试入口已记录 616 个头文件依赖，调整 `RenderEntity.h` 的修改时间可触发重编译。随后恢复了头文件时间戳。干净 Debug 原生测试和六组 JSB 探针通过。
+
 CLI build 会生成：
 
 ```text
