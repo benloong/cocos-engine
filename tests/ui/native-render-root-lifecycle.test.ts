@@ -3,7 +3,11 @@ import { resolve } from 'path';
 import ts from 'typescript';
 import { Node } from '../../cocos/scene-graph/node';
 import { Batcher2D } from '../../cocos/2d/renderer/batcher-2d';
+import { UIRendererManager } from '../../cocos/2d/framework/ui-renderer-manager';
 import * as constants from 'internal:constants';
+
+const rootFilename = resolve(__dirname, '../../cocos/root.jsb.ts');
+const rootSource = ts.createSourceFile(rootFilename, readFileSync(rootFilename, 'utf8'), ts.ScriptTarget.Latest, true);
 
 test('native RenderRoot2D creates one backend and detaches it through disable/destroy', () => {
     const backend = { setNode: jest.fn(), setEnabled: jest.fn() };
@@ -41,18 +45,16 @@ test('Web batcher sorts roots by sibling index', () => {
 });
 
 test('native sortScreens sorts the live registry without replacing it from the empty JS screen list', () => {
-    const filename = resolve(__dirname, '../../cocos/root.jsb.ts');
-    const source = ts.createSourceFile(filename, readFileSync(filename, 'utf8'), ts.ScriptTarget.Latest, true);
     let createBatcher: ts.FunctionExpression | undefined;
-    source.forEachChild((statement) => {
+    rootSource.forEachChild((statement) => {
         if (ts.isExpressionStatement(statement) && ts.isBinaryExpression(statement.expression)
-            && statement.expression.left.getText(source) === 'rootProto._createBatcher2D'
+            && statement.expression.left.getText(rootSource) === 'rootProto._createBatcher2D'
             && ts.isFunctionExpression(statement.expression.right)) {
             createBatcher = statement.expression.right;
         }
     });
     expect(createBatcher).toBeDefined();
-    const javascript = ts.transpileModule(`exports.create = ${createBatcher!.getText(source)};`, {
+    const javascript = ts.transpileModule(`exports.create = ${createBatcher!.getText(rootSource)};`, {
         compilerOptions: { target: ts.ScriptTarget.ES2019, module: ts.ModuleKind.CommonJS },
     }).outputText;
     const exported: any = {};
@@ -77,4 +79,47 @@ test('native sortScreens sorts the live registry without replacing it from the e
     } finally {
         (constants as any).JSB = original;
     }
+});
+
+test('Root JSB flushes native renderers after the TS queue and before submitting each frame', () => {
+    const frameStatements = rootSource.statements.filter((statement) => {
+        if (ts.isVariableStatement(statement)) {
+            return statement.declarationList.declarations.some(({ name }) => ts.isIdentifier(name)
+                && (name.text === 'nativeUIRendererManager' || name.text === 'oldFrameMove'));
+        }
+        return ts.isExpressionStatement(statement) && ts.isBinaryExpression(statement.expression)
+            && statement.expression.left.getText(rootSource) === 'rootProto.frameMove';
+    });
+    expect(frameStatements).toHaveLength(3);
+    const javascript = ts.transpileModule(frameStatements.map(statement => statement.getText(rootSource)).join('\n'), {
+        compilerOptions: { target: ts.ScriptTarget.ES2019, module: ts.ModuleKind.CommonJS },
+    }).outputText;
+
+    const calls: string[] = [];
+    const nativeManager = { updateAllDirtyRenderers: jest.fn(() => { calls.push('native'); }) };
+    const createNativeManager = jest.fn(() => nativeManager);
+    const submitFrame = jest.fn((_deltaTime: number, _frame?: number) => { calls.push('frame'); });
+    const rootProto = { frameMove: submitFrame };
+    const cclegacy = { director: { getTotalFrames: jest.fn().mockReturnValueOnce(7).mockReturnValueOnce(8) } };
+    new Function('rootProto', 'NativeUIRendererManager', 'cclegacy', javascript)(rootProto, createNativeManager, cclegacy);
+
+    const shared = new UIRendererManager();
+    const renderer = {
+        _internalId: -1,
+        _dirtyVersion: -1,
+        updateRenderer: () => { calls.push('ts'); },
+    } as unknown as Parameters<UIRendererManager['addRenderer']>[0];
+    shared.addRenderer(renderer);
+    shared.markDirtyRenderer(renderer);
+    shared.updateAllDirtyRenderers();
+    expect(calls).toEqual(['ts']);
+    rootProto.frameMove(0.25);
+    expect(calls).toEqual(['ts', 'native', 'frame']);
+
+    shared.updateAllDirtyRenderers();
+    rootProto.frameMove(0.5);
+    expect(calls).toEqual(['ts', 'native', 'frame', 'native', 'frame']);
+    expect(createNativeManager).toHaveBeenCalledTimes(1);
+    expect(submitFrame).toHaveBeenNthCalledWith(1, 0.25, 7);
+    expect(submitFrame).toHaveBeenNthCalledWith(2, 0.5, 8);
 });
