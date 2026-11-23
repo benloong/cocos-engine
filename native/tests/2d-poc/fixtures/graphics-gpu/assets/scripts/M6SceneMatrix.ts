@@ -16,8 +16,7 @@ async function runLegacyGraphicsScene (openScene: (name: string) => Node, captur
         || !graphics.fillColor.equals(Color.RED) || !graphics.strokeColor.equals(Color.GREEN)) {
         throw new Error('Graphics Prefab style fields did not deserialize');
     }
-    const usesNativeMeshes = sys.isNative
-        && (globalThis as { __m6GraphicsMaskImplementation?: string }).__m6GraphicsMaskImplementation !== 'js';
+    const usesNativeMeshes = sys.isNative;
     if (typeof graphics.activeSubModel !== 'function' || (usesNativeMeshes
         ? 'impl' in graphics || graphics.model !== undefined || graphics.graphicsNativeProxy !== undefined
         : !graphics.impl || !graphics.model || Boolean(graphics.graphicsNativeProxy) !== sys.isNative)) {

@@ -24,7 +24,7 @@
 */
 
 import { ccclass, requireComponent, executeInEditMode, executionOrder, help, menu, multiline, type, displayOrder, serializable, editable } from 'cc.decorator';
-import { DEBUG, DEV, EDITOR, NATIVE } from 'internal:constants';
+import { DEBUG, DEV, EDITOR } from 'internal:constants';
 import { Font, SpriteAtlas, TTFFont, SpriteFrame } from '../assets';
 import { EventTouch } from '../../input/types';
 import { assert, warnID, Color, Vec2, CCObjectFlags, cclegacy, js, Size } from '../../core';
@@ -139,16 +139,6 @@ interface ISegment {
     clickParam: string;
     clickHandler: string;
     type: string,
-}
-
-function segmentWidth (segment: ISegment): number {
-    // A native UITransform publishes float dimensions. Keep the TTF advance
-    // at layout precision until the final segment position is known.
-    if (NATIVE && segment.comp instanceof Label && segment.comp.cacheMode !== CacheMode.CHAR) {
-        const width = segment.comp.contentWidth;
-        if (width > 0) return width;
-    }
-    return segment.node._getUITransformComp()!.width;
 }
 
 /**
@@ -766,12 +756,6 @@ export class RichText extends Component {
         if (this._labelSegmentsCache.length === 0) {
             label = this._createFontLabel(s);
             this._labelSegmentsCache.push(label);
-            // A fresh native Label acquires its measuring backend on first activation.
-            // Pooled labels keep it while detached.
-            if (NATIVE && !label.comp!._isOnLoadCalled && this.node.activeInHierarchy) {
-                this.node.addChild(label.node);
-                label.node.removeFromParent();
-            }
         } else {
             label = this._labelSegmentsCache[0];
             label.node.getComponent(Label)!.string = s;
@@ -779,7 +763,7 @@ export class RichText extends Component {
         label.styleIndex = styleIndex;
         this._applyTextAttribute(label);
         const size = label.node._getUITransformComp()!.contentSize;
-        Vec2.set(out, segmentWidth(label), size.y);
+        Vec2.set(out, size.x, size.y);
         return out;
     }
 
@@ -789,7 +773,7 @@ export class RichText extends Component {
         this._segments.forEach((seg) => {
             const clickHandler = seg.clickHandler;
             const clickParam = seg.clickParam;
-            if (clickHandler && this._containsTouchLocation(seg, (NATIVE ? event._hitTestWorldPoint : null) ?? event.touch!.getUILocation())) {
+            if (clickHandler && this._containsTouchLocation(seg, event.touch!.getUILocation())) {
                 components.forEach((component) => {
                     const func = component[clickHandler];
                     if (component.enabledInHierarchy && func) {
@@ -921,7 +905,8 @@ this._measureText(styleIndex) as unknown as (s: string) => number,
             for (let k = 0; k < fragments.length; ++k) {
                 const splitString = fragments[k];
                 labelSegment = this._addLabelSegment(splitString, styleIndex);
-                this._lineOffsetX += segmentWidth(labelSegment);
+                const labelSize = labelSegment.node._getUITransformComp()!.contentSize;
+                this._lineOffsetX += labelSize.width;
                 if (fragments.length > 1 && k < fragments.length - 1) {
                     this._updateLineInfo();
                 }
@@ -1145,7 +1130,7 @@ this._measureText(styleIndex) as unknown as (s: string) => number,
                 } else {
                     label = this._addLabelSegment(labelString, i);
 
-                    this._lineOffsetX += segmentWidth(label);
+                    this._lineOffsetX += label.node._getUITransformComp()!.width;
                     if (this._lineOffsetX > this._labelWidth) {
                         this._labelWidth = this._lineOffsetX;
                     }
@@ -1230,7 +1215,7 @@ this._measureText(styleIndex) as unknown as (s: string) => number,
             );
 
             if (lineCount === nextLineIndex) {
-                nextTokenX += segmentWidth(segment);
+                nextTokenX += segmentNode._getUITransformComp()!.width;
             }
 
             const sprite = segmentNode.getComponent(Sprite);
@@ -1358,10 +1343,6 @@ this._measureText(styleIndex) as unknown as (s: string) => number,
         label.isBold = false;
         label.isItalic = false;
         label.isUnderline = false;
-        if (NATIVE) {
-            label.enableOutline = false;
-            label.outlineWidth = 0;
-        }
     }
 }
 

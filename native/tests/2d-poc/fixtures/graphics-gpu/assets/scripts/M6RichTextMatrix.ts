@@ -833,7 +833,7 @@ export async function runRichTextMatrix (parent: Node, camera: Camera, capture: 
         }
         rich.string = item.value;
         const backend = (rich as any)._native;
-        const expectNative = sys.isNative && !(globalThis as any).__m6JsRichText;
+        const expectNative = sys.isNative;
         if (!!backend !== expectNative) throw new Error('Unexpected RichText implementation');
         await capture(item.name);
         if (backend && ('getSegmentLabel' in backend || 'getSegmentSprite' in backend || !node.children.length

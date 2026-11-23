@@ -8,22 +8,22 @@ const rootProbe = args[0] === '--render-root';
 const name = rootProbe ? 'old-render-root' : 'old-ui-opacity';
 const project = path.join(__dirname, 'build', `${name}-project`);
 const arg = args[rootProbe ? 1 : 0];
-const bundles = ['--build-default', '--build-fallback', '--build-web'];
+const bundles = ['--build-default', '--build-web'];
+if (arg === '--build-fallback') throw new Error('Component TS rollback is no longer supported');
 
 if (bundles.includes(arg)) {
     const compile = JSON.parse(fs.readFileSync(path.join(project, 'build/windows/cocos.compile.config.json'), 'utf8')).buildEngineParam;
-    const fallback = arg === '--build-fallback';
     const web = arg === '--build-web';
     const output = web ? path.join(project, 'build/web-mobile/cocos-js') : compile.output;
     require(path.join(repo, 'scripts/ensure-pal.cjs'))();
     const { buildEngine } = require(path.join(repo, 'node_modules/@cocos/ccbuild'));
     buildEngine({
         engine: repo,
-        out: fallback ? path.join(__dirname, 'build', `${name}-fallback`) : output,
+        out: output,
         platform: web ? 'HTML5' : compile.platformType,
         mode: 'BUILD',
         features: compile.includeModules,
-        flags: { ...compile.flags, ...(fallback ? { [rootProbe ? 'USE_JS_RENDER_ROOT_2D' : 'USE_JS_UI_OPACITY']: true } : {}) },
+        flags: compile.flags,
         moduleFormat: 'system',
         compress: !compile.debug,
         sourceMap: compile.sourceMaps,

@@ -24,7 +24,7 @@
 */
 
 import { ccclass, help, executionOrder, menu, tooltip, displayOrder, type, range, editable, serializable, visible } from 'cc.decorator';
-import { BUILD, JSB, EDITOR } from 'internal:constants';
+import { BUILD, EDITOR } from 'internal:constants';
 import { SpriteAtlas } from '../assets/sprite-atlas';
 import { SpriteFrame, SpriteFrameEvent } from '../assets/sprite-frame';
 import { builtinResMgr } from '../../asset/asset-manager/builtin-res-mgr';
@@ -291,57 +291,13 @@ export class Sprite extends UIRenderer {
     @displayOrder(6)
     @tooltip('i18n:sprite.fill_center')
     get fillCenter (): Vec2 {
-        const center = this._fillCenter;
-        if (!JSB) return center;
-        if (this._fillCenterView !== center) {
-            this._releaseFillCenterView();
-            let { x, y } = center;
-            Object.defineProperties(center, {
-                x: {
-                    configurable: true,
-                    enumerable: true,
-                    get: () => x,
-                    set: (value: number) => {
-                        if (x === value) return;
-                        x = value;
-                        this._markFillCenterDirty();
-                    },
-                },
-                y: {
-                    configurable: true,
-                    enumerable: true,
-                    get: () => y,
-                    set: (value: number) => {
-                        if (y === value) return;
-                        y = value;
-                        this._markFillCenterDirty();
-                    },
-                },
-            });
-            this._fillCenterView = center;
-        }
-        return center;
+        return this._fillCenter;
     }
     set fillCenter (value) {
         this._fillCenter.x = value.x;
         this._fillCenter.y = value.y;
-        this._markFillCenterDirty();
-    }
-
-    private _markFillCenterDirty (): void {
         if (this._type === SpriteType.FILLED && this.renderData) {
             this._markForUpdateRenderData();
-        }
-    }
-
-    private _releaseFillCenterView (): void {
-        const center = this._fillCenterView;
-        if (center) {
-            Object.defineProperties(center, {
-                x: { value: center.x, writable: true },
-                y: { value: center.y, writable: true },
-            });
-            this._fillCenterView = null;
         }
     }
 
@@ -521,8 +477,6 @@ export class Sprite extends UIRenderer {
     @serializable
     protected _atlas: SpriteAtlas | null = null;
 
-    private declare _fillCenterView?: Vec2 | null;
-
     public __preload (): void {
         this.changeMaterialForDefine();
         super.__preload();
@@ -541,9 +495,7 @@ export class Sprite extends UIRenderer {
         const spriteFrame = this._spriteFrame;
         if (spriteFrame) {
             this._updateUVs();
-            if (JSB) {
-                spriteFrame.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
-            } else if (this._type === SpriteType.SLICED) {
+            if (this._type === SpriteType.SLICED) {
                 spriteFrame.on(SpriteFrameEvent.UV_UPDATED, this._updateUVs, this);
             }
         }
@@ -551,9 +503,7 @@ export class Sprite extends UIRenderer {
 
     public onDisable (): void {
         super.onDisable();
-        if (JSB) {
-            this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
-        } else if (this._spriteFrame && this._type === SpriteType.SLICED) {
+        if (this._spriteFrame && this._type === SpriteType.SLICED) {
             this._spriteFrame.off(SpriteFrameEvent.UV_UPDATED, this._updateUVs, this);
         }
     }
@@ -563,14 +513,6 @@ export class Sprite extends UIRenderer {
             this.node.off(NodeEventType.SIZE_CHANGED, this._resized, this);
         }
         super.onDestroy();
-    }
-
-    public _onPreDestroy (): void {
-        try {
-            super._onPreDestroy();
-        } finally {
-            if (JSB) this._releaseFillCenterView();
-        }
     }
 
     /**
@@ -673,9 +615,9 @@ export class Sprite extends UIRenderer {
             }
         }
 
-        // On Web, only sliced sprites update UVs when the frame insets change.
+        // Only Sliced type need update uv when sprite frame insets changed
         const spriteFrame = self._spriteFrame;
-        if (!JSB && spriteFrame) {
+        if (spriteFrame) {
             if (self._type === SpriteType.SLICED) {
                 spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
             } else {
@@ -740,19 +682,9 @@ export class Sprite extends UIRenderer {
         }
     }
 
-    private _onFrameUVChanged (): void {
-        const renderData = this.renderData;
-        if (renderData) renderData.textureDirty = true;
-        this._markForUpdateRenderData();
-    }
-
     private _updateUVs (): void {
         if (this._assembler) {
             this._assembler.updateUVs!(this);
-            // The same insets determine the nine-slice position grid and its UVs.
-            if (JSB && this._type === SpriteType.SLICED && this.renderData) {
-                this._markForUpdateRenderData();
-            }
         }
     }
 
@@ -760,9 +692,7 @@ export class Sprite extends UIRenderer {
         const self = this;
         const spriteFrame = self._spriteFrame;
 
-        if (JSB) {
-            oldFrame?.off(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
-        } else if (oldFrame && self._type === SpriteType.SLICED) {
+        if (oldFrame && self._type === SpriteType.SLICED) {
             oldFrame.off(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
         }
 
@@ -773,7 +703,6 @@ export class Sprite extends UIRenderer {
             }
             if (textureChanged) {
                 if (self.renderData) self.renderData.textureDirty = true;
-                if (JSB) this._colorDirty();
                 // texture type changed, set this._instanceMaterialType to default value
                 const oldIsRT = oldFrame ? oldFrame.texture instanceof RenderTexture : false;
                 const newIsRT = spriteFrame.texture instanceof RenderTexture;
@@ -783,9 +712,7 @@ export class Sprite extends UIRenderer {
                 self.changeMaterialForDefine();
             }
             self._applySpriteSize();
-            if (JSB) {
-                if (self.enabledInHierarchy) spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._onFrameUVChanged, self);
-            } else if (self._type === SpriteType.SLICED) {
+            if (self._type === SpriteType.SLICED) {
                 spriteFrame.on(SpriteFrameEvent.UV_UPDATED, self._updateUVs, self);
             }
         }

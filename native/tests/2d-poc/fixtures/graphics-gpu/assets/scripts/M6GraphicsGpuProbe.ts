@@ -8,9 +8,9 @@ const { ccclass } = _decorator;
 const outputRoot = '__M6_GPU_OUTPUT__';
 const snapshot = '__M6_GPU_SNAPSHOT__';
 const probeMode: string = '__M6_GPU_MODE__';
-const spriteImplementation = (globalThis as { __m6SpriteImplementation?: string }).__m6SpriteImplementation ?? (sys.isNative ? 'native' : 'js');
-const labelImplementation = (globalThis as { __m6LabelImplementation?: string }).__m6LabelImplementation ?? (sys.isNative ? 'native' : 'js');
-const graphicsMaskImplementation = (globalThis as { __m6GraphicsMaskImplementation?: string }).__m6GraphicsMaskImplementation ?? (sys.isNative ? 'native' : 'js');
+const spriteImplementation = sys.isNative ? 'native' : 'js';
+const labelImplementation = sys.isNative ? 'native' : 'js';
+const graphicsMaskImplementation = sys.isNative ? 'native' : 'js';
 const wait = (ms = 180): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 async function checkLegacyLabelEffects (parent: Node, target: RenderTexture): Promise<object> {

@@ -120,8 +120,6 @@ export class FontAtlas {
  */
 @ccclass('cc.BitmapFont')
 export class BitmapFont extends Font {
-    /** @engineInternal Emitted by the JSB asset for the native Label fallback. */
-    public declare static EVENT_CONFIG_RELOAD: string;
     /**
      * @deprecated since v3.7.0, Useless Code.
      */

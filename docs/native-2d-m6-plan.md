@@ -258,7 +258,7 @@
 
 交付：平台矩阵、生命周期/泄漏/线程报告和可定位的失败项。
 
-### M6.5 性能、回退与最终 Gate
+### M6.5 性能与最终 Gate
 
 - [x] 已固定 7e83734299 迁移前版本、7045a76a35 候选、硬件和构建模式；Windows Release 与 Web 完成五种负载三轮对照。每个场景预热 30 帧，稳态及 10% 变更态各采样 120 帧。[方法、环境和数据](./native-2d-m6-performance.md)。
 - [x] Windows 文本行宽复用。Label 布局与绘制共享行宽，GDI 复用同一次测量，DirectWrite 左对齐省去定位测量。六轮混合变更帧从 4.2690 降至 3.6188 ms，系统字体和自定义字体在 Windows 的优化前后像素一致。[测量和回归](./native-2d-m6-text-width-reuse.json)
@@ -290,20 +290,10 @@
   - native-ts-build 的 PR 检查已接入位图字体布局和径向 Sprite 的 C++/Web assembler 对照。本机运行同一对入口，2327 个布局和 3024 个几何用例通过；Windows 完整应用矩阵另行验收。
   - [x] [Windows PR 矩阵](../.github/workflows/native-ts-build.yml)分别构建 Debug/Release 引擎、生成 SWIG 绑定并运行[六组 JSB 用例](../native/tests/2d-poc/run-windows-jsb-probes.ps1)，覆盖 renderer manager、Sprite API、SpriteAtlas、字体资产、布局和 RichText。每次运行同时检查场景记录的节点挂接。两种配置均在本机从空目录编译通过，六组用例与 SIMPLE Sprite 对 Web 的 13 项检查全部通过。Web 全量检查通过 TypeScript 编译和 197 组 Jest（1467 项通过、8 项跳过、16 项待实现），native TS 编译通过。完整应用场景仍待签收。
   - 历史候选 `68af105c8d` 的 Windows Debug、Release 完整原生测试各通过 3 次，每次完成 1000 轮字体别名生命周期。字体资产、布局、RichText、Sprite API、SpriteAtlas 和 Graphics 几何的脚本均从构建子目录启动通过。Web 和 native TypeScript、全量 1480 项 Jest 和 57 项薄壳检查通过。[本机复测数据](./native-2d-m6-label-ttf-canvas-size.json)
-- [x] 按组件/模块完成独立回退演练，验证 override、依赖资产、材质与旧场景并记录行为和耗时。最终候选复测归入最终签收。
-  - 历史候选 `68af105c8d` 复验了 Windows 双配置的组件回退。Sprite、Label、Graphics／Mask、UIOpacity、RenderRoot2D 的回退与恢复各保持 163 张图逐字节一致。RichText 的三阶段各通过 62 项布局，严格像素 59/62，切换实现与恢复后各配置的 62 张原生图均与默认运行相同。[逐配置快照和部署包指纹](./native-2d-m6-candidate-recheck.json)
-  - [x] Graphics／Mask 与其 Sprite 模板依赖使用同一个回退标志。Windows 双配置各通过默认、TS 回退和恢复的 138 张严格像素对照、22 项命中及 1000 轮场景切换。TS Mask 的圆角命中走实时祖先查询，JSB UITransform 发出锚点变更事件后，回退包与 Web 的动态模板形状一致。[步骤与采样](./native-2d-m6.3-graphics-gpu.md)、[逐配置数据](./native-2d-m6-graphics-mask-rollback.json)
-  - [x] RichText 42 项应用矩阵在 Windows 双配置分别完成原生、TS 回退、恢复原生三次启动。各次通过实现类型、Prefab、字体生命周期和布局检查，各配置切换前后的 RGBA 一致。对 Web 严格像素 39/42。[完整回退实测](./native-2d-m6-richtext-rollback.md#42-项应用矩阵回退与恢复)
-  - [x] Sprite 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。各 Windows 配置在同一二进制上执行原生、TS 回退、恢复原生，三次各 116 张图与 Web 和上一候选逐字节一致。旧 cocos-m1-test 两种配置回退后通过 Sprite、Mask、RichText，恢复后重新通过 Sprite 五种模式。128 个 Sprite 改色和位移的帧样本另行记录。[回退流程及数据](./native-2d-m6-sprite-rollback.md)
-  - [x] Label 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。六次 Windows 运行各 116 张对照图与 Web 逐字节一致。旧 cocos-m1-test 的真实 BMFont、CHAR 缓存、换行及 GPU 字形三阶段通过。系统字体在 TS 回退时的像素覆盖变化及同一 Prefab 的同步更新耗时已归档。[复现和数据](./native-2d-m6-label-rollback.md)
-    - [x] TS Label 归一化 Canvas 的整数尺寸。捆绑 TTF 首次加载、跨场景复用和冷重载的三张图恢复像素一致。Windows Debug、Release 的原生、TS 回退、恢复三阶段各 163 张图与 Chrome 严格一致。[历史 Label 回退记录](./native-2d-m6-label-ttf-canvas-size.json)
-  - [x] UIOpacity 支持独立切回 JS 并恢复原生实现。Windows Debug/Release 各验证两种实现、Prefab 字段、组件生命周期、85 张 Web 对照图与 setter 耗时。[复现和采样](./native-2d-m6-ui-opacity-rollback.md)
-  - [x] RenderRoot2D 支持独立切回 JS 并恢复原生注册。Windows Debug/Release 各验证两种实现、Prefab 实例化、11 个根注册检查点、85 张 Web 对照图与组件启停耗时。[复现和采样](./native-2d-m6-render-root-rollback.md)
-  - [x] RichText 支持独立切回 TS 并恢复原生实现。Windows 双配置覆盖序列化 Prefab、字体与图集、混合场景换行和点击、段查询与样式更新计时。12 个场景比较切换前后的布局和图像，跨端字形差异单列。[复现和数据](./native-2d-m6-richtext-rollback.md)
-- [ ] M6.5 最终候选回退复验。在同一最终候选上，用 Windows Debug、Release 分别验证 Sprite、Label、Graphics／Mask、UIOpacity、RenderRoot2D 和 RichText 的默认原生、TS 回退、恢复原生三阶段。按现行用例集核对实现身份、资源生命周期、GPU 图像和恢复后的部署包，并记录各配置的日志与产物。
+- 历史记录 `68af105c8d` 包含当时的组件级 TS 回退与恢复。最终候选验收使用默认 Native 实现和现行 Web 对照。[历史快照与部署包指纹](./native-2d-m6-candidate-recheck.json)
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
 
-交付：性能报告、回退记录、M6 Gate。原计划 4–5 周是早期估算，未包含当前列出的全部 M4/M5 终态欠项；完成 M6.0 后重新排期。
+交付：性能报告、默认 Native 验收记录、M6 Gate。原计划 4–5 周是早期估算，未包含当前列出的全部 M4/M5 终态欠项；完成 M6.0 后重新排期。
 
 ## 3. 终态验收标准
 
@@ -316,7 +306,7 @@
 | 图形完整性 | Graphics 三角化/GPU 提交和描边语义，Mask 混合/嵌套/恢复正确 | 256×256 兼容光栅化探针 |
 | 性能 | 上述 ≥50% CPU、≥70% JSB、≥30% JS 堆目标及 GC 数据 | M2 ≥30% 阶段 KPI 或单一空闲场景 |
 | 稳定性与平台 | 1000 次加载卸载、无新增泄漏/崩溃、线程边界、Windows Debug/Release 矩阵，另列暂缓平台 | 仅单个配置的功能通过 |
-| 工具链与回退 | 绑定/元数据可复现、本机裁剪组合通过、组件/模块回退演练 | 手工补元数据后本机可运行 |
+| 工具链 | 绑定/元数据可复现、本机裁剪组合通过、默认 Native 入口验证 | 手工补元数据后本机可运行 |
 
 全部阻断项通过后才能将 M6 和整个 Native 2D 下沉标为终态完成。任何新增容差或范围豁免必须明确记录用例、影响和决策；尚未确认的差异继续列为待处理。
 

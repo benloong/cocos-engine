@@ -24,7 +24,7 @@
 */
 
 import { ccclass, help, executionOrder, menu, displayOrder, visible, multiline, type, serializable, editable } from 'cc.decorator';
-import { BYTEDANCE, EDITOR, JSB } from 'internal:constants';
+import { BYTEDANCE, EDITOR } from 'internal:constants';
 import { minigame } from 'pal/minigame';
 import { BitmapFont, Font, SpriteFrame } from '../assets';
 import { ImageAsset, Texture2D } from '../../asset/assets';
@@ -43,7 +43,6 @@ import type { RenderData } from '../renderer/render-data';
 import type { LetterFont } from '../assembler/label/letter-font';
 import type { TTF } from '../assembler/label/ttf';
 
-const tempColor = Color.WHITE.clone();
 /**
  * @en Enum for horizontal text alignment.
  *
@@ -477,7 +476,6 @@ export class Label extends UIRenderer {
 
         // this._N$file = value;
         this._font = value;
-        if (JSB && this.enabledInHierarchy) this._observeBitmapFont(value instanceof BitmapFont ? value : null);
         // if (value && this._isSystemFontUsed)
         //     this._isSystemFontUsed = false;
 
@@ -848,7 +846,6 @@ export class Label extends UIRenderer {
     protected _userDefinedFont: Font | null = null;
     protected _assemblerData: ISharedLabelData | null = null;
     protected _fontAtlas: FontAtlas | null = null;
-    private declare _observedBitmapFont?: BitmapFont | null;
     protected _letterTexture: LetterRenderTexture | null = null;
 
     protected _contentWidth = 0;
@@ -897,20 +894,7 @@ export class Label extends UIRenderer {
             this.fontFamily = 'Arial';
         }
 
-        if (JSB) this._observeBitmapFont(this._font instanceof BitmapFont ? this._font : null);
         this._applyFontTexture();
-    }
-
-    public onDisable (): void {
-        if (JSB) this._observeBitmapFont(null);
-        super.onDisable();
-    }
-
-    private _observeBitmapFont (font: BitmapFont | null): void {
-        if (this._observedBitmapFont === font) return;
-        this._observedBitmapFont?.off(BitmapFont.EVENT_CONFIG_RELOAD, this._markForUpdateRenderData, this);
-        this._observedBitmapFont = font;
-        font?.on(BitmapFont.EVENT_CONFIG_RELOAD, this._markForUpdateRenderData, this);
     }
 
     private destroyTtfSpriteFrame (): void {
@@ -940,7 +924,6 @@ export class Label extends UIRenderer {
     }
 
     public onDestroy (): void {
-        if (JSB) this._observeBitmapFont(null);
         if (this._assembler && this._assembler.resetAssemblerData) {
             this._assembler.resetAssemblerData(this._assemblerData!);
         }
@@ -1000,15 +983,8 @@ export class Label extends UIRenderer {
     /**
      * @deprecated since v3.7.0, this is an engine private interface that will be removed in the future.
      */
-    public setEntityColor (color: Color): void {
-        if (JSB) {
-            if (this._font instanceof BitmapFont) {
-                this._renderEntity.color = color;
-            } else {
-                tempColor.set(255, 255, 255, color.a);
-                this._renderEntity.color = tempColor;
-            }
-        }
+    public setEntityColor (_color: Color): void {
+        // Web assemblers read the component color directly.
     }
 
     protected _canRender (): boolean {

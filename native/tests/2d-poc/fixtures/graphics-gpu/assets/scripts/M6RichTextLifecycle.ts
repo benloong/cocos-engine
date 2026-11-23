@@ -7,7 +7,7 @@ const loadAtlas = (): Promise<SpriteAtlas> => new Promise((resolve, reject) => {
 });
 
 export async function checkRichTextCollectedWrappers (parent: Node, font: TTFFont): Promise<object | null> {
-    if (!sys.isNative || (globalThis as { __m6JsRichText?: boolean }).__m6JsRichText) return null;
+    if (!sys.isNative) return null;
     const WeakNode = (globalThis as unknown as { WeakRef: new (node: Node) => { deref(): Node | undefined } }).WeakRef;
     const host = new Node('richtext-collected-wrappers');
     host.layer = parent.layer;
@@ -64,7 +64,7 @@ export async function checkRichTextCollectedWrappers (parent: Node, font: TTFFon
 }
 
 export async function checkRichTextRetiredNodes (parent: Node, font: TTFFont): Promise<object | null> {
-    if (!sys.isNative || (globalThis as { __m6JsRichText?: boolean }).__m6JsRichText) return null;
+    if (!sys.isNative) return null;
     console.log('M6_RICHTEXT_RETIRED_NODES_START');
     const atlas = (await loadAtlas()).addRef();
     const atlasId = atlas.uuid;
@@ -269,7 +269,7 @@ export async function checkRichTextLifecycle (
     rich.font = font;
     rich.fontSize = 24;
     rich.lineHeight = 28;
-    const native = sys.isNative && !(globalThis as { __m6JsRichText?: boolean }).__m6JsRichText;
+    const native = sys.isNative;
     const textName = 'RICHTEXT_CHILD';
     const imageName = 'RICHTEXT_Image_CHILD';
     let added = 0;

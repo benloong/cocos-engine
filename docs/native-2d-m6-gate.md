@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**NO-GO。** 最终签收仍须在同一候选上完成 M6.4 平台矩阵和 M6.5 回退复验。组件 API、现行资源管线、极限生命周期和间接热路径的剩余证据仍待签收。`68af105c8d` 的应用、回退、裁剪与性能结果已归档为历史记录。
+**NO-GO。** 最终签收仍须在同一候选上完成 M6.4 平台矩阵和 M6.5 性能、本机检查及最终签收。组件 API、现行资源管线、极限生命周期和间接热路径的剩余证据仍待签收。`68af105c8d` 的应用、回退、裁剪与性能结果已归档为历史记录。
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
 
@@ -36,7 +36,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | SpriteRenderer 多边形深度裁剪 | Windows Debug、Release 与 Web 保留非平面多边形的 Z 边界。相机远平面移动前后的新增图为 1728 和 0 个着色像素，155 张既有图的哈希与上轮一致。Web 验证打包中克隆和恢复源纹理。 | [实际裁剪与逐配置记录](./native-2d-m6-sprite-polygon-depth.json) |
 | SpriteFrame 换纹理与网格复位 | Windows Debug、Release 和 Web 一次发布最终矩形与网格边界，整图复位从 `(0,0)` 开始。Web 在原帧换图和卸载后验证同页克隆仍可绘制并恢复源图。160 张图三端逐字节一致。 | [事件和像素记录](./native-2d-m6-sprite-packed-reset.json) |
 | BMFont 配置实时重载 | Windows Debug、Release 和 Web 使用 XML FNT 与序列化 Prefab，保持 Label 绑定并依次重载字距、删除字形和恢复配置。布局宽度为 40、42、37、40 像素。163 张图三端逐字节一致。 | [布局、生命周期和图像](./native-2d-m6-bitmap-config-reload.json) |
-| Windows Label 回退的捆绑 TTF | Windows Debug、Release 各在原生、TS 回退和恢复阶段通过 163 张与 Chrome 的逐字节对照。修复回退纹理的整数尺寸后，三张捆绑 TTF 图通过，原有 160 张的哈希保持一致。 | [六次本机运行及旧版本差异](./native-2d-m6-label-ttf-canvas-size.json) |
+| 历史记录 · Windows Label 回退的捆绑 TTF | Windows Debug、Release 各在原生、TS 回退和恢复阶段通过 163 张与 Chrome 的逐字节对照。修复回退纹理的整数尺寸后，三张捆绑 TTF 图通过，原有 160 张的哈希保持一致。 | [六次本机运行及旧版本差异](./native-2d-m6-label-ttf-canvas-size.json) |
 | 历史记录 `68af105c8d` · 应用、回退与裁剪 | Windows 双配置各完成默认应用以及 Sprite、Label、Graphics／Mask、UIOpacity 和 RenderRoot2D 的回退与恢复。每次 163 张 RGBA 与同快照 Chrome 捕获逐字节一致，22 个命中检查和 1000 轮场景切换通过。RichText 双配置的原生、回退、恢复每次布局 62/62、严格像素 59/62，各配置的 62 张本机图跨阶段逐张相同。18 种裁剪组合通过。 | [逐配置的二进制、部署包和比较结果](./native-2d-m6-candidate-recheck.json) |
 | 历史记录 `68af105c8d` · 性能 | Windows Release 六对交错。固定混合变更帧 CPU 下降 59.3%、JSB 下降 77.5%、JS 堆峰值下降 41.7%，强制 GC 中位数下降 1.8%。Web 完成 12 项同源负载。 | [逐轮数据](./native-2d-m6-performance-68af105c8d.json) |
 | 生产绑定清理 | 删除 Sprite、Label 和 RichText 的 9 个未用 JSB 读回接口。Windows 双配置各通过 6 组 JSB 探针，108 张图与 Web 及上一节点逐字节一致 | [绑定清单、快照及二进制哈希](./native-2d-m6-binding-cleanup.json) |
@@ -68,7 +68,7 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | 线程边界 | Windows Debug/Release 实测分离设备线程，核对提交、异步加载和销毁路径 | [线程与同步报告](./native-2d-m6-threads.md) |
 | Prefab 资产生命周期 | Windows Debug/Release、ASan 和 Web，各 1000 轮；检查引用、GPU 和活动场景持有者 | [数据与采集边界](./native-2d-m6-asset-lifetime.md) |
 | 调度与裁剪 | Windows Debug/Release 交替启动 20 次通过；Windows 与 Web 的 18 个独立 Release bundle 导出通过 | [启动记录](./native-2d-m6-scheduling-results.json)、[构建矩阵](./native-2d-m6-feature-matrix.json) |
-| Graphics／Mask 回退 | Windows Debug 和 Release 各运行默认、TS 回退、恢复三阶段。每次 138 张图均与 Web 逐字节一致，22 项命中和 1000 轮场景切换通过。回退同时切换宿主 Sprite 的模板提交路径 | [三阶段构建哈希与耗时](./native-2d-m6-graphics-mask-rollback.json) |
+| 历史记录 · Graphics／Mask 回退 | Windows Debug 和 Release 各运行默认、TS 回退、恢复三阶段。每次 138 张图均与 Web 逐字节一致，22 项命中和 1000 轮场景切换通过。回退同时切换宿主 Sprite 的模板提交路径 | [三阶段构建哈希与耗时](./native-2d-m6-graphics-mask-rollback.json) |
 
 ## 字体像素诊断
 
@@ -93,5 +93,4 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.2 | RichText 终态 | 固定布局、场景、视觉和输入回归已通过当前范围。`CHILD_ADDED` 回调修改宿主锚点后，Windows Debug、Release 和 Chrome 均使用新锚点，并验证段节点包装对象的身份与后续位置。当前布局 62/62、严格像素 59/62。剩余资源与极限对象生命周期、其他 Node wrapper 场景及最终候选复验继续验收。[锚点回归证据](./native-2d-m6-richtext-anchor-during-attach.json) |
 | M6.4 | 平台矩阵待验收 | 在同一最终候选上构建 Windows Debug、Release，并与 Web 逐项核对现行场景的渲染、字体、事件和资源生命周期。记录各配置产物及结果，macOS、iOS、Android 和 OHOS 仍暂缓、待验证。 |
 | M6.5 | 本机检查 | 最终候选仍须补齐本机检查和间接热路径证据。历史候选 `68af105c8d` 的 Windows Debug、Release 完整原生测试各通过 3 次，字体别名超时和访问冲突未复现，原因仍待确认。Debug 增量构建的调用追踪两次停在 RenderRoot2D 稳态窗口，从空目录重建后通过。双配置各完成 14 个 60 帧窗口，迁移类直接 JSB 调用均为 0，6 组独立资产通过检查。[历史原生复测](./native-2d-m6-label-ttf-canvas-size.json) [历史应用、回退与调用追踪](./native-2d-m6-candidate-recheck.json) |
-| M6.5 | 最终候选回退复验待办 | 在同一最终候选上，用 Windows Debug、Release 分别验证 Sprite、Label、Graphics／Mask、UIOpacity、RenderRoot2D 和 RichText 的默认原生、TS 回退、恢复原生三阶段。按现行用例集核对实现身份、资源生命周期、GPU 图像和恢复后的部署包，并记录各配置的日志与产物。 |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

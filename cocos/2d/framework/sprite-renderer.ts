@@ -23,7 +23,6 @@
 */
 
 import { ccclass, executeInEditMode, executionOrder, help, menu, serializable, type, visible } from 'cc.decorator';
-import { JSB } from 'internal:constants';
 import { builtinResMgr } from '../../asset/asset-manager';
 import { Material } from '../../asset/assets';
 import { Color, Vec2, cclegacy } from '../../core';
@@ -31,7 +30,7 @@ import { ModelLocalBindings } from '../../rendering/define';
 import { Model } from '../../render-scene/scene';
 import type { Root } from '../../root';
 import { TransformBit } from '../../scene-graph/node-enum';
-import { SpriteFrame, SpriteFrameEvent } from '../assets/sprite-frame';
+import { SpriteFrame } from '../assets/sprite-frame';
 import { ModelRenderer } from '../../misc';
 
 enum SpriteMode {
@@ -68,7 +67,7 @@ export class SpriteRenderer extends ModelRenderer {
             return;
         }
 
-        if (JSB) this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
+        const lastSprite = this._spriteFrame;
         this._spriteFrame = value;
         if (this._spriteFrame) {
             this._spriteFrame.ensureMeshData(); // Make sure the mesh is available, you should call it before using the mesh
@@ -77,7 +76,6 @@ export class SpriteRenderer extends ModelRenderer {
         }
         this._updateModels();
         if (this.enabledInHierarchy) {
-            if (JSB) this._spriteFrame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
             this._attachToScene();
         }
         // TODO Update on Editor
@@ -106,18 +104,18 @@ export class SpriteRenderer extends ModelRenderer {
     protected _size: Vec2 = new Vec2(); // todo for sliced & tiled
 
     private _model: Model | null = null;
-    private declare _boundMesh?: SpriteFrame['mesh'];
 
     public onLoad (): void {
         if (this._spriteFrame) {
-            if (JSB || !this._spriteFrame.mesh) this._spriteFrame.ensureMeshData();
+            if (!this._spriteFrame.mesh) {
+                this._spriteFrame.ensureMeshData();
+            }
             this._spriteFrame.mesh!.initialize();
         }
         this._updateModels();
     }
 
     public onRestore (): void {
-        if (JSB) this._spriteFrame?.ensureMeshData();
         this._updateModels();
         if (this.enabledInHierarchy) {
             this._attachToScene();
@@ -126,19 +124,13 @@ export class SpriteRenderer extends ModelRenderer {
 
     public onEnable (): void {
         super.onEnable();
-        const frame = this._spriteFrame;
-        if (JSB) {
-            frame?.on(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
-            frame?.ensureMeshData();
-        }
-        if (!this._model || (JSB && frame?.mesh && frame.mesh !== this._boundMesh)) {
+        if (!this._model) {
             this._updateModels();
         }
         this._attachToScene();
     }
 
     public onDisable (): void {
-        if (JSB) this._spriteFrame?.off(SpriteFrameEvent.UV_UPDATED, this._onFrameUVChanged, this);
         if (this._model) {
             this._detachFromScene();
         }
@@ -149,16 +141,6 @@ export class SpriteRenderer extends ModelRenderer {
             (cclegacy.director.root as Root).destroyModel(this._model);
             this._model = null;
             this._models.length = 0;
-        }
-        if (JSB) this._boundMesh = null;
-    }
-
-    private _onFrameUVChanged (): void {
-        const frame = this._spriteFrame;
-        frame?.ensureMeshData();
-        if (frame?.mesh && frame.mesh !== this._boundMesh) {
-            this._updateModels();
-            this._attachToScene();
         }
     }
 
@@ -178,10 +160,6 @@ export class SpriteRenderer extends ModelRenderer {
 
         if (this._model) {
             const mesh = this._spriteFrame.mesh!;
-            if (JSB) {
-                this._model.visFlags = this.visibility;
-                this._boundMesh = mesh;
-            }
             this._model.createBoundingShape(mesh.struct.minPosition, mesh.struct.maxPosition);
             this._updateModelParams();
             this._onUpdateLocalDescriptorSet();
@@ -190,7 +168,7 @@ export class SpriteRenderer extends ModelRenderer {
 
     protected _createModel (): void {
         const model = this._model = (cclegacy.director.root as Root).createModel<Model>(Model);
-        if (!JSB) model.visFlags = this.visibility;
+        model.visFlags = this.visibility;
         model.node = model.transform = this.node;
         this._models.length = 0;
         this._models.push(this._model);
@@ -198,7 +176,7 @@ export class SpriteRenderer extends ModelRenderer {
 
     protected _updateModelParams (): void {
         if (!this._spriteFrame || !this._model) { return; }
-        if (!JSB) this._spriteFrame.ensureMeshData();
+        this._spriteFrame.ensureMeshData();
         const mesh = this._spriteFrame.mesh!;
         this.node.hasChangedFlags |= TransformBit.POSITION; // Same as model, Maybe a hack
         this._model.transform.hasChangedFlags |= TransformBit.POSITION;
@@ -246,18 +224,14 @@ export class SpriteRenderer extends ModelRenderer {
             return;
         }
 
-        // Mesh UVs address the source texture even while 2D sprites use an atlas page.
-        const frame = this._spriteFrame;
-        const source = JSB ? frame.original?._texture ?? frame.texture : frame;
-        const texture = source?.getGFXTexture();
-        if (JSB && !texture) return;
-        const sampler = source!.getGFXSampler();
+        const texture = this._spriteFrame.getGFXTexture()!;
+        const sampler = this._spriteFrame.getGFXSampler();
         // We need a api like updateLocalDescriptors(texture,sampler,binding) from model
         const subModels = this._model.subModels;
         const binding = ModelLocalBindings.SAMPLER_SPRITE;
         for (let i = 0; i < subModels.length; i++) {
             const { descriptorSet } = subModels[i];
-            descriptorSet.bindTexture(binding, texture!);
+            descriptorSet.bindTexture(binding, texture);
             descriptorSet.bindSampler(binding, sampler);
             descriptorSet.update();
         }

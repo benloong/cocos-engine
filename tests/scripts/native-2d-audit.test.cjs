@@ -6,32 +6,25 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { declaration, runtimeImports, inspect, build, shellHotPaths, isWebAssembler } = require('../../native/tests/2d-poc/audit-m6.cjs');
 
-test('component rollback removes only the selected Windows overrides and preserves Web overrides', async () => {
+test('Native selects the 2D component and assembler overrides without changing Web entries', async () => {
     const root = path.resolve(__dirname, '../..');
     const query = await require('@cocos/ccbuild').StatsQuery.create(root);
-    function overrides (platform, flags) {
+    function overrides (platform) {
         const mode = 'BUILD';
-        const buildTimeConstants = query.constantManager.genBuildTimeConstants({ mode, platform, flags });
+        const buildTimeConstants = query.constantManager.genBuildTimeConstants({ mode, platform, flags: {} });
         return query.evaluateModuleOverrides({ platform, mode, buildTimeConstants });
     }
-    const components = { USE_JS_UI_OPACITY: 'components/ui-opacity', USE_JS_RENDER_ROOT_2D: 'framework/render-root-2d',
-        USE_JS_RICH_TEXT: 'components/rich-text', USE_JS_SPRITE: 'components/sprite', USE_JS_LABEL: 'components/label' };
-    for (const selected of [...Object.keys(components).map(flag => [flag]), Object.keys(components)]) {
-        const windows = overrides('WINDOWS', {});
-        const flags = {};
-        for (const flag of selected) {
-            flags[flag] = true;
-            const base = path.join(root, 'cocos/2d', components[flag]);
-            assert.equal(windows[base + '.ts'], base + '.jsb.ts');
-            delete windows[base + '.ts'];
-            if (flag === 'USE_JS_SPRITE' || flag === 'USE_JS_LABEL') {
-                const assembler = path.join(root, 'cocos/2d/assembler', path.basename(base), 'index');
-                assert.equal(windows[assembler + '.ts'], assembler + '.jsb.ts');
-                delete windows[assembler + '.ts'];
-            }
-        }
-        assert.deepEqual(overrides('WINDOWS', flags), windows);
-        assert.deepEqual(overrides('HTML5', flags), overrides('HTML5', {}));
+    const windows = overrides('WINDOWS');
+    const web = overrides('HTML5');
+    const modules = [
+        'components/ui-opacity', 'framework/render-root-2d', 'components/rich-text', 'components/sprite',
+        'components/label', 'components/graphics', 'components/mask',
+        'assembler/sprite/index', 'assembler/label/index', 'assembler/graphics/index',
+    ];
+    for (const module of modules) {
+        const base = path.join(root, 'cocos/2d', module);
+        assert.equal(windows[base + '.ts'], base + '.jsb.ts');
+        assert.equal(web[base + '.ts'], undefined);
     }
 });
 

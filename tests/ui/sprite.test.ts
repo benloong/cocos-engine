@@ -1,5 +1,4 @@
 import { Canvas, SpriteFrame, UITransform } from "../../cocos/2d";
-import { SpriteFrameEvent } from '../../cocos/2d/assets/sprite-frame';
 import { Sprite, UIOpacity } from "../../cocos/2d/components";
 import { Texture2D } from "../../cocos/asset/assets";
 import { Node } from "../../cocos/scene-graph/node";
@@ -165,54 +164,4 @@ test('sprite.updateWorldMatrix', () => {
     expect(sprite3.renderData!.chunk.vb[0]).toStrictEqual(300 - 0.5);
     expect(sprite4.renderData!.chunk.vb[0]).toStrictEqual(300 - 0.5);
     expect(sprite5.renderData!.chunk.vb[0]).toStrictEqual(300 - 0.5);
-});
-
-test('Sprite refreshes geometry and texture for UV changes only on its enabled frame', () => {
-    const scene = new Scene('tiled frame changes');
-    director.runSceneImmediate(scene);
-    const node = new Node('tiled sprite');
-    scene.addChild(node);
-    const sprite = node.addComponent(Sprite);
-    const texture = new Texture2D();
-    const first = new SpriteFrame();
-    const second = new SpriteFrame();
-    first.texture = texture;
-    second.texture = texture;
-
-    sprite.type = Sprite.Type.TILED;
-    sprite.spriteFrame = first;
-    expect(first.hasEventListener(SpriteFrameEvent.UV_UPDATED)).toBe(true);
-
-    sprite.enabled = false;
-    expect(first.hasEventListener(SpriteFrameEvent.UV_UPDATED)).toBe(false);
-    sprite.spriteFrame = second;
-    expect(second.hasEventListener(SpriteFrameEvent.UV_UPDATED)).toBe(false);
-
-    sprite.enabled = true;
-    expect(second.hasEventListener(SpriteFrameEvent.UV_UPDATED)).toBe(true);
-    sprite.spriteFrame = first;
-    expect(second.hasEventListener(SpriteFrameEvent.UV_UPDATED)).toBe(false);
-    expect(first.hasEventListener(SpriteFrameEvent.UV_UPDATED)).toBe(true);
-    const modes = [
-        [Sprite.Type.SIMPLE, Sprite.FillType.HORIZONTAL],
-        [Sprite.Type.SLICED, Sprite.FillType.HORIZONTAL],
-        [Sprite.Type.TILED, Sprite.FillType.HORIZONTAL],
-        [Sprite.Type.FILLED, Sprite.FillType.HORIZONTAL],
-        [Sprite.Type.FILLED, Sprite.FillType.RADIAL],
-    ] as const;
-    for (const [type, fillType] of modes) {
-        sprite.type = type;
-        sprite.fillType = fillType;
-        const data = sprite.renderData!;
-        data.vertDirty = false;
-        data.textureDirty = false;
-        const update = jest.spyOn(sprite, '_markForUpdateRenderData');
-        first.emit(SpriteFrameEvent.UV_UPDATED, first);
-        expect(update).toHaveBeenCalledTimes(1);
-        expect(data.vertDirty).toBe(true);
-        expect(data.textureDirty).toBe(true);
-        update.mockRestore();
-    }
-    node._destroyImmediate();
-    expect(first.hasEventListener(SpriteFrameEvent.UV_UPDATED)).toBe(false);
 });

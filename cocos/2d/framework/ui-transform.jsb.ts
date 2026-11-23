@@ -23,13 +23,12 @@
 */
 
 import { ccclass, help, executeInEditMode, executionOrder, menu, tooltip, displayOrder, serializable, disallowMultiple } from 'cc.decorator';
-import { EDITOR, USE_JS_GRAPHICS_MASK } from 'internal:constants';
+import { EDITOR } from 'internal:constants';
 import { Component } from '../../scene-graph';
 import { Rect, Size, Vec2, Vec3, geometry, Mat4, visibleRect, warnID } from '../../core';
 import { director } from '../../game/director';
 import { NodeEventType } from '../../scene-graph/node-event';
 import { queueUITransformParentChange, queueUITransformSiblingOrder } from './ui-transform-sibling-order';
-import { hitTestWithNativeTransform, testAncestorMasks } from './ui-transform-mask-hit';
 
 declare const n2d: any;
 
@@ -217,8 +216,7 @@ export class UITransform extends Component {
             _isHitMat4.m13 = center.y - (_isHitMat4.m01 * m12 + _isHitMat4.m05 * m13);
             Mat4.invert(_isHitMat4, _isHitMat4);
             Vec2.transformMat4(_isHitWorld, uiPoint, _isHitMat4);
-            if (this._native.containsWorldPointXY(_isHitWorld.x, _isHitWorld.y)
-                && (!USE_JS_GRAPHICS_MASK || testAncestorMasks(this.node, _isHitWorld))) {
+            if (this._native.containsWorldPointXY(_isHitWorld.x, _isHitWorld.y)) {
                 return true;
             }
         }
@@ -226,7 +224,12 @@ export class UITransform extends Component {
     }
 
     public hitTest (screenPoint: Vec2, windowId = 0, worldPoint?: Vec2): boolean {
-        return this._native ? hitTestWithNativeTransform(this.node, this._native, screenPoint, windowId, worldPoint) : false;
+        if (!this._native) return false;
+        if (!worldPoint) return this._native.hitTestXY(screenPoint.x, screenPoint.y, windowId);
+        const hit = this._native.getHitTestWorldPointXY(screenPoint.x, screenPoint.y, windowId);
+        if (!Number.isFinite(hit.x) || !Number.isFinite(hit.y)) return false;
+        worldPoint.set(hit);
+        return true;
     }
 
     public convertToNodeSpaceAR (worldPoint: Vec3, out?: Vec3): Vec3 {
