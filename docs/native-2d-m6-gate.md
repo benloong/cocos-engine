@@ -1,16 +1,16 @@
 # Native 2D M6 Gate
 
-**NO-GO。** 2026-11-23 对候选 `5cdc896f3c` 重新进行本机验收，发现全量 Jest、位图字体布局、Windows Debug Label 透明度及完整图形／字体应用失败。M6.4 平台矩阵和 M6.5 最终签收继续待办。`68af105c8d` 的应用、回退、裁剪与性能结果保留为历史记录。
+**NO-GO。** 2026-11-23 对候选 `5cdc896f3c` 重新进行本机验收，Windows Debug Label 透明度、Graphics 双配置应用及 RichText Release 存在失败。现有 Web 实现已按用户决定退出 M6 验收，原始全量 Jest 和跨端对照结果按下述范围重新解释。M6.4 平台矩阵和 M6.5 最终签收继续待办。`68af105c8d` 的应用、回退、裁剪与性能结果保留为历史记录。
 
-验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
+验收范围为 Windows Debug、Windows Release 的 JSB 薄层和 Native 实现。JSB + Native 禁用动态合图。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
 
 **序列化验收范围。** 场景、Prefab 和资产使用现行序列化格式及现行类名，继续验证字段恢复、资源绑定与生命周期。旧版本序列化数据的加载、迁移和兼容不列入 M6 签收。
 
 **现行格式回归覆盖。** `cc.Label` 的字段和字体绑定、`cc.Sprite` 独立图片与图集生命周期、`cc.Mask` 模板材质以及 `cc.Graphics` 的样式和材质恢复已有对应夹具。夹具的提交不改变最终候选的待验收状态。[Label 与 Sprite](./native-2d-m6-label-renderer-compat.md) [Mask](./native-2d-m6-mask-compat.md) [Graphics](./native-2d-m6-graphics-compat.md)
 
-Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-outline`、`text-nested` 三项的跨端像素一致性要求。加入同名字体四张图后，两个 Windows 配置均为布局 62/62、严格像素 59/62。[本轮验收记录](./native-2d-m6-font-source-isolation.json)
+**2026-11-23 验收范围调整。** 现有 Web 实现的 TypeScript、全量 Jest、构建、动态图集、资源加载及 GPU／字体应用检查退出 M6 签收。历史 Web 结果保留为观察记录，Web 运行成功和 Windows 对当前 Web 的布局／像素一致性均退出强制门槛。Native 的 API、现行格式序列化、渲染、事件、资源与对象生命周期仍须在 Windows 双配置独立验收。
 
-本轮签收在两个 Windows 配置分别运行 `node native/tests/2d-poc/compare-richtext-gpu.cjs --m6-gate <Windows 捕获目录> <Web 捕获目录>`。暂缓项仍记录实际像素差异和严格结果，布局、采集哈希、渲染可见性、交互和字体生命周期仍须通过。其余图像继续按通道容差 1 比较。
+既有 Web 捕获及对照脚本可作可选参考。Native 视觉验收使用已确认的夹具期望和基准图像，核对布局、采集哈希、渲染可见性、交互及字体生命周期。此前三项字体跨端像素暂缓约定归入历史记录。[历史字体矩阵](./native-2d-m6-font-source-isolation.json)
 
 ## 当前候选 5cdc896f3c 的本机复验
 
@@ -19,14 +19,14 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 | 项目 | 本轮结果 |
 |---|---|
 | 基础检查 | 元数据、M6 基线、43 项薄壳及 18 项 M1 壳检查通过。脚本单元测试 33 项通过，Web 和 Native TypeScript 编译通过。 |
-| C++ 与跨端对照 | C++ 175 项检查、径向 Sprite、RichText 解析／布局、Graphics 几何和 SpriteFrame UV 对照通过。位图字体布局对照失败，第 2307 例的 U+1F642 在 Native 测得宽度 8.5，Web 为 0。 |
-| 全量 Jest | 186 套件通过、12 套件失败、6 套件跳过。1461 项通过、25 项失败、8 项跳过、16 项待实现。失败涉及字体加载与反序列化、动态图集、SpriteFrame 网格／释放、Mask 模板生命周期等。 |
+| C++ 与历史对照采样 | C++ 175 项检查、径向 Sprite、RichText 解析／布局、Graphics 几何和 SpriteFrame UV 对照通过。位图字体布局对照失败，第 2307 例的 U+1F642 在 Native 测得宽度 8.5，Web 为 0。该跨端差异保留作参考，Native 布局需按独立期望核对。 |
+| 全量 Jest | 186 套件通过、12 套件失败、6 套件跳过。1461 项通过、25 项失败、8 项跳过、16 项待实现。失败涉及字体加载与反序列化、动态图集、SpriteFrame 网格／释放、Mask 模板生命周期等。这是范围调整前的原始统计，纯 Web 用例退出签收，混合套件中的 JSB／Native 断言仍须逐项核对。 |
 | 原生 JSB 探针 | Release 六组全部通过。Debug 在原生测试前置的 Label 提交透明度检查处失败，期望 0.501961，实际 1.0，后续 JSB 探针被阻断。 |
-| Graphics 完整应用 | Web 在多边形帧检查处遇到空数据。Windows Debug 串行复测出现 `glDrawElements` 错误 `0x505`，终止了停住的测试进程。Release 使用独立可写目录重试后，在矩形网格方向检查处失败。175 张图像、命中和场景生命周期的完整跨端对照未完成。 |
-| RichText 完整应用 | Debug 完成 62 张捕获与 1000 轮字体加载释放，HTTP 断流、取消续传和重试通过。Release 在激活期间重建后未恢复。Web 下载重试后字体宽度仍为 108，未恢复到夹具期望值。双配置对 Web 的完整像素签收未完成。 |
+| Graphics 完整应用 | Web 多边形帧的空数据错误归为范围外观察。Windows Debug 串行复测出现 `glDrawElements` 错误 `0x505`，终止了停住的测试进程。Release 使用独立可写目录重试后，在矩形网格方向检查处失败。Native 图像、命中和场景生命周期的完整验收仍待完成。 |
+| RichText 完整应用 | Debug 完成 62 张捕获与 1000 轮字体加载释放，HTTP 断流、取消续传和重试通过。Release 在激活期间重建后未恢复。Web 字体重试后宽度仍为 108 的结果归为范围外观察。Native 双配置的独立视觉与生命周期签收仍待完成。 |
 | 同候选性能 | Windows Release 对迁移前 `7e83734299` 完成六对交错采样，Web 完成 12 项负载。混合变更帧 CPU 为 4.30625 → 2.043675 ms/帧，下降 52.5%；JSB 为 876 → 197 次/帧，下降 77.5%；JS 堆峰值为 30,044,958 → 17,458,212 字节，下降 41.9%；强制 GC 为 6.9365 → 4.5440 ms，下降 34.5%。四项性能门槛通过，GC 六对中五对改善。比较器已核对 29 份场景资源、V8 DLL 和渲染器一致，计时包含 Native 脏队列刷新。 |
 
-本轮采用现行格式和默认 Native 路径。此前候选的图像、裁剪和调用追踪结果继续作为阶段记录，当前候选的失败项及尚未重跑的功能裁剪、调用追踪、ASan 和文档工程完整门禁继续待签收。
+本轮采用现行格式和默认 Native 路径。此前候选的图像、裁剪和调用追踪结果继续作为阶段记录，当前候选范围内的失败项及尚未重跑的 Native 功能裁剪、调用追踪、ASan 和文档工程 Windows 门禁继续待签收。
 
 ## 此前阶段结果
 
@@ -107,6 +107,6 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.1 | 复杂布局 | [补充平面 BMFont 标量已验证](./native-2d-m6-bitmap-unicode.json)，水平 TTF 字形已有上述 72 组常规/斜体验收，普通 TTF 的三种溢出模式已通过整词换行像素对照。含嵌套书写方向、泰文叠加标记、拉丁组合音标和控制空白的四组 TTF 段落与 Web 逐字节相同。其余复杂字形、位图字体复杂脚本、任意 mesh、packed 组合和配置更新继续验收。已安装的 16 px Arial 两行文本在 NONE 模式下的自然宽度已修正，Windows 双配置与 Chrome 均为 80.9453125。[Label 系统字体矩阵](./native-2d-m6-system-font.json) |
 | M6.1 | 资源管线与生命周期 | 静态图集的帧克隆已通过源 Prefab 卸载和重载回归。该 Prefab 的预加载、图集依赖延迟、取消后重试已通过三端回归。同一 Prefab 已通过跨场景实例销毁、图集复用及最终缓存释放。Windows 双配置通过 HTTP 字体部分响应断线及同 URL 重试，Web 通过浏览器响应读取中断后重新加载字体。Windows 下载器已验证排队与传输中取消、失败时保留旧文件、清除不可续传的半文件和 Range 续传。Web 已验证 fetch 主动取消及续传。Web 引擎首次断流时返回回退字体，释放后同 URL 已成功重载并测得原字体宽度。其余现行格式资产和场景的资源生命周期仍待验收。[场景夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts) |
 | M6.2 | RichText 终态 | 固定布局、场景、视觉和输入回归已通过当前范围。`CHILD_ADDED` 回调修改宿主锚点后，Windows Debug、Release 和 Chrome 均使用新锚点，并验证段节点包装对象的身份与后续位置。当前布局 62/62、严格像素 59/62。剩余资源与极限对象生命周期、其他 Node wrapper 场景及最终候选复验继续验收。[锚点回归证据](./native-2d-m6-richtext-anchor-during-attach.json) |
-| M6.4 | 平台矩阵待验收 | 在同一最终候选上构建 Windows Debug、Release，并与 Web 逐项核对现行场景的渲染、字体、事件和资源生命周期。记录各配置产物及结果，macOS、iOS、Android 和 OHOS 仍暂缓、待验证。 |
+| M6.4 | 平台矩阵待验收 | 在同一最终候选上构建 Windows Debug、Release，逐项核对 JSB／Native 现行场景的渲染、字体、事件和资源生命周期。记录各配置产物及结果，macOS、iOS、Android 和 OHOS 仍暂缓、待验证。 |
 | M6.5 | 本机检查 | 最终候选仍须补齐本机检查和间接热路径证据。历史候选 `68af105c8d` 的 Windows Debug、Release 完整原生测试各通过 3 次，字体别名超时和访问冲突未复现，原因仍待确认。Debug 增量构建的调用追踪两次停在 RenderRoot2D 稳态窗口，从空目录重建后通过。双配置各完成 14 个 60 帧窗口，迁移类直接 JSB 调用均为 0，6 组独立资产通过检查。[历史原生复测](./native-2d-m6-label-ttf-canvas-size.json) [历史应用、回退与调用追踪](./native-2d-m6-candidate-recheck.json) |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |

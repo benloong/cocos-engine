@@ -1577,5 +1577,44 @@
         }
       ]
     }
-  ]
+  ],
+  "acceptanceScope": {
+    "effectiveDate": "2026-11-23",
+    "decision": "User requested excluding the existing Web implementation from M6 acceptance.",
+    "targets": [
+      "JSB thin layer",
+      "Native implementation"
+    ],
+    "platforms": [
+      "Windows Debug",
+      "Windows Release"
+    ],
+    "excludedFromGate": [
+      "Existing Web implementation TypeScript and full Jest acceptance",
+      "Existing Web engine bundles and application builds",
+      "Existing Web dynamic atlas, assets, font loading and GPU applications",
+      "Mandatory runtime, layout and pixel parity against the current Web implementation"
+    ],
+    "references": "Existing Web results and comparisons remain optional diagnostic references.",
+    "nativeRequirements": [
+      "Native TypeScript",
+      "JSB and Native targeted assertions",
+      "Current-format serialization",
+      "Native API and rendering",
+      "Native events and resource lifecycle",
+      "Native extreme object lifecycle",
+      "Native performance and stability"
+    ],
+    "previousResults": "All historical runs and localRechecks retain their original scope, counts, failures and fingerprints as measured.",
+    "latestCandidate": "5cdc896f3ccd5ab552a090a9e61328f98dea33a2",
+    "latestCandidateStatus": "NO-GO",
+    "remainingNativeBlockers": [
+      "Debug Label submitted opacity expected 0.501961, got 1.0",
+      "Debug Graphics glDrawElements error 0x505",
+      "Release Graphics rectangle mesh does not address the current source corners",
+      "Release RichText does not recover after rebuilding during activation"
+    ],
+    "mixedJestAssertions": "Pending assertion-by-assertion review of JSB/Native execution paths. The original 25 failed tests are not a revised Native-only failure count.",
+    "bitmapLayout": "The recorded Native 8.5 versus Web 0 discrepancy remains a reference observation. Native layout requires an independent expected-value check."
+  }
 }
