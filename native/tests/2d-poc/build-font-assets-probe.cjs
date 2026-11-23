@@ -10,11 +10,8 @@ const loaderModule = ts.transpileModule(fs.readFileSync(path.join(repo, 'cocos/2
 const script = `
 (function () { try {
 const cclegacy = {}, js = { createMap: () => Object.create(null) };
-let initialized = 0, bitmapReloads = 0;
+let initialized = 0;
 jsb.Asset.prototype._ctor = function () { initialized++; };
-jsb.Asset.prototype.emit = function (event) {
-    if (event === 'bitmap_font_config_reload') bitmapReloads++;
-};
 Object.defineProperty(jsb.Asset.prototype, 'nativeUrl', { get () { return this._nativeUrl || ''; } });
 Object.defineProperty(jsb.SpriteFrame.prototype, 'texture', { get () { return this.getTexture(); } });
 jsb.Asset.prototype.destroy = function () { return this._destroy(); };
@@ -171,7 +168,6 @@ check(font.getGlyphData().length === 8 && font.getKerning(65, 65) === -1, 'nativ
 check(font.fontDefDictionary.texture === texture && font.fontDefDictionary.getLetter('65').w === 2, 'deprecated view reads native');
 font.fntConfig.fontDefDictionary[65].xAdvance = 3; font.onLoaded();
 check(font.getGlyphData()[7] === 3, 'onLoaded commits edited serialization view');
-check(bitmapReloads === 1, 'onLoaded notifies the JavaScript Label fallback');
 const stale = font.fntConfig;
 stale.fontDefDictionary[65].xAdvance = 99;
 check(font.setConfigJson(JSON.stringify(config)), 'native config update');

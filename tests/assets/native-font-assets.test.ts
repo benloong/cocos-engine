@@ -23,7 +23,6 @@ class NativeTTF extends NativeFont {
     clearNativeData () { this.family = ''; this.source = ''; this.size = 0; super.clearNativeData(); }
 }
 class NativeBitmap extends NativeFont {
-    emit = jest.fn();
     frame: any = null;
     size = -1;
     text = '';
@@ -123,7 +122,6 @@ test('bitmap serialized data and dependency writes reach native and compatibilit
     expect(font.fontDefDictionary.texture).toBe(replacement);
     font.fntConfig.fontSize = 24; font.onLoaded();
     expect(JSON.parse(font.getConfigJson()).fontSize).toBe(24);
-    expect(font.emit).toHaveBeenLastCalledWith((NativeBitmap as any).EVENT_CONFIG_RELOAD);
     font.clearNativeData();
     expect(font._atlasView).toBeUndefined();
     expect(font.spriteFrame).toBeNull();

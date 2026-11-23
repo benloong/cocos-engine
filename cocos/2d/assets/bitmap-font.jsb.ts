@@ -57,8 +57,7 @@ export class FontAtlas {
     }
 }
 export type BitmapFont = JsbBitmapFont;
-export const BitmapFont: typeof JsbBitmapFont & { EVENT_CONFIG_RELOAD: string } = jsb.BitmapFont;
-BitmapFont.EVENT_CONFIG_RELOAD = 'bitmap_font_config_reload';
+export const BitmapFont: typeof JsbBitmapFont = jsb.BitmapFont;
 cclegacy.BitmapFont = BitmapFont;
 const proto: any = BitmapFont.prototype;
 proto._ctor = function () { jsb.Font.prototype._ctor.apply(this, arguments); };
@@ -108,7 +107,6 @@ proto.onLoaded = function () {
     // serialization view once, never once per Label or once per glyph.
     if (this._configRevision === this.getConfigRevision()) this.fntConfig = this._configView;
     this._atlasView = undefined;
-    this.emit(BitmapFont.EVENT_CONFIG_RELOAD);
 };
 patch_cc_BitmapFont({ BitmapFont, SpriteFrame });
 
