@@ -30,6 +30,7 @@ import { PipelineEventProcessor } from './rendering/pipeline-event';
 import type { Root as JsbRoot } from './root';
 import type { RenderRoot2D } from './2d/framework/render-root-2d';
 import type { Batcher2D } from './2d/renderer/batcher-2d';
+import { NativeUIRendererManager } from './2d/renderer/native-2d';
 
 declare const nr: any;
 declare const jsb: any;
@@ -251,8 +252,11 @@ rootProto.onGlobalPipelineStateChanged = function() {
     }
 }
 
+const nativeUIRendererManager = new NativeUIRendererManager();
 const oldFrameMove = rootProto.frameMove;
 rootProto.frameMove = function (deltaTime: number) {
+    // Director has already processed the TypeScript renderer queue.
+    nativeUIRendererManager.updateAllDirtyRenderers();
     oldFrameMove.call(this, deltaTime, cclegacy.director.getTotalFrames());
 };
 

@@ -28,4 +28,3 @@ export const NativeUIMeshBuffer = undefined;
 export const NativeRenderEntity = undefined;
 export const NativeUIModelProxy = undefined;
 export const NativeStencilManager = undefined;
-export const NativeUIRendererManager = undefined;
