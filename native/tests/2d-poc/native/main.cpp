@@ -1619,6 +1619,7 @@ void testRichTextRuntime() {
     check(node.getChildren().size() == 3 && getChildRenderer<cc::Label>(node, 0)->getString() == "one", "disabled RichText defers layout");
     rich.setEnabled(true);
     check(node.getChildren().size() == 1 && node.getChildren()[0].get() == first && getChildRenderer<cc::Label>(node, 0)->getString() == "changed", "enabling RichText applies the deferred text to the reused segment");
+    cc::IntrusivePtr<cc::Node> retiredNode(node.getChildren()[0]);
     if (hasWrapper) check(imageLayout.toObject()->getPrivateData() == transform, "pooled image layout wrapper stays valid");
     check(frame->getRefCount() == frameRefs, "recycled image releases frame and texture references");
     rich.setFontAsset(nullptr); check(font->getRefCount() == fontRefs, "RichText clears font references including measurement cache");
@@ -1633,6 +1634,8 @@ void testRichTextRuntime() {
     check(node.getChildren().empty(), "RichText follows atlas table revision");
     rich.setString("final"); rich.setNode(nullptr); rich.setImageAtlas(nullptr);
     check(node.getChildren().empty(), "RichText detach releases active and pooled native children");
+    check(!cc::isObjectValid(retiredNode.get()) && !retiredNode->getParent() && !retiredNode->isActive(),
+          "RichText retires a segment Node even while an external owner keeps it alive");
     if (hasWrapper) check(!imageLayout.toObject()->getPrivateData(), "detaching RichText invalidates the borrowed layout wrapper");
     cc::Node lateNode("rich-text-late-transform"); cc::RichText late;
     late.setString("late"); late.setNode(&lateNode);
@@ -1662,6 +1665,26 @@ void testRichTextRuntime() {
     const auto *resized = getChildRenderer<cc::Label>(resizeNode, 0);
     check(changedDuringResize && resized && resized->getString() == "callback replacement",
           "RichText applies text changed by its size notification");
+    cc::Node anchorNode("rich-text-child-anchor-callback");
+    cc::UITransform anchorUI(&anchorNode);
+    anchorUI.setAnchorPoint(0.F, .5F);
+    cc::RichText anchorRich;
+    anchorRich.setString("");
+    anchorRich.setNode(&anchorNode);
+    bool changedDuringChildAttach = false;
+    const auto childAdded = anchorNode.on<cc::Node::ChildAdded>([&](cc::Node *, cc::Node *) {
+        if (changedDuringChildAttach) return;
+        changedDuringChildAttach = true;
+        anchorUI.setAnchorPoint(1.F, .5F);
+    });
+    anchorRich.setString("I<b>I</b>");
+    anchorNode.off(childAdded);
+    check(changedDuringChildAttach && anchorNode.getChildren().size() == 2,
+          "RichText emits child attachment before publishing final anchored layout");
+    if (!anchorNode.getChildren().empty()) {
+        checkNear(anchorNode.getChildren()[0]->getPosition().x, -anchorUI.getContentSize().x,
+                  "RichText applies the anchor changed during child attachment");
+    }
     std::printf("rich text runtime: PASS\n");
 }
 
@@ -1742,6 +1765,8 @@ void testGraphicsMeshes() {
     cc::Graphics graphics; graphics.setNode(&node);
     graphics.setFillColor(cc::Color(200,40,20,128));
     graphics.rect(-700,-300,1400,600);graphics.fill();
+    graphics.flushRenderData();
+    check(graphics.getRenderEntity()->getRenderDrawInfosSize() == 1, "Explicit Graphics update builds native draw info before the manager tick");
     cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
     node.setActiveInHierarchy(true);
     node._setLocalOpacity(.5F);
@@ -1791,10 +1816,34 @@ void testGraphicsMeshes() {
     mask.setType(2);
     {
         cc::Graphics source;source.rect(0,0,20,40);source.fill();mask.setGraphics(&source);cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
-        check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask consumes Graphics directly without frame texture");
-        if (auto *draw = mask.getRenderEntity()->getRenderDrawInfoAt(0)) {
+        auto *stencil = mask.getRenderEntity();
+        check(stencil->getRenderDrawInfosSize() == 1, "Mask consumes Graphics directly without frame texture");
+        if (stencil->getRenderDrawInfosSize()) {
+            auto *draw = stencil->getRenderDrawInfoAt(0);
             check(draw->getVbCount() == 4 && draw->getIbCount() == 6, "Rectangle stencil submits four vertices and six indices");
         }
+        const auto submittedMaterial = [stencil]() -> cc::Material * {
+            return stencil->getRenderDrawInfosSize() ? stencil->getRenderDrawInfoAt(0)->getMaterial() : nullptr;
+        };
+        cc::IntrusivePtr<cc::Material> custom(new cc::Material());
+        source.setMaterial(custom);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(submittedMaterial() == custom.get(), "Mask draw uses the helper's shared material");
+        auto *instance = source.getMaterialInstance(0);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(instance && submittedMaterial() == instance, "Mask draw uses the helper's material instance");
+        source.setSharedMaterial(nullptr, 0);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(mask.getRenderEntity()->getRenderDrawInfosSize() == 0, "Mask observes explicit null stencil material");
+        source.setMaterial(nullptr);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(mask.getRenderEntity()->getRenderDrawInfosSize() == 1, "Mask restores the helper's builtin stencil material");
+        mask.setType(0);
+        source.setMaterial(custom);
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        check(submittedMaterial() == custom.get(), "Mask uses the forwarded material with generated rectangle geometry");
+        source.setMaterial(nullptr);
+        mask.setType(2);
         source.clear();cc::UIRendererManager::getInstance().updateAllDirtyRenderers();check(mask.getRenderEntity()->getRenderDrawInfosSize()==0,"Mask observes source clear in native");
         source.circle(0,0,10);source.fill();cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
         check(mask.getRenderEntity()->getRenderDrawInfosSize()==1,"Mask observes new source geometry");

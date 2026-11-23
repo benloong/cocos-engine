@@ -44,7 +44,8 @@ function main () {
         if (shared.has(shell.name) && !shell.overridden) continue;
         const findings = report.files.find(file => file.file === shell.runtime);
         check(shell.overridden, shell.name + ' must use its native override');
-        check(!findings.frameMethods.length, shell.runtime + ' implements a frame method: ' + JSON.stringify(findings.frameMethods));
+        const frameMethods = findings.frameMethods.filter(method => !(shell.name === 'Graphics' && method.nativeFlush));
+        check(!frameMethods.length, shell.runtime + ' implements a frame method: ' + JSON.stringify(frameMethods));
         check(!findings.allocations.length, shell.runtime + ' creates rendering data: ' + JSON.stringify(findings.allocations));
     }
     const { shellSizes } = require('./measure-shell-lines.cjs');

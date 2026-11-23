@@ -11,6 +11,7 @@ import { instantiate } from '../../exports/base';
 import { Color } from '../../cocos/core/math/color';
 import { Vec2 } from '../../cocos/core/math/vec2';
 import { Material } from '../../cocos/asset/assets/material';
+import { CCObject, isValid } from '../../cocos/core';
 
 let shared: any[] = [], instances: any[] = [];
 
@@ -216,6 +217,20 @@ test('Label binds serialized material slots and releases instance owners on dest
     expect(current._owner).toBeNull();
     expect(shared).toEqual([]);
     expect(label.sharedMaterials).toEqual([]);
+});
+
+test('destroying an unloaded Label does not create or retain renderer assets', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb') as typeof import('../../cocos/2d/components/label.jsb');
+    const node = new Node('unloaded-label');
+    node.active = false;
+    const label = node.addComponent(Label);
+    label.updateRenderData(true);
+    expect(label.ttfSpriteFrame).toBeNull();
+    node.destroy();
+    CCObject._deferredDestroy();
+    expect(isValid(label)).toBe(false);
+    expect(nativeLabel.setNode).not.toHaveBeenCalled();
+    expect(nativeLabel.destroyTTFSpriteFrame).not.toHaveBeenCalled();
 });
 
 test('Label M3 shell attaches and forwards text properties', () => {

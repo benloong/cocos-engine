@@ -106,7 +106,16 @@ function inspect(file, text) {
     const location = node => source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
     function walk(node) {
         const hook = frameHookName(node);
-        if (frameHooks.has(hook)) frameMethods.push({name:hook, line:location(node)});
+        if (frameHooks.has(hook)) {
+            const method = {name:hook, line:location(node)};
+            if (hook === 'updateRenderer' && ts.isMethodDeclaration(node) && node.body?.statements.length === 1) {
+                const statement = node.body.statements[0];
+                if (ts.isExpressionStatement(statement) && statement.expression.getText(source) === 'this._native?.flushRenderData()') {
+                    method.nativeFlush = true;
+                }
+            }
+            frameMethods.push(method);
+        }
         if (ts.isCallExpression(node) && /\b(_native|jsb|n2d)\b/.test(node.expression.getText(source))) nativeCalls.push({expression:node.expression.getText(source), line:location(node)});
         if (ts.isNewExpression(node) && /^(Float32Array|Uint16Array|Uint32Array|RenderData|HtmlTextParser)$/.test(node.expression.getText(source))) allocations.push({type:node.expression.getText(source), line:location(node)});
         if (ts.isForStatement(node) || ts.isForOfStatement(node) || ts.isForInStatement(node) || ts.isWhileStatement(node) || ts.isDoStatement(node)) loops.push(location(node));

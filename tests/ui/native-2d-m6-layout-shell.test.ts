@@ -10,6 +10,7 @@ const nativeGraphics = {
     getMaterialInstanceCount: () => 0, getSharedMaterialCount: () => 0, getSharedMaterial: () => null, getRenderMaterial: () => null,
     setSharedMaterial: jest.fn(), setMaterialInstance: jest.fn(), resizeMaterials: jest.fn(),
     fillRect: jest.fn(), moveTo: jest.fn(), lineTo: jest.fn(), stroke: jest.fn(),
+    flushRenderData: jest.fn(),
 };
 
 test('Graphics leaves builtin material selection to the native renderer', () => {
@@ -82,4 +83,45 @@ test('Graphics restores stroke metadata and binds Mask geometry across load/dest
     graphics.onDestroy();
     expect(mask.setGraphics).toHaveBeenLastCalledWith(null);
     expect(graphics.lateUpdate).toBeUndefined();
+});
+
+test('Graphics restores authored styles and forwards an explicit renderer update to its native backend', () => {
+    const { Graphics } = require('../../cocos/2d/components/graphics.jsb');
+    const node = new Node('legacy-graphics');
+    node.active = false;
+    const graphics = node.addComponent(Graphics) as InstanceType<typeof import('../../cocos/2d/components/graphics.jsb').Graphics>;
+    nativeGraphics.flushRenderData.mockClear();
+    graphics.updateRenderer();
+    expect(nativeGraphics.flushRenderData).not.toHaveBeenCalled();
+    graphics.onLoad();
+    Object.assign(graphics, { _lineWidth: 8, _lineCap: Graphics.LineCap.ROUND, _miterLimit: 5 });
+    graphics.onRestore();
+    expect(nativeGraphics.setLineWidth).toHaveBeenLastCalledWith(8);
+    expect(nativeGraphics.setLineCap).toHaveBeenLastCalledWith(Graphics.LineCap.ROUND);
+    expect(nativeGraphics.setMiterLimit).toHaveBeenLastCalledWith(5);
+    graphics.updateRenderer();
+    expect(nativeGraphics.flushRenderData).toHaveBeenCalledTimes(1);
+    graphics.onDestroy();
+    graphics.updateRenderer();
+    expect(nativeGraphics.flushRenderData).toHaveBeenCalledTimes(1);
+});
+
+test('Graphics forwards legacy material refresh and supports a guarded model activation call', () => {
+    const { Graphics } = require('../../cocos/2d/components/graphics.jsb');
+    const node = new Node('legacy-graphics-material');
+    node.active = false;
+    const graphics = node.addComponent(Graphics) as any;
+    const material = {};
+    graphics.onLoad();
+    graphics.customMaterial = material;
+    nativeGraphics.setMaterial.mockClear();
+    graphics.updateMaterial();
+    expect(nativeGraphics.setMaterial).toHaveBeenCalledWith(material);
+    graphics.customMaterial = null;
+    expect(nativeGraphics.setMaterial).toHaveBeenLastCalledWith(null);
+    expect(() => graphics.activeSubModel(0, 4, 6)).not.toThrow();
+    expect('impl' in graphics).toBe(false);
+    expect(graphics.model).toBeUndefined();
+    expect(graphics.graphicsNativeProxy).toBeUndefined();
+    graphics.onDestroy();
 });
