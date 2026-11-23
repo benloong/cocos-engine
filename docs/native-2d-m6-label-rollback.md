@@ -50,7 +50,7 @@ Windows Debug 和 Release 各用同一二进制依次运行原生、TS 回退和
 
 Windows Canvas 的 `fillText` 读取 JSB 提交的阴影颜色、偏移和模糊值，使用 DirectWrite 在前景字形之前绘制阴影。Canvas 保存与恢复时同步保存这三个属性。原生 Label 已自行绘制阴影，Windows 上继续沿用显式绘制。
 
-本机 Windows Debug、Release 各在同一二进制上执行原生、TS 回退、恢复原生。两种配置的旧版描边与阴影通过 Prefab 启用、属性转发、单独启停、销毁以及与直接接口的图像等价性。独立 Canvas 用例覆盖硬阴影、模糊、恢复和透明颜色。
+本机 Windows Debug、Release 各在同一二进制上执行原生、TS 回退、恢复原生。现行 GPU 夹具从 `cc.Label` 的样式字段恢复描边和阴影，并检查运行时添加 `LabelOutline`、`LabelShadow` 后的属性转发、启停、销毁和像素对照。独立 Canvas 用例覆盖硬阴影、模糊、恢复和透明颜色。
 
 原生和恢复阶段各 163 张图与 Chrome 逐字节一致。每个 TS 回退阶段有 160 张严格一致。`scene-ttf-bundle-first`、`scene-ttf-bundle-next`、`scene-ttf-bundle-cold` 各有 996 个像素超差，最大通道差为 209，字体宽度和资源生命周期断言通过。完整 Debug 原生探针在字体资产检查后超时，独立阴影探针已通过。[本机数据](./native-2d-m6-label-shadow-fallback.json)
 

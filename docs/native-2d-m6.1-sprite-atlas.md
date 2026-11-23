@@ -45,11 +45,11 @@ V8 探针只隔离 core/元数据模块并显式调用构造钩子；元数据�
 
 ## 4. 后续
 
-测试工程内的旧格式静态图集和 Prefab 已加入下方验收。其余旧项目场景、RichText imageAtlas、异步取消、长期生命周期、平台及性能继续按 [M6 计划](./native-2d-m6-plan.md) 执行。
+验收夹具使用导入的静态图集与 `cc.Sprite` Prefab。其余现行场景、RichText imageAtlas、异步取消、长期生命周期、平台及性能继续按 [M6 计划](./native-2d-m6-plan.md) 执行。
 
 ## 5. 真实资源和 Prefab
 
-验收工程由 CLI 导入 TexturePacker format 2 的 plist 和 32×16 PNG。Prefab 序列化字段引用图集和第一个 SpriteFrame 的资源 UUID。探针先按资源路径加载 Prefab，再加载同一图集，检查两个帧的身份、纹理、旋转、裁剪、偏移以及原生表条目数。
+验收工程由 CLI 导入 TexturePacker format 2 的 plist 和 32×16 PNG。现行 `cc.Sprite` Prefab 的序列化字段引用图集和第一个 SpriteFrame 的资源 UUID。探针先按资源路径加载 Prefab，再加载同一图集，检查两个帧的身份、纹理、旋转、裁剪、偏移以及原生表条目数。
 
 每次实例化两个 Sprite。图集和初始帧共用，实例的组件和换帧状态独立。渲染到 M4 的隔离 Camera 目标，检查从红色原帧切换到绿色旋转帧后的中心像素。先销毁实例，再释放 Prefab，图集由显式引用继续持有。最后归还该引用并检查 Prefab、图集、两个帧和 Texture2D 均移出资源缓存。每端重复三轮，并要求 `M6_STATIC_ATLAS_PASS`。
 

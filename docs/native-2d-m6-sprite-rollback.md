@@ -25,7 +25,7 @@ foreach ($folder in 'gpu-win', 'm6-system-graphics-fresh-release') {
 }
 ```
 
-应用在旧图集 Prefab 挂接后检查 Sprite 实现身份。每次运行覆盖普通和旋转图集帧、Sprite 各几何模式、材质槽与实例释放、Sprite Mask 模板及 1000 轮场景切换。六次 Windows 运行各 116 张图与 Web 和上一候选逐字节一致，各通过 4998 项场景断言。恢复时的引擎包哈希与该配置的初始原生包一致。默认 Windows Release 功能包的 Web assembler 保留量为 0 字节。[快照、二进制及逐图哈希](./native-2d-m6-sprite-rollback.json)
+应用在图集 Prefab 挂接后检查 Sprite 实现身份。每次运行覆盖普通和旋转图集帧、Sprite 各几何模式、材质槽与实例释放、Sprite Mask 模板及 1000 轮场景切换。六次 Windows 运行各 116 张图与 Web 和上一候选逐字节一致，各通过 4998 项场景断言。恢复时的引擎包哈希与该配置的初始原生包一致。默认 Windows Release 功能包的 Web assembler 保留量为 0 字节。[快照、二进制及逐图哈希](./native-2d-m6-sprite-rollback.json)
 
 ## 同场景帧耗时
 

@@ -1,6 +1,6 @@
 # M6 千轮真实资源加载与内存归因
 
-Windows Debug、Release、完整 cocos-m1-test ASan 应用和 Web 分别完成 1000 次 TexturePacker 图集、PNG 和旧 Prefab 加载卸载。每轮检查 5 个缓存资产，每 100 轮执行 GC 和弱引用采样，另有 22 次真实绘图检查。各配置均未观察到崩溃或资产实例累积。[每个二进制和夹具哈希、样本及堆差分](./native-2d-m6-asset-lifetime.json)
+Windows Debug、Release、完整 cocos-m1-test ASan 应用和 Web 分别完成 1000 次 TexturePacker 图集、PNG 和图集 Prefab 加载卸载。每轮检查 5 个缓存资产，每 100 轮执行 GC 和弱引用采样，另有 22 次真实绘图检查。各配置均未观察到崩溃或资产实例累积。[每个二进制和夹具哈希、样本及堆差分](./native-2d-m6-asset-lifetime.json)
 
 在 Windows Debug 诊断主机，第 100 至 1000 轮，未抓快照的运行中 CRT 普通及客户端堆从 29,704,996 B 变为 29,738,151 B，末轮字节数和活跃块数均处于此前采样范围内。每批 500 个被跟踪的旧 wrapper 最多保留 5 个。单独采快照的运行中，V8 自身字节净增 729,176 B，其中 code 类净增 707,328 B；Prefab、SpriteAtlas、SpriteFrame、Texture2D、ImageAsset、Node、Sprite 实例均减少。Debug CRT 采集覆盖共享调试运行库的普通及客户端分配，进程私有字节和 V8 堆单列。
 

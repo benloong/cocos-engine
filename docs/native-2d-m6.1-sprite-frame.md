@@ -53,7 +53,7 @@ native harness 用 `native/tests/2d-poc/native/CMakeLists.txt` 配置，构建 c
 
 - 真实 PNG/.fnt、旧场景/prefab、完整 native 引擎 JS bundle 与 Creator 资源加载链的回归；本次原生消费者使用程序化 ImageAsset/Texture2D，不等同于文件加载。
 - 更新后的 Web/native GPU RenderTexture 像素 golden；本次检查了 native draw buffer 与 UV，未重跑 M2/M3 场景像素探针。
-- 动态合图打包与恢复的剩余组合继续验收。旧序列化 mesh 的验证见[旧序列化多边形](#旧序列化多边形)。
+- 动态合图打包与恢复的剩余组合继续验收。现行多边形用例见[自定义多边形](#自定义多边形)。
 - SpriteAtlas map/native 表同步、字体资产完整生命周期及 M6 平台/内存/线程矩阵，见 [M6 计划](./native-2d-m6-plan.md)。
 
 ## 帧末归还纹理引用
@@ -64,21 +64,9 @@ SpriteFrame 通过 IntrusivePtr 持有当前纹理。打包状态下，另一份
 
 Windows Debug 和 Release 的 C++ 探针各完成 1000 轮，普通帧与打包帧各占一半。真实 Windows Debug Prefab 与 Web 工程、完整串行门禁及 39 项定向 Jest 通过，100 组现有像素对照逐字节一致。M5 用时 40.33 秒。测试覆盖图集与帧归还自身的引用，长期堆和跨平台仍待验收。
 
-## 旧序列化多边形
+## 自定义多边形
 
-Web 和 JSB 从旧格式读入多边形后，SpriteRenderer 通过 ensureMeshData 首次构造网格。修复前定向回归读到空索引。修复后保留作者指定的原始顶点、索引和 UV，按当前 pivot 与 pixelsToUnit 更新位置和边界。克隆独立持有原始坐标与缓冲；同一对象重新反序列化时采用新的索引和边界。
-
-Windows Debug、Release 与 Web 的同一场景执行反序列化、纹理依赖回填、SpriteRenderer 绑定、克隆与替换克隆纹理。GPU 样本检查红色原图和克隆、绿色替换纹理及黑色凹口，每张有 3072 个着色像素。三张新增图和 116 张既有图均通过逐字节对照。对照快照为 e5aac01ecbd429ddf30e9ae630db4de80330110c6af43fd81d1c2a2e993a38b3。
-
-| 捕获 | 三端共同的 RGBA SHA256 |
-|---|---|
-| authored-mesh | 7547ae52964ef737da8f9b12cbd01bf4dedddb83e33b5d56d2ed51eab1ad20ef |
-| authored-mesh-clone | 7547ae52964ef737da8f9b12cbd01bf4dedddb83e33b5d56d2ed51eab1ad20ef |
-| authored-mesh-replaced-texture | 4c54b0c487ce6a6f4509bb2fa5d92d113c2d2f7bb2485ed2661ebb08758bbb9f |
-
-[场景与实际 Mesh 缓冲断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)通过既有 SpriteFrame 和 SpriteRenderer API 执行。JSB 薄壳检查为 295/300 行，复用已生成 Mesh 的边界。
-
-标准旧工程在 Windows Debug、Release 通过 M2–M5。Debug 完整 M0 和 Release 六组真实 JSB 探针通过，Web 旧工程完成 92 张位图、旧图集与 RichText 检查。
+现行 SpriteFrame 用例验证作者提供的顶点、索引、UV 和纹理依赖回填。SpriteRenderer 绑定反序列化的帧后生成网格，并检查凹口、独立克隆和替换克隆纹理。GPU 夹具保留原图、克隆和换图三组捕获，最终候选以同一快照重新对照。[场景与 Mesh 缓冲断言](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)
 
 ## 同一帧的图集页和源纹理
 

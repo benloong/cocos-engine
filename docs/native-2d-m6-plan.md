@@ -7,7 +7,9 @@
 > 构建验收约束：后续改动统一按 [Cocos CLI 构建与验收流程](./native-2d-build-and-acceptance.zh-CN.md) 第 8 节构建 cocos-m1-test、重建 override、同步资源、编译 Debug app 并执行全部门禁，通过后再提交。定向 PoC/GPU/ASAN 仅作补充证据；不得替代文档规定的测试工程验收。
 
 > 本轮验收平台为 Windows Debug/Release，使用 Web 作行为与像素对照。macOS、iOS、Android、OHOS 暂缓验收，保留待验证状态。本轮使用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
-> 场景、Prefab 和资产按现行序列化格式验收。旧版本序列化数据的加载、迁移和兼容不列入本轮签收。历史兼容结果保留供参考，详见 [M6 Gate](./native-2d-m6-gate.md)。
+> 场景、Prefab 和资产按现行序列化格式验收。旧版本序列化数据的加载、迁移和兼容不列入本轮签收，详见 [M6 Gate](./native-2d-m6-gate.md)。
+
+- [ ] 同一候选复验现行格式夹具。覆盖 Label 字体与材质更新、未加载组件销毁、Sprite 独立图片与图集生命周期、Mask 模板切换和 Graphics 材质恢复。[Label 与 Sprite](./native-2d-m6-label-renderer-compat.md) [Mask](./native-2d-m6-mask-compat.md) [Graphics](./native-2d-m6-graphics-compat.md)
 > RichText 的 `text-bold`、`text-outline`、`text-nested` 暂缓 Windows 对 Web 的像素一致性签收。保留实际比较结果，布局和其他检查继续验收。签收命令及历史差值见 [M6 Gate](./native-2d-m6-gate.md)。
 
 ## 1. 已有基础与验收边界
@@ -41,10 +43,10 @@
 
 ### M6.1 资产与状态一致性
 
-- [x] Label 序列化基础兼容：恢复 Web 的字体/系统字体字段、样式/效果/24 个默认值，补旧格式 deserialize/Details 回填与 instantiate 回归；初始化样式传给 native，普通 TTF 下划线厚度与实际字号通过 Windows Debug/Release 联调，见 [报告](./native-2d-m6.1-label-serialization.md)。
+- [x] Label 现行序列化字段：恢复 Web 的字体/系统字体字段、样式/效果/24 个默认值，以 `cc.Label` 验证 deserialize/Details 字体回填与 instantiate；初始化样式传给 native，普通 TTF 下划线厚度与实际字号通过 Windows Debug/Release 联调，见 [报告](./native-2d-m6.1-label-serialization.md)。
 - [x] Sprite 壳声明与基础材质/状态兼容：六个缺口、fillRange 默认值/条形负范围、atlas/trim/grayscale/事件、native 材质变体与真正 MaterialInstance、帧/材质持有、尺寸/Node 变化和零填充清理已补，Windows Debug/Release 实际 JSB 与定向测试通过，见 [报告](./native-2d-m6.1-sprite-api.md)。
 - [x] Sprite radial 与可变 fillCenter：归一化中心、角度方向、矩形边界三角形、rotated UV 和 flip 行为已修复；fillCenter 分量读写直接桥接 native，加载/克隆/销毁保持视图契约。3024 组实际 Web assembler 与 native CPU 几何对照、Windows Debug/Release 定向测试通过，见 [报告](./native-2d-m6.1-radial.md)。
-- [x] Sprite 径向填充的实际 GPU 像素验收。修复 Web 直接写 `fillCenter.x/y` 后未刷新渲染数据。Windows Debug、Release 与 Web 对照正负范围、分量更新、旋转帧与 UV 翻转、空到全填充，以及旧 Prefab 的普通和旋转帧。两种 Windows 配置各 102 张图与 Web 逐字节一致。[逐图数据](./native-2d-m6-sprite-radial-gpu.json)
+- [x] Sprite 径向填充的实际 GPU 像素验收。修复 Web 直接写 `fillCenter.x/y` 后未刷新渲染数据。Windows Debug、Release 与 Web 对照正负范围、分量更新、旋转帧与 UV 翻转、空到全填充，以及图集 Prefab 的普通和旋转帧。两种 Windows 配置各 102 张图与 Web 逐字节一致。[逐图数据](./native-2d-m6-sprite-radial-gpu.json)
 - [x] Sprite 九宫格在节点小于边距总和时按轴比例压缩边框，并保留原始纹理 UV。Web 运行中修改边距同时刷新顶点分区。Windows Debug、Release 与 Web 验证现有节点缩小、直接创建同尺寸节点、修改边距及旋转帧。两个 Windows 配置各 108 张图与 Web 逐字节一致，原有 102 张图的哈希保持一致。[九宫格对照](./native-2d-m6-sprite-sliced-gpu.json)
 - [x] Sprite 平铺保留图集帧边框，重复并裁切中心区。小尺寸按比例压缩边框，零宽中心使用边界 UV，超出 16 位索引容量时清空几何。Web 运行时修改帧边距可刷新平铺，启停、换帧和切换类型均检查 UV 事件订阅。Windows Debug、Release 各 116 张回读与 Web 逐字节一致，原有 108 张哈希亦一致。[平铺几何和像素对照](./native-2d-m6-sprite-tiled-gpu.json)
 - [x] Sprite/Label 材质槽 API 与提交：补数组整体赋值/缩短/清空、加载前引用、forceUpdate、实例 owner 解绑；native 区分显式空槽和恢复内置材质，Label 实际 DrawInfo 跟随槽和实例变化。Windows Debug/Release、实际 JSB 与 Web 定向对照通过，见 [报告](./native-2d-m6.1-material-slots.md)。
@@ -64,7 +66,6 @@
 - [x] Label 启用时恢复字体。无字体资产且关闭系统字体时，按 Web 行为恢复系统字体；系统字体族为空时恢复 Arial。已配置的字体族和有效字体资产保留。修复前定向用例复现 useSystemFont 仍为 false，修复后 6 项 Label 契约测试通过。Web 与 Windows Debug/Release 实际场景验证重新启用及保留 Verdana，85 张图像逐字节一致，标准工程串行门禁通过。[当前快照与像素结果](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Sprite 和 Label 的 JSB 壳继承 UIRenderer.color。编辑器改色在同步原生颜色后派发一次 COLOR_CHANGED，监听器收到独立副本；运行时改色和重复赋相同值的事件数均为 0。Web 类和 JSB 壳的编辑器/运行时契约由[定向测试](../tests/ui/native-2d-m3-label-shell.test.ts)覆盖，三端运行时赋值由[实际场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)覆盖。
 - [ ] 完整组件 parity：Label 其余公开/兼容接口，以及真实场景/Prefab 和资源管线继续验收。
-  - [x] 旧版 `LabelOutlineComponent` 别名与 `LabelShadow` 在序列化 Prefab 中还原并启用。Windows Debug、Release 与 Web 验证属性转发、单独启停、销毁及与直接设置 Label 特效的像素等价。复用现有颜色和偏移对象时跳过更新，三个实际改值各同步一次。[三端证据](./native-2d-m6-label-effect-api.json)
   - [x] 已绑定 BitmapFont 的 Label 改为 18.25 px、重复写入该字号、再更换字体族。旧 Windows Debug 调用六次字体 setter；现版 Debug/Release 均只调用一次 `setFontSize` 和一次 `setFont`，仍持有同一 BitmapFont。切回系统字体后以 23.75 px 实际绘制并回读到非空字形。Web 同序列保留位图字体身份、原始字号和目标字号。[Windows 探针](../native/tests/2d-poc/build-sprite-api-probe.cjs)、[Web 对照](../tests/ui/native-2d-m3-label-shell.test.ts)
   - [x] Windows DirectWrite Label 接收 TTF 小数字号。修复前 24、24.25 和 24.75 px 的自然宽度均为 95.9765625。修复后 24.25 和 24.75 px 的 Windows Debug/Release 宽度分别为 96.9763107 和 98.9758301，与 Web 的最大差小于 0.000054 px。三端在同一场景验证重绘、恢复 24 px 及 47 张既有图的逐图哈希。[复测记录](./native-2d-m6-richtext-configurations.json)
   - [x] Label 的粗体、斜体、下划线及其高度、描边开关与宽度、阴影开关与模糊值均在值改变时更新。对每个属性依次写入初值、新值、相同新值和初值，Windows Debug/Release 均只调用两次原生 setter，Web 同样触发两次渲染数据更新。[真实 JSB 探针](../native/tests/2d-poc/build-sprite-api-probe.cjs)、[Web 对照](../tests/ui/native-2d-m3-label-shell.test.ts)
@@ -127,14 +128,13 @@
 - [x] BitmapFont/LabelAtlas GPU 图集消费者：原生字形 quad 直接采样活动图集，移除整段 CPU 纹理合成；帧 revision、纹理尺寸/同尺寸 GPU 重建、sampler 变化与清空引用回归通过。真实 Windows Debug 工程覆盖两类字体、普通/旋转帧的原图/打包/恢复，并验证 70000 字形分块；证据与布局边界见[报告](./native-2d-m6.1-bitmap-gpu.md)。
 - [x] BitmapFont/LabelAtlas 基础原生布局：修复默认 CENTER/CENTER，统一字号/源字号缩放、spacing、词/CJK 换行、九种对齐与四种 overflow/裁剪、无换行测量和尺寸更新；2307 组实际 Web 数值对照在 g++/MSVC 通过，含 kerning 的 76 组布局 GPU 与 12 组默认居中合图图像全部字节一致，文档完整串行门禁通过，见[布局报告](./native-2d-m6.1-bitmap-layout.md)。
 - [x] BMFont/LabelAtlas 配置源字号：与公共 fontSize 元数据分离，配置重载按 revision 自动更新 Label，原子校验/清空、缺字段兼容回退及非正源字号空测量/空提交回归通过；76 组布局使用公共字号 64、源字号 16/32/8，100 组 GPU 图像均字节一致，完整文档门禁通过，见[源字号报告](./native-2d-m6.1-bitmap-source-size.md)。
-  - [x] 旧 XML BMFont 在已绑定 Label 时重载配置。Windows Debug、Release 和 Web 校验替换字距和字形宽度、原地删除字形后重载及停用期间恢复配置。布局宽度依次为 40、42、37、40 像素，恢复图与初始图相同。[实时重载证据](./native-2d-m6-bitmap-config-reload.json)
+  - [x] XML BMFont 在已绑定 Label 时重载配置。Windows Debug、Release 和 Web 校验替换字距和字形宽度、原地删除字形后重载及停用期间恢复配置。布局宽度依次为 40、42、37、40 像素，恢复图与初始图相同。[实时重载证据](./native-2d-m6-bitmap-config-reload.json)
 - [x] BMFont/LabelAtlas 帧转换：2307 组 Web 帧矩形、顶点位置和 UV 对照通过，真实 GPU 覆盖非零帧原点、trim/offset 和旋转组合。原生 UI 批次持有 IA 和使用的缓冲区直至清理，确定性回归和完整工程门禁通过，见[帧转换报告](./native-2d-m6.1-bitmap-frame.md)。
 - [x] Windows DirectWrite 水平 RTL 字形按排版后的 advance/offset 从右端定位。Thonburi 的 RTL 控制符、对应视觉顺序及泰文叠加标记在 Debug/Release 的四种字号、常规和斜体均与 Chrome 原始画布一致。三张新增 RichText GPU 图也逐字节相同。Arial 纯希伯来文及阿拉伯文各通过 7/8 组常规/斜体；12px 常规、含空格的混排和合成粗体差异另计。[双配置逐项对照](./native-2d-m6-bidi.json)
 - [x] 水平 TTF 混排的 U+0020 字距和小字号覆盖率。Windows 使用中性语言单独排普通空格，保留词内 kerning；字形齐全且无字距表的可打印 ASCII 沿用无分段布局。正体按 DirectWrite 字体推荐选择自然平滑。Debug/Release 在相同 Arial、Thonburi 文件和 Chrome 上验证 9 种文本、4 个字号，常规/斜体 72/72 均在 1 级通道容差内。40 张应用图与上轮各端哈希一致。四轮交错微基准中，24px 带空格短句的测量中位数，Thonburi 为 2.57→2.55 µs，Arial 为 198.56→219.03 µs；Arial 绘制为 317.11→345.30 µs。合成粗体原始画布仍为 0/36。[逐样本和 CPU 实测](./native-2d-m6-text-spacing.json)
 - [ ] 字体复杂布局与资产边界：补充平面 BMFont 标量字形通过 2327 个 Web/native 布局对照，Windows Debug/Release 的四种字体/旋转组合与 Web 逐像素相等，见[捕获](./native-2d-m6-bitmap-unicode.json)。bidi/shaping、任意 mesh 和其余 packed 帧状态组合、其余字体配置/元数据动态入口，以及现行格式的资产、场景、Prefab 和资源生命周期矩阵继续验收。字体终态项仍待签收。
   - [x] 普通 TTF Label 与原生 RichText 共用整词分段。74 px 宽的 `Atlas 123` 在 CLAMP、SHRINK 和 RESIZE_HEIGHT 下，自动换行图与显式拆成 `Atlas `、`123` 两行的图逐字节相同。Windows Debug、Release 和 Web 的三组布局及 RGBA 均一致。旧 Windows Debug 在 CLAMP 图像断言处失败。[验收结果](./native-2d-m6-label-word-wrap.json)
   - [x] 普通 TTF Label 在多段落换行中验证嵌套书写方向、泰文叠加标记、拉丁组合音标及控制空白。Windows Canvas 的测量、填充、描边和阴影将单行 TAB、LF、FF、CR 逐个作为空格处理。旧 Debug 的混合空白段落有 1124 个超差像素，修复后四组新增图在 Windows Debug、Release 和 Web 逐字节一致。独立原生测试另验证 DirectWrite 和 GDI 回退。[验收结果](./native-2d-m6-label-paragraphs.json)
-  - [x] 旧 SpriteFrame 多边形数据在 SpriteRenderer 生成网格时保留顶点、索引和 UV。Windows Debug、Release 与 Web 对照包含凹多边形、独立克隆和换纹理重建。[逐图证据](./native-2d-m6.1-sprite-frame.md#旧序列化多边形)
   - [x] 共享 SpriteFrame 打包后，Web 2D Sprite 更新图集 UV 和纹理提交，SpriteRenderer 的网格与材质继续采样同一源纹理。矩形和多边形各验收源图、材质重绑、打包后建网格与恢复，Windows 双配置以禁用路径对照。[同一帧打包对照](./native-2d-m6.1-sprite-frame.md#同一帧的图集页和源纹理)
   - [x] SpriteRenderer 的矩形网格遵循旋转帧的有效图集区域和 X/Y 翻转，绑定中的帧变化会刷新模型。Windows 双配置和 Web 的 11 张新增方向图均通过四角颜色检查，覆盖 Web 打包、禁用后翻转与恢复。138 张图逐字节一致。[网格方向验收](./native-2d-m6.1-sprite-frame.md#矩形网格的旋转与翻转)
   - [x] SpriteFrame 保留带深度变化的凹多边形包围盒。Windows Debug、Release 与 Web 验证原帧、懒建网格的帧和克隆的 Z 边界。相机远平面分别位于多边形后方和前方时，两张 GPU 图的着色面积为 1728 和 0 像素。Web 在已打包状态克隆，并验证恢复到源纹理。[裁剪与合图证据](./native-2d-m6-sprite-polygon-depth.json)
@@ -145,17 +145,17 @@
 - [x] JSB + Native 暂停运行时动态图集。Windows Debug 验证显式启用、插入、打包和重置均保持原图，Web 自动打包与恢复通过。完整门禁、37 项定向 Jest 和 100 组像素对照通过，见[验收记录](./native-2d-m6.1-atlas-automatic.md#jsb--native-暂停运行时合图)。
 - [x] 2026-11-18 确认运行时动态合图终态。JSB + Native 保持禁用，组件和 manager 的显式启用、插入、打包、重置均维持原图；Web 保持启用能力。Windows Debug 完整工程与 Web 重建实测通过，覆盖 Web 回退、自动打包、共享帧恢复及 Sprite/Mask、BitmapFont/LabelAtlas 共 100 组原始像素对照。旧的 Native 自动打包记录留作历史基线。
   - [x] 系统字体 Label 的 CacheMode.BITMAP 遵循同一平台开关。96c37f626f 的 Windows 双 Label 用例在 manager 关闭时仍读到共享纹理。移除独立原生图集后，Windows Debug/Release 实际提交各自的完整源纹理，显式开启 manager 和重绘均保留源纹理。Web 关闭时使用两张源纹理，开启后两帧进入同一图集并保留各自原图。三端重绘前后的红绿字形最大通道差均在 1 以内，两种 Windows 配置各有 92 组位图字体图像与 Web 逐字节相同。[跨平台场景](../native/tests/2d-poc/fixtures/acceptance/BitmapGpuProbe.ts)、[提交纹理检查](../native/tests/2d-poc/fixtures/acceptance/LabelSpike.ts)。
-- [x] 旧格式静态图集和 Prefab：Windows Debug/Web 实际加载 TexturePacker plist、PNG 和序列化 Prefab，通过三个加载释放循环、两个独立实例、红绿 GPU 换帧、缓存清理和独立图集持有检查。见[验收报告](./native-2d-m6.1-sprite-atlas.md#5-真实资源和-prefab)。
+- [x] 静态图集和 Prefab：Windows Debug/Web 实际加载 TexturePacker plist、PNG 和序列化 Prefab，通过三个加载释放循环、两个独立实例、红绿 GPU 换帧、缓存清理和独立图集持有检查。见[验收报告](./native-2d-m6.1-sprite-atlas.md#5-真实资源和-prefab)。
 - [x] SpriteAtlas 帧末释放原生帧表：分别覆盖 C++ 和 JSB 销毁队列，拒绝迟到写入，Debug/Release 1000 轮引用计数复归。真实 Prefab 保留 wrapper 的释放断言和连续文档门禁通过。见[所有权验收](./native-2d-m6.1-sprite-atlas.md#6-原生帧引用随延迟销毁释放)。
 - [x] SpriteFrame 帧末归还当前纹理和原图。C++ 与 JSB 的销毁队列共用清理入口，迟到依赖不能重新绑定。Debug/Release 各 1000 轮和 Windows Debug 真实资产释放、完整串行门禁及像素对照通过。见[验收报告](./native-2d-m6.1-sprite-frame.md#帧末归还纹理引用)。
   - [x] SpriteFrame 延迟销毁时归还自身生成的 Mesh 和 GPU 缓冲。Windows Debug、Release 与 Web 通过六个帧释放用例，存活克隆仍能绘制，Web 同页克隆可恢复到源纹理。127 张图与清理前逐字节一致。[网格所有权验收](./native-2d-m6.1-sprite-frame.md#帧末释放生成的网格)
 - [ ] 补其余现行格式资产和场景、异步取消与延迟依赖、clone、跨场景重复加载释放及长期生命周期。
-  - [x] 旧 XML BMFont 跨场景加载、释放与冷重载。回归 Prefab 通过保留的 UUID 使用旧工程 Open Sans FNT、PNG 和元数据。修复 Web BitmapFont 销毁时归还自有 FontAtlas 的纹理引用。三端验证预加载后缓存未发布资产、跨场景共享、持有原图后重载、五个缓存键清理及冷重载。Windows 使用原图，Web 使用动态合图页。六张新增图逐字节一致。[应用结果](./native-2d-m6-legacy-bmfont.json)
+  - [x] XML BMFont 跨场景加载、释放与冷重载。回归 Prefab 通过保留的 UUID 使用旧工程 Open Sans FNT、PNG 和元数据。修复 Web BitmapFont 销毁时归还自有 FontAtlas 的纹理引用。三端验证预加载后缓存未发布资产、跨场景共享、持有原图后重载、五个缓存键清理及冷重载。Windows 使用原图，Web 使用动态合图页。六张新增图逐字节一致。[应用结果](./native-2d-m6-legacy-bmfont.json)
   - [x] 旧 BMFont 图集依赖延迟、取消与重试。预加载后在实际资产管线暂停图集图像依赖，每次等待两个帧末。Windows Debug、Release 与 Web 在等待和首次取消后均查不到五个资产缓存键。同一 Prefab UUID 重试成功，跨场景、释放和冷重载断言通过，144 张图与上轮逐字节一致。[场景与缓存记录](./native-2d-m6-legacy-bmfont.json)
   - [x] 旧式 `.labelatlas` 资源通过 Creator 导入并绑定序列化 Prefab。Windows Debug、Release 与 Web 验证 8 个 16×25 字格，`1076` 的四个中心像素与源图一致。三端通过图集依赖取消和重试、跨场景共享、显式保留原图、最终清理五个缓存键及冷重载。Windows 使用原图，Web 使用动态合图页。[序列化资源及像素记录](./native-2d-m6-legacy-label-atlas.json)
-  - [x] 旧静态图集 Prefab 的旋转帧克隆在原 Prefab、图集和原帧释放后继续渲染。运行时显式持有导入纹理，重新加载同一 Prefab 后，新节点解析到新图集并复用该纹理。Windows Debug、Release 和 Web 的中心像素依次为绿、绿、红、绿。销毁克隆并释放最后一个纹理引用后，纹理失效且缓存中已无该 UUID。[真实加载、回读与释放用例](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
-  - [x] 旧 Prefab 异步图集依赖。resources.preload 返回包含 Prefab 和图集文件的请求记录，两者尚未发布到资产缓存。在真实加载管线中暂停图集依赖两个帧末，第一次以取消错误结束，第二次对同一 Prefab UUID 放行。Windows Debug、Release 和 Web 均验证等待中及取消后无半成品进入缓存，重试解析到同一图集内的帧，切帧后中心像素由红变绿，释放后两个缓存键消失。此用例注入依赖阶段取消，传输层中止另行验收。[回归夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
-  - [x] 旧 Prefab 在两个真实 Scene 中先后实例化。保留 Prefab 引用时，旧 Sprite 和节点随第一场景销毁，下一场景复用同一图集、原帧、旋转帧与纹理。切到空场景并释放最后一个引用后，五项资产均失效且移出缓存，UI 根计数归零。Windows Debug、Release 与 Web 的整幅图像分别显示红帧、绿帧和空场景，88 组图像逐字节一致。[跨场景断言与图像哈希](./native-2d-m6-windows-web-gpu-results.json)
+  - [x] 静态图集 Prefab 的旋转帧克隆在原 Prefab、图集和原帧释放后继续渲染。运行时显式持有导入纹理，重新加载同一 Prefab 后，新节点解析到新图集并复用该纹理。Windows Debug、Release 和 Web 的中心像素依次为绿、绿、红、绿。销毁克隆并释放最后一个纹理引用后，纹理失效且缓存中已无该 UUID。[真实加载、回读与释放用例](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
+  - [x] Prefab 异步图集依赖。resources.preload 返回包含 Prefab 和图集文件的请求记录，两者尚未发布到资产缓存。在真实加载管线中暂停图集依赖两个帧末，第一次以取消错误结束，第二次对同一 Prefab UUID 放行。Windows Debug、Release 和 Web 均验证等待中及取消后无半成品进入缓存，重试解析到同一图集内的帧，切帧后中心像素由红变绿，释放后两个缓存键消失。此用例注入依赖阶段取消，传输层中止另行验收。[回归夹具](../native/tests/2d-poc/fixtures/acceptance/StaticAtlasProbe.ts)
+  - [x] Prefab 在两个真实 Scene 中先后实例化。保留 Prefab 引用时，旧 Sprite 和节点随第一场景销毁，下一场景复用同一图集、原帧、旋转帧与纹理。切到空场景并释放最后一个引用后，五项资产均失效且移出缓存，UI 根计数归零。Windows Debug、Release 与 Web 的整幅图像分别显示红帧、绿帧和空场景，88 组图像逐字节一致。[跨场景断言与图像哈希](./native-2d-m6-windows-web-gpu-results.json)
 
 交付：资产 parity 报告和真实资源回归日志。prototype 改造本身不等于资产下沉验收完成。
 
@@ -248,7 +248,7 @@
 - [x] Windows 调度回归通过。Debug、Release 交替各启动 10 次，无重试，全部在原 45 秒预算内产生唯一终态标记，清理前进程均存活。每次保留应用哈希、stdout/stderr、单调时间和 CPU 采样。[20 次运行记录](./native-2d-m6-scheduling-results.json)。同场景 Web、Windows Debug/Release 及 ASan 的千次场景切换和 78 张 GPU 图像均通过。旧两次缺失仍无完整日志，原因未定。
 - [x] 同场景静态图集与 Prefab 真实资源千轮压力：Windows Debug 与 Web 各通过 5000 个资产引用和缓存检查、22 个 GPU 像素断言。Windows 私有字节采样和 V8 映射稳定，Chrome GC 后堆从第 100 到 1000 轮增加约 0.93 MiB。完整串行门禁通过，见[采样与范围](./native-2d-m6.1-sprite-atlas.md#7-真实资源千轮压力)。
 - [x] 完成同场景 Web 千轮堆增长归因。默认与关闭 V8 优化编译各运行 1000 轮，比较第 100 和 1000 轮堆快照。默认快照增长的 90.5% 落在 V8 `code` 类，对照的总自身字节基本持平，两组关键资产实例计数均下降。见[堆快照对照](./native-2d-m6.1-sprite-atlas.md#8-web-堆快照归因)。
-- [x] Windows Debug/Release、完整工程 ASan、CRT/V8 诊断主机与 Web 均通过真实旧 Prefab 连续加载卸载 1000 次，每份报告含 5000 项资产和 22 项 GPU 检查。每 100 轮显式 GC、核查 500 个弱引用；Windows 双堆和 Web 快照中 Prefab、图集、精灵帧、纹理、图片实例均减少。Web 新增绘图对象全部追到当前活动场景，Windows ASan stderr 为空。[配置、覆盖限制与复现](./native-2d-m6-asset-lifetime.md)及[逐轮数据](./native-2d-m6-asset-lifetime.json)。
+- [x] Windows Debug/Release、完整工程 ASan、CRT/V8 诊断主机与 Web 均通过真实 Prefab 连续加载卸载 1000 次，每份报告含 5000 项资产和 22 项 GPU 检查。每 100 轮显式 GC、核查 500 个弱引用；Windows 双堆和 Web 快照中 Prefab、图集、精灵帧、纹理、图片实例均减少。Web 新增绘图对象全部追到当前活动场景，Windows ASan stderr 为空。[配置、覆盖限制与复现](./native-2d-m6-asset-lifetime.md)及[逐轮数据](./native-2d-m6-asset-lifetime.json)。
 - [x] Windows MSVC Release 应用项目构建与基础渲染矩阵。使用同一套 Debug 验收脚本资源，Release 原生二进制完成 M2 五模式、M3 Label、M4 Mask/Graphics 和 M5 RichText，M5 计入 9 个 Label、1 个 Sprite，着色像素为 8725。Release 输出的 12 份图集与 88 份字体 RGBA 和 Debug 同名捕获逐字节一致。Release 应用 SHA256 为 `ed9de14382436006389b64a9b23928b4dba834766993aec429666ee4e816b6b4`；日志见 `native/tests/2d-poc/build/m6-release-*.log` 和 `m6-windows-release-build.log`。此处 Release 指 C++ 配置，发布脚本与完整事件矩阵继续验收。
 - [ ] Windows Debug/Release 构建和关键渲染、字体、事件场景逐格验收。macOS、iOS、Android、OHOS 的 Debug/Release 标为暂缓、待验证。
   - [x] 候选 `244decdeb0` 的 Windows Debug、Release 与 Web 重建后通过同一快照的 RichText 字体应用矩阵。Windows 双配置各通过 47 项布局、44 项严格像素和 1000 次加载释放，三项像素差异按当前范围暂缓。[本机矩阵记录](./native-2d-m6-richtext-configurations.json)
@@ -291,13 +291,10 @@
   - [x] RichText 42 项应用矩阵在 Windows 双配置分别完成原生、TS 回退、恢复原生三次启动。各次通过实现类型、Prefab、字体生命周期和布局检查，各配置切换前后的 RGBA 一致。对 Web 严格像素 39/42。[完整回退实测](./native-2d-m6-richtext-rollback.md#42-项应用矩阵回退与恢复)
   - [x] Sprite 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。各 Windows 配置在同一二进制上执行原生、TS 回退、恢复原生，三次各 116 张图与 Web 和上一候选逐字节一致。旧 cocos-m1-test 两种配置回退后通过 Sprite、Mask、RichText，恢复后重新通过 Sprite 五种模式。128 个 Sprite 改色和位移的帧样本另行记录。[回退流程及数据](./native-2d-m6-sprite-rollback.md)
   - [x] Label 单模块回退与恢复通过 Windows Debug、Release 与 Web 验收。六次 Windows 运行各 116 张对照图与 Web 逐字节一致。旧 cocos-m1-test 的真实 BMFont、CHAR 缓存、换行及 GPU 字形三阶段通过。系统字体在 TS 回退时的像素覆盖变化及同一 Prefab 的同步更新耗时已归档。[复现和数据](./native-2d-m6-label-rollback.md)
-    - [x] Windows 双配置的 TS Label 回退已复验旧版描边和阴影。163 张图中的 160 张逐字节一致，三张捆绑 TTF 图继续验收。恢复原生后各 163 张逐字节一致。[当前候选数据](./native-2d-m6-label-shadow-fallback.json)
     - [x] TS Label 归一化 Canvas 的整数尺寸。捆绑 TTF 首次加载、跨场景复用和冷重载的三张图恢复像素一致。Windows Debug、Release 的原生、TS 回退、恢复三阶段各 163 张图与 Chrome 严格一致。[当前回退证据](./native-2d-m6-label-ttf-canvas-size.json)
   - [x] UIOpacity 支持独立切回 JS 并恢复原生实现。Windows Debug/Release 各验证两种实现、Prefab 字段、组件生命周期、85 张 Web 对照图与 setter 耗时。[复现和采样](./native-2d-m6-ui-opacity-rollback.md)
-  - [x] 旧 cocos-m1-test 的 UIOpacity 回退。修复挂接前禁用的组件在原生首帧提前应用透明度。原始场景、Prefab、SpriteFrame 和材质在 Windows Debug、Release 各完成原生、TS 回退及恢复，每次 18 块 GPU 回读均与 Web 逐字节一致。[像素与恢复证据](./native-2d-m6-ui-opacity-rollback.md#旧工程复验)
   - [x] RenderRoot2D 支持独立切回 JS 并恢复原生注册。Windows Debug/Release 各验证两种实现、Prefab 实例化、11 个根注册检查点、85 张 Web 对照图与组件启停耗时。[复现和采样](./native-2d-m6-render-root-rollback.md)
-  - [x] 旧 cocos-m1-test 的 RenderRoot2D 回退。原始 Canvas、Camera 和 SpriteFrame 与独立 Prefab 根在 Windows Debug、Release 各完成原生、TS 回退和恢复。六次运行的 10 个遍历检查点和 20 块 RGBA 均与 Web 一致，覆盖两个根独立启停、组件移除及 Prefab 释放和冷重载。[旧工程复验](./native-2d-m6-render-root-rollback.md#旧工程复验)
-  - [x] RichText 支持独立切回 TS 并恢复原生实现。Windows 双配置覆盖序列化 Prefab、字体与图集、旧混合场景换行和点击、段查询与样式更新计时。12 个场景比较切换前后的布局和图像，跨端字形差异单列。[复现和数据](./native-2d-m6-richtext-rollback.md)
+  - [x] RichText 支持独立切回 TS 并恢复原生实现。Windows 双配置覆盖序列化 Prefab、字体与图集、混合场景换行和点击、段查询与样式更新计时。12 个场景比较切换前后的布局和图像，跨端字形差异单列。[复现和数据](./native-2d-m6-richtext-rollback.md)
 - [ ] 汇总 `native-2d-m6-gate.md`：每个任务、平台、指标均链接候选版本的日志/产物；失败和未验证项不能记作通过。
 
 交付：性能报告、回退记录、M6 Gate。原计划 4–5 周是早期估算，未包含当前列出的全部 M4/M5 终态欠项；完成 M6.0 后重新排期。
@@ -306,7 +303,7 @@
 
 | 门禁 | 必须满足 | 不足以判定通过的证据 |
 |---|---|---|
-| 范围与 API | 冻结范围内逐类 parity，旧场景/prefab/资产、公开 API 与用户脚本兼容 | 仅 smoke 或方法存在 |
+| 范围与 API | 冻结范围内逐类 parity，现行格式的场景、Prefab 和资产、公开 API 与用户脚本兼容 | 仅 smoke 或方法存在 |
 | 薄壳 | 元数据/序列化、生命周期、API/事件桥接；无 UV/几何、文本/HTML、材质选择算法或第二份权威状态 | 只改 prototype 或只满足行数 |
 | 原生热路径 | native 准备、几何/文本/材质与提交闭环，稳态每帧 JSB 0 次 | JS 调用 native，但仍在 JS 逐段布局 |
 | 视觉与事件 | Sprite/Graphics 通道容差 1；文本按记录的布局/字形/基线容差与本轮三项像素暂缓约定；事件序列一致 | colored 非零、面积或 ±20% sanity 单项 |
