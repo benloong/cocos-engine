@@ -14,6 +14,8 @@
 
 ## 1. 已有基础与验收边界
 
+2026-11-23 在 `5cdc896f3c` 重新执行本机验收。Windows 双配置原生测试与完整应用、Windows/Web 场景及引擎包构建成功，Web/Native TypeScript、基础静态检查及 Release 六组 JSB 探针通过。同候选六对交错性能采样的四项门槛通过，混合变更帧 CPU、JSB、JS 堆峰值和强制 GC 分别下降 52.5%、77.5%、41.9% 和 34.5%。全量 Jest 有 25 项失败，位图字体布局、Debug Label 透明度、Graphics 完整应用以及 Release/Web RichText 存在失败。M6.4 平台矩阵和 M6.5 最终签收继续待办。当前结果与未重跑的功能裁剪、调用追踪、ASan 及文档工程门禁见 [M6 Gate](./native-2d-m6-gate.md#当前候选-5cdc896f3c-的本机复验)。
+
 | 阶段 | 已有记录 | 留给 M6 的边界 |
 |---|---|---|
 | M0/M1 | PoC、UITransform/UIOpacity、Node 槽位、生命周期和场景/prefab 验证 | 扩展稳定性、线程与平台覆盖，复核稳态调用数 |

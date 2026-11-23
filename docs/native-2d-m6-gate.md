@@ -1,6 +1,6 @@
 # Native 2D M6 Gate
 
-**NO-GO。** 最终签收仍须在同一候选上完成 M6.4 平台矩阵和 M6.5 性能、本机检查及最终签收。组件 API、现行资源管线、极限生命周期和间接热路径的剩余证据仍待签收。`68af105c8d` 的应用、回退、裁剪与性能结果已归档为历史记录。
+**NO-GO。** 2026-11-23 对候选 `5cdc896f3c` 重新进行本机验收，发现全量 Jest、位图字体布局、Windows Debug Label 透明度及完整图形／字体应用失败。M6.4 平台矩阵和 M6.5 最终签收继续待办。`68af105c8d` 的应用、回退、裁剪与性能结果保留为历史记录。
 
 验收范围为 Windows Debug、Windows Release 和 Web。JSB + Native 禁用动态合图，Web 启用。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
 
@@ -12,7 +12,23 @@ Windows 对 Web 的 RichText 与 Label 字体矩阵暂缓 `text-bold`、`text-ou
 
 本轮签收在两个 Windows 配置分别运行 `node native/tests/2d-poc/compare-richtext-gpu.cjs --m6-gate <Windows 捕获目录> <Web 捕获目录>`。暂缓项仍记录实际像素差异和严格结果，布局、采集哈希、渲染可见性、交互和字体生命周期仍须通过。其余图像继续按通道容差 1 比较。
 
-## 已测结果
+## 当前候选 5cdc896f3c 的本机复验
+
+源码基于 `5cdc896f3ccd5ab552a090a9e61328f98dea33a2`。Windows Debug、Release 原生测试程序与完整应用均完成重建，Graphics、RichText 的 Windows/Web 场景资源及四份当前引擎包均构建成功。本机记录见[候选复验数据](./native-2d-m6-candidate-recheck.json)中的 `localRechecks`。
+
+| 项目 | 本轮结果 |
+|---|---|
+| 基础检查 | 元数据、M6 基线、43 项薄壳及 18 项 M1 壳检查通过。脚本单元测试 33 项通过，Web 和 Native TypeScript 编译通过。 |
+| C++ 与跨端对照 | C++ 175 项检查、径向 Sprite、RichText 解析／布局、Graphics 几何和 SpriteFrame UV 对照通过。位图字体布局对照失败，第 2307 例的 U+1F642 在 Native 测得宽度 8.5，Web 为 0。 |
+| 全量 Jest | 186 套件通过、12 套件失败、6 套件跳过。1461 项通过、25 项失败、8 项跳过、16 项待实现。失败涉及字体加载与反序列化、动态图集、SpriteFrame 网格／释放、Mask 模板生命周期等。 |
+| 原生 JSB 探针 | Release 六组全部通过。Debug 在原生测试前置的 Label 提交透明度检查处失败，期望 0.501961，实际 1.0，后续 JSB 探针被阻断。 |
+| Graphics 完整应用 | Web 在多边形帧检查处遇到空数据。Windows Debug 串行复测出现 `glDrawElements` 错误 `0x505`，终止了停住的测试进程。Release 使用独立可写目录重试后，在矩形网格方向检查处失败。175 张图像、命中和场景生命周期的完整跨端对照未完成。 |
+| RichText 完整应用 | Debug 完成 62 张捕获与 1000 轮字体加载释放，HTTP 断流、取消续传和重试通过。Release 在激活期间重建后未恢复。Web 下载重试后字体宽度仍为 108，未恢复到夹具期望值。双配置对 Web 的完整像素签收未完成。 |
+| 同候选性能 | Windows Release 对迁移前 `7e83734299` 完成六对交错采样，Web 完成 12 项负载。混合变更帧 CPU 为 4.30625 → 2.043675 ms/帧，下降 52.5%；JSB 为 876 → 197 次/帧，下降 77.5%；JS 堆峰值为 30,044,958 → 17,458,212 字节，下降 41.9%；强制 GC 为 6.9365 → 4.5440 ms，下降 34.5%。四项性能门槛通过，GC 六对中五对改善。比较器已核对 29 份场景资源、V8 DLL 和渲染器一致，计时包含 Native 脏队列刷新。 |
+
+本轮采用现行格式和默认 Native 路径。此前候选的图像、裁剪和调用追踪结果继续作为阶段记录，当前候选的失败项及尚未重跑的功能裁剪、调用追踪、ASan 和文档工程完整门禁继续待签收。
+
+## 此前阶段结果
 
 | 项目 | 配置和结果 | 证据 |
 |---|---|---|

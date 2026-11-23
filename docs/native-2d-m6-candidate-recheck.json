@@ -662,5 +662,920 @@
         "sha256": "acaeb7378d507b815ef210a78e432733d41ffcf68f649a66d1ee6b58cc50612d"
       }
     ]
-  }
+  },
+  "localRechecks": [
+    {
+      "date": "2026-11-23",
+      "revision": "5cdc896f3ccd5ab552a090a9e61328f98dea33a2",
+      "status": "NO-GO",
+      "scope": {
+        "platforms": [
+          "Windows Debug",
+          "Windows Release",
+          "Web"
+        ],
+        "implementation": "default Native and existing Web",
+        "serialization": "current format",
+        "execution": "local"
+      },
+      "staticChecks": [
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/metadata.log",
+          "name": "metadata",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/baseline.log",
+          "name": "baseline",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/thin-shell.log",
+          "name": "thin-shell",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/m1-shell.log",
+          "name": "m1-shell",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/poc.log",
+          "name": "poc",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/radial.log",
+          "name": "radial",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/bitmap-layout.log",
+          "name": "bitmap-layout",
+          "exitCode": 1
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-parser.log",
+          "name": "richtext-parser",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-layout.log",
+          "name": "richtext-layout",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-geometry.log",
+          "name": "graphics-geometry",
+          "exitCode": 0
+        },
+        {
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/sprite-frame.log",
+          "name": "sprite-frame",
+          "exitCode": 0
+        }
+      ],
+      "typechecks": [
+        {
+          "name": "web-ts",
+          "exitCode": 0
+        },
+        {
+          "name": "native-ts",
+          "exitCode": 0
+        }
+      ],
+      "scriptUnitTests": {
+        "passed": 33,
+        "failed": 0,
+        "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/script-tests-local.log",
+        "excludes": "worker-release.test.cjs requires a separately built minified worker bundle"
+      },
+      "jest": {
+        "passedSuites": 186,
+        "failedSuites": 12,
+        "skippedSuites": 6,
+        "passedTests": 1461,
+        "failedTests": 25,
+        "skippedTests": 8,
+        "todoTests": 16,
+        "results": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/jest-results.json",
+        "sha256": "f80201bc54ed2126ed4bb63c4c0e9efd6fd8ac938bc8c38c63042f7ca522eaea",
+        "failures": [
+          {
+            "file": "tests/ui/native-2d-m2-sprite-frame-shell.test.ts",
+            "tests": [
+              "a generated rectangle mesh follows rotated atlas corners and live flips",
+              "destroying a Web SpriteFrame releases its mesh at frame end and leaves the clone valid",
+              "authored polygon vertices survive Web and native serialization and cloning"
+            ]
+          },
+          {
+            "file": "tests/assets/native-font-assets.test.ts",
+            "tests": [
+              "TTFFont deserializes its family without loading bytes until its native dependency arrives"
+            ]
+          },
+          {
+            "file": "tests/ui/font-loader.test.ts",
+            "tests": [
+              "font creation failure releases the partial asset, reports an error and permits retry",
+              "a native font without loaded bytes is rejected and released rather than cached as a success",
+              "Web registers only the successful font face when a timed-out request is retried",
+              "Web font assets share one registration and can reuse preloaded data after release"
+            ]
+          },
+          {
+            "file": "tests/ui/auto-atlas.test.ts",
+            "tests": [
+              "unpackable sources and failed placement leave existing page capacity usable",
+              "removing packed frames preserves shared uploads and scene launch restores clones"
+            ]
+          },
+          {
+            "file": "tests/ui/sprite-frame.test.ts",
+            "tests": [
+              "dynamic atlas uploads memory image views with their byte range and preserves native-image upload",
+              "Sprite stencil applies the Mask threshold when creating or refreshing its material"
+            ]
+          },
+          {
+            "file": "tests/core/deserialize.test.ts",
+            "tests": [
+              "Deserialize Builtin nullable defaults preserve primitives and objects"
+            ]
+          },
+          {
+            "file": "tests/ui/label.test.ts",
+            "tests": [
+              "BitmapFont destroys its own runtime atlas texture and preserves a caller-supplied atlas",
+              "BitmapFont reload removes stale config glyphs and preserves caller glyphs in a borrowed atlas"
+            ]
+          },
+          {
+            "file": "tests/ui/font-loader-polling.test.ts",
+            "tests": [
+              "Web polling observes new font metrics and permits retry from the timeout callback"
+            ]
+          },
+          {
+            "file": "tests/asset-manager/factory.test.ts",
+            "tests": [
+              "a producer exception completes all joined requests and permits a same-ID retry",
+              "late completions cannot finish a replacement request or call old consumers twice",
+              "a non-Error producer throw becomes an Error callback"
+            ]
+          },
+          {
+            "file": "tests/ui/mask-stencil-lifecycle.test.ts",
+            "tests": [
+              "empty nested mask preserves enclosing stencil level: stage=2 sorting=0",
+              "empty nested mask preserves enclosing stencil level: stage=6 sorting=0",
+              "empty nested mask preserves enclosing stencil level: stage=2 sorting=1",
+              "empty nested mask preserves enclosing stencil level: stage=6 sorting=1"
+            ]
+          },
+          {
+            "file": "tests/assets/native-font-assets-jit.test.ts",
+            "tests": [
+              "TTFFont deserializes its family without loading bytes until its native dependency arrives"
+            ]
+          },
+          {
+            "file": "tests/core/deserialize-jit.test.ts",
+            "tests": [
+              "Deserialize Builtin nullable defaults preserve primitives and objects"
+            ]
+          }
+        ]
+      },
+      "nativeBuilds": [
+        {
+          "config": "Debug",
+          "exitCode": 0,
+          "binary": "native/tests/2d-poc/build/ci-jsb-Debug/cc2d_native_poc.exe",
+          "sha256": "3c79930f35c969182d3bd3dc6bba173cfff60f867ca420be3549b0a60dc306ac",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/native-build-Debug-retry.log"
+        },
+        {
+          "config": "Release",
+          "exitCode": 0,
+          "binary": "native/tests/2d-poc/build/ci-jsb-Release/cc2d_native_poc.exe",
+          "sha256": "ca39ac1d0f3b2c74e8aca03f216256076ae230f003cbeef9693d4dafc8ce7acd",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/native-build-Release.log"
+        }
+      ],
+      "jsbProbes": {
+        "Release": {
+          "passed": 6,
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/jsb-Release.log"
+        },
+        "Debug": {
+          "passed": 0,
+          "blockedBy": "Native preflight Label submitted opacity expected 0.501961, got 1.0",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/jsb-Debug.log"
+        }
+      },
+      "applicationBuilds": [
+        {
+          "build": "gpu-win",
+          "exitCode": 0
+        },
+        {
+          "build": "gpu-win-release-m6-mask-fresh",
+          "exitCode": 0
+        }
+      ],
+      "resourceBuilds": [
+        {
+          "exitCode": 0,
+          "mode": "graphics",
+          "platform": "windows",
+          "log": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-recheck-5cdc896f3c/cli-graphics-windows-local.log"
+        },
+        {
+          "exitCode": 0,
+          "mode": "graphics",
+          "platform": "web-mobile",
+          "log": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-recheck-5cdc896f3c/cli-graphics-web-mobile-local.log"
+        },
+        {
+          "exitCode": 0,
+          "mode": "richtext",
+          "platform": "windows",
+          "log": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-recheck-5cdc896f3c/cli-richtext-windows-local.log"
+        },
+        {
+          "exitCode": 0,
+          "mode": "richtext",
+          "platform": "web-mobile",
+          "log": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-recheck-5cdc896f3c/cli-richtext-web-mobile-local.log"
+        }
+      ],
+      "engineBuilds": [
+        {
+          "mode": "graphics",
+          "platform": "WINDOWS",
+          "exitCode": 0
+        },
+        {
+          "mode": "graphics",
+          "platform": "HTML5",
+          "exitCode": 0
+        },
+        {
+          "mode": "richtext",
+          "platform": "WINDOWS",
+          "exitCode": 0
+        },
+        {
+          "mode": "richtext",
+          "platform": "HTML5",
+          "exitCode": 0
+        }
+      ],
+      "graphics": {
+        "status": "FAIL",
+        "web": {
+          "error": "Polygon frame check tries to iterate null data",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-web.log"
+        },
+        "Debug": {
+          "error": "glDrawElements returned GL error 0x505 during serial retry; stalled test process was terminated",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Debug-serial-app.log"
+        },
+        "Release": {
+          "error": "Bound mesh does not address the current source corners",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Release-isolated-app.log"
+        },
+        "recovery": "Generated Windows bootstrap temporarily used an independent workspace writable directory. Original generated bootstrap restored. Debug port collision was excluded by a serial retry.",
+        "comparison": "Incomplete captures prevent current cross-platform comparison"
+      },
+      "richText": {
+        "status": "FAIL",
+        "Debug": {
+          "status": "PASS",
+          "captures": 62,
+          "snapshot": "1948a668047f44460de452436d4936ca5ef97e1e4f61cd86050dd65b5b252ab4",
+          "executableSha256": "86f97f4042df9e756b0ba58f8f77d39809e935d6433e6f8381ee1a608bd5c21d",
+          "captureSha256": {
+            "label-word-wrap-clamp": "7616b58353a5f2a43d0b426c310d770246df2e9afeb02bdbbae5ada2a2e32c53",
+            "label-word-wrap-shrink": "7fad9fee1b894012aea830ea45af4d10efdb4767866649b18f040de2848873ac",
+            "label-word-wrap-resize-height": "1d9cfc763f732dad24d66a3af5f43faf41ee129dea69b265e7c4d86e3137259a",
+            "label-paragraph-bidi": "775f4d67a924f0a62e3e9cf924ff819b271ab7e2973f6c4efcadc1761b1b022a",
+            "label-paragraph-thai": "8bdbe11684a012ac5c2ed5de67ceafad80c46d8bbc18632d2c8ae93afb436fcb",
+            "label-paragraph-combining": "a07615a5ca3b040a2c0cced14589b98e61c94eeca1687a3000c06975668b8408",
+            "label-paragraph-whitespace": "6daef0df3c5b30a30a49d6523161b2b53326264caddd0d27c02c90409b7c0b18",
+            "text-basic": "fa5939d678d6e014729b2a4e697850bf26774e2dc88a7087bef96970a0ef3c87",
+            "text-bold": "2a3ad3e634605c591dfde808a318a6f8112afb78331cdb715e09220d371d17e6",
+            "text-italic": "4b2c74cf584ab10467a8e1f833a1fb95a51f8d5512ff837b2148355b013f7475",
+            "text-underline": "200bf94693f41bb3e257cef10e3cd5be52b3959c29de780f216c34ebbaa0c961",
+            "text-outline": "b149ca666d8f4e617e59c3c6e122bf603cd32e68fb2732f8024f10d9f2d3db61",
+            "text-nested": "03f8244696d18b55caa7b785a279c6add93bde42c94aad0ef7f67373fa05d11a",
+            "text-colors": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+            "text-wrap-left": "ba0743afd83c200f07a121268264e0571b44dfa157179220271cad20d28a174f",
+            "text-wrap-center": "88f036e8d54d3d8ace552c997a403fa19e3ba88c712387f168973e3d5c224aca",
+            "text-wrap-right": "5594520510d009c67e8476ec461a626ff86a3032808a2eeb8a2cb873e76409da",
+            "text-multiline": "e9fab7cb831b0bdea39dcb8367c6d9fcc17895b02ddad46635452a4331b34220",
+            "text-unicode": "91a7632533df4dba8d3ab509c0d792ee1daa04f8ee81e382869c54f7338148e9",
+            "text-shadow-tag": "5ae0e1a9bd49a5847aba628103b3f5919862c34811124bf37921969fb92eca22",
+            "text-bidi-override": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+            "text-bidi-visual": "d9cee6071cfc788ef705ab904a51acb0fd511d184b30918498848857cf68fe39",
+            "text-thai-marks": "bcdb8335053936bac16391fa9ebc78c18d02f8f72a4aad0e92579ec0d2ad97c8",
+            "label-shadow-0-0-positive": "e05fb0857545b2c024fd9f8b55370e3fe8677a782b8b1d52e7b488e4688fc5f2",
+            "label-shadow-0-0-negative": "e05fb0857545b2c024fd9f8b55370e3fe8677a782b8b1d52e7b488e4688fc5f2",
+            "label-shadow-0-1-positive": "01808009f8e085ea2891b4c2b3ecb32d56546001449e89ecff88f19b41b83e1b",
+            "label-shadow-0-1-negative": "01808009f8e085ea2891b4c2b3ecb32d56546001449e89ecff88f19b41b83e1b",
+            "label-shadow-0-2-positive": "9ac4165f886f08404849918d59df51dc8d92d2e5384941bb8f0799e4a7343219",
+            "label-shadow-0-2-negative": "9ac4165f886f08404849918d59df51dc8d92d2e5384941bb8f0799e4a7343219",
+            "label-shadow-1-0-positive": "386b991449b375e6b798d3ea3ca2e69092079ba2fbca4cf4df0e39239e310723",
+            "label-shadow-1-0-negative": "386b991449b375e6b798d3ea3ca2e69092079ba2fbca4cf4df0e39239e310723",
+            "label-shadow-1-1-positive": "82b1d9f1d28d09f0651d56c81867399be1b0de1c17c68b9486f2958900f80ad4",
+            "label-shadow-1-1-negative": "82b1d9f1d28d09f0651d56c81867399be1b0de1c17c68b9486f2958900f80ad4",
+            "label-shadow-1-2-positive": "cbb694683345343300298b27d580a8de9d7888139d9343cbd0778c85cd38ac95",
+            "label-shadow-1-2-negative": "8133faf30f624af279643057c915757638f1b1fc803048226213697ee238f015",
+            "label-shadow-2-0-positive": "f816d41c5eecaa259c1bbf8fa1c41f898141c29411e2cab7f25251cea632026c",
+            "label-shadow-2-0-negative": "f816d41c5eecaa259c1bbf8fa1c41f898141c29411e2cab7f25251cea632026c",
+            "label-shadow-2-1-positive": "4e75efa3ee8aea7722c49dc9e4076dae6180d0c91171e207d4f98135ec6daa6e",
+            "label-shadow-2-1-negative": "4e75efa3ee8aea7722c49dc9e4076dae6180d0c91171e207d4f98135ec6daa6e",
+            "label-shadow-2-2-positive": "682d888280a120430fe62f9567d2f6d1f6418b4384ae39ff68e36452b87898a9",
+            "label-shadow-2-2-negative": "682d888280a120430fe62f9567d2f6d1f6418b4384ae39ff68e36452b87898a9",
+            "label-shadow-3-0-positive": "282197bb25fb22cdcfa07fb1d628766b326fd3c1a0eb4f30a57bafdd94367c16",
+            "label-shadow-3-0-negative": "282197bb25fb22cdcfa07fb1d628766b326fd3c1a0eb4f30a57bafdd94367c16",
+            "label-shadow-3-1-positive": "49c5da95d5a8414ff2da9e70aaa7bb3f6a20fa8c6495b3995a1579eb5065b9bc",
+            "label-shadow-3-1-negative": "49c5da95d5a8414ff2da9e70aaa7bb3f6a20fa8c6495b3995a1579eb5065b9bc",
+            "label-shadow-3-2-positive": "f5f57a4d744def94aecb9b00da4335cd2870047814bf13976184d8480c8a9482",
+            "label-shadow-3-2-negative": "2d322f38c0d9fe9a01fbf444dfb0d62fef19cee8a4797deca6781b85b9e9319d",
+            "label-shadow-multiline-positive": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+            "label-shadow-multiline-negative": "fd1b25fe63b0a8e3058bb8f1779fdaa5f301b82ff21975d0ed639d35b76e8cde",
+            "label-shadow-blur-2": "e4c60bf149e5ac6fc03fd09b65da9603dff546c18e80667b0185a3fa371fc9bc",
+            "label-shadow-blur-4": "ca2f7a7c4121497e1c49b4f98167a1f9a1c292af9191e1203ae947b5c7dfbc41",
+            "label-shadow-blur-8": "21d2e7efdbb27c799e26fb1ec5b42791aca1e7e102ababd9aa8bbe4e1a40e256",
+            "label-shadow-blur-clipped-positive": "3036d9b08f84b728b91f2fcfb1b5ab8f06f8f9998ee94043513408500f284adb",
+            "label-shadow-blur-clipped-negative": "d5d098cf0064f56b49c6e5e38b97c24094b94db0947c7c1c82e4306890bcb93f",
+            "richtext-lifecycle-grid": "c8ea86c4dcb87785a5b84fe3c8005b4aa852286784cd35aaf9f832352388dc25",
+            "richtext-lifecycle-disabled": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+            "richtext-lifecycle-rebuilt": "ec91c9ff428dfb8e6c2d3fe6767478b5c9ab470c125ca7bc2412f1d96798a53f",
+            "richtext-lifecycle-destroyed": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+            "font-alias-both-0": "a0e2870d9b902d5e455cfd28377528296721e25172c26209aeab2424d8fcbd2e",
+            "font-alias-only-1": "b09f8803549532a94d9740a60c3d9630328ec45e4d5a2dd726bf075c4214cd55",
+            "font-alias-both-1": "a0e2870d9b902d5e455cfd28377528296721e25172c26209aeab2424d8fcbd2e",
+            "font-alias-only-0": "f66978d3f69986517e78de6538c5c277bb440b8de713093a418eb5d28b5a502a"
+          },
+          "lifecycle": {
+            "cycles": 1000,
+            "cacheHits": 1000,
+            "bytesPerLoad": 223404,
+            "assignmentFailureRolledBack": true,
+            "retrySucceeded": true,
+            "missingRejected": true,
+            "deferredDestroyFinished": true,
+            "cacheBefore": 22,
+            "cacheAfter": 22,
+            "http": {
+              "interrupted": true,
+              "loaded": true,
+              "bytes": 223404,
+              "cachePathResolved": true,
+              "width": 95.9765625,
+              "released": true,
+              "cacheRemoved": true,
+              "missingRejected": true,
+              "failedFilesRemoved": true,
+              "cancelledAndResumed": true
+            }
+          },
+          "manifest": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-Debug-captures/manifest.json",
+          "manifestSha256": "aa0729e8f6cd4539f8980d4468cb3b1a6b9a94bf93eada9199ac54c0cb83491f"
+        },
+        "Release": {
+          "error": "RichText did not recover after rebuilding during activation",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-Release-app.log"
+        },
+        "web": {
+          "error": "Font retry still uses fallback metrics, width 108",
+          "log": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-web.log"
+        },
+        "comparison": "Incomplete Release and Web captures prevent M6 pixel gate comparison"
+      },
+      "performance": {
+        "status": "PASS",
+        "source": "native/tests/2d-poc/build/m6-perf-gate-5cdc896f3c-comparison.json",
+        "sha256": "762c369a53fc8158e211d3b86fef6d40430f7ac40c43c10db43cd8133441e604",
+        "cpu": "13th Gen Intel(R) Core(TM) i7-13700KF",
+        "os": "Windows 11 Pro",
+        "rounds": 6,
+        "warmupFrames": 30,
+        "sampledFramesPerPhase": 120,
+        "windowsScene": {
+          "files": 29,
+          "sha256": "5e380d2ccbe3af6b589b6bfe9209e015554425a2404aa849ccf2767099f75a93",
+          "bootstrapSha256": "e657c2b786a0fd81bddfe62607248a573c8f7d5b869a130464def1e856751c3e"
+        },
+        "reductionPercent": {
+          "empty/steady": {
+            "cpuMs": -110.25641024471655,
+            "setterMs": 0,
+            "prepareMs": -399.9999998635758,
+            "batchMs": -69.38775510204083,
+            "jsbCalls": -1.4925373134328401,
+            "peakJsBytes": 3.8712628681442873,
+            "forcedGcMs": -7.833061787179707
+          },
+          "empty/dirty": {
+            "cpuMs": -75.89285713968954,
+            "setterMs": 2.2737367544323206e-8,
+            "prepareMs": -299.99999990905053,
+            "batchMs": -60.41666666666665,
+            "jsbCalls": -1.4925373134328401,
+            "peakJsBytes": 3.1031720301904153,
+            "forcedGcMs": 23.277527366378216
+          },
+          "sprites/steady": {
+            "cpuMs": -31.858407079410235,
+            "setterMs": 0,
+            "prepareMs": -150.0000001364242,
+            "batchMs": -30.719037871033784,
+            "jsbCalls": -1.4925373134328401,
+            "peakJsBytes": 10.821986588664767,
+            "forcedGcMs": 29.266879165474748
+          },
+          "sprites/dirty": {
+            "cpuMs": -24.17040358771507,
+            "setterMs": -20.881226054099788,
+            "prepareMs": -699.9999998181011,
+            "batchMs": -21.292723263506062,
+            "jsbCalls": -150.74626865671644,
+            "peakJsBytes": 11.09669032322752,
+            "forcedGcMs": 24.27285318556932
+          },
+          "labels/steady": {
+            "cpuMs": 19.38402742641815,
+            "setterMs": 0,
+            "prepareMs": -100.00000024253191,
+            "batchMs": 19.972849143051075,
+            "jsbCalls": -1.4925373134328401,
+            "peakJsBytes": 14.118910013956931,
+            "forcedGcMs": 15.729027962742304
+          },
+          "labels/dirty": {
+            "cpuMs": 75.40501339806144,
+            "setterMs": -32.75862068954702,
+            "prepareMs": 85.77590162430805,
+            "batchMs": -19.96047430830039,
+            "jsbCalls": 80.31319910514542,
+            "peakJsBytes": 31.447431983854667,
+            "forcedGcMs": 21.075328011703153
+          },
+          "masks/steady": {
+            "cpuMs": 32.15848322783651,
+            "setterMs": null,
+            "prepareMs": -200,
+            "batchMs": 32.51705653021442,
+            "jsbCalls": -1.4925373134328401,
+            "peakJsBytes": 8.188277328188365,
+            "forcedGcMs": -7.308789566538065
+          },
+          "masks/dirty": {
+            "cpuMs": 33.190487221150335,
+            "setterMs": 48.23529410213845,
+            "prepareMs": -200,
+            "batchMs": 33.29464035544169,
+            "jsbCalls": -1.388888888888884,
+            "peakJsBytes": 9.274683040468979,
+            "forcedGcMs": 34.100246507800335
+          },
+          "rich/steady": {
+            "cpuMs": 22.693912793812167,
+            "setterMs": 100,
+            "prepareMs": -100,
+            "batchMs": 24.261818181818196,
+            "jsbCalls": -1.4925373134328401,
+            "peakJsBytes": 10.520499006381845,
+            "forcedGcMs": 16.39323250446153
+          },
+          "rich/dirty": {
+            "cpuMs": 68.86139175850799,
+            "setterMs": 83.53401565327985,
+            "prepareMs": -3849.9999992269295,
+            "batchMs": -8.345120226308333,
+            "jsbCalls": 85.33604887983707,
+            "peakJsBytes": 15.115714092392096,
+            "forcedGcMs": -4.843568945599652
+          },
+          "mixed/steady": {
+            "cpuMs": -4.279334145442459,
+            "setterMs": null,
+            "prepareMs": -100.00000036379788,
+            "batchMs": -3.840212471882709,
+            "jsbCalls": -1.4925373134328401,
+            "peakJsBytes": 21.751100813555535,
+            "forcedGcMs": 17.574257425811457
+          },
+          "mixed/dirty": {
+            "cpuMs": 52.54165457191551,
+            "setterMs": 77.2711571675242,
+            "prepareMs": 58.90021943959709,
+            "batchMs": -5.8485019078000855,
+            "jsbCalls": 77.51141552511416,
+            "peakJsBytes": 41.893039091617304,
+            "forcedGcMs": 34.491458228168725
+          }
+        },
+        "mixedDirtyTargets": {
+          "cpu": true,
+          "jsb": true,
+          "peakJsHeap": true,
+          "forcedGc": true
+        },
+        "mixedDirtyForcedGc": {
+          "pairs": [
+            {
+              "beforeMs": 7.2870000000039,
+              "afterMs": 4.475000000005821
+            },
+            {
+              "beforeMs": 5.84599999999773,
+              "afterMs": 4.22099999999773
+            },
+            {
+              "beforeMs": 8.572000000000116,
+              "afterMs": 4.7189999999973224
+            },
+            {
+              "beforeMs": 7.828000000001339,
+              "afterMs": 4.347999999998137
+            },
+            {
+              "beforeMs": 5.072000000000116,
+              "afterMs": 6.337000000003172
+            },
+            {
+              "beforeMs": 6.586000000002969,
+              "afterMs": 4.613000000004831
+            }
+          ],
+          "improvedPairs": 5,
+          "medianPairedDeltaMs": -2.3924999999981083
+        },
+        "configs": {
+          "before": {
+            "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+            "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+            "vendor": "Imagination Technologies (Host: NVIDIA Corporation)",
+            "rawSha256": [
+              "77e74e78b0c65536398ee26fffc27ec057dd9a96175e639bdf0857abffeeaf4f",
+              "0897046a7a04a65fe0f8d55e1fb178f957265f56277daa06d87c791013d280b6",
+              "771c85ac00857929022996e4e3ed4baea2251150c04e159384cc8206ceb2202a",
+              "928faeb87e4477d363583f19f2fcf5a12ac7280dc42891844eb3a60627477dfc",
+              "ec17a285efb8f10ec71c7762d16c12a7db5eb467f6f9fb6d53f157b3211df56f",
+              "61b5eae2787d57a36bd41d8139b730b146ba4c5003aa435a1757563401f2100a"
+            ],
+            "executableSha256": "3b2132fcb9638f05a6f399cb73ddfb6d1c716405aa60a2baa4f1a8437e3a05a5",
+            "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669",
+            "entrySha256": "a7e0f6f5c39a9c6183561837e5030e6b301db5b267808856546eb35120ca0a04",
+            "v8Dlls": {
+              "v8.dll": "48220636bd11a4378c805c52f50f94fd1cbed7856a4beda171963c25a564b3ac",
+              "v8_libbase.dll": "477ee8c9bcd9e98b3a3903dc5da10dafc0ca05f3ab629dcc6ced4c7f8f25ea41",
+              "v8_libplatform.dll": "47979cb28eed789589728d0c92ce4b2e139067b22f5d5390afa18913f388b57c"
+            },
+            "mixedDirtyMetrics": {
+              "cpuMs": 4.306249999998676,
+              "setterMs": 1.4474999999983993,
+              "prepareMs": 1.9367500000007567,
+              "batchMs": 0.79935,
+              "jsbCalls": 876,
+              "peakJsBytes": 30044958,
+              "forcedGcMs": 6.936500000003434
+            }
+          },
+          "after": {
+            "revision": "5cdc896f3ccd5ab552a090a9e61328f98dea33a2",
+            "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+            "vendor": "Imagination Technologies (Host: NVIDIA Corporation)",
+            "rawSha256": [
+              "1d82f7786ae5c80869d54ccb12f7216ba4f8469984c61ae144d51f129b5b03dc",
+              "4d44a076cf8889c61c515a5bf6a2d34092d9e5a20e2d9787c3fc1371a08268d8",
+              "6415e994ab099e5a618d1e5adb9397dea579501350debb68c77523d760580f90",
+              "a226966d11eafebe553db859234b90e038ef72b16880bea3cab5f806aa2b769d",
+              "592527e27da62723c64a2d6bd6e7324225d82ab82b878c945a0f245eb136d355",
+              "cc57a26dc95ffd1cb354a1b81d346424282a03368a55f385a080ba3f42868380"
+            ],
+            "executableSha256": "ca0694b412389efd05c0e561cc6247fe073635f2f74a5312f1104d4ae496e272",
+            "engineSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+            "entrySha256": "177253ea4876276cf611ff3752f3a34e41ee5537b8df1c8b7656f52dfb8466dd",
+            "v8Dlls": {
+              "v8.dll": "48220636bd11a4378c805c52f50f94fd1cbed7856a4beda171963c25a564b3ac",
+              "v8_libbase.dll": "477ee8c9bcd9e98b3a3903dc5da10dafc0ca05f3ab629dcc6ced4c7f8f25ea41",
+              "v8_libplatform.dll": "47979cb28eed789589728d0c92ce4b2e139067b22f5d5390afa18913f388b57c"
+            },
+            "mixedDirtyMetrics": {
+              "cpuMs": 2.0436749999962602,
+              "setterMs": 0.3289999999997235,
+              "prepareMs": 0.7960000000039145,
+              "batchMs": 0.8461000000000001,
+              "jsbCalls": 197,
+              "peakJsBytes": 17458212,
+              "forcedGcMs": 4.544000000005326
+            }
+          },
+          "web": {
+            "revision": "5cdc896f3ccd5ab552a090a9e61328f98dea33a2",
+            "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (NVIDIA)",
+            "rawSha256": [
+              "57751c30e7ed297b5dc64ec187b0510e119bb1f1acb4745015a3c0031e6fa9aa"
+            ],
+            "engineSha256": "96e50f0650d2fe879d8b905c29ac97b82acf0c29c05d4dded110b50b2f94972a",
+            "entrySha256": "c77d5ce0220c339653af84f587c571564f361f93352085fac0b6aa18b63e77e2",
+            "mixedDirtyMetrics": {
+              "cpuMs": 4.150000000372529,
+              "setterMs": 1,
+              "prepareMs": 2.100000001490116,
+              "batchMs": 1.0999999977648258,
+              "jsbCalls": 0,
+              "peakJsBytes": 39173568,
+              "forcedGcMs": 11.199999999254942
+            }
+          }
+        }
+      },
+      "notRerun": [
+        "Full feature trimming matrix",
+        "Per-frame JSB invocation trace",
+        "ASan scene matrix",
+        "Complete cocos-m1-test documented application gates"
+      ],
+      "logs": [
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/app-build-gpu-win-release-m6-mask-fresh.log",
+          "sha256": "67f37497ec41ccd7e95e4d7741ef52ad71d05a681ae562eb2bcc136c1ff26685"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/app-build-gpu-win.log",
+          "sha256": "87c7df154c90eda26e27c10442e6b7c382f1d3113ae04668839b0b15e258d9c6"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/app-build-results.json",
+          "sha256": "26de9669b4ce1039c4d3b50a8943045de1ee020c2de80414064b2e856cdd2f4f"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/baseline.log",
+          "sha256": "047e977fc3c29aaae9e817ba9ff43d8a41861164437136bcc1bb9b4f0aaf6ce6"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/bitmap-layout.log",
+          "sha256": "abe2363aca819f3c84b3db0d980bfc0f8eb0eebdc20181a8ba6a924bbac848df"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-graphics-web-mobile-local.log",
+          "sha256": "94e3ec4961ef6b31ae70a92f863b0009b390b7b18298a5dda6ca1e2035778918"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-graphics-web-mobile-retry.log",
+          "sha256": "fa3dd2335f80eb84101c4c93866ebc716156112afbe1288e8710137d922089af"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-graphics-windows-local.log",
+          "sha256": "47b94f4d674a7a3ddb80ec3905cfcf741d7938655722682b3f49a576adf14d0f"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-graphics-windows-retry.log",
+          "sha256": "d4b31588a9121a8c4d748f5d499f4762fd462e53d27ed098411bc4e2dad4d041"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-graphics-windows.log",
+          "sha256": "e4f01ff71c68ea971401d115855426ab8facb4ca1472cbfa514adc6612ffdf22"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-results.json",
+          "sha256": "0b1e0f599b64bc9a26796eea62a785029bb78b8b8d2697dd2d3c60b33a06b782"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-richtext-web-mobile-local.log",
+          "sha256": "2bd225bd77804fc9ab3523c2f47abe8fed42625ef13d4d4366e369c84c199da5"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-richtext-web-mobile-retry.log",
+          "sha256": "a0d8008a92e62a170764692a9912bf0f8957288b274d8ec935f21379a10add2a"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-richtext-windows-local.log",
+          "sha256": "bdb7d548f7967f93bc86849a030a9e9cbb7531e5e670414b6608f53f3b29004c"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/cli-richtext-windows-retry.log",
+          "sha256": "9bea19f4eba874af8b032320c465880366589e794a8017b94ad99ec2d49d310c"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/engine-graphics-HTML5.log",
+          "sha256": "b967e9e36166a2abc03f5c0344866de42f6a01c5b041cd1a00cb4a036e93548c"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/engine-graphics-WINDOWS.log",
+          "sha256": "f07b8bc5e117d124d6f2b22c5d68344b126202aa80f7856d39faf480f405b87e"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/engine-results.json",
+          "sha256": "8afd4b65deda5d58c45e61ef8ac896b90d2ffc0d13d6e8416a07b51a91aeeb77"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/engine-richtext-HTML5.log",
+          "sha256": "126bba27146136448f2af4d28c910eba4ae713870599a8adfb0de86ee5fd963b"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/engine-richtext-WINDOWS.log",
+          "sha256": "1593e0b9b65ba180f469b6d4a86f4fc1e775dbc540e60e0122663a43c0805ef3"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Debug-app.log",
+          "sha256": "b767711d7a53c851d93cd70b61c334faa3abc5b6d6b5978bde33f29f8aa3f06e"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Debug-isolated-app.log",
+          "sha256": "55ee976d29a794dfbdb950fe28a084d7d15de1d9a1e1ad3823c791750c06f3b2"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Debug-isolated.log",
+          "sha256": "d113b757dd599f694d0ef00a9e3e2a33d7704e54ae8f874a59a061424591b9d9"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Debug-serial-app.log",
+          "sha256": "67cbe325326c9ba3809b8f2f135a67eee6be312529a0ecbd7f7b9c98e61b7a99"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Debug-serial.log",
+          "sha256": "1212e9e6b77b655ab55a364feedc231d4c433b92dd357cc42e02cbe3c3e6eabb"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Debug.log",
+          "sha256": "d113b757dd599f694d0ef00a9e3e2a33d7704e54ae8f874a59a061424591b9d9"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Release-app.log",
+          "sha256": "6d88053910898d006f86d0a43331b8fb51dff572446f6ec9198d9bee211a11cf"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Release-isolated-app.log",
+          "sha256": "7d01aeb68f166acdead0393ca5a4b1c4cbfb5aca90c9ad84d784c37b21f078c4"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Release-isolated.log",
+          "sha256": "cf0ef38df97c2bc5e3f02f74321002e7d809964ce45baad74aada6d901dd3a4b"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-Release.log",
+          "sha256": "dbb1337ea72af1745f6b2595dd6f8c53852635b3bfee4b32a94274210e8cfa32"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-geometry.log",
+          "sha256": "f1bd25470d5beb7ecf7691475ce052bffc8032f87223c1c05f1e405405b6b54d"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-isolated-results.json",
+          "sha256": "be136f22a6be2c6417fea3e90c1553b24778e6dcfec0db0ac51a45929d424c09"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-results.json",
+          "sha256": "151c2bd31d7d800110d24dece354b145d804d2043f85f2a98e85b97333627422"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/graphics-web.log",
+          "sha256": "3500f113d39c85148f236568a71b8167c2b0b85fd5b622c3c2d3c47582a7054a"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/jest-results.json",
+          "sha256": "f80201bc54ed2126ed4bb63c4c0e9efd6fd8ac938bc8c38c63042f7ca522eaea"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/jest.log",
+          "sha256": "3dcde6ccb0e34855037836c9bad495b2c0bc4fd4489fa98865aa8e7dd8911608"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/jsb-Debug.log",
+          "sha256": "383497f55143097c869005c8b3b1ac8f9f215c60aaeb197d79eb4b4eaad737b2"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/jsb-Release.log",
+          "sha256": "ad480d6232e706105a10ca07de36c6eea9f7ec1305bf0d3696fc3ba51a248b77"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/m1-shell.log",
+          "sha256": "57bd99c3ccb2c320733dc2e8662bc90747a0c8074a1d4281c07a3f4305b2e8e8"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/metadata.log",
+          "sha256": "2e9862a54452a945f887db2c2f574b3b13350e36bd494cc96113ac9374fb990e"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/native-build-Debug-retry.log",
+          "sha256": "86e6994f0e0c20d40de35827452762120e573861f91073fe8597e98c03ba62b3"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/native-build-Debug.log",
+          "sha256": "2b4c82bbe3dd9807db6b151ef0f59a26cd9a6c3d2caa3e3c3e47c69231ca25ac"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/native-build-Release.log",
+          "sha256": "715b992d750f2f2bd1e3b60515c12dbf32eeb2f2cf2874c70e69da32b76d8dfe"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/native-build-results.json",
+          "sha256": "d8f457e48aed49b8d5a7096a5119245c21ddbd99312b4d9d89fa3635c4a57076"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/native-ts.log",
+          "sha256": "09a14112d9f616ac0322351124e7f911a47b5d4b13669ebd3de538c3d4ac4255"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/perf-build.log",
+          "sha256": "b5dd807d4677505e54c65c7fc0dce59c63f1434b44bf1124f761d4fe0c21de65"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/perf-prepare-HTML5.log",
+          "sha256": "9de5df5b2b3a7e84ceee48b01d626480f7068e6ae01ece6b1524df44b6457b63"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/perf-prepare-WINDOWS.log",
+          "sha256": "c53188489d7eeaa50ebc146bdea10612d9255cda473eed9fc071de34a2f99bff"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/poc.log",
+          "sha256": "365b53ef4be702acd345b1b7f9ecf7a98c78955ac7dc73ea80b923e1099c87f7"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/prepare-graphics.log",
+          "sha256": "494ba9e99794d22961c160d322b357299e60dcc02fd7e7c6461c77c382aa7740"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/prepare-richtext.log",
+          "sha256": "b09e6777124691fec8514b728aaf82d8c6c814afd85cb71b5867c216fb7b39d6"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/radial.log",
+          "sha256": "5eb6e0046624591c87bfa5b011d1e5d8d25fa701a6630459f5be552944ce533e"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-Debug-app.log",
+          "sha256": "f1c405023f4f2f619ca3fc984bf179f2c5293a1633f1069bc63cce3076056c62"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-Debug.log",
+          "sha256": "5a35d15d43e431504a82f844f0adf8525fae3b607c8b7a1f0207e8b6d7cba14c"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-Release-app.log",
+          "sha256": "bb04b4ecac6a194adda63e478bcaa95b2ba5ccba58e0cfea3aa9989f5417bf98"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-Release.log",
+          "sha256": "013283f59b9e5d86a258d53e6d455ee531240d9dc6877bbc5b6a4ee0e3abda8a"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-layout.log",
+          "sha256": "a06b7a1296f8b968898ad2954957053579e14ac8f5167cc05cd1ab53f1faae69"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-parser.log",
+          "sha256": "3591a8cca03a0b5bfb0b68e4130e9b17b3ff5367ee18efe0ff787d818d5db720"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-results.json",
+          "sha256": "cf86fd37e1c29753ab3de1220c2569ea84c6f5bc5d37e72ba7d3128ee4d35f32"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/richtext-web.log",
+          "sha256": "c695878d48781f9b5383f0c98d6cedd11a0caba9ccd5de5131665dd9f183db05"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/script-tests-local.log",
+          "sha256": "3d791e778fcae51053f5cb8b42a152129fb3c71f2b35bc8052f06113b6b79471"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/script-tests.log",
+          "sha256": "efbf6681836a7f39be4e93db735a469294894ef02bc00341f0571f2c557c5cb5"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/sprite-frame.log",
+          "sha256": "6100bd4f42fe6bf436f43e19919721e7556cecce4f17d0459fc09b7386d84127"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/static-results.json",
+          "sha256": "f8790cc114176c7edaafb8a6bfbd282e89fa8ec24dcb6e422823c6b734a6765e"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/thin-shell.log",
+          "sha256": "eed47bcc83b14ddaa700b668429bc7cdf3e32a669322d62d1a95fa6c1beb66d0"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/typecheck-results.json",
+          "sha256": "7b337f62b66a91e3f6f1c12fdfe8abdaa56eb086f95cb947ee63a12b31cf319a"
+        },
+        {
+          "file": "native/tests/2d-poc/build/m6-recheck-5cdc896f3c/web-ts.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ]
 }
