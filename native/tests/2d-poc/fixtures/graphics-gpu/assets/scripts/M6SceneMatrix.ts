@@ -90,15 +90,13 @@ async function runLegacyMaskScenes (openScene: (name: string) => Node, capture: 
         throw new Error('Legacy Sprite Mask did not reuse its serialized host Sprite and frame');
     }
     const spriteMaterial = new Material();
-    spriteMaterial.copy(spriteMask.sharedMaterial!);
-    spriteMask.customMaterial = spriteMaterial;
-    if (spriteMask.customMaterial !== spriteMaterial || sprite.getSharedMaterial(0) !== spriteMaterial) {
-        throw new Error('Legacy Sprite Mask did not forward customMaterial to the stencil Sprite');
+    spriteMaterial.copy(sprite.getSharedMaterial(0)!);
+    sprite.customMaterial = spriteMaterial;
+    if (sprite.getSharedMaterial(0) !== spriteMaterial) {
+        throw new Error('Sprite Mask stencil did not use its custom material');
     }
-    spriteMask.customMaterial = null;
+    sprite.customMaterial = null;
     spriteMask.alphaThreshold = 0.4;
-    spriteMask.markForUpdateRenderData();
-    spriteMask.updateRenderer();
     await capture('scene-legacy-mask-sprite');
     spriteMask.inverted = true;
     await capture('scene-legacy-mask-sprite-inverted');
@@ -107,21 +105,16 @@ async function runLegacyMaskScenes (openScene: (name: string) => Node, capture: 
     const stencil = graphicsMask.subComp;
     if (!(stencil instanceof Graphics)) throw new Error('Legacy Graphics Mask did not bind its stencil Graphics');
     const graphicsMaterial = new Material();
-    graphicsMaterial.copy(graphicsMask.sharedMaterial!);
-    graphicsMask.customMaterial = graphicsMaterial;
-    const instance = graphicsMask.getMaterialInstance(0);
-    if (!instance || graphicsMask.getMaterial(0) !== graphicsMaterial || graphicsMask.getRenderMaterial(0) !== instance
-        || stencil.getRenderMaterial(0) !== instance) {
-        throw new Error('Legacy Graphics Mask did not forward shared and instanced stencil materials');
+    graphicsMaterial.copy(stencil.getSharedMaterial(0)!);
+    stencil.customMaterial = graphicsMaterial;
+    const instance = stencil.getMaterialInstance(0);
+    if (!instance || stencil.getSharedMaterial(0) !== graphicsMaterial || stencil.getRenderMaterial(0) !== instance) {
+        throw new Error('Graphics Mask stencil did not use its shared material and material instance');
     }
     stencil.fillRect(-16, -16, 32, 32);
-    graphicsMask.setNodeDirty();
-    graphicsMask.setTextureDirty();
     await capture('scene-legacy-mask-graphics');
     stencil.clear();
     stencil.fillRect(0, -16, 16, 32);
-    graphicsMask.setMaterialInstance(null, 1);
-    graphicsMask.markForUpdateRenderData(false);
     await capture('scene-legacy-mask-graphics-updated');
     openScene('legacy-mask-released');
     await nextFrame();
@@ -132,7 +125,7 @@ async function runLegacyMaskScenes (openScene: (name: string) => Node, capture: 
     graphicsPrefab.decRef();
     spriteMaterial.destroy();
     graphicsMaterial.destroy();
-    return { spritePrefab: true, graphicsPrefab: true, materialForwarding: true, stencilUpdates: true, released: true };
+    return { spritePrefab: true, graphicsPrefab: true, stencilMaterials: true, stencilUpdates: true, released: true };
 }
 
 async function runStandaloneSpriteScenes (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {

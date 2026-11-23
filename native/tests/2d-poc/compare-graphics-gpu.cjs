@@ -17,7 +17,7 @@ if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new 
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==19||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
 if (!a.scenes.inactiveSpriteCenterDetached) throw new Error('Missing inactive legacy Sprite lifetime evidence');
 const legacyMask = a.scenes.legacyMask;
-if (!legacyMask || !['spritePrefab', 'graphicsPrefab', 'materialForwarding', 'stencilUpdates', 'released'].every(key => legacyMask[key] === true)) {
+if (!legacyMask || !['spritePrefab', 'graphicsPrefab', 'stencilMaterials', 'stencilUpdates', 'released'].every(key => legacyMask[key] === true)) {
     throw new Error('Incomplete legacy Mask Prefab evidence');
 }
 const legacyGraphics = a.scenes.legacyGraphics;

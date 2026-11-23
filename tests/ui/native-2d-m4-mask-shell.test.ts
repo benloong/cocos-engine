@@ -8,7 +8,6 @@ const nativeMask = {
     setAlphaThreshold: jest.fn(),
     setPriority: jest.fn(),
     setEnabled: jest.fn(),
-    invalidateStencil: jest.fn(),
     setSegments: jest.fn(), setGraphics: jest.fn(), setRadius: jest.fn(), isHitWorldPointXY: jest.fn(() => true),
 };
 
@@ -96,92 +95,16 @@ test('Mask clamps geometric state and forwards world-space hit testing to native
     expect(mask.isHit({ x: 11, y: 22 })).toBe(false);
 });
 
-test('Mask preserves legacy renderer arguments, results and empty defaults', () => {
+test('Native Mask leaves renderer APIs on the stencil component', () => {
     const { Mask } = require('../../cocos/2d/components/mask.jsb');
-    const node = new Node('legacy-mask');
-    node.addComponent(UITransform);
-    const mask = node.addComponent(Mask) as InstanceType<typeof import('../../cocos/2d/components/mask.jsb').Mask>;
-    mask.onLoad();
-    nativeMask.invalidateStencil.mockClear();
-    const material = {} as NonNullable<typeof mask.customMaterial>;
-    const instance = {};
-    const { Color } = require('../../cocos/core');
-    const color = Color.RED.clone();
-    const renderer = {
-        customMaterial: null,
-        color: Color.WHITE,
-        sharedMaterial: material,
-        sharedMaterials: [],
-        material: null,
-        materials: [],
-        getSharedMaterial: jest.fn(() => material),
-        getMaterialInstance: jest.fn(() => instance),
-        getRenderMaterial: jest.fn(() => instance),
-        setMaterial: jest.fn(),
-        setMaterialInstance: jest.fn(),
-        _markForUpdateRenderData: jest.fn(),
-        updateRenderer: jest.fn(),
-        setNodeDirty: jest.fn(),
-        setTextureDirty: jest.fn(),
-    };
-    const subComp = jest.spyOn(mask, 'subComp', 'get').mockReturnValue(renderer as unknown as typeof mask.subComp);
-    mask.customMaterial = material;
-    mask.color = color;
-    mask.color = null;
-    mask.sharedMaterials = [material, null];
-    mask.sharedMaterials = null;
-    mask.material = instance;
-    mask.materials = [instance, null];
-    expect(mask.customMaterial).toBe(renderer.customMaterial);
-    expect(renderer.customMaterial).toBe(material);
-    expect(mask.color).toBe(color);
-    expect(renderer.color).toBe(color);
-    expect(mask.sharedMaterial).toBe(material);
-    expect(mask.sharedMaterials).toBe(renderer.sharedMaterials);
-    expect(renderer.sharedMaterials).toEqual([material, null]);
-    expect(mask.material).toBe(instance);
-    expect(renderer.material).toBe(instance);
-    expect(mask.materials).toBe(renderer.materials);
-    expect(renderer.materials).toEqual([instance, null]);
-    expect(mask.getMaterial(3)).toBe(material);
-    expect(renderer.getSharedMaterial).toHaveBeenCalledWith(3);
-    expect(mask.getMaterialInstance(2)).toBe(instance);
-    expect(renderer.getMaterialInstance).toHaveBeenCalledWith(2);
-    expect(mask.getRenderMaterial(1)).toBe(instance);
-    expect(renderer.getRenderMaterial).toHaveBeenCalledWith(1);
-    mask.setMaterial(material, 4);
-    expect(renderer.setMaterial).toHaveBeenCalledWith(material, 4);
-    mask.setMaterialInstance(null, 5);
-    expect(renderer.setMaterialInstance).toHaveBeenCalledWith(null, 5);
-    mask.markForUpdateRenderData();
-    mask.markForUpdateRenderData(false);
-    expect(renderer._markForUpdateRenderData.mock.calls).toEqual([[true], [false]]);
-    mask.updateRenderer();
-    mask.setNodeDirty();
-    mask.setTextureDirty();
-    expect(renderer.updateRenderer).toHaveBeenCalledTimes(1);
-    expect(renderer.setNodeDirty).toHaveBeenCalledTimes(1);
-    expect(renderer.setTextureDirty).toHaveBeenCalledTimes(1);
-    expect(nativeMask.invalidateStencil).toHaveBeenCalledTimes(4);
-
-    subComp.mockClear();
-    expect(mask.requestRenderData(0)).toBeUndefined();
-    expect(mask.destroyRenderData()).toBeUndefined();
-    expect(mask.fillBuffers({})).toBeUndefined();
-    expect(mask.postUpdateAssembler({})).toBeUndefined();
-    expect(subComp).not.toHaveBeenCalled();
-
-    subComp.mockReturnValue(null);
-    expect(mask.customMaterial).toBeNull();
-    expect(mask.color).toBeNull();
-    expect(mask.sharedMaterial).toBeNull();
-    expect(mask.sharedMaterials).toBeNull();
-    expect(mask.material).toBeNull();
-    expect(mask.materials).toEqual([null]);
-    expect(mask.getMaterial(0)).toBeNull();
-    expect(mask.getMaterialInstance(0)).toBeNull();
-    expect(mask.getRenderMaterial(0)).toBeNull();
-    mask.onDestroy();
+    for (const name of [
+        'customMaterial', 'color', 'markForUpdateRenderData', 'requestRenderData', 'destroyRenderData',
+        'updateRenderer', 'fillBuffers', 'postUpdateAssembler', 'setNodeDirty', 'setTextureDirty',
+        'sharedMaterial', 'sharedMaterials', 'material', 'materials', 'getMaterial', 'setMaterial',
+        'getMaterialInstance', 'setMaterialInstance', 'getRenderMaterial',
+    ]) {
+        expect(name in Mask.prototype).toBe(false);
+    }
 });
 
 test('Mask restores serialized geometric state to the native stencil', () => {
