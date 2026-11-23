@@ -21,8 +21,13 @@ foreach ($item in $NativeExecutables) {
         throw "Layout ownership JSB probe failed or was not executed: $executable"
     }
 }
-& node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
-    (Join-Path $repoRoot 'tests/ui/native-2d-m1-shell.test.ts') `
-    (Join-Path $repoRoot 'tests/ui/native-2d-m3-label-shell.test.ts') `
-    (Join-Path $repoRoot 'tests/ui/native-2d-m6-layout-shell.test.ts')
-if ($LASTEXITCODE -ne 0) { throw 'Layout ownership API/serialization tests failed' }
+Push-Location $repoRoot
+try {
+    & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
+        (Join-Path $repoRoot 'tests/ui/native-2d-m1-shell.test.ts') `
+        (Join-Path $repoRoot 'tests/ui/native-2d-m3-label-shell.test.ts') `
+        (Join-Path $repoRoot 'tests/ui/native-2d-m6-layout-shell.test.ts')
+    if ($LASTEXITCODE -ne 0) { throw 'Layout ownership API/serialization tests failed' }
+} finally {
+    Pop-Location
+}

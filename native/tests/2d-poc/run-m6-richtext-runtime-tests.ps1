@@ -12,8 +12,13 @@ foreach ($item in $NativeExecutables) {
     $output | Write-Output
     if ($exitCode -ne 0 -or ($output -join "`n") -notmatch 'jsb shell integration: OK') { throw "RichText JSB probe failed: $executable" }
 }
-& node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --silent --runInBand --runTestsByPath `
-    (Join-Path $repoRoot 'tests/ui/native-2d-m6-richtext-shell.test.ts') `
-    (Join-Path $repoRoot 'tests/scene-graph/native-node-constructor.test.ts') `
-    (Join-Path $repoRoot 'tests/ui/richtext.test.ts')
-if ($LASTEXITCODE -ne 0) { throw 'RichText shell/Web API tests failed' }
+Push-Location $repoRoot
+try {
+    & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --silent --runInBand --runTestsByPath `
+        (Join-Path $repoRoot 'tests/ui/native-2d-m6-richtext-shell.test.ts') `
+        (Join-Path $repoRoot 'tests/scene-graph/native-node-constructor.test.ts') `
+        (Join-Path $repoRoot 'tests/ui/richtext.test.ts')
+    if ($LASTEXITCODE -ne 0) { throw 'RichText shell/Web API tests failed' }
+} finally {
+    Pop-Location
+}

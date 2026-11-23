@@ -21,7 +21,12 @@ foreach ($item in $NativeExecutables) {
         throw "SpriteAtlas JSB probe failed or was not executed: $executable"
     }
 }
-& node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
-    (Join-Path $repoRoot 'tests/assets/native-sprite-atlas.test.ts') `
-    (Join-Path $repoRoot 'tests/assets/sprite-atlas.test.ts')
-if ($LASTEXITCODE -ne 0) { throw 'SpriteAtlas API/serialization tests failed' }
+Push-Location $repoRoot
+try {
+    & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
+        (Join-Path $repoRoot 'tests/assets/native-sprite-atlas.test.ts') `
+        (Join-Path $repoRoot 'tests/assets/sprite-atlas.test.ts')
+    if ($LASTEXITCODE -ne 0) { throw 'SpriteAtlas API/serialization tests failed' }
+} finally {
+    Pop-Location
+}

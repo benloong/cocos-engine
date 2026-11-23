@@ -24,6 +24,11 @@ $result = Join-Path $outDir 'graphics-geometry-result.json'
 $previous = $env:CC_GRAPHICS_GEOMETRY_FIXTURE
 try {
     $env:CC_GRAPHICS_GEOMETRY_FIXTURE = $result
-    & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --silent --runInBand --runTestsByPath (Join-Path $repoRoot 'tests/ui/native-graphics-geometry-parity.test.ts')
-    if ($LASTEXITCODE -ne 0) { throw 'Web/native Graphics geometry parity failed' }
+    Push-Location $repoRoot
+    try {
+        & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --silent --runInBand --runTestsByPath (Join-Path $repoRoot 'tests/ui/native-graphics-geometry-parity.test.ts')
+        if ($LASTEXITCODE -ne 0) { throw 'Web/native Graphics geometry parity failed' }
+    } finally {
+        Pop-Location
+    }
 } finally { $env:CC_GRAPHICS_GEOMETRY_FIXTURE = $previous }

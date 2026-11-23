@@ -21,12 +21,17 @@ foreach ($item in $NativeExecutables) {
         throw "Font assets JSB probe failed or was not executed: $executable"
     }
 }
-& node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
-    (Join-Path $repoRoot 'tests/assets/native-font-assets.test.ts') `
-    (Join-Path $repoRoot 'tests/assets/native-font-assets-jit.test.ts') `
-    (Join-Path $repoRoot 'tests/core/deserialize.test.ts') `
-    (Join-Path $repoRoot 'tests/core/deserialize-jit.test.ts') `
-    (Join-Path $repoRoot 'tests/ui/native-2d-m3-label-shell.test.ts') `
-    (Join-Path $repoRoot 'tests/ui/font-loader.test.ts') `
-    (Join-Path $repoRoot 'tests/ui/font-family.test.ts')
-if ($LASTEXITCODE -ne 0) { throw 'Font assets API/serialization tests failed' }
+Push-Location $repoRoot
+try {
+    & node (Join-Path $repoRoot 'node_modules/jest/bin/jest.js') --runInBand --silent --runTestsByPath `
+        (Join-Path $repoRoot 'tests/assets/native-font-assets.test.ts') `
+        (Join-Path $repoRoot 'tests/assets/native-font-assets-jit.test.ts') `
+        (Join-Path $repoRoot 'tests/core/deserialize.test.ts') `
+        (Join-Path $repoRoot 'tests/core/deserialize-jit.test.ts') `
+        (Join-Path $repoRoot 'tests/ui/native-2d-m3-label-shell.test.ts') `
+        (Join-Path $repoRoot 'tests/ui/font-loader.test.ts') `
+        (Join-Path $repoRoot 'tests/ui/font-family.test.ts')
+    if ($LASTEXITCODE -ne 0) { throw 'Font assets API/serialization tests failed' }
+} finally {
+    Pop-Location
+}
