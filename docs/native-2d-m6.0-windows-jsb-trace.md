@@ -11,12 +11,16 @@
 ```powershell
 $fixture = (Resolve-Path native/tests/2d-poc/build/graphics-gpu-project).Path
 $build = 'native/tests/2d-poc/build/gpu-win-trace'
-cmake -S "$fixture/native/engine/win64" -B $build -G Ninja -DCMAKE_BUILD_TYPE=Debug "-DRES_DIR=$fixture/build/windows" '-DCMAKE_CXX_FLAGS_DEBUG=/Z7 /Od /DRECORD_JSB_INVOKING'
+cmake -S "$fixture/native/engine/win64" -B $build -G Ninja -DCMAKE_BUILD_TYPE=Debug `
+    -DCMAKE_TRY_COMPILE_CONFIGURATION=Release "-DRES_DIR=$fixture/build/windows" `
+    '-DCMAKE_C_FLAGS_DEBUG=/Z7 /Od /RTC1' '-DCMAKE_CXX_FLAGS_DEBUG=/Z7 /Od /DRECORD_JSB_INVOKING'
 cmake --build $build -j 5
 pwsh -NoProfile -File native/tests/2d-poc/run-m6-jsb-trace.ps1
 ```
 
 原始 stdout、stderr 和 JSON 位于 trace 构建目录。版本库保存本次[逐窗口函数计数](./native-2d-m6.0-windows-jsb-trace.json)。统计限于 V8 的 SE 绑定包装入口，未计入原生内部直接调用或通过共享内存完成的数据访问。M0 至 M6 常规 Debug 门禁及 32 项定向 Jest 在关闭采集的应用中通过。
+
+历史候选 `68af105c8d` 的 Debug 增量构建两次停在 RenderRoot2D 稳态窗口。用上述参数从空目录配置后，Debug 完成全部 14 个场景和 6 组独立资产检查，与 Release 的门禁结果一致。旧构建两次超时的日志哈希与复测结果一并归档。[历史候选记录](./native-2d-m6-candidate-recheck.json)
 
 ## 当前引擎的变更与生命周期计数
 
