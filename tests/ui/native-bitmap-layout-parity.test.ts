@@ -20,6 +20,26 @@ test.each([BitmapFont, LabelAtlas])('Web bitmap font reloads edits to its assign
     }
 });
 const fixture = process.env.CC_BITMAP_LAYOUT_FIXTURE;
+(fixture ? test : test.skip)('native supplementary-plane glyph metrics use scalar advances', () => {
+    const { inputs, backends } = JSON.parse(readFileSync(fixture!, 'utf8'));
+    const expectedSizes = [[8.5, 16], [32, 32], [32, 32], [32, 16]];
+    expect(backends.length).toBeGreaterThan(0);
+    for (let overflow = 0; overflow < expectedSizes.length; overflow++) {
+        const index = inputs.findIndex(input => input.text.length === 1 && input.text[0] === 0x1F642
+            && input.fontSize === 8 && input.sourceFontSize === 16 && input.overflow === overflow);
+        expect(index).toBeGreaterThanOrEqual(0);
+        expect(inputs[index].glyphs.find(glyph => glyph.code === 0x1F642).xAdvance).toBe(17);
+        for (const backend of backends) {
+            const result = backend.outputs[index];
+            expect(result.width).toBe(expectedSizes[overflow][0]);
+            expect(result.height).toBe(expectedSizes[overflow][1]);
+            expect(result.lineWidths).toEqual([8.5]);
+            expect(result.actualFontSize).toBe(8);
+            expect(result.scale).toBe(0.5);
+            expect(result.glyphs).toHaveLength(1);
+        }
+    }
+});
 (fixture ? test : test.skip)('native bitmap layout matches actual Web TextProcessing', () => {
  const {inputs, backends} = JSON.parse(readFileSync(fixture!, 'utf8'));
  expect(inputs.length).toBeGreaterThan(2000); expect(backends.length).toBeGreaterThan(0);
