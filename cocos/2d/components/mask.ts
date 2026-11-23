@@ -25,11 +25,13 @@
 
 import { ccclass, help, executionOrder, menu, tooltip, displayOrder,
     type, visible, serializable, range, slide, executeInEditMode } from 'cc.decorator';
+import { JSB } from 'internal:constants';
 import { clamp, Color, Mat4, Vec2, Vec3, warnID, cclegacy, ccenum, errorID } from '../../core';
 import { Graphics } from './graphics';
 import { TransformBit } from '../../scene-graph/node-enum';
 import { Stage } from '../renderer/stencil-manager';
 import { NodeEventProcessor } from '../../scene-graph/node-event-processor';
+import { MaskMode } from '../renderer/render-entity';
 import { Sprite } from './sprite';
 import { NodeEventType, Component } from '../../scene-graph';
 import type { SpriteFrame } from '../assets';
@@ -151,6 +153,9 @@ export class Mask extends Component {
             }
             this._changeRenderType();
             this._updateGraphics();
+            if (JSB) {
+                this.subComp!.renderEntity.setMaskMode(this._inverted ? MaskMode.MASK_INVERTED : MaskMode.MASK);
+            }
         } else {
             if (this._graphics) {
                 this._graphics.clear();
@@ -159,6 +164,9 @@ export class Mask extends Component {
                 this._graphics = null;
             }
             this._changeRenderType();
+            if (JSB) {
+                this.subComp!.renderEntity.setMaskMode(this._inverted ? MaskMode.MASK_INVERTED : MaskMode.MASK);
+            }
         }
     }
 
@@ -177,6 +185,10 @@ export class Mask extends Component {
     set inverted (value) {
         this._inverted = value;
         this.subComp!.stencilStage = this.inverted ? Stage.ENTER_LEVEL_INVERTED : Stage.ENTER_LEVEL;
+
+        if (JSB) {
+            this.subComp!.renderEntity.setMaskMode(this._inverted ? MaskMode.MASK_INVERTED : MaskMode.MASK);
+        }
     }
 
     /**
@@ -316,6 +328,12 @@ export class Mask extends Component {
 
     public onLoad (): void {
         this._changeRenderType();
+
+        if (JSB) {
+            if (this.subComp) {
+                this.subComp.renderEntity.setMaskMode(this._inverted ? MaskMode.MASK_INVERTED : MaskMode.MASK);
+            }
+        }
     }
 
     public onEnable (): void {
