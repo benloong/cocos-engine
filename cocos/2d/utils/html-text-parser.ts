@@ -23,6 +23,9 @@
  THE SOFTWARE.
 */
 
+import { JSB, TEST } from 'internal:constants';
+import { cclegacy } from '../../core';
+
 /**
  * @deprecated since v3.5.0, this is an engine private interface that will be removed in the future.
  */
@@ -429,4 +432,8 @@ export class HtmlTextParser {
 
         return str;
     }
+}
+
+if (TEST && !JSB) {
+    cclegacy._Test.HtmlTextParser = HtmlTextParser;
 }

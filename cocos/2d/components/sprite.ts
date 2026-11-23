@@ -331,7 +331,6 @@ export class Sprite extends UIRenderer {
     private _markFillCenterDirty (): void {
         if (this._type === SpriteType.FILLED && this.renderData) {
             this._markForUpdateRenderData();
-            if (!JSB) this._updateUVs();
         }
     }
 

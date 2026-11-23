@@ -183,7 +183,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
     const advancedProps: string[] = [];
     let advancedPropsToRead = advancedProps;
     const advancedPropsValueType: any = [];
-    const advancedPropsNullable: boolean[] = [];
+    const advancedPropsNullable: boolean[] | null = JSB ? [] : null;
 
     ((): void => {
         const props: string[] = klass.__values__;
@@ -221,7 +221,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
                     advancedPropsToRead.push(propNameToRead);
                 }
                 advancedPropsValueType.push((defaultValue instanceof cclegacy.ValueType) && defaultValue.constructor);
-                if (JSB) advancedPropsNullable.push(defaultValue === null);
+                advancedPropsNullable?.push(defaultValue === null);
             }
         }
     })();
@@ -239,7 +239,7 @@ function compileDeserializeNative (_self: _Deserializer, klass: CCClassConstruct
             if (prop === undefined) {
                 continue;
             }
-            if ((!fastMode || (JSB && advancedPropsNullable[i])) && typeof prop !== 'object') {
+            if ((!fastMode || advancedPropsNullable?.[i]) && typeof prop !== 'object') {
                 o[propName] = prop;
             } else {
                 // fastMode (so will not simpleProp) or object

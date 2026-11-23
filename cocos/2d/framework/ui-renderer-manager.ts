@@ -33,8 +33,11 @@ export class UIRendererManager {
     private _allRenderers: (UIRenderer | UIMeshRenderer)[] = [];
     private _dirtyRenderers: (UIRenderer | UIMeshRenderer)[] = [];
     private _dirtyVersion = 0;
+    private declare readonly _native?: NativeUIRendererManager;
 
-    constructor (private readonly _native?: NativeUIRendererManager) {}
+    constructor (native?: NativeUIRendererManager) {
+        if (native) this._native = native;
+    }
 
     public addRenderer (uiRenderer: UIRenderer | UIMeshRenderer): void {
         if (uiRenderer._internalId === -1) {
