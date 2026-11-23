@@ -13,7 +13,7 @@ if(!fs.existsSync(assetsLink)) fs.symlinkSync(path.join(project,'build/windows/d
 fs.cpSync(fixture,project,{recursive:true});
 const resources = path.join(project, 'assets/resources');
 fs.mkdirSync(resources, {recursive:true});
-const resourceFolders = mode === 'graphics' ? ['M6StaticAtlas', 'M3BitmapFont', 'M6LabelAtlas'] : ['M6StaticAtlas'];
+const resourceFolders = mode === 'graphics' ? ['M6StaticAtlas', 'M3BitmapFont', 'M6LabelAtlas', 'M6LegacyImage'] : ['M6StaticAtlas'];
 for (const folder of resourceFolders) {
     const source = path.join(__dirname, 'fixtures/acceptance/resources', folder);
     fs.cpSync(source, path.join(resources, folder), {recursive:true});

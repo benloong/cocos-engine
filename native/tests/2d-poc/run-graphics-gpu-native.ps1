@@ -102,7 +102,7 @@ try {
         if((Test-Path -LiteralPath $manifest) -and (Get-Item -LiteralPath $manifest).LastWriteTimeUtc -gt $started) {
             $result=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
             if($result.backend -ne 'native') { throw 'Invalid native backend' }
-            if($Mode -eq 'graphics' -and ($result.captures.Count -ne 163 -or $result.hits.Count -ne 22 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000)) { throw 'Invalid native capture manifest' }
+            if($Mode -eq 'graphics' -and ($result.captures.Count -ne 175 -or $result.hits.Count -ne 22 -or $result.roots.Count -ne 11 -or $result.scenes.cycles -ne 1000)) { throw 'Invalid native capture manifest' }
             if ($selectedComponents.Count) {
                 $key = $component.Substring(0, 1).ToLowerInvariant() + $component.Substring(1)
                 if ($result."${key}Implementation" -ne $implementation) { throw "Unexpected $component implementation" }

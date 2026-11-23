@@ -25,6 +25,7 @@ async function checkLegacyLabelEffects (parent: Node, target: RenderTexture): Pr
     instance.layer = parent.layer;
     parent.addChild(instance);
     const label = instance.getComponent(Label)!;
+    const ttfFrame = label.ttfSpriteFrame;
     const pixels = async (): Promise<Uint8Array> => {
         await wait();
         const rgba = target.readPixels();
@@ -44,6 +45,25 @@ async function checkLegacyLabelEffects (parent: Node, target: RenderTexture): Pr
         }
         const outline = instance.addComponent(LabelOutline);
         const shadow = instance.addComponent(LabelShadow);
+        const shared = label.getSharedMaterial(0)!;
+        const sharedSource = shared.passes[0].blendState.targets[0].blendSrc;
+        const renderer = label as Label & { srcBlendFactor: gfx.BlendFactor };
+        const source = renderer.srcBlendFactor;
+        const changedSource = source === gfx.BlendFactor.ONE ? gfx.BlendFactor.SRC_ALPHA : gfx.BlendFactor.ONE;
+        renderer.srcBlendFactor = changedSource;
+        label._updateBlendFunc();
+        const material = label.getRenderMaterial(0)!;
+        const pass = material.passes[0];
+        const hash = pass.hash;
+        label._updateBlendFunc();
+        if (material === shared || pass.blendState.targets[0].blendSrc !== changedSource
+            || shared.passes[0].blendState.targets[0].blendSrc !== sharedSource
+            || label.getRenderMaterial(0) !== material || pass.hash !== hash) {
+            throw new Error('Explicit Label blend update did not isolate or reuse the material instance');
+        }
+        renderer.srcBlendFactor = source;
+        label._updateBlendFunc();
+        if (pass.blendState.targets[0].blendSrc !== source) throw new Error('Label blend update did not restore its source factor');
         const outlineColor = new Color(255, 0, 0, 255);
         const shadowColor = new Color(0, 255, 0, 255);
         const offset = new Vec2(16, 14);
@@ -89,11 +109,12 @@ async function checkLegacyLabelEffects (parent: Node, target: RenderTexture): Pr
         }
         label.enableOutline = label.enableShadow = true;
         if (!equal(both, await pixels())) throw new Error('Legacy and direct Label effects rendered differently');
-        return { updates, prefab: true, forwarding: true, rendered: true, destroyed: true };
+        return { updates, prefab: true, forwarding: true, rendered: true, destroyed: true, blend: true };
     } finally {
         instance.destroy();
         prefab.destroy();
         await wait();
+        if (!ttfFrame || isValid(label) || isValid(ttfFrame)) throw new Error('Label pre-destroy did not release its generated TTF frame');
     }
 }
 

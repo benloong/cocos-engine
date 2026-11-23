@@ -1,7 +1,211 @@
-import { Asset, AssetManager, BitmapFont, Camera, Color, Director, director, Graphics, instantiate, isValid, Label, LabelAtlas, Layers, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, TTFFont, UITransform } from 'cc';
+import { Asset, AssetManager, BitmapFont, Camera, Color, Director, director, gfx, Graphics, instantiate, isValid, Label, LabelAtlas, Layers, Mask, Material, native, Node, Prefab, resources, assetManager, Rect, RenderRoot2D, RenderTexture, Scene, Size, Sprite, SpriteFrame, sys, Texture2D, TTFFont, UITransform } from 'cc';
 
 type Check = { name: string; actual: boolean | number; expected: boolean | number };
 const nextFrame = (): Promise<void> => new Promise(resolve => director.once(Director.EVENT_AFTER_DRAW, resolve));
+
+async function runLegacyGraphicsScene (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {
+    const prefab = await new Promise<Prefab>((resolve, reject) => resources.load('M6LegacyImage/LegacyGraphics', Prefab,
+        (error, asset) => error ? reject(error) : resolve(asset.addRef() as Prefab)));
+    const parent = openScene('legacy-graphics-component');
+    const instance = instantiate(prefab);
+    instance.layer = parent.layer;
+    parent.addChild(instance);
+    const graphics = instance.getComponent(Graphics);
+    if (!graphics || graphics.lineWidth !== 7 || graphics.lineCap !== Graphics.LineCap.SQUARE
+        || graphics.lineJoin !== Graphics.LineJoin.ROUND || graphics.miterLimit !== 6
+        || !graphics.fillColor.equals(Color.RED) || !graphics.strokeColor.equals(Color.GREEN)) {
+        throw new Error('Graphics Prefab style fields did not deserialize');
+    }
+    const usesNativeMeshes = sys.isNative
+        && (globalThis as { __m6GraphicsMaskImplementation?: string }).__m6GraphicsMaskImplementation !== 'js';
+    if (typeof graphics.activeSubModel !== 'function' || (usesNativeMeshes
+        ? 'impl' in graphics || graphics.model !== undefined || graphics.graphicsNativeProxy !== undefined
+        : !graphics.impl || !graphics.model || Boolean(graphics.graphicsNativeProxy) !== sys.isNative)) {
+        throw new Error('Unexpected legacy Graphics renderer surface');
+    }
+    if (usesNativeMeshes) graphics.activeSubModel(0, 4, 6);
+    graphics.onRestore();
+    // The original M4 scene draws this same 80 px square. Extra offscreen paths exercise a second mesh chunk.
+    graphics.rect(-40, -40, 80, 80);
+    for (let batch = 0; batch < 5; ++batch) {
+        for (let i = 0; i < 4000; ++i) graphics.rect(256 + (batch * 4000 + i) * 2, 0, 1, 1);
+        graphics.fill();
+    }
+    graphics.updateRenderer();
+    await capture('scene-legacy-graphics-initial');
+
+    const builtin = graphics.getSharedMaterial(0)!;
+    const muted = new Material();
+    muted.initialize({
+        effectAsset: builtin.effectAsset,
+        states: { blendState: { targets: [{ blendColorMask: gfx.ColorMask.NONE }] } },
+    });
+    graphics.setMaterial(muted, 0);
+    const materialInstance = graphics.getMaterialInstance(0);
+    if (graphics.getMaterial(0) !== muted || !materialInstance || graphics.getRenderMaterial(0) !== materialInstance) {
+        throw new Error('Legacy Graphics did not forward shared and instance material slots');
+    }
+    graphics.updateRenderer();
+    await capture('scene-legacy-graphics-material');
+    graphics.customMaterial = muted;
+    graphics.updateMaterial();
+    if (graphics.getSharedMaterial(0) !== muted) throw new Error('Legacy Graphics lost its custom material on refresh');
+    graphics.customMaterial = null;
+    graphics.updateMaterial();
+    if (graphics.getSharedMaterial(0) !== builtin) throw new Error('Legacy Graphics did not restore its own builtin material');
+    graphics.updateRenderer();
+    await capture('scene-legacy-graphics-material-restored');
+
+    openScene('legacy-graphics-released');
+    await nextFrame();
+    if (isValid(graphics) || isValid(instance)) throw new Error('Legacy Graphics survived scene replacement');
+    prefab.decRef();
+    muted.destroy();
+    await capture('scene-legacy-graphics-released');
+    return { prefab: true, styles: true, rendererSurface: true, materialForwarding: true, retainedGeometry: true, released: true };
+}
+
+async function runLegacyMaskScenes (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {
+    const openPrefab = async (name: string, assetName: string, type: number): Promise<{ mask: Mask; prefab: Prefab }> => {
+        const prefab = await new Promise<Prefab>((resolve, reject) => resources.load(`M6LegacyImage/${assetName}`, Prefab,
+            (error, asset) => error ? reject(error) : resolve(asset.addRef() as Prefab)));
+        const parent = openScene(name);
+        const instance = instantiate(prefab);
+        instance.layer = parent.layer;
+        parent.addChild(instance);
+        const mask = instance.getComponent(Mask);
+        if (!mask || mask.type !== type || mask.inverted || mask.segments !== 18 || mask.alphaThreshold !== 0.35) {
+            throw new Error(`${assetName} did not restore the serialized Mask state`);
+        }
+        const child = new Node('legacy-mask-content');
+        child.layer = parent.layer;
+        instance.addChild(child);
+        const content = child.addComponent(Graphics);
+        content.fillColor = Color.RED;
+        content.fillRect(-32, -32, 64, 64);
+        return { mask, prefab };
+    };
+    const { mask: spriteMask, prefab: spritePrefab } = await openPrefab('legacy-sprite-mask', 'LegacySpriteMask', Mask.Type.SPRITE_STENCIL);
+    const sprite = spriteMask.node.getComponent(Sprite);
+    if (!sprite?.spriteFrame || spriteMask.subComp !== sprite || spriteMask.spriteFrame !== sprite.spriteFrame) {
+        throw new Error('Legacy Sprite Mask did not reuse its serialized host Sprite and frame');
+    }
+    const spriteMaterial = new Material();
+    spriteMaterial.copy(spriteMask.sharedMaterial!);
+    spriteMask.customMaterial = spriteMaterial;
+    if (spriteMask.customMaterial !== spriteMaterial || sprite.getSharedMaterial(0) !== spriteMaterial) {
+        throw new Error('Legacy Sprite Mask did not forward customMaterial to the stencil Sprite');
+    }
+    spriteMask.customMaterial = null;
+    spriteMask.alphaThreshold = 0.4;
+    spriteMask.markForUpdateRenderData();
+    spriteMask.updateRenderer();
+    await capture('scene-legacy-mask-sprite');
+    spriteMask.inverted = true;
+    await capture('scene-legacy-mask-sprite-inverted');
+
+    const { mask: graphicsMask, prefab: graphicsPrefab } = await openPrefab('legacy-graphics-mask', 'LegacyGraphicsMask', Mask.Type.GRAPHICS_STENCIL);
+    const stencil = graphicsMask.subComp;
+    if (!(stencil instanceof Graphics)) throw new Error('Legacy Graphics Mask did not bind its stencil Graphics');
+    const graphicsMaterial = new Material();
+    graphicsMaterial.copy(graphicsMask.sharedMaterial!);
+    graphicsMask.customMaterial = graphicsMaterial;
+    const instance = graphicsMask.getMaterialInstance(0);
+    if (!instance || graphicsMask.getMaterial(0) !== graphicsMaterial || graphicsMask.getRenderMaterial(0) !== instance
+        || stencil.getRenderMaterial(0) !== instance) {
+        throw new Error('Legacy Graphics Mask did not forward shared and instanced stencil materials');
+    }
+    stencil.fillRect(-16, -16, 32, 32);
+    graphicsMask.setNodeDirty();
+    graphicsMask.setTextureDirty();
+    await capture('scene-legacy-mask-graphics');
+    stencil.clear();
+    stencil.fillRect(0, -16, 16, 32);
+    graphicsMask.setMaterialInstance(null, 1);
+    graphicsMask.markForUpdateRenderData(false);
+    await capture('scene-legacy-mask-graphics-updated');
+    openScene('legacy-mask-released');
+    await nextFrame();
+    if (isValid(spriteMask) || isValid(sprite) || isValid(graphicsMask) || isValid(stencil)) {
+        throw new Error('Legacy Mask or stencil renderer survived scene replacement');
+    }
+    spritePrefab.decRef();
+    graphicsPrefab.decRef();
+    spriteMaterial.destroy();
+    graphicsMaterial.destroy();
+    return { spritePrefab: true, graphicsPrefab: true, materialForwarding: true, stencilUpdates: true, released: true };
+}
+
+async function runStandaloneSpriteScenes (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {
+    const assetPath = 'M6LegacyImage/LegacyStandaloneSprite';
+    const imageUuid = '65a9391d-ffee-4413-a20c-c3820d38d0f9';
+    const ids = ['72c84532-7db0-4e3f-8eb5-4b59f545b128', `${imageUuid}@f9941`, `${imageUuid}@6c48a`, imageUuid];
+    const cached = (assets: Asset[]): boolean => assets.every((asset, i) => asset.uuid === ids[i] && assetManager.assets.get(ids[i]) === asset);
+    const release = async (assets: Asset[], keys: string[]): Promise<void> => {
+        for (let frame = 0; frame < 12 && assets.some(asset => isValid(asset)); ++frame) await nextFrame();
+        if (assets.some(asset => isValid(asset)) || keys.some(id => assetManager.assets.has(id))) {
+            throw new Error('Standalone Sprite assets survived their last owner');
+        }
+    };
+    const load = (): Promise<Prefab> => new Promise((resolve, reject) => resources.load(assetPath, Prefab,
+        (error, asset) => error ? reject(error) : resolve(asset.addRef() as Prefab)));
+    const show = async (name: string, prefab: Prefab) => {
+        const parent = openScene(name);
+        const instance = instantiate(prefab);
+        const sprite = instance.getComponent(Sprite);
+        const frame = sprite?.spriteFrame;
+        const texture = frame?.texture;
+        if (!sprite || sprite.spriteAtlas || !frame || !frame.packable || frame.rect.width !== 64 || frame.rect.height !== 64
+            || !(texture instanceof Texture2D) || !texture.image || texture.width !== 64 || texture.height !== 64) {
+            throw new Error('Sprite Prefab missed the standalone PNG or its imported metadata');
+        }
+        const assets = [prefab, frame, texture, texture.image];
+        if (!cached(assets)) throw new Error('Standalone Sprite dependency identity differs from its asset cache');
+        frame.packable = false;
+        instance.layer = parent.layer;
+        parent.addChild(instance);
+        await capture(name);
+        return { frame, texture, assets };
+    };
+
+    await new Promise<void>((resolve, reject) => resources.preload(assetPath, Prefab, (error, requests) => {
+        if (error) reject(error);
+        else if (!ids.slice(0, 2).every(id => requests.some(request => request.uuid === id && request.file))) {
+            reject(new Error('Standalone Sprite preload missed the Prefab or frame'));
+        } else resolve();
+    }));
+    if (ids.some(id => assetManager.assets.has(id))) throw new Error('Standalone Sprite preload published assets');
+    const prefab = await load();
+    const first = await show('scene-standalone-sprite-first', prefab);
+    const clone = first.frame.clone();
+    first.texture.addRef();
+    const cloneRoot = openScene('scene-standalone-sprite-clone');
+    prefab.decRef();
+    await release(first.assets.slice(0, 2), ids.slice(0, 2));
+    if (clone.texture !== first.texture || assetManager.assets.get(ids[2]) !== first.texture) {
+        throw new Error('Standalone Sprite clone lost its explicitly retained texture');
+    }
+    cloneRoot.getComponent(UITransform)!.setContentSize(32, 32);
+    const sprite = cloneRoot.addComponent(Sprite);
+    sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+    sprite.spriteFrame = clone;
+    await capture('scene-standalone-sprite-clone');
+    openScene('standalone-sprite-release');
+    await nextFrame();
+    clone.destroy();
+    first.texture.decRef();
+    await release(first.assets.slice(2), ids.slice(2));
+
+    const coldPrefab = await load();
+    const cold = await show('scene-standalone-sprite-cold', coldPrefab);
+    if (cold.assets.some((asset, i) => asset === first.assets[i])) throw new Error('Standalone Sprite cold load reused a released asset');
+    openScene('standalone-sprite-final');
+    await nextFrame();
+    coldPrefab.decRef();
+    await release(cold.assets, ids);
+    await capture('scene-standalone-sprite-final');
+    return { preload: true, clone: true, coldReload: true, released: true, ids };
+}
 
 async function runBundledTTFScenes (openScene: (name: string) => Node, capture: (name: string) => Promise<void>): Promise<object> {
     const bundleName = 'm6-ttf';
@@ -285,6 +489,21 @@ async function runImportedFontScenes (fixture: ImportedFontCase, openScene: (nam
         throw new Error(`${path} retry missed the image dependency: ${pausedRequests}/${pausedFrames}`);
     }
     const first = await show(`${prefix}-initial`, prefab);
+    const label = first.label;
+    const originalFont = label.font as BitmapFont;
+    label.useSystemFont = true;
+    label.updateRenderData(true);
+    if (!label.useSystemFont || label.font || label.spriteFrame === originalFont.spriteFrame || label._bmFontOriginalSize !== -1) {
+        throw new Error(`${path} did not release its bitmap binding when selecting a system font`);
+    }
+    label.enabled = false;
+    label.font = originalFont;
+    label.enabled = true;
+    label.updateRenderData(true);
+    if (label.useSystemFont || label.font !== originalFont || label.spriteFrame !== originalFont.spriteFrame
+        || label._bmFontOriginalSize !== fontSize || first.instance.getComponent(UITransform)!.width !== fixture.width) {
+        throw new Error(`${path} did not restore the same bitmap asset and metrics on re-enable`);
+    }
     const reloadWidths = labelAtlas ? null : await checkBitmapConfigReload(first.label, capture);
     const second = await show(`${prefix}-next`, prefab);
     if (isValid(first.instance) || isValid(first.label) || first.assets.some((asset, i) => asset !== second.assets[i])) {
@@ -321,7 +540,7 @@ async function runImportedFontScenes (fixture: ImportedFontCase, openScene: (nam
     await finishRelease(fresh.assets, ids);
     await capture(`${prefix}-final-empty`);
     return { preload: true, cancelledAndRetried: true, pausedRequests, pausedFrames, sharedAcrossScenes: true,
-        keptTexture: true, coldReload: true, released: true, atlasPolicy: true, width: first.width, reloadWidths, ids };
+        keptTexture: true, coldReload: true, released: true, atlasPolicy: true, fontApiRoundTrip: true, width: first.width, reloadWidths, ids };
 }
 
 // All render roots in this fixture are direct Scene children. A walk overwrites
@@ -458,6 +677,16 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
         director.runSceneImmediate(scene);
         return instance.getComponent(Sprite)!;
     };
+    const inactive = instantiate(prefab);
+    const inactiveSprite = inactive.getComponent(Sprite)!;
+    const retainedCenter = inactiveSprite.fillCenter;
+    retainedCenter.set(0.25, 0.75);
+    inactive.destroy();
+    await nextFrame();
+    if (isValid(inactiveSprite) || Object.getOwnPropertyDescriptor(retainedCenter, 'x')?.get
+        || retainedCenter.x !== 0.25 || retainedCenter.y !== 0.75) {
+        throw new Error('Unattached legacy Sprite left the radial center bound after destruction');
+    }
     const first = openPrefabScene('m6-atlas-first');
     const firstNode = first.node;
     const atlas = first.spriteAtlas!;
@@ -505,5 +734,9 @@ export async function runSceneMatrix (rt: RenderTexture, capture: (name: string,
         fontType: LabelAtlas, fontSize: 22, text: '1076', textureSize: 64, width: 64, height: 25,
     }, openFontScene, capture);
     const bundledTTF = await runBundledTTFScenes(openFontScene, capture);
-    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks, legacyBitmap, labelAtlas, bundledTTF };
+    const standaloneSprite = await runStandaloneSpriteScenes(openFontScene, capture);
+    const legacyMask = await runLegacyMaskScenes(openFontScene, capture);
+    const legacyGraphics = await runLegacyGraphicsScene(openFontScene, capture);
+    return { cycles, texturesCreated, texturesDestroyed, assertions, collections, samples, checks,
+        inactiveSpriteCenterDetached: true, legacyBitmap, labelAtlas, bundledTTF, standaloneSprite, legacyMask, legacyGraphics };
 }

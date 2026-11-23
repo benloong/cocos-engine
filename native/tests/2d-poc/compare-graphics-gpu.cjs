@@ -3,21 +3,33 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const native=path.resolve(process.argv[2]||path.join(__dirname,'build/graphics-gpu-native'));
 const web=path.resolve(process.argv[3]||path.join(__dirname,'build/graphics-gpu-web'));
 const a=JSON.parse(fs.readFileSync(path.join(native,'manifest.json'))),b=JSON.parse(fs.readFileSync(path.join(web,'manifest.json')));
-if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==163) throw new Error('Snapshot/backend/case set mismatch');
+if(a.backend!=='native'||b.backend!=='web'||a.snapshot!==b.snapshot||JSON.stringify(a.captures)!==JSON.stringify(b.captures)||a.captures.length!==175) throw new Error('Snapshot/backend/case set mismatch');
 const prepared=JSON.parse(fs.readFileSync(path.join(__dirname,'build/graphics-gpu-project/m6-gpu-snapshot.json')));
-if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==163) throw new Error('Stale or duplicate captures');
+if(prepared.snapshot!==a.snapshot||new Set(a.captures).size!==175) throw new Error('Stale or duplicate captures');
 if(require('./graphics-gpu-snapshot.cjs')().snapshot!==a.snapshot) throw new Error('Sources changed after capture preparation');
 if([a,b].some(x=>x.width!==256||x.height!==256)) throw new Error('Unexpected capture dimensions');
-const legacyLabelEffects = { updates: 3, prefab: true, forwarding: true, rendered: true, destroyed: true };
+const legacyLabelEffects = { updates: 3, prefab: true, forwarding: true, rendered: true, destroyed: true, blend: true };
 if ([a, b].some(({ legacyLabelEffects: actual }) => JSON.stringify(actual) !== JSON.stringify(legacyLabelEffects))) {
     throw new Error('Incomplete legacy Label effect API and rendering evidence');
 }
 if(JSON.stringify(a.hits)!==JSON.stringify(b.hits)||a.hits?.length!==22||new Set(a.hits.map(x=>x.name)).size!==22||a.hits.some(x=>x.actual!==x.expected)) throw new Error('Hit-test expectations/backend results mismatch');
 if(JSON.stringify(a.roots)!==JSON.stringify(b.roots)||a.roots?.length!==11||new Set(a.roots.map(x=>x.name)).size!==11||a.roots.some(x=>x.actual!==x.expected)) throw new Error('Root registry expectations/backend results mismatch');
 if(JSON.stringify(a.scenes)!==JSON.stringify(b.scenes)||a.scenes?.cycles!==1000||a.scenes.assertions!==4998||a.scenes.texturesCreated!==1000||a.scenes.texturesDestroyed!==1000||a.scenes.collections!==10||a.scenes.samples?.length!==5||a.scenes.checks?.length!==19||a.scenes.checks.some(x=>x.actual!==x.expected)) throw new Error('Scene transition/resource expectations/backend results mismatch');
+if (!a.scenes.inactiveSpriteCenterDetached) throw new Error('Missing inactive legacy Sprite lifetime evidence');
+const legacyMask = a.scenes.legacyMask;
+if (!legacyMask || !['spritePrefab', 'graphicsPrefab', 'materialForwarding', 'stencilUpdates', 'released'].every(key => legacyMask[key] === true)) {
+    throw new Error('Incomplete legacy Mask Prefab evidence');
+}
+const legacyGraphics = a.scenes.legacyGraphics;
+if (!legacyGraphics || !['prefab', 'styles', 'rendererSurface', 'materialForwarding', 'retainedGeometry', 'released'].every(key => legacyGraphics[key] === true)) {
+    throw new Error('Incomplete legacy Graphics Prefab evidence');
+}
+const standalone = a.scenes.standaloneSprite;
+if (!standalone?.preload || !standalone.clone || !standalone.coldReload || !standalone.released
+    || standalone.ids?.length !== 4 || new Set(standalone.ids).size !== 4) throw new Error('Incomplete standalone Sprite lifecycle evidence');
 for (const [kind, width] of [['legacyBitmap', 40], ['labelAtlas', 64]]) {
     const evidence = a.scenes[kind];
-    if (!evidence || !['preload', 'cancelledAndRetried', 'sharedAcrossScenes', 'keptTexture', 'coldReload', 'released', 'atlasPolicy']
+    if (!evidence || !['preload', 'cancelledAndRetried', 'sharedAcrossScenes', 'keptTexture', 'coldReload', 'released', 'atlasPolicy', 'fontApiRoundTrip']
         .every(key => evidence[key] === true) || evidence.pausedRequests !== 2 || evidence.pausedFrames !== 4
         || evidence.width !== width || evidence.ids?.length !== 5 || new Set(evidence.ids).size !== 5) {
         throw new Error('Incomplete imported font scene evidence: ' + kind);
@@ -80,12 +92,24 @@ const centers={
     'scene-cycle-500':[0,0,255,255],'scene-cycle-750':[0,0,255,255],
     'scene-cycle-1000':[0,0,255,255],'scene-final-empty':[0,0,0,255],
     'scene-atlas-first':[255,0,0,255],'scene-atlas-second':[0,255,0,255],'scene-atlas-unloaded':[0,0,0,255],
+    'scene-standalone-sprite-first':[255,0,0,255],'scene-standalone-sprite-clone':[255,0,0,255],
+    'scene-standalone-sprite-cold':[255,0,0,255],'scene-standalone-sprite-final':[0,0,0,255],
+    'scene-legacy-mask-sprite':[255,0,0,255],'scene-legacy-mask-sprite-inverted':[0,0,0,255],
+    'scene-legacy-mask-graphics':[255,0,0,255],'scene-legacy-mask-graphics-updated':[255,0,0,255],
+    'scene-legacy-graphics-initial':[255,0,0,255],'scene-legacy-graphics-material':[0,0,0,255],
+    'scene-legacy-graphics-material-restored':[255,0,0,255],'scene-legacy-graphics-released':[0,0,0,255],
 };
 for (const name of Object.keys(centers)) {
     if (!a.captures.includes(name)) throw new Error('Missing root or scene transition capture: ' + name);
 }
 const sanity={
     'prefab-atlas-sprite':1024,'prefab-atlas-mesh-left':4096,'prefab-atlas-mesh-right':1920,
+    'scene-standalone-sprite-first':1024,'scene-standalone-sprite-clone':1024,
+    'scene-standalone-sprite-cold':1024,'scene-standalone-sprite-final':0,
+    'scene-legacy-mask-sprite':1024,'scene-legacy-mask-sprite-inverted':3072,
+    'scene-legacy-mask-graphics':1024,'scene-legacy-mask-graphics-updated':512,
+    'scene-legacy-graphics-initial':6400,'scene-legacy-graphics-material':0,
+    'scene-legacy-graphics-material-restored':6400,'scene-legacy-graphics-released':0,
     'authored-mesh':3072,'authored-mesh-clone':3072,'authored-mesh-replaced-texture':3072,
     'sprite-batch-1':64,'sprite-batch-128':8192,
     'sprite-radial-quadrant':1008,'sprite-radial-quadrant-updated':1008,
@@ -281,6 +305,13 @@ for (const [name, reference] of [['mesh-rect-packed', 'mesh-rect-rotated-3'],
     const sourceImage = results.find(row => row.name === reference);
     if (image.nativeSha256 !== sourceImage.nativeSha256 || image.webSha256 !== sourceImage.webSha256) {
         throw new Error('Packing, flipping or restoring changed an oriented mesh image: ' + name);
+    }
+}
+const standaloneFirst = results.find(row => row.name === 'scene-standalone-sprite-first');
+for (const name of ['scene-standalone-sprite-clone', 'scene-standalone-sprite-cold']) {
+    const image = results.find(row => row.name === name);
+    if (image.nativeSha256 !== standaloneFirst.nativeSha256 || image.webSha256 !== standaloneFirst.webSha256) {
+        throw new Error('Standalone Sprite changed after clone or cold reload: ' + name);
     }
 }
 const result={snapshot:a.snapshot,width:a.width,height:a.height,environment:{native:a.environment,web:b.environment},scenes:a.scenes,roots:a.roots,hits:a.hits,labelLayout:{native:a.labelLayout,web:b.labelLayout},shrinkSizes:{native:a.shrinkSizes,web:b.shrinkSizes},batchDrawCalls:{native:a.batchDrawCalls,web:b.batchDrawCalls},legacyLabelEffects,tolerance:1,pass:results.every(x=>x.pass),results};
