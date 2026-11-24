@@ -39,6 +39,8 @@ $err=Join-Path $PSScriptRoot "build/$Mode-gpu-native.err.log"
 $manifest=Join-Path $PSScriptRoot "build/$Mode-gpu-native/manifest.json"
 $started=[DateTime]::UtcNow
 $process=Start-Process -FilePath $exePath -WorkingDirectory (Split-Path -Parent $exePath) -WindowStyle Hidden -RedirectStandardOutput $log -RedirectStandardError $err -PassThru
+# Cache the process handle before HasExited so Windows PowerShell retains ExitCode.
+$nativeProcessHandle = $process.Handle
 try {
     $deadline=$started.AddSeconds(180)
     while([DateTime]::UtcNow -lt $deadline) {

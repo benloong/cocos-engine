@@ -1,0 +1,150 @@
+{
+  "date": "2026-11-24",
+  "candidateImplementation": "03b5254ea726f567a1bf5ddacf5d800a455703a6",
+  "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "captures": 62,
+      "metricRows": 16,
+      "fontCycles": 1000,
+      "cacheBefore": 22,
+      "cacheAfter": 22,
+      "requests": {
+        "font": {
+          "interrupted": 1,
+          "complete": 31,
+          "cancelled": 1,
+          "resumed": 1
+        },
+        "aliases": {
+          "a": 1,
+          "b": 1
+        },
+        "missing": 6,
+        "queued": 0
+      },
+      "exclusiveReadChecks": 11,
+      "firstHandleSample": {
+        "phase": "local-25",
+        "processHandles": 551,
+        "gdiObjects": 27,
+        "userObjects": 28,
+        "exclusiveRead": true
+      },
+      "lastHandleSample": {
+        "phase": "after-http-repeats",
+        "processHandles": 547,
+        "gdiObjects": 27,
+        "userObjects": 28,
+        "exclusiveRead": true
+      },
+      "byteIdenticalToReference": 62,
+      "maxChannelDifference": 0,
+      "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "executableSha256": "f77506ca8d821d1080de5c2a1772428cd05f1546af122f7d82974e692927e739",
+      "manifestSha256": "f4a49d91237cf7360c3022573a307164a89efa182fee431c0c9864bae41bb9e3",
+      "fontHandleReportSha256": "75c3d33b5f6eb59890bb4b4153977a697d514c1f128420ec399e311adf0f1e94",
+      "logSha256": "09907647f70f25edfe06789c592f731327e2c080c08c2f13e3d1272fa5b6f73f"
+    },
+    {
+      "configuration": "Release",
+      "captures": 62,
+      "metricRows": 16,
+      "fontCycles": 1000,
+      "cacheBefore": 22,
+      "cacheAfter": 22,
+      "requests": {
+        "font": {
+          "interrupted": 1,
+          "complete": 31,
+          "cancelled": 1,
+          "resumed": 1
+        },
+        "aliases": {
+          "a": 1,
+          "b": 1
+        },
+        "missing": 6,
+        "queued": 0
+      },
+      "exclusiveReadChecks": 11,
+      "firstHandleSample": {
+        "phase": "local-25",
+        "processHandles": 450,
+        "gdiObjects": 27,
+        "userObjects": 28,
+        "exclusiveRead": true
+      },
+      "lastHandleSample": {
+        "phase": "after-http-repeats",
+        "processHandles": 448,
+        "gdiObjects": 27,
+        "userObjects": 28,
+        "exclusiveRead": true
+      },
+      "byteIdenticalToReference": 62,
+      "maxChannelDifference": 0,
+      "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "executableSha256": "9b11e15c236295420d6e557b874017966b915d7c9c047e0b019b4dfacb0f41cd",
+      "manifestSha256": "75fe54dc0eec7097f51687753438e316507cb69c19ffb0a5d8702695592fa667",
+      "fontHandleReportSha256": "67da10dee90593a4347b2f12608aba4dfe166da047e04a69da2ab5586da84f6f",
+      "logSha256": "09907647f70f25edfe06789c592f731327e2c080c08c2f13e3d1272fa5b6f73f"
+    }
+  ],
+  "finalRunnerExitCode": 0,
+  "validatorExitCode": 0,
+  "validationFile": "native/tests/2d-poc/build/m6-richtext-03b5254ea7/handle-verified/validation.json",
+  "validationSha256": "664f757f7629aaebb419f02b4b02cb4a6e630d39c9867725bca832acf64cef8f",
+  "toolSourceSha256": {
+    "native/tests/2d-poc/run-m6-candidate-richtext.ps1": "8dcf268c586f2648e5b65f286bd26611a84fcc31da65b5e2dddbad06672d65b8",
+    "native/tests/2d-poc/validate-m6-candidate-richtext.cjs": "4397e623b789d6eb1258f10b12a893942668558203806d6f0043660b22c3167b",
+    "native/tests/2d-poc/run-graphics-gpu-native.ps1": "346b668114098d432031aa63c409251c0eb1e99d59dff02d45b8e45aec7d0bca"
+  },
+  "exitCodeControl": {
+    "expected": 37,
+    "actual": 37,
+    "result": "PASS"
+  },
+  "earlierRuns": [
+    {
+      "kind": "initial Debug",
+      "result": "failed: launcher observed premature process exit with unavailable native ExitCode; stopped after lifecycle-disabled capture",
+      "logSha256": "5cc01c0c8af05078072647f91e18e0423ba18233004a070e5386a0f90c1e0544"
+    },
+    {
+      "kind": "concurrent Release",
+      "result": "fixture preflight failed because diagnostic Debug held the shared font; not an engine regression"
+    },
+    {
+      "kind": "serial Release before handle recording",
+      "result": "failed: launcher observed premature exit at the same phase; native cause remains unproven",
+      "logSha256": "5b0dbffa40990aab20f3a7414cdbc6122df6e566f2198254acb2ccd44a9555c8"
+    },
+    {
+      "kind": "debugger launch",
+      "result": "crossed rebuild/destroy phase; no second-chance exception captured; diagnostic timeout with no checkpoint service, not a normal gate pass",
+      "logSha256": "538dca46a8eac81a37c64e36cbf2af3292915787572669acd095be54fc37ee2d"
+    },
+    {
+      "kind": "current ASan build",
+      "result": "built successfully; normal 180 second gate timed out around font cycle 401; no sanitizer error reported; not an ASan pass",
+      "logSha256": "df80ef184455c54c8c716696fd8f3b937c3bf6da3f4e71fda03a85c307d03ffd",
+      "sampledNativeStackSha256": "9b64e7d57d74d67df0e64f47f7891b56f6bf99df96a24e6cf0e40fb5535cd63f"
+    }
+  ],
+  "limits": [
+    "The process-handle change makes native ExitCode available; successful reruns do not establish the cause of earlier exits.",
+    "All failed and diagnostic runs remain archived and are not replaced by final passing rows.",
+    "ASan did not finish the matrix and is not signed off; no general memory leak claim is made.",
+    "Native binaries and unchanged CLI resource fixtures were reused; the current clean-source Native engine packet from the core node was explicitly deployed and rechecked.",
+    "Process handle and GDI values are reported at the checkpoints, not as a complete OS resource leak proof.",
+    "Documentation project gates and final consolidated M6 sign-off remain pending.",
+    "No Web, SpriteRenderer or ModelRenderer implementation/acceptance was changed."
+  ],
+  "negativeCaptureControl": {
+    "exitCode": 1,
+    "reason": "Capture SHA mismatch detected after changing one byte; original data restored and final validator rerun passed.",
+    "logSha256": "42beea81cecc5befc50ba5af8352a154e502292a81f40ac853ff41f5db5708d5"
+  }
+}
