@@ -1,0 +1,70 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "scope": "Regenerated 2d, assets and scene bindings from detached candidate using each native build configuration SWIG arguments. Compared both emitted files with the inputs used in the candidate core build.",
+  "artifacts": "native/tests/2d-poc/build/m6-binding-gate-29833647c3",
+  "swigSha256": "db71309139430a97be7184322bebe8b8d9b6a98e35519162bd2b5552b18bed9a",
+  "metadataTestsPassed": 4,
+  "metadataTestLogSha256": "56eec5c33575e27601e62dd15019e432298fd52413ac5f09552971b19cd5db1c",
+  "matches": [
+    {
+      "build": "out",
+      "file": "jsb_2d_auto.cpp",
+      "sha256": "a7ed6578f2e47ae7177976945bea9aaa2f0ff3f72590343498ce65ec8f603d68"
+    },
+    {
+      "build": "out",
+      "file": "jsb_2d_auto.h",
+      "sha256": "ec3f1b60b03d41a0def7efc310732066ae77698704329cbf9de7f9e82200ac80"
+    },
+    {
+      "build": "out",
+      "file": "jsb_assets_auto.cpp",
+      "sha256": "f8317ada8678f8115c0f2caeb8e52a3b45faa582894794e6e33f23229656c218"
+    },
+    {
+      "build": "out",
+      "file": "jsb_assets_auto.h",
+      "sha256": "8f82b84325a49a5496acf9a63ddc413741f2a28dc5ba70deaa7ebf4197466692"
+    },
+    {
+      "build": "out",
+      "file": "jsb_scene_auto.cpp",
+      "sha256": "8921815d8468c1b714e531b55a1d821d14a5b96538522eace6067bc321c126eb"
+    },
+    {
+      "build": "out",
+      "file": "jsb_scene_auto.h",
+      "sha256": "ef5444846d175db8d097b58c4417466d08766f6c651a0af6e50636c50bdd4173"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_2d_auto.cpp",
+      "sha256": "a7ed6578f2e47ae7177976945bea9aaa2f0ff3f72590343498ce65ec8f603d68"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_2d_auto.h",
+      "sha256": "ec3f1b60b03d41a0def7efc310732066ae77698704329cbf9de7f9e82200ac80"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_assets_auto.cpp",
+      "sha256": "f8317ada8678f8115c0f2caeb8e52a3b45faa582894794e6e33f23229656c218"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_assets_auto.h",
+      "sha256": "8f82b84325a49a5496acf9a63ddc413741f2a28dc5ba70deaa7ebf4197466692"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_scene_auto.cpp",
+      "sha256": "8921815d8468c1b714e531b55a1d821d14a5b96538522eace6067bc321c126eb"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_scene_auto.h",
+      "sha256": "ef5444846d175db8d097b58c4417466d08766f6c651a0af6e50636c50bdd4173"
+    }
+  ]
+}
