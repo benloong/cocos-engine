@@ -1,0 +1,32 @@
+{
+  "candidate": "c61e440da0",
+  "artifacts": "native/tests/2d-poc/build/m6-xyz-app-c61e440da0",
+  "fixture": "native/tests/2d-poc/fixtures/check-transform-depth.cjs",
+  "auditedFullFeatureBundleSha256": "8790896DEB3CD08AE373AA1983C7A6C24EA6FC76135C76F45B822AAB9D015BA2",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "assertions": {
+        "nested": true,
+        "parentMoved": true,
+        "inPlace": true,
+        "inputPreserved": true
+      },
+      "applicationSha256": "49BD668420D9B55D8AD9BC1CBC3A9CAA11BFB41C2DCCC699BCFC9AB1A4D60494",
+      "logSha256": "3F2CD99061F3E9463164412C3D166BE49EFF82A628EB6040D87380ADCBDF2CD6"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "assertions": {
+        "nested": true,
+        "parentMoved": true,
+        "inPlace": true,
+        "inputPreserved": true
+      },
+      "applicationSha256": "151B59288BCB2E21080766595AC4726EBE4F132011007B72CCF5ED11132B255F",
+      "logSha256": "E4B65E53506007B1414213001AA6DAC213967A0C74E08E8E8CD6BCDD8852DA58"
+    }
+  ]
+}
