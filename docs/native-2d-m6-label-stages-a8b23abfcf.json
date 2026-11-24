@@ -1,0 +1,631 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "scope": "Three serial diagnostic Windows Release launches, default scheduling. Medians are per stage across frames, in milliseconds. Upload measures CPU time inside uploadData. Fastest/slowest groups are ranked by overall sampled CPU. The official six-pair gate is unchanged.",
+  "artifacts": "native/tests/2d-poc/build/m6-label-stages-a8b23abfcf",
+  "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+  "exeSha256": "60b048e425d57afbe1743f1fc692cd0884f075967e5e9349771c891578b7d449",
+  "workloadSha256": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+  "runs": [
+    {
+      "round": 1,
+      "sha256": "8ed19fe1d03d0b125194d10e66a6932dcadecddc09164f3e816c940d3212b2f0",
+      "phases": {
+        "labels": {
+          "all": {
+            "cpuMs": 0.46640000000035653,
+            "prepareMs": 0.2460000000000946,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.20865,
+            "layoutMs": 0.11605,
+            "canvasSetupMs": 0.017849999999999998,
+            "backgroundMs": 0.0107,
+            "drawMs": 0.021949999999999997,
+            "readbackMs": 0.0008,
+            "textureSetupMs": 0.0209,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0043,
+            "finishMs": 0.017050000000000003
+          },
+          "fastest30": {
+            "cpuMs": 0.38890000000101865,
+            "prepareMs": 0.17249999999967258,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.1366,
+            "layoutMs": 0.05345,
+            "canvasSetupMs": 0.01295,
+            "backgroundMs": 0.0098,
+            "drawMs": 0.0172,
+            "readbackMs": 0.0008,
+            "textureSetupMs": 0.01935,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00425,
+            "finishMs": 0.01555
+          },
+          "slowest30": {
+            "cpuMs": 0.5660999999994033,
+            "prepareMs": 0.29249999999956344,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.24805,
+            "layoutMs": 0.13725,
+            "canvasSetupMs": 0.024,
+            "backgroundMs": 0.0123,
+            "drawMs": 0.026000000000000002,
+            "readbackMs": 0.001,
+            "textureSetupMs": 0.0234,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00465,
+            "finishMs": 0.019200000000000002
+          },
+          "counts": {
+            "calls": [
+              20,
+              20
+            ],
+            "cacheHits": [
+              19,
+              19
+            ],
+            "draws": [
+              1,
+              1
+            ]
+          }
+        },
+        "rich": {
+          "all": {
+            "cpuMs": 0.44285000000174624,
+            "prepareMs": 0.18500000000130967,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.17005,
+            "layoutMs": 0.047799999999999995,
+            "canvasSetupMs": 0.0267,
+            "backgroundMs": 0.0172,
+            "drawMs": 0.03535,
+            "readbackMs": 0.00135,
+            "textureSetupMs": 0.0104,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0046,
+            "finishMs": 0.016849999999999997
+          },
+          "fastest30": {
+            "cpuMs": 0.3125499999991851,
+            "prepareMs": 0.11800000000221189,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.10865,
+            "layoutMs": 0.028650000000000002,
+            "canvasSetupMs": 0.019549999999999998,
+            "backgroundMs": 0.013000000000000001,
+            "drawMs": 0.022,
+            "readbackMs": 0.0009,
+            "textureSetupMs": 0.008,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0033,
+            "finishMs": 0.01125
+          },
+          "slowest30": {
+            "cpuMs": 0.6478999999992869,
+            "prepareMs": 0.2809999999990396,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.2642,
+            "layoutMs": 0.11625,
+            "canvasSetupMs": 0.0312,
+            "backgroundMs": 0.02265,
+            "drawMs": 0.05035,
+            "readbackMs": 0.00195,
+            "textureSetupMs": 0.0121,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0062,
+            "finishMs": 0.02155
+          },
+          "counts": {
+            "calls": [
+              4,
+              8
+            ],
+            "cacheHits": [
+              3,
+              7
+            ],
+            "draws": [
+              1,
+              2
+            ]
+          }
+        },
+        "mixed": {
+          "all": {
+            "cpuMs": 1.7209500000004365,
+            "prepareMs": 0.7210000000013679,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 0.6649499999999999,
+            "layoutMs": 0.48085,
+            "canvasSetupMs": 0.0324,
+            "backgroundMs": 0.023,
+            "drawMs": 0.0559,
+            "readbackMs": 0.0021,
+            "textureSetupMs": 0.028749999999999998,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.008150000000000001,
+            "finishMs": 0.031450000000000006
+          },
+          "fastest30": {
+            "cpuMs": 1.4034000000013243,
+            "prepareMs": 0.5794999999998254,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 0.5259,
+            "layoutMs": 0.38075000000000003,
+            "canvasSetupMs": 0.02375,
+            "backgroundMs": 0.01885,
+            "drawMs": 0.04355,
+            "readbackMs": 0.00195,
+            "textureSetupMs": 0.0246,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0066,
+            "finishMs": 0.0275
+          },
+          "slowest30": {
+            "cpuMs": 2.298800000000451,
+            "prepareMs": 1.136000000000422,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 1.06905,
+            "layoutMs": 0.7792,
+            "canvasSetupMs": 0.0427,
+            "backgroundMs": 0.03555,
+            "drawMs": 0.0797,
+            "readbackMs": 0.0034000000000000002,
+            "textureSetupMs": 0.03745,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.01195,
+            "finishMs": 0.042649999999999993
+          },
+          "counts": {
+            "calls": [
+              24,
+              28
+            ],
+            "cacheHits": [
+              22,
+              25
+            ],
+            "draws": [
+              2,
+              3
+            ]
+          }
+        }
+      }
+    },
+    {
+      "round": 2,
+      "sha256": "9f9ef82a31eeea1d90d25b0fe678e5c71e67cb30a58054f249b99a4e71a67b12",
+      "phases": {
+        "labels": {
+          "all": {
+            "cpuMs": 0.4699499999999636,
+            "prepareMs": 0.24549999999999272,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.199,
+            "layoutMs": 0.0991,
+            "canvasSetupMs": 0.0177,
+            "backgroundMs": 0.0104,
+            "drawMs": 0.0223,
+            "readbackMs": 0.0008,
+            "textureSetupMs": 0.0202,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0045,
+            "finishMs": 0.0171
+          },
+          "fastest30": {
+            "cpuMs": 0.385350000000211,
+            "prepareMs": 0.17299999999977445,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.13455,
+            "layoutMs": 0.05365,
+            "canvasSetupMs": 0.01245,
+            "backgroundMs": 0.00995,
+            "drawMs": 0.017349999999999997,
+            "readbackMs": 0.0007,
+            "textureSetupMs": 0.0197,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00425,
+            "finishMs": 0.0159
+          },
+          "slowest30": {
+            "cpuMs": 0.5429000000002401,
+            "prepareMs": 0.2844999999997526,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.2439,
+            "layoutMs": 0.1393,
+            "canvasSetupMs": 0.02135,
+            "backgroundMs": 0.011800000000000001,
+            "drawMs": 0.02545,
+            "readbackMs": 0.0009,
+            "textureSetupMs": 0.021650000000000003,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00465,
+            "finishMs": 0.01865
+          },
+          "counts": {
+            "calls": [
+              20,
+              20
+            ],
+            "cacheHits": [
+              19,
+              19
+            ],
+            "draws": [
+              1,
+              1
+            ]
+          }
+        },
+        "rich": {
+          "all": {
+            "cpuMs": 0.41450000000053844,
+            "prepareMs": 0.15850000000136788,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.1475,
+            "layoutMs": 0.044,
+            "canvasSetupMs": 0.0258,
+            "backgroundMs": 0.01495,
+            "drawMs": 0.028900000000000002,
+            "readbackMs": 0.0013,
+            "textureSetupMs": 0.009899999999999999,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0044,
+            "finishMs": 0.0141
+          },
+          "fastest30": {
+            "cpuMs": 0.3092499999986612,
+            "prepareMs": 0.11650000000008731,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.1069,
+            "layoutMs": 0.01935,
+            "canvasSetupMs": 0.0234,
+            "backgroundMs": 0.0127,
+            "drawMs": 0.0212,
+            "readbackMs": 0.0009,
+            "textureSetupMs": 0.0087,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0033,
+            "finishMs": 0.01085
+          },
+          "slowest30": {
+            "cpuMs": 0.7428000000002037,
+            "prepareMs": 0.3085000000010041,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.2872,
+            "layoutMs": 0.12065000000000001,
+            "canvasSetupMs": 0.03225,
+            "backgroundMs": 0.0224,
+            "drawMs": 0.05155,
+            "readbackMs": 0.002,
+            "textureSetupMs": 0.01315,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00625,
+            "finishMs": 0.0229
+          },
+          "counts": {
+            "calls": [
+              4,
+              8
+            ],
+            "cacheHits": [
+              3,
+              7
+            ],
+            "draws": [
+              1,
+              2
+            ]
+          }
+        },
+        "mixed": {
+          "all": {
+            "cpuMs": 1.7854999999992724,
+            "prepareMs": 0.804999999998472,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 0.74485,
+            "layoutMs": 0.55495,
+            "canvasSetupMs": 0.03295,
+            "backgroundMs": 0.025750000000000002,
+            "drawMs": 0.06105,
+            "readbackMs": 0.0022,
+            "textureSetupMs": 0.02855,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00875,
+            "finishMs": 0.03565
+          },
+          "fastest30": {
+            "cpuMs": 1.3771000000001457,
+            "prepareMs": 0.5619999999998981,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 0.5117499999999999,
+            "layoutMs": 0.36445,
+            "canvasSetupMs": 0.0236,
+            "backgroundMs": 0.0188,
+            "drawMs": 0.04145,
+            "readbackMs": 0.0015,
+            "textureSetupMs": 0.02305,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00645,
+            "finishMs": 0.027049999999999998
+          },
+          "slowest30": {
+            "cpuMs": 2.376699999997992,
+            "prepareMs": 1.1169999999983702,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 1.0413999999999999,
+            "layoutMs": 0.7706500000000001,
+            "canvasSetupMs": 0.04385,
+            "backgroundMs": 0.0361,
+            "drawMs": 0.08755,
+            "readbackMs": 0.003,
+            "textureSetupMs": 0.03655,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.01155,
+            "finishMs": 0.0453
+          },
+          "counts": {
+            "calls": [
+              24,
+              28
+            ],
+            "cacheHits": [
+              22,
+              25
+            ],
+            "draws": [
+              2,
+              3
+            ]
+          }
+        }
+      }
+    },
+    {
+      "round": 3,
+      "sha256": "6ffbb93a731f34cbdb5e8a60aeb5e1344c714def02bc0d6b4c115d947d693d2f",
+      "phases": {
+        "labels": {
+          "all": {
+            "cpuMs": 0.5207500000000945,
+            "prepareMs": 0.26300000000082946,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.21745,
+            "layoutMs": 0.12145,
+            "canvasSetupMs": 0.01965,
+            "backgroundMs": 0.0128,
+            "drawMs": 0.02375,
+            "readbackMs": 0.001,
+            "textureSetupMs": 0.02325,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0048,
+            "finishMs": 0.018349999999999998
+          },
+          "fastest30": {
+            "cpuMs": 0.42819999999943975,
+            "prepareMs": 0.1890000000003056,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.14855000000000002,
+            "layoutMs": 0.05795,
+            "canvasSetupMs": 0.0146,
+            "backgroundMs": 0.01095,
+            "drawMs": 0.018549999999999997,
+            "readbackMs": 0.0008,
+            "textureSetupMs": 0.020900000000000002,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00445,
+            "finishMs": 0.01695
+          },
+          "slowest30": {
+            "cpuMs": 0.8217499999997526,
+            "prepareMs": 0.3974999999991269,
+            "calls": 20,
+            "cacheHits": 19,
+            "draws": 1,
+            "ttfMs": 0.34105,
+            "layoutMs": 0.16155,
+            "canvasSetupMs": 0.02905,
+            "backgroundMs": 0.01895,
+            "drawMs": 0.0358,
+            "readbackMs": 0.0014,
+            "textureSetupMs": 0.03245,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.00625,
+            "finishMs": 0.024300000000000002
+          },
+          "counts": {
+            "calls": [
+              20,
+              20
+            ],
+            "cacheHits": [
+              19,
+              19
+            ],
+            "draws": [
+              1,
+              1
+            ]
+          }
+        },
+        "rich": {
+          "all": {
+            "cpuMs": 0.4788000000005821,
+            "prepareMs": 0.17299999999886495,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.16110000000000002,
+            "layoutMs": 0.04795,
+            "canvasSetupMs": 0.0324,
+            "backgroundMs": 0.0156,
+            "drawMs": 0.03065,
+            "readbackMs": 0.00145,
+            "textureSetupMs": 0.010350000000000002,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0041,
+            "finishMs": 0.014
+          },
+          "fastest30": {
+            "cpuMs": 0.28090000000053844,
+            "prepareMs": 0.10999999999876309,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.10245,
+            "layoutMs": 0.0206,
+            "canvasSetupMs": 0.0218,
+            "backgroundMs": 0.0112,
+            "drawMs": 0.0195,
+            "readbackMs": 0.0009,
+            "textureSetupMs": 0.0075,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0028,
+            "finishMs": 0.0102
+          },
+          "slowest30": {
+            "cpuMs": 1.0038499999981227,
+            "prepareMs": 0.4470000000001164,
+            "calls": 8,
+            "cacheHits": 7,
+            "draws": 1,
+            "ttfMs": 0.41974999999999996,
+            "layoutMs": 0.1832,
+            "canvasSetupMs": 0.058249999999999996,
+            "backgroundMs": 0.039900000000000005,
+            "drawMs": 0.08274999999999999,
+            "readbackMs": 0.0037,
+            "textureSetupMs": 0.0205,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0104,
+            "finishMs": 0.03695
+          },
+          "counts": {
+            "calls": [
+              4,
+              8
+            ],
+            "cacheHits": [
+              3,
+              7
+            ],
+            "draws": [
+              1,
+              2
+            ]
+          }
+        },
+        "mixed": {
+          "all": {
+            "cpuMs": 2.994350000001048,
+            "prepareMs": 1.3330000000005384,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 1.2441,
+            "layoutMs": 0.9112,
+            "canvasSetupMs": 0.052250000000000005,
+            "backgroundMs": 0.04435,
+            "drawMs": 0.10975,
+            "readbackMs": 0.0042,
+            "textureSetupMs": 0.04095,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0143,
+            "finishMs": 0.05455
+          },
+          "fastest30": {
+            "cpuMs": 1.6904499999991123,
+            "prepareMs": 0.6465000000007421,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 0.5862,
+            "layoutMs": 0.4021,
+            "canvasSetupMs": 0.02825,
+            "backgroundMs": 0.02275,
+            "drawMs": 0.050100000000000006,
+            "readbackMs": 0.0023,
+            "textureSetupMs": 0.02895,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0083,
+            "finishMs": 0.030850000000000002
+          },
+          "slowest30": {
+            "cpuMs": 4.938800000000815,
+            "prepareMs": 2.5349999999998545,
+            "calls": 28,
+            "cacheHits": 25,
+            "draws": 3,
+            "ttfMs": 2.40375,
+            "layoutMs": 1.7593,
+            "canvasSetupMs": 0.09535,
+            "backgroundMs": 0.0811,
+            "drawMs": 0.184,
+            "readbackMs": 0.00785,
+            "textureSetupMs": 0.06914999999999999,
+            "diagnosticsMs": 0,
+            "uploadMs": 0.0269,
+            "finishMs": 0.09029999999999999
+          },
+          "counts": {
+            "calls": [
+              24,
+              28
+            ],
+            "cacheHits": [
+              22,
+              25
+            ],
+            "draws": [
+              2,
+              3
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

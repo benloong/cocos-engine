@@ -51,15 +51,19 @@ for (let round = 1; round <= roundCount; round++) {
             if (kind === 'stages') {
                 assert.equal(c.ttfStages.length, 120);
                 for (const row of c.ttfStages) {
-                    assert.equal(row.length, sections.length + 1);
+                    assert([sections.length + 1, sections.length + 3].includes(row.length));
+                    if (row.length === sections.length + 3) assert.equal(row[0], row.at(-2) + row.at(-1));
                     assert(row.every(n => Number.isSafeInteger(n) && n >= 0));
-                    assert.equal(row[0], c.phase === 'steady' ? 0 : glyphRuns[c.name]);
+                    const expected = c.phase === 'steady' ? 0 : glyphRuns[c.name];
+                    const extraRichRuns = row.length === sections.length + 3 && c.phase === 'dirty'
+                        && (c.name === 'mixed' || c.name === 'rich');
+                    assert(row[0] === expected || (extraRichRuns && row[0] === expected + glyphRuns.rich));
                     if (row[0] === 0) assert(row.every(n => n === 0));
                 }
-                summary.otherPrepareMs = median(c.ttfStages.map((row, i) =>
-                    c.stages[i][1] - row.slice(1).reduce((a, b) => a + b, 0) / 1e6));
+                const elapsedMs = row => row.slice(1, sections.length + 1).reduce((a, b) => a + b, 0) / 1e6;
+                summary.otherPrepareMs = median(c.ttfStages.map((row, i) => c.stages[i][1] - elapsedMs(row)));
                 summary.calls = median(c.ttfStages.map(row => row[0]));
-                summary.ttfMs = median(c.ttfStages.map(row => row.slice(1).reduce((a, b) => a + b, 0) / 1e6));
+                summary.ttfMs = median(c.ttfStages.map(elapsedMs));
                 sections.forEach((name, i) => { summary[name] = median(c.ttfStages.map(row => row[i + 1] / 1e6)); });
             } else assert.equal(c.ttfStages, undefined);
             cases[c.name + '/' + c.phase] = summary;

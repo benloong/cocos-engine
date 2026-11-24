@@ -50,10 +50,12 @@ if (labelStages) {
     const labelSource = execFileSync('git', ['-C', source, 'show', 'HEAD:' + labelFile], { encoding: 'utf8' });
     const drawContext = 'auto &context = measurement.drawingContext(textureWidth, textureHeight);';
     const hasRasterReuse = labelSource.includes('uploadRaster(cache->pixels);');
+    const drawLines = labelSource.includes('auto drawLine =')
+        ? 'auto drawLine =' : 'for (size_t i = 0; i < lines.size(); ++i)';
     const cuts = [
         ['Layout', labelSource.includes(drawContext) ? drawContext : 'CanvasRenderingContext2D context(static_cast<float>(textureWidth), static_cast<float>(textureHeight));'],
         ['CanvasSetup', 'const Color &edgeColor ='],
-        ['Background', hasRasterReuse ? 'for (size_t i = 0; i < lines.size(); ++i)' : 'float textTop ='],
+        ['Background', hasRasterReuse ? drawLines : 'float textTop ='],
         ['Draw', 'cc::Data pixels;'],
         ...(hasRasterReuse ? [
             ['Layout', 'uploadRaster(cache->pixels);'],
@@ -64,12 +66,15 @@ if (labelStages) {
             ['TextureSetup', 'const uint8_t *bytes = pixels.getBytes();'],
             ['Diagnostics', '_texture->uploadData(bytes);'],
         ]),
-        ['Upload', '_lastTextureWidth = static_cast<float>(textureWidth);'],
+        ['Upload', labelSource.includes('_lastTextureWidth = static_cast<float>(textureWidth);')
+            ? '_lastTextureWidth = static_cast<float>(textureWidth);' : '_lastContentWidth = contentWidth;'],
     ];
     instrument(labelFile, [
         ['#include "2d/components/Label.h"', '#include "M6TtfTimer.h"\n#include "2d/components/Label.h"'],
         ['const auto box = _transform->getContentSize();', 'M6TtfTimer timer;\n    const auto box = _transform->getContentSize();'],
         ...cuts.map(([stage, line]) => [line, 'timer.next(M6TtfTimer::Stage::' + stage + ');\n    ' + line]),
+        ...(hasRasterReuse ? [['uploadRaster(cache->pixels);', '++M6TtfTimer::hits;\n        uploadRaster(cache->pixels);']] : []),
+        ['cc::Data pixels;', '++M6TtfTimer::draws;\n    cc::Data pixels;'],
     ]);
 } else if (fs.existsSync(path.join(source, 'native/cocos', timer))) {
     instrument(labelFile, []);

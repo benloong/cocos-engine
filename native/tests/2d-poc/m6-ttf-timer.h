@@ -7,6 +7,7 @@
 class M6TtfTimer {
 public:
     enum class Stage { Layout, CanvasSetup, Background, Draw, Readback, TextureSetup, Diagnostics, Upload, Finish, Count };
+    inline static thread_local uint64_t hits{}, draws{};
 
     M6TtfTimer() { ++calls; }
     ~M6TtfTimer() { next(Stage::Finish); }
@@ -22,6 +23,8 @@ public:
             data += "," + std::to_string(value);
             value = 0;
         }
+        data += "," + std::to_string(hits) + "," + std::to_string(draws);
+        hits = draws = 0;
         return data;
     }
 private:
