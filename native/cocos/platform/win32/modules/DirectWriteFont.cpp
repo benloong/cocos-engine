@@ -497,8 +497,15 @@ public:
         // DirectWrite supplies the right edge of an RTL run. Place each shaped
         // glyph at its left origin before snapping it to the Canvas raster grid.
         const bool rtl = (run->bidiLevel & 1U) != 0;
+        // Paint synthetic bold outlines in visual order within an RTL run:
+        // overlapping coverage is rounded to bytes after each glyph.
+        const bool visualOrder = rtl && _bold && _lineWidth == 0 && !_blur.radius;
         float origin = x;
-        for (UINT32 index = 0; index < run->glyphCount; ++index) {
+        if (visualOrder) {
+            for (UINT32 i = 0; i < run->glyphCount; ++i) origin -= run->glyphAdvances[i];
+        }
+        for (UINT32 i = 0; i < run->glyphCount; ++i) {
+            const UINT32 index = visualOrder ? run->glyphCount - 1 - i : i;
             DWRITE_GLYPH_RUN glyph = *run;
             glyph.bidiLevel = 0;
             glyph.glyphCount = 1;
@@ -507,11 +514,12 @@ public:
             glyph.glyphOffsets = nullptr;
             const auto offset = run->glyphOffsets ? run->glyphOffsets[index] : DWRITE_GLYPH_OFFSET{};
             const float advance = run->glyphAdvances[index];
-            const float glyphX = rtl ? origin - advance - offset.advanceOffset : origin + offset.advanceOffset;
+            if (rtl && !visualOrder) origin -= advance;
+            const float glyphX = rtl ? origin - offset.advanceOffset : origin + offset.advanceOffset;
             const auto hr = drawMask(std::floor(glyphX * 4.F + .5F) / 4.F,
                                      std::floor(y - offset.ascenderOffset + .5F), mode, &glyph, rasterMode);
             if (FAILED(hr)) return hr;
-            origin += rtl ? -advance : advance;
+            if (!rtl || visualOrder) origin += advance;
         }
         return S_OK;
     }
