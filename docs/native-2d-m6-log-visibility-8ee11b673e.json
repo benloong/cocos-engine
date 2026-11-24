@@ -1,0 +1,27 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "command": "run-native-log-visibility-tests.ps1",
+  "scope": "Win32 native core and script log messages visible before the waiting child exits.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "aff21af8067cbc1a6a65f224b91b3030c845d3f7aafb6a0cc8f77ad185939d9d",
+      "visibleBeforeRelease": true,
+      "childAliveBeforeRelease": true,
+      "visibleAfterExit": true,
+      "exitCode": 0,
+      "runDirectory": "8ee11b673e-Debug-a07de5fa47af4159aaf5c655cd8d299c",
+      "reportSha256": "3d9bac3a2e91f7941b1b73706ec1dfef9b2b4bfb81353a7d19ee11e4d344c065"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "6b9c1d8f2d60a15cf8086b6a873282bc3477a35cc939a819996976db9efb432b",
+      "visibleBeforeRelease": true,
+      "childAliveBeforeRelease": true,
+      "visibleAfterExit": true,
+      "exitCode": 0,
+      "runDirectory": "8ee11b673e-Release-c742122c619443deb70a1745ae1a34eb",
+      "reportSha256": "712ab4a2052b64768a70eb50593652cc7ccece6ba38f8012d7e725e065a4e838"
+    }
+  ]
+}
