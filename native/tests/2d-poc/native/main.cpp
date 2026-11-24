@@ -61,6 +61,8 @@
 #include "bindings/jswrapper/SeApi.h"
 #include "bindings/manual/jsb_platform.h"
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
+#include <windows.h>
+#include <winternl.h>
 size_t getFontAliasLeaseCount();
 size_t getFontAliasGroupCount();
 #endif
@@ -660,13 +662,60 @@ void testFrameConsumers() {
 }
 
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
-bool checkDirectWriteFileRelease(const std::filesystem::path &path) {
-    // Request read and write access with no sharing. A lingering reader or
-    // mapped font file must not prevent replacing this source after release.
+void reportDirectWriteFileFailure(const std::filesystem::path &path, const char *stage, DWORD error, bool expected = false) {
+    std::fprintf(stderr, "%s stage=%s error=%lu pid=%lu path=%ls\n",
+                 expected ? "M6_FONT_FILE_CONTROL" : "M6_FONT_FILE_FAILURE",
+                 stage, error, GetCurrentProcessId(), path.c_str());
+    // Observe only after the gate has failed. This handle must never overlap a gate check.
+    HANDLE file = CreateFileW(path.c_str(), FILE_READ_ATTRIBUTES,
+                             FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr,
+                             OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (file == INVALID_HANDLE_VALUE) {
+        std::fprintf(stderr, "M6_FONT_FILE_OWNERS openError=%lu\n", GetLastError());
+        return;
+    }
+    using QueryFile = NTSTATUS (NTAPI *)(HANDLE, PIO_STATUS_BLOCK, PVOID, ULONG, FILE_INFORMATION_CLASS);
+    auto query = reinterpret_cast<QueryFile>(GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationFile"));
+    if (query) {
+        struct { ULONG count; ULONG_PTR ids[64]; } owners{};
+        IO_STATUS_BLOCK statusBlock{};
+        // FileProcessIdsUsingFileInformation, documented FILE_INFORMATION_CLASS value 47.
+        const auto status = query(file, &statusBlock, &owners, sizeof(owners), static_cast<FILE_INFORMATION_CLASS>(47));
+        std::fprintf(stderr, "M6_FONT_FILE_OWNERS status=0x%08lx count=%lu observerPid=%lu\n",
+                     static_cast<unsigned long>(status), owners.count, GetCurrentProcessId());
+        if (status >= 0 && owners.count <= 64) {
+            for (ULONG i = 0; i < owners.count; ++i) {
+                const auto pid = static_cast<DWORD>(owners.ids[i]);
+                HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+                wchar_t image[1024]{}; DWORD length = 1024;
+                const bool named = process && QueryFullProcessImageNameW(process, 0, image, &length);
+                std::fprintf(stderr, "M6_FONT_FILE_OWNER pid=%lu observer=%d image=%ls\n",
+                             pid, pid == GetCurrentProcessId(), named ? image : L"<unavailable>");
+                if (process) CloseHandle(process);
+            }
+        }
+    } else {
+        std::fprintf(stderr, "M6_FONT_FILE_OWNERS queryUnavailable\n");
+    }
+    CloseHandle(file);
+}
+
+bool checkDirectWriteFileRelease(const std::filesystem::path &path, const char *stage = nullptr) {
     HANDLE exclusive = CreateFileW(path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (exclusive == INVALID_HANDLE_VALUE) return false;
-    return CloseHandle(exclusive) != FALSE;
+    if (exclusive == INVALID_HANDLE_VALUE) {
+        const DWORD error = GetLastError();
+        if (stage) reportDirectWriteFileFailure(path, stage, error);
+        SetLastError(error);
+        return false;
+    }
+    const bool closed = CloseHandle(exclusive) != FALSE;
+    if (!closed && stage) {
+        const DWORD error = GetLastError();
+        reportDirectWriteFileFailure(path, "exclusive-handle-close", error);
+        SetLastError(error);
+    }
+    return closed;
 }
 
 bool exerciseDirectWriteFile(const std::filesystem::path &path, const char *fixture, float expectedWidth) {
@@ -679,22 +728,36 @@ bool exerciseDirectWriteFile(const std::filesystem::path &path, const char *fixt
     const std::string source = path.u8string();
     auto first = cc::DirectWriteFont::create(source, 24.F, false, false);
     auto second = cc::DirectWriteFont::create(source, 24.F, false, false);
-    if (!first || !second || first->measure("Atlas 123")[0] != expectedWidth) return false;
+    if (!first || !second || first->measure("Atlas 123")[0] != expectedWidth) {
+        std::fprintf(stderr, "M6_FONT_FILE_FAILURE stage=valid-font-create-or-measure first=%d second=%d expected=%f actual=%f\n",
+                     bool(first), bool(second), expectedWidth, first ? first->measure("Atlas 123")[0] : -1.F);
+        return false;
+    }
     first.reset();
     std::array<uint8_t, 32 * 32 * 4> pixels{};
     if (second->measure("Atlas 123")[0] != expectedWidth
         || !second->draw("A", 1, 24, 3, pixels.data(), 32, 32, {1, 1, 1, 1})
         || !second->stroke("A", 1, 24, 3, pixels.data(), 32, 32, {1, 1, 1, 1}, 2.F,
-                           cc::DirectWriteFont::StrokeJoin::ROUND)) return false;
+                           cc::DirectWriteFont::StrokeJoin::ROUND)) {
+        std::fprintf(stderr, "M6_FONT_FILE_FAILURE stage=surviving-font-measure-draw-or-stroke\n");
+        return false;
+    }
     second.reset();
-    if (!checkDirectWriteFileRelease(path)) return false;
+    if (!checkDirectWriteFileRelease(path, "after-valid-font-release")) return false;
     {
         std::ofstream invalid(path, std::ios::binary | std::ios::trunc);
         invalid.write("invalid", 7);
         invalid.close();
-        if (!invalid) return false;
+        if (!invalid) {
+            std::fprintf(stderr, "M6_FONT_FILE_FAILURE stage=invalid-file-write\n");
+            return false;
+        }
     }
-    return !cc::DirectWriteFont::create(source, 24.F, false, false) && checkDirectWriteFileRelease(path);
+    if (cc::DirectWriteFont::create(source, 24.F, false, false)) {
+        reportDirectWriteFileFailure(path, "invalid-font-accepted", ERROR_INVALID_DATA);
+        return false;
+    }
+    return checkDirectWriteFileRelease(path, "after-invalid-font-rejection");
 }
 
 int runDirectWriteFileProbe() {
@@ -706,15 +769,40 @@ int runDirectWriteFileProbe() {
         widths[i] = face->measure("Atlas 123")[0];
     }
     if (widths[0] <= 0 || widths[1] <= 0 || widths[0] == widths[1]) return 1;
+    wchar_t directory[MAX_PATH]{};
+    DWORD length = GetEnvironmentVariableW(L"CC_M6_FONT_PROBE_DIRECTORY", directory, MAX_PATH);
+    if (length == 0) {
+        length = GetModuleFileNameW(nullptr, directory, MAX_PATH);
+        if (length > 0 && length < MAX_PATH) {
+            const auto parent = std::filesystem::path(directory).parent_path().wstring();
+            std::copy(parent.begin(), parent.end(), directory);
+            directory[parent.size()] = L'\0';
+            length = static_cast<DWORD>(parent.size());
+        }
+    }
+    if (length == 0 || length >= MAX_PATH) {
+        std::fprintf(stderr, "M6_FONT_FILE_FAILURE stage=temporary-directory length=%lu error=%lu\n", length, GetLastError());
+        return 1;
+    }
+    // Keep generated sources in the build directory, independently of the launch directory.
+    // The directory override retains the original workspace reproduction path.
     wchar_t name[MAX_PATH]{};
-    if (!GetTempFileNameW(L".", L"m6f", 0, name)) return 1;
+    if (!GetTempFileNameW(directory, L"m6f", 0, name)) {
+        std::fprintf(stderr, "M6_FONT_FILE_FAILURE stage=temporary-file-create error=%lu directory=%ls\n", GetLastError(), directory);
+        return 1;
+    }
     const auto path = std::filesystem::absolute(name);
+    std::printf("M6_FONT_FILE_START pid=%lu path=%ls\n", GetCurrentProcessId(), path.c_str());
+    std::fflush(stdout);
     // Confirm the exclusive-open check detects a real outstanding reader.
     HANDLE reader = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr,
                                 OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
     bool ok = reader != INVALID_HANDLE_VALUE;
     if (ok) {
         ok = !checkDirectWriteFileRelease(path) && GetLastError() == ERROR_SHARING_VIOLATION;
+        if (ok && GetEnvironmentVariableW(L"CC_M6_FONT_DIAGNOSTIC_CONTROL", nullptr, 0)) {
+            reportDirectWriteFileFailure(path, "intentional-held-reader-control", ERROR_SHARING_VIOLATION, true);
+        }
         if (!CloseHandle(reader)) ok = false;
     }
     ok = ok && exerciseDirectWriteFile(path, fixtures[0], widths[0]) && exerciseDirectWriteFile(path, fixtures[1], widths[1]);
@@ -733,6 +821,7 @@ int runDirectWriteFileProbe() {
         }
     }
     const bool removed = DeleteFileW(path.c_str()) != FALSE;
+    if (!removed) reportDirectWriteFileFailure(path, "temporary-file-delete", GetLastError());
     return ok && removed ? 0 : 1;
 }
 #endif
