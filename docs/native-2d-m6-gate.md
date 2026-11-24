@@ -1,5 +1,13 @@
 # Native 2D M6 Gate
 
+## Windows 最终签收 · 2026-11-24
+
+**GO — 实现候选 `8ee11b673e`。** 用户确认历史 Debug 提前退出和字体共享冲突已处理，关闭这两项阻断。历史记录保留当时的观测，具体退出原因和占用进程未从原始日志确定。
+
+15 份已提交报告均对应同一实现候选。Debug 和 Release [原生核心复验](./native-2d-m6-reaccept-core-8ee11b673e.json)通过，[字体复验](./native-2d-m6-reaccept-font-8ee11b673e.json)各完成 1000 轮。[离线 RichText 应用](./native-2d-m6-offline-richtext-exit-8ee11b673e.json)六次正常退出，348 张捕获与基准逐字节一致。[Windows Release 性能门禁](./native-2d-m6-performance-8ee11b673e.json)四项通过。
+
+## 历次候选记录
+
 **NO-GO。** 2026-11-23 已列出的 JSB／Native 定向失败已完成修复复验。Jest 入口修正后通过 63 项 Native 检查，Windows Debug Label 透明度、Graphics 双配置和 RichText Release 在干净重建后通过。旧增量构建遗漏头文件依赖的问题已修复。M6.4 完整矩阵、Native 裁剪、调用追踪、ASan、文档工程 Windows 门禁及 M6.5 最终签收继续待办。现有 Web 实现退出 M6 验收，历史结果继续保留。
 
 验收范围为 Windows Debug、Windows Release 的 JSB 薄层和 Native 实现。JSB + Native 禁用动态合图。Windows RichText 内部分段仅通过原生组件查询。macOS、iOS、Android、OHOS 暂缓验收。本轮采用本机验收证据，CI 与托管 runner 运行记录退出签收范围。
