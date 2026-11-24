@@ -1,0 +1,88 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "artifacts": "native/tests/2d-poc/build/m6-document-8ee11b673e",
+  "scope": "Document application M2, M3, M4 Mask and Extra, and M5. Only the M5 launcher requires natural exit within 120 seconds.",
+  "inputs": "Full document Resources copied from the previous accepted document run, using the debugger-disabled Debug and normal Release executables from the repaired RichText application build. Separate staging directories and sequential launchers.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "matchingPixelCaptures": {
+        "m6-atlas-captures": 12,
+        "m6-bitmap-captures": 92
+      },
+      "exeSha256": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+      "engineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "787ffc727f0e17e31975d070bb57c04ac8458077840a295cd28f86a986feb1f8",
+      "stages": [
+        {
+          "stage": "m2-pixel",
+          "marker": "M2 pixel probe: PASS",
+          "logSha256": "3b1aa34b8c42214ae5d63ee3f6e7a6518d618297090c8b7fda8ef3c6b2f8837b"
+        },
+        {
+          "stage": "m3-label",
+          "marker": "M3 Label probe: PASS",
+          "logSha256": "be849f89f3168e688893972fceb0dca77a6c5f7d939a8b84046c187b644e74ef"
+        },
+        {
+          "stage": "m4-mask",
+          "marker": "M4 Mask probe: PASS",
+          "logSha256": "d695c7f35b56c26d36dd604689d1017988be9baf16302b05e836786cfa8e93a2"
+        },
+        {
+          "stage": "m4-extra",
+          "marker": "M4 extra probe: PASS",
+          "logSha256": "df0d14c09db82301bd41340b3121facec2050151a18fc96bac3a2ec1e1d0800d"
+        },
+        {
+          "stage": "m5-richtext",
+          "marker": "M5 RichText probe: PASS",
+          "logSha256": "dff6a7f5d6b5214b2af431472ffa3593c6b3a4366fa073b5479eabc281c08071"
+        }
+      ],
+      "m5ElapsedSeconds": 41.6640173,
+      "m5Exit": 0,
+      "m5ReportSha256": "65c8ac7b910776aca42bc5c2d2512bae359dc0ab531ed2dc48cb1b6f9a83cbb3"
+    },
+    {
+      "configuration": "Release",
+      "matchingPixelCaptures": {
+        "m6-atlas-captures": 12,
+        "m6-bitmap-captures": 92
+      },
+      "exeSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "engineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "787ffc727f0e17e31975d070bb57c04ac8458077840a295cd28f86a986feb1f8",
+      "stages": [
+        {
+          "stage": "m2-pixel",
+          "marker": "M2 pixel probe: PASS",
+          "logSha256": "361915f5da65a142f6b91b18de848a3fbe96f54d789409fe78c89ca30fb4fc36"
+        },
+        {
+          "stage": "m3-label",
+          "marker": "M3 Label probe: PASS",
+          "logSha256": "be849f89f3168e688893972fceb0dca77a6c5f7d939a8b84046c187b644e74ef"
+        },
+        {
+          "stage": "m4-mask",
+          "marker": "M4 Mask probe: PASS",
+          "logSha256": "d695c7f35b56c26d36dd604689d1017988be9baf16302b05e836786cfa8e93a2"
+        },
+        {
+          "stage": "m4-extra",
+          "marker": "M4 extra probe: PASS",
+          "logSha256": "df0d14c09db82301bd41340b3121facec2050151a18fc96bac3a2ec1e1d0800d"
+        },
+        {
+          "stage": "m5-richtext",
+          "marker": "M5 RichText probe: PASS",
+          "logSha256": "0cf49fd586a3d9e2b59e6b21c2efa3ed3fc8ef68d40882c782ca3d0d8bf86c1c"
+        }
+      ],
+      "m5ElapsedSeconds": 40.1211233,
+      "m5Exit": 0,
+      "m5ReportSha256": "36ef2354a2c66a13cb7050ab7221d49b0900f120ee2593e5ba3df59e31c197e7"
+    }
+  ]
+}
