@@ -158,6 +158,16 @@ Vec2 UITransform::convertToWorldSpaceAR(const Vec2 &nodePoint) const {
     return Vec2(world.x, world.y);
 }
 
+Vec3 UITransform::convertToNodeSpaceARXYZ(float x, float y, float z) const {
+    const Vec3 point(x, y, z);
+    return _node ? UITransformMath::convertToNodeSpaceAR(point, _node->getWorldMatrix()) : point;
+}
+
+Vec3 UITransform::convertToWorldSpaceARXYZ(float x, float y, float z) const {
+    const Vec3 point(x, y, z);
+    return _node ? UITransformMath::convertToWorldSpaceAR(point, _node->getWorldMatrix()) : point;
+}
+
 bool UITransform::containsWorldPoint(const Vec2 &worldPoint) const {
     if (_node == nullptr) {
         return false;

@@ -2534,6 +2534,20 @@ void testUITransformParity() {
     const cc::Vec2 world = convertTransform.convertToWorldSpaceAR(cc::Vec2(0.F, 0.F));
     checkNear(world.x, 50.F, "parity convert world x");
     checkNear(world.y, 50.F, "parity convert world y");
+    cc::Node *child = ccnew cc::Node("convert-depth");
+    child->setParent(&convertNode);
+    child->setPosition(1.F, 2.F, 3.F);
+    child->setScale(2.F, 3.F, 4.F);
+    child->setRotationFromEuler(90.F, 0.F, 0.F);
+    cc::UITransform childTransform(child);
+    const auto projected = childTransform.convertToWorldSpaceARXYZ(2.F, 3.F, 5.F);
+    checkNear(projected.x, 55.F, "hierarchical world x");
+    checkNear(projected.y, 32.F, "hierarchical world y includes depth");
+    checkNear(projected.z, 12.F, "hierarchical world z includes rotation");
+    const auto original = childTransform.convertToNodeSpaceARXYZ(projected.x, projected.y, projected.z);
+    checkNear(original.x, 2.F, "hierarchical inverse x");
+    checkNear(original.y, 3.F, "hierarchical inverse y");
+    checkNear(original.z, 5.F, "hierarchical inverse z");
 }
 
 void testUITransformScaleParity() {

@@ -39,6 +39,12 @@ node._uiProps = { uiTransformComp: null };
 node.emit = function(type) { check(type === 'size-changed','size event'); changes++; };
 const ui = new exports.UITransform(); ui.node=node; ui.__preload(); ui.onLoad();
 check(node._uiProps.uiTransformComp===ui,'preload registers the shell with its node');
+node.setPositionJS(4, 6, 8);
+const point = { x: 1, y: 2, z: 3, set(x, y, z) { this.x=x; this.y=y; this.z=z; } };
+check(ui.convertToWorldSpaceAR(point, point) === point && point.x===5 && point.y===8 && point.z===11,
+    'world conversion preserves depth and caller-owned output');
+check(ui.convertToNodeSpaceAR(point, point) === point && point.x===1 && point.y===2 && point.z===3,
+    'inverse conversion round-trips all axes in place');
 ui.setContentSize(100,10);
 check(ui.height===10 && changes===1,'shell setter notifies once');
 const label = new n2d.Label(); label.setNode(node);

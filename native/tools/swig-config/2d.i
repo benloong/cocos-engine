@@ -262,7 +262,17 @@
     SE_PRECONDITION2(ok, false, "Invalid size callback");
     $1 = &callback$argnum;
 }
+// The shell copies coordinates into the caller's Vec3, so return a value
+// object instead of allocating a second native Vec3 with GC ownership.
+%typemap(out) cc::Vec3 {
+    se::HandleObject point(se::Object::createPlainObject());
+    point->setProperty("x", se::Value($1.x));
+    point->setProperty("y", se::Value($1.y));
+    point->setProperty("z", se::Value($1.z));
+    s.rval().setObject(point);
+}
 %include "2d/framework/UITransform.h"
+%clear cc::Vec3;
 %clear const std::function<void(float, float)> &;
 %include "2d/framework/UIOpacity.h"
 // Registration and dirty slots are internal to native components.

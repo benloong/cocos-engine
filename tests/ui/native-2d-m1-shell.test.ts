@@ -19,10 +19,8 @@ const nativeUITransform = {
     getBoundingBoxToY: jest.fn(() => 10),
     getBoundingBoxToWidth: jest.fn(() => 11),
     getBoundingBoxToHeight: jest.fn(() => 12),
-    convertToNodeSpaceARX: jest.fn((x: number) => x + 1),
-    convertToNodeSpaceARY: jest.fn((y: number) => y + 2),
-    convertToWorldSpaceARX: jest.fn((x: number) => x + 3),
-    convertToWorldSpaceARY: jest.fn((y: number) => y + 4),
+    convertToNodeSpaceARXYZ: jest.fn((x: number, y: number, z: number) => ({ x: x - 3, y: y - 4, z: z - 5 })),
+    convertToWorldSpaceARXYZ: jest.fn((x: number, y: number, z: number) => ({ x: x + 3, y: y + 4, z: z + 5 })),
     containsWorldPointXY: jest.fn(() => true),
     hitTestXY: jest.fn(() => true),
     getHitTestWorldPointXY: jest.fn(() => ({ x: 11, y: 21 })),
@@ -82,7 +80,10 @@ test('UITransform shell attaches and forwards to native', () => {
     expect(ui.hitTest(new Vec2(10, 20), 4, worldPoint)).toBe(false);
     expect(worldPoint).toEqual(new Vec2(11, 21));
     expect(ui.getBoundingBoxTo(new Mat4()).x).toBe(9);
-    expect(ui.convertToWorldSpaceAR(new Vec3(1, 2, 0)).x).toBe(4);
+    const point = new Vec3(1, 2, 7);
+    expect(ui.convertToWorldSpaceAR(point, point)).toBe(point);
+    expect(point).toEqual(new Vec3(4, 6, 12));
+    expect(ui.convertToNodeSpaceAR(point)).toEqual(new Vec3(1, 2, 7));
 
     ui.onDestroy();
     expect(nativeUITransform.detach).toHaveBeenCalled();

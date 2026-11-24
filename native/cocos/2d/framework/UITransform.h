@@ -33,6 +33,7 @@
 #include "math/Geometry.h"
 #include "math/Mat4.h"
 #include "math/Vec2.h"
+#include "math/Vec3.h"
 
 namespace cc {
 
@@ -99,6 +100,8 @@ public:
 
     Vec2 convertToNodeSpaceAR(const Vec2 &worldPoint) const;
     Vec2 convertToWorldSpaceAR(const Vec2 &nodePoint) const;
+    cc::Vec3 convertToNodeSpaceARXYZ(float x, float y, float z) const;
+    cc::Vec3 convertToWorldSpaceARXYZ(float x, float y, float z) const;
     bool containsWorldPoint(const Vec2 &worldPoint) const;
 
     // Scalar wrappers for the JS thin shell (Vec2 is not bound yet).

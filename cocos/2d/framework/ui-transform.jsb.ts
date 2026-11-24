@@ -235,11 +235,8 @@ export class UITransform extends Component {
     public convertToNodeSpaceAR (worldPoint: Vec3, out?: Vec3): Vec3 {
         out = out || new Vec3();
         if (this._native) {
-            out.set(
-                this._native.convertToNodeSpaceARX(worldPoint.x, worldPoint.y),
-                this._native.convertToNodeSpaceARY(worldPoint.x, worldPoint.y),
-                0,
-            );
+            const point = this._native.convertToNodeSpaceARXYZ(worldPoint.x, worldPoint.y, worldPoint.z);
+            out.set(point.x, point.y, point.z);
         } else {
             out.set(worldPoint);
         }
@@ -249,11 +246,8 @@ export class UITransform extends Component {
     public convertToWorldSpaceAR (nodePoint: Vec3, out?: Vec3): Vec3 {
         out = out || new Vec3();
         if (this._native) {
-            out.set(
-                this._native.convertToWorldSpaceARX(nodePoint.x, nodePoint.y),
-                this._native.convertToWorldSpaceARY(nodePoint.x, nodePoint.y),
-                0,
-            );
+            const point = this._native.convertToWorldSpaceARXYZ(nodePoint.x, nodePoint.y, nodePoint.z);
+            out.set(point.x, point.y, point.z);
         } else {
             out.set(nodePoint);
         }
