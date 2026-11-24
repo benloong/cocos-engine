@@ -1,0 +1,170 @@
+{
+  "selectedChecksPassed": true,
+  "allRecordedAttemptsPassed": false,
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "selectedStages": [
+        {
+          "stage": "m2-pixel",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/checked/Debug-m2-pixel.log",
+          "sha256": "eacebbc35acf5f277f93fdfeed1e7106e06994e40d7764c6fc473258ee24c002"
+        },
+        {
+          "stage": "m3-label",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/checked/Debug-m3-label.log",
+          "sha256": "9831356bc8b4a1f1eca29755eeed8a829716c8207385096b9fbed182311b7e89"
+        },
+        {
+          "stage": "m4-mask",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/checked/Debug-m4-mask.log",
+          "sha256": "76b7ac89f44fd10a838dea6ef78d4c7c0d3d29b39604bf95f99a5240102c6389"
+        },
+        {
+          "stage": "m4-extra",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/checked/Debug-m4-extra.log",
+          "sha256": "6b7cd4a34b66cafd7d681ffa78c54999a412c3765e1fe9d2f7244d81aac50bcc"
+        }
+      ],
+      "m5": {
+        "exitCode": 0,
+        "elapsedSeconds": 41.6766022,
+        "timeoutSeconds": 45,
+        "aliveBeforeCleanup": true,
+        "reportSha256": "2a38f00c0ab6dd9b6ae6c33d2184df1edfa6f2e61857e2c9435c631bfaaf9f4c",
+        "report": "native/tests/2d-poc/build/m6-doc-03b5254ea7/serial-Debug-m5/20261124T042516631-b7c8b94a.json"
+      },
+      "atlas": {
+        "exitCode": 0,
+        "result": {
+          "cycles": 1000,
+          "checkedAssets": 5000,
+          "pixelChecks": 22
+        },
+        "samples": 11,
+        "firstSample": {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 209506304,
+          "workingSetBytes": 232890368
+        },
+        "lastSample": {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 204107776,
+          "workingSetBytes": 233549824
+        },
+        "reportSha256": "d2acf6036ca438af089fbfb10f3d42549a1d3e39cd1b41b83f74e9d0cc4d6002",
+        "report": "native/tests/2d-poc/build/m6-doc-03b5254ea7/Debug-atlas-stress/20261124T042649422-cbae9c13.json"
+      },
+      "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "executableSha256": "d2afe957bc1b1764b6a699e8e4858a2c1ff459b3cb359a08a21905ddeb5196c0",
+      "buildLogSha256": "d468f25474fde9486e047bb4dae0f47b2be9af39c373e6918a63295caba97814"
+    },
+    {
+      "configuration": "Release",
+      "selectedStages": [
+        {
+          "stage": "m2-pixel",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/release/Release-m2-pixel.log",
+          "sha256": "51f4a90773ffa46477a3a87a5de293a867646b358b98e88df079f323cb9c6e3e"
+        },
+        {
+          "stage": "m3-label",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/release/Release-m3-label.log",
+          "sha256": "265bb2422d8341e795ba22902b8145f917b199a6d59456e9375810305c05f393"
+        },
+        {
+          "stage": "m4-mask",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/release/Release-m4-mask.log",
+          "sha256": "76b7ac89f44fd10a838dea6ef78d4c7c0d3d29b39604bf95f99a5240102c6389"
+        },
+        {
+          "stage": "m4-extra",
+          "exitCode": 0,
+          "log": "native/tests/2d-poc/build/m6-doc-03b5254ea7/release/Release-m4-extra.log",
+          "sha256": "6b7cd4a34b66cafd7d681ffa78c54999a412c3765e1fe9d2f7244d81aac50bcc"
+        }
+      ],
+      "m5": {
+        "exitCode": 0,
+        "elapsedSeconds": 40.1405445,
+        "timeoutSeconds": 45,
+        "aliveBeforeCleanup": true,
+        "reportSha256": "7c5472827fc49ccf3302625691f7847be3e79057f455d1bd71615c716d9e5c8e",
+        "report": "native/tests/2d-poc/build/m6-doc-03b5254ea7/release/Release-m5/20261124T043406299-f9c1af9b.json"
+      },
+      "atlas": {
+        "exitCode": 0,
+        "result": {
+          "cycles": 1000,
+          "checkedAssets": 5000,
+          "pixelChecks": 22
+        },
+        "samples": 11,
+        "firstSample": {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 191586304,
+          "workingSetBytes": 173469696
+        },
+        "lastSample": {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 187142144,
+          "workingSetBytes": 177168384
+        },
+        "reportSha256": "e4417174ae45c258d9f36a525351a40285b3e87bb4320939f3e6872fb149b181",
+        "report": "native/tests/2d-poc/build/m6-doc-03b5254ea7/release/Release-atlas-stress/20261124T043446864-78528645.json"
+      },
+      "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "executableSha256": "e3766581529cc909903594564e300af25db9d9fcce233952cc65d757b0c82523",
+      "buildLogSha256": "2a6f2f165bf9d8c74459226f7ddc5d320468be004491ca20638dc83e913d5810"
+    }
+  ],
+  "nativeJest": {
+    "suites": 17,
+    "passed": 127,
+    "skipped": 13,
+    "reportSha256": "0eaf2435cc7f455fd4e13704ce3aee4157c70dd50c1c24f858937fcfd22e2fb2"
+  },
+  "nativeToolTests": {
+    "passed": 13,
+    "logSha256": "0d841ebebd368d9998c04f34e208aab543197c01860d1f84ed2e3aa9bd35a104"
+  },
+  "priorM5Failure": {
+    "elapsedSeconds": 45.3745657,
+    "aliveBeforeCleanup": true,
+    "failure": "RichText probe missing after 45 seconds; stdout=C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-doc-03b5254ea7\\checked\\Debug-m5\\20261124T042258694-91542352.stdout.log"
+  },
+  "fixtureSourceProofSha256": "6f32a46725242c1fe489bb89dec157a4f6812f9330dc5058677083e2400cde8e",
+  "date": "2026-11-24",
+  "candidateImplementation": "03b5254ea726f567a1bf5ddacf5d800a455703a6",
+  "validationFile": "native/tests/2d-poc/build/m6-doc-03b5254ea7/validation.json",
+  "validationSha256": "8d475461b764e018b2ae2665c4cae05c40a33de85418b4710c51f9098658f06c",
+  "runnerSourceSha256": "25fb8dff1d46532572617552a6d3f3e47c6d38469632e9597255bc59cb9a5af9",
+  "limits": [
+    "Native document binaries were rebuilt incrementally from current unchanged Native implementation; not built from an empty directory.",
+    "CLI data reused from the prior isolated document project after six probe sources were verified equal; clean Native override was replaced and hash-checked.",
+    "Only Native M0 metadata/audit and scoped Jest items were run; legacy M0 Web suites remain excluded.",
+    "First M5 attempt timed out at 45 seconds while concurrent Native Jest was running; its cause is not established by the later serial pass.",
+    "No timeout, pixel threshold, baseline or workload was relaxed.",
+    "Continuous startup schedule, earlier premature exits and final M6 sign-off remain pending.",
+    "No Web, SpriteRenderer or ModelRenderer implementation or acceptance was added."
+  ]
+}
