@@ -1,0 +1,60 @@
+{
+  "verificationBase": "e05598d06daf3b3a024de6e10db726fb68a8289a",
+  "deployedApplications": "m6-richtext-normal-exit",
+  "artifacts": "native/tests/2d-poc/build/m6-label-layout-e05598d06d",
+  "engineInternal": [
+    "textStyle",
+    "textLayout",
+    "textLayoutData",
+    "textRenderData"
+  ],
+  "sourceAccesses": {
+    "cocos/2d/assembler/label/bmfontUtils.ts": [
+      "textStyle",
+      "textLayout",
+      "textLayoutData",
+      "textRenderData"
+    ],
+    "cocos/2d/assembler/label/ttf.ts": [
+      "textRenderData"
+    ],
+    "cocos/2d/assembler/label/ttfUtils.ts": [
+      "textStyle",
+      "textLayout",
+      "textLayoutData",
+      "textRenderData"
+    ],
+    "cocos/2d/components/label.ts": [
+      "textStyle",
+      "textLayout",
+      "textLayoutData",
+      "textRenderData"
+    ]
+  },
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "scriptsScanned": 15,
+      "exitCode": 0,
+      "bitmapCaptures": 12,
+      "layoutCaptures": 80,
+      "labels": 9,
+      "coloredPixels": 10075,
+      "exeSha256": "c2ef42afe25b5a064284da9fbb7c114e7c4c01e6ea0712d0b2012fbf07cc3463",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "stdoutSha256": "B8EA268D6C1B13E945570F0981CA991CB5A1C3390DF3F4B9B14766B5AB4D933B"
+    },
+    {
+      "configuration": "Release",
+      "scriptsScanned": 15,
+      "exitCode": 0,
+      "bitmapCaptures": 12,
+      "layoutCaptures": 80,
+      "labels": 9,
+      "coloredPixels": 10075,
+      "exeSha256": "e7fc0a3d959dc09d66a54174d51e84118d20cbd9067ea4509ac69b27ae5c9f24",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "stdoutSha256": "27A72A2C8604BEC7DE0063B485095A06F8B7536CE4C634326E3AD1CDB1556497"
+    }
+  ]
+}
