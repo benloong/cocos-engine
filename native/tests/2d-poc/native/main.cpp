@@ -1777,6 +1777,108 @@ void testRichTextRuntime() {
     std::printf("rich text runtime: PASS\n");
 }
 
+// Keep real JSB wrappers rooted across allocation reuse and GC. Native Nodes are
+// deliberately retained too: destruction must retire them before their last owner.
+void testRichTextRetainedWrappers(se::ScriptEngine *scriptEngine) {
+    struct RetainedSegment {
+        cc::IntrusivePtr<cc::Node> node;
+        se::Value nodeWrapper;
+        se::Value layoutWrapper;
+    };
+    std::vector<RetainedSegment> retained;
+    retained.reserve(12800);
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D()); texture->create(8, 8);
+    cc::IntrusivePtr<cc::SpriteFrame> frame(new cc::SpriteFrame()); frame->resetWithTexture(texture);
+    cc::IntrusivePtr<cc::SpriteAtlas> atlas(new cc::SpriteAtlas()); atlas->addSpriteFrame("icon", frame);
+    cc::IntrusivePtr<cc::TTFFont> font(new cc::TTFFont()); font->setFontFamily("Arial");
+    const auto textureRefs = texture->getRefCount(), frameRefs = frame->getRefCount();
+    const auto atlasRefs = atlas->getRefCount(), fontRefs = font->getRefCount();
+    std::string markup;
+    for (int i = 0; i < 32; ++i) markup += "<color=#ff0000>x</color><img src=\"icon\" width=8 height=8/>";
+    const auto capture = [&](cc::Node &host) {
+        check(host.getChildren().size() == 64, "RichText stress creates 32 labels and 32 images");
+        for (size_t i = 0; i < host.getChildren().size(); ++i) {
+            auto *renderer = i % 2 ? static_cast<cc::UIRenderer *>(getChildRenderer<cc::Sprite>(host, i))
+                                   : static_cast<cc::UIRenderer *>(getChildRenderer<cc::Label>(host, i));
+            auto *layout = static_cast<cc::UITransform *>(host.getChildren()[i]->getUIComponent(cc::UITransform::TYPE_ID));
+            check(renderer != nullptr && layout != nullptr, "RichText stress preserves alternating segment kinds and layout");
+            if (!renderer || !layout) continue;
+            RetainedSegment segment;
+            segment.node = host.getChildren()[i];
+            const bool wrapped = nativevalue_to_se(segment.node.get(), segment.nodeWrapper, nullptr)
+                              && nativevalue_to_se(layout, segment.layoutWrapper, nullptr);
+            check(wrapped && segment.nodeWrapper.isObject() && segment.layoutWrapper.isObject(),
+                  "RichText stress creates real Node and borrowed layout wrappers");
+            if (!wrapped || !segment.nodeWrapper.isObject() || !segment.layoutWrapper.isObject()) continue;
+            segment.nodeWrapper.setObject(segment.nodeWrapper.toObject(), true);
+            segment.layoutWrapper.setObject(segment.layoutWrapper.toObject(), true);
+            retained.push_back(std::move(segment));
+        }
+    };
+    const auto checkRetired = [&](size_t begin, size_t end) {
+        for (size_t i = begin; i < end; ++i) {
+            const auto &segment = retained[i];
+            check(!cc::isObjectValid(segment.node.get()) && !segment.node->getParent()
+                      && !segment.node->isActive() && !segment.node->getUserData(),
+                  "RichText retained Node is retired without parent or renderer");
+            check(segment.nodeWrapper.toObject()->getPrivateData() == segment.node.get(),
+                  "RichText retained Node wrapper still addresses its retired native Node");
+            check(!segment.layoutWrapper.toObject()->getPrivateData(),
+                  "RichText disposed layout wrapper cannot resurrect after allocation reuse");
+        }
+    };
+    const int failuresBefore = gFailures;
+    for (int cycle = 0; cycle < 100; ++cycle) {
+        cc::Node first("rich-text-stress-first"), second("rich-text-stress-second");
+        cc::UITransform firstUI(&first), secondUI(&second);
+        const size_t begin = retained.size();
+        {
+            cc::RichText rich;
+            rich.setFontSize(8); rich.setLineHeight(10);
+            rich.setFontAsset(font); rich.setImageAtlas(atlas); rich.setString(markup);
+            rich.setNode(&first); rich.setUITransform(&firstUI);
+            capture(first);
+            rich.setString("");
+            check(first.getChildren().empty(), "RichText stress clearing text detaches every segment");
+            size_t pooled = 0;
+            for (size_t i = begin; i < retained.size(); ++i) {
+                if (retained[i].layoutWrapper.toObject()->getPrivateData()) ++pooled;
+            }
+            check(pooled == 30, "RichText stress bounds recycled layouts to 20 labels and 10 images");
+            check(frame->getRefCount() == frameRefs, "RichText stress pooled images release frame references");
+            rich.setString(markup);
+            rich.setNode(&second); rich.setUITransform(&secondUI);
+            check(first.getChildren().empty(), "RichText stress changing host clears the previous host");
+            checkRetired(begin, retained.size());
+            capture(second);
+            rich.setEnabled(false); rich.setString("");
+            check(second.getChildren().size() == 64, "RichText stress defers disabled layout changes");
+            rich.setEnabled(true);
+            check(second.getChildren().empty(), "RichText stress enabling consumes the deferred clear");
+            if (cycle % 2 == 0) {
+                rich.setString(markup); // Destroy with active children on half the cycles.
+            } else {
+                rich.setFontAsset(nullptr); rich.setImageAtlas(nullptr);
+                check(font->getRefCount() == fontRefs && atlas->getRefCount() == atlasRefs,
+                      "RichText stress explicit asset clear releases pooled and measurement ownership");
+            }
+        }
+        check(first.getChildren().empty() && second.getChildren().empty(), "RichText stress destruction clears both hosts");
+        checkRetired(begin, retained.size());
+        check(font->getRefCount() == fontRefs && atlas->getRefCount() == atlasRefs
+                  && frame->getRefCount() == frameRefs && texture->getRefCount() == textureRefs,
+              "RichText stress returns all shared resource references to baseline");
+        cc::UIRendererManager::getInstance().updateAllDirtyRenderers();
+        if ((cycle + 1) % 10 == 0) {
+            scriptEngine->garbageCollect();
+            checkRetired(0, retained.size());
+        }
+    }
+    check(retained.size() == 12800, "RichText stress retains both wrapper batches across all 100 cycles");
+    std::printf("rich text retained wrappers: %s (100 cycles, %zu Nodes, %zu layouts, 10 GC checkpoints)\n",
+                failuresBefore == gFailures ? "PASS" : "FAIL", retained.size(), retained.size());
+}
+
 void testLayoutAndMaterials() {
     cc::UITransform transform;
     int changes = 0;
@@ -3604,6 +3706,7 @@ int main(int argc, char **argv) {
         try {
             testJsBindings(scriptEngine);
             testRichTextRuntime();
+            testRichTextRetainedWrappers(scriptEngine);
         } catch (const std::exception &error) {
             ++gFailures;
             std::printf("FAIL: JSB binding test exception: %s\n", error.what());

@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-24",
+  "baseRevision": "962d5257dc4c58cf70cc5c6542e70cbb73a6af7b",
+  "scope": "Native RichText retained Node and borrowed UITransform JSB wrappers; no implementation changes",
+  "testSource": "native/tests/2d-poc/native/main.cpp",
+  "testSourceSha256": "6207f8cbb635fb8e04daf4e9744508570692471c5f8fa4b1cd4518381ea9fdac",
+  "probeSource": "native/tests/2d-poc/build-richtext-runtime-probe.cjs",
+  "probeSourceSha256": "73aedbf70101effc2987ad85b5adf807ea1844d77a936bd91dae13cc9dcb7fa1",
+  "generatedProbeSha256": "77474ed2849408a255c1a9a6591422ed4327e498ef06de727a03abcb52789ad1",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-richtext-retained-wrappers/Debug.log",
+      "logSha256": "34418e29b41b0d6d16678d0aea9fd3e688f2b68a0fbc0ae7fde8b80e81af2a27",
+      "executable": "native/tests/2d-poc/native/out/cc2d_native_poc.exe",
+      "executableSha256": "4dc2c0f490d0ad20a3dbe4ba1b96a98a8191576a4e8e8e8fada5140de07918d0",
+      "requiredOutput": [
+        "rich text retained wrappers: PASS (100 cycles, 12800 Nodes, 12800 layouts, 10 GC checkpoints)",
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ],
+      "cycles": 100,
+      "retainedNodes": 12800,
+      "retainedLayouts": 12800,
+      "gcCheckpoints": 10
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-richtext-retained-wrappers/Release.log",
+      "logSha256": "92d1480131b330756bb45895c2e200f0d15c555745ae1b2c694bbfc61d77b14d",
+      "executable": "native/tests/2d-poc/native/out-release2/cc2d_native_poc.exe",
+      "executableSha256": "e1d0974f13a85ac7d2825d07d539b780e8a56c3f8778963a2332caf0f6aee136",
+      "requiredOutput": [
+        "rich text retained wrappers: PASS (100 cycles, 12800 Nodes, 12800 layouts, 10 GC checkpoints)",
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ],
+      "cycles": 100,
+      "retainedNodes": 12800,
+      "retainedLayouts": 12800,
+      "gcCheckpoints": 10
+    }
+  ],
+  "staticChecks": [
+    {
+      "command": [
+        "node",
+        "native/tests/2d-poc/audit-m6.cjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "UITransform: override, 0 missing serialized declarations, 0 undeclared public APIs\nUIRenderer: Web runtime, 0 missing serialized declarations, 0 undeclared public APIs\nRenderRoot2D: override, 0 missing serialized declarations, 0 undeclared public APIs\nSprite: override, 0 missing serialized declarations, 0 undeclared public APIs\nLabel: override, 0 missing serialized declarations, 8 undeclared public APIs\nMask: override, 0 missing serialized declarations, 19 undeclared public APIs\nGraphics: override, 0 missing serialized declarations, 3 undeclared public APIs\nRichText: override, 0 missing serialized declarations, 0 undeclared public APIs\nUIOpacity: override, 0 missing serialized declarations, 0 undeclared public APIs\nLabelOutline: Web runtime, 0 missing serialized declarations, 0 undeclared public APIs\nLabelShadow: Web runtime, 0 missing serialized declarations, 0 undeclared public APIs\nFont: override, 0 missing serialized declarations, 0 undeclared public APIs\nTTFFont: override, 0 missing serialized declarations, 0 undeclared public APIs\nBitmapFont: override, 0 missing serialized declarations, 0 undeclared public APIs\nLabelAtlas: override, 0 missing serialized declarations, 0 undeclared public APIs\nSpriteFrame: override, 0 missing serialized declarations, 0 undeclared public APIs\nSpriteAtlas: override, 0 missing serialized declarations, 0 undeclared public APIs\n17 classes, 79 source files; this is an audit baseline, not a passing parity gate."
+    },
+    {
+      "command": [
+        "node",
+        "native/tests/2d-poc/check-thin-shell.js"
+      ],
+      "exitCode": 0,
+      "stdout": "Checked transitive 2D runtime imports for 17 classes.\n43 checks, 0 failures"
+    }
+  ],
+  "limits": [
+    "Nodes and wrappers are deliberately retained; this is not a process heap leak measurement.",
+    "Real JSB conversion, borrowed-wrapper invalidation and native retirement are checked; complete application Node wrapper integration remains a separate acceptance item.",
+    "System Arial is used; no custom-font or glyph coverage is claimed.",
+    "No new GPU, Web, SpriteRenderer or ModelRenderer acceptance is included.",
+    "This does not sign off the final M6 candidate."
+  ]
+}
