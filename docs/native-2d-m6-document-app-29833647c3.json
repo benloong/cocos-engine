@@ -1,0 +1,95 @@
+{
+  "engineCandidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "verificationHead": "af86f0734b53b257b6aba2a4813713b5d298649f",
+  "nativeBuild": "cmake --build <project> --config <configuration> --target cocos-m1-test --parallel 6",
+  "project": "cocos-m1-test/build/windows/proj (Visual Studio 18, x64); COCOS_X_PATH via cocos-cli/packages/engine junction to v4",
+  "artifacts": "native/tests/2d-poc/build/m6-document-29833647c3",
+  "resources": "Reused the corresponding configuration Resources from m6-document-a8b23abfcf; checked engine bundle and scenario hashes before accepting.",
+  "scope": "M2 through M5 on the Windows document application. M5 requires natural exit within 120 seconds. Other stages check their output markers.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "2001d8b3ebec2255aa8a0ed41ef87cf106859aa78e985a36bff82ec17003afe9",
+      "engineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "787ffc727f0e17e31975d070bb57c04ac8458077840a295cd28f86a986feb1f8",
+      "buildLogSha256": "3bbf7f671c40eaa0d7e1bcde05456f70afd1986ba8dee580c36f24019cac83cc",
+      "stages": [
+        {
+          "stage": "m2-pixel",
+          "marker": "M2 pixel probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "c5cd9decf0fa1ca8f9183e21e49894aa277fe895593bb6311c74c2edf4bb9946"
+        },
+        {
+          "stage": "m3-label",
+          "marker": "M3 Label probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "5050ec69c20db7cb2725a722182869df668cd4ab28ae7ef984877f5f18ad130b"
+        },
+        {
+          "stage": "m4-mask",
+          "marker": "M4 Mask probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "76b7ac89f44fd10a838dea6ef78d4c7c0d3d29b39604bf95f99a5240102c6389"
+        },
+        {
+          "stage": "m4-extra",
+          "marker": "M4 extra probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "6b7cd4a34b66cafd7d681ffa78c54999a412c3765e1fe9d2f7244d81aac50bcc"
+        },
+        {
+          "stage": "m5-richtext",
+          "marker": "M5 RichText probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "c1b422a7fecafd6cd6137a9c2a0a314929e5512f091b023fec0448117d06a2c9"
+        }
+      ],
+      "m5ProcessExit": 0,
+      "m5ElapsedSeconds": 42.8020445,
+      "m5ReportSha256": "bf91ee724365af13baf99560c2d6be3f2d0f6676012a5c315d247b7c8f85e35a"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "759a60532edf10bd0bd879d0472236e5790b25f51e8a506d04d8b5d0568def63",
+      "engineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "787ffc727f0e17e31975d070bb57c04ac8458077840a295cd28f86a986feb1f8",
+      "buildLogSha256": "cc4ffb9dc41022ab8e30728c39ea9d04b79b6966cbeb6e6680fac5b0a850612c",
+      "stages": [
+        {
+          "stage": "m2-pixel",
+          "marker": "M2 pixel probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "b34cf3bb2ceeea197808894490a251cddbad29d47f2eae74ea2fc08513a859db"
+        },
+        {
+          "stage": "m3-label",
+          "marker": "M3 Label probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "9831356bc8b4a1f1eca29755eeed8a829716c8207385096b9fbed182311b7e89"
+        },
+        {
+          "stage": "m4-mask",
+          "marker": "M4 Mask probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "76b7ac89f44fd10a838dea6ef78d4c7c0d3d29b39604bf95f99a5240102c6389"
+        },
+        {
+          "stage": "m4-extra",
+          "marker": "M4 extra probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "6b7cd4a34b66cafd7d681ffa78c54999a412c3765e1fe9d2f7244d81aac50bcc"
+        },
+        {
+          "stage": "m5-richtext",
+          "marker": "M5 RichText probe: PASS",
+          "gateExitCode": 0,
+          "logSha256": "1f80fa8241149854341b214e581cb519b5bb146adcb1eac3a169d8b9b0d2bc47"
+        }
+      ],
+      "m5ProcessExit": 0,
+      "m5ElapsedSeconds": 40.3405396,
+      "m5ReportSha256": "c6ef101ce9937b03f0b616e5c8202a4ef19607c0a1efb4aedd327594ce18b207"
+    }
+  ]
+}
