@@ -1,7 +1,7 @@
 {
   "date": "2026-11-24",
   "candidateImplementation": "03b5254ea726f567a1bf5ddacf5d800a455703a6",
-  "status": "confirmed-crash-root-cause-pending",
+  "status": "release-empty-receiver-confirmed-in-dump",
   "localTime": "2026-11-24T12:01:00.9438864+08:00",
   "utcTime": "2026-11-24T04:01:00.9438864Z",
   "eventRecordId": 40533,
@@ -14,6 +14,17 @@
   "moduleOffset": "0x8cfe08",
   "access": "read",
   "targetAddress": "0x0",
+  "propertyLookup": {
+    "method": "v8::Object::Has",
+    "returnRva": "0x4d34e",
+    "savedReturnMatchesUnwoundFrame": true,
+    "receiverLocalEmpty": true,
+    "contextLocalEmpty": false,
+    "fixRevision": "d6212f7012",
+    "fixScope": "Acquire the local receiver before allocating the property name and retain it through Has and Get.",
+    "unresolved": "The dump has no GC or finalizer timeline for the interval between the original persistent handle check and creation of the local receiver.",
+    "offlineVerifier": "verify-receiver.py"
+  },
   "application": "native/tests/2d-poc/build/m6-richtext-03b5254ea7/serial-release/richtext-Release/native-2d-m6-gpu.exe",
   "applicationSha256": "9b11e15c236295420d6e557b874017966b915d7c9c047e0b019b4dfacb0f41cd",
   "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
@@ -48,10 +59,10 @@
   ],
   "limits": [
     "The event path and PID match the retained failed serial Release application; its previous missing launcher ExitCode does not mean the process exited normally.",
-    "WER and the dump confirm an access violation; the root cause and relation to GL are not established.",
+    "The archived executable imports and saved caller stack identify an empty receiver at the V8 property check during RichText segment disposal.",
     "Native executable frames are resolved using its matching-timestamp linker map; distant V8 export symbol matches remain unreliable.",
     "Only the initial native stack prefix is retained here; frames after the JIT boundary are not treated as reliably unwound.",
-    "Later passing applications do not erase this failure. No implementation repair is claimed.",
+    "Later regression results apply to the implementation that retains the receiver across the property lookup.",
     "The initial Debug premature exit has not yet been tied to an equivalent OS crash record."
   ],
   "nativeLinkMap": {
