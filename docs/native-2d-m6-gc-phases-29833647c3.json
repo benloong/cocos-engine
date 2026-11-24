@@ -1,0 +1,349 @@
+{
+  "configurations": {
+    "before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669",
+      "executableSha256": "e522862471f021b47f268da2c757a2c2f0840a48a956e5001466c63a5ab0aa3f",
+      "engineLibrarySha256": "4c10d5bdfd93b331ca6fd9fc2a99b37faf1eb9a37ec2b67c74c0af3924591f96",
+      "diagnosticScriptEngineSha256": "fe5dc1c8581dac975df6076795d7da80cc638631f68860817f90a4e9a51461f0"
+    },
+    "after": {
+      "revision": "29833647c3de9625d1f4073b02f1a230a8645f75",
+      "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+      "executableSha256": "a6aadb8ffec4f96af76c93951b648974073e5af26412c019ffd2a1bd9910ab00",
+      "engineLibrarySha256": "50ab8d489b57e7d5e576a9992ce2cdaf6dde7b3822496e35146f61688a7beeb4",
+      "diagnosticScriptEngineSha256": "fe5dc1c8581dac975df6076795d7da80cc638631f68860817f90a4e9a51461f0"
+    }
+  },
+  "workloadSha256": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+  "diagnosticWorkloadSha256": "38251182e48dfb70e48a82ef6aec35c86a07a13e2d0f29fcdd526c5df79c8c97",
+  "artifacts": "native/tests/2d-poc/build/m6-gc-phases-29833647c3",
+  "measuredCollections": 144,
+  "method": "V8 trace-gc-nvp internal pause and phase timers in milliseconds. Stages can nest. Callback wall times include verbose output. Official forced GC gate remains separate.",
+  "mixedDirty": {
+    "before": {
+      "pause": 7.550000000000001,
+      "mark": 5.35,
+      "mark.roots": 0.2,
+      "mark.full_closure_parallel": 5.15,
+      "mark.ephemeron.marking": 3.75,
+      "evacuate": 0.75,
+      "evacuate.copy": 0.35,
+      "evacuate.update_pointers": 0.4,
+      "sweep": 0.1,
+      "heap.external.weak_global_handles": 1
+    },
+    "after": {
+      "pause": 8.600000000000001,
+      "mark": 7.35,
+      "mark.roots": 0.2,
+      "mark.full_closure_parallel": 7.1,
+      "mark.ephemeron.marking": 4.55,
+      "evacuate": 0.6,
+      "evacuate.copy": 0.1,
+      "evacuate.update_pointers": 0.4,
+      "sweep": 0,
+      "heap.external.weak_global_handles": 0.2
+    }
+  },
+  "pairedDeltaMs": {
+    "pause": 0.6500000000000004,
+    "mark": 1.3000000000000003,
+    "mark.roots": 0,
+    "mark.full_closure_parallel": 1.2499999999999996,
+    "mark.ephemeron.marking": 1.2999999999999998,
+    "evacuate": -0.29999999999999993,
+    "evacuate.copy": -0.25,
+    "evacuate.update_pointers": -0.04999999999999999,
+    "sweep": -0.1,
+    "heap.external.weak_global_handles": -0.8
+  },
+  "pairsByFirstRun": {
+    "before": {
+      "rounds": [
+        1,
+        3,
+        5
+      ],
+      "medianPairedDeltaMs": {
+        "pause": -1.9000000000000004,
+        "mark": -1,
+        "evacuate": -0.29999999999999993,
+        "sweep": -0.1
+      }
+    },
+    "after": {
+      "rounds": [
+        2,
+        4,
+        6
+      ],
+      "medianPairedDeltaMs": {
+        "pause": 2.1000000000000005,
+        "mark": 3.4000000000000004,
+        "evacuate": -0.29999999999999993,
+        "sweep": -0.1
+      }
+    }
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "resultSha256": "e16a0b642528915c940affb16b91e56651965d1a66957cf998dcfd7fafa75631",
+        "logSha256": "fc2868c2af31bc418a7f3967ed841e0e2e139b11a87da060d19bbae5058ec73f",
+        "mixedDirty": {
+          "pause": 7.9,
+          "mark": 5.6,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 5.4,
+          "mark.ephemeron.marking": 5.4,
+          "evacuate": 1.1,
+          "evacuate.copy": 0.5,
+          "evacuate.update_pointers": 0.5,
+          "sweep": 0.2,
+          "heap.external.weak_global_handles": 0.7,
+          "total_size_before": 28374308,
+          "total_size_after": 22300812
+        }
+      },
+      "after": {
+        "resultSha256": "b5d196252705fcac3857f079bc700d50577a1aa685dc721c4355214943606898",
+        "logSha256": "f68cdbfa9477a7e932b1a29ed34813d3f0f2c05b707726b2eee33377d8a90962",
+        "mixedDirty": {
+          "pause": 6,
+          "mark": 4.6,
+          "mark.roots": 0.3,
+          "mark.full_closure_parallel": 4.4,
+          "mark.ephemeron.marking": 2.7,
+          "evacuate": 0.7,
+          "evacuate.copy": 0.2,
+          "evacuate.update_pointers": 0.5,
+          "sweep": 0,
+          "heap.external.weak_global_handles": 0.3,
+          "total_size_before": 18065196,
+          "total_size_after": 17317692
+        }
+      }
+    },
+    {
+      "round": 2,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": {
+        "resultSha256": "04f61e14123eb16a40263a4aa785ab2d83c3ab821ea80adf4fca29a1815380c7",
+        "logSha256": "ff9c7dca2845595acd4ee2b627a2e5d9424c12a9bae0937bb0cc61e3df5b119c",
+        "mixedDirty": {
+          "pause": 8.9,
+          "mark": 7.9,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 7.6,
+          "mark.ephemeron.marking": 5.5,
+          "evacuate": 0.4,
+          "evacuate.copy": 0.1,
+          "evacuate.update_pointers": 0.3,
+          "sweep": 0,
+          "heap.external.weak_global_handles": 0.2,
+          "total_size_before": 18070384,
+          "total_size_after": 17317852
+        }
+      },
+      "before": {
+        "resultSha256": "86860c0579a9bfe81e36cb00229f82a48f337668f1aacbcd5fe3f36d0b3ec190",
+        "logSha256": "63fca4a94b8ae8319d339b4fe93691c96341a4fd043bc4d57f2912869e248aae",
+        "mixedDirty": {
+          "pause": 7,
+          "mark": 5.1,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 4.9,
+          "mark.ephemeron.marking": 4,
+          "evacuate": 0.7,
+          "evacuate.copy": 0.3,
+          "evacuate.update_pointers": 0.4,
+          "sweep": 0.1,
+          "heap.external.weak_global_handles": 0.8,
+          "total_size_before": 28546100,
+          "total_size_after": 22308536
+        }
+      }
+    },
+    {
+      "round": 3,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "resultSha256": "41638b30ed0ecc38f1769032a1b5e326f46bd505900a5545d0fc65877ad67b73",
+        "logSha256": "f2138c470c505dfcc8513fdc866bbe52101770ebe823928e2e94e91c911225b8",
+        "mixedDirty": {
+          "pause": 8.6,
+          "mark": 6.5,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 6.3,
+          "mark.ephemeron.marking": 3.3,
+          "evacuate": 0.7,
+          "evacuate.copy": 0.3,
+          "evacuate.update_pointers": 0.4,
+          "sweep": 0.1,
+          "heap.external.weak_global_handles": 1.1,
+          "total_size_before": 28466364,
+          "total_size_after": 22283352
+        }
+      },
+      "after": {
+        "resultSha256": "88229e10a7f2e06e3e35a8fba257b5d2095de63e41d799c16f03b7d8278f1679",
+        "logSha256": "910e99b3484bcbe22833e61f4bb4b089b222e479b108db42c52c21ff3bfc2e69",
+        "mixedDirty": {
+          "pause": 6.2,
+          "mark": 4.7,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 4.5,
+          "mark.ephemeron.marking": 2.4,
+          "evacuate": 0.4,
+          "evacuate.copy": 0.1,
+          "evacuate.update_pointers": 0.3,
+          "sweep": 0,
+          "heap.external.weak_global_handles": 0.2,
+          "total_size_before": 18149568,
+          "total_size_after": 17317660
+        }
+      }
+    },
+    {
+      "round": 4,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": {
+        "resultSha256": "5188385532cf148efa63f01123ecb47140903dd0c898dd1348d3f5c6ec6d6dc4",
+        "logSha256": "5e1bb104345d98d7441465a93762aecfe8b69baa3f29447dee6377a40bccbdfb",
+        "mixedDirty": {
+          "pause": 9.3,
+          "mark": 8,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 7.8,
+          "mark.ephemeron.marking": 5,
+          "evacuate": 0.6,
+          "evacuate.copy": 0.1,
+          "evacuate.update_pointers": 0.4,
+          "sweep": 0,
+          "heap.external.weak_global_handles": 0.2,
+          "total_size_before": 18064620,
+          "total_size_after": 17316444
+        }
+      },
+      "before": {
+        "resultSha256": "dbd3fe8cc19bc2d3ea7ba9600bf77280070ced1123d979fa46f488f6ebed3162",
+        "logSha256": "2f6e2b881fa7e907000bafb8eed852ab420504a1942116a9ba9655a81c473d9b",
+        "mixedDirty": {
+          "pause": 7.2,
+          "mark": 4.6,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 4.4,
+          "mark.ephemeron.marking": 3.5,
+          "evacuate": 1,
+          "evacuate.copy": 0.4,
+          "evacuate.update_pointers": 0.5,
+          "sweep": 0,
+          "heap.external.weak_global_handles": 1.3,
+          "total_size_before": 28458156,
+          "total_size_after": 22296788
+        }
+      }
+    },
+    {
+      "round": 5,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "resultSha256": "ed18bac530ed1a821748e24a4d46726d17234f413a4010fc2cf3e7415236ba2f",
+        "logSha256": "4baec125c7e9aa0636ebaec23f57e50cd0c7fbbb426e6d2503028a205f1fc7f8",
+        "mixedDirty": {
+          "pause": 8.9,
+          "mark": 7,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 6.8,
+          "mark.ephemeron.marking": 4.3,
+          "evacuate": 0.7,
+          "evacuate.copy": 0.3,
+          "evacuate.update_pointers": 0.4,
+          "sweep": 0,
+          "heap.external.weak_global_handles": 0.9,
+          "total_size_before": 28310536,
+          "total_size_after": 22273656
+        }
+      },
+      "after": {
+        "resultSha256": "0c50102bba14b118b9f212e559d205918bf7737fb98d432d20c37355099b83b5",
+        "logSha256": "3f61f9f132df7dac1ee1cb24d1133b4df879df158967107c24f211cdef383792",
+        "mixedDirty": {
+          "pause": 8.3,
+          "mark": 6.8,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 6.6,
+          "mark.ephemeron.marking": 6.5,
+          "evacuate": 0.7,
+          "evacuate.copy": 0.2,
+          "evacuate.update_pointers": 0.5,
+          "sweep": 0.1,
+          "heap.external.weak_global_handles": 0.2,
+          "total_size_before": 18062224,
+          "total_size_after": 17317900
+        }
+      }
+    },
+    {
+      "round": 6,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": {
+        "resultSha256": "381aba5236e99946363515cdfa6b607af1d5bb0928eb65aefd8fff990c1463f3",
+        "logSha256": "419f04d76802c433aa8397197846ef73977c15ac7663940be6db10c907186b11",
+        "mixedDirty": {
+          "pause": 10.1,
+          "mark": 8.6,
+          "mark.roots": 0.4,
+          "mark.full_closure_parallel": 8.3,
+          "mark.ephemeron.marking": 4.1,
+          "evacuate": 0.6,
+          "evacuate.copy": 0.1,
+          "evacuate.update_pointers": 0.4,
+          "sweep": 0,
+          "heap.external.weak_global_handles": 0.2,
+          "total_size_before": 18069296,
+          "total_size_after": 17317772
+        }
+      },
+      "before": {
+        "resultSha256": "80b1edd96a5cb91ce4ae9d118a3f6bd2bb06c6fc70c00c90b494b2fc3caf417c",
+        "logSha256": "6ab6b4a15f4c7dee26857cf7517ded4d500d60a21571de6c940680c9fa7cbcff",
+        "mixedDirty": {
+          "pause": 6.7,
+          "mark": 4,
+          "mark.roots": 0.2,
+          "mark.full_closure_parallel": 3.9,
+          "mark.ephemeron.marking": 3,
+          "evacuate": 0.8,
+          "evacuate.copy": 0.4,
+          "evacuate.update_pointers": 0.4,
+          "sweep": 0.1,
+          "heap.external.weak_global_handles": 1.1,
+          "total_size_before": 28477048,
+          "total_size_after": 22268272
+        }
+      }
+    }
+  ]
+}
