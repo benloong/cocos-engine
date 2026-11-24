@@ -1,0 +1,38 @@
+{
+  "candidate": "6255b6c179",
+  "configuration": "Windows Debug",
+  "artifacts": "native/tests/2d-poc/build/m6-font-gate-6255b6c179/live-faces",
+  "method": "Instrumented only the probe main. Open the same temporary font with GENERIC_READ | GENERIC_WRITE, share mode zero, OPEN_EXISTING, then close without modifying it. Sample after creating two faces and measuring the first, and after measuring, drawing and stroking the surviving face just before its reset. Keep the ordinary held-reader control and both post-release checks. Each run includes two warmups and 1000 alternating fixture cycles.",
+  "probeSourceSha256": "2a6de563fd441ff66a935a478f07cc686580b257032ac1502c6727effac1bbad",
+  "probeExeSha256": "2a58ca49410df4c81d5d607a285ae6297e141a038d1e1d8cedadbc7c5b8280dc",
+  "runs": [
+    {
+      "log": "run-1.log",
+      "sha256": "587198d83441209951bf530ce2a7113c6b55344e731d4b1b85bb6526bd297204",
+      "successfulExclusiveOpens": {
+        "one": 1002,
+        "two": 1002
+      },
+      "exitCode": 0
+    },
+    {
+      "log": "run-2.log",
+      "sha256": "d250a8c8ef1f0c5f7dc7d6793d58091f994690f6d6decf6c982e8362973c8fda",
+      "successfulExclusiveOpens": {
+        "one": 1002,
+        "two": 1002
+      },
+      "exitCode": 0
+    },
+    {
+      "log": "run-3.log",
+      "sha256": "fb344f417ef2f7b9abc37cc24395cc6920b32f2094d46d43edb85695bc6e063f",
+      "successfulExclusiveOpens": {
+        "one": 1002,
+        "two": 1002
+      },
+      "exitCode": 0
+    }
+  ],
+  "conclusion": "On these sampled paths, a live DirectWriteFont did not require a continuously held file handle that denied exclusive opening. Exclusive-open success alone cannot establish destruction of a font object. Neither historical sharing violation was reproduced or attributed."
+}
