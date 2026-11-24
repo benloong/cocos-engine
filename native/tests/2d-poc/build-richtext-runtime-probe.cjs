@@ -146,19 +146,28 @@ rich.string='';
 check(labels.filter(label=>__isObjectValid(label)).length===20,'evicted Label wrappers expire during relayout');
 // Alternate retained and unretained Node wrappers during segment eviction.
 let disposedNodes = 0;
+let destroyLookups = 0;
 let retainedNodes;
 node._onChildAdded = child => {
     if (retainedNodes) retainedNodes.push(child);
-    child.destroy = () => { disposedNodes++; };
+    Object.defineProperty(child, 'destroy', { configurable: true, get() {
+        destroyLookups++;
+        return function () {
+            check(this === child, 'segment destroy receiver');
+            disposedNodes++;
+        };
+    } });
 };
 for (let cycle = 0; cycle < 100; cycle++) {
     retainedNodes = cycle % 2 === 0 ? [] : null;
     rich.string = '<b>x</b><i>y</i>'.repeat(12);
     const activeLabels = Array.from({ length: 24 }, (_, index) => labelAt(index));
     const before = disposedNodes;
+    const lookupsBefore = destroyLookups;
     rich.string = '';
     check(activeLabels.filter(label => __isObjectValid(label)).length === 20, 'label pool after eviction, cycle ' + cycle);
     const callbacks = disposedNodes - before;
+    check(destroyLookups - lookupsBefore === callbacks, 'one destroy lookup per callback, cycle ' + cycle);
     check(retainedNodes ? callbacks === 4 : callbacks <= 4, 'Node disposal callbacks, cycle ' + cycle);
 }
 node._onChildAdded = () => {};

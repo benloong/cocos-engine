@@ -489,12 +489,12 @@ bool Object::getProperty(const char *name, Value *data, bool cachePropertyName) 
 
     v8::HandleScope handleScope(__isolate);
 
-    if (_obj.persistent().IsEmpty()) {
+    // Keep the actual receiver alive through property-name allocation and accessor execution.
+    v8::Local<v8::Object> localObj = _obj.handle(__isolate);
+    if (localObj.IsEmpty()) {
         return false;
     }
 
-    // Keep a weakly wrapped receiver alive while allocating the property name.
-    v8::Local<v8::Object> localObj = _obj.handle(__isolate);
     v8::MaybeLocal<v8::String> nameValue;
 
     if (cachePropertyName) {

@@ -848,10 +848,12 @@ bool register_all_scene_manual(se::Object *obj) // NOLINT(readability-identifier
         }
         if (auto *wrapper = findLiveNodeWrapper(node); wrapper && cc::isObjectValid(node, true)) {
             se::AutoHandleScope scope;
+            // A destroy accessor can run script while the weak Node wrapper is being looked up.
+            se::Value receiver(wrapper);
             se::Value destroy;
-            if (wrapper->getProperty("destroy", &destroy) && destroy.isObject() && destroy.toObject()->isFunction()) {
+            if (receiver.toObject()->getProperty("destroy", &destroy) && destroy.isObject() && destroy.toObject()->isFunction()) {
                 // Let the script queue run Node's event and component cleanup after this segment is released.
-                se::ScriptEngine::getInstance()->callFunction(wrapper, "destroy", 0, nullptr);
+                destroy.toObject()->call(se::EmptyValueArray, receiver.toObject());
             }
         }
     });
