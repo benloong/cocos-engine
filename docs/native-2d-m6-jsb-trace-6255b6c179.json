@@ -1,0 +1,41 @@
+{
+  "candidate": "6255b6c179b821a5d28f58dba9bc43582039f176",
+  "artifacts": "native/tests/2d-poc/build/m6-jsb-trace-6255b6c179",
+  "scope": "Windows Native RECORD_JSB_INVOKING, rebuilt from candidate-equivalent engine sources using the previously accepted trace build directories. Deployed scoped candidate bundle and archived fixture; writable path relocated. Disabled script debugging in the Debug app entry. Both processes exited after the completion marker.",
+  "validator": "native/tests/2d-poc/summarize-jsb-trace.cjs",
+  "setupFailure": "Initial Debug run from a different older cache stopped at a CRT heap error. See native-2d-m6-trace-cache-layout-6255b6c179.json for the single-object control.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "windows": 136,
+      "cases": 20,
+      "steadyWindows": 14,
+      "framesPerSteadyWindow": 60,
+      "directMigratedCallsInSteadyWindows": 0,
+      "managerUpdatesPerSteadyWindow": 60,
+      "independentAssetCases": 6,
+      "processExitCode": 0,
+      "exeSha256": "732590d455da93b56cc33cb7fd6e477752dd428f87118b01b81d7f7f5333c281",
+      "engineSha256": "5f181f4375ad66eef58f01137cc3a7b87f800a66020b30c15d32d09bb9772383",
+      "traceSha256": "53809b91ab9e733b29a8f941303ec3542ec58291cf92af0c43f5388537b5deb1",
+      "stdoutSha256": "b5eddef213ad3335c54517802cfe0d3793f7b7f5c236f82f5c4f58174c4e1e51",
+      "buildLogSha256": "a90118ef7bb3cd59da1f9c7e50a9da14b40866b8f1667d524d77895251b0f047"
+    },
+    {
+      "configuration": "Release",
+      "windows": 136,
+      "cases": 20,
+      "steadyWindows": 14,
+      "framesPerSteadyWindow": 60,
+      "directMigratedCallsInSteadyWindows": 0,
+      "managerUpdatesPerSteadyWindow": 60,
+      "independentAssetCases": 6,
+      "processExitCode": 0,
+      "exeSha256": "5e4b070c26a195f25b85c1a425d691bf2c5673add1d35e0c98a385ba2a29ca1f",
+      "engineSha256": "5f181f4375ad66eef58f01137cc3a7b87f800a66020b30c15d32d09bb9772383",
+      "traceSha256": "917e4340be3783a02700cd2a11e5d5d8cc13a8b7a75626ed452b5392043c2bed",
+      "stdoutSha256": "b901a87148a58f6887f3090cbd39d97279c25986e5e4c72be63a096726d64166",
+      "buildLogSha256": "1b9a0215653056c192bf3393bf9372279803e0096a91f8454e7d4faac4391fc9"
+    }
+  ]
+}
