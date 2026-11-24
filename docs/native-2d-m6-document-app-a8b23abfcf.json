@@ -1,0 +1,84 @@
+{
+  "engineCandidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "verificationHead": "d889c287a12292370b8648ea067d8163b82ea8b5",
+  "project": "cocos-m1-test/build/windows/proj (Visual Studio 18, x64); COCOS_X_PATH via cocos-cli/packages/engine junction to v4",
+  "nativeBuild": "cmake --build <project> --config <configuration> --target cocos-m1-test --parallel 6",
+  "assets": "Document project Resources from m6-richtext-normal-exit; game.end() after the M5 fixture.",
+  "bundleAudit": "Fresh Windows build of cc.js matched deployed bytes, 84 2D graph modules (58 with emitted bytes), 73 boundary imports, 0 dynamic imports.",
+  "artifacts": "native/tests/2d-poc/build/m6-document-a8b23abfcf",
+  "scope": "Windows document application stages M2 through M5; only the M5 launcher requires natural exit.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "4800568E3D6507D030258FCBFE28C3C140B34EBAD5F090C3B553EADFCB119B2A",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "787FFC727F0E17E31975D070BB57C04AC8458077840A295CD28F86A986FEB1F8",
+      "buildLogSha256": "D7211E99C9AAD1DDF165580F36A1542EB6228F70F0FC6506332E198A5FEA55F9",
+      "stages": [
+        {
+          "name": "m2-pixel",
+          "gateExitCode": 0,
+          "logSha256": "43D7815E0A56E98A6EC42137E3A8D7E294937188D9A08011291FB422B4F0660A"
+        },
+        {
+          "name": "m3-label",
+          "gateExitCode": 0,
+          "logSha256": "9831356BC8B4A1F1ECA29755EEED8A829716C8207385096B9FBED182311B7E89"
+        },
+        {
+          "name": "m4-mask",
+          "gateExitCode": 0,
+          "logSha256": "76B7AC89F44FD10A838DEA6EF78D4C7C0D3D29B39604BF95F99A5240102C6389"
+        },
+        {
+          "name": "m4-extra",
+          "gateExitCode": 0,
+          "logSha256": "6B7CD4A34B66CAFD7D681FFA78C54999A412C3765E1FE9D2F7244D81AAC50BCC"
+        },
+        {
+          "name": "m5-richtext",
+          "gateExitCode": 0,
+          "logSha256": "E82194BA1638170944EEF406619D3CA5886B22084D51B00B4AC682CC1F9A0A31"
+        }
+      ],
+      "m5AppExit": 0,
+      "m5LogSha256": "C2ED8FF582A3171751E2000CD5AB66517B98388B219952501B02DECEDA0BADE9"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "3C8C3D871A36DFC943564B28FFA3AD95017BD32BECD71E7202904BBC56C814DE",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "787FFC727F0E17E31975D070BB57C04AC8458077840A295CD28F86A986FEB1F8",
+      "buildLogSha256": "DE7F82155A8BDBE8FB955ED5880DC57B24030D6711FFA317152739799F0ED7A5",
+      "stages": [
+        {
+          "name": "m2-pixel",
+          "gateExitCode": 0,
+          "logSha256": "F57440F92D53EB7AFC5EC03D8FB93727B52ECAC256FC337774AACC718BE957E4"
+        },
+        {
+          "name": "m3-label",
+          "gateExitCode": 0,
+          "logSha256": "E46B59F68799681064E24CBF57386E96FA316E193F9F851D9A51333D50B86A23"
+        },
+        {
+          "name": "m4-mask",
+          "gateExitCode": 0,
+          "logSha256": "76B7AC89F44FD10A838DEA6EF78D4C7C0D3D29B39604BF95F99A5240102C6389"
+        },
+        {
+          "name": "m4-extra",
+          "gateExitCode": 0,
+          "logSha256": "6B7CD4A34B66CAFD7D681FFA78C54999A412C3765E1FE9D2F7244D81AAC50BCC"
+        },
+        {
+          "name": "m5-richtext",
+          "gateExitCode": 0,
+          "logSha256": "37CE61AA504C648CAFB6534C832221BC9F9BE63F1A6EEDC1E7CB76D0A38574F7"
+        }
+      ],
+      "m5AppExit": 0,
+      "m5LogSha256": "FB0AE292AB385BF5628C90B0CC4E9B166FABFB6ED4F774C46DEAE4A5DD8F5F4D"
+    }
+  ]
+}
