@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-24",
+  "baseRevision": "78b3c7e4a1e107ef711e9dc2c6d5227a759ccedf",
+  "issue": "Graphics drawing before onLoad created a backend without binding staged material slots; native reads could replace staged JS slots with defaults.",
+  "fix": "Bind material slots when the native Graphics backend is first created; onLoad synchronizes existing slots without rebinding and replacing pre-load instances.",
+  "sourceSha256": {
+    "cocos/2d/components/graphics.jsb.ts": "9ba2e413c5a782abc8a12f862c15d9ac9d7494c086de62ebedfa6e73a269880a",
+    "tests/ui/native-2d-m6-layout-shell.test.ts": "a798cd9d90b8eb9a320914ed05a51126c49ea10cd5c57b3f41bb976cd7983b9c",
+    "native/tests/2d-poc/build-sprite-api-probe.cjs": "3e879c61dd824d5ea5f9a8dfe62379495232cfd07349a585f2dfa7d24cdaf8fe",
+    "docs/native-2d-m6.0-baseline.json": "f24061cf349082806c903dc93c511cc7c57c32beda3c1bcc57aafcc86e95732b"
+  },
+  "generatedProbeSha256": "c88b7c0d2d11e86259b20dc523f16e8c9af016e7ad9709609becdc47022e8e00",
+  "before": {
+    "configuration": "Release",
+    "exitCode": 1,
+    "error": "pre-load Graphics drawing retains staged native material slots",
+    "logSha256": "2ec7a29ea4c789b36b64b67d622e1feca94ba84a569e09f85abbdcce9ec913f9"
+  },
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-graphics-preload-material/Debug.log",
+      "logSha256": "932c99a2d6bd6719655a392b803ac9b48b248e77ee8e275b34bed66fe2e6f9ec",
+      "executableSha256": "e1148634ef52adb05901c3b6ad2ad6386bf1f8fe4387d7a945318411b75b4130",
+      "nativeBinaryReused": true,
+      "requiredOutput": [
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ]
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-graphics-preload-material/Release.log",
+      "logSha256": "485a9e531d7b8608c0691575ef0c3c7627d21535fe2d8ca5b10917bb5270da95",
+      "executableSha256": "665d790529d0560c2b7519b2d4994433aab1e04325fec127b36ccbf417a62f7a",
+      "nativeBinaryReused": true,
+      "requiredOutput": [
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ]
+    }
+  ],
+  "jest": {
+    "exitCode": 0,
+    "suites": 2,
+    "passed": 13,
+    "paths": [
+      "tests/ui/native-2d-m6-layout-shell.test.ts",
+      "tests/ui/native-2d-m4-mask-shell.test.ts"
+    ],
+    "logSha256": "ea0661673644da7fa88b45ef47ad4fc82f317ef8917763be1b9f4e6a6b774810"
+  },
+  "nativeTypeScript": {
+    "exitCode": 0,
+    "logSha256": "5b501f8f94927529761574424701bb18bba181d46346abd02fa933e1425b46c0"
+  },
+  "thinShell": "43 checks, 0 failures",
+  "auditBaseline": "PASS; only Graphics source hash and call-site line numbers changed; native source hashes and API declaration comparisons unchanged",
+  "fixtureDiagnostics": [
+    "Initial standalone probe called a pre-load array setter unavailable on its simplified UIRenderer base; corrected to stage the actual serialized _materials field. This was a probe bootstrap error, not the regression evidence.",
+    "Initial DrawInfo assertion used getMaterial() instead of the generated material property; corrected to the bound property. This was a probe API error, not a runtime defect."
+  ],
+  "limits": [
+    "Native C++ was unchanged; Debug/Release executables from the previous native build were reused.",
+    "Actual native DrawInfo material identity is asserted; no new application GPU pixel sign-off is claimed.",
+    "Full documentation application packaging and final candidate acceptance matrix were not rerun.",
+    "Mask renderer API declaration differences and Graphics internal model/proxy fields are not signed off by this fix.",
+    "Web, SpriteRenderer and ModelRenderer implementations remain unchanged."
+  ]
+}

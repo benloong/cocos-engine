@@ -250,15 +250,23 @@ check(label.assemblerData===null,'Native Label canvas accessor stays empty after
 labelTransform.detach();
 const graphicsNode=new jsb.Node('graphics-runtime-shell');
 const graphics=new graphicsExports.Graphics();graphics.node=graphicsNode;
+graphics._materials=[custom,normal]; // Serialized slots are staged before the first drawing command.
 graphics.fillRect(0,0,20,10);
 const preLoadGraphics=graphics._native;
+check(graphics.getSharedMaterial(0)===custom&&graphics.getSharedMaterial(1)===normal,'pre-load Graphics drawing retains staged native material slots');
+const preLoadGraphicsInstance=graphics.getMaterialInstance(0);
+check(preLoadGraphicsInstance&&preLoadGraphicsInstance.parent===custom&&preLoadGraphicsInstance.owner===graphics,'pre-load Graphics material instance belongs to its component');
 graphics.onLoad();
+check(graphics.getMaterialInstance(0)===preLoadGraphicsInstance&&preLoadGraphicsInstance.owner===graphics,'Graphics onLoad preserves the pre-load material instance');
 check(graphics._native===preLoadGraphics,'onLoad retains the Graphics that recorded the rectangle');
 rendererManager.updateAllDirtyRenderers();
 const graphicsEntity=readRendererEntity(graphics._native);
 check(graphicsEntity.getRenderDrawInfosSize()===1,'rectangle submits a single draw');
 const rectangleDraw=graphicsEntity.getRenderDrawInfoAt(0);
 check(rectangleDraw.vbCount===4 && rectangleDraw.ibCount===6,'pre-load rectangle submits four vertices and six indices');
+check(rectangleDraw.material===preLoadGraphicsInstance,'pre-load Graphics instance is used by the actual native draw');
+graphics.customMaterial=null;rendererManager.updateAllDirtyRenderers();
+check(preLoadGraphicsInstance.owner===null,'restoring the builtin material detaches the pre-load instance owner');
 graphics.clear();
 check(graphics._native.getSharedMaterial(0),'Graphics builtin material resolves in native');
 graphics.lineCap=2;graphics.lineJoin=1;graphics.miterLimit=3;graphics.lineWidth=6;

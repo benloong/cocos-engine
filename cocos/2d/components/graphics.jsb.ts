@@ -65,6 +65,7 @@ export class Graphics extends UIRenderer {
             this._native = new n2d.Graphics();
             this._native.setEnabled(false);
             this._syncNativeStyles();
+            bindNativeMaterialSlots(this);
             this._mask?.setGraphics(this._native);
         }
         return this._native;
@@ -93,7 +94,7 @@ export class Graphics extends UIRenderer {
         this._native.setPriority(this.priority);
         this._native.setEnabled(this.enabledInHierarchy);
         this._syncNativeStyles();
-        bindNativeMaterialSlots(this);
+        syncNativeMaterialSlots(this);
         this._mask?.setGraphics(this._native);
     }
 

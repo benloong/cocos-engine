@@ -15221,8 +15221,8 @@
     },
     {
       "file": "cocos/2d/components/graphics.jsb.ts",
-      "sha256": "6f5c50b75d00c711ff79ab0639866bfde992007311a9138124f9a8452303ff3a",
-      "printedCodeLines": 193,
+      "sha256": "9ba2e413c5a782abc8a12f862c15d9ac9d7494c086de62ebedfa6e73a269880a",
+      "printedCodeLines": 194,
       "runtimeImports": [
         "cc.decorator",
         "../../core",
@@ -15233,7 +15233,7 @@
       "frameMethods": [
         {
           "name": "updateRenderer",
-          "line": 105,
+          "line": 106,
           "nativeFlush": true
         }
       ],
@@ -15244,99 +15244,99 @@
         },
         {
           "expression": "this._native.setLineWidth",
-          "line": 74
-        },
-        {
-          "expression": "this._native.setFillColor",
           "line": 75
         },
         {
-          "expression": "this._native.setStrokeColor",
+          "expression": "this._native.setFillColor",
           "line": 76
         },
         {
-          "expression": "this._native.setLineJoin",
+          "expression": "this._native.setStrokeColor",
           "line": 77
         },
         {
-          "expression": "this._native.setLineCap",
+          "expression": "this._native.setLineJoin",
           "line": 78
         },
         {
-          "expression": "this._native.setMiterLimit",
+          "expression": "this._native.setLineCap",
           "line": 79
         },
         {
-          "expression": "this._native.setColorRGBA",
+          "expression": "this._native.setMiterLimit",
           "line": 80
         },
         {
-          "expression": "this._native.setNode",
-          "line": 92
+          "expression": "this._native.setColorRGBA",
+          "line": 81
         },
         {
-          "expression": "this._native.setPriority",
+          "expression": "this._native.setNode",
           "line": 93
         },
         {
-          "expression": "this._native.setEnabled",
+          "expression": "this._native.setPriority",
           "line": 94
         },
         {
+          "expression": "this._native.setEnabled",
+          "line": 95
+        },
+        {
           "expression": "this._native?.flushRenderData",
-          "line": 106
+          "line": 107
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 115
+          "line": 116
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 119
+          "line": 120
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 141
-        },
-        {
-          "expression": "this._native.setNode",
           "line": 142
         },
         {
+          "expression": "this._native.setNode",
+          "line": 143
+        },
+        {
           "expression": "this._native?.setLineJoin",
-          "line": 148
+          "line": 149
         },
         {
           "expression": "this._native?.setLineCap",
-          "line": 150
+          "line": 151
         },
         {
           "expression": "this._native?.setMiterLimit",
-          "line": 152
+          "line": 153
         },
         {
           "expression": "this._native.setMaterial",
-          "line": 161
+          "line": 162
         },
         {
           "expression": "this._native?.setColorRGBA",
-          "line": 167
+          "line": 168
         },
         {
           "expression": "this._native?.setLineWidth",
-          "line": 176
+          "line": 177
         },
         {
           "expression": "this._native?.setFillColor",
-          "line": 185
+          "line": 186
         },
         {
           "expression": "this._native?.setStrokeColor",
-          "line": 194
+          "line": 195
         },
         {
           "expression": "this._native?.clear",
-          "line": 198
+          "line": 199
         }
       ],
       "allocations": [],

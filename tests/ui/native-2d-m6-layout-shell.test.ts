@@ -1,3 +1,4 @@
+import { Material } from '../../cocos/asset/assets/material';
 import { Node } from '../../cocos/scene-graph/node';
 import { UITransform } from '../../cocos/2d/framework/ui-transform';
 import { builtinResMgr } from '../../cocos/asset/asset-manager/builtin-res-mgr';
@@ -124,4 +125,48 @@ test('Graphics forwards legacy material refresh and supports a guarded model act
     expect(graphics.model).toBeUndefined();
     expect(graphics.graphicsNativeProxy).toBeUndefined();
     graphics.onDestroy();
+});
+
+
+test.each([false, true])('Graphics preserves staged materials and pre-load instances (custom=%s)', (custom) => {
+    const shared: any[] = [], instances: any[] = [];
+    const backend = {
+        ...nativeGraphics,
+        setMaterial: jest.fn((value) => { shared[0] = value; instances[0] = null; }),
+        setSharedMaterial: jest.fn((value, index) => { shared[index] = value; }),
+        getSharedMaterialCount: () => shared.length,
+        getSharedMaterial: (index) => shared[index] ?? null,
+        getRenderMaterial: (index) => instances[index] ?? shared[index] ?? null,
+        getMaterialInstanceCount: () => instances.length,
+        getMaterialInstanceSlot: (index) => instances[index] ?? null,
+        getMaterialInstance: (index) => instances[index] ?? (instances[index] = { parent: shared[index] }),
+        writeMaterialSlot: jest.fn((isShared, index, value) => { (isShared ? shared : instances)[index] = value; }),
+        resizeMaterials: jest.fn((size) => { shared.length = instances.length = size; }),
+    };
+    const previous = (global as any).n2d;
+    (global as any).n2d = { Graphics: jest.fn(() => backend) };
+    try {
+        const { Graphics } = require('../../cocos/2d/components/graphics.jsb');
+        const node = new Node('graphics-preload-material'); node.active = false;
+        node.addComponent(UITransform);
+        const graphics: any = node.addComponent(Graphics);
+        const first = new Material(), second = new Material();
+        graphics.sharedMaterials = [first, second];
+        if (custom) graphics.customMaterial = first;
+        graphics.fillRect(0, 0, 20, 10);
+        expect(graphics.sharedMaterials).toEqual([first, second]);
+        expect(shared).toEqual([first, second]);
+        const instance = graphics.getMaterialInstance(0);
+        expect(instance.parent).toBe(first);
+        expect(instance._owner).toBe(graphics);
+        expect(backend.setMaterial).toHaveBeenCalledTimes(1);
+        graphics.onLoad();
+        expect(graphics.getMaterialInstance(0)).toBe(instance);
+        expect(instance._owner).toBe(graphics);
+        expect(backend.setMaterial).toHaveBeenCalledTimes(1);
+        graphics.onDestroy();
+        expect(instance._owner).toBeNull();
+        expect(shared).toEqual([]);
+        expect(instances).toEqual([]);
+    } finally { (global as any).n2d = previous; }
 });
