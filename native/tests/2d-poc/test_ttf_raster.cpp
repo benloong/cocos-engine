@@ -27,6 +27,8 @@ int main(int argc, char **argv) {
         {"bidi-visual", "A321B"},
         {"bidi-nested", u8"A\u202E12\u202D34\u202C56\u202CB78"},
         {"bidi-nested-visual", "A653421B78"},
+        {"bidi-lines", u8"A\u202E12\u202D34\u202C56\u202CB78\nX\u202E12\u202CY"},
+        {"bidi-lines-visual", "A653421B78\nX21Y"},
         {"latin-space", "A V A"},
         {"latin-kern", "AVATAR"},
         {"hebrew", u8"\u05D0\u05D1\u05D2"},

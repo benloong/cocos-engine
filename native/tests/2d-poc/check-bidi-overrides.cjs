@@ -12,6 +12,7 @@ const font = path.resolve(__dirname, '../../../tests/fixtures/Thonburi.ttf');
 const cases = [
     ['bidi-override', 'bidi-visual'],
     ['bidi-nested', 'bidi-nested-visual'],
+    ['bidi-lines', 'bidi-lines-visual'],
 ];
 for (const [logical, visual] of cases) {
     const differences = [];

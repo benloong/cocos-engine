@@ -470,9 +470,9 @@ class TextRenderer final : public IDWriteTextRenderer {
 public:
     // These buffers/factory are synchronous borrows for IDWriteTextLayout::Draw.
     TextRenderer(IDWriteFactory *factory, IDWriteRenderingParams *renderingParams, uint8_t *pixels, uint32_t width, uint32_t height, const std::array<float, 4> &color,
-                 bool bold, bool italic, float lineWidth, DirectWriteFont::StrokeJoin join, float blur)
+                 bool bold, bool italic, float lineWidth, DirectWriteFont::StrokeJoin join, float blur, bool reorderRuns)
     : _factory(factory), _renderingParams(renderingParams), _pixels(pixels), _width(width), _height(height), _color(color),
-      _bold(bold), _italic(italic), _lineWidth(lineWidth), _join(join), _blur(blur) {}
+      _bold(bold), _italic(italic), _lineWidth(lineWidth), _join(join), _blur(blur), _reorderRuns(reorderRuns) {}
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void **out) override {
         if (!out) return E_POINTER;
         *out = nullptr;
@@ -485,6 +485,17 @@ public:
     HRESULT STDMETHODCALLTYPE GetCurrentTransform(void *, DWRITE_MATRIX *matrix) override { *matrix = {1, 0, 0, 1, 0, 0}; return S_OK; }
     HRESULT STDMETHODCALLTYPE GetPixelsPerDip(void *, FLOAT *scale) override { *scale = 1; return S_OK; }
     HRESULT STDMETHODCALLTYPE DrawGlyphRun(void *, FLOAT x, FLOAT y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run, const DWRITE_GLYPH_RUN_DESCRIPTION *, IUnknown *) override {
+        if (_reorderRuns) {
+            if (!_lineMasks.empty() && y != _lineBaseline) {
+                const auto hr = finishLine();
+                if (FAILED(hr)) return hr;
+            }
+            _lineBaseline = y;
+            _runLeft = x;
+            if (run->bidiLevel & 1U) {
+                for (UINT32 i = 0; i < run->glyphCount; ++i) _runLeft -= run->glyphAdvances[i];
+            }
+        }
         if (run->isSideways) return drawMask(x, y, mode, run);
         DWRITE_RENDERING_MODE rasterMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
         if (!_bold && !_italic && _lineWidth == 0 && _renderingParams) {
@@ -523,6 +534,19 @@ public:
         }
         return S_OK;
     }
+    HRESULT finishLine() {
+        // Nested embeddings can be delivered out of visual order even after
+        // the glyphs within each run have been ordered. Keep ties stable.
+        std::stable_sort(_lineMasks.begin(), _lineMasks.end(), [](const auto &a, const auto &b) {
+            return a.left < b.left;
+        });
+        for (const auto &entry : _lineMasks) {
+            const auto hr = blendMask(entry.mask.bounds, entry.mask.coverage, 1);
+            if (FAILED(hr)) return hr;
+        }
+        _lineMasks.clear();
+        return S_OK;
+    }
     HRESULT drawMask(float x, float y, DWRITE_MEASURING_MODE mode, const DWRITE_GLYPH_RUN *run,
                      DWRITE_RENDERING_MODE rasterMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC) {
         if (_bold || _lineWidth > 0) {
@@ -537,7 +561,12 @@ public:
             const auto hr = _outline->draw(run, x + padding, y + padding, _bold, _italic, _lineWidth, _join,
                                            _width + 2 * padding, _height + 2 * padding, mask);
             if (padding) OffsetRect(&mask.bounds, -padding, -padding);
-            return FAILED(hr) ? hr : blendMask(mask.bounds, mask.coverage, 1);
+            if (FAILED(hr)) return hr;
+            if (_reorderRuns) {
+                if (!mask.coverage.empty()) _lineMasks.push_back({_runLeft, std::move(mask)});
+                return S_OK;
+            }
+            return blendMask(mask.bounds, mask.coverage, 1);
         }
         ComOwner<IDWriteGlyphRunAnalysis> analysis;
         constexpr auto texture = DWRITE_TEXTURE_CLEARTYPE_3x1;
@@ -635,6 +664,11 @@ private:
     float _lineWidth;
     DirectWriteFont::StrokeJoin _join;
     GlyphBlur _blur;
+    struct PositionedMask { float left; OutlineMask mask; };
+    bool _reorderRuns;
+    float _runLeft{0};
+    float _lineBaseline{0};
+    std::vector<PositionedMask> _lineMasks;
     std::unique_ptr<OutlineRasterizer> _outline; // owns this synchronous Draw's COM lease and factories
 };
 }
@@ -771,7 +805,8 @@ bool DirectWriteFont::drawText(const std::string &text, float x, float y, int ba
         y -= line.baseline;
     }
     ComOwner<TextRenderer> renderer;
-    renderer.reset(new TextRenderer(_impl->factory.get(), _impl->renderingParams.get(), pixels, width, height, color, _impl->bold, _impl->italic, lineWidth, join, blur));
-    return SUCCEEDED(layout->Draw(nullptr, renderer.get(), x, y));
+    const bool reorderRuns = _impl->bold && lineWidth == 0 && blur == 0 && metrics.maxBidiReorderingDepth > 1;
+    renderer.reset(new TextRenderer(_impl->factory.get(), _impl->renderingParams.get(), pixels, width, height, color, _impl->bold, _impl->italic, lineWidth, join, blur, reorderRuns));
+    return SUCCEEDED(layout->Draw(nullptr, renderer.get(), x, y)) && (!reorderRuns || SUCCEEDED(renderer->finishLine()));
 }
 } // namespace cc
