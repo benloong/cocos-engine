@@ -291,9 +291,10 @@ export class UITransform extends Component {
     }
 
     public getComputeAABB (out?: geometry.AABB): geometry.AABB {
-        const box = this.getBoundingBoxToWorld();
+        const box = this._native ? this._native.getSelfBoundingBoxToWorld()
+            : this._selfBoundingBox(new Rect()).transformMat4(this.node.worldMatrix);
         out = out || new geometry.AABB();
-        geometry.AABB.set(out, box.x + box.width / 2, box.y + box.height / 2, 0, box.width / 2, box.height / 2, 0);
+        geometry.AABB.set(out, box.x + box.width / 2, box.y + box.height / 2, this.node.worldPosition.z, box.width / 2, box.height / 2, 0.001);
         return out;
     }
 

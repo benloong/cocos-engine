@@ -18,7 +18,19 @@ module.exports = function checkTransformDepth(cc) {
         if (ui.convertToWorldSpaceAR(world, world) !== world || !near(world, 0, -11, 23)) throw new Error('Stale transform after moving parent');
         const restored = ui.convertToNodeSpaceAR(world);
         if (restored === world || !near(restored, 2, 3, 5)) throw new Error('Incorrect inverse after moving parent');
-        return {nested: true, parentMoved: true, inPlace: true, inputPreserved: true};
+        child.setRotationFromEuler(0, 0, 90);
+        ui.setContentSize(10, 12);
+        ui.setAnchorPoint(0, 0);
+        const descendant = new cc.Node('outside-self-bounds');
+        child.addChild(descendant);
+        descendant.setPosition(200, 0, 0);
+        descendant.addComponent(cc.UITransform).setContentSize(20, 20);
+        const bounds = ui.getComputeAABB();
+        if (!near(bounds.center, -22, 19, 14) || !near(bounds.halfExtents, 18, 10, 0.001)
+            || ui.getBoundingBoxToWorld().height <= 20) throw new Error('Self and subtree bounds disagree with expected geometry');
+        parent.setPosition(-5, 7, -12);
+        if (ui.getComputeAABB(bounds) !== bounds || !near(bounds.center, -22, 19, -9)) throw new Error('Stale depth in caller-owned AABB');
+        return {nested: true, parentMoved: true, inPlace: true, inputPreserved: true, selfBounds: true};
     } finally {
         parent.destroy();
     }

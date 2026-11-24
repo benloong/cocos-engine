@@ -79,6 +79,11 @@ Rect UITransform::getBoundingBox() const {
     return UITransformMath::transformRect(local, localMatrix);
 }
 
+Rect UITransform::getSelfBoundingBoxToWorld() const {
+    const Rect local = UITransformMath::getSelfBoundingBox(_contentSize, _anchorPoint);
+    return _node ? UITransformMath::transformRect(local, _node->getWorldMatrix()) : local;
+}
+
 Rect UITransform::getBoundingBoxToWorld() const {
     Rect result;
     bool initialized = false;
@@ -100,8 +105,7 @@ Rect UITransform::getBoundingBoxToWorld() const {
     }
 
     if (_contentSize.x > 0.F && _contentSize.y > 0.F) {
-        const Rect local = UITransformMath::getSelfBoundingBox(_contentSize, _anchorPoint);
-        const Rect selfWorld = _node == nullptr ? local : UITransformMath::transformRect(local, _node->getWorldMatrix());
+        const Rect selfWorld = getSelfBoundingBoxToWorld();
         result = initialized ? result.unionWithRect(selfWorld) : selfWorld;
     }
     return result;

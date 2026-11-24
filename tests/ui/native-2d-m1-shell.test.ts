@@ -15,6 +15,7 @@ const nativeUITransform = {
     getBoundingBoxToWorldY: jest.fn(() => 6),
     getBoundingBoxToWorldWidth: jest.fn(() => 7),
     getBoundingBoxToWorldHeight: jest.fn(() => 8),
+    getSelfBoundingBoxToWorld: jest.fn(() => ({ x: 1, y: 2, width: 6, height: 8 })),
     getBoundingBoxToX: jest.fn(() => 9),
     getBoundingBoxToY: jest.fn(() => 10),
     getBoundingBoxToWidth: jest.fn(() => 11),
@@ -66,8 +67,8 @@ test('UITransform shell attaches and forwards to native', () => {
 
     expect(ui.getBoundingBox().x).toBe(1);
     const bounds = ui.getComputeAABB();
-    expect(bounds.center).toEqual(new Vec3(8.5, 10, 0));
-    expect(bounds.halfExtents).toEqual(new Vec3(3.5, 4, 0));
+    expect(bounds.center).toEqual(new Vec3(4, 6, 0));
+    expect(bounds.halfExtents).toEqual(new Vec3(3, 4, 0.001));
     expect(ui.hitTest(new Vec2(10, 20))).toBe(true);
     expect(nativeUITransform.hitTestXY).toHaveBeenCalledWith(10, 20, 0);
     expect(ui.hitTest(new Vec2(10, 20), 3)).toBe(true);

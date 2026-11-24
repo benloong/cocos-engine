@@ -147,11 +147,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
-      "sha256": "8e170f9baeb6ca8c868bd0d749d9f1feae28ef9785be6c3fe262803905c7efe5"
+      "sha256": "3abe12447cf547de88de8c11d225eeaad175aac208dd9e89f86292d6ac423f19"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.h",
-      "sha256": "8a11a47b0e9aad67a0e8041e5fb15706a87d36cb482747989ddf86615fa53dbf"
+      "sha256": "dd1c562bc9c9f915634e85848b18fd9e797022df22bbd0d841af9f632e3e2011"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.cpp",
@@ -383,7 +383,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "799cf64a72bed7039f9cbae8fcc4117e3c13ad23575fa5319abc8ef91aca43a4"
+      "sha256": "4e942bbf7715b196f02fab21ce96c342fc13e337382adf77e02c3b78604869f9"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -16767,8 +16767,8 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "d71992b7ed50ce935bd408285ea8e8858a41967f4029f06740e9fd01ee062a19",
-      "printedCodeLines": 243,
+      "sha256": "dd534ed5a004bc8a8f63212ae36812e49ebb135530988159474733cf8dcc865a",
+      "printedCodeLines": 244,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16879,6 +16879,10 @@
         {
           "expression": "this._native.getBoundingBoxToHeight",
           "line": 289
+        },
+        {
+          "expression": "this._native.getSelfBoundingBoxToWorld",
+          "line": 294
         }
       ],
       "allocations": [],

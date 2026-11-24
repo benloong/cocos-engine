@@ -91,6 +91,7 @@ public:
      * Bounding box in the parent coordinate space (self only).
      */
     Rect getBoundingBox() const;
+    cc::Rect getSelfBoundingBoxToWorld() const;
 
     /**
      * Bounding box in world space (self + direct active children).

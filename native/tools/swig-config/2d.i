@@ -271,7 +271,16 @@
     point->setProperty("z", se::Value($1.z));
     s.rval().setObject(point);
 }
+%typemap(out) cc::Rect getSelfBoundingBoxToWorld {
+    se::HandleObject rect(se::Object::createPlainObject());
+    rect->setProperty("x", se::Value($1.x));
+    rect->setProperty("y", se::Value($1.y));
+    rect->setProperty("width", se::Value($1.width));
+    rect->setProperty("height", se::Value($1.height));
+    s.rval().setObject(rect);
+}
 %include "2d/framework/UITransform.h"
+%clear cc::Rect getSelfBoundingBoxToWorld;
 %clear cc::Vec3;
 %clear const std::function<void(float, float)> &;
 %include "2d/framework/UIOpacity.h"
