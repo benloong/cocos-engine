@@ -1,0 +1,40 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "artifacts": "native/tests/2d-poc/build/m6-jsb-trace-8ee11b673e",
+  "scope": "Windows Native RECORD_JSB_INVOKING, rebuilt from candidate-equivalent engine sources using the previously accepted trace build directories. Deployed scoped candidate bundle and archived fixture; writable path relocated. Disabled script debugging in the Debug app entry. Both processes exited after the completion marker.",
+  "validator": "native/tests/2d-poc/summarize-jsb-trace.cjs",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "windows": 136,
+      "cases": 20,
+      "steadyWindows": 14,
+      "framesPerSteadyWindow": 60,
+      "directMigratedCallsInSteadyWindows": 0,
+      "managerUpdatesPerSteadyWindow": 60,
+      "independentAssetCases": 6,
+      "processExitCode": 0,
+      "exeSha256": "d8d997d5254e7dba69674e83721c39a6f92066a6aca2e0690e566ef0bdc607d5",
+      "engineSha256": "5f181f4375ad66eef58f01137cc3a7b87f800a66020b30c15d32d09bb9772383",
+      "traceSha256": "2e36162a997e2f7fc4d188d71546f445f6caabf24802f54223dd25ef339c6253",
+      "stdoutSha256": "5d167565fcb2af54a4124c382f5cce4fee7f4dc8255503005be0e2fa825a8828",
+      "buildLogSha256": "ef3df631406a8aa000b169e1f2038f0922e788f0ecba9991e8cd4ac9577bfe4c"
+    },
+    {
+      "configuration": "Release",
+      "windows": 136,
+      "cases": 20,
+      "steadyWindows": 14,
+      "framesPerSteadyWindow": 60,
+      "directMigratedCallsInSteadyWindows": 0,
+      "managerUpdatesPerSteadyWindow": 60,
+      "independentAssetCases": 6,
+      "processExitCode": 0,
+      "exeSha256": "03084b0565f663adf6528cdc42bdd36ea873757ac4d3aa8b74b76dac1e85b345",
+      "engineSha256": "5f181f4375ad66eef58f01137cc3a7b87f800a66020b30c15d32d09bb9772383",
+      "traceSha256": "98bba6e6243daeb5618547bac8d159ff4df5b61114388621ad497ea6fc97fac2",
+      "stdoutSha256": "3ce5d9eb833978b64c314e16b7487a47ff2796c7bb0744a70265f241cdaf34e5",
+      "buildLogSha256": "de6e2dbbac184a41d9908b4002c8c7e6bf77e174faf6fbab481f86096f9b2587"
+    }
+  ]
+}
