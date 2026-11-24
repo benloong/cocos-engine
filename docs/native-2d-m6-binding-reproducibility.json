@@ -1,0 +1,70 @@
+{
+  "candidate": "28e212c3e9",
+  "scope": "Two fresh SWIG output directories using the actual Windows Debug and Release CMake rules for the 2d, assets and scene modules. Each file compared byte-for-byte by SHA-256 against the corresponding build input.",
+  "swigSha256": "DB71309139430A97BE7184322BEBE8B8D9B6A98E35519162BD2B5552B18BED9A",
+  "metadataClasses": 6,
+  "metadataTestsPassed": 4,
+  "metadataSha256": "013757A5F62C4225F7626C06EB738846A5153F3CA400CA0EBA713B6FF05F1C99",
+  "files": [
+    {
+      "build": "out",
+      "file": "jsb_2d_auto.cpp",
+      "sha256": "673CDF1888E019BA122D59A86661BC1E91D6E3D37410A35DC9AD4F2FDBF9489B"
+    },
+    {
+      "build": "out",
+      "file": "jsb_2d_auto.h",
+      "sha256": "EC3F1B60B03D41A0DEF7EFC310732066AE77698704329CBF9DE7F9E82200AC80"
+    },
+    {
+      "build": "out",
+      "file": "jsb_assets_auto.cpp",
+      "sha256": "F8317ADA8678F8115C0F2CAEB8E52A3B45FAA582894794E6E33F23229656C218"
+    },
+    {
+      "build": "out",
+      "file": "jsb_assets_auto.h",
+      "sha256": "8F82B84325A49A5496ACF9A63DDC413741F2A28DC5BA70DEAA7EBF4197466692"
+    },
+    {
+      "build": "out",
+      "file": "jsb_scene_auto.cpp",
+      "sha256": "8921815D8468C1B714E531B55A1D821D14A5B96538522EACE6067BC321C126EB"
+    },
+    {
+      "build": "out",
+      "file": "jsb_scene_auto.h",
+      "sha256": "EF5444846D175DB8D097B58C4417466D08766F6C651A0AF6E50636C50BDD4173"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_2d_auto.cpp",
+      "sha256": "673CDF1888E019BA122D59A86661BC1E91D6E3D37410A35DC9AD4F2FDBF9489B"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_2d_auto.h",
+      "sha256": "EC3F1B60B03D41A0DEF7EFC310732066AE77698704329CBF9DE7F9E82200AC80"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_assets_auto.cpp",
+      "sha256": "F8317ADA8678F8115C0F2CAEB8E52A3B45FAA582894794E6E33F23229656C218"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_assets_auto.h",
+      "sha256": "8F82B84325A49A5496ACF9A63DDC413741F2A28DC5BA70DEAA7EBF4197466692"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_scene_auto.cpp",
+      "sha256": "8921815D8468C1B714E531B55A1D821D14A5B96538522EACE6067BC321C126EB"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_scene_auto.h",
+      "sha256": "EF5444846D175DB8D097B58C4417466D08766F6C651A0AF6E50636C50BDD4173"
+    }
+  ]
+}
