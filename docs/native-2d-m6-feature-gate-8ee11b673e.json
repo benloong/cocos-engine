@@ -1,0 +1,136 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "artifacts": "native/tests/2d-poc/build/m6-windows-features-8ee11b673e",
+  "platform": "WINDOWS",
+  "command": "node native/tests/2d-poc/check-m6-feature-matrix.cjs WINDOWS <bits>",
+  "variants": [
+    {
+      "bits": 0,
+      "features": [],
+      "exports": [],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "cfd3df997a6b15ca46d74b2f140d6685edf4df01a4fa885ee9501e60fe700d6f",
+      "statsSha256": "3674a19992378d7f48ddba14a43b191d44c4d108a342a31fd275d2c3c5496312"
+    },
+    {
+      "bits": 1,
+      "features": [
+        "2d"
+      ],
+      "exports": [
+        "Sprite"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "c6e0e9024d4c74fec3e9df7e3bba14df0cab16df884bc03dadf09fdc2338910e",
+      "statsSha256": "e985f7c717ddf116679504eda8e58cb522bc1bc3e84f9bf59ab46152f042ca68"
+    },
+    {
+      "bits": 3,
+      "features": [
+        "2d",
+        "rich-text"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "86288165b9013d75409ad98d50a7acbcab51194a7f85a8a37e57766a4fe296b9",
+      "statsSha256": "c646cd98e83c3b09367b89677e5a20101db25dfe9bbe629594c7136119be7c77"
+    },
+    {
+      "bits": 5,
+      "features": [
+        "2d",
+        "mask"
+      ],
+      "exports": [
+        "Sprite",
+        "Mask"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "730dce3d4918b6af5ac9e17ccf4860ba73050697b8b2243dd5003015fb7a493d",
+      "statsSha256": "d9fd727ce14ed0092c349b2eccec5bf2a244839d7afcd374a628421b43f116dc"
+    },
+    {
+      "bits": 7,
+      "features": [
+        "2d",
+        "rich-text",
+        "mask"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText",
+        "Mask"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "fc182ac8cb23b228d234f8b37a02e0f094cfe5eda254b012db05a6da9c5b119e",
+      "statsSha256": "9654f24841ef25d3467b7e0ba0f8b5ebe7df79cebcf8c0c8bd23258597453baf"
+    },
+    {
+      "bits": 9,
+      "features": [
+        "2d",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "06ad021c93cbc3ea041103ab46364d01b87967cfb873f537afe98f1de876de1e",
+      "statsSha256": "a684525a3e8ddeb2dd534532c48615ac74ad147194dff250fb50989355605f8d"
+    },
+    {
+      "bits": 11,
+      "features": [
+        "2d",
+        "rich-text",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "9400b755ba12f6084ee3f7174f8e6f9ca55e073e7e771016745c2860d4fb8aa0",
+      "statsSha256": "c7ac4886a04499888a1e78862b8b1a9c0e4fcc9333ead836b5ef5aee86ba6321"
+    },
+    {
+      "bits": 13,
+      "features": [
+        "2d",
+        "mask",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "Mask",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "2bb6a4fa5c357cbac8c14972793335e3ac7b484883d9cb16e8399cbdee88b5e8",
+      "statsSha256": "6b446833872303933fdf75d49553766087affc5ed759fe09e9f5b8f614d4a2cd"
+    },
+    {
+      "bits": 15,
+      "features": [
+        "2d",
+        "rich-text",
+        "mask",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText",
+        "Mask",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "342b98afa706e086ad8a95ccc6f18ead4a39fbd67c1e48d61675ddcc8101395d",
+      "statsSha256": "a3f4a9c092f1687c9afcb6a2a606dca608c15a515d1d97999846c164d0efe0d5"
+    }
+  ]
+}
