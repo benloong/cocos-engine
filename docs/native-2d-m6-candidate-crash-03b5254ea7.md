@@ -21,3 +21,5 @@ V8 后端的 `Object::getProperty` 原先在创建属性名后才从 persistent 
 在 Windows Debug（`native/out`）和 Release（`native/out-release2`）分别增量重编并链接 `cc2d_native_poc` 后，运行由 `build-richtext-runtime-probe.cjs` 生成的探针。两个配置均退出 0 并报告 `jsb shell integration: OK`。覆盖分段回收、借用包装对象失效和触摸回调中销毁。本轮未运行依赖本地 HTTP 字体服务的完整 GPU 应用压力矩阵，崩溃阻断保留。
 
 同日扩展离线 JSB 探针，在同一 RichText 实例上交替保留和放开分段 Node 的脚本引用。每个配置执行 100 轮，每轮创建或复用 24 个 Label 后清空，检查只有池内 20 个包装对象继续有效。有强引用的 50 轮逐轮确认调用 4 次分段 Node 的脚本销毁回调。Windows Debug、Release 均退出 0，并报告 `jsb shell integration: OK` 和 `native 2D PoC: PASS`。该探针使用测试回调，未覆盖完整应用的 Node 延迟销毁队列。
+
+候选 d6212f7012 的离线 GPU 应用按 Release、Debug 顺序交替执行三轮。六个进程各自在写出结果后调用 game.end()，全部以 0 退出。每轮 58 张 RGBA 捕获及生命周期计数均与上一轮离线基准一致。该场景的重复运行和正常退出已验证，历史访问冲突的触发条件仍未确认。[逐次结果与哈希](./native-2d-m6-offline-richtext-exit.json)

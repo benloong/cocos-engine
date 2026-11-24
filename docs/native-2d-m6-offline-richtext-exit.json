@@ -1,0 +1,57 @@
+{
+  "candidate": "d6212f7012",
+  "artifacts": "native/tests/2d-poc/build/m6-offline-exit-d6212f7012",
+  "baseline": "native-2d-m6-offline-richtext-lifecycle.json",
+  "shutdown": "Game.end() after manifest write. Each process exited within the 150-second timeout.",
+  "scope": "Offline RichText application through collected-wrapper checks. Same executables and cc.js as baseline.",
+  "runs": [
+    {
+      "round": 1,
+      "configuration": "Release",
+      "exitCode": 0,
+      "identicalCaptures": 58,
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "logSha256": "4620564CA6192ADAA5EC4DDCB2ABD9E46221BEF22A1C808DD94828166E568129"
+    },
+    {
+      "round": 1,
+      "configuration": "Debug",
+      "exitCode": 0,
+      "identicalCaptures": 58,
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "logSha256": "985441B6ECF940A7C01A9CD668BBFB9BCC5120072CB30729CBD8617A02BB153D"
+    },
+    {
+      "round": 2,
+      "configuration": "Release",
+      "exitCode": 0,
+      "identicalCaptures": 58,
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "logSha256": "26FA1E2764A95A39EC899C8F9100CBBAF6EC33800BF953A03A921F2766180B8B"
+    },
+    {
+      "round": 2,
+      "configuration": "Debug",
+      "exitCode": 0,
+      "identicalCaptures": 58,
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "logSha256": "EFD8900F5B3463FE82004AC84CAD2D8D5E4BBF1A6EF0C91778FA9E6D87C85AC9"
+    },
+    {
+      "round": 3,
+      "configuration": "Release",
+      "exitCode": 0,
+      "identicalCaptures": 58,
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "logSha256": "B6BAF3FEE6E39EB88AE7A88B0DCD18F837AE9112234278DFE0F27C398E96AD56"
+    },
+    {
+      "round": 3,
+      "configuration": "Debug",
+      "exitCode": 0,
+      "identicalCaptures": 58,
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "logSha256": "EA49644B3B872CEF4EE8921DC4B3C6C2D294601D6B61C553C5595911052CF1B7"
+    }
+  ]
+}
