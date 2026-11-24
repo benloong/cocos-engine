@@ -1,0 +1,172 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "artifacts": "native/tests/2d-poc/build/m6-atlas-gate-a8b23abfcf",
+  "command": "run-m6-static-atlas-stress.ps1 -AppExe <document app>",
+  "scope": "Serial offline application runs. Each fixture checks asset reference counts, deferred destruction, cache removal and GPU pixels. The launcher stops the process after collecting the completion marker.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "gateExitCode": 0,
+      "appSha256": "4800568E3D6507D030258FCBFE28C3C140B34EBAD5F090C3B553EADFCB119B2A",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "787FFC727F0E17E31975D070BB57C04AC8458077840A295CD28F86A986FEB1F8",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "privateBytes": 223289344
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 221233152
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 224677888
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 224403456
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 219746304
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 217313280
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 220119040
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 219717632
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 221507584
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 221904896
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 220139520
+        }
+      ],
+      "reportSha256": "7059CB37333175341EE4002918373AF43C824C96BD28B16B9E03F802A78BED39",
+      "stdoutSha256": "ACC0CA9C0473CFEF15250C2C860230D7E4E16B83858926AD1E628E07CA1A3C96"
+    },
+    {
+      "configuration": "Release",
+      "gateExitCode": 0,
+      "appSha256": "3C8C3D871A36DFC943564B28FFA3AD95017BD32BECD71E7202904BBC56C814DE",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "787FFC727F0E17E31975D070BB57C04AC8458077840A295CD28F86A986FEB1F8",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "privateBytes": 203960320
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 203460608
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 204697600
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 205979648
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 199704576
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 199700480
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 199757824
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 199016448
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 201920512
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 200069120
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "privateBytes": 200417280
+        }
+      ],
+      "reportSha256": "0C5F6A3861A180D0D3F667D27CA47A05A1B12D4CE6A83C3A960AD1CB8B5D4F5A",
+      "stdoutSha256": "3B3D5D02665AC8BF6137A89F7E0E321CD7ABBAC482A5365B1DE3433BCE46C6E3"
+    }
+  ]
+}
