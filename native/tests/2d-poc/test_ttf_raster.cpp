@@ -25,6 +25,8 @@ int main(int argc, char **argv) {
         {"thai", u8"\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22"},
         {"bidi-override", u8"A\u202E123\u202CB"},
         {"bidi-visual", "A321B"},
+        {"bidi-nested", u8"A\u202E12\u202D34\u202C56\u202CB78"},
+        {"bidi-nested-visual", "A653421B78"},
         {"latin-space", "A V A"},
         {"latin-kern", "AVATAR"},
         {"hebrew", u8"\u05D0\u05D1\u05D2"},
