@@ -1,0 +1,314 @@
+{
+  "checkpoint": "labels/steady after 120 sampled frames and the ordinary forced GC; 200 Label components; isolated Windows Release applications.",
+  "columns": [
+    "snapshotNodes",
+    "shallowBytes",
+    "outgoingEdgesIncludingWeakAndInternal"
+  ],
+  "method": "V8 heap snapshot queried once per process. Counts are whole-isolate observations. Snapshot work is outside the timed workload; outgoing edges are not mark visits.",
+  "artifacts": "native/tests/2d-poc/build/m6-label-heap-29833647c3",
+  "workloadSha256": "7c58ca3fce6e9e5661c51c5b10bb586e512e15680097b03ebe3b389aff216303",
+  "probeSha256": "ca1d9cd82e8f56665b94b6fc23d0a33bdee14a7bb3cdc83e01a529ecbee8fcf5",
+  "runs": [
+    {
+      "round": 1,
+      "arm": "before",
+      "rawSha256": "c3f87b8dda6f38df764a6537ac3c3264971ea75f90567745b6a44a7dc3ef6ea5"
+    },
+    {
+      "round": 1,
+      "arm": "after",
+      "rawSha256": "83d998dfda40eff0f14d273930f78ba9a81b728c559df2879913bc0dd4464655"
+    },
+    {
+      "round": 2,
+      "arm": "after",
+      "rawSha256": "c758f881270ea2c364592701f227c2e0a400854c4992eb9175fd3b0e231186d0"
+    },
+    {
+      "round": 2,
+      "arm": "before",
+      "rawSha256": "4a42832d34c9a43a6402767786c52a722eeecfca7cbbb4eb320ed702265eef61"
+    }
+  ],
+  "arms": {
+    "before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669",
+      "exeSha256": "37b40bb2609d8a0efc238fcf76ec8c6d30eaa955110a5dbb39beb9d7c5cae2c9",
+      "totals": [
+        [
+          194731,
+          15549643,
+          755175
+        ],
+        [
+          194651,
+          15542683,
+          754879
+        ]
+      ],
+      "jsObjects": [
+        [
+          47505,
+          1666116,
+          245864
+        ],
+        [
+          47505,
+          1666116,
+          245864
+        ]
+      ],
+      "closures": [
+        [
+          10555,
+          312544,
+          72047
+        ],
+        [
+          10555,
+          312544,
+          72047
+        ]
+      ],
+      "classes": {
+        "Label": [
+          [
+            200,
+            53600,
+            8600
+          ],
+          [
+            200,
+            53600,
+            8600
+          ]
+        ],
+        "Node": [
+          [
+            206,
+            4120,
+            4704
+          ],
+          [
+            206,
+            4120,
+            4704
+          ]
+        ],
+        "Object": [
+          [
+            11793,
+            275224,
+            56670
+          ],
+          [
+            11793,
+            275224,
+            56670
+          ]
+        ],
+        "Array": [
+          [
+            8187,
+            130992,
+            35273
+          ],
+          [
+            8187,
+            130992,
+            35273
+          ]
+        ],
+        "Color": [
+          [
+            2037,
+            32788,
+            6116
+          ],
+          [
+            2037,
+            32788,
+            6116
+          ]
+        ],
+        "Vec2": [
+          [
+            1065,
+            21300,
+            4258
+          ],
+          [
+            1065,
+            21300,
+            4258
+          ]
+        ],
+        "RenderData": [
+          [
+            200,
+            22400,
+            4200
+          ],
+          [
+            200,
+            22400,
+            4200
+          ]
+        ],
+        "StaticVBChunk": [
+          [
+            200,
+            8000,
+            1200
+          ],
+          [
+            200,
+            8000,
+            1200
+          ]
+        ]
+      }
+    },
+    "after": {
+      "revision": "29833647c3de9625d1f4073b02f1a230a8645f75",
+      "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+      "exeSha256": "420292625cfeba098ff9ea52a1e56e75c60e95e1f2dd811ebc6959d8b2f251e3",
+      "totals": [
+        [
+          147523,
+          12830315,
+          588922
+        ],
+        [
+          147550,
+          12830671,
+          588961
+        ]
+      ],
+      "jsObjects": [
+        [
+          23547,
+          866544,
+          124039
+        ],
+        [
+          23547,
+          866544,
+          124039
+        ]
+      ],
+      "closures": [
+        [
+          10659,
+          316648,
+          73012
+        ],
+        [
+          10659,
+          316648,
+          73012
+        ]
+      ],
+      "classes": {
+        "Label": [
+          [
+            401,
+            52020,
+            7202
+          ],
+          [
+            401,
+            52020,
+            7202
+          ]
+        ],
+        "Node": [
+          [
+            206,
+            4120,
+            4704
+          ],
+          [
+            206,
+            4120,
+            4704
+          ]
+        ],
+        "Object": [
+          [
+            5390,
+            135984,
+            32561
+          ],
+          [
+            5390,
+            135984,
+            32561
+          ]
+        ],
+        "Array": [
+          [
+            4136,
+            66176,
+            17025
+          ],
+          [
+            4136,
+            66176,
+            17025
+          ]
+        ],
+        "Color": [
+          [
+            825,
+            13396,
+            2480
+          ],
+          [
+            825,
+            13396,
+            2480
+          ]
+        ],
+        "Vec2": [
+          [
+            440,
+            8808,
+            1754
+          ],
+          [
+            440,
+            8808,
+            1754
+          ]
+        ],
+        "RenderData": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "StaticVBChunk": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ]
+      }
+    }
+  }
+}
