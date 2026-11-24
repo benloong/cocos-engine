@@ -1,0 +1,298 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "artifacts": "native/tests/2d-poc/build/m6-gc-handles-29833647c3",
+  "configs": {
+    "before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "exeSha256": "9de0ddbc9849d97e5107dc5b7b0779c94a92133295ba9e9339dce12a86ee8202",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669"
+    },
+    "after": {
+      "revision": "29833647c3de9625d1f4073b02f1a230a8645f75",
+      "exeSha256": "18da8b0ddcfdd14be6499787c7588da00fb90c678a9ba1f640189eb8019fecfc",
+      "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb"
+    }
+  },
+  "columns": [
+    "nonempty strong JSB-class handles",
+    "nonempty weak JSB-class handles",
+    "native pointer map entries",
+    "all V8 used global handle bytes"
+  ],
+  "counter": "VisitHandlesWithClassIds filtered by ObjectWrap::MAGIC_CLASS_ID_JSB, Persistent::IsWeak, NativePtrToObjectMap::size and GetHeapStatistics().used_global_handles_size(). The V8 byte count includes unclassified handles.",
+  "probeSha256": "f21348d8534839c3010cae535eb4c15d3efebe6ddc2e485331aee517172c30e7",
+  "workloadSha256": "51c8f63ebd31df1b257412c866ef38de83d5400ea130bf0bab4ecef7c5a8c0df",
+  "runs": [
+    {
+      "round": 1,
+      "arm": "before",
+      "resultSha256": "4fbff382bf22b9eb86b93e4d3bf465e66c1b27e20ee267cc3a81876bf7f97776"
+    },
+    {
+      "round": 1,
+      "arm": "after",
+      "resultSha256": "b38edc6a4acc4606bc0a612fe274307dd43a1c3ac793fcf32b4fdb5f51a0f733"
+    },
+    {
+      "round": 2,
+      "arm": "after",
+      "resultSha256": "6fde1664ef1bc35b27028e963810fe6508bad8622e92a292d1c0369346a5dfdb"
+    },
+    {
+      "round": 2,
+      "arm": "before",
+      "resultSha256": "fe506ef9d960e09d0c60a2a5bf6e84b10e15f01ebdc67e0c89b9123b2704879d"
+    }
+  ],
+  "method": "Counterbalanced before-after and after-before runs. Each pair of rows gives counts immediately before and after forced GC in a 120-frame phase. Diagnostic binaries only; time is not used for acceptance.",
+  "measurements": {
+    "empty/steady": {
+      "before": [
+        [
+          [
+            0,
+            950,
+            950,
+            63712
+          ],
+          [
+            0,
+            103,
+            103,
+            36608
+          ]
+        ],
+        [
+          [
+            0,
+            950,
+            950,
+            63712
+          ],
+          [
+            0,
+            103,
+            103,
+            36608
+          ]
+        ]
+      ],
+      "after": [
+        [
+          [
+            0,
+            949,
+            949,
+            64864
+          ],
+          [
+            0,
+            102,
+            102,
+            37760
+          ]
+        ],
+        [
+          [
+            0,
+            949,
+            949,
+            64864
+          ],
+          [
+            0,
+            102,
+            102,
+            37760
+          ]
+        ]
+      ]
+    },
+    "sprites/steady": {
+      "before": [
+        [
+          [
+            0,
+            5955,
+            5955,
+            415936
+          ],
+          [
+            0,
+            5108,
+            5108,
+            388832
+          ]
+        ],
+        [
+          [
+            0,
+            5955,
+            5955,
+            415936
+          ],
+          [
+            0,
+            5108,
+            5108,
+            388832
+          ]
+        ]
+      ],
+      "after": [
+        [
+          [
+            0,
+            6949,
+            6949,
+            640960
+          ],
+          [
+            0,
+            6102,
+            6102,
+            613856
+          ]
+        ],
+        [
+          [
+            0,
+            6949,
+            6949,
+            640960
+          ],
+          [
+            0,
+            6102,
+            6102,
+            613856
+          ]
+        ]
+      ]
+    },
+    "labels/steady": {
+      "before": [
+        [
+          [
+            0,
+            3956,
+            3956,
+            204800
+          ],
+          [
+            0,
+            2109,
+            2109,
+            145696
+          ]
+        ],
+        [
+          [
+            0,
+            3956,
+            3956,
+            204800
+          ],
+          [
+            0,
+            2109,
+            2109,
+            145696
+          ]
+        ]
+      ],
+      "after": [
+        [
+          [
+            0,
+            3149,
+            3149,
+            212192
+          ],
+          [
+            0,
+            1302,
+            1302,
+            153088
+          ]
+        ],
+        [
+          [
+            0,
+            3149,
+            3149,
+            212192
+          ],
+          [
+            0,
+            1302,
+            1302,
+            153088
+          ]
+        ]
+      ]
+    },
+    "mixed/dirty": {
+      "before": [
+        [
+          [
+            0,
+            10909,
+            10909,
+            653728
+          ],
+          [
+            0,
+            8392,
+            8392,
+            567040
+          ]
+        ],
+        [
+          [
+            0,
+            10915,
+            10915,
+            653920
+          ],
+          [
+            0,
+            8392,
+            8392,
+            567040
+          ]
+        ]
+      ],
+      "after": [
+        [
+          [
+            0,
+            8939,
+            8939,
+            831520
+          ],
+          [
+            0,
+            8092,
+            8092,
+            804416
+          ]
+        ],
+        [
+          [
+            0,
+            8939,
+            8939,
+            831520
+          ],
+          [
+            0,
+            8092,
+            8092,
+            804416
+          ]
+        ]
+      ]
+    }
+  }
+}
