@@ -1,0 +1,145 @@
+{
+  "candidate": "6255b6c179b821a5d28f58dba9bc43582039f176",
+  "artifacts": "native/tests/2d-poc/build/m6-jsb-6255b6c179",
+  "scope": "Seven unchanged JSB scripts executed in isolated directories using the two candidate core binaries.",
+  "requiredMarkers": [
+    "jsb shell integration: OK",
+    "jsb scene record: OK",
+    "native 2D PoC: PASS"
+  ],
+  "probes": [
+    {
+      "probe": "font-assets",
+      "script": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf/probes/font-assets.js",
+      "scriptSha256": "b7229edd27c0c8e44977f6656d40b38b6cc25e9e9a059cc150d16f13a7d4ac32",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+          "exitCode": 0,
+          "logSha256": "ed4447a0bdaf0aae087222ded81abca1e0e0d89401a75a62d34864086b4b6e08"
+        },
+        {
+          "configuration": "Release",
+          "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+          "exitCode": 0,
+          "logSha256": "da2955059ca935b5fb27a133bc594edf42aba646598ba2c957cfd359b3d56f5d"
+        }
+      ]
+    },
+    {
+      "probe": "layout",
+      "script": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf/probes/layout.js",
+      "scriptSha256": "0f55645c096494779b7b94c68013e09ef280cd0cebaa6b9bd317ba6c8a5cff75",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+          "exitCode": 0,
+          "logSha256": "de0d0143f23c2e5c95538c7d6c28899ae930295eab2e2cad8423179e1ee4a11a"
+        },
+        {
+          "configuration": "Release",
+          "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+          "exitCode": 0,
+          "logSha256": "ab3991b4b4f1dac097ffd6279271dcd7254e258a213163445f9fb1132b0a2c3c"
+        }
+      ]
+    },
+    {
+      "probe": "renderer-manager",
+      "script": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf/probes/renderer-manager.js",
+      "scriptSha256": "f559679715699b50279deb649a2a3fd8d2dc807c2c31b696434c8fdfec71b9f2",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+          "exitCode": 0,
+          "logSha256": "fb9591506c6e5ab7403471f079f696f50b629c86bd07c797a584961462034382"
+        },
+        {
+          "configuration": "Release",
+          "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+          "exitCode": 0,
+          "logSha256": "ee3a8b7bd28f0246c095727a76be5d2aba8e626df02b683bc7b048ea79c37e54"
+        }
+      ]
+    },
+    {
+      "probe": "richtext-runtime",
+      "script": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf/probes/richtext-runtime.js",
+      "scriptSha256": "201f905fe3e31b406f1d2411cf9793ed568275001a646fe9e6485b5730bb5408",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+          "exitCode": 0,
+          "logSha256": "1d9eeb8e044179c8dd7b5717570e7baebe7aa74da02be38a56323ada2808764d"
+        },
+        {
+          "configuration": "Release",
+          "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+          "exitCode": 0,
+          "logSha256": "43265780cf44dfecfd03f91cfc01613c948e87dbd252dd015d31d152cc0e72e9"
+        }
+      ]
+    },
+    {
+      "probe": "sprite-api",
+      "script": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf/probes/sprite-api.js",
+      "scriptSha256": "c88b7c0d2d11e86259b20dc523f16e8c9af016e7ad9709609becdc47022e8e00",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+          "exitCode": 0,
+          "logSha256": "0f54a0b63e3802e7520fa1ad61520388e8003e10534f5d9f9568f973de049e73"
+        },
+        {
+          "configuration": "Release",
+          "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+          "exitCode": 0,
+          "logSha256": "9dc2eb020bd8b61754e576fb692b1ef465f3b1b679cd7d89ad74e38c14cd03fd"
+        }
+      ]
+    },
+    {
+      "probe": "sprite-atlas",
+      "script": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf/probes/sprite-atlas.js",
+      "scriptSha256": "a2689f03bc914d3de6f70a31816838566c970af7c5740e96a3da34582f422c1c",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+          "exitCode": 0,
+          "logSha256": "3019fb40738fd9ba09e9e77a0c3315a0d99f033a60617fe0e61ef87c2fd051cc"
+        },
+        {
+          "configuration": "Release",
+          "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+          "exitCode": 0,
+          "logSha256": "6d5d40d6116159a02bcda6618d410efd638c3b484ecd73d2c372c3df5556ed94"
+        }
+      ]
+    },
+    {
+      "probe": "sprite-frame-lifetime",
+      "script": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf/probes/sprite-frame-lifetime.js",
+      "scriptSha256": "8b3af2bd561d20d3ae4240239f07895f8d15dcd5aeaf1e7165f2754d5903cb06",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+          "exitCode": 0,
+          "logSha256": "cc84b26e894b22cc0e516a579014e1951916f900ca871d6c0bad6eec2d25aef7"
+        },
+        {
+          "configuration": "Release",
+          "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+          "exitCode": 0,
+          "logSha256": "770af291428404a92dd708eec642e253fe153ae1992ffd27f1826c03a4a7905e"
+        }
+      ]
+    }
+  ]
+}
