@@ -1,0 +1,32 @@
+{
+  "candidate": "e03c0660a4",
+  "artifacts": "native/tests/2d-poc/build/m6-scene-atlas-e03c0660a4",
+  "fixture": "native/tests/2d-poc/fixtures/check-atlas-scene-release.cjs",
+  "scope": "Local resources.load callbacks delivered after a real Director scene switch. Explicit atlas retention followed by decRef and deferred asset destruction.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": {
+        "cycles": 32,
+        "requestsAcrossSceneChanges": 32,
+        "releasedDependencyChains": 32
+      },
+      "exeSha256": "794752DCCF715CC4F2876DBBBDFB907116A4971ADE6F5A19737244AA0A0E118C",
+      "ccJsSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "logSha256": "DB3BDA801F6C9F2E1FAE166420A14E4310D1828A140E7FF0DC490403AAD127F5"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": {
+        "cycles": 32,
+        "requestsAcrossSceneChanges": 32,
+        "releasedDependencyChains": 32
+      },
+      "exeSha256": "4DF1AD926653E815CFAEB3BE956BF7E333C4D056D74BF9123EEF19ACA075B080",
+      "ccJsSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "logSha256": "1826BB5C8FD165EA4948A8BD5226E05368DA5F427E3AAE4FE706D4A5C46809D0"
+    }
+  ]
+}
