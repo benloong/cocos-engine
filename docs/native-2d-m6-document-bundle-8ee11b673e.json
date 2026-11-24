@@ -1,0 +1,31 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "deployments": [
+    "Debug",
+    "Release"
+  ],
+  "method": "Rebuilt the local Windows document bundle, checked its module graph with audit-windows-bundle.cjs, and compared every emitted engine chunk with both application deployments.",
+  "chunkHashes": {
+    "cc.js": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f"
+  },
+  "graph2DModules": 84,
+  "emitted2DModules": 58,
+  "boundaryImports": 73,
+  "dynamicGraphImports": 0,
+  "runtimeImports": [
+    {
+      "line": 1902,
+      "call": "module.import(settingsModule)"
+    },
+    {
+      "line": 33103,
+      "call": "module.import(`virtual:///prerequisite-imports/${bundle.name}`)"
+    },
+    {
+      "line": 38068,
+      "call": "module.import(pack)"
+    }
+  ],
+  "reportSha256": "7d199234fa4ad1091377ed802688bba44928b69c138c04a6c75bd5c78e09fa75",
+  "logSha256": "64fb21965bde5bf89d289361b2f527684da17bd1d8e1c7d9db1cb96177d7c950"
+}
