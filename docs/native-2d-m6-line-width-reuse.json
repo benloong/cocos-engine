@@ -1,0 +1,241 @@
+{
+  "base": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "workload": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+  "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+  "labelSourceSha256LF": "328ad35e598a684a5a40c5282ed53ea180f8a106386156e72138f1170b3628d9",
+  "order": [
+    "control-1",
+    "width-1",
+    "width-2",
+    "control-2",
+    "control-3",
+    "width-3"
+  ],
+  "measurement": "Per-run medians of 120 dirty frames, milliseconds, Windows Release diagnostic probes enabled.",
+  "arms": {
+    "control": {
+      "exe": "60b048e425d57afbe1743f1fc692cd0884f075967e5e9349771c891578b7d449",
+      "engine": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+      "runs": [
+        {
+          "round": 1,
+          "raw": "2ab52084f1e264b15e2ab0d6fc4f671fd89574f0f763d5864eaee35a11ea82e1",
+          "phases": {
+            "labels": {
+              "cpuMs": 0.8464500000021901,
+              "layoutMs": 0.17165,
+              "hits": 19,
+              "draws": 1
+            },
+            "rich": {
+              "cpuMs": 0.8750499999990105,
+              "layoutMs": 0.10944999999999999,
+              "hits": 7,
+              "draws": 1
+            },
+            "mixed": {
+              "cpuMs": 2.276399999998152,
+              "layoutMs": 0.7051499999999999,
+              "hits": 25,
+              "draws": 3
+            }
+          }
+        },
+        {
+          "round": 2,
+          "raw": "559449bdb32b1c0bd2df14936845ecd0690449855a7779a972a7682eea87d25c",
+          "phases": {
+            "labels": {
+              "cpuMs": 1.1909000000006622,
+              "layoutMs": 0.23420000000000002,
+              "hits": 19,
+              "draws": 1
+            },
+            "rich": {
+              "cpuMs": 0.988699999999316,
+              "layoutMs": 0.125,
+              "hits": 7,
+              "draws": 1
+            },
+            "mixed": {
+              "cpuMs": 2.3868000000021103,
+              "layoutMs": 0.76925,
+              "hits": 25,
+              "draws": 3
+            }
+          }
+        },
+        {
+          "round": 3,
+          "raw": "7c84567731095597c88d43bb469612164524a1b1efaac523787b300a86f8058b",
+          "phases": {
+            "labels": {
+              "cpuMs": 1.1926500000009386,
+              "layoutMs": 0.23355,
+              "hits": 19,
+              "draws": 1
+            },
+            "rich": {
+              "cpuMs": 0.8665000000013097,
+              "layoutMs": 0.10635,
+              "hits": 7,
+              "draws": 1
+            },
+            "mixed": {
+              "cpuMs": 3.13170000000048,
+              "layoutMs": 0.9154,
+              "hits": 25,
+              "draws": 3
+            }
+          }
+        }
+      ]
+    },
+    "width": {
+      "exe": "5e84d680d00386325ccc3229890c1fcd3a6ed9fa6bbcca2f7697d9e47dd7a965",
+      "engine": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+      "runs": [
+        {
+          "round": 1,
+          "raw": "cba57608b5452aaf8ce07c05e992180da9661f13152816dd2216643df7a2305a",
+          "phases": {
+            "labels": {
+              "cpuMs": 0.9671000000006912,
+              "layoutMs": 0.0717,
+              "hits": 19,
+              "draws": 1
+            },
+            "rich": {
+              "cpuMs": 0.8125000000011787,
+              "layoutMs": 0.02615,
+              "hits": 7,
+              "draws": 1
+            },
+            "mixed": {
+              "cpuMs": 2.0367000000016295,
+              "layoutMs": 0.48460000000000003,
+              "hits": 25,
+              "draws": 3
+            }
+          }
+        },
+        {
+          "round": 2,
+          "raw": "31cf8f8621d4d219a2c8c5daac3b4a1c0a2c861b12b1465777ea945c0aade357",
+          "phases": {
+            "labels": {
+              "cpuMs": 1.0331500000005238,
+              "layoutMs": 0.07500000000000001,
+              "hits": 19,
+              "draws": 1
+            },
+            "rich": {
+              "cpuMs": 0.5186999999983265,
+              "layoutMs": 0.01515,
+              "hits": 7,
+              "draws": 1
+            },
+            "mixed": {
+              "cpuMs": 2.5500499999992288,
+              "layoutMs": 0.66125,
+              "hits": 25,
+              "draws": 3
+            }
+          }
+        },
+        {
+          "round": 3,
+          "raw": "10fd138fdbfdfec6a0ef733162cd677715d4cfc1c667d80f7f5344d0bd1b73f1",
+          "phases": {
+            "labels": {
+              "cpuMs": 0.8389000000014406,
+              "layoutMs": 0.06505,
+              "hits": 19,
+              "draws": 1
+            },
+            "rich": {
+              "cpuMs": 0.7029500000005093,
+              "layoutMs": 0.0197,
+              "hits": 7,
+              "draws": 1
+            },
+            "mixed": {
+              "cpuMs": 2.772450000001368,
+              "layoutMs": 0.7256499999999999,
+              "hits": 25,
+              "draws": 3
+            }
+          }
+        }
+      ]
+    }
+  },
+  "pixelChecks": {
+    "independentTexturesAndSameFrameVariantsPerArm": 18,
+    "acrossArms": [
+      {
+        "alignment": 0,
+        "text": "AB",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "45b83795cb1784965762df630fd7016a5fdd8d0335aef2a5b52a98724384fe05"
+      },
+      {
+        "alignment": 0,
+        "text": "Wide line\ni",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "c3501afba05353590a64fa1471a89b30954de9275d93672bca34b6e4455599ee"
+      },
+      {
+        "alignment": 0,
+        "text": "Café 文",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "3c48b2c303b806dc7022b7aa7a19452173745205e919dd9c255bb2cfcfa0ed50"
+      },
+      {
+        "alignment": 1,
+        "text": "AB",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "70508ed6741f03b4697081427a1954c86d2c643395ee5cf1221a3681bfbc02d5"
+      },
+      {
+        "alignment": 1,
+        "text": "Wide line\ni",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "9d712db22a3b3e47230daad91d9697036a69723886073349acc0486d7372ce3d"
+      },
+      {
+        "alignment": 1,
+        "text": "Café 文",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "d46a8c30b799c59263f1a673a94f01e15f27f09d115e285528cdfbd9f40b6dff"
+      },
+      {
+        "alignment": 2,
+        "text": "AB",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "c60a78bc5e4f0482f8054c76a23ba9179d5bf88d76fba8a8edb4705cc839f528"
+      },
+      {
+        "alignment": 2,
+        "text": "Wide line\ni",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "951b962d4737e300cf2a43bd00d5c7c37eb7f6e49d2e82896d142697d30ade20"
+      },
+      {
+        "alignment": 2,
+        "text": "Café 文",
+        "width": 160,
+        "height": 80,
+        "rgbaSha256": "0f672ccbda95d5cd539311cbdd532d7aaf5ace515f9907e6c7dd1119bd625c59"
+      }
+    ]
+  }
+}

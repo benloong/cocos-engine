@@ -71,6 +71,7 @@ struct LineRaster {
 
     Placement placement{};
     std::string text;
+    float measuredWidth{};
     Data pixels;
 };
 
@@ -862,8 +863,28 @@ void Label::rebuildTexture() {
     float contentWidth = 0.0F;
     std::vector<float> lineWidths;
     lineWidths.reserve(lines.size());
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+    LineRaster *cache = !_fontAsset && lines.size() == 1 && _string.size() <= 256 ? measurement.systemRaster() : nullptr;
+    LineRaster::Placement placement{};
+    if (cache) {
+        const auto app = CC_CURRENT_APPLICATION();
+        const auto engine = app ? app->getEngine() : nullptr;
+        if (engine) {
+            placement.frame = engine->getTotalFrames();
+            placement.fontRevision = getFontAliasRevision();
+        } else {
+            cache = nullptr;
+        }
+    }
+#endif
     for (const std::string &line : lines) {
+#if CC_PLATFORM == CC_PLATFORM_WINDOWS
+        const bool reuseWidth = cache && !cache->pixels.isNull() && cache->placement.frame == placement.frame &&
+                               cache->placement.fontRevision == placement.fontRevision && cache->text == line;
+        lineWidths.push_back(reuseWidth ? cache->measuredWidth : measureText(measureContext, line));
+#else
         lineWidths.push_back(measureText(measureContext, line));
+#endif
         contentWidth = std::max(contentWidth, lineWidths.back());
     }
     if (_transform->getContentSize().x > 0.0F && _overflow != 0) {
@@ -928,20 +949,14 @@ void Label::rebuildTexture() {
     };
 
 #if CC_PLATFORM == CC_PLATFORM_WINDOWS
-    LineRaster *cache = nullptr;
-    LineRaster::Placement placement{};
-    if (!_fontAsset && !_enableOutline && !drawShadow && !_isUnderline && lines.size() == 1 &&
-        _string.size() <= 256 && static_cast<uint64_t>(textureWidth) * textureHeight <= 16384) {
-        const auto app = CC_CURRENT_APPLICATION();
-        const auto engine = app ? app->getEngine() : nullptr;
-        if (engine) cache = measurement.systemRaster();
-        if (cache) {
-            placement = {engine->getTotalFrames(), getFontAliasRevision(), {textureWidth, textureHeight},
-                         {lineX(lineWidths.front()), textTop}, {_color.r, _color.g, _color.b}};
-            if (!cache->pixels.isNull() && cache->placement == placement && cache->text == lines.front()) {
-                uploadRaster(cache->pixels);
-                return;
-            }
+    if (_enableOutline || drawShadow || _isUnderline || static_cast<uint64_t>(textureWidth) * textureHeight > 16384) cache = nullptr;
+    if (cache) {
+        placement.size = {textureWidth, textureHeight};
+        placement.origin = {lineX(lineWidths.front()), textTop};
+        placement.rgb = {_color.r, _color.g, _color.b};
+        if (!cache->pixels.isNull() && cache->placement == placement && cache->text == lines.front()) {
+            uploadRaster(cache->pixels);
+            return;
         }
     }
     auto &context = measurement.drawingContext(textureWidth, textureHeight);
@@ -1075,6 +1090,7 @@ void Label::rebuildTexture() {
     if (cache && !pixels.isNull()) {
         cache->placement = placement;
         cache->text = lines[0];
+        cache->measuredWidth = lineWidths.front();
         cache->pixels = std::move(pixels);
     }
 #endif
