@@ -1,0 +1,33 @@
+{
+  "candidate": "6255b6c179b821a5d28f58dba9bc43582039f176",
+  "artifacts": "native/tests/2d-poc/build/m6-jsb-trace-6255b6c179",
+  "failedCache": "gpu-win-trace-lifecycle",
+  "failedExeSha256": "ea41da4d66496df10329aac0f29c5fa4ab0de322cd9d13d995ec53d697e38f39",
+  "observed": "The Debug CRT reported corruption after a heap block, and the launcher reached its timeout while the error dialog was open. The main thread detected it in free_dbg while deleting a CanvasRenderingContext2D during V8 wrapper finalization.",
+  "stackSha256": "4f6148adae8c5374d031dc1d7085ece102d4a204e8a5bce55d39566b4f965902",
+  "staleBuildObjects": {
+    "jsb_cocos_auto.cpp": {
+      "canvasBytes": 424,
+      "sha256": "d7e77d60e818490c8b3c9ef6aaf828d3f6ccba762ae39fe17003bce032d77ce8"
+    },
+    "CanvasRenderingContext2D.cpp": {
+      "canvasBytes": 432,
+      "sha256": "078c0109763ddf62a70e77c76e05d250c0a96c7cb75d5869197c8b7ef34cbf87"
+    },
+    "Label.cpp": {
+      "canvasBytes": 432,
+      "sha256": "791750136be9308630610c8b663163e25a705b6c59650f33f1defbf874cf30a2"
+    }
+  },
+  "bindingHeaderDependencyCount": 0,
+  "control": {
+    "method": "Recompiled only jsb_cocos_auto.cpp with the original Debug compilation arguments; linked that object ahead of the unchanged engine library, using the same application objects and fixture with the writable directory relocated.",
+    "canvasBytes": 432,
+    "objectSha256": "6fb15ee4f3e0174fdb507d8e489296dc9131fb72c1ed9a1a1b9792507ebe166b",
+    "exeSha256": "5b852da576ffceb8f0d9ecbfdb3c273768c304b549c7fb090cea11492fdb9586",
+    "processExit": 0,
+    "traceWindows": 136,
+    "resultSha256": "59d9c1d5f9be24c70349f0e30ca869203106992f6511bd8deb3d26fb085e7dc5"
+  },
+  "scope": "This identifies the current trace-cache failure. The historical premature Debug exit used a different executable and has no corresponding stack."
+}
