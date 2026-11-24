@@ -1,0 +1,74 @@
+{
+  "candidate": "6255b6c179",
+  "artifacts": "native/tests/2d-poc/build/m6-font-gate-6255b6c179",
+  "command": "cc2d_native_poc.exe --directwrite-file-probe",
+  "directory": "Repository root",
+  "gatePassed": false,
+  "runs": [
+    {
+      "round": 1,
+      "configuration": "Debug",
+      "logSha256": "5a29c393b89b6ddaaaa312a7955ac37d7925943aad1c1f436aeb4b00bdb56171",
+      "pid": 24904,
+      "completedCheckpoints": [
+        250,
+        500,
+        750,
+        1000
+      ],
+      "passed": true
+    },
+    {
+      "round": 1,
+      "configuration": "Release",
+      "logSha256": "e8e6b54dbfd94e3dc5b2d2138e89c8d5a7973cc525ed5f9c8f1c0c013609bf68",
+      "pid": 29232,
+      "completedCheckpoints": [
+        250,
+        500,
+        750,
+        1000
+      ],
+      "passed": true
+    },
+    {
+      "round": 2,
+      "configuration": "Release",
+      "logSha256": "f6e23447bb8cf80f6c4da8533ba03599ee56b83a86e1baab09a07fc5239888a9",
+      "pid": 42392,
+      "completedCheckpoints": [
+        250,
+        500,
+        750,
+        1000
+      ],
+      "passed": true
+    },
+    {
+      "round": 2,
+      "configuration": "Debug",
+      "logSha256": "c228666ff5e880b988ed5d21295df1e521e240668c3d67352e0930b4f8dfc806",
+      "pid": 24572,
+      "completedCheckpoints": [
+        250,
+        500,
+        750,
+        1000
+      ],
+      "passed": true
+    },
+    {
+      "round": 3,
+      "configuration": "Debug",
+      "logSha256": "e72e371273bfad34d670c8d908fbd08e47fa6bc3bb79eddadbb51ea2e9268ce7",
+      "pid": 34740,
+      "completedCheckpoints": [],
+      "passed": false,
+      "failedCycle": 88,
+      "stage": "after-valid-font-release",
+      "win32Error": 32,
+      "subsequentOwnerCount": 0
+    }
+  ],
+  "scope": "Stopped on first failure. The intentional held-reader control identified its own process in every run. The post-failure owner query found no PID on Debug cycle 88."
+}
