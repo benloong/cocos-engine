@@ -1,0 +1,42 @@
+{
+  "candidate": "a479ad6b84befeb120f6ed5cb09cb5cee67b9883",
+  "scope": "Native 2D static source and metadata gates on Windows",
+  "artifactDirectory": "native/tests/2d-poc/build/m6-static-a479ad6b84",
+  "checks": [
+    {
+      "command": "node scripts/generate-native-2d-decorators.cjs --check",
+      "exitCode": 0,
+      "result": "6 classes verified",
+      "log": "metadata.log",
+      "sha256": "2E9862A54452A945F887DB2C2F574B3B13350E36BD494CC96113AC9374FB990E"
+    },
+    {
+      "command": "node native/tests/2d-poc/audit-m6.cjs --check",
+      "exitCode": 0,
+      "result": "17 classes, 79 source files, 0 missing serialized declarations; undeclared public APIs: Label 6, Mask 19, Graphics 3",
+      "log": "baseline.log",
+      "sha256": "91A906931794ECF3E38F6071E329602B5D7D3CCBDEA798661E8375942074534A"
+    },
+    {
+      "command": "node native/tests/2d-poc/check-thin-shell.js",
+      "exitCode": 0,
+      "result": "43 checks, 0 failures",
+      "log": "thin.log",
+      "sha256": "EED47BCC83B14DDAA700B668429BC7CDF3E32A669322D62D1A95FA6C1BEB66D0"
+    },
+    {
+      "command": "node native/tests/2d-poc/check-m1-shells.js",
+      "exitCode": 0,
+      "result": "18 checks, 0 failures",
+      "log": "m1.log",
+      "sha256": "159FE3ABDBE778A6EF5CB37A48BDC9ABA194B70DE0CA3996BC687B5D939F9DCC"
+    },
+    {
+      "command": "node --test tests/scripts/native-2d-audit.test.cjs tests/scripts/native-2d-decorators.test.cjs",
+      "exitCode": 0,
+      "result": "13 tests passed",
+      "log": "auditTools.log",
+      "sha256": "4FC79277C5D0E6B870904D0DA94A46F9042E2BEE40B5D8BA6ECE179550F802B9"
+    }
+  ]
+}
