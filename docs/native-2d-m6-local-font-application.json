@@ -1,0 +1,114 @@
+{
+  "candidate": "c4854ca4b0",
+  "artifacts": "native/tests/2d-poc/build/m6-local-app-font-c4854ca4b0",
+  "scope": "Existing local-file assetManager.loadRemote loop and rollback tests, with a rendered Label and exclusive-file checkpoints. Offline application fixture exits before HTTP and omits the HTTP-dependent alias fixture.",
+  "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "samples": [
+        {
+          "phase": "local-25",
+          "processHandles": 569,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-250",
+          "processHandles": 569,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-500",
+          "processHandles": 569,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-750",
+          "processHandles": 571,
+          "gdiObjects": 27,
+          "userObjects": 29,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-1000",
+          "processHandles": 571,
+          "gdiObjects": 27,
+          "userObjects": 29,
+          "exclusiveRead": true
+        }
+      ],
+      "lifecycle": {
+        "cacheBefore": 22,
+        "cacheAfter": 22,
+        "localCycles": 1000,
+        "deferredDestroyFinished": true
+      },
+      "identicalCaptures": 58,
+      "exeSha256": "c0b0143af3bb2d77b5aa1a9bb490d8054d6ca752f1d7675ae4a78e986f2ac240",
+      "ccJsSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "appScriptSha256": "3c0405c2038f5748f0276120a07d007b50bdf8d4169d719db7c158859286a11d",
+      "logSha256": "ff99c91fa0ec8283e6703157ac9cdad9d83fc5ecd1282c20d0bf1effadc98ede",
+      "manifestSha256": "6c483ba9b48698d131a566180a21bdc5fda775f3ff989cc96b82482fbe840083"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "samples": [
+        {
+          "phase": "local-25",
+          "processHandles": 463,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-250",
+          "processHandles": 463,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-500",
+          "processHandles": 463,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-750",
+          "processHandles": 463,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        },
+        {
+          "phase": "local-1000",
+          "processHandles": 463,
+          "gdiObjects": 27,
+          "userObjects": 28,
+          "exclusiveRead": true
+        }
+      ],
+      "lifecycle": {
+        "cacheBefore": 22,
+        "cacheAfter": 22,
+        "localCycles": 1000,
+        "deferredDestroyFinished": true
+      },
+      "identicalCaptures": 58,
+      "exeSha256": "879d60d34aadd42e5f33fa53498de03251171ecf71ea7dfab7274d5ae4311678",
+      "ccJsSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "appScriptSha256": "700b64e8d93b996d2c0004643585ab95a322bec5541f66e24dff804a105a7b5f",
+      "logSha256": "df8565827ad85ac3d4b044a81eff92cd344bfe2a3e0dcc72f8338b990b94fd75",
+      "manifestSha256": "ceb3aec7b02d1025ddfeeeb24800c12eb14c1c37f0501d81041106d3761345ed"
+    }
+  ]
+}
