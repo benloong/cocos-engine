@@ -1,0 +1,89 @@
+{
+  "sourceRevision": "dd19706ad8",
+  "scope": "Offline full-feature Windows M5 RichText scenario through render target cleanup and game.end().",
+  "staging": "Resources from m6-full-app-f354774108/doc-<configuration>, executable, DLLs and src/cocos-js/cc.js from m6-target-bounds-6ac9f67533/<configuration>. Insert System.import(\"cc\").then(cc => cc.game.end()) immediately after rt.destroy() following M5_RICHTEXT in assets/main/index.js.",
+  "command": "run-m5-richtext-probe.ps1 -AppExe <staged exe> -LogDirectory <configuration>/logs -TimeoutSeconds 90 -RequireNormalExit",
+  "artifacts": "native/tests/2d-poc/build/m6-richtext-normal-exit",
+  "configurations": [
+    {
+      "name": "Debug",
+      "exeSha256": "C2EF42AFE25B5A064284DA9FBB7C114E7C4C01E6EA0712D0B2012FBF07CC3463",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "787FFC727F0E17E31975D070BB57C04AC8458077840A295CD28F86A986FEB1F8",
+      "runs": [
+        {
+          "report": "20261124T090435095-5ece769a.json",
+          "exitCode": 0,
+          "killedForCleanup": false,
+          "bitmapCaptures": 12,
+          "layoutCaptures": 80,
+          "labels": 9,
+          "sprites": 1,
+          "coloredPixels": 10075,
+          "clicks": [
+            "first",
+            "second",
+            "second"
+          ],
+          "stdoutSha256": "BFBB3E86ABCFD00492C9C1FD62373F70F9AE8B40B4D7C2BF009627816D6F2058"
+        },
+        {
+          "report": "20261124T090559074-a39a7ba1.json",
+          "exitCode": 0,
+          "killedForCleanup": false,
+          "bitmapCaptures": 12,
+          "layoutCaptures": 80,
+          "labels": 9,
+          "sprites": 1,
+          "coloredPixels": 10075,
+          "clicks": [
+            "first",
+            "second",
+            "second"
+          ],
+          "stdoutSha256": "C7F077499FA62845E5DDA5CC795140955006672B3601124AA7F91C544C6142CF"
+        }
+      ]
+    },
+    {
+      "name": "Release",
+      "exeSha256": "E7FC0A3D959DC09D66A54174D51E84118D20CBD9067EA4509AC69B27AE5C9F24",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "787FFC727F0E17E31975D070BB57C04AC8458077840A295CD28F86A986FEB1F8",
+      "runs": [
+        {
+          "report": "20261124T090518700-9414ee7e.json",
+          "exitCode": 0,
+          "killedForCleanup": false,
+          "bitmapCaptures": 12,
+          "layoutCaptures": 80,
+          "labels": 9,
+          "sprites": 1,
+          "coloredPixels": 10075,
+          "clicks": [
+            "first",
+            "second",
+            "second"
+          ],
+          "stdoutSha256": "FA4872D1689F2850D87F5CB70C45732FB0F24F9084B31EE839BBB0FA697F3867"
+        },
+        {
+          "report": "20261124T090641240-d1b2df32.json",
+          "exitCode": 0,
+          "killedForCleanup": false,
+          "bitmapCaptures": 12,
+          "layoutCaptures": 80,
+          "labels": 9,
+          "sprites": 1,
+          "coloredPixels": 10075,
+          "clicks": [
+            "first",
+            "second",
+            "second"
+          ],
+          "stdoutSha256": "81A111EDD0D2DD2BA158ADF207A11AF94328AB387F68941493BDB4ABDCF7FD38"
+        }
+      ]
+    }
+  ]
+}

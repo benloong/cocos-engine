@@ -2,7 +2,8 @@ param(
     [string]$AppExe = 'C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj\Debug\cocos-m1-test.exe',
     [int]$TimeoutSeconds = 45,
     [string]$LogDirectory = (Join-Path $PSScriptRoot 'build/m5-probe-runs'),
-    [ValidateSet('native','js')][string]$Implementation = 'native'
+    [ValidateSet('native','js')][string]$Implementation = 'native',
+    [switch]$RequireNormalExit
 )
 
 $ErrorActionPreference = 'Stop'
@@ -113,6 +114,12 @@ try {
     }
     $captureDirectory = Join-Path (Split-Path -Parent (Resolve-Path -LiteralPath $AppExe)) 'm6-bitmap-captures'
     $layoutMetrics | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $captureDirectory 'layout-metrics.json') -Encoding utf8
+    if ($RequireNormalExit) {
+        $remaining = [Math]::Max(0, [int]($deadline - (Get-Date)).TotalMilliseconds)
+        if (-not $proc.WaitForExit($remaining)) { throw 'RichText app did not exit after completion' }
+        if ($proc.ExitCode -ne 0) { throw "RichText app exited with code $($proc.ExitCode)" }
+        Write-Host 'M5 RichText app exit: 0'
+    }
     $passed = $true
     Write-Host 'M5 RichText probe: PASS'
 } catch {
