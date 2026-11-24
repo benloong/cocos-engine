@@ -1,0 +1,126 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "artifacts": "native/tests/2d-poc/build/m6-jsb-a8b23abfcf",
+  "scope": "Seven Windows JSB integration probes, each in a new V8 process. Debug and Release used the same generated scripts and the binaries from the candidate native core build.",
+  "debugExeSha256": "9E42AECBB62257B7FD960C90A43EAB1D9048360364911103DEA1E595E33ECB45",
+  "releaseExeSha256": "F5D7C15D1FEAFE3FE67A0D034B025AB0E164A2F47636F352E7C311FB424D1308",
+  "requiredMarkers": [
+    "jsb shell integration: OK",
+    "jsb scene record: OK",
+    "native 2D PoC: PASS"
+  ],
+  "probes": [
+    {
+      "probe": "font-assets",
+      "scriptSha256": "B7229EDD27C0C8E44977F6656D40B38B6CC25E9E9A059CC150D16F13A7D4AC32",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "logSha256": "4FED1030C06A0C0C9B60BD219BA745E61BE69F70BCA78BA1080FE13348472946"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "logSha256": "E57BCF8E0A9EFB92DB2D59D708B563829C23DCA5721F1C2412757561611367F9"
+        }
+      ]
+    },
+    {
+      "probe": "layout",
+      "scriptSha256": "0F55645C096494779B7B94C68013E09EF280CD0CEBAA6B9BD317BA6C8A5CFF75",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "logSha256": "90805BA799A58928469C407C5FFA5A22EA80008CE6FDCC05574B6A7D13D3510C"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "logSha256": "541B0F275D774946B1F6C4C957D8AC538625CD8BB5E325A5FA900DC1397E5A66"
+        }
+      ]
+    },
+    {
+      "probe": "renderer-manager",
+      "scriptSha256": "F559679715699B50279DEB649A2A3FD8D2DC807C2C31B696434C8FDFEC71B9F2",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "logSha256": "22C15FCB315460623B299F0A8F98D908D55AF948849AE48A2F6BE0F1A558EF41"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "logSha256": "1FA46EB8C03A2715752BFDB69678549F11F95C2651BA728B8B796BF19C7806D0"
+        }
+      ]
+    },
+    {
+      "probe": "richtext-runtime",
+      "scriptSha256": "201F905FE3E31B406F1D2411CF9793ED568275001A646FE9E6485B5730BB5408",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "logSha256": "83FE4A760702132C14112CA23886DADB68164FCC96092435A632DDF05B69AA1C"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "logSha256": "4104C834E98AB573A10F24020DBC23A89C7FCEE8688E5B3B578290F6BD85605F"
+        }
+      ]
+    },
+    {
+      "probe": "sprite-api",
+      "scriptSha256": "C88B7C0D2D11E86259B20DC523F16E8C9AF016E7AD9709609BECDC47022E8E00",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "logSha256": "B42C4378368C5BFBA05307E769E1A5CBB7D8C98DE759984922EB545DC169203B"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "logSha256": "274A12822D392547C6869306AE62D17C38B8A19D0ED019BC216FE2A478D53226"
+        }
+      ]
+    },
+    {
+      "probe": "sprite-atlas",
+      "scriptSha256": "A2689F03BC914D3DE6F70A31816838566C970AF7C5740E96A3DA34582F422C1C",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "logSha256": "53261934A540F546755AA49AC7E7C13D841BABB871278B28071A5867CF59C476"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "logSha256": "4EF388C092209DAF5CCC03FEC34F450D8BC3FDF1EA639EFFEA8F164BD3C234BE"
+        }
+      ]
+    },
+    {
+      "probe": "sprite-frame-lifetime",
+      "scriptSha256": "8B3AF2BD561D20D3AE4240239F07895F8D15DCD5AEAF1E7165F2754D5903CB06",
+      "runs": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "logSha256": "307CF6E43EC79950C50918C11046BE7EFD8DAF7EFFB86E5E37FC897564980A83"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "logSha256": "90B8049413921B7FC4F93D46A12A78668191A43AAD8491886E202422BDE94A33"
+        }
+      ]
+    }
+  ]
+}
