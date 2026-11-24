@@ -1,0 +1,68 @@
+{
+  "candidate": "cd81b419c1",
+  "artifacts": "native/tests/2d-poc/build/m6-mask-api-cd81b419c1",
+  "fixture": "native/tests/2d-poc/fixtures/check-mask-stencil-api.cjs",
+  "scope": "Mask.graphics / subComp identity, renderer access across stencil switches and disposal. Direct Mask renderer APIs are absent as specified by the shell test introduced in 75e7b85c62; callers of those APIs remain incompatible.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": {
+        "typeSwitches": 8,
+        "missing": [
+          "customMaterial",
+          "color",
+          "markForUpdateRenderData",
+          "requestRenderData",
+          "destroyRenderData",
+          "updateRenderer",
+          "fillBuffers",
+          "postUpdateAssembler",
+          "setNodeDirty",
+          "setTextureDirty",
+          "sharedMaterial",
+          "sharedMaterials",
+          "material",
+          "materials",
+          "getMaterial",
+          "setMaterial",
+          "getMaterialInstance",
+          "setMaterialInstance",
+          "getRenderMaterial"
+        ]
+      },
+      "logSha256": "1539819F63D0E8BAB1563DE1EFE78C81699FDC99112F0CECCFE0C89A5D42DE15",
+      "exeSha256": "6313BB3D8833C5795F2C44F7D24CE485F9AAF65F69BD16EC5BC88C91B18E5E3B"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": {
+        "typeSwitches": 8,
+        "missing": [
+          "customMaterial",
+          "color",
+          "markForUpdateRenderData",
+          "requestRenderData",
+          "destroyRenderData",
+          "updateRenderer",
+          "fillBuffers",
+          "postUpdateAssembler",
+          "setNodeDirty",
+          "setTextureDirty",
+          "sharedMaterial",
+          "sharedMaterials",
+          "material",
+          "materials",
+          "getMaterial",
+          "setMaterial",
+          "getMaterialInstance",
+          "setMaterialInstance",
+          "getRenderMaterial"
+        ]
+      },
+      "logSha256": "5B762257487C84A9E9CC64E57669ACC3203771257435A41D3234705E2B48A26E",
+      "exeSha256": "5BEF025FBED799F17F1D312735FCA01D02D78C2E6A4CAE1E34E3A29E5DBA8FF8"
+    }
+  ]
+}
