@@ -1,0 +1,25 @@
+{
+  "candidate": "03b5254ea7",
+  "source": "Archived outer run logs and local Windows System event records",
+  "provider": "Microsoft-Windows-DistributedCOM",
+  "eventId": 10010,
+  "classId": "{7EAAE8B9-E33F-4B4F-BB40-9ADA6BEEC764}",
+  "registeredClass": "FirewallNotificationDialog",
+  "failedDebug": {
+    "outerLogSha256": "5cc01c0c8af05078072647f91e18e0423ba18233004a070e5386a0f90c1e0544",
+    "outerLogFinishedUtc": "2026-11-24T03:54:06.1124350Z",
+    "eventRecord": 130762,
+    "eventUtc": "2026-11-24T03:54:06.9801032Z",
+    "millisecondsAfterOuterLog": 867.6682
+  },
+  "successfulDebug": {
+    "outerLogSha256": "09907647f70f25edfe06789c592f731327e2c080c08c2f13e3d1272fa5b6f73f",
+    "startUtc": "2026-11-24T04:07:49.4461799Z",
+    "endUtc": "2026-11-24T04:10:33.5550897Z",
+    "eventRecord": 130767,
+    "eventUtc": "2026-11-24T04:08:20.2779726Z",
+    "captureCount": 62
+  },
+  "interpretation": "The same COM server registration timeout also occurred during a successful Debug run. The event carries a class ID and no native application exit status. Its timing does not identify the cause of the failed run.",
+  "processExitAudit": "Access denied for the executable-specific Security 4689 query; presence of a record is unknown."
+}
