@@ -1,0 +1,190 @@
+{
+  "candidate": "6255b6c179",
+  "artifacts": "native/tests/2d-poc/build/m6-font-gate-6255b6c179",
+  "method": "20 Debug runs using the unchanged executable in the repository root. Separately, a test-only Debug executable held a zero-access metadata handle with full sharing. It queried file users immediately before each exclusive open after valid-font release and immediately after failure, before diagnostics or path reopening. Both probes used unique temporary files; the last runs of the first series overlapped with initial instrumented runs.",
+  "control": {
+    "externalReader": true,
+    "readerPid": 30184,
+    "probePid": 29016,
+    "exitCode": 1,
+    "logSha256": "96f1b803d8a643cb29769e8108cc2d5ea99f14497254a341c8215a3240f53b25"
+  },
+  "probeSourceSha256": "7ea9da759200e678959bb2a5d1db88c3b7232362206b78aede88ae03e7283f07",
+  "probeExeSha256": "67ca79876118b6395cfcf8d8ceb98eb62ba9026001fdce50e8203ae5f0f2c832",
+  "originalRuns": [
+    {
+      "file": "series/1.log",
+      "pid": 10692,
+      "logSha256": "ad3321ad359d5bf42c4a6202aa8255de466e0cd5149aef934fc1e66e96cb50e4",
+      "passed": true
+    },
+    {
+      "file": "series/2.log",
+      "pid": 45724,
+      "logSha256": "0f3cbe307347f49bc4f04858957339ae5ae041819b8052299d8e98ba88e39b93",
+      "passed": true
+    },
+    {
+      "file": "series/3.log",
+      "pid": 1928,
+      "logSha256": "eb5589ca4c7853fce83a4dbde1bb2b5eb6ab332f1632afebaab826abf2f4414c",
+      "passed": true
+    },
+    {
+      "file": "series/4.log",
+      "pid": 26488,
+      "logSha256": "853b970e19b3ebde3cb30fdab5bce10a296b6e80d007f56b1312ae6c83fb96ad",
+      "passed": true
+    },
+    {
+      "file": "series/5.log",
+      "pid": 8724,
+      "logSha256": "699afa594efd47f8701fcb338dc946cb1253c250f5d4e5bbda4c8befda6d19c5",
+      "passed": true
+    },
+    {
+      "file": "series/6.log",
+      "pid": 22192,
+      "logSha256": "aff29de985e00e83d2b0d1220e075566992f3e782132e07290b777a70d421a8c",
+      "passed": true
+    },
+    {
+      "file": "series/7.log",
+      "pid": 40140,
+      "logSha256": "0e8e77231f8b007c35f8f6d21f2008a6107b193be08f129744ab490468fd451a",
+      "passed": true
+    },
+    {
+      "file": "series/8.log",
+      "pid": 38376,
+      "logSha256": "ab3cc8e0dc8efddb31b69de182d1de0d141a115b622a0cea5b85f077d9a47a8b",
+      "passed": true
+    },
+    {
+      "file": "series/9.log",
+      "pid": 31496,
+      "logSha256": "e327442cf7ffa145c8d0e8171c80a93b3926797f29ba20977d99060513340d00",
+      "passed": true
+    },
+    {
+      "file": "series/10.log",
+      "pid": 34156,
+      "logSha256": "f7e643de400028458c5fd49af3613f5382fb476e571a1bbee98344da86375c0e",
+      "passed": true
+    },
+    {
+      "file": "series/11.log",
+      "pid": 26452,
+      "logSha256": "c9ec1c3a00bcf1ed186a9caddbfa30962ece48b53f910deb4794a6999c3f9d9b",
+      "passed": false,
+      "stage": "after-valid-font-release",
+      "error": 32,
+      "cycle": 86,
+      "ownerPidsAfterReport": []
+    },
+    {
+      "file": "series/12.log",
+      "pid": 36572,
+      "logSha256": "414a9b4295d1c7a4adb21b507aa8e67a0ddb512615ad5c6a08aeca8cc3adf37b",
+      "passed": true
+    },
+    {
+      "file": "series/13.log",
+      "pid": 40612,
+      "logSha256": "4720c6a570312a5d343d8c88d325a01de33d1b1a15a4b81dc45b4cdc5e29bc77",
+      "passed": true
+    },
+    {
+      "file": "series/14.log",
+      "pid": 40464,
+      "logSha256": "bfa3998a03f113f452eb25da1bc1c49e5e42e164dc7a33a8d45146d1612f2c0b",
+      "passed": true
+    },
+    {
+      "file": "series/15.log",
+      "pid": 35956,
+      "logSha256": "f16772b54f1036d6af653cd6bd219b4baa026e8643ccc7c6a30bb7983ec3ad4c",
+      "passed": true
+    },
+    {
+      "file": "series/16.log",
+      "pid": 45992,
+      "logSha256": "900aa6e80a573d5b4e14bbebe8504a955a32dbbb023716a1b3d0d34effa54b5f",
+      "passed": true
+    },
+    {
+      "file": "series/17.log",
+      "pid": 29376,
+      "logSha256": "38a60dc615ad7f28b5d53417bc1f5c4f661475a4c9f22fc5cf67a72e4dd0a3fd",
+      "passed": true
+    },
+    {
+      "file": "series/18.log",
+      "pid": 17764,
+      "logSha256": "ace7fd0517dd6ec9cfe8b6e89d984eadcf24aef8c5390648278e95317802909d",
+      "passed": true
+    },
+    {
+      "file": "series/19.log",
+      "pid": 29344,
+      "logSha256": "db386d571ec2722b348615b0b9f120957f8cc2b814026a27c6630747593be508",
+      "passed": true
+    },
+    {
+      "file": "series/20.log",
+      "pid": 28592,
+      "logSha256": "0eaf2cc3c2d5ada3804a0c6adab9cdb84fe3d47396bac5d9c0f65da825201412",
+      "passed": true
+    }
+  ],
+  "instrumentedRuns": [
+    {
+      "file": "bracket/trial-1.log",
+      "pid": 38144,
+      "logSha256": "27e51d1a8b14a9dc0a45e54999452cd7e852da8d664d17705f4d6f5e2301a81f",
+      "passed": true
+    },
+    {
+      "file": "bracket/trial-2.log",
+      "pid": 44796,
+      "logSha256": "8d62208a441b149279c4054a06931b8c607f6f896cda49226bb5d27a081778e9",
+      "passed": true
+    },
+    {
+      "file": "bracket/trial-3.log",
+      "pid": 31936,
+      "logSha256": "221539c64c692a8f91fa7e3fa2c9f0239f2e4678fe12035888074b6c868f577b",
+      "passed": true
+    },
+    {
+      "file": "bracket/trial-4.log",
+      "pid": 43988,
+      "logSha256": "a89e5f6b350fbe8806eb569a3182f1c30c4ef25c0b17b54730425a114cade6bc",
+      "passed": true
+    },
+    {
+      "file": "bracket/trial-5.log",
+      "pid": 45332,
+      "logSha256": "990e895a282926115452315b864a2f06e3abeedcef72513a23305a874d6c4491",
+      "passed": true
+    },
+    {
+      "file": "bracket/trial-6.log",
+      "pid": 24068,
+      "logSha256": "f144084e248a931dfc3a4aa297118d27bf65af8e9f1f7050c174b0e85ce8252f",
+      "passed": true
+    },
+    {
+      "file": "bracket/trial-7.log",
+      "pid": 26488,
+      "logSha256": "7fd201fb46ebac772ce3555807541b879f04ae425b7c29f69801db70df35be2f",
+      "passed": true
+    },
+    {
+      "file": "bracket/trial-8.log",
+      "pid": 43728,
+      "logSha256": "c4dce9517b976efca11a5d5fd58da998a4bf958bbd22aa752d90251efe458479",
+      "passed": true
+    }
+  ]
+}
