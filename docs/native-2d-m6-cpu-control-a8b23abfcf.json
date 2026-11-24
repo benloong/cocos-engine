@@ -1,0 +1,391 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "scope": "Diagnostic Release comparisons; two launches per arm. The official six-pair gate remains failed for CPU.",
+  "artifacts": "native/tests/2d-poc/build/m6-cpu-control-a8b23abfcf",
+  "workloadSha256": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+  "aggregation": "Median across 120 samples per phase per run. Stage medians are computed independently.",
+  "referenceScenes": {
+    "historical": {
+      "files": 29,
+      "sha256": "5e380d2ccbe3af6b589b6bfe9209e015554425a2404aa849ccf2767099f75a93",
+      "bootstrapSha256": "e657c2b786a0fd81bddfe62607248a573c8f7d5b869a130464def1e856751c3e"
+    },
+    "current": {
+      "files": 50,
+      "sha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "bootstrapSha256": "e657c2b786a0fd81bddfe62607248a573c8f7d5b869a130464def1e856751c3e"
+    }
+  },
+  "sameSceneVersionComparison": [
+    {
+      "file": "1-529cb53636.json",
+      "revision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "sceneSha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "exeSha256": "5c1aa871f7deccfa5684409573ac12bf31207791ad28ac8bc41996bf97fa47e5",
+      "bundleSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+      "rawSha256": "2b911e87fe7c97b056c8d191086ae5859e1ba04396fab26524d8b82a653026b5",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.009800000000767615,
+          "setterMs": 0.0020000000004074536,
+          "prepareMs": 0.00400000000036016,
+          "batchMs": 0.0041
+        },
+        "sprites": {
+          "cpuMs": 0.49370000000065484,
+          "setterMs": 0.19199999999909778,
+          "prepareMs": 0.020999999998821295,
+          "batchMs": 0.28715
+        },
+        "labels": {
+          "cpuMs": 0.9105999999996363,
+          "setterMs": 0.04200000000128057,
+          "prepareMs": 0.4819999999981519,
+          "batchMs": 0.3926
+        },
+        "masks": {
+          "cpuMs": 0.3825999999998254,
+          "setterMs": 0.013999999999214197,
+          "prepareMs": 0.004000000000814907,
+          "batchMs": 0.3641
+        },
+        "rich": {
+          "cpuMs": 0.5171499999970023,
+          "setterMs": 0.24049999999988358,
+          "prepareMs": 0.1400000000030559,
+          "batchMs": 0.11095
+        },
+        "mixed": {
+          "cpuMs": 3.65265000000227,
+          "setterMs": 0.481500000001688,
+          "prepareMs": 1.779500000000553,
+          "batchMs": 1.1993
+        }
+      }
+    },
+    {
+      "file": "2-a8b23abfcf.json",
+      "revision": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+      "sceneSha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "exeSha256": "e399c33e1135cd609b5bb76ea2daefa0a0a63f63a6213fcdcec41a0518736ce6",
+      "bundleSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+      "rawSha256": "550e086b292b2a83d3e992eedec755be70b43638ecb586c09a22af0f45fa2160",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.011349999999607098,
+          "setterMs": 0.0020000000004074536,
+          "prepareMs": 0.005000000000109139,
+          "batchMs": 0.00405
+        },
+        "sprites": {
+          "cpuMs": 0.42545000000005817,
+          "setterMs": 0.1640000000006694,
+          "prepareMs": 0.018000000000029104,
+          "batchMs": 0.243
+        },
+        "labels": {
+          "cpuMs": 1.0222999999994618,
+          "setterMs": 0.04899999999906868,
+          "prepareMs": 0.532999999999447,
+          "batchMs": 0.4144
+        },
+        "masks": {
+          "cpuMs": 0.665500000000131,
+          "setterMs": 0.01599999999962165,
+          "prepareMs": 0.004000000000814907,
+          "batchMs": 0.647
+        },
+        "rich": {
+          "cpuMs": 0.5667999999986322,
+          "setterMs": 0.23550000000250293,
+          "prepareMs": 0.20100000000093132,
+          "batchMs": 0.1086
+        },
+        "mixed": {
+          "cpuMs": 2.1855499999965073,
+          "setterMs": 0.36649999999644933,
+          "prepareMs": 0.9204999999965366,
+          "batchMs": 0.81505
+        }
+      }
+    },
+    {
+      "file": "3-a8b23abfcf.json",
+      "revision": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+      "sceneSha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "exeSha256": "e399c33e1135cd609b5bb76ea2daefa0a0a63f63a6213fcdcec41a0518736ce6",
+      "bundleSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+      "rawSha256": "7ca6f8a4dd1932cae11e04a712405c8d0a2a73478745badca5717f680491f00c",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.01049999999985812,
+          "setterMs": 0.001999999999497959,
+          "prepareMs": 0.004000000000814907,
+          "batchMs": 0.0042
+        },
+        "sprites": {
+          "cpuMs": 0.38690000000008007,
+          "setterMs": 0.15349999999943975,
+          "prepareMs": 0.01599999999962165,
+          "batchMs": 0.21165
+        },
+        "labels": {
+          "cpuMs": 0.6979500000000873,
+          "setterMs": 0.037000000000261934,
+          "prepareMs": 0.35350000000107684,
+          "batchMs": 0.3122
+        },
+        "masks": {
+          "cpuMs": 0.38119999999911236,
+          "setterMs": 0.011000000002240995,
+          "prepareMs": 0.0030000000006111804,
+          "batchMs": 0.36515
+        },
+        "rich": {
+          "cpuMs": 0.4972000000028813,
+          "setterMs": 0.20199999999749707,
+          "prepareMs": 0.18700000000171713,
+          "batchMs": 0.09415
+        },
+        "mixed": {
+          "cpuMs": 2.0697499999980793,
+          "setterMs": 0.29349999999976717,
+          "prepareMs": 0.8590000000040163,
+          "batchMs": 0.8443
+        }
+      }
+    },
+    {
+      "file": "4-529cb53636.json",
+      "revision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "sceneSha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "exeSha256": "5c1aa871f7deccfa5684409573ac12bf31207791ad28ac8bc41996bf97fa47e5",
+      "bundleSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+      "rawSha256": "c15236e1d7e080b2d5e266993b2cfbe46a6d0073486029148057deb0955aa13a",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.00895000000010914,
+          "setterMs": 0.001999999999497959,
+          "prepareMs": 0.0039999999999054126,
+          "batchMs": 0.0037
+        },
+        "sprites": {
+          "cpuMs": 0.324750000000131,
+          "setterMs": 0.13000000000010914,
+          "prepareMs": 0.014000000001033186,
+          "batchMs": 0.18275000000000002
+        },
+        "labels": {
+          "cpuMs": 0.7170999999995635,
+          "setterMs": 0.03600000000005821,
+          "prepareMs": 0.3600000000005821,
+          "batchMs": 0.32284999999999997
+        },
+        "masks": {
+          "cpuMs": 0.8580999999997381,
+          "setterMs": 0.01900000000023283,
+          "prepareMs": 0.005000000001018634,
+          "batchMs": 0.8359
+        },
+        "rich": {
+          "cpuMs": 0.525249999996915,
+          "setterMs": 0.23649999999906868,
+          "prepareMs": 0.15099999999802094,
+          "batchMs": 0.10869999999999999
+        },
+        "mixed": {
+          "cpuMs": 3.938250000003085,
+          "setterMs": 0.47299999999813735,
+          "prepareMs": 2.03349999999773,
+          "batchMs": 1.26965
+        }
+      }
+    }
+  ],
+  "sameVersionSceneComparison": [
+    {
+      "file": "1-old-scene.json",
+      "revision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "sceneSha256": "5e380d2ccbe3af6b589b6bfe9209e015554425a2404aa849ccf2767099f75a93",
+      "exeSha256": "5c1aa871f7deccfa5684409573ac12bf31207791ad28ac8bc41996bf97fa47e5",
+      "bundleSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+      "rawSha256": "86846b98609272c8f43e4acd97a564cdbc90f2d1cd4d3271c94074bf01e427d8",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.009549999999959983,
+          "setterMs": 0.001999999999497959,
+          "prepareMs": 0.004000000000814907,
+          "batchMs": 0.00355
+        },
+        "sprites": {
+          "cpuMs": 0.3403000000002037,
+          "setterMs": 0.13100000000031287,
+          "prepareMs": 0.015000000001236913,
+          "batchMs": 0.18925
+        },
+        "labels": {
+          "cpuMs": 0.9621999999996217,
+          "setterMs": 0.04799999999886495,
+          "prepareMs": 0.4724999999998545,
+          "batchMs": 0.3725
+        },
+        "masks": {
+          "cpuMs": 0.8709000000017608,
+          "setterMs": 0.01900000000023283,
+          "prepareMs": 0.005000000001018634,
+          "batchMs": 0.8432999999999999
+        },
+        "rich": {
+          "cpuMs": 0.7641999999956925,
+          "setterMs": 0.29399999999805004,
+          "prepareMs": 0.23900000000139698,
+          "batchMs": 0.1526
+        },
+        "mixed": {
+          "cpuMs": 2.992150000005064,
+          "setterMs": 0.32199999999647844,
+          "prepareMs": 1.3184999999975844,
+          "batchMs": 0.9699
+        }
+      }
+    },
+    {
+      "file": "2-current-scene.json",
+      "revision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "sceneSha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "exeSha256": "5c1aa871f7deccfa5684409573ac12bf31207791ad28ac8bc41996bf97fa47e5",
+      "bundleSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+      "rawSha256": "07e1c1f312585c2981dabf11941f8c82e69e34664e5d69946c16b933af63622d",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.014600000000924047,
+          "setterMs": 0.0029999999997016857,
+          "prepareMs": 0.006999999999607098,
+          "batchMs": 0.0052499999999999995
+        },
+        "sprites": {
+          "cpuMs": 0.3611500000004657,
+          "setterMs": 0.13000000000010914,
+          "prepareMs": 0.015000000000327418,
+          "batchMs": 0.20800000000000002
+        },
+        "labels": {
+          "cpuMs": 0.8143000000009749,
+          "setterMs": 0.0389999999988504,
+          "prepareMs": 0.426499999999578,
+          "batchMs": 0.3442
+        },
+        "masks": {
+          "cpuMs": 0.5562000000000291,
+          "setterMs": 0.013000000002648449,
+          "prepareMs": 0.004000000000814907,
+          "batchMs": 0.5382
+        },
+        "rich": {
+          "cpuMs": 0.8066500000009023,
+          "setterMs": 0.31850000000122236,
+          "prepareMs": 0.28949999999895226,
+          "batchMs": 0.16035
+        },
+        "mixed": {
+          "cpuMs": 4.917699999995168,
+          "setterMs": 0.5554999999985739,
+          "prepareMs": 2.3114999999997963,
+          "batchMs": 1.7412999999999998
+        }
+      }
+    },
+    {
+      "file": "3-current-scene.json",
+      "revision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "sceneSha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "exeSha256": "5c1aa871f7deccfa5684409573ac12bf31207791ad28ac8bc41996bf97fa47e5",
+      "bundleSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+      "rawSha256": "9c195ecf77fe245b1eaf563ddd7cb4312ca79be2776033dd3e3170742041c396",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.012100000000163709,
+          "setterMs": 0.0020000000004074536,
+          "prepareMs": 0.005000000000109139,
+          "batchMs": 0.0044
+        },
+        "sprites": {
+          "cpuMs": 0.4051000000003929,
+          "setterMs": 0.1540000000004511,
+          "prepareMs": 0.01599999999962165,
+          "batchMs": 0.23215000000000002
+        },
+        "labels": {
+          "cpuMs": 0.8435499999975117,
+          "setterMs": 0.03749999999854481,
+          "prepareMs": 0.41049999999995634,
+          "batchMs": 0.37124999999999997
+        },
+        "masks": {
+          "cpuMs": 0.4433499999995198,
+          "setterMs": 0.01299999999901047,
+          "prepareMs": 0.0030000000006111804,
+          "batchMs": 0.42785
+        },
+        "rich": {
+          "cpuMs": 0.5358999999982247,
+          "setterMs": 0.23449999999866122,
+          "prepareMs": 0.1680000000014843,
+          "batchMs": 0.1175
+        },
+        "mixed": {
+          "cpuMs": 2.117900000003347,
+          "setterMs": 0.2815000000009604,
+          "prepareMs": 0.9029999999984284,
+          "batchMs": 0.8543000000000001
+        }
+      }
+    },
+    {
+      "file": "4-old-scene.json",
+      "revision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "sceneSha256": "5e380d2ccbe3af6b589b6bfe9209e015554425a2404aa849ccf2767099f75a93",
+      "exeSha256": "5c1aa871f7deccfa5684409573ac12bf31207791ad28ac8bc41996bf97fa47e5",
+      "bundleSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+      "rawSha256": "8bc4fb13c8cb6ad79895e02d5452b8c8fab25e43cbb32d51df5dd28db2f65e14",
+      "dirty": {
+        "empty": {
+          "cpuMs": 0.013299999999912687,
+          "setterMs": 0.0020000000004074536,
+          "prepareMs": 0.005500000000211003,
+          "batchMs": 0.0051
+        },
+        "sprites": {
+          "cpuMs": 0.511550000000131,
+          "setterMs": 0.19400000000132422,
+          "prepareMs": 0.021000000000640284,
+          "batchMs": 0.28525
+        },
+        "labels": {
+          "cpuMs": 1.1981999999995487,
+          "setterMs": 0.059000000001105946,
+          "prepareMs": 0.654500000002372,
+          "batchMs": 0.47535
+        },
+        "masks": {
+          "cpuMs": 0.9086999999994325,
+          "setterMs": 0.018000000000029104,
+          "prepareMs": 0.005000000001018634,
+          "batchMs": 0.88385
+        },
+        "rich": {
+          "cpuMs": 0.6899999999976426,
+          "setterMs": 0.2749999999978172,
+          "prepareMs": 0.2209999999977299,
+          "batchMs": 0.1349
+        },
+        "mixed": {
+          "cpuMs": 3.522400000004307,
+          "setterMs": 0.37149999999746797,
+          "prepareMs": 1.6380000000026484,
+          "batchMs": 1.1811
+        }
+      }
+    }
+  ]
+}
