@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-24",
+  "baseRevision": "a8cf2ff6842f5ac20f150d1782062c5baad0cd0c",
+  "issue": [
+    "Mask owned Graphics helpers can exist before onLoad, but Component does not call onDestroy for never-loaded components.",
+    "After destruction, subComp and other explicit creation paths could allocate new stencil helpers."
+  ],
+  "fix": [
+    "Idempotent cleanup from onDestroy and a finally block in inherited pre-destruction dispatch.",
+    "Strict validity and retired-state guards on stencil creation, type/frame setters, load and restore.",
+    "Clear pending SpriteFrame references and schedule owned helper node destruction."
+  ],
+  "sourceSha256": {
+    "cocos/2d/components/mask.jsb.ts": "bbe5a4ff0de12a33b0dfa0ce63c89538405d9f7866b26c44127644926d2c8594",
+    "tests/ui/native-2d-m4-mask-shell.test.ts": "e111ac92a0f649b79a15ff809ab33b62d728a02ba9c3a7ee53e0ad8242cf6f7e",
+    "docs/native-2d-m6.0-baseline.json": "7d1b3d30b7977b615939432b5296419947cf6077528526bfaffa4827da56e126"
+  },
+  "jestBefore": {
+    "exitCode": 1,
+    "failed": 2,
+    "passed": 5,
+    "logSha256": "2cd6a9bd4b85a91dd480296d410ecf06ad146470bcc66cbeb93aaa4681b5bb76",
+    "failures": [
+      "never-loaded owned helper Node remained valid",
+      "loaded Mask subComp recreated a helper after destruction"
+    ]
+  },
+  "jestAfter": {
+    "exitCode": 0,
+    "suites": 2,
+    "passed": 15,
+    "logSha256": "fffbc8c67afd29e51d6cec54df3934efbc497eab66404e30e30be6d964aaddce"
+  },
+  "isolatedJest": {
+    "exitCode": 0,
+    "passed": 2,
+    "skipped": 5,
+    "logSha256": "9c4fb6caac220a81ce7f4ab669bb39615a98fb8953ca0c224b4284c269edd7b2"
+  },
+  "nativeTypeScript": {
+    "exitCode": 0,
+    "logSha256": "b35264fc821f7b84e349ad2ce40b5fd1f6151309aa7e30a1c215226ab4fcc590"
+  },
+  "existingNativeRegressions": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-mask-owned-helper/Debug.log",
+      "logSha256": "62684a14cc6b761d7e55ca1374b7c41ee82b442d2af4dc2f352ef3341aafb641",
+      "executableSha256": "e1148634ef52adb05901c3b6ad2ad6386bf1f8fe4387d7a945318411b75b4130",
+      "scope": "Existing Native console and Sprite/Label/Graphics JSB probe; not an end-to-end test of the new Mask shell lifecycle"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-mask-owned-helper/Release.log",
+      "logSha256": "ce8c93872a0252f3145a7820f355588ecd81a014ab210a1e728e22cdcb1c5dfe",
+      "executableSha256": "665d790529d0560c2b7519b2d4994433aab1e04325fec127b36ccbf417a62f7a",
+      "scope": "Existing Native console and Sprite/Label/Graphics JSB probe; not an end-to-end test of the new Mask shell lifecycle"
+    }
+  ],
+  "thinShell": "43 checks, 0 failures",
+  "auditBaseline": "PASS; Mask shell declarations, call-site lines and hash updated; native hashes unchanged",
+  "fixtureNote": "An initial test-double error lacked Graphics.moveTo; retained separately as fixture-missing-command.log and excluded from the regression evidence.",
+  "limits": [
+    "New Mask lifecycle behavior is verified with real JS Node/Component/CCObject scheduling and mocked native bindings in Jest.",
+    "Owned helper cleanup uses the normal deferred queue; tests drain two destruction batches, not immediate child destruction.",
+    "Native C++ did not change and existing Debug/Release binaries were reused.",
+    "No new end-to-end application Mask wrapper, GPU pixel or process heap leak sign-off is claimed.",
+    "Full final-candidate application packaging and M6 acceptance remain pending.",
+    "Web, SpriteRenderer and ModelRenderer implementations are unchanged."
+  ]
+}

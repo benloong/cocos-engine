@@ -69,12 +69,14 @@ export class Mask extends Component {
     protected _alphaThreshold = 0.1;
 
     private _native: any = null;
+    private _nativeDestroyed = false;
     private _spriteFrame: SpriteFrame | null | undefined;
     private _sprite: Sprite | null = null;
     private _graphics: Graphics | null = null;
     private _graphicsNode: Node | null = null;
 
     public onLoad (): void {
+        if (this._nativeDestroyed || !isValid(this, true)) return;
         this._native = new n2d.Mask();
         this._native.setType(this._type);
         this._native.setNode(this.node);
@@ -85,6 +87,7 @@ export class Mask extends Component {
     }
 
     public onRestore (): void {
+        if (this._nativeDestroyed || !isValid(this, true)) return;
         this._native?.setType(this._type);
         this._bindStencil();
         this._syncStencilSettings();
@@ -100,7 +103,10 @@ export class Mask extends Component {
 
     public onEnable (): void {
         this._native?.setEnabled(true);
-        if (this._type === MaskType.SPRITE_STENCIL) this._getSprite().enabled = true;
+        if (this._type === MaskType.SPRITE_STENCIL) {
+            const sprite = this._getSprite();
+            if (sprite) sprite.enabled = true;
+        }
     }
 
     public onDisable (): void {
@@ -112,6 +118,22 @@ export class Mask extends Component {
     }
 
     public onDestroy (): void {
+        this._destroyNative();
+    }
+
+    public _onPreDestroy (): void {
+        try {
+            super._onPreDestroy();
+        } finally {
+            // Component skips onDestroy if onLoad never ran, but stencil helpers
+            // can already exist through type or subComp before that point.
+            this._destroyNative();
+        }
+    }
+
+    private _destroyNative (): void {
+        if (this._nativeDestroyed) return;
+        this._nativeDestroyed = true;
         this._graphics?._setMask(null);
         if (this._sprite) this._setSpriteMask(this._sprite, false);
         if (this._native) {
@@ -123,6 +145,7 @@ export class Mask extends Component {
         this._graphicsNode = null;
         this._graphics = null;
         this._sprite = null;
+        this._spriteFrame = undefined;
     }
 
     get type (): MaskType {
@@ -130,15 +153,17 @@ export class Mask extends Component {
     }
 
     set type (value: MaskType) {
-        if (this._type === value) return;
+        if (this._nativeDestroyed || !isValid(this, true) || this._type === value) return;
         this._type = value;
         this._native?.setType(value);
         this._bindStencil();
     }
 
     private _bindStencil (): void {
+        if (this._nativeDestroyed || !isValid(this, true)) return;
         if (this._type === MaskType.SPRITE_STENCIL) {
-            this._getSprite().enabled = this.enabled;
+            const sprite = this._getSprite();
+            if (sprite) sprite.enabled = this.enabled;
         } else if (this._sprite) {
             this._setSpriteMask(this._sprite, false);
             this._sprite._destroyImmediate();
@@ -171,11 +196,13 @@ export class Mask extends Component {
     }
 
     get subComp (): Graphics | Sprite | null {
+        if (this._nativeDestroyed || !isValid(this, true)) return null;
         if (this._type !== MaskType.SPRITE_STENCIL) return this._getGraphics();
         return isValid(this._sprite, true) ? this._sprite : null;
     }
 
-    private _getSprite (): Sprite {
+    private _getSprite (): Sprite | null {
+        if (this._nativeDestroyed || !isValid(this, true)) return null;
         let sprite = this._sprite;
         if (!sprite || !isValid(sprite, true)) {
             sprite = this.node.getComponent(Sprite);
@@ -217,7 +244,8 @@ export class Mask extends Component {
         if (active) sprite.getMaterialInstance(0)?.setProperty('alphaThreshold', this._alphaThreshold);
     }
 
-    private _getGraphics (): Graphics {
+    private _getGraphics (): Graphics | null {
+        if (this._nativeDestroyed || !isValid(this, true)) return null;
         if (!this._graphicsNode) {
             this._graphicsNode = new Node('MaskGraphics');
             this._graphicsNode._objFlags |= CCObject.Flags.DontSave | CCObject.Flags.HideInHierarchy;
@@ -239,8 +267,10 @@ export class Mask extends Component {
     }
 
     set spriteFrame (value: SpriteFrame | null) {
+        if (this._nativeDestroyed || !isValid(this, true)) return;
         if (this._type === MaskType.SPRITE_STENCIL) {
-            this._getSprite().spriteFrame = value;
+            const sprite = this._getSprite();
+            if (sprite) sprite.spriteFrame = value;
             return;
         }
         this._spriteFrame = value;

@@ -1,3 +1,4 @@
+import { CCObject, isValid } from '../../cocos/core';
 import { Node } from '../../cocos/scene-graph/node';
 import { UITransform } from '../../cocos/2d/framework/ui-transform';
 
@@ -11,18 +12,18 @@ const nativeMask = {
     setSegments: jest.fn(), setGraphics: jest.fn(), setRadius: jest.fn(), isHitWorldPointXY: jest.fn(() => true),
 };
 
+const nativeGraphics={
+    setNode:jest.fn(),setPriority:jest.fn(),setEnabled:jest.fn(),setLineWidth:jest.fn(),moveTo:jest.fn(),
+    setFillColor:jest.fn(),setStrokeColor:jest.fn(),setLineJoin:jest.fn(),setLineCap:jest.fn(),
+    setMiterLimit:jest.fn(),setColorRGBA:jest.fn(),setMaterial:jest.fn(),setSharedMaterial:jest.fn(),
+    getMaterialInstanceCount: () => 0, getSharedMaterialCount:()=>0,getSharedMaterial:()=>null,getRenderMaterial:()=>null,resizeMaterials:jest.fn(),
+};
+
 beforeAll(() => {
-    (global as any).n2d = { Mask: jest.fn(() => nativeMask) };
+    (global as any).n2d = { Mask: jest.fn(() => nativeMask), Graphics: jest.fn(() => nativeGraphics) };
 });
 
 test('Mask binds a disabled Graphics helper when its native backend becomes ready and unbinds on destroy', () => {
-    const nativeGraphics={
-        setNode:jest.fn(),setPriority:jest.fn(),setEnabled:jest.fn(),setLineWidth:jest.fn(),
-        setFillColor:jest.fn(),setStrokeColor:jest.fn(),setLineJoin:jest.fn(),setLineCap:jest.fn(),
-        setMiterLimit:jest.fn(),setColorRGBA:jest.fn(),setMaterial:jest.fn(),setSharedMaterial:jest.fn(),
-        getMaterialInstanceCount: () => 0, getSharedMaterialCount:()=>0,getSharedMaterial:()=>null,getRenderMaterial:()=>null,resizeMaterials:jest.fn(),
-    };
-    (global as any).n2d.Graphics=jest.fn(()=>nativeGraphics);
     // Reproduce the ccbuild NATIVE override for this direct source test.
     // The normal Jest module graph otherwise selects the Web Graphics class.
     const graphicsModule=require('../../cocos/2d/components/graphics');
@@ -121,4 +122,45 @@ test('Mask restores serialized geometric state to the native stencil', () => {
     expect(nativeMask.setInverted).toHaveBeenLastCalledWith(true);
     expect(nativeMask.setAlphaThreshold).toHaveBeenLastCalledWith(0.7);
     mask.onDestroy();
+});
+
+
+test.each([false, true])('Mask releases owned graphics and rejects later creation (loaded=%s)', (loaded) => {
+    const module = require('../../cocos/2d/components/graphics');
+    const original = module.Graphics;
+    module.Graphics = require('../../cocos/2d/components/graphics.jsb').Graphics;
+    try {
+        const { Mask, MaskType } = require('../../cocos/2d/components/mask.jsb');
+        const node = new Node('mask-owned-graphics'); node.active = false;
+        node.addComponent(UITransform);
+        const mask: any = node.addComponent(Mask);
+        mask.type = MaskType.GRAPHICS_STENCIL;
+        const helper = mask.subComp;
+        const helperNode = helper.node;
+        mask.spriteFrame = { texture: {} }; // Retain a pending dependency while using graphics.
+        helper.moveTo(0, 0); // Allocate a real shell backend before the helper loads.
+        expect(helper._native).not.toBeNull();
+        if (loaded) { mask.onLoad(); mask._objFlags |= CCObject.Flags.IsOnLoadCalled; }
+        const onDestroy = jest.spyOn(mask, 'onDestroy');
+        expect(mask.destroy()).toBe(true);
+        expect(mask.subComp).toBeNull();
+        CCObject._deferredDestroy(); CCObject._deferredDestroy();
+        expect(isValid(mask)).toBe(false);
+        expect(isValid(helperNode)).toBe(false);
+        expect(isValid(helper)).toBe(false);
+        expect(helper._native).toBeNull();
+        expect(node.children).toHaveLength(0);
+        expect(onDestroy).toHaveBeenCalledTimes(loaded ? 1 : 0);
+        expect(mask.spriteFrame).toBeNull();
+        const create = (global as any).n2d.Mask; create.mockClear();
+        expect(mask.subComp).toBeNull();
+        mask.type = MaskType.SPRITE_STENCIL;
+        mask.spriteFrame = { texture: {} };
+        mask.onRestore(); mask.onLoad();
+        expect(mask.subComp).toBeNull();
+        expect(mask._native).toBeNull();
+        expect(create).not.toHaveBeenCalled();
+        expect(mask.spriteFrame).toBeNull();
+        expect(node.children).toHaveLength(0);
+    } finally { module.Graphics = original; }
 });
