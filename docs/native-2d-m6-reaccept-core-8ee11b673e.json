@@ -1,0 +1,20 @@
+{
+  "candidate": "8ee11b673e",
+  "suite": "core",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": "native 2D PoC: PASS",
+      "log": "native/tests/2d-poc/build/m6-reaccept-f4b34b90ca1b4bb29f8e60661953eae6/Debug-core.log",
+      "sha256": "f2e2d08ed4a17d0fbe2b6c66d610df11d7de2116f20ea710ed5800aaea5f0662"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": "native 2D PoC: PASS",
+      "log": "native/tests/2d-poc/build/m6-reaccept-f4b34b90ca1b4bb29f8e60661953eae6/Release-core.log",
+      "sha256": "0b4ed5dbc1aa7e214dad8e2e0ee7eb57ab5b95df2ef7577e0d90884a0db0abcf"
+    }
+  ]
+}
