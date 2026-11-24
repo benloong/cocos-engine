@@ -1,0 +1,30 @@
+{
+  "candidate": "db59a022eb",
+  "artifacts": "native/tests/2d-poc/build/m6-local-abort-db59a022eb",
+  "scope": "jsb.Downloader immediate abort with a local file URI, before response headers. Previous task wrappers retained. Active HTTP transfer and resumption not exercised.",
+  "fixture": "native/tests/2d-poc/fixtures/check-local-download-abort.cjs",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": {
+        "callbacks": 32,
+        "destinationReuses": 31,
+        "preservedPrefixes": 16
+      },
+      "exeSha256": "794752DCCF715CC4F2876DBBBDFB907116A4971ADE6F5A19737244AA0A0E118C",
+      "logSha256": "C4E7641A49DF2915743228D7D6E8B9BEEB355751C10F16106A5ACFFE743F92FC"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": {
+        "callbacks": 32,
+        "destinationReuses": 31,
+        "preservedPrefixes": 16
+      },
+      "exeSha256": "4DF1AD926653E815CFAEB3BE956BF7E333C4D056D74BF9123EEF19ACA075B080",
+      "logSha256": "1B97675D1531036AC838B3A991FD3B83F04F1F67D3808F0466B2E3CF396AE107"
+    }
+  ]
+}
