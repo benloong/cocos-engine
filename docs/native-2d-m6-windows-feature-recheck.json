@@ -1,0 +1,136 @@
+{
+  "candidate": "f97133611d",
+  "platform": "WINDOWS",
+  "mode": "BUILD",
+  "command": "node native/tests/2d-poc/check-m6-feature-matrix.cjs WINDOWS <bits>",
+  "variants": [
+    {
+      "bits": 0,
+      "features": [],
+      "exports": [],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "cfd3df997a6b15ca46d74b2f140d6685edf4df01a4fa885ee9501e60fe700d6f",
+      "rollupStatsSha256": "3674A19992378D7F48DDBA14A43B191D44C4D108A342A31FD275D2C3C5496312"
+    },
+    {
+      "bits": 1,
+      "features": [
+        "2d"
+      ],
+      "exports": [
+        "Sprite"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "7b578a8cee8718e643e081e85f0165e1a9e8f6f34e8cd4fb9cbca623663ebdd8",
+      "rollupStatsSha256": "B780E8361DF3D3692C2EEE80DAD51DDE042EA850E92B5F28AC8707D21C725502"
+    },
+    {
+      "bits": 3,
+      "features": [
+        "2d",
+        "rich-text"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "b0c4a3c1cb13d5bde8f50ce26dc3ab25d97f2c2aaa8c08738c5fd544affea31f",
+      "rollupStatsSha256": "4446FBB79E69EC2C024004EBE1ECC3FBD3FF458E5DA8E3AEBC7942E2701B663A"
+    },
+    {
+      "bits": 5,
+      "features": [
+        "2d",
+        "mask"
+      ],
+      "exports": [
+        "Sprite",
+        "Mask"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "79c31a6280e2f45188d1ba5a1f1c862f67d7b11c91cd5b0ef5319f44e33fece3",
+      "rollupStatsSha256": "33F7512204A1F7B29AC9AE6D27B63947C9CA7AAAE57E1ABD979994E644C8F5EB"
+    },
+    {
+      "bits": 7,
+      "features": [
+        "2d",
+        "rich-text",
+        "mask"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText",
+        "Mask"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "eecb395b76ec18d21f1d5fe7db7410c3def5edbdb1d45daaf00a11161991f20a",
+      "rollupStatsSha256": "A40AD99A062D6721C674AD014BC1F75BC6033E1820948415AEA3ABE14173DAF7"
+    },
+    {
+      "bits": 9,
+      "features": [
+        "2d",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "529d52b05c8e4e77825b547169e3e31ca1bb40f1eec00a30c75af894970d35a9",
+      "rollupStatsSha256": "342865B74455C2D404A8F476446699DB7CC7B4AA193BB8C1C20EBCFB286DC9FC"
+    },
+    {
+      "bits": 11,
+      "features": [
+        "2d",
+        "rich-text",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "7d74111dd52756c45a2e1724f0effa7a0876196e453bb43b67d14376df8b25a8",
+      "rollupStatsSha256": "9C3FA818C31C9FDB04CD98CF051A67BD4B90D4699F230FB6771715C5CF44C4A6"
+    },
+    {
+      "bits": 13,
+      "features": [
+        "2d",
+        "mask",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "Mask",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "9ff8509e16f5907c2d968099ee953f1cea0f3f76c8f1b312bfb9532b748c08fb",
+      "rollupStatsSha256": "E090E6D1AE234B2ADFE919CB82AC9A89F717D764EDF6E4B6D1D37EF0FB5483BB"
+    },
+    {
+      "bits": 15,
+      "features": [
+        "2d",
+        "rich-text",
+        "mask",
+        "graphics"
+      ],
+      "exports": [
+        "Sprite",
+        "RichText",
+        "Mask",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "bundleSha256": "b7800a96bf28f50d21d73cdd29d4c372a13d2fa93c821ee11a9e5b61d81fbe02",
+      "rollupStatsSha256": "54CA616B3A5111CC1669B059DD1DB6F6BF20BC6401C5374D99688FB650980648"
+    }
+  ]
+}
