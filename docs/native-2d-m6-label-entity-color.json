@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-24",
+  "baseRevision": "afcb2917d558e2b9c8079e77beabb342e0298db5",
+  "issue": "Inherited Label.setEntityColor wrote the JS render entity instead of the active Native Label entity.",
+  "fix": "Forward the compatibility call to Native Label; native bitmap fonts use RGBA while system and TTF fonts use white RGB plus alpha; preserve Label component color.",
+  "sourceSha256": {
+    "cocos/2d/components/label.jsb.ts": "04b62df8dd44e0ed4ae3e3d3e96d2f56cda96432570210ba4f9e37eb8394b536",
+    "native/cocos/2d/components/Label.h": "d2a3c1e11c74d76d067ddc54397449871a7090d5679b7654195ae769654e85b3",
+    "native/cocos/2d/components/Label.cpp": "e94fe63813ddc07c09192d24d0bb707d0cec0af5a82cf9dc46e7c21ea7e03a0e",
+    "native/tests/2d-poc/native/main.cpp": "77aa9458305cb60b7e20c67b786551df8f23f4d3e2054fd3f5bcc54a02e550aa",
+    "native/tests/2d-poc/build-sprite-api-probe.cjs": "b8d6ba8b7c11d13a9a885f7aa83e39040f99e002934f08b865199ff5798f1406",
+    "tests/ui/native-2d-m3-label-shell.test.ts": "9a91c0890829fc36af1ff19d735ea11e580f8a505235e96132db72ad6bcaebaf",
+    "docs/native-2d-m6.0-baseline.json": "9e2126bcb3a813cb5db8ad2610e5e9191e379b8aae14869c985b800370de0882"
+  },
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-label-entity-color/Debug.log",
+      "logSha256": "b9a1bf995c6475d8780c284066f7fb9b411473e8b4867f045b41cc47eebae616",
+      "executableSha256": "e1148634ef52adb05901c3b6ad2ad6386bf1f8fe4387d7a945318411b75b4130",
+      "generatedBindingSha256": "673cdf1888e019ba122d59a86661bc1e91d6e3d37410a35dc9ad4f2fdbf9489b",
+      "requiredOutput": [
+        "label legacy entity color: PASS (4 font paths, 3 alpha values)",
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ],
+      "builds": {
+        "console": {
+          "log": "native/tests/2d-poc/build/m6-label-entity-color/build-console-Debug.log",
+          "sha256": "bbd82b0fc126463cd2dabd53e64c24698260d7288d14788562395325f095de35",
+          "exitCode": 0
+        },
+        "app": {
+          "log": "native/tests/2d-poc/build/m6-label-entity-color/build-app-Debug.log",
+          "sha256": "9805530452522aa771d1b6817749c6fb555eb42e5a5c5f6c7add9801d74dce13",
+          "exitCode": 0
+        }
+      }
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-label-entity-color/Release.log",
+      "logSha256": "4d0be1056658d1b62dc1faca1410e7af75352b2d40b8ec7f88921250f1501280",
+      "executableSha256": "665d790529d0560c2b7519b2d4994433aab1e04325fec127b36ccbf417a62f7a",
+      "generatedBindingSha256": "673cdf1888e019ba122d59a86661bc1e91d6e3d37410a35dc9ad4f2fdbf9489b",
+      "requiredOutput": [
+        "label legacy entity color: PASS (4 font paths, 3 alpha values)",
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ],
+      "builds": {
+        "console": {
+          "log": "native/tests/2d-poc/build/m6-label-entity-color/build-console-Release.log",
+          "sha256": "f093d7c1cc25f9e46541997d0c9519276f3626a658caefaee301720d7818b1b2",
+          "exitCode": 0
+        },
+        "app": {
+          "log": "native/tests/2d-poc/build/m6-label-entity-color/build-app-Release.log",
+          "sha256": "bd121450f759d0a0f7829ea1adcecaaf46b969206d38109318af9f0b9b31d45c",
+          "exitCode": 0
+        }
+      }
+    }
+  ],
+  "jestBefore": {
+    "exitCode": 1,
+    "failed": 1,
+    "reason": "Expected native entity-color bridge call count was zero",
+    "log": "native/tests/2d-poc/build/m6-label-entity-color/before-jest.log",
+    "sha256": "738c503df8d4449f08b72b47d6f70d3b83faa06192ab80fb07d7f2a5b2b428c1"
+  },
+  "jestAfter": {
+    "exitCode": 0,
+    "passed": 4,
+    "skipped": 8,
+    "log": "native/tests/2d-poc/build/m6-label-entity-color/after-jest.log",
+    "sha256": "ffe4db2cfee1fcd3bd86e4014d5fbc8f63b00995ecf1c56b00d0bb2abae3bf68"
+  },
+  "nativeTypeScript": {
+    "exitCode": 0,
+    "log": "native/tests/2d-poc/build/m6-label-entity-color/native-ts.log",
+    "sha256": "67796c9c236361a6019829ceec73fba5424a3d6f2da944e489af7fc88555ca1e"
+  },
+  "thinShell": "43 checks, 0 failures",
+  "auditBaseline": "PASS; Label declaration differences 8 -> 7, other classes unchanged",
+  "limits": [
+    "Native entity-state assertions and real JSB conversion are covered; no new application GPU pixel sign-off is claimed.",
+    "Application Debug and Release targets were rebuilt, not rerun as the full final-candidate acceptance matrix.",
+    "Remaining Label, Mask and Graphics API declaration differences still need individual disposition.",
+    "No Web implementation, SpriteRenderer or ModelRenderer changed.",
+    "M6 final candidate acceptance remains pending."
+  ]
+}

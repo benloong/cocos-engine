@@ -1652,6 +1652,44 @@ void testRichTextLayout() {
     std::printf("rich text layout: PASS\n");
 }
 
+void testLabelEntityColor() {
+    const int failuresBefore = gFailures;
+    cc::Node node("label-legacy-entity-color"); cc::UITransform ui(&node);
+    cc::Label label; label.setNode(&node); label.setUITransform(&ui);
+    label.setFontSize(12); label.setLineHeight(16); label.setString("A");
+    cc::IntrusivePtr<cc::TTFFont> ttf(new cc::TTFFont()); ttf->setFontFamily("Arial");
+    cc::IntrusivePtr<cc::BitmapFontAsset> bitmap(new cc::BitmapFontAsset());
+    cc::IntrusivePtr<cc::LabelAtlas> atlas(new cc::LabelAtlas());
+    cc::IntrusivePtr<cc::Texture2D> texture(new cc::Texture2D()); texture->create(2, 2);
+    auto frame = makeSquareFrame(texture, 2);
+    for (auto *font : {bitmap.get(), static_cast<cc::BitmapFontAsset *>(atlas.get())}) {
+        font->setFontSize(2); font->setSpriteFrame(frame);
+        font->setConfigJson(R"({"fontDefDictionary":{"65":{"rect":{"x":0,"y":0,"width":2,"height":2},"xAdvance":2}}})");
+    }
+    auto &manager = cc::UIRendererManager::getInstance();
+    for (auto *font : {static_cast<cc::FontAsset *>(nullptr), static_cast<cc::FontAsset *>(ttf.get()),
+                       static_cast<cc::FontAsset *>(bitmap.get()), static_cast<cc::FontAsset *>(atlas.get())}) {
+        label.setFontAsset(font); label.setColorRGBA(100, 80, 60, 200); label.updateRenderData();
+        const bool isBitmap = dynamic_cast<cc::BitmapFontAsset *>(font) != nullptr;
+        for (const auto alpha : {0, 78, 255}) {
+            label.setEntityColorRGBA(12, 34, 56, static_cast<float>(alpha));
+            manager.updateAllDirtyRenderers();
+            const auto color = label.getRenderEntity()->getColor();
+            check(color.r == (isBitmap ? 12 : 255) && color.g == (isBitmap ? 34 : 255)
+                      && color.b == (isBitmap ? 56 : 255) && color.a == alpha,
+                  "legacy Label entity tint reaches the actual native render entity");
+        }
+        // A later rebuild must still rasterize/tint with the component color.
+        label.setString("AA"); label.updateRenderData(); manager.updateAllDirtyRenderers();
+        const auto restored = label.getRenderEntity()->getColor();
+        check(restored.r == (isBitmap ? 100 : 255) && restored.g == (isBitmap ? 80 : 255)
+                  && restored.b == (isBitmap ? 60 : 255) && restored.a == 200,
+              "legacy entity tint preserves the Label color used by the next rebuild");
+        label.setString("A");
+    }
+    std::printf("label legacy entity color: %s (4 font paths, 3 alpha values)\n", failuresBefore == gFailures ? "PASS" : "FAIL");
+}
+
 void testRichTextRuntime() {
     cc::Node node("native-rich-text"); cc::UITransform ui(&node); ui.setAnchorPoint(0.F, 0.F);
     cc::Sprite parentRenderer; parentRenderer.setNode(&node);
@@ -3679,6 +3717,7 @@ int main(int argc, char **argv) {
         testUiBatchInputResources();
         testBitmapGpuGeometry();
         testFontAssets();
+        testLabelEntityColor();
         testFontAliasOwnership();
         testTextStroke();
         testTextShadowCrop();

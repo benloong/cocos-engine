@@ -53,6 +53,7 @@ const nativeLabel = {
     setVerticalAlign: jest.fn(),
     setSpacingX: jest.fn(),
     setColorRGBA: jest.fn(),
+    setEntityColorRGBA: jest.fn(),
     setEnableOutline: jest.fn(),
     setOutlineColor: jest.fn(),
     setOutlineWidth: jest.fn(),
@@ -352,4 +353,26 @@ test('serialized Label preserves its font dependency and styles through load and
     expect(clone.isBold).toBe(true);
     expect(clone.underlineHeight).toBe(4);
     label.onDestroy();
+});
+
+
+test('Native Label entity color forwards to its native renderer without changing component color', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const node = new Node('label-entity-color'); node.addComponent(UITransform);
+    const label: any = node.addComponent(Label);
+    const color = new Color(12, 34, 56, 78);
+    const componentColor = label.color.clone();
+    label.setEntityColor(color);
+    expect(nativeLabel.setEntityColorRGBA).not.toHaveBeenCalled();
+    label.onLoad();
+    nativeLabel.setColorRGBA.mockClear();
+    label.setEntityColor(color);
+    expect(nativeLabel.setEntityColorRGBA).toHaveBeenCalledWith(12, 34, 56, 78);
+    expect(nativeLabel.setColorRGBA).not.toHaveBeenCalled();
+    expect(label.color).toEqual(componentColor);
+    expect(color).toEqual(new Color(12, 34, 56, 78));
+    label.onDestroy();
+    nativeLabel.setEntityColorRGBA.mockClear();
+    label.setEntityColor(color);
+    expect(nativeLabel.setEntityColorRGBA).not.toHaveBeenCalled();
 });

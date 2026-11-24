@@ -471,6 +471,13 @@ void Label::setColorRGBA(float r, float g, float b, float a) {
     setColor(color);
 }
 
+void Label::setEntityColorRGBA(float r, float g, float b, float a) {
+    // Legacy entity tint does not change the Label color used to rasterize text.
+    // Bitmap assets use the full tint; TTF textures already contain their RGB.
+    if (dynamic_cast<BitmapFontAsset *>(_fontAsset.get())) _renderer.setColorRGBA(r, g, b, a);
+    else _renderer.setColorRGBA(255.F, 255.F, 255.F, a);
+}
+
 void Label::setMaterial(Material *material) {
     UIRenderer::setMaterial(material);
 }

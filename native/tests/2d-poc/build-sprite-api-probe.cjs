@@ -167,6 +167,10 @@ check(label.contentWidth===0,'Label contentWidth starts at zero');
 label.contentWidth=19.123456789;
 label.onLoad();
 check(label.contentWidth===19.123456789,'Label preserves pre-load contentWidth');
+const labelColorBefore = JSON.stringify(label.color);
+label.setEntityColor(new Color(12,34,56,78));
+check(JSON.stringify(label.color)===labelColorBefore,'legacy Label entity tint preserves component color through real JSB');
+
 const labelAssembler=assemblerExports.labelAssembler.getAssembler(label);
 label.string='native adapter';labelAssembler.updateRenderData(label);
 check(labelTransform.getWidth()>0,'native Label assembler builds text');

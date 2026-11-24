@@ -103,6 +103,7 @@ public:
 
     void setColor(const Color &color);
     void setColorRGBA(float r, float g, float b, float a);
+    void setEntityColorRGBA(float r, float g, float b, float a);
     void setMaterial(Material *material);
     void setPriority(int32_t priority);
     void setEnabled(bool enabled);

@@ -428,6 +428,11 @@ export class Label extends UIRenderer {
         this._acquireLetterTexture();
     }
 
+    /** @deprecated Legacy entity tint; component color remains unchanged. */
+    public setEntityColor (color: Color): void {
+        this._native?.setEntityColorRGBA(color.r, color.g, color.b, color.a);
+    }
+
     protected _updateColor (): void {
         this._native?.setColorRGBA(this._color.r, this._color.g, this._color.b, this._color.a);
     }
