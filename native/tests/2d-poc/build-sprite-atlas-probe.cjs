@@ -69,6 +69,40 @@ check(data.spriteFrames.join(',') === 'hero,first-id,icon,second-id,empty,', 'se
 const pendingMap = dependencies[0][0];
 atlas.clear(); pendingMap.hero = second;
 check(atlas.getSpriteFrameNames().length === 0, 'late callback after clear');
+function beginLoad(target, pairs) {
+    const writes = [];
+    target._deserialize({ spriteFrames: pairs }, { result: { push: (map, key, uuid, type) => {
+        check(type === 'cc.SpriteFrame', 'frame dependency type');
+        writes.push(() => { map[key] = uuid === 'first-id' ? first : second; });
+    } } });
+    return writes;
+}
+const peer = new SpriteAtlas();
+peer.spriteFrames = { shared: first };
+for (let cycle = 0; cycle < 1000; ++cycle) {
+    const old = beginLoad(atlas, ['hero', 'second-id', 'obsolete', 'second-id']);
+    const current = beginLoad(atlas, ['hero', 'first-id', 'icon', 'second-id']);
+    current[1]();
+    old[0]();
+    check(atlas.spriteFrames.hero === null && rawGet.call(atlas, 'hero') === null
+        && rawTexture.call(atlas) === null, 'superseded callback cannot fill a pending replacement slot');
+    current[0]();
+    old[1]();
+    check(atlas.getSpriteFrameNames().join(',') === 'hero,icon' && rawGet.call(atlas, 'obsolete') === null
+        && rawGet.call(atlas, 'hero') === first && rawGet.call(atlas, 'icon') === second
+        && rawTexture.call(atlas) === texture, 'reload preserves new slot order, identities and texture');
+    check(atlas._serialize().spriteFrames.join(',') === 'hero,first-id,icon,second-id', 'reload serializes only current dependencies');
+}
+const late = beginLoad(peer, ['shared', 'first-id', 'pending', 'second-id']);
+late[0]();
+check(peer._destroy(), 'queue peer atlas destruction');
+late[1]();
+jsb.CCObject.deferredDestroy();
+late[0]();
+check(!isValid(peer) && peer.getSpriteFrameNames().length === 0
+    && rawGet.call(atlas, 'hero') === first && rawTexture.call(atlas) === texture
+    && isValid(first, true) && isValid(texture, true), 'late peer callbacks preserve the surviving atlas and shared assets');
+console.log('sprite atlas delayed dependencies: PASS (1000 overlapping reloads and peer destruction)');
 for (let i = 0; i < 1000; i++) {
     atlas.spriteFrames = { hero: first };
     atlas.addSpriteFrame('alias', first);
