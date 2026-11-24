@@ -1,0 +1,37 @@
+{
+  "verificationBase": "2da9d93e24593adf0db38ef1b120b2b313427765",
+  "deploymentSource": "m6-mask-pending-6decea9fa3 full-feature Windows applications",
+  "artifacts": "native/tests/2d-poc/build/m6-label-inherited-2da9d93e24",
+  "fixture": "native/tests/2d-poc/fixtures/check-label-inherited-methods.cjs",
+  "scope": "Inherited _updateBlendFunc and _onPreDestroy on scene-attached labels, instance reuse, isolation of a sibling sharing the material, deferred destruction.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": {
+        "inheritedMethods": 2,
+        "preDestroyCalls": 1,
+        "sharedSource": 2,
+        "instanceSource": 1
+      },
+      "exeSha256": "C2EF42AFE25B5A064284DA9FBB7C114E7C4C01E6EA0712D0B2012FBF07CC3463",
+      "bundleSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "AFE65FA28F092FDF4B0F5E96CE54A13AC7014A136BE941F9D20B76649063CA37",
+      "logSha256": "9D51C87211DF9CE366132BD090A827475EA8304142F3771E4B54526428BF1996"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": {
+        "inheritedMethods": 2,
+        "preDestroyCalls": 1,
+        "sharedSource": 2,
+        "instanceSource": 1
+      },
+      "exeSha256": "E7FC0A3D959DC09D66A54174D51E84118D20CBD9067EA4509AC69B27AE5C9F24",
+      "bundleSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "AFE65FA28F092FDF4B0F5E96CE54A13AC7014A136BE941F9D20B76649063CA37",
+      "logSha256": "067A25FE9A92C262004CAF51813988938997C2F1F2F6FED79E90BA661B9E2016"
+    }
+  ]
+}
