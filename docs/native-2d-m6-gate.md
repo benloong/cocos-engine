@@ -126,3 +126,5 @@ CanvasKit 和 Direct2D 对同一组生产线段栅格化时，96 个掩码均出
 | M6.4 | 平台矩阵待验收 | 在同一最终候选上构建 Windows Debug、Release，逐项核对 JSB／Native 现行场景的渲染、字体、事件和资源生命周期。记录各配置产物及结果，macOS、iOS、Android 和 OHOS 仍暂缓、待验证。 |
 | M6.5 | 本机检查 | 最终候选仍须补齐本机检查和间接热路径证据。历史候选 `68af105c8d` 的 Windows Debug、Release 完整原生测试各通过 3 次，字体别名超时和访问冲突未复现，原因仍待确认。Debug 增量构建的调用追踪两次停在 RenderRoot2D 稳态窗口，从空目录重建后通过。双配置各完成 14 个 60 帧窗口，迁移类直接 JSB 调用均为 0，6 组独立资产通过检查。[历史原生复测](./native-2d-m6-label-ttf-canvas-size.json) [历史应用、回退与调用追踪](./native-2d-m6-candidate-recheck.json) |
 | M6.5 | 最终签收 | 待上述阻断项清零，在同一候选上汇总完整日志 |
+
+2026-11-24 修正 V8 属性读取期间的接收对象生命周期后，Windows Debug、Release GPU 应用各一次完成离线 RichText 场景。两侧 58 张 RGBA 捕获逐字节相同，各完成 32 轮分段生命周期、64 轮淘汰及 4 轮包装对象 GC 与重建。应用使用原失败版本的已部署脚本，在独立副本中将输出重定向，并在字体别名和 HTTP 用例前返回；进程在生成结果后由启动器结束。最终候选的重复运行、自然退出和历史崩溃归因继续待验。[配置、哈希与计数](./native-2d-m6-offline-richtext-lifecycle.json)

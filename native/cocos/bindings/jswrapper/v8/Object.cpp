@@ -493,6 +493,8 @@ bool Object::getProperty(const char *name, Value *data, bool cachePropertyName) 
         return false;
     }
 
+    // Keep a weakly wrapped receiver alive while allocating the property name.
+    v8::Local<v8::Object> localObj = _obj.handle(__isolate);
     v8::MaybeLocal<v8::String> nameValue;
 
     if (cachePropertyName) {
@@ -507,7 +509,6 @@ bool Object::getProperty(const char *name, Value *data, bool cachePropertyName) 
 
     v8::Local<v8::String> nameValToLocal = nameValue.ToLocalChecked();
     v8::Local<v8::Context> context = __isolate->GetCurrentContext();
-    v8::Local<v8::Object> localObj = _obj.handle(__isolate);
     v8::Maybe<bool> maybeExist = localObj->Has(context, nameValToLocal);
     if (maybeExist.IsNothing()) {
         return false;

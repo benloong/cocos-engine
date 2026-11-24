@@ -1,0 +1,145 @@
+{
+  "artifacts": "native/tests/2d-poc/build/m6-local-gpu-20261124-153018",
+  "scope": "Offline application through collected-wrapper checks, before font alias and transport tests. Launcher stopped each process after manifest creation.",
+  "differentCaptures": [],
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "captureCount": 58,
+      "exeSha256": "C0B0143AF3BB2D77B5AA1A9BB490D8054D6CA752F1D7675AE4A78E986F2AC240",
+      "engineSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "results": {
+        "offlineLifecycle": true,
+        "activation": {
+          "initial": 3,
+          "callbacks": 1,
+          "cleared": true,
+          "replacement": 1,
+          "reparented": true,
+          "destroyed": true
+        },
+        "segmentLifecycle": {
+          "rows": 8,
+          "pairsPerRow": 8,
+          "cycles": 32,
+          "checkpoints": [
+            {
+              "name": "richtext-lifecycle-grid",
+              "segments": 128,
+              "visible": true
+            },
+            {
+              "name": "richtext-lifecycle-disabled",
+              "segments": 128,
+              "visible": false
+            },
+            {
+              "name": "richtext-lifecycle-rebuilt",
+              "segments": 128,
+              "visible": true
+            },
+            {
+              "name": "richtext-lifecycle-destroyed",
+              "segments": 0,
+              "visible": false
+            }
+          ],
+          "layerChanges": [
+            1,
+            33554432
+          ],
+          "ownerReleased": true,
+          "eventPairs": 4224,
+          "atlasId": "ba29c4cd-b002-4ab8-9089-dfe715fcf63c"
+        },
+        "retiredNodes": {
+          "owners": 4,
+          "cycles": 64,
+          "segments": 96,
+          "reused": 1796,
+          "reusedAcrossOwners": 0,
+          "destroyedWhilePooled": 4,
+          "tracked": 4348,
+          "retained": 0,
+          "atlasReleased": true
+        },
+        "collectedWrappers": {
+          "cycles": 4,
+          "collected": 8,
+          "reusedNativeNodes": 8,
+          "layerEvents": 8
+        }
+      }
+    },
+    {
+      "configuration": "Release",
+      "captureCount": 58,
+      "exeSha256": "879D60D34AADD42E5F33FA53498DE03251171ECF71EA7DFAB7274D5AE4311678",
+      "engineSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "manifestSha256": "D7CAFB87B65C10872090CF82D06261148BADF81DF832D46873A499185104F5FB",
+      "results": {
+        "offlineLifecycle": true,
+        "activation": {
+          "initial": 3,
+          "callbacks": 1,
+          "cleared": true,
+          "replacement": 1,
+          "reparented": true,
+          "destroyed": true
+        },
+        "segmentLifecycle": {
+          "rows": 8,
+          "pairsPerRow": 8,
+          "cycles": 32,
+          "checkpoints": [
+            {
+              "name": "richtext-lifecycle-grid",
+              "segments": 128,
+              "visible": true
+            },
+            {
+              "name": "richtext-lifecycle-disabled",
+              "segments": 128,
+              "visible": false
+            },
+            {
+              "name": "richtext-lifecycle-rebuilt",
+              "segments": 128,
+              "visible": true
+            },
+            {
+              "name": "richtext-lifecycle-destroyed",
+              "segments": 0,
+              "visible": false
+            }
+          ],
+          "layerChanges": [
+            1,
+            33554432
+          ],
+          "ownerReleased": true,
+          "eventPairs": 4224,
+          "atlasId": "ba29c4cd-b002-4ab8-9089-dfe715fcf63c"
+        },
+        "retiredNodes": {
+          "owners": 4,
+          "cycles": 64,
+          "segments": 96,
+          "reused": 1796,
+          "reusedAcrossOwners": 0,
+          "destroyedWhilePooled": 4,
+          "tracked": 4348,
+          "retained": 0,
+          "atlasReleased": true
+        },
+        "collectedWrappers": {
+          "cycles": 4,
+          "collected": 8,
+          "reusedNativeNodes": 8,
+          "layerEvents": 8
+        }
+      }
+    }
+  ]
+}

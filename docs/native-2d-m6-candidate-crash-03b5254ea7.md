@@ -13,3 +13,11 @@ V8 内部仍缺少匹配符号，日志中的远距离导出符号匹配不用�
 [结构化证据及文件哈希](./native-2d-m6-candidate-crash-03b5254ea7.json)。原始事件 XML、WER 报告、转储及离线诊断工具保存在 `native/tests/2d-poc/build/m6-startup-03b5254ea7/`。此前初始 Debug 提前退出仍未找到对应系统崩溃记录；后续双配置通过与本次失败分别保留。
 
 本节点只归档诊断，不修改引擎实现。文档应用连续启动矩阵属于另一项有限覆盖，不能消除此 RichText 压力场景的崩溃阻断。
+
+### 2026-11-24 工作区候选修正与离线回归
+
+V8 后端的 `Object::getProperty` 原先在创建属性名后才从 persistent handle 取得接收对象。创建字符串可能触发 GC。修正将接收对象的 local handle 提前到创建属性名之前，并在整个属性查询期间持有。现有转储无法确认该次 GC 就是历史崩溃的触发条件。
+
+在 Windows Debug（`native/out`）和 Release（`native/out-release2`）分别增量重编并链接 `cc2d_native_poc` 后，运行由 `build-richtext-runtime-probe.cjs` 生成的探针。两个配置均退出 0 并报告 `jsb shell integration: OK`。覆盖分段回收、借用包装对象失效和触摸回调中销毁。本轮未运行依赖本地 HTTP 字体服务的完整 GPU 应用压力矩阵，崩溃阻断保留。
+
+同日扩展离线 JSB 探针，在同一 RichText 实例上交替保留和放开分段 Node 的脚本引用。每个配置执行 100 轮，每轮创建或复用 24 个 Label 后清空，检查只有池内 20 个包装对象继续有效。有强引用的 50 轮逐轮确认调用 4 次分段 Node 的脚本销毁回调。Windows Debug、Release 均退出 0，并报告 `jsb shell integration: OK` 和 `native 2D PoC: PASS`。该探针使用测试回调，未覆盖完整应用的 Node 延迟销毁队列。
