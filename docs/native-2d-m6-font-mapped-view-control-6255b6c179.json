@@ -1,0 +1,171 @@
+{
+  "candidate": "6255b6c179",
+  "platform": "Windows",
+  "artifactDirectory": "native/tests/2d-poc/build/m6-font-gate-6255b6c179",
+  "method": "Create temporary files in the original repository directory. Use CreateFileW(GENERIC_READ | GENERIC_WRITE, share=0, OPEN_EXISTING) and query FileProcessIdsUsingFileInformation on a zero-access handle allowing all sharing modes. Positive control opens GENERIC_READ with FILE_SHARE_READ. Create a PAGE_READONLY mapping and a FILE_MAP_READ view, close the section and reader handles, touch the view, sample again, then unmap. No DirectWrite instance is created.",
+  "mappedControl": {
+    "pid": 44684,
+    "rows": [
+      {
+        "baseline": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        },
+        "openReader": {
+          "exclusiveOpenError": 32,
+          "pids": [
+            44684
+          ]
+        },
+        "mappedExclusiveOpenError": 0,
+        "ownersWithMappedView": [
+          44684
+        ],
+        "unmapped": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        }
+      },
+      {
+        "baseline": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        },
+        "openReader": {
+          "exclusiveOpenError": 32,
+          "pids": [
+            44684
+          ]
+        },
+        "mappedExclusiveOpenError": 0,
+        "ownersWithMappedView": [
+          44684
+        ],
+        "unmapped": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        }
+      },
+      {
+        "baseline": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        },
+        "openReader": {
+          "exclusiveOpenError": 32,
+          "pids": [
+            44684
+          ]
+        },
+        "mappedExclusiveOpenError": 0,
+        "ownersWithMappedView": [
+          44684
+        ],
+        "unmapped": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        }
+      },
+      {
+        "baseline": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        },
+        "openReader": {
+          "exclusiveOpenError": 32,
+          "pids": [
+            44684
+          ]
+        },
+        "mappedExclusiveOpenError": 0,
+        "ownersWithMappedView": [
+          44684
+        ],
+        "unmapped": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        }
+      },
+      {
+        "baseline": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        },
+        "openReader": {
+          "exclusiveOpenError": 32,
+          "pids": [
+            44684
+          ]
+        },
+        "mappedExclusiveOpenError": 0,
+        "ownersWithMappedView": [
+          44684
+        ],
+        "unmapped": {
+          "exclusiveOpenError": 0,
+          "pids": []
+        }
+      }
+    ]
+  },
+  "mappedScriptSha256": "47832ce3da0578ebeb4338735ddf7e1fe186a0c5aa3f54de450a6c7ce2581793",
+  "filesystemMethod": "Alternate Thonburi and OpenSans via CopyFileW and truncate/write invalid bytes. Close the writer and attempt exclusive opens immediately after each replacement for at least one millisecond. Record every failure.",
+  "filesystemControls": [
+    {
+      "round": 1,
+      "completedCycles": 1000,
+      "successfulOpens": {
+        "valid:0": 1000,
+        "invalid:0": 15423
+      },
+      "logSha256": "74cc42315744c57fa8cf391d5b5e607213f09dc7880e0c194e9cc77b9c34ece7"
+    },
+    {
+      "round": 2,
+      "completedCycles": 1000,
+      "successfulOpens": {
+        "valid:0": 1000,
+        "invalid:0": 14795
+      },
+      "logSha256": "62780395a8c72f6be6bde6a0bad8cc1d8251944ecf73703f63072cf762253419"
+    },
+    {
+      "round": 3,
+      "completedCycles": 1000,
+      "successfulOpens": {
+        "valid:0": 1000,
+        "invalid:0": 16906
+      },
+      "logSha256": "d73adb22287ed4e47749fd3ca5aeb462cb6a5249c98cea764270a3ae3dadc8ab"
+    },
+    {
+      "round": 4,
+      "completedCycles": 1000,
+      "successfulOpens": {
+        "valid:0": 1000,
+        "invalid:0": 17567
+      },
+      "logSha256": "82e770ff484dc0076124ef987c7e9a5d6c912e05045bc76d52d6bd0d3609b598"
+    },
+    {
+      "round": 5,
+      "completedCycles": 1000,
+      "successfulOpens": {
+        "valid:0": 1000,
+        "invalid:0": 17547
+      },
+      "logSha256": "f2f8eae1bd9e3cddb5044bb08a9f05f0e5c29964a5c8181e4be4ef1ab9c946ce"
+    },
+    {
+      "round": 6,
+      "completedCycles": 1000,
+      "successfulOpens": {
+        "valid:0": 1000,
+        "invalid:0": 15406
+      },
+      "logSha256": "fafde93dacaaa45e77ac671b54cf33703401a6412c416bafeb5c1ebfa0936678"
+    }
+  ],
+  "filesystemScriptSha256": "890bd138f1895756bad90e94f5f7315b55dafaa77e61fa17f4c2c830fad8c605",
+  "interpretation": "A process can appear in the file user list solely through a mapped view that permits this exclusive open. The previously observed MsMpEng PID therefore does not identify the owner of either sharing violation. These controls did not reproduce the intermittent error without a held reader."
+}
