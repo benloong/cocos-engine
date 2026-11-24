@@ -1,0 +1,31 @@
+{
+  "candidate": "6255b6c179b821a5d28f58dba9bc43582039f176",
+  "artifacts": "native/tests/2d-poc/build/m6-native-core-6255b6c179",
+  "scope": "Windows x64 core suite on the lazy render buffer candidate, including JSB buffer identity and bidirectional updates.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "buildDirectory": "native/tests/2d-poc/native/out",
+      "buildExit": 0,
+      "runExit": 0,
+      "bindings": "OK",
+      "sceneRecord": "OK",
+      "core": "PASS",
+      "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+      "buildLogSha256": "d2e00baad4f7d897692c47fc0f187b657d44f0d2c13ba21573211323e34c27f1",
+      "runLogSha256": "c8ceea9f472fc4f011654de77b6a993e555714c1807c9a5c3a3b737524c872ee"
+    },
+    {
+      "configuration": "Release",
+      "buildDirectory": "native/tests/2d-poc/native/out-release2",
+      "buildExit": 0,
+      "runExit": 0,
+      "bindings": "OK",
+      "sceneRecord": "OK",
+      "core": "PASS",
+      "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+      "buildLogSha256": "d2e00baad4f7d897692c47fc0f187b657d44f0d2c13ba21573211323e34c27f1",
+      "runLogSha256": "7ba1d52c12cbb17c138d4fb4c0c43eec1c54a715f677f93f3719c8448de6a707"
+    }
+  ]
+}
