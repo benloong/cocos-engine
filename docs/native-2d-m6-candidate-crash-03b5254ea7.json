@@ -1,0 +1,131 @@
+{
+  "date": "2026-11-24",
+  "candidateImplementation": "03b5254ea726f567a1bf5ddacf5d800a455703a6",
+  "status": "confirmed-crash-root-cause-pending",
+  "localTime": "2026-11-24T12:01:00.9438864+08:00",
+  "utcTime": "2026-11-24T04:01:00.9438864Z",
+  "eventRecordId": 40533,
+  "werEventRecordId": 40534,
+  "reportId": "4d350907-a234-43f0-9789-5a2e4c2a1d63",
+  "processId": 20996,
+  "exceptionThreadId": 37832,
+  "exceptionCode": "0xc0000005",
+  "faultingModule": "v8.dll",
+  "moduleOffset": "0x8cfe08",
+  "access": "read",
+  "targetAddress": "0x0",
+  "application": "native/tests/2d-poc/build/m6-richtext-03b5254ea7/serial-release/richtext-Release/native-2d-m6-gpu.exe",
+  "applicationSha256": "9b11e15c236295420d6e557b874017966b915d7c9c047e0b019b4dfacb0f41cd",
+  "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+  "v8Sha256": "48220636bd11a4378c805c52f50f94fd1cbed7856a4beda171963c25a564b3ac",
+  "lastCapture": "richtext-lifecycle-disabled",
+  "lastCaptureLocalTime": "2026-11-24T12:00:59+08:00",
+  "artifacts": "native/tests/2d-poc/build/m6-startup-03b5254ea7",
+  "artifactSha256": {
+    "crash-events.xml.txt": "868860aa20570dc7ed57e7a133fee0da7cd915a1297b66b6c5481d5af76ff19a",
+    "release-20996.dmp": "b66b6fbdb7990dc5f075c05f747ef0cd3329d92bcf62e4613fa89028bfe57653",
+    "read-dump.cpp": "693b3c021b4b249df381c1bef8ca0842339d43a15aeb358a649c13cc69f6f2f6",
+    "Release-Report.wer": "0b73586f03b39f0cd6b5280590eb32cb01fe68909c835a48c5c3dd0780c93c46",
+    "crash-stack.log": "5bdd4074eb74a53e3a6ea03fa88918a1dad6493f384dec8db5c38cbf168fcf3d",
+    "crash-map-frames.json": "5c014e4ad557e39906d30110b5756b19e7f0566d1b7b4e720353d56902029098"
+  },
+  "nativeFrameOffsets": [
+    "v8.dll+8cfe08",
+    "v8.dll+364224",
+    "v8.dll+38e42c",
+    "native-2d-m6-gpu.exe+4d34e",
+    "native-2d-m6-gpu.exe+2a4dca",
+    "native-2d-m6-gpu.exe+29e299",
+    "native-2d-m6-gpu.exe+31e618",
+    "native-2d-m6-gpu.exe+31e1e6",
+    "native-2d-m6-gpu.exe+3219c7",
+    "native-2d-m6-gpu.exe+3216f8",
+    "native-2d-m6-gpu.exe+3222bb",
+    "native-2d-m6-gpu.exe+32209d",
+    "native-2d-m6-gpu.exe+bdeda",
+    "native-2d-m6-gpu.exe+49545",
+    "v8.dll+156b7d"
+  ],
+  "limits": [
+    "The event path and PID match the retained failed serial Release application; its previous missing launcher ExitCode does not mean the process exited normally.",
+    "WER and the dump confirm an access violation; the root cause and relation to GL are not established.",
+    "Native executable frames are resolved using its matching-timestamp linker map; distant V8 export symbol matches remain unreliable.",
+    "Only the initial native stack prefix is retained here; frames after the JIT boundary are not treated as reliably unwound.",
+    "Later passing applications do not erase this failure. No implementation repair is claimed.",
+    "The initial Debug premature exit has not yet been tied to an equivalent OS crash record."
+  ],
+  "nativeLinkMap": {
+    "mapPath": "native/tests/2d-poc/build/gpu-win-release/native-2d-m6-gpu.map",
+    "mapSha256": "5bb99f656813aaf8256af82ab96c377797278c209bede1b365c72859434afa21",
+    "mapTimestamp": "6b04fead",
+    "executableTimestamp": "6b04fead",
+    "frames": [
+      {
+        "rva": "0x4d34e",
+        "displacement": "0xde",
+        "symbol": "?getProperty@Object@se@@QEAA_NPEBDPEAVValue@2@_N@Z",
+        "mapLine": "0001:0004c270       ?getProperty@Object@se@@QEAA_NPEBDPEAVValue@2@_N@Z 000000014004d270 f   cocos_engine:Object.cpp.obj"
+      },
+      {
+        "rva": "0x2a4dca",
+        "displacement": "0x10a",
+        "symbol": "??R<lambda_9c0f23e3b722b5228787f842bf695e49>@@QEBA@PEAVNode@cc@@PEAVUITransform@2@PEAVLabel@2@PEAVSprite@2@@Z",
+        "mapLine": "0001:002a3cc0       ??R<lambda_9c0f23e3b722b5228787f842bf695e49>@@QEBA@PEAVNode@cc@@PEAVUITransform@2@PEAVLabel@2@PEAVSprite@2@@Z 00000001402a4cc0 f   cocos_engine:jsb_scene_manual.cpp.obj"
+      },
+      {
+        "rva": "0x29e299",
+        "displacement": "0x19",
+        "symbol": "?<lambda_invoker_cdecl>@<lambda_9c0f23e3b722b5228787f842bf695e49>@@CA@PEAVNode@cc@@PEAVUITransform@3@PEAVLabel@3@PEAVSprite@3@@Z",
+        "mapLine": "0001:0029d280       ?<lambda_invoker_cdecl>@<lambda_9c0f23e3b722b5228787f842bf695e49>@@CA@PEAVNode@cc@@PEAVUITransform@3@PEAVLabel@3@PEAVSprite@3@@Z 000000014029e280 f   cocos_engine:jsb_scene_manual.cpp.obj"
+      },
+      {
+        "rva": "0x31e618",
+        "displacement": "0x78",
+        "symbol": "??1Segment@RichText@cc@@QEAA@XZ",
+        "mapLine": "0001:0031d5a0       ??1Segment@RichText@cc@@QEAA@XZ 000000014031e5a0 f i cocos_engine:RichText.cpp.obj"
+      },
+      {
+        "rva": "0x31e1e6",
+        "displacement": "0x16",
+        "symbol": "??1?$unique_ptr@USegment@RichText@cc@@U?$default_delete@USegment@RichText@cc@@@std@@@std@@QEAA@XZ",
+        "mapLine": "0001:0031d1d0       ??1?$unique_ptr@USegment@RichText@cc@@U?$default_delete@USegment@RichText@cc@@@std@@@std@@QEAA@XZ 000000014031e1d0 f i cocos_engine:RichText.cpp.obj"
+      },
+      {
+        "rva": "0x3219c7",
+        "displacement": "0x237",
+        "symbol": "?recycle@RichText@cc@@AEAAXV?$unique_ptr@USegment@RichText@cc@@U?$default_delete@USegment@RichText@cc@@@std@@@std@@@Z",
+        "mapLine": "0001:00320790       ?recycle@RichText@cc@@AEAAXV?$unique_ptr@USegment@RichText@cc@@U?$default_delete@USegment@RichText@cc@@@std@@@std@@@Z 0000000140321790 f   cocos_engine:RichText.cpp.obj"
+      },
+      {
+        "rva": "0x3216f8",
+        "displacement": "0xb48",
+        "symbol": "?rebuildLayout@RichText@cc@@AEAAXXZ",
+        "mapLine": "0001:0031fbb0       ?rebuildLayout@RichText@cc@@AEAAXXZ 0000000140320bb0 f   cocos_engine:RichText.cpp.obj"
+      },
+      {
+        "rva": "0x3222bb",
+        "displacement": "0x17b",
+        "symbol": "?updateLayout@RichText@cc@@QEAAXXZ",
+        "mapLine": "0001:00321140       ?updateLayout@RichText@cc@@QEAAXXZ 0000000140322140 f   cocos_engine:RichText.cpp.obj"
+      },
+      {
+        "rva": "0x32209d",
+        "displacement": "0x9d",
+        "symbol": "?setString@RichText@cc@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+        "mapLine": "0001:00321000       ?setString@RichText@cc@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z 0000000140322000 f   cocos_engine:RichText.cpp.obj"
+      },
+      {
+        "rva": "0xbdeda",
+        "displacement": "0x11a",
+        "symbol": "?js_cc_RichText_setString@@YA_NAEAVState@se@@@Z",
+        "mapLine": "0001:000bcdc0       ?js_cc_RichText_setString@@YA_NAEAVState@se@@@Z 00000001400bddc0 f   cocos_engine:jsb_2d_auto.cpp.obj"
+      },
+      {
+        "rva": "0x49545",
+        "displacement": "0xb5",
+        "symbol": "?jsbFunctionWrapper@@YAXAEBV?$FunctionCallbackInfo@VValue@v8@@@v8@@P6A_NAEAVState@se@@@ZPEBD@Z",
+        "mapLine": "0001:00048490       ?jsbFunctionWrapper@@YAXAEBV?$FunctionCallbackInfo@VValue@v8@@@v8@@P6A_NAEAVState@se@@@ZPEBD@Z 0000000140049490 f   cocos_engine:HelperMacros.cpp.obj"
+      }
+    ]
+  }
+}
