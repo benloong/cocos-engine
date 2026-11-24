@@ -1,0 +1,24 @@
+{
+  "candidate": "6255b6c179b821a5d28f58dba9bc43582039f176",
+  "command": "run-native-log-visibility-tests.ps1 -NativeExe <candidate executable>",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "e5c95ece8814c1eec431aa6d67af7002619e72d192a6405697b6b1a34dbbdc06",
+      "childAliveBeforeRelease": true,
+      "visibleBeforeRelease": true,
+      "visibleAfterExit": true,
+      "exitCode": 0,
+      "reportSha256": "6F5A1A637BB2C7DAD6A2858AA3B437584B57EA1E804C9EB0FE2966FD48497387"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "90f5920346a8ad7d941f1eb3fcdc552faa875fa6a4025fb52f2d7dd3103f2b30",
+      "childAliveBeforeRelease": true,
+      "visibleBeforeRelease": true,
+      "visibleAfterExit": true,
+      "exitCode": 0,
+      "reportSha256": "19E673151CC88216A203D1EC28EB44F1E2B0A7D4E3C46CEB34EDDBACC9438284"
+    }
+  ]
+}
