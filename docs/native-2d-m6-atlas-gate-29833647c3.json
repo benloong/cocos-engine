@@ -1,0 +1,212 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "artifacts": "native/tests/2d-poc/build/m6-document-29833647c3",
+  "command": "run-m6-static-atlas-stress.ps1 -AppExe <document app> -LogDirectory <configuration>-atlas",
+  "scope": "Windows asset release and GPU pixel checks. The launcher stops each application after the fixture reports completion.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "2001d8b3ebec2255aa8a0ed41ef87cf106859aa78e985a36bff82ec17003afe9",
+      "engineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "787ffc727f0e17e31975d070bb57c04ac8458077840a295cd28f86a986feb1f8",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 221962240,
+          "workingSetBytes": 243843072
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 219586560,
+          "workingSetBytes": 242589696
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 222683136,
+          "workingSetBytes": 244965376
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 223170560,
+          "workingSetBytes": 245014528
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 225083392,
+          "workingSetBytes": 245886976
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 222863360,
+          "workingSetBytes": 245026816
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 220622848,
+          "workingSetBytes": 247173120
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 219435008,
+          "workingSetBytes": 245874688
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 219402240,
+          "workingSetBytes": 247218176
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 219561984,
+          "workingSetBytes": 247410688
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 218238976,
+          "workingSetBytes": 246104064
+        }
+      ],
+      "reportSha256": "fe5f6cbb3bfd79a95e44104bd450b30954d30b377469e6fcc3ff9bf05553f9d8"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "759a60532edf10bd0bd879d0472236e5790b25f51e8a506d04d8b5d0568def63",
+      "engineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "787ffc727f0e17e31975d070bb57c04ac8458077840a295cd28f86a986feb1f8",
+      "result": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "samples": [
+        {
+          "cycle": 0,
+          "wrappers": 0,
+          "liveWrappers": 0,
+          "jsHeapBytes": null,
+          "privateBytes": 203194368,
+          "workingSetBytes": 184578048
+        },
+        {
+          "cycle": 100,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 201428992,
+          "workingSetBytes": 184176640
+        },
+        {
+          "cycle": 200,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 201084928,
+          "workingSetBytes": 184147968
+        },
+        {
+          "cycle": 300,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 202465280,
+          "workingSetBytes": 185135104
+        },
+        {
+          "cycle": 400,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 202153984,
+          "workingSetBytes": 185970688
+        },
+        {
+          "cycle": 500,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 202743808,
+          "workingSetBytes": 186105856
+        },
+        {
+          "cycle": 600,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 195174400,
+          "workingSetBytes": 185163776
+        },
+        {
+          "cycle": 700,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 195203072,
+          "workingSetBytes": 185110528
+        },
+        {
+          "cycle": 800,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 195207168,
+          "workingSetBytes": 186175488
+        },
+        {
+          "cycle": 900,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 195235840,
+          "workingSetBytes": 185434112
+        },
+        {
+          "cycle": 1000,
+          "wrappers": 500,
+          "liveWrappers": 5,
+          "jsHeapBytes": null,
+          "privateBytes": 196247552,
+          "workingSetBytes": 186114048
+        }
+      ],
+      "reportSha256": "59438b97ea40a6270e265c08b6617b25d4a4a79f5ee742e12e0fd13d7a54edc1"
+    }
+  ]
+}
