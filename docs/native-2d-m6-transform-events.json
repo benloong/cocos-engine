@@ -1,0 +1,75 @@
+{
+  "candidate": "e6701bb5d0",
+  "fixture": "native/tests/2d-poc/fixtures/check-transform-events.cjs",
+  "artifacts": "native/tests/2d-poc/build/m6-transform-events-e6701bb5d0",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": {
+        "sizes": [
+          [
+            41,
+            29
+          ],
+          [
+            43,
+            29
+          ],
+          [
+            53,
+            31
+          ]
+        ],
+        "anchors": [
+          [
+            0.25,
+            0.125
+          ],
+          [
+            0.75,
+            0.125
+          ]
+        ],
+        "detachedCallbackSilent": true
+      },
+      "bundleSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "exeSha256": "794752DCCF715CC4F2876DBBBDFB907116A4971ADE6F5A19737244AA0A0E118C",
+      "logSha256": "B3872E92670D3030C82613BCA7C8974A74010FCAE93A06B021C15F7FA5E13343"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": {
+        "sizes": [
+          [
+            41,
+            29
+          ],
+          [
+            43,
+            29
+          ],
+          [
+            53,
+            31
+          ]
+        ],
+        "anchors": [
+          [
+            0.25,
+            0.125
+          ],
+          [
+            0.75,
+            0.125
+          ]
+        ],
+        "detachedCallbackSilent": true
+      },
+      "bundleSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "exeSha256": "4DF1AD926653E815CFAEB3BE956BF7E333C4D056D74BF9123EEF19ACA075B080",
+      "logSha256": "8013888C924ED05B6F90E4CF314C055BB7420114616063520C96E3B6FF78A3EC"
+    }
+  ]
+}
