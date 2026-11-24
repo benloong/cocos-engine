@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][ValidatePattern('^[0-9a-f]{10}$')][string]$CandidateRevision)
+param([Parameter(Mandatory)][ValidatePattern('^[0-9a-f]{10}$')][string]$CandidateRevision, [switch]$NativeOnly, [string]$OutputFile)
 $ErrorActionPreference = 'Stop'
 $build = Join-Path $PSScriptRoot 'build'
 $runner = Join-Path $PSScriptRoot 'run-m6-perf.ps1'
@@ -22,10 +22,15 @@ foreach ($round in 1..6) {
     }
 }
 
-$log = "$prefix-1-web.log"
-& pwsh -NoProfile -File $runner -Target web -ProjectRevision $CandidateRevision *> $log
-$exit = $LASTEXITCODE
-if ($exit) { Get-Content -LiteralPath $log -Tail 20; exit $exit }
-Copy-Item -LiteralPath (Join-Path $build 'perf-web/manifest.json') -Destination "$prefix-1-web.json"
-& node (Join-Path $PSScriptRoot 'compare-m6-perf.cjs') --gate $CandidateRevision
+if (!$NativeOnly) {
+    $log = "$prefix-1-web.log"
+    & pwsh -NoProfile -File $runner -Target web -ProjectRevision $CandidateRevision *> $log
+    $exit = $LASTEXITCODE
+    if ($exit) { Get-Content -LiteralPath $log -Tail 20; exit $exit }
+    Copy-Item -LiteralPath (Join-Path $build 'perf-web/manifest.json') -Destination "$prefix-1-web.json"
+}
+$compareArgs = @('--gate', $CandidateRevision)
+if ($NativeOnly) { $compareArgs += '--native-only' }
+if ($OutputFile) { $compareArgs += @('--output-file', $OutputFile) }
+& node (Join-Path $PSScriptRoot 'compare-m6-perf.cjs') @compareArgs
 exit $LASTEXITCODE

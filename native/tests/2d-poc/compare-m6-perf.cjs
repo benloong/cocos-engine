@@ -5,12 +5,26 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
 const os = require('node:os');
-const out = path.join(__dirname, 'build');
-const candidate = process.argv[3];
-const gate = process.argv[2] === '--gate';
-const paired = gate || process.argv[2] === '--paired';
-if (process.argv.length > 2 && (process.argv.length !== 4 || !(paired || process.argv[2] === '--candidate') || !(gate ? /^[0-9a-f]{10}$/ : /^[0-9a-f]{7,40}$/).test(candidate))) {
-    throw new Error('Usage: compare-m6-perf.cjs [--candidate commit | --paired commit | --gate commit]');
+const args = process.argv.slice(2);
+const usage = 'Usage: compare-m6-perf.cjs [--candidate commit | --paired commit | --gate commit] [--native-only] [--data-root directory] [--output-file file]';
+function option (name, valueRequired) {
+    const index = args.indexOf(name);
+    if (index < 0) return undefined;
+    const value = valueRequired ? args[index + 1] : true;
+    if (valueRequired && (!value || value.startsWith('--'))) throw new Error(usage);
+    args.splice(index, valueRequired ? 2 : 1);
+    if (args.includes(name)) throw new Error('Duplicate option: ' + name);
+    return value;
+}
+const nativeOnly = option('--native-only', false) === true;
+const dataRoot = option('--data-root', true);
+const outputFile = option('--output-file', true);
+const out = dataRoot ? path.resolve(dataRoot) : path.join(__dirname, 'build');
+const candidate = args[1];
+const gate = args[0] === '--gate';
+const paired = gate || args[0] === '--paired';
+if ((args.length && (args.length !== 2 || !(paired || args[0] === '--candidate') || !(gate ? /^[0-9a-f]{10}$/ : /^[0-9a-f]{7,40}$/).test(candidate))) || (nativeOnly && !gate)) {
+    throw new Error(usage);
 }
 // The first frozen candidate used the original pages series file names.
 const series = candidate === 'cfe140f062' ? 'pages' : candidate;
@@ -25,7 +39,7 @@ const expected = ['empty', 'sprites', 'labels', 'masks', 'rich', 'mixed'].flatMa
 const rounds = gate ? [1, 2, 3, 4, 5, 6] : [1, 2, 3];
 const inputFile = (round, target) => path.join(out, `m6-perf-${gate ? 'gate' : 'paired'}-${candidate}-${round}-${target}.json`);
 const configs = {};
-for (const target of ['before', 'after', 'web']) {
+for (const target of nativeOnly ? ['before', 'after'] : ['before', 'after', 'web']) {
     const measurements = {};
     const inputs = [];
     let renderer, vendor;
@@ -142,5 +156,13 @@ if (gate) {
 }
 const output = gate ? 'm6-perf-gate-' + candidate + '-comparison.json' :
     (candidate ? 'm6-perf-' + series + '-comparison.json' : 'm6-perf-comparison.json');
-fs.writeFileSync(path.join(out, output), JSON.stringify(result, null, 2) + '\n');
+if (nativeOnly) result.scope = 'Windows Native only; current Web implementation excluded';
+const destination = outputFile ? path.resolve(outputFile) : path.join(out, output);
+fs.mkdirSync(path.dirname(destination), { recursive: true });
+fs.writeFileSync(destination, JSON.stringify(result, null, 2) + '\n');
 console.log(JSON.stringify({ mixed, mixedDirtyTargets: result.mixedDirtyTargets }));
+
+if (gate && !Object.values(result.mixedDirtyTargets).every(Boolean)) {
+    console.error('M6_PERF_GATE_FAILED ' + Object.entries(result.mixedDirtyTargets).filter(([, passed]) => !passed).map(([name]) => name).join(', '));
+    process.exitCode = 1;
+}
