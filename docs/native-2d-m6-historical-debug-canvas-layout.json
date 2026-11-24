@@ -1,0 +1,36 @@
+{
+  "scope": "Historical RichText Debug early exit on 03b5254ea7",
+  "question": "Did the archived Debug executable contain the 424-byte JSB allocation paired with a 432-byte native Canvas constructor found in the legacy trace cache?",
+  "result": "excluded for the archived Canvas allocation path",
+  "archive": {
+    "pathUnder2dPocBuild": "m6-richtext-03b5254ea7/richtext-Debug/native-2d-m6-gpu.exe",
+    "sha256": "f77506ca8d821d1080de5c2a1772428cd05f1546af122f7d82974e692927e739"
+  },
+  "method": "Compared the two gpu-win Debug object functions against the archive PE text section. Ignored trailing alignment padding and the four-byte PC-relative relocation fields. Required every remaining byte to match together, then resolved the binding's constructor call in the archive.",
+  "functions": [
+    {
+      "object": "jsb_cocos_auto.cpp.obj",
+      "sha256": "36c62e4480109c21954121267bf067838c55197ecca7efdc185699ab52f65a40",
+      "function": "js_new_cc_CanvasRenderingContext2D",
+      "bodyBytes": 738,
+      "comparedBytes": 598,
+      "archiveMatches": 1,
+      "objectCodeViewClassBytes": 432,
+      "archiveAllocationArgumentBytes": 432,
+      "archiveConstructorCallResolvesToMatchedBody": true
+    },
+    {
+      "object": "CanvasRenderingContext2D.cpp.obj",
+      "sha256": "902604f163f817b7e958db72bff5ee57d57d7b60116e8bdb5f5b39a1ab16e5d3",
+      "function": "cc::CanvasRenderingContext2D(float, float)",
+      "bodyBytes": 601,
+      "comparedBytes": 505,
+      "archiveMatches": 1,
+      "objectCodeViewClassBytes": 432,
+      "archiveFinalFieldOffset": 424,
+      "archiveFinalFieldStoreBytes": 8
+    }
+  ],
+  "controls": "Both gpu-win functions matched once in the gpu-win reference executable. Both legacy trace object functions matched once in their own reference executable and zero times in the archive.",
+  "remaining": "The archived binary establishes the size passed by this binding. The historical run's termination cause remains unknown."
+}
