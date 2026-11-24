@@ -111,5 +111,14 @@ const summary = { configurations, workloadSha256: official.workloadSha256, diagn
     measuredCollections: rounds.length * 2 * ids.length,
     method: 'V8 trace-gc-nvp internal pause and phase timers in milliseconds. Stages can nest. Callback wall times include verbose output. Official forced GC gate remains separate.',
     mixedDirty, pairedDeltaMs, pairsByFirstRun, rounds };
+summary.parallelMarkByWorkload = Object.fromEntries(ids.map(id => {
+    const delta = samples.after.map((run, i) => run[id]['mark.full_closure_parallel'] - samples.before[i][id]['mark.full_closure_parallel']);
+    return [id, {
+        afterMinusBeforeMs: delta,
+        slowerPairs: delta.filter(ms => ms > 0).length,
+        baselineFirstMedianMs: median(delta.filter((_, i) => rounds[i].order[0] === 'before')),
+        candidateFirstMedianMs: median(delta.filter((_, i) => rounds[i].order[0] === 'after')),
+    }];
+}));
 fs.writeFileSync(path.join(dir, 'summary.json'), JSON.stringify(summary, null, 2) + '\n');
 console.log(JSON.stringify({ collections: summary.measuredCollections, mixedDirty }));
