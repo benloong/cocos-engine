@@ -1,0 +1,65 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "artifacts": "native/tests/2d-poc/build/m6-font-gate-a8b23abfcf",
+  "command": "cc2d_native_poc.exe --directwrite-file-probe",
+  "directory": "Repository root via CC_M6_FONT_PROBE_DIRECTORY",
+  "control": "CC_M6_FONT_DIAGNOSTIC_CONTROL=1; held reader returned error 32 and owner PID matched each probe",
+  "sampling": "250, 500, 750 and 1000 cycles per process; all sources deleted",
+  "scope": "Current candidate in the historical directory. Historical transient owner remains unidentified.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "round": 1,
+      "pid": 36544,
+      "handlesAndGdi": "234/0",
+      "exitCode": 0,
+      "exeSha256": "9E42AECBB62257B7FD960C90A43EAB1D9048360364911103DEA1E595E33ECB45",
+      "logSha256": "8D8898AAA28AB4E0514D3D723E421C4FE0239F55AB46F105FFC61FB8A364DCBA"
+    },
+    {
+      "configuration": "Release",
+      "round": 1,
+      "pid": 16772,
+      "handlesAndGdi": "224/0",
+      "exitCode": 0,
+      "exeSha256": "F5D7C15D1FEAFE3FE67A0D034B025AB0E164A2F47636F352E7C311FB424D1308",
+      "logSha256": "67021F15BC62A4014641AC4512499E5AE91E17820338034FF8D5E126E9FC35E2"
+    },
+    {
+      "configuration": "Debug",
+      "round": 2,
+      "pid": 22312,
+      "handlesAndGdi": "234/0",
+      "exitCode": 0,
+      "exeSha256": "9E42AECBB62257B7FD960C90A43EAB1D9048360364911103DEA1E595E33ECB45",
+      "logSha256": "548CA127EEAAA9A9B4E900E9076EDAE68C4666A4391211B3E92FCECBBC5D4538"
+    },
+    {
+      "configuration": "Release",
+      "round": 2,
+      "pid": 27512,
+      "handlesAndGdi": "224/0",
+      "exitCode": 0,
+      "exeSha256": "F5D7C15D1FEAFE3FE67A0D034B025AB0E164A2F47636F352E7C311FB424D1308",
+      "logSha256": "4154578547B55FA9E64D17E74CC3421B52437303D40EC3B729D03468367ADD2C"
+    },
+    {
+      "configuration": "Debug",
+      "round": 3,
+      "pid": 26272,
+      "handlesAndGdi": "234/0",
+      "exitCode": 0,
+      "exeSha256": "9E42AECBB62257B7FD960C90A43EAB1D9048360364911103DEA1E595E33ECB45",
+      "logSha256": "D86D28182ABF0CC2BC2BA9935FD55406F2693E9B1D8B3AA92F6039AF5973F39B"
+    },
+    {
+      "configuration": "Release",
+      "round": 3,
+      "pid": 9476,
+      "handlesAndGdi": "224/0",
+      "exitCode": 0,
+      "exeSha256": "F5D7C15D1FEAFE3FE67A0D034B025AB0E164A2F47636F352E7C311FB424D1308",
+      "logSha256": "4FF850B7C75FF9980C96C0CE1FB4AEEBA897B452178FDD318AB3A390A6C27B7D"
+    }
+  ]
+}
