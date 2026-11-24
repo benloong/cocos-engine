@@ -51,8 +51,13 @@ void UIRendererManager::removeRenderer(UIRenderer *renderer) {
     if (renderer->_dirtyVersion == _dirtyVersion) {
         auto it = std::find(_dirtyRenderers.begin(), _dirtyRenderers.end(), renderer);
         CC_ASSERT(it != _dirtyRenderers.end());
-        *it = _dirtyRenderers.back();
-        _dirtyRenderers.pop_back();
+        if (_updating) {
+            // Keep every outstanding index stable while callbacks mutate the queue.
+            *it = nullptr;
+        } else {
+            *it = _dirtyRenderers.back();
+            _dirtyRenderers.pop_back();
+        }
         renderer->_dirtyVersion = -1;
     }
 }
@@ -64,11 +69,15 @@ void UIRendererManager::markDirtyRenderer(UIRenderer *renderer) {
 }
 
 void UIRendererManager::updateAllDirtyRenderers() {
+    if (_updating) return;
+    _updating = true;
     for (size_t i = 0; i < _dirtyRenderers.size(); ++i) {
-        _dirtyRenderers[i]->updateRenderer();
+        UIRenderer *renderer = _dirtyRenderers[i];
+        if (renderer) renderer->updateRenderer();
     }
     _dirtyRenderers.clear();
     ++_dirtyVersion;
+    _updating = false;
 }
 
 } // namespace cc

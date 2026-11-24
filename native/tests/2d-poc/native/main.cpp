@@ -2861,7 +2861,7 @@ void testDirtyRenderers() {
     }
     manager.updateAllDirtyRenderers();
     check(updates == 2, "destruction cancels queued work");
-    // Removing the next item swaps the tail into its place. Appends during a callback
+    // Removing the next item cancels its pending entry. Appends during a callback
     // are visited in the same pass, and repeated marks of the current item coalesce.
     cc::Node root("manager-parity");
     Probe first, second, third, fourth;
@@ -2885,6 +2885,28 @@ void testDirtyRenderers() {
     manager.updateAllDirtyRenderers();
     manager.updateAllDirtyRenderers();
     check(order == std::vector<int>{1, 3, 4, 2, 2}, "version advances and idle pass skips clean renderers");
+
+    for (const bool removeCurrent : {true, false}) {
+        Probe a, b, c;
+        for (auto *item : {&a, &b, &c}) item->setNode(&root);
+        std::vector<int> visited;
+        a.run = [&] {
+            visited.push_back(1);
+            if (removeCurrent) a.setEnabled(false);
+        };
+        b.run = [&] {
+            visited.push_back(2);
+            if (!removeCurrent) a.setEnabled(false);
+            manager.updateAllDirtyRenderers(); // Recursive flush must not consume the live queue.
+        };
+        c.run = [&] { visited.push_back(3); };
+        for (auto *item : {&a, &b, &c}) manager.markDirtyRenderer(item);
+        manager.updateAllDirtyRenderers();
+        check(visited == std::vector<int>{1, 2, 3},
+              removeCurrent ? "self removal preserves every remaining dirty renderer"
+                            : "removing an updated renderer preserves outstanding queue indices");
+    }
+
 }
 
 void testRendererLayoutOwnership() {

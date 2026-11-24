@@ -123,7 +123,7 @@
     },
     {
       "file": "native/cocos/2d/framework/UIOpacity.cpp",
-      "sha256": "40a89cba5b04c9836a3b90a7b53eb4e9b9a45c930f4b2c0603c597383e187892"
+      "sha256": "6cae8ce4ad111a579ddeed6c04bf873c0c346ea420427b99eb9ee2d928ed4610"
     },
     {
       "file": "native/cocos/2d/framework/UIOpacity.h",
@@ -139,11 +139,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRendererManager.cpp",
-      "sha256": "c779bf4648259c95134ba3ce915b7784b7b58f7eef9b8c73a578a887ae5a8ffa"
+      "sha256": "11f641e8a890f19c3bd55df1248ed42f51c609e47bb1de9a535f8fd090a73951"
     },
     {
       "file": "native/cocos/2d/framework/UIRendererManager.h",
-      "sha256": "3c6c1734698fcd91305ea825d84f0c1b5f2e4da6d2737c7640321b37ca418e15"
+      "sha256": "89e094a6fa95a6171fcc39e6c7e8290f94c7f27e3da847eb4c10bb6cf3441a7b"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",

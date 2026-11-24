@@ -44,6 +44,7 @@ private:
     std::vector<UIRenderer *> _allRenderers;
     std::vector<UIRenderer *> _dirtyRenderers;
     int64_t _dirtyVersion{0};
+    bool _updating{false};
 };
 
 } // namespace cc
