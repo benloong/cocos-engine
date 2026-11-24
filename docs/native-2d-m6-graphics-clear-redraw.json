@@ -1,0 +1,37 @@
+{
+  "candidate": "eacd1b4c8b",
+  "artifacts": "native/tests/2d-poc/build/m6-graphics-redraw-eacd1b4c8b",
+  "fixture": "native/tests/2d-poc/fixtures/check-graphics-clear-redraw.cjs",
+  "scope": "256x256 RGBA readback after clear, redraw and deferred destruction. The observed absence of impl, model and graphicsNativeProxy is recorded; compatibility for those fields remains open.",
+  "setup": "Initial full-document binary with GPU-fixture assets failed during profiler startup. Accepted runs use rebuilt matching GPU binaries and feature bundle.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "gateExitCode": 0,
+      "result": {
+        "cycles": 8,
+        "implementationFields": {
+          "impl": false,
+          "model": false,
+          "graphicsNativeProxy": false
+        }
+      },
+      "bundleSha256": "7BECC6F0D6D1578CDF931A100DC549427AD7FEBA6EAB099E113610D13E2D5E49",
+      "exeSha256": "6313BB3D8833C5795F2C44F7D24CE485F9AAF65F69BD16EC5BC88C91B18E5E3B"
+    },
+    {
+      "configuration": "Release",
+      "gateExitCode": 0,
+      "result": {
+        "cycles": 8,
+        "implementationFields": {
+          "impl": false,
+          "model": false,
+          "graphicsNativeProxy": false
+        }
+      },
+      "bundleSha256": "7BECC6F0D6D1578CDF931A100DC549427AD7FEBA6EAB099E113610D13E2D5E49",
+      "exeSha256": "5BEF025FBED799F17F1D312735FCA01D02D78C2E6A4CAE1E34E3A29E5DBA8FF8"
+    }
+  ]
+}
