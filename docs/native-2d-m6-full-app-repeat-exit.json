@@ -1,0 +1,181 @@
+{
+  "candidate": "e25b8d16fb",
+  "artifacts": "native/tests/2d-poc/build/m6-repeated-exit-e25b8d16fb",
+  "scope": "Serial offline full-feature application startup, five Sprite golden modes, target-space bounds, and game.end() shutdown. No retries. This scenario exits before the full M5 workload.",
+  "binaries": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "C2EF42AFE25B5A064284DA9FBB7C114E7C4C01E6EA0712D0B2012FBF07CC3463",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "B7504F3D3767EBC54AD7D546B01260104379A0E9CD1D4AFA0F64C935B2C015BC"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "E7FC0A3D959DC09D66A54174D51E84118D20CBD9067EA4509AC69B27AE5C9F24",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "B7504F3D3767EBC54AD7D546B01260104379A0E9CD1D4AFA0F64C935B2C015BC"
+    }
+  ],
+  "runs": [
+    {
+      "configuration": "Debug",
+      "round": 1,
+      "pid": 23968,
+      "exitCode": 0,
+      "elapsedMs": 5008,
+      "logSha256": "F3068434780CCE5948D2EE56E96FFD37E05A2675E77278EF2F42BF4D1AAD837B"
+    },
+    {
+      "configuration": "Release",
+      "round": 1,
+      "pid": 36436,
+      "exitCode": 0,
+      "elapsedMs": 3721,
+      "logSha256": "C06479850CFA606F76701498CCE3ABE247FC2B3C051A70DF35D6DF552E244F53"
+    },
+    {
+      "configuration": "Debug",
+      "round": 2,
+      "pid": 34956,
+      "exitCode": 0,
+      "elapsedMs": 5068,
+      "logSha256": "14D79CDDE33FC4A854591A5D9356E32CA33333B44D2B0FDEE7A01CBE62A8D769"
+    },
+    {
+      "configuration": "Release",
+      "round": 2,
+      "pid": 27280,
+      "exitCode": 0,
+      "elapsedMs": 3691,
+      "logSha256": "632B90333FBB01F7C92AD93C883B6E5CEC63BB2B7C1F5C749B29735A26B51A8F"
+    },
+    {
+      "configuration": "Debug",
+      "round": 3,
+      "pid": 10856,
+      "exitCode": 0,
+      "elapsedMs": 4986,
+      "logSha256": "3DF98B47867D360838382F773DC6D706425EEDB522A0B7A4B03EB37FE2D3967C"
+    },
+    {
+      "configuration": "Release",
+      "round": 3,
+      "pid": 4532,
+      "exitCode": 0,
+      "elapsedMs": 3692,
+      "logSha256": "A34BB38FE45A0D893F4010E12A19F32C87F0627EFE8C216F90A840918A82CB86"
+    },
+    {
+      "configuration": "Debug",
+      "round": 4,
+      "pid": 42636,
+      "exitCode": 0,
+      "elapsedMs": 5103,
+      "logSha256": "C1C081CDC44010D234B051AB6A7182AA575E746E3E063D41239D83A3691A9503"
+    },
+    {
+      "configuration": "Release",
+      "round": 4,
+      "pid": 35764,
+      "exitCode": 0,
+      "elapsedMs": 3652,
+      "logSha256": "C4467E39A5F6F9E6B0CC9B43CC7E3CF06DE14CEE8C904EDB436C37212E015AA1"
+    },
+    {
+      "configuration": "Debug",
+      "round": 5,
+      "pid": 25616,
+      "exitCode": 0,
+      "elapsedMs": 5048,
+      "logSha256": "546657AA75A4F21D933BAA924D4B0C1B3BDB87F2696763532B2FAE0D870113EB"
+    },
+    {
+      "configuration": "Release",
+      "round": 5,
+      "pid": 44796,
+      "exitCode": 0,
+      "elapsedMs": 3675,
+      "logSha256": "A13D6143B899B7E1B8FE3FA05B8D376AC57B850C8A71B0F4069D3C004033E09B"
+    },
+    {
+      "configuration": "Debug",
+      "round": 6,
+      "pid": 24432,
+      "exitCode": 0,
+      "elapsedMs": 5039,
+      "logSha256": "DF773273C9E3058D8857B143F47105DA01867860B1B435331056F4B93C83D424"
+    },
+    {
+      "configuration": "Release",
+      "round": 6,
+      "pid": 36636,
+      "exitCode": 0,
+      "elapsedMs": 3759,
+      "logSha256": "DEDFC1417F619B8E5E502B849A40E4740B411A46B3A7DAAF34A724CBA5340B8E"
+    },
+    {
+      "configuration": "Debug",
+      "round": 7,
+      "pid": 39404,
+      "exitCode": 0,
+      "elapsedMs": 5072,
+      "logSha256": "CBCA0EC4F2E4C595625C0C1FAFA01DCA7B85B2EA39609743EFC3A261CB842774"
+    },
+    {
+      "configuration": "Release",
+      "round": 7,
+      "pid": 32404,
+      "exitCode": 0,
+      "elapsedMs": 3686,
+      "logSha256": "610DF9ED1D36AD2C974062A17E959A333B55DB429AD24A6FBB239515C7D6EC3A"
+    },
+    {
+      "configuration": "Debug",
+      "round": 8,
+      "pid": 31340,
+      "exitCode": 0,
+      "elapsedMs": 5054,
+      "logSha256": "B86E7F45857C10C38CCEB9425164189313AA1E583B156495E8B8B6B75ECA68A3"
+    },
+    {
+      "configuration": "Release",
+      "round": 8,
+      "pid": 24480,
+      "exitCode": 0,
+      "elapsedMs": 3699,
+      "logSha256": "7E5934B12C0BE28A8C05095B264B2E5C784FF7A7093DBA99950FEFE629EA0940"
+    },
+    {
+      "configuration": "Debug",
+      "round": 9,
+      "pid": 22524,
+      "exitCode": 0,
+      "elapsedMs": 5050,
+      "logSha256": "E0FF2DF6E28E1765B70009C9497CF05CB962C98E7EC39948E2BC7E22AB7337BD"
+    },
+    {
+      "configuration": "Release",
+      "round": 9,
+      "pid": 42996,
+      "exitCode": 0,
+      "elapsedMs": 3759,
+      "logSha256": "D4B45876CD25F995FEF4A982A9A62F5D1AE40544EF73B5C5A302D1F6DA7720A6"
+    },
+    {
+      "configuration": "Debug",
+      "round": 10,
+      "pid": 33392,
+      "exitCode": 0,
+      "elapsedMs": 5125,
+      "logSha256": "9CD7C69EAFFC2F82FE0978BE45AD853CB62108B42E308D106BE74789AC39D312"
+    },
+    {
+      "configuration": "Release",
+      "round": 10,
+      "pid": 42508,
+      "exitCode": 0,
+      "elapsedMs": 3760,
+      "logSha256": "F71D59503EC841C2B2C65247F7C1008496E3C0F3D4341509F3CB58F8120E850B"
+    }
+  ]
+}
