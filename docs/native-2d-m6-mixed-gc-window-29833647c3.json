@@ -1,0 +1,236 @@
+{
+  "revision": "29833647c3",
+  "scope": "Default V8 marking, from the mixed/steady completion marker through mixed/dirty completion. Totals sum V8 pause times, including collections before the forced call. Formal acceptance measures the forced call alone.",
+  "batches": [
+    {
+      "source": "docs/native-2d-m6-gc-phases-29833647c3.json",
+      "rounds": [
+        {
+          "round": 1,
+          "before": {
+            "logSha256": "fc2868c2af31bc418a7f3967ed841e0e2e139b11a87da060d19bbae5058ec73f",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 2.6
+              }
+            ],
+            "forcedPauseMs": 7.9,
+            "totalPauseMs": 10.5
+          },
+          "after": {
+            "logSha256": "f68cdbfa9477a7e932b1a29ed34813d3f0f2c05b707726b2eee33377d8a90962",
+            "preceding": [],
+            "forcedPauseMs": 6,
+            "totalPauseMs": 6
+          }
+        },
+        {
+          "round": 2,
+          "before": {
+            "logSha256": "63fca4a94b8ae8319d339b4fe93691c96341a4fd043bc4d57f2912869e248aae",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 2.7
+              }
+            ],
+            "forcedPauseMs": 7,
+            "totalPauseMs": 9.7
+          },
+          "after": {
+            "logSha256": "ff9c7dca2845595acd4ee2b627a2e5d9424c12a9bae0937bb0cc61e3df5b119c",
+            "preceding": [],
+            "forcedPauseMs": 8.9,
+            "totalPauseMs": 8.9
+          }
+        },
+        {
+          "round": 3,
+          "before": {
+            "logSha256": "f2138c470c505dfcc8513fdc866bbe52101770ebe823928e2e94e91c911225b8",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 1.8
+              }
+            ],
+            "forcedPauseMs": 8.6,
+            "totalPauseMs": 10.4
+          },
+          "after": {
+            "logSha256": "910e99b3484bcbe22833e61f4bb4b089b222e479b108db42c52c21ff3bfc2e69",
+            "preceding": [],
+            "forcedPauseMs": 6.2,
+            "totalPauseMs": 6.2
+          }
+        },
+        {
+          "round": 4,
+          "before": {
+            "logSha256": "2f6e2b881fa7e907000bafb8eed852ab420504a1942116a9ba9655a81c473d9b",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 1.6
+              }
+            ],
+            "forcedPauseMs": 7.2,
+            "totalPauseMs": 8.8
+          },
+          "after": {
+            "logSha256": "5e1bb104345d98d7441465a93762aecfe8b69baa3f29447dee6377a40bccbdfb",
+            "preceding": [],
+            "forcedPauseMs": 9.3,
+            "totalPauseMs": 9.3
+          }
+        },
+        {
+          "round": 5,
+          "before": {
+            "logSha256": "4baec125c7e9aa0636ebaec23f57e50cd0c7fbbb426e6d2503028a205f1fc7f8",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 3.3
+              }
+            ],
+            "forcedPauseMs": 8.9,
+            "totalPauseMs": 12.2
+          },
+          "after": {
+            "logSha256": "3f61f9f132df7dac1ee1cb24d1133b4df879df158967107c24f211cdef383792",
+            "preceding": [],
+            "forcedPauseMs": 8.3,
+            "totalPauseMs": 8.3
+          }
+        },
+        {
+          "round": 6,
+          "before": {
+            "logSha256": "6ab6b4a15f4c7dee26857cf7517ded4d500d60a21571de6c940680c9fa7cbcff",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 1.4
+              }
+            ],
+            "forcedPauseMs": 6.7,
+            "totalPauseMs": 8.1
+          },
+          "after": {
+            "logSha256": "419f04d76802c433aa8397197846ef73977c15ac7663940be6db10c907186b11",
+            "preceding": [],
+            "forcedPauseMs": 10.1,
+            "totalPauseMs": 10.1
+          }
+        }
+      ],
+      "summary": {
+        "before": {
+          "totalPauseMedianMs": 10.05,
+          "forcedPauseMedianMs": 7.550000000000001
+        },
+        "after": {
+          "totalPauseMedianMs": 8.600000000000001,
+          "forcedPauseMedianMs": 8.600000000000001
+        }
+      }
+    },
+    {
+      "source": "docs/native-2d-m6-gc-marking-control-29833647c3.json",
+      "rounds": [
+        {
+          "round": 1,
+          "before": {
+            "logSha256": "6a78731417725673fa161b11cd314f8a61b17641a8b7e850e7fdd1d4b3280360",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 1.4
+              }
+            ],
+            "forcedPauseMs": 6.6,
+            "totalPauseMs": 8
+          },
+          "after": {
+            "logSha256": "ef0e76b626a95503c77a6082d797600e6d2c5bb0600e32fd92c76ba8f6c1ba47",
+            "preceding": [],
+            "forcedPauseMs": 4.3,
+            "totalPauseMs": 4.3
+          }
+        },
+        {
+          "round": 2,
+          "before": {
+            "logSha256": "76988c1d9395ecb7424252471b7ddb4d8a4b5c38f19a6ae31e18b17e15212654",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 1.5
+              }
+            ],
+            "forcedPauseMs": 6.8,
+            "totalPauseMs": 8.3
+          },
+          "after": {
+            "logSha256": "5002e0a30d5536a385eb7d6ee76f855eee993f53c3e1fa35f0ccb7edca61ff27",
+            "preceding": [],
+            "forcedPauseMs": 6,
+            "totalPauseMs": 6
+          }
+        },
+        {
+          "round": 3,
+          "before": {
+            "logSha256": "64178ca45f81895ad695028e3f41d3a7c07e8bc20ac7f8c83f45c616687a74e4",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 1.5
+              }
+            ],
+            "forcedPauseMs": 6.7,
+            "totalPauseMs": 8.2
+          },
+          "after": {
+            "logSha256": "658fa7eacc0434743469f11934afd3bbb4d88af67946c9752b7faf2d43a9a922",
+            "preceding": [],
+            "forcedPauseMs": 5.1,
+            "totalPauseMs": 5.1
+          }
+        },
+        {
+          "round": 4,
+          "before": {
+            "logSha256": "b4fb0b042bf23bd5739e48dbbddca8b83c93e7c0fd51146e206f9b06f07d09e7",
+            "preceding": [
+              {
+                "type": "s",
+                "pauseMs": 2.2
+              }
+            ],
+            "forcedPauseMs": 7.3,
+            "totalPauseMs": 9.5
+          },
+          "after": {
+            "logSha256": "ba161abac0723055fec099eecc9c83e78594f59c9c334c5847e5485c7abdcc88",
+            "preceding": [],
+            "forcedPauseMs": 9.1,
+            "totalPauseMs": 9.1
+          }
+        }
+      ],
+      "summary": {
+        "before": {
+          "totalPauseMedianMs": 8.25,
+          "forcedPauseMedianMs": 6.75
+        },
+        "after": {
+          "totalPauseMedianMs": 5.55,
+          "forcedPauseMedianMs": 5.55
+        }
+      }
+    }
+  ]
+}
