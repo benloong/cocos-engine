@@ -1,0 +1,33 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "scope": "Windows x64 native 2D core suite, including built-in V8 bindings and scene record. Both existing Ninja build directories incrementally rebuilt cc2d_native_poc and regenerated the 2D bindings.",
+  "buildCommand": "cmake --build <buildDirectory> --target cc2d_native_poc --parallel 6",
+  "runCommand": "cc2d_native_poc.exe",
+  "artifacts": "native/tests/2d-poc/build/m6-native-core-a8b23abfcf",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "buildDirectory": "native/tests/2d-poc/native/out",
+      "buildExit": 0,
+      "runExit": 0,
+      "sceneRecord": "OK",
+      "core": "PASS",
+      "exeSha256": "9E42AECBB62257B7FD960C90A43EAB1D9048360364911103DEA1E595E33ECB45",
+      "generatedBindingSha256": "A7ED6578F2E47AE7177976945BEA9AAA2F0FF3F72590343498CE65EC8F603D68",
+      "buildLogSha256": "49F8666A3CC1C1CBC2F312B9327756D01CAD5AE38A53A2F04D3E55C541130DB9",
+      "runLogSha256": "0FB8259F0315E78FCAEB80640224F43BB424BE828274BD079009877883A8BD0B"
+    },
+    {
+      "configuration": "Release",
+      "buildDirectory": "native/tests/2d-poc/native/out-release2",
+      "buildExit": 0,
+      "runExit": 0,
+      "sceneRecord": "OK",
+      "core": "PASS",
+      "exeSha256": "F5D7C15D1FEAFE3FE67A0D034B025AB0E164A2F47636F352E7C311FB424D1308",
+      "generatedBindingSha256": "A7ED6578F2E47AE7177976945BEA9AAA2F0FF3F72590343498CE65EC8F603D68",
+      "buildLogSha256": "500115EC70E3CEA97C8F778EC7A70E796B0DCE3B77E3D681E89C525A37DACB98",
+      "runLogSha256": "CCE75CD2C5D06676B6FAE831271BBBFD2536BA2498F2319A0132745190DECA0C"
+    }
+  ]
+}
