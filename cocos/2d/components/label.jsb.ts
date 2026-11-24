@@ -130,6 +130,9 @@ export class Label extends UIRenderer {
     get fontAtlas (): FontAtlas | null { return this._fontAtlas; }
     set fontAtlas (value: FontAtlas | null) { this._fontAtlas = value; }
 
+    /** @deprecated Native text has no JS canvas assembler data. */
+    get assemblerData (): null { return null; }
+
     get ttfSpriteFrame (): SpriteFrame | null { return this._native?.getTTFSpriteFrame() ?? null; }
 
     private _letterTexture: LetterRenderTexture | null = null;

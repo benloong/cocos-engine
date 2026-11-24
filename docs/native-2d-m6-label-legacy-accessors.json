@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-24",
+  "baseRevision": "e1f556f8a2bdadb2d1ad32abeca35ed19a1ed6e0",
+  "scope": "Native Label assemblerData compatibility and inherited blend/destruction behavior",
+  "implementationChange": "assemblerData getter returns null at all lifecycle stages without acquiring a JS canvas",
+  "sourceSha256": {
+    "cocos/2d/components/label.jsb.ts": "6714a307cfc4df672c5c75b70f92c502e050eef7db582ff649876ca5f38ca1a5",
+    "native/tests/2d-poc/build-sprite-api-probe.cjs": "d24a17f8a719b1ba71bce0a4d6aea752c17c5f42cdf9951c134d123299cbfa63",
+    "tests/ui/native-2d-m3-label-shell.test.ts": "a204de6b90dc680393a2081ef2e658c89ebe2892fe5e0bebced9d0909d1eb33c",
+    "docs/native-2d-m6.0-baseline.json": "b54f75d8841e2d73bc053c65a3e972ed70f02e89c09c534ce7a88bb5c794e5b7"
+  },
+  "generatedProbeSha256": "51bc1b268730f0bc224047d849161d7cb1e248e45e2414392309b059795bd04a",
+  "beforeJest": {
+    "exitCode": 1,
+    "failed": 1,
+    "passed": 3,
+    "skipped": 12,
+    "expectedFailure": "assemblerData was undefined, expected null",
+    "logSha256": "ac47f5ecf9f27b23493fa35562b445ce9e0c3fbbc12457cbf8fea6b921243b9d"
+  },
+  "afterJest": {
+    "exitCode": 0,
+    "passed": 6,
+    "skipped": 10,
+    "logSha256": "cda847ffe0583a020322e175b4be3a7de5faf52c9c431eaa1939dbde4b7dc428"
+  },
+  "nativeTypeScript": {
+    "exitCode": 0,
+    "logSha256": "5d1621adeb46922b80ad0ae3f77fc117cca2149cba1f81d74d5f640e1f933d89"
+  },
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-label-legacy-accessors/Debug.log",
+      "logSha256": "02d4af3995113abe568bff6f3b99a4b52a471a2e9c74b837981f9aa14ec13646",
+      "executableSha256": "e1148634ef52adb05901c3b6ad2ad6386bf1f8fe4387d7a945318411b75b4130",
+      "requiredOutput": [
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ],
+      "nativeBinaryReused": true
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-label-legacy-accessors/Release.log",
+      "logSha256": "d0c00b801ac11abd11b2838dab01fa6f58a699470994eea26daf9235097acfed",
+      "executableSha256": "665d790529d0560c2b7519b2d4994433aab1e04325fec127b36ccbf417a62f7a",
+      "requiredOutput": [
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ],
+      "nativeBinaryReused": true
+    }
+  ],
+  "thinShell": "43 checks, 0 failures",
+  "auditBaseline": "PASS; only Label shell declaration, source hash and call-site line numbers changed; native hashes unchanged",
+  "remainingLabelDeclarationDifferences": {
+    "_updateBlendFunc": "Inherited UIRenderer behavior verified against mocked native material slots and pass state; no override added.",
+    "_onPreDestroy": "Inherited Component behavior verified through the real Node/CCObject destruction scheduler with mocked native renderer; loaded and unloaded paths covered.",
+    "textStyle": "Web source marks @engineInternal; Native text state is not represented as JS layout objects.",
+    "textLayout": "Web source marks @engineInternal; no JS text layout implementation added.",
+    "textRenderData": "Web source marks @engineInternal; no JS text render state added.",
+    "textLayoutData": "Web source marks @engineInternal; no JS layout output added."
+  },
+  "limits": [
+    "Native C++ was unchanged; current Debug/Release console binaries from the previous node were reused.",
+    "Native TS was compiled and actual JSB probes passed; full documentation application packaging and GPU matrix were not rerun.",
+    "Inherited blend behavior uses mocked native material slots in Jest; no new GPU blend pixel claim is made.",
+    "Remaining AST names were not removed from the declaration baseline or converted into a full API parity pass.",
+    "Web implementation and SpriteRenderer/ModelRenderer remain untouched; M6 final acceptance remains pending."
+  ]
+}

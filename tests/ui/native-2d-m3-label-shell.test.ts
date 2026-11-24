@@ -376,3 +376,69 @@ test('Native Label entity color forwards to its native renderer without changing
     label.setEntityColor(color);
     expect(nativeLabel.setEntityColorRGBA).not.toHaveBeenCalled();
 });
+
+
+test('Native Label assemblerData stays null without allocating a canvas', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const node = new Node('label-legacy-canvas'); node.addComponent(UITransform);
+    const label: any = node.addComponent(Label);
+    const pool = jest.spyOn(Label._canvasPool, 'get');
+    try {
+        expect(label.assemblerData).toBeNull();
+        label.onLoad(); label.string = 'compatibility'; label.updateRenderData();
+        expect(label.assemblerData).toBeNull();
+        label.onDestroy();
+        expect(label.assemblerData).toBeNull();
+        expect(pool).not.toHaveBeenCalled();
+    } finally { pool.mockRestore(); }
+});
+
+test('Native Label inherited blend refresh updates its native material instance only once', () => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const node = new Node('label-legacy-blend'); node.addComponent(UITransform);
+    const label: any = node.addComponent(Label);
+    expect(() => label._updateBlendFunc()).not.toThrow();
+    label.onLoad();
+    const target: any = { blendSrc: -1, blendDst: -1 };
+    const pass = { blendState: { targets: [target], setTarget: jest.fn() }, _updatePassHash: jest.fn() };
+    const instance = { parent: new Material(), passes: [pass] };
+    shared[0] = instance.parent; instances[0] = instance;
+    label._srcBlendFactor = 1; label._dstBlendFactor = 2;
+    label._updateBlendFunc();
+    expect(target).toMatchObject({ blend: true, blendSrc: 1, blendDst: 2 });
+    expect(pass.blendState.setTarget).toHaveBeenCalledWith(0, target);
+    expect(pass._updatePassHash).toHaveBeenCalledTimes(1);
+    label._updateBlendFunc();
+    expect(pass._updatePassHash).toHaveBeenCalledTimes(1);
+    label.onDestroy();
+    expect((instance as any)._owner).toBeNull();
+    expect(() => label._updateBlendFunc()).not.toThrow();
+});
+
+test.each([false, true])('Native Label inherited deferred destroy cleans loaded=%s state', (loaded) => {
+    const { Label } = require('../../cocos/2d/components/label.jsb');
+    const node = new Node('label-legacy-destroy'); node.addComponent(UITransform);
+    const label: any = node.addComponent(Label);
+    let instance: any;
+    if (loaded) {
+        label.onLoad(); label._objFlags |= CCObject.Flags.IsOnLoadCalled;
+        label.sharedMaterials = [new Material()]; instance = label.material;
+        nativeLabel.setNode.mockClear(); nativeLabel.setFontAsset.mockClear();
+    }
+    const destroy = jest.spyOn(label, 'onDestroy');
+    expect(label.destroy()).toBe(true);
+    CCObject._deferredDestroy();
+    expect(isValid(label)).toBe(false);
+    expect(node.getComponent(Label)).toBeNull();
+    expect(destroy).toHaveBeenCalledTimes(loaded ? 1 : 0);
+    if (loaded) {
+        expect(label._native).toBeNull();
+        expect(instance._owner).toBeNull();
+        expect(nativeLabel.setNode).toHaveBeenCalledWith(null);
+        expect(nativeLabel.setFontAsset).toHaveBeenCalledWith(null);
+        expect(nativeLabel.destroyTTFSpriteFrame).toHaveBeenCalledTimes(1);
+    } else {
+        expect(nativeLabel.setNode).not.toHaveBeenCalled();
+        expect(nativeLabel.destroyTTFSpriteFrame).not.toHaveBeenCalled();
+    }
+});
