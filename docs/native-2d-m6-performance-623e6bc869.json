@@ -1,0 +1,1853 @@
+{
+  "candidate": "623e6bc869",
+  "scope": "Windows Release Native only",
+  "status": "Fixed mixed-dirty KPI gate passed; M6 overall signoff pending",
+  "comparison": {
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13700KF",
+    "os": "Windows 11 Pro",
+    "release": "10.0.26300",
+    "arch": "x64",
+    "warmupFrames": 30,
+    "sampledFramesPerPhase": 120,
+    "rounds": 6,
+    "configs": {
+      "before": {
+        "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+        "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+        "vendor": "Imagination Technologies (Host: NVIDIA Corporation)",
+        "rawSha256": [
+          "16bfa76fcf08636e57832102616d449e6eab1051e0bfe0fada85cb4db3bdd8b7",
+          "432898f0bd79d26f25a1095547d1fcd5a2af4917786088458d501deb896dc4fb",
+          "be160efb10c71e70d4186129a033bc19bb3d5e9fcf97ef9981e1a93ce3b6e6fe",
+          "60bc8ee2a5236f620dcef4d8b643b919bdcddc44a67e9cbd1ffdc132c9a387a7",
+          "81124e3817df8e5528df9321d9c75b91a5e1d1097cf175d479feb2fa9f7b71cc",
+          "3285cda92adb3bef6959ef4a7b019cdb0f7b872961bfc36c3276d0d8f7e8c4a5"
+        ],
+        "measurements": {
+          "empty/steady": [
+            {
+              "cpuMs": 0.0066500000001564336,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0019999999999527063,
+              "batchMs": 0.0033,
+              "jsbCalls": 67,
+              "peakJsBytes": 13182012,
+              "forcedGcMs": 4.048999999999978
+            },
+            {
+              "cpuMs": 0.006850000000258296,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0019999999999527063,
+              "batchMs": 0.0032,
+              "jsbCalls": 67,
+              "peakJsBytes": 13068068,
+              "forcedGcMs": 3.838999999999942
+            },
+            {
+              "cpuMs": 0.005049999999929059,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.0023,
+              "jsbCalls": 67,
+              "peakJsBytes": 13077740,
+              "forcedGcMs": 2.7549999999991996
+            },
+            {
+              "cpuMs": 0.005550000000156433,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.001999999999497959,
+              "batchMs": 0.0024,
+              "jsbCalls": 67,
+              "peakJsBytes": 13068952,
+              "forcedGcMs": 5.279999999999745
+            },
+            {
+              "cpuMs": 0.0042499999999527065,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.0020499999999999997,
+              "jsbCalls": 67,
+              "peakJsBytes": 13079292,
+              "forcedGcMs": 4.84900000000016
+            },
+            {
+              "cpuMs": 0.005700000000030923,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.001999999999497959,
+              "batchMs": 0.0025,
+              "jsbCalls": 67,
+              "peakJsBytes": 13121220,
+              "forcedGcMs": 3.5499999999992724
+            }
+          ],
+          "empty/dirty": [
+            {
+              "cpuMs": 0.006649999999905412,
+              "setterMs": 0.0020000000004074536,
+              "prepareMs": 0.0014999999993960955,
+              "batchMs": 0.00265,
+              "jsbCalls": 67,
+              "peakJsBytes": 13392868,
+              "forcedGcMs": 3.8209999999999127
+            },
+            {
+              "cpuMs": 0.008400000000563887,
+              "setterMs": 0.0029999999997016857,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.0034,
+              "jsbCalls": 67,
+              "peakJsBytes": 13318292,
+              "forcedGcMs": 3.9179999999996653
+            },
+            {
+              "cpuMs": 0.006099999999701686,
+              "setterMs": 0.0020000000004074536,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.00275,
+              "jsbCalls": 67,
+              "peakJsBytes": 13249788,
+              "forcedGcMs": 3.6809999999986758
+            },
+            {
+              "cpuMs": 0.00685000000036016,
+              "setterMs": 0.0020000000004074536,
+              "prepareMs": 0.001999999999497959,
+              "batchMs": 0.0024,
+              "jsbCalls": 67,
+              "peakJsBytes": 13124516,
+              "forcedGcMs": 3.594999999999345
+            },
+            {
+              "cpuMs": 0.007149999999097782,
+              "setterMs": 0.0020000000004074536,
+              "prepareMs": 0.001999999999497959,
+              "batchMs": 0.0025,
+              "jsbCalls": 67,
+              "peakJsBytes": 13227028,
+              "forcedGcMs": 4.347999999999956
+            },
+            {
+              "cpuMs": 0.007149999999654392,
+              "setterMs": 0.0029999999997016857,
+              "prepareMs": 0.001999999999497959,
+              "batchMs": 0.0025,
+              "jsbCalls": 67,
+              "peakJsBytes": 13225444,
+              "forcedGcMs": 4.083000000000538
+            }
+          ],
+          "sprites/steady": [
+            {
+              "cpuMs": 0.18795000000050932,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0019999999985884642,
+              "batchMs": 0.1863,
+              "jsbCalls": 67,
+              "peakJsBytes": 18321496,
+              "forcedGcMs": 4.905000000000655
+            },
+            {
+              "cpuMs": 0.22309999999899593,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.21910000000000002,
+              "jsbCalls": 67,
+              "peakJsBytes": 18296396,
+              "forcedGcMs": 7.925999999999476
+            },
+            {
+              "cpuMs": 0.2237000000006112,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.2208,
+              "jsbCalls": 67,
+              "peakJsBytes": 18228924,
+              "forcedGcMs": 5.80199999999968
+            },
+            {
+              "cpuMs": 0.18920000000050932,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.18630000000000002,
+              "jsbCalls": 67,
+              "peakJsBytes": 18296144,
+              "forcedGcMs": 5.980000000001382
+            },
+            {
+              "cpuMs": 0.20729999999970167,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.2051,
+              "jsbCalls": 67,
+              "peakJsBytes": 18211952,
+              "forcedGcMs": 4.31000000000131
+            },
+            {
+              "cpuMs": 0.19170000000050932,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0019999999985884642,
+              "batchMs": 0.1892,
+              "jsbCalls": 67,
+              "peakJsBytes": 18247748,
+              "forcedGcMs": 5.538000000000466
+            }
+          ],
+          "sprites/dirty": [
+            {
+              "cpuMs": 0.3517000000010623,
+              "setterMs": 0.14399999999932334,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.18580000000000002,
+              "jsbCalls": 67,
+              "peakJsBytes": 18447624,
+              "forcedGcMs": 5.260000000000218
+            },
+            {
+              "cpuMs": 0.3394500000002255,
+              "setterMs": 0.13649999999961437,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.18085,
+              "jsbCalls": 67,
+              "peakJsBytes": 18481328,
+              "forcedGcMs": 5.760000000000218
+            },
+            {
+              "cpuMs": 0.3521500000005239,
+              "setterMs": 0.13000000000010914,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.18915,
+              "jsbCalls": 67,
+              "peakJsBytes": 18456320,
+              "forcedGcMs": 7.309999999999491
+            },
+            {
+              "cpuMs": 0.3076999999996944,
+              "setterMs": 0.12250000000040018,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.16949999999999998,
+              "jsbCalls": 67,
+              "peakJsBytes": 18454236,
+              "forcedGcMs": 4.4319999999988795
+            },
+            {
+              "cpuMs": 0.31999999999866846,
+              "setterMs": 0.12700000000040745,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.16570000000000001,
+              "jsbCalls": 67,
+              "peakJsBytes": 18468752,
+              "forcedGcMs": 3.672999999998865
+            },
+            {
+              "cpuMs": 0.2818999999999491,
+              "setterMs": 0.10849999999936699,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.15560000000000002,
+              "jsbCalls": 67,
+              "peakJsBytes": 18466116,
+              "forcedGcMs": 6.487999999999374
+            }
+          ],
+          "labels/steady": [
+            {
+              "cpuMs": 0.43400000000040745,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.001999999996769475,
+              "batchMs": 0.432,
+              "jsbCalls": 67,
+              "peakJsBytes": 16047324,
+              "forcedGcMs": 6.156999999999243
+            },
+            {
+              "cpuMs": 0.46999999999848663,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.46425,
+              "jsbCalls": 67,
+              "peakJsBytes": 16251052,
+              "forcedGcMs": 4.746999999999389
+            },
+            {
+              "cpuMs": 0.480600000000713,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0014999999984866008,
+              "batchMs": 0.47709999999999997,
+              "jsbCalls": 67,
+              "peakJsBytes": 16176692,
+              "forcedGcMs": 5.758999999998196
+            },
+            {
+              "cpuMs": 0.3481500000003056,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.34665,
+              "jsbCalls": 67,
+              "peakJsBytes": 16190688,
+              "forcedGcMs": 6.744999999998981
+            },
+            {
+              "cpuMs": 0.43155000000061117,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.001999999996769475,
+              "batchMs": 0.42865,
+              "jsbCalls": 67,
+              "peakJsBytes": 16183388,
+              "forcedGcMs": 5.2960000000020955
+            },
+            {
+              "cpuMs": 0.44289999999869034,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.001999999996769475,
+              "batchMs": 0.44145,
+              "jsbCalls": 67,
+              "peakJsBytes": 16177972,
+              "forcedGcMs": 5.233000000000175
+            }
+          ],
+          "labels/dirty": [
+            {
+              "cpuMs": 3.2238500000004366,
+              "setterMs": 0.028000000000247383,
+              "prepareMs": 2.9500000000007276,
+              "batchMs": 0.2457,
+              "jsbCalls": 447,
+              "peakJsBytes": 19711704,
+              "forcedGcMs": 4.180000000000291
+            },
+            {
+              "cpuMs": 3.0297000000002763,
+              "setterMs": 0.02750000000014552,
+              "prepareMs": 2.7324999999982538,
+              "batchMs": 0.24725,
+              "jsbCalls": 447,
+              "peakJsBytes": 19880760,
+              "forcedGcMs": 5.630999999997584
+            },
+            {
+              "cpuMs": 3.3035999999994763,
+              "setterMs": 0.030000000000654836,
+              "prepareMs": 3.000499999998283,
+              "batchMs": 0.2504,
+              "jsbCalls": 447,
+              "peakJsBytes": 19666936,
+              "forcedGcMs": 8.528999999998632
+            },
+            {
+              "cpuMs": 3.3075499999986615,
+              "setterMs": 0.023499999999330612,
+              "prepareMs": 3.069499999999607,
+              "batchMs": 0.21145,
+              "jsbCalls": 447,
+              "peakJsBytes": 19668792,
+              "forcedGcMs": 4.3770000000004075
+            },
+            {
+              "cpuMs": 3.021099999999767,
+              "setterMs": 0.023499999999330612,
+              "prepareMs": 2.720500000001266,
+              "batchMs": 0.2085,
+              "jsbCalls": 447,
+              "peakJsBytes": 19716800,
+              "forcedGcMs": 4.032999999999447
+            },
+            {
+              "cpuMs": 2.905899999999374,
+              "setterMs": 0.02200000000084401,
+              "prepareMs": 2.6199999999989814,
+              "batchMs": 0.21910000000000002,
+              "jsbCalls": 447,
+              "peakJsBytes": 19882120,
+              "forcedGcMs": 5
+            }
+          ],
+          "masks/steady": [
+            {
+              "cpuMs": 0.7109500000004074,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.70895,
+              "jsbCalls": 67,
+              "peakJsBytes": 14471848,
+              "forcedGcMs": 4.574000000000524
+            },
+            {
+              "cpuMs": 0.6914000000004075,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.001999999996769475,
+              "batchMs": 0.6894,
+              "jsbCalls": 67,
+              "peakJsBytes": 14515320,
+              "forcedGcMs": 4.7259999999987485
+            },
+            {
+              "cpuMs": 0.7333000000002037,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.7323,
+              "jsbCalls": 67,
+              "peakJsBytes": 14497328,
+              "forcedGcMs": 4.849000000001979
+            },
+            {
+              "cpuMs": 0.6166500000003056,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.61525,
+              "jsbCalls": 67,
+              "peakJsBytes": 14484960,
+              "forcedGcMs": 3.992999999998574
+            },
+            {
+              "cpuMs": 0.6971499999985885,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.69555,
+              "jsbCalls": 67,
+              "peakJsBytes": 14479868,
+              "forcedGcMs": 3.61699999999837
+            },
+            {
+              "cpuMs": 0.6625000000003056,
+              "setterMs": 0.000499999998282874,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.661,
+              "jsbCalls": 67,
+              "peakJsBytes": 14491596,
+              "forcedGcMs": 7.010000000002037
+            }
+          ],
+          "masks/dirty": [
+            {
+              "cpuMs": 0.7091000000013534,
+              "setterMs": 0.024000000001251465,
+              "prepareMs": 0.001999999996769475,
+              "batchMs": 0.6846000000000001,
+              "jsbCalls": 72,
+              "peakJsBytes": 14595052,
+              "forcedGcMs": 3.598999999998341
+            },
+            {
+              "cpuMs": 0.692249999999447,
+              "setterMs": 0.023499999999330612,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.65925,
+              "jsbCalls": 72,
+              "peakJsBytes": 14603576,
+              "forcedGcMs": 3.2329999999965366
+            },
+            {
+              "cpuMs": 0.6967499999992288,
+              "setterMs": 0.021000000000640284,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.6737500000000001,
+              "jsbCalls": 72,
+              "peakJsBytes": 14604900,
+              "forcedGcMs": 7.8290000000015425
+            },
+            {
+              "cpuMs": 0.682000000001237,
+              "setterMs": 0.01900000000023283,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.6594,
+              "jsbCalls": 72,
+              "peakJsBytes": 14384728,
+              "forcedGcMs": 3.385999999998603
+            },
+            {
+              "cpuMs": 0.6480000000014552,
+              "setterMs": 0.018500000000130967,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.6253,
+              "jsbCalls": 72,
+              "peakJsBytes": 14593604,
+              "forcedGcMs": 4.60399999999936
+            },
+            {
+              "cpuMs": 0.6094999999986176,
+              "setterMs": 0.018000000000029104,
+              "prepareMs": 0.0010000000002037268,
+              "batchMs": 0.58935,
+              "jsbCalls": 72,
+              "peakJsBytes": 14602360,
+              "forcedGcMs": 6.858000000000175
+            }
+          ],
+          "rich/steady": [
+            {
+              "cpuMs": 0.21445000000050932,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.21195,
+              "jsbCalls": 67,
+              "peakJsBytes": 14565496,
+              "forcedGcMs": 4.805000000000291
+            },
+            {
+              "cpuMs": 0.2183499999984866,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.215,
+              "jsbCalls": 67,
+              "peakJsBytes": 14605836,
+              "forcedGcMs": 3.463000000003376
+            },
+            {
+              "cpuMs": 0.17720000000020372,
+              "setterMs": 0,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.17565,
+              "jsbCalls": 67,
+              "peakJsBytes": 14565112,
+              "forcedGcMs": 4.818999999995867
+            },
+            {
+              "cpuMs": 0.12970000000222645,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000038417056,
+              "batchMs": 0.1277,
+              "jsbCalls": 67,
+              "peakJsBytes": 14567784,
+              "forcedGcMs": 3.271999999997206
+            },
+            {
+              "cpuMs": 0.13675000000081491,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000020227162,
+              "batchMs": 0.1337,
+              "jsbCalls": 67,
+              "peakJsBytes": 14566880,
+              "forcedGcMs": 8.022000000004482
+            },
+            {
+              "cpuMs": 0.17680000000243018,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.17445,
+              "jsbCalls": 67,
+              "peakJsBytes": 14569060,
+              "forcedGcMs": 6.054000000003725
+            }
+          ],
+          "rich/dirty": [
+            {
+              "cpuMs": 2.0483999999970024,
+              "setterMs": 1.9534999999996217,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.08374999999999999,
+              "jsbCalls": 491,
+              "peakJsBytes": 15371292,
+              "forcedGcMs": 3.4570000000021537
+            },
+            {
+              "cpuMs": 1.844550000003696,
+              "setterMs": 1.7530000000042492,
+              "prepareMs": 0.0030000000042491592,
+              "batchMs": 0.08560000000000001,
+              "jsbCalls": 491,
+              "peakJsBytes": 15519696,
+              "forcedGcMs": 5.72899999999936
+            },
+            {
+              "cpuMs": 1.7515000000006693,
+              "setterMs": 1.6474999999991269,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.08615,
+              "jsbCalls": 491,
+              "peakJsBytes": 15359864,
+              "forcedGcMs": 5.525000000001455
+            },
+            {
+              "cpuMs": 1.4234499999952852,
+              "setterMs": 1.3314999999965949,
+              "prepareMs": 0.0030000000042491592,
+              "batchMs": 0.0854,
+              "jsbCalls": 491,
+              "peakJsBytes": 15330572,
+              "forcedGcMs": 5.815999999998894
+            },
+            {
+              "cpuMs": 1.8193500000035217,
+              "setterMs": 1.7490000000034343,
+              "prepareMs": 0.0029999999969732016,
+              "batchMs": 0.07175000000000001,
+              "jsbCalls": 491,
+              "peakJsBytes": 15360780,
+              "forcedGcMs": 4.051999999996042
+            },
+            {
+              "cpuMs": 2.03179999999578,
+              "setterMs": 1.948999999996886,
+              "prepareMs": 0.0030000000042491592,
+              "batchMs": 0.0701,
+              "jsbCalls": 491,
+              "peakJsBytes": 15317872,
+              "forcedGcMs": 4.504999999997381
+            }
+          ],
+          "mixed/steady": [
+            {
+              "cpuMs": 1.0099500000023283,
+              "setterMs": 0,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 1.00745,
+              "jsbCalls": 67,
+              "peakJsBytes": 22646560,
+              "forcedGcMs": 8.35899999999674
+            },
+            {
+              "cpuMs": 1.0731500000002037,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 1.07215,
+              "jsbCalls": 67,
+              "peakJsBytes": 22765020,
+              "forcedGcMs": 6.6929999999993015
+            },
+            {
+              "cpuMs": 0.9985000000004074,
+              "setterMs": 0,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.9964999999999999,
+              "jsbCalls": 67,
+              "peakJsBytes": 22616612,
+              "forcedGcMs": 8.536000000000058
+            },
+            {
+              "cpuMs": 0.8512500000021246,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000038417056,
+              "batchMs": 0.84975,
+              "jsbCalls": 67,
+              "peakJsBytes": 22723496,
+              "forcedGcMs": 5.73399999999674
+            },
+            {
+              "cpuMs": 0.9790500000004074,
+              "setterMs": 0,
+              "prepareMs": 0.0020000000004074536,
+              "batchMs": 0.97705,
+              "jsbCalls": 67,
+              "peakJsBytes": 22653728,
+              "forcedGcMs": 8.08299999999872
+            },
+            {
+              "cpuMs": 0.9340000000040454,
+              "setterMs": 0,
+              "prepareMs": 0.0010000000038417056,
+              "batchMs": 0.9319999999999999,
+              "jsbCalls": 67,
+              "peakJsBytes": 22605680,
+              "forcedGcMs": 8.856999999996333
+            }
+          ],
+          "mixed/dirty": [
+            {
+              "cpuMs": 4.331899999996624,
+              "setterMs": 1.4684999999990396,
+              "prepareMs": 1.955999999998312,
+              "batchMs": 0.7794,
+              "jsbCalls": 876,
+              "peakJsBytes": 30506544,
+              "forcedGcMs": 6.3770000000004075
+            },
+            {
+              "cpuMs": 4.561550000003084,
+              "setterMs": 1.6419999999998254,
+              "prepareMs": 1.933499999999185,
+              "batchMs": 0.81125,
+              "jsbCalls": 876,
+              "peakJsBytes": 30599900,
+              "forcedGcMs": 7.167999999997846
+            },
+            {
+              "cpuMs": 4.261550000002881,
+              "setterMs": 1.4599999999991269,
+              "prepareMs": 1.900999999998021,
+              "batchMs": 0.79155,
+              "jsbCalls": 876,
+              "peakJsBytes": 30669468,
+              "forcedGcMs": 6.669000000001688
+            },
+            {
+              "cpuMs": 4.004949999998108,
+              "setterMs": 1.3594999999986612,
+              "prepareMs": 1.8685000000004948,
+              "batchMs": 0.79305,
+              "jsbCalls": 876,
+              "peakJsBytes": 30526348,
+              "forcedGcMs": 6.413999999997031
+            },
+            {
+              "cpuMs": 4.300649999998108,
+              "setterMs": 1.374999999996362,
+              "prepareMs": 1.9429999999993015,
+              "batchMs": 0.70755,
+              "jsbCalls": 876,
+              "peakJsBytes": 30664240,
+              "forcedGcMs": 6.165000000000873
+            },
+            {
+              "cpuMs": 4.354500000002678,
+              "setterMs": 1.3754999999982829,
+              "prepareMs": 1.955999999998312,
+              "batchMs": 0.75135,
+              "jsbCalls": 876,
+              "peakJsBytes": 30658224,
+              "forcedGcMs": 8.455999999998312
+            }
+          ]
+        },
+        "metrics": {
+          "empty/steady": {
+            "cpuMs": 0.005625000000093678,
+            "setterMs": 0.0010000000002037268,
+            "prepareMs": 0.001999999999497959,
+            "batchMs": 0.00245,
+            "jsbCalls": 67,
+            "peakJsBytes": 13078516,
+            "forcedGcMs": 3.94399999999996
+          },
+          "empty/dirty": {
+            "cpuMs": 0.006999999999728971,
+            "setterMs": 0.0020000000004074536,
+            "prepareMs": 0.001999999999497959,
+            "batchMs": 0.002575,
+            "jsbCalls": 67,
+            "peakJsBytes": 13238408,
+            "forcedGcMs": 3.869499999999789
+          },
+          "sprites/steady": {
+            "cpuMs": 0.19950000000010548,
+            "setterMs": 0.0010000000002037268,
+            "prepareMs": 0.0020000000004074536,
+            "batchMs": 0.19715,
+            "jsbCalls": 67,
+            "peakJsBytes": 18271946,
+            "forcedGcMs": 5.670000000000073
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.329724999999447,
+            "setterMs": 0.1285000000002583,
+            "prepareMs": 0.0020000000004074536,
+            "batchMs": 0.175175,
+            "jsbCalls": 67,
+            "peakJsBytes": 18461218,
+            "forcedGcMs": 5.510000000000218
+          },
+          "labels/steady": {
+            "cpuMs": 0.4384499999995489,
+            "setterMs": 0.0010000000002037268,
+            "prepareMs": 0.001999999996769475,
+            "batchMs": 0.43672500000000003,
+            "jsbCalls": 67,
+            "peakJsBytes": 16180680,
+            "forcedGcMs": 5.5275000000001455
+          },
+          "labels/dirty": {
+            "cpuMs": 3.1267750000003565,
+            "setterMs": 0.025499999999738066,
+            "prepareMs": 2.8412499999994907,
+            "batchMs": 0.2324,
+            "jsbCalls": 447,
+            "peakJsBytes": 19714252,
+            "forcedGcMs": 4.688500000000204
+          },
+          "masks/steady": {
+            "cpuMs": 0.6942749999994979,
+            "setterMs": 0,
+            "prepareMs": 0.0010000000002037268,
+            "batchMs": 0.692475,
+            "jsbCalls": 67,
+            "peakJsBytes": 14488278,
+            "forcedGcMs": 4.649999999999636
+          },
+          "masks/dirty": {
+            "cpuMs": 0.6871250000003419,
+            "setterMs": 0.020000000000436557,
+            "prepareMs": 0.0010000000002037268,
+            "batchMs": 0.6593249999999999,
+            "jsbCalls": 72,
+            "peakJsBytes": 14598706,
+            "forcedGcMs": 4.10149999999885
+          },
+          "rich/steady": {
+            "cpuMs": 0.17700000000131694,
+            "setterMs": 0.000499999998282874,
+            "prepareMs": 0.0020000000004074536,
+            "batchMs": 0.17504999999999998,
+            "jsbCalls": 67,
+            "peakJsBytes": 14567332,
+            "forcedGcMs": 4.811999999998079
+          },
+          "rich/dirty": {
+            "cpuMs": 1.8319500000036089,
+            "setterMs": 1.7510000000038417,
+            "prepareMs": 0.0030000000042491592,
+            "batchMs": 0.084575,
+            "jsbCalls": 491,
+            "peakJsBytes": 15360322,
+            "forcedGcMs": 5.014999999999418
+          },
+          "mixed/steady": {
+            "cpuMs": 0.9887750000004074,
+            "setterMs": 0,
+            "prepareMs": 0.0020000000004074536,
+            "batchMs": 0.986775,
+            "jsbCalls": 67,
+            "peakJsBytes": 22650144,
+            "forcedGcMs": 8.22099999999773
+          },
+          "mixed/dirty": {
+            "cpuMs": 4.316274999997367,
+            "setterMs": 1.4177499999987049,
+            "prepareMs": 1.9382499999992433,
+            "batchMs": 0.7854749999999999,
+            "jsbCalls": 876,
+            "peakJsBytes": 30629062,
+            "forcedGcMs": 6.54149999999936
+          }
+        },
+        "entrySha256": "a7e0f6f5c39a9c6183561837e5030e6b301db5b267808856546eb35120ca0a04",
+        "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669",
+        "executableSha256": "34d21fdc7b4b09510af36a5b03152d811dbebaa6d6da9b65279016e3384f632c",
+        "v8Dlls": {
+          "v8.dll": "48220636bd11a4378c805c52f50f94fd1cbed7856a4beda171963c25a564b3ac",
+          "v8_libbase.dll": "477ee8c9bcd9e98b3a3903dc5da10dafc0ca05f3ab629dcc6ced4c7f8f25ea41",
+          "v8_libplatform.dll": "47979cb28eed789589728d0c92ce4b2e139067b22f5d5390afa18913f388b57c"
+        }
+      },
+      "after": {
+        "revision": "623e6bc869e501549bb89cd637804bcffedac085",
+        "renderer": "PVRVFrame 10.8 - None (Host : NVIDIA GeForce RTX 4080/PCIe/SSE2) (SDK Build: 18.1@5086772)",
+        "vendor": "Imagination Technologies (Host: NVIDIA Corporation)",
+        "rawSha256": [
+          "55d0df10c43e5a6b0970068923fc6856c82f8e366aa4e99fd44b540c9a687499",
+          "b1f4af94108e2be3edc9bdb2fb98c8f1298a2c1b3fe393772ca516ff736c8a28",
+          "e9408305cd4448a6aa4dc1dcd051a3b07316b3cb6c15c59fc5f367f9ab65ea46",
+          "adc6706e9d477266886758dacc7ce60ba8f0889302af76e6e5201a36dea581fc",
+          "bcb4d781f63c56f662ec933aac4b758304bf518361317e5cb1a5458373711eed",
+          "30026fa4a27646835c772511687ba2cfe62951a6b89ca21a5978fd143bd3ba70"
+        ],
+        "measurements": {
+          "empty/steady": [
+            {
+              "cpuMs": 0.01440000000034379,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.006999999999607098,
+              "batchMs": 0.0056,
+              "jsbCalls": 68,
+              "peakJsBytes": 12570088,
+              "forcedGcMs": 5.163000000000466
+            },
+            {
+              "cpuMs": 0.013300000000265572,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.006000000000312866,
+              "batchMs": 0.0053,
+              "jsbCalls": 68,
+              "peakJsBytes": 12597112,
+              "forcedGcMs": 3.594000000000051
+            },
+            {
+              "cpuMs": 0.011250000000391083,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0059999999994033715,
+              "batchMs": 0.0047,
+              "jsbCalls": 68,
+              "peakJsBytes": 12561484,
+              "forcedGcMs": 3.6220000000002983
+            },
+            {
+              "cpuMs": 0.008699999999654392,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0039999999999054126,
+              "batchMs": 0.0038,
+              "jsbCalls": 68,
+              "peakJsBytes": 12586456,
+              "forcedGcMs": 3.8770000000004075
+            },
+            {
+              "cpuMs": 0.009350000000312865,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.004000000000132786,
+              "batchMs": 0.0038,
+              "jsbCalls": 68,
+              "peakJsBytes": 12564448,
+              "forcedGcMs": 4.703000000000429
+            },
+            {
+              "cpuMs": 0.007549999999779902,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.003000000000156433,
+              "batchMs": 0.00315,
+              "jsbCalls": 68,
+              "peakJsBytes": 12597676,
+              "forcedGcMs": 3.1970000000001164
+            }
+          ],
+          "empty/dirty": [
+            {
+              "cpuMs": 0.015100000000218279,
+              "setterMs": 0.0029999999997016857,
+              "prepareMs": 0.006999999999607098,
+              "batchMs": 0.0053,
+              "jsbCalls": 68,
+              "peakJsBytes": 12685368,
+              "forcedGcMs": 4.408999999999651
+            },
+            {
+              "cpuMs": 0.012749999999912689,
+              "setterMs": 0.0020000000004074536,
+              "prepareMs": 0.005000000000109139,
+              "batchMs": 0.0045,
+              "jsbCalls": 68,
+              "peakJsBytes": 12635444,
+              "forcedGcMs": 3.8190000000013242
+            },
+            {
+              "cpuMs": 0.013900000000014552,
+              "setterMs": 0.0029999999997016857,
+              "prepareMs": 0.006000000000312866,
+              "batchMs": 0.005,
+              "jsbCalls": 68,
+              "peakJsBytes": 12649332,
+              "forcedGcMs": 4.424000000000888
+            },
+            {
+              "cpuMs": 0.015800000000116415,
+              "setterMs": 0.0029999999997016857,
+              "prepareMs": 0.006999999999607098,
+              "batchMs": 0.0058,
+              "jsbCalls": 68,
+              "peakJsBytes": 12749196,
+              "forcedGcMs": 3.467000000000553
+            },
+            {
+              "cpuMs": 0.011100000000061845,
+              "setterMs": 0.0020000000004074536,
+              "prepareMs": 0.004999999999199645,
+              "batchMs": 0.0039,
+              "jsbCalls": 68,
+              "peakJsBytes": 12645300,
+              "forcedGcMs": 4.498999999999796
+            },
+            {
+              "cpuMs": 0.012049999999810825,
+              "setterMs": 0.002999999998792191,
+              "prepareMs": 0.0059999999994033715,
+              "batchMs": 0.004,
+              "jsbCalls": 68,
+              "peakJsBytes": 12731536,
+              "forcedGcMs": 4.1200000000008
+            }
+          ],
+          "sprites/steady": [
+            {
+              "cpuMs": 0.2952999999996071,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.006000000001222361,
+              "batchMs": 0.2883,
+              "jsbCalls": 68,
+              "peakJsBytes": 16239748,
+              "forcedGcMs": 4.385000000000218
+            },
+            {
+              "cpuMs": 0.2564500000000073,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0059999999994033715,
+              "batchMs": 0.25125,
+              "jsbCalls": 68,
+              "peakJsBytes": 16362456,
+              "forcedGcMs": 9.226000000000568
+            },
+            {
+              "cpuMs": 0.2751500000010332,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0059999999994033715,
+              "batchMs": 0.2659,
+              "jsbCalls": 68,
+              "peakJsBytes": 16349468,
+              "forcedGcMs": 3.7340000000003783
+            },
+            {
+              "cpuMs": 0.24315000000031287,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.004999999999199645,
+              "batchMs": 0.2364,
+              "jsbCalls": 68,
+              "peakJsBytes": 16341844,
+              "forcedGcMs": 3.8770000000004075
+            },
+            {
+              "cpuMs": 0.2571999999996071,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.005000000001018634,
+              "batchMs": 0.2509,
+              "jsbCalls": 68,
+              "peakJsBytes": 16268172,
+              "forcedGcMs": 4.690000000000509
+            },
+            {
+              "cpuMs": 0.2766000000012223,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.005000000001018634,
+              "batchMs": 0.26965,
+              "jsbCalls": 68,
+              "peakJsBytes": 16356704,
+              "forcedGcMs": 7.404000000000451
+            }
+          ],
+          "sprites/dirty": [
+            {
+              "cpuMs": 0.45865000000082945,
+              "setterMs": 0.17399999999997817,
+              "prepareMs": 0.021499999999832653,
+              "batchMs": 0.2434,
+              "jsbCalls": 168,
+              "peakJsBytes": 16430360,
+              "forcedGcMs": 4.477999999999156
+            },
+            {
+              "cpuMs": 0.4196999999996799,
+              "setterMs": 0.170999999999367,
+              "prepareMs": 0.019999999998617568,
+              "batchMs": 0.22310000000000002,
+              "jsbCalls": 168,
+              "peakJsBytes": 16403792,
+              "forcedGcMs": 5.54399999999805
+            },
+            {
+              "cpuMs": 0.46374999999907596,
+              "setterMs": 0.18499999999949068,
+              "prepareMs": 0.0194999999994252,
+              "batchMs": 0.2402,
+              "jsbCalls": 168,
+              "peakJsBytes": 16543052,
+              "forcedGcMs": 5.630000000001019
+            },
+            {
+              "cpuMs": 0.36234999999956347,
+              "setterMs": 0.1625000000003638,
+              "prepareMs": 0.01599999999962165,
+              "batchMs": 0.1735,
+              "jsbCalls": 168,
+              "peakJsBytes": 16542384,
+              "forcedGcMs": 4.389999999999418
+            },
+            {
+              "cpuMs": 0.36855000000044386,
+              "setterMs": 0.1540000000004511,
+              "prepareMs": 0.01599999999962165,
+              "batchMs": 0.19745000000000001,
+              "jsbCalls": 168,
+              "peakJsBytes": 16401276,
+              "forcedGcMs": 4.485999999998967
+            },
+            {
+              "cpuMs": 0.43474999999958525,
+              "setterMs": 0.1819999999988795,
+              "prepareMs": 0.02050000000053842,
+              "batchMs": 0.22045,
+              "jsbCalls": 168,
+              "peakJsBytes": 16540600,
+              "forcedGcMs": 3.5789999999997235
+            }
+          ],
+          "labels/steady": [
+            {
+              "cpuMs": 0.4278500000012223,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.42215,
+              "jsbCalls": 68,
+              "peakJsBytes": 13839308,
+              "forcedGcMs": 5.842000000000553
+            },
+            {
+              "cpuMs": 0.43854999999909783,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.43300000000000005,
+              "jsbCalls": 68,
+              "peakJsBytes": 13890808,
+              "forcedGcMs": 4.361000000000786
+            },
+            {
+              "cpuMs": 0.38529999999940334,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.37929999999999997,
+              "jsbCalls": 68,
+              "peakJsBytes": 13868768,
+              "forcedGcMs": 3.9950000000026193
+            },
+            {
+              "cpuMs": 0.3247499999988941,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0030000000006111804,
+              "batchMs": 0.32025000000000003,
+              "jsbCalls": 68,
+              "peakJsBytes": 13897416,
+              "forcedGcMs": 3.7489999999997963
+            },
+            {
+              "cpuMs": 0.38335000000071306,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.3798,
+              "jsbCalls": 68,
+              "peakJsBytes": 13885144,
+              "forcedGcMs": 6.957000000002154
+            },
+            {
+              "cpuMs": 0.40304999999919966,
+              "setterMs": 0.0010000000002037268,
+              "prepareMs": 0.0039999999971769284,
+              "batchMs": 0.39735,
+              "jsbCalls": 68,
+              "peakJsBytes": 13899480,
+              "forcedGcMs": 4.661000000000058
+            }
+          ],
+          "labels/dirty": [
+            {
+              "cpuMs": 0.7953999999995925,
+              "setterMs": 0.03800000000046566,
+              "prepareMs": 0.43000000000029104,
+              "batchMs": 0.33094999999999997,
+              "jsbCalls": 88,
+              "peakJsBytes": 13677468,
+              "forcedGcMs": 3.9579999999987194
+            },
+            {
+              "cpuMs": 0.8219500000005822,
+              "setterMs": 0.04099999999925785,
+              "prepareMs": 0.4114999999983411,
+              "batchMs": 0.3366,
+              "jsbCalls": 88,
+              "peakJsBytes": 13637868,
+              "forcedGcMs": 3.2849999999998545
+            },
+            {
+              "cpuMs": 0.702200000001426,
+              "setterMs": 0.035500000001775334,
+              "prepareMs": 0.36199999999917054,
+              "batchMs": 0.3157,
+              "jsbCalls": 88,
+              "peakJsBytes": 13670072,
+              "forcedGcMs": 3.330999999998312
+            },
+            {
+              "cpuMs": 0.7057999999998108,
+              "setterMs": 0.03499999999985448,
+              "prepareMs": 0.3930000000000291,
+              "batchMs": 0.27149999999999996,
+              "jsbCalls": 88,
+              "peakJsBytes": 13825264,
+              "forcedGcMs": 3.730999999999767
+            },
+            {
+              "cpuMs": 0.7484499999986322,
+              "setterMs": 0.038500000000567525,
+              "prepareMs": 0.42150000000037835,
+              "batchMs": 0.2935,
+              "jsbCalls": 88,
+              "peakJsBytes": 13672324,
+              "forcedGcMs": 4.914000000000669
+            },
+            {
+              "cpuMs": 0.7731500000008004,
+              "setterMs": 0.0375000000003638,
+              "prepareMs": 0.42000000000189175,
+              "batchMs": 0.3026,
+              "jsbCalls": 88,
+              "peakJsBytes": 13704276,
+              "forcedGcMs": 4.271999999997206
+            }
+          ],
+          "masks/steady": [
+            {
+              "cpuMs": 0.416150000000713,
+              "setterMs": 0,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.41264999999999996,
+              "jsbCalls": 68,
+              "peakJsBytes": 13393804,
+              "forcedGcMs": 3.83100000000195
+            },
+            {
+              "cpuMs": 0.48060000000112046,
+              "setterMs": 0,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.47509999999999997,
+              "jsbCalls": 68,
+              "peakJsBytes": 13312804,
+              "forcedGcMs": 6.634999999998399
+            },
+            {
+              "cpuMs": 0.3652500000008149,
+              "setterMs": 0,
+              "prepareMs": 0.0039999999971769284,
+              "batchMs": 0.3609,
+              "jsbCalls": 68,
+              "peakJsBytes": 13289760,
+              "forcedGcMs": 3.8180000000029395
+            },
+            {
+              "cpuMs": 0.44275000000021825,
+              "setterMs": 0,
+              "prepareMs": 0.0030000000006111804,
+              "batchMs": 0.43625,
+              "jsbCalls": 68,
+              "peakJsBytes": 13246176,
+              "forcedGcMs": 3.080999999998312
+            },
+            {
+              "cpuMs": 0.46929999999889405,
+              "setterMs": 0,
+              "prepareMs": 0.0030000000006111804,
+              "batchMs": 0.4658,
+              "jsbCalls": 68,
+              "peakJsBytes": 13440900,
+              "forcedGcMs": 5.736000000000786
+            },
+            {
+              "cpuMs": 0.5301500000004075,
+              "setterMs": 0,
+              "prepareMs": 0.0030000000006111804,
+              "batchMs": 0.52815,
+              "jsbCalls": 68,
+              "peakJsBytes": 13265320,
+              "forcedGcMs": 4.436999999998079
+            }
+          ],
+          "masks/dirty": [
+            {
+              "cpuMs": 0.5016999999997235,
+              "setterMs": 0.013999999999214197,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.47695,
+              "jsbCalls": 73,
+              "peakJsBytes": 13187556,
+              "forcedGcMs": 4.5900000000001455
+            },
+            {
+              "cpuMs": 0.5018500000001309,
+              "setterMs": 0.01299999999901047,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.48005,
+              "jsbCalls": 73,
+              "peakJsBytes": 13248628,
+              "forcedGcMs": 3.8549999999995634
+            },
+            {
+              "cpuMs": 0.35984999999901046,
+              "setterMs": 0.011999999998806743,
+              "prepareMs": 0.0030000000006111804,
+              "batchMs": 0.3367,
+              "jsbCalls": 73,
+              "peakJsBytes": 13375172,
+              "forcedGcMs": 2.9579999999987194
+            },
+            {
+              "cpuMs": 0.4772499999995198,
+              "setterMs": 0.01299999999901047,
+              "prepareMs": 0.0030000000006111804,
+              "batchMs": 0.46175,
+              "jsbCalls": 73,
+              "peakJsBytes": 13201852,
+              "forcedGcMs": 3.495999999999185
+            },
+            {
+              "cpuMs": 0.5022500000007276,
+              "setterMs": 0.010000000002037268,
+              "prepareMs": 0.002999999998792191,
+              "batchMs": 0.49155,
+              "jsbCalls": 73,
+              "peakJsBytes": 13394140,
+              "forcedGcMs": 4.958999999998923
+            },
+            {
+              "cpuMs": 0.4390000000019354,
+              "setterMs": 0.010000000002037268,
+              "prepareMs": 0.0030000000006111804,
+              "batchMs": 0.4273,
+              "jsbCalls": 73,
+              "peakJsBytes": 13148896,
+              "forcedGcMs": 7.852999999999156
+            }
+          ],
+          "rich/steady": [
+            {
+              "cpuMs": 0.1956999999959691,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.005999999995765393,
+              "batchMs": 0.18869999999999998,
+              "jsbCalls": 68,
+              "peakJsBytes": 13063020,
+              "forcedGcMs": 5.505000000004657
+            },
+            {
+              "cpuMs": 0.2111500000031432,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.006000000001222361,
+              "batchMs": 0.20465,
+              "jsbCalls": 68,
+              "peakJsBytes": 13061420,
+              "forcedGcMs": 3.4539999999979045
+            },
+            {
+              "cpuMs": 0.1982499999939464,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.005499999999301508,
+              "batchMs": 0.1877,
+              "jsbCalls": 68,
+              "peakJsBytes": 13060956,
+              "forcedGcMs": 4.584000000002561
+            },
+            {
+              "cpuMs": 0.1606999999939464,
+              "setterMs": 0,
+              "prepareMs": 0.004499999999097781,
+              "batchMs": 0.1547,
+              "jsbCalls": 68,
+              "peakJsBytes": 13089032,
+              "forcedGcMs": 3.7110000000029686
+            },
+            {
+              "cpuMs": 0.15569999999738066,
+              "setterMs": 0,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.1507,
+              "jsbCalls": 68,
+              "peakJsBytes": 13094320,
+              "forcedGcMs": 3.1090000000040163
+            },
+            {
+              "cpuMs": 0.18105000000122234,
+              "setterMs": 0.000999999996565748,
+              "prepareMs": 0.004999999997380655,
+              "batchMs": 0.17504999999999998,
+              "jsbCalls": 68,
+              "peakJsBytes": 13061428,
+              "forcedGcMs": 4.027000000001863
+            }
+          ],
+          "rich/dirty": [
+            {
+              "cpuMs": 0.7266000000020955,
+              "setterMs": 0.3250000000007276,
+              "prepareMs": 0.26900000000023283,
+              "batchMs": 0.11415,
+              "jsbCalls": 72,
+              "peakJsBytes": 13337076,
+              "forcedGcMs": 3.595000000001164
+            },
+            {
+              "cpuMs": 0.7095500000015134,
+              "setterMs": 0.34050000000206637,
+              "prepareMs": 0.26300000000264845,
+              "batchMs": 0.1043,
+              "jsbCalls": 72,
+              "peakJsBytes": 13097404,
+              "forcedGcMs": 4.832000000002154
+            },
+            {
+              "cpuMs": 0.7452499999994762,
+              "setterMs": 0.33650000000125146,
+              "prepareMs": 0.29100000000107684,
+              "batchMs": 0.1069,
+              "jsbCalls": 72,
+              "peakJsBytes": 13294112,
+              "forcedGcMs": 3.7600000000020373
+            },
+            {
+              "cpuMs": 0.48390000000040745,
+              "setterMs": 0.20750000000043656,
+              "prepareMs": 0.147000000000844,
+              "batchMs": 0.08360000000000001,
+              "jsbCalls": 72,
+              "peakJsBytes": 13123748,
+              "forcedGcMs": 3.3810000000012224
+            },
+            {
+              "cpuMs": 0.7147500000008149,
+              "setterMs": 0.3149999999986903,
+              "prepareMs": 0.27000000000043656,
+              "batchMs": 0.0911,
+              "jsbCalls": 72,
+              "peakJsBytes": 13287548,
+              "forcedGcMs": 3.4949999999953434
+            },
+            {
+              "cpuMs": 0.6666500000020955,
+              "setterMs": 0.3025000000016007,
+              "prepareMs": 0.2519999999967695,
+              "batchMs": 0.0834,
+              "jsbCalls": 72,
+              "peakJsBytes": 13103404,
+              "forcedGcMs": 4.389999999999418
+            }
+          ],
+          "mixed/steady": [
+            {
+              "cpuMs": 1.190399999999098,
+              "setterMs": 0,
+              "prepareMs": 0.004999999997380655,
+              "batchMs": 1.1859000000000002,
+              "jsbCalls": 68,
+              "peakJsBytes": 17730036,
+              "forcedGcMs": 6.9650000000037835
+            },
+            {
+              "cpuMs": 0.9994499999975843,
+              "setterMs": 0,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 0.99185,
+              "jsbCalls": 68,
+              "peakJsBytes": 17824944,
+              "forcedGcMs": 6.292000000001281
+            },
+            {
+              "cpuMs": 1.0828499999975842,
+              "setterMs": 0,
+              "prepareMs": 0.004999999997380655,
+              "batchMs": 1.0768499999999999,
+              "jsbCalls": 68,
+              "peakJsBytes": 17754272,
+              "forcedGcMs": 5.581999999994878
+            },
+            {
+              "cpuMs": 0.8798000000010187,
+              "setterMs": 0,
+              "prepareMs": 0.0030000000042491592,
+              "batchMs": 0.8763,
+              "jsbCalls": 68,
+              "peakJsBytes": 17848384,
+              "forcedGcMs": 3.701999999997497
+            },
+            {
+              "cpuMs": 0.9351499999984866,
+              "setterMs": 0,
+              "prepareMs": 0.0039999999971769284,
+              "batchMs": 0.93365,
+              "jsbCalls": 68,
+              "peakJsBytes": 17791084,
+              "forcedGcMs": 5.5570000000006985
+            },
+            {
+              "cpuMs": 1.022849999997177,
+              "setterMs": 0,
+              "prepareMs": 0.004000000000814907,
+              "batchMs": 1.01885,
+              "jsbCalls": 68,
+              "peakJsBytes": 17833020,
+              "forcedGcMs": 5.594000000004598
+            }
+          ],
+          "mixed/dirty": [
+            {
+              "cpuMs": 2.064599999994208,
+              "setterMs": 0.4275000000016007,
+              "prepareMs": 0.7550000000010186,
+              "batchMs": 0.85405,
+              "jsbCalls": 197,
+              "peakJsBytes": 17908480,
+              "forcedGcMs": 7.177999999999884
+            },
+            {
+              "cpuMs": 2.1116000000049184,
+              "setterMs": 0.3984999999993306,
+              "prepareMs": 0.7769999999945867,
+              "batchMs": 0.8346,
+              "jsbCalls": 197,
+              "peakJsBytes": 18010856,
+              "forcedGcMs": 8.334000000002561
+            },
+            {
+              "cpuMs": 2.1905500000001745,
+              "setterMs": 0.426499999997759,
+              "prepareMs": 0.7989999999954307,
+              "batchMs": 0.84995,
+              "jsbCalls": 197,
+              "peakJsBytes": 17927072,
+              "forcedGcMs": 6.797000000005937
+            },
+            {
+              "cpuMs": 1.7376000000009895,
+              "setterMs": 0.27400000000488944,
+              "prepareMs": 0.6195000000006985,
+              "batchMs": 0.8205,
+              "jsbCalls": 197,
+              "peakJsBytes": 18042788,
+              "forcedGcMs": 4.118999999998778
+            },
+            {
+              "cpuMs": 1.9203499999942375,
+              "setterMs": 0.3430000000007567,
+              "prepareMs": 0.7135000000016589,
+              "batchMs": 0.7901,
+              "jsbCalls": 197,
+              "peakJsBytes": 17993964,
+              "forcedGcMs": 5.063999999998487
+            },
+            {
+              "cpuMs": 1.9920499999993015,
+              "setterMs": 0.4129999999968277,
+              "prepareMs": 0.7385000000031141,
+              "batchMs": 0.7395,
+              "jsbCalls": 197,
+              "peakJsBytes": 17979580,
+              "forcedGcMs": 6.152999999998428
+            }
+          ]
+        },
+        "metrics": {
+          "empty/steady": {
+            "cpuMs": 0.010300000000351974,
+            "setterMs": 0.0010000000002037268,
+            "prepareMs": 0.004999999999768079,
+            "batchMs": 0.00425,
+            "jsbCalls": 68,
+            "peakJsBytes": 12578272,
+            "forcedGcMs": 3.749500000000353
+          },
+          "empty/dirty": {
+            "cpuMs": 0.01332499999996362,
+            "setterMs": 0.0029999999992469384,
+            "prepareMs": 0.005999999999858119,
+            "batchMs": 0.00475,
+            "jsbCalls": 68,
+            "peakJsBytes": 12667350,
+            "forcedGcMs": 4.2645000000002256
+          },
+          "sprites/steady": {
+            "cpuMs": 0.2661750000003201,
+            "setterMs": 0.0010000000002037268,
+            "prepareMs": 0.005500000000211003,
+            "batchMs": 0.258575,
+            "jsbCalls": 68,
+            "peakJsBytes": 16345656,
+            "forcedGcMs": 4.537500000000364
+          },
+          "sprites/dirty": {
+            "cpuMs": 0.4272249999996326,
+            "setterMs": 0.17249999999967258,
+            "prepareMs": 0.019749999999021384,
+            "batchMs": 0.221775,
+            "jsbCalls": 168,
+            "peakJsBytes": 16485480,
+            "forcedGcMs": 4.481999999999061
+          },
+          "labels/steady": {
+            "cpuMs": 0.3941749999993015,
+            "setterMs": 0.0010000000002037268,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 0.388575,
+            "jsbCalls": 68,
+            "peakJsBytes": 13887976,
+            "forcedGcMs": 4.511000000000422
+          },
+          "labels/dirty": {
+            "cpuMs": 0.7607999999997163,
+            "setterMs": 0.03775000000041473,
+            "prepareMs": 0.4157500000001164,
+            "batchMs": 0.30915,
+            "jsbCalls": 88,
+            "peakJsBytes": 13674896,
+            "forcedGcMs": 3.8444999999992433
+          },
+          "masks/steady": {
+            "cpuMs": 0.45602499999955615,
+            "setterMs": 0,
+            "prepareMs": 0.0034999999988940544,
+            "batchMs": 0.451025,
+            "jsbCalls": 68,
+            "peakJsBytes": 13301282,
+            "forcedGcMs": 4.1340000000000146
+          },
+          "masks/dirty": {
+            "cpuMs": 0.48947499999962163,
+            "setterMs": 0.012499999998908606,
+            "prepareMs": 0.0030000000006111804,
+            "batchMs": 0.46935,
+            "jsbCalls": 73,
+            "peakJsBytes": 13225240,
+            "forcedGcMs": 4.2224999999998545
+          },
+          "rich/steady": {
+            "cpuMs": 0.18837499999859572,
+            "setterMs": 0.000999999996565748,
+            "prepareMs": 0.005249999998341082,
+            "batchMs": 0.181375,
+            "jsbCalls": 68,
+            "peakJsBytes": 13062224,
+            "forcedGcMs": 3.8690000000024156
+          },
+          "rich/dirty": {
+            "cpuMs": 0.7121500000011641,
+            "setterMs": 0.31999999999970896,
+            "prepareMs": 0.26600000000144064,
+            "batchMs": 0.09770000000000001,
+            "jsbCalls": 72,
+            "peakJsBytes": 13205648,
+            "forcedGcMs": 3.6775000000016007
+          },
+          "mixed/steady": {
+            "cpuMs": 1.0111499999973805,
+            "setterMs": 0,
+            "prepareMs": 0.004000000000814907,
+            "batchMs": 1.00535,
+            "jsbCalls": 68,
+            "peakJsBytes": 17808014,
+            "forcedGcMs": 5.587999999999738
+          },
+          "mixed/dirty": {
+            "cpuMs": 2.0283249999967548,
+            "setterMs": 0.40574999999807915,
+            "prepareMs": 0.7467500000020664,
+            "batchMs": 0.82755,
+            "jsbCalls": 197,
+            "peakJsBytes": 17986772,
+            "forcedGcMs": 6.475000000002183
+          }
+        },
+        "entrySha256": "177253ea4876276cf611ff3752f3a34e41ee5537b8df1c8b7656f52dfb8466dd",
+        "engineSha256": "ea066077356d4e1b1aef66305e9700ae25ffccd918a3979980d812ad7e74e577",
+        "executableSha256": "90e3c4e7225e0a63934106682d60c6c066a3904763724cc75a381bc2475cf3f0",
+        "v8Dlls": {
+          "v8.dll": "48220636bd11a4378c805c52f50f94fd1cbed7856a4beda171963c25a564b3ac",
+          "v8_libbase.dll": "477ee8c9bcd9e98b3a3903dc5da10dafc0ca05f3ab629dcc6ced4c7f8f25ea41",
+          "v8_libplatform.dll": "47979cb28eed789589728d0c92ce4b2e139067b22f5d5390afa18913f388b57c"
+        }
+      }
+    },
+    "reductionPercent": {
+      "empty/steady": {
+        "cpuMs": -83.1111111143189,
+        "setterMs": 0,
+        "prepareMs": -150.00000005115908,
+        "batchMs": -73.46938775510206,
+        "jsbCalls": -1.4925373134328401,
+        "peakJsBytes": 3.8249293727208755,
+        "forcedGcMs": 4.931541582140186
+      },
+      "empty/dirty": {
+        "cpuMs": -90.35714286399346,
+        "setterMs": -49.9999999317879,
+        "prepareMs": -200.0000000682121,
+        "batchMs": -84.4660194174757,
+        "jsbCalls": -1.4925373134328401,
+        "peakJsBytes": 4.313645568258662,
+        "forcedGcMs": -10.208037214122179
+      },
+      "sprites/steady": {
+        "cpuMs": -33.42105263166888,
+        "setterMs": 0,
+        "prepareMs": -174.99999995452526,
+        "batchMs": -31.156479837687034,
+        "jsbCalls": -1.4925373134328401,
+        "peakJsBytes": 10.542336322578883,
+        "forcedGcMs": 19.973544973539582
+      },
+      "sprites/dirty": {
+        "cpuMs": -29.570096292470737,
+        "setterMs": -34.24124513566213,
+        "prepareMs": -887.499999749889,
+        "batchMs": -26.60196945911233,
+        "jsbCalls": -150.74626865671644,
+        "peakJsBytes": 10.702099937284748,
+        "forcedGcMs": 18.65698729584603
+      },
+      "labels/steady": {
+        "cpuMs": 10.098072756367426,
+        "setterMs": 0,
+        "prepareMs": -100.00000036379788,
+        "batchMs": 11.025244719216909,
+        "jsbCalls": -1.4925373134328401,
+        "peakJsBytes": 14.169392139267323,
+        "forcedGcMs": 18.389868837624547
+      },
+      "labels/dirty": {
+        "cpuMs": 75.6682204507958,
+        "setterMs": -48.03921568942155,
+        "prepareMs": 85.3673559172832,
+        "batchMs": -33.02495697074011,
+        "jsbCalls": 80.31319910514542,
+        "peakJsBytes": 30.634466882131772,
+        "forcedGcMs": 18.001493014843206
+      },
+      "masks/steady": {
+        "cpuMs": 34.316373195076025,
+        "setterMs": null,
+        "prepareMs": -249.99999981810106,
+        "batchMs": 34.86768475396224,
+        "jsbCalls": -1.4925373134328401,
+        "peakJsBytes": 8.19280248487777,
+        "forcedGcMs": 11.096774193541115
+      },
+      "masks/dirty": {
+        "cpuMs": 28.764780789612075,
+        "setterMs": 37.50000000682121,
+        "prepareMs": -200,
+        "batchMs": 28.81355932203389,
+        "jsbCalls": -1.388888888888884,
+        "peakJsBytes": 9.408135214175829,
+        "forcedGcMs": -2.9501401926377735
+      },
+      "rich/steady": {
+        "cpuMs": -6.42655367073115,
+        "setterMs": -100,
+        "prepareMs": -162.4999998635758,
+        "batchMs": -3.6132533561839653,
+        "jsbCalls": -1.4925373134328401,
+        "peakJsBytes": 10.332077280863782,
+        "forcedGcMs": 19.5968412301754
+      },
+      "rich/dirty": {
+        "cpuMs": 61.126122437852494,
+        "setterMs": 81.72472872649875,
+        "prepareMs": -8766.66665415606,
+        "batchMs": -15.518770322199238,
+        "jsbCalls": 85.33604887983707,
+        "peakJsBytes": 14.02753145409321,
+        "forcedGcMs": 26.66999002986984
+      },
+      "mixed/steady": {
+        "cpuMs": -2.262901064141376,
+        "setterMs": null,
+        "prepareMs": -100,
+        "batchMs": -1.8823946695041949,
+        "jsbCalls": -1.4925373134328401,
+        "peakJsBytes": 21.377921482530095,
+        "forcedGcMs": 32.02773385231382
+      },
+      "mixed/dirty": {
+        "cpuMs": 53.00751226467284,
+        "setterMs": 71.38070886979723,
+        "prepareMs": 61.47297820186468,
+        "batchMs": -5.3566313377255925,
+        "jsbCalls": 77.51141552511416,
+        "peakJsBytes": 41.27547229490737,
+        "forcedGcMs": 1.0165864098017785
+      }
+    },
+    "mixedDirtyTargets": {
+      "cpu": true,
+      "jsb": true,
+      "peakJsHeap": true,
+      "forcedGc": true
+    },
+    "workloadSha256": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+    "runOrder": [
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ],
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ],
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ]
+    ],
+    "windowsScene": {
+      "files": 50,
+      "sha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "bootstrapSha256": "e657c2b786a0fd81bddfe62607248a573c8f7d5b869a130464def1e856751c3e"
+    },
+    "mixedDirtyForcedGc": {
+      "pairs": [
+        {
+          "beforeMs": 6.3770000000004075,
+          "afterMs": 7.177999999999884
+        },
+        {
+          "beforeMs": 7.167999999997846,
+          "afterMs": 8.334000000002561
+        },
+        {
+          "beforeMs": 6.669000000001688,
+          "afterMs": 6.797000000005937
+        },
+        {
+          "beforeMs": 6.413999999997031,
+          "afterMs": 4.118999999998778
+        },
+        {
+          "beforeMs": 6.165000000000873,
+          "afterMs": 5.063999999998487
+        },
+        {
+          "beforeMs": 8.455999999998312,
+          "afterMs": 6.152999999998428
+        }
+      ],
+      "improvedPairs": 3,
+      "medianPairedDeltaMs": -0.4864999999990687
+    },
+    "scope": "Windows Native only; current Web implementation excluded"
+  },
+  "binaryProvenance": {
+    "candidate": "623e6bc869e501549bb89cd637804bcffedac085",
+    "baseline": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+    "baselineBackup": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-perf-623e6bc869\\previous-baseline-bin",
+    "workloadSha256": "E12702248EBF29C5B9F6C0541107C30DF6640279B9F230F5C14DF9A1515D1DF7",
+    "baselineExecutableSha256": "34D21FDC7B4B09510AF36A5B03152D811DBEBAA6D6DA9B65279016E3384F632C",
+    "candidateExecutableSha256": "90E3C4E7225E0A63934106682D60C6C066A3904763724CC75A381BC2475CF3F0",
+    "scope": "Windows Release Native only, 6 alternating pairs",
+    "v8.dll": "48220636BD11A4378C805C52F50F94FD1CBED7856A4BEDA171963C25A564B3AC",
+    "v8_libbase.dll": "477EE8C9BCD9E98B3A3903DC5DA10DAFC0CA05F3AB629DCC6CED4C7F8F25EA41",
+    "v8_libplatform.dll": "47979CB28EED789589728D0C92CE4B2E139067B22F5D5390AFA18913F388B57C"
+  },
+  "measurementCheckouts": {
+    "before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "instrumentedFiles": [
+        "cocos/game/director.ts",
+        "cocos/root.ts",
+        "native/cocos/bindings/jswrapper/v8/HelperMacros.h",
+        "native/cocos/bindings/manual/jsb_global.cpp",
+        "native/cocos/core/Root.cpp"
+      ],
+      "instrumentationPatchSha256": "8f2a73e673711d40942e561e7632208a5437d59fb7171295bd1a7fdde055bbfd",
+      "probeHeaderSha256": "29ac24399ad37a9aad5148d30fae00602b33af86f9f6d46181190487596efe22"
+    },
+    "after": {
+      "revision": "623e6bc869e501549bb89cd637804bcffedac085",
+      "instrumentedFiles": [
+        "cocos/game/director.ts",
+        "cocos/root.jsb.ts",
+        "cocos/root.ts",
+        "native/cocos/bindings/jswrapper/v8/HelperMacros.h",
+        "native/cocos/bindings/manual/jsb_global.cpp",
+        "native/cocos/core/Root.cpp"
+      ],
+      "instrumentationPatchSha256": "efbbdeddb50356290f8c4630d85f3c956df6662048fc09f7b7576b7bfd6d9b1a",
+      "probeHeaderSha256": "29ac24399ad37a9aad5148d30fae00602b33af86f9f6d46181190487596efe22"
+    }
+  },
+  "rawSamplesPerExecution": 1440,
+  "executions": 12,
+  "totalSampledFrames": 17280,
+  "limitations": [
+    "GC median reduction is only 1.02%; 3 of 6 pairs improved. No statistical significance claimed.",
+    "Pure Sprite CPU remains above migration baseline. All 12 workloads retained in comparison.",
+    "This is the performance node only; it does not sign off API, visual or extreme lifetime coverage."
+  ],
+  "localArtifacts": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-perf-623e6bc869"
+}
