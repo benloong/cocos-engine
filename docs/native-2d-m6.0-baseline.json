@@ -147,11 +147,11 @@
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",
-      "sha256": "0019b802a597e9ebf95d9445848fb968c6028246b2bab599363318d9dac8a573"
+      "sha256": "8e170f9baeb6ca8c868bd0d749d9f1feae28ef9785be6c3fe262803905c7efe5"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.h",
-      "sha256": "0b9a2dbad8f4721a6b632ed492a4c9e300a5a83d94e42add170f3ec84bcaace1"
+      "sha256": "8a11a47b0e9aad67a0e8041e5fb15706a87d36cb482747989ddf86615fa53dbf"
     },
     {
       "file": "native/cocos/2d/framework/UITransformMath.cpp",
@@ -283,7 +283,7 @@
     },
     {
       "file": "native/cocos/bindings/jswrapper/v8/Object.cpp",
-      "sha256": "99af4fb4a5eaa98b27453609327c4863f1006f3f0cf9f926a3ac08bd79844e8f"
+      "sha256": "939305e6edca4a3327e6a28481801abdced19f73c8537570d682d3144648fcb9"
     },
     {
       "file": "native/cocos/bindings/jswrapper/v8/Object.h",
@@ -367,7 +367,7 @@
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.cpp",
-      "sha256": "149f68515edcced311096329b0ece86120db33c46e8cb3256aecf8543c712d6a"
+      "sha256": "ca98ea434b64c460d056eb0d8d9b2d863169512b6da4a556885bbf1fda440287"
     },
     {
       "file": "native/cocos/platform/win32/modules/DirectWriteFont.h",
@@ -383,7 +383,7 @@
     },
     {
       "file": "native/tools/swig-config/2d.i",
-      "sha256": "eec3a4ff2e78d401b5c65b792eeeb212d193cbd54e204021d9832ce8ac7e3fa5"
+      "sha256": "799cf64a72bed7039f9cbae8fcc4117e3c13ad23575fa5319abc8ef91aca43a4"
     },
     {
       "file": "native/tools/swig-config/assets.i",
@@ -16767,8 +16767,8 @@
     },
     {
       "file": "cocos/2d/framework/ui-transform.jsb.ts",
-      "sha256": "569cc41c2a41be554e52e561bc28a37008a22136b935edeb61fa73bdf85b3621",
-      "printedCodeLines": 241,
+      "sha256": "d71992b7ed50ce935bd408285ea8e8858a41967f4029f06740e9fd01ee062a19",
+      "printedCodeLines": 243,
       "runtimeImports": [
         "cc.decorator",
         "internal:constants",
@@ -16825,68 +16825,60 @@
           "line": 229
         },
         {
-          "expression": "this._native.convertToNodeSpaceARX",
-          "line": 239
+          "expression": "this._native.convertToNodeSpaceARXYZ",
+          "line": 238
         },
         {
-          "expression": "this._native.convertToNodeSpaceARY",
-          "line": 240
-        },
-        {
-          "expression": "this._native.convertToWorldSpaceARX",
-          "line": 253
-        },
-        {
-          "expression": "this._native.convertToWorldSpaceARY",
-          "line": 254
+          "expression": "this._native.convertToWorldSpaceARXYZ",
+          "line": 249
         },
         {
           "expression": "this._native.getBoundingBoxX",
-          "line": 266
+          "line": 260
         },
         {
           "expression": "this._native.getBoundingBoxY",
-          "line": 267
+          "line": 261
         },
         {
           "expression": "this._native.getBoundingBoxWidth",
-          "line": 268
+          "line": 262
         },
         {
           "expression": "this._native.getBoundingBoxHeight",
-          "line": 269
+          "line": 263
         },
         {
           "expression": "this._native.getBoundingBoxToWorldX",
-          "line": 278
+          "line": 272
         },
         {
           "expression": "this._native.getBoundingBoxToWorldY",
-          "line": 279
+          "line": 273
         },
         {
           "expression": "this._native.getBoundingBoxToWorldWidth",
-          "line": 280
+          "line": 274
         },
         {
           "expression": "this._native.getBoundingBoxToWorldHeight",
-          "line": 281
+          "line": 275
         },
         {
           "expression": "this._native.getBoundingBoxToX",
-          "line": 292
+          "line": 286
         },
         {
           "expression": "this._native.getBoundingBoxToY",
-          "line": 293
+          "line": 287
         },
         {
           "expression": "this._native.getBoundingBoxToWidth",
-          "line": 294
+          "line": 288
         },
         {
           "expression": "this._native.getBoundingBoxToHeight",
-          "line": 295
+          "line": 289
         }
       ],
       "allocations": [],
