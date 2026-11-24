@@ -1,0 +1,33 @@
+{
+  "candidate": "6255b6c179b821a5d28f58dba9bc43582039f176",
+  "command": "node native/tests/2d-poc/audit-windows-bundle.cjs <deployed Windows document Resources/src/cocos-js>",
+  "result": "Verified engine chunks: 1 2D graph modules: 84 boundary imports: 73 dynamic imports: 0",
+  "chunks": {
+    "cc.js": {
+      "sha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "imports": [],
+      "runtimeImports": [
+        {
+          "line": 1902,
+          "call": "module.import(settingsModule)"
+        },
+        {
+          "line": 33103,
+          "call": "module.import(`virtual:///prerequisite-imports/${bundle.name}`)"
+        },
+        {
+          "line": 38068,
+          "call": "module.import(pack)"
+        }
+      ]
+    }
+  },
+  "emitted2DModules": 58,
+  "checkedDeployments": [
+    "Debug",
+    "Release"
+  ],
+  "reportSha256": "7d199234fa4ad1091377ed802688bba44928b69c138c04a6c75bd5c78e09fa75",
+  "logSha256": "4aad31d5e1f90f22f868aaf32bedc92ce642ebcacb3d29bd00871672953537d6",
+  "setup": "The detached-checkout build left box2d and dragonbones-js imports unresolved. Rebuilt using installed local dependencies in the main checkout after checking the engine sources against the candidate."
+}
