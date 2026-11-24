@@ -1,0 +1,121 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "artifacts": "native/tests/2d-poc/build/m6-font-reader-8ee11b673e",
+  "scope": "Known external reader and 1000-cycle no-reader controls in isolated directories, followed by 1000 cycles in the historical repository directory per configuration. Validates this candidate and does not identify the reader in a historical failure.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "aff21af8067cbc1a6a65f224b91b3030c845d3f7aafb6a0cc8f77ad185939d9d",
+      "externalReader": true,
+      "readerPid": 29528,
+      "probePid": 25896,
+      "exitCode": 1,
+      "logSha256": "e62056756983b5f09cce3c4e1c91f79b2b3a6079c32c898ed7915f50733a4550"
+    },
+    {
+      "configuration": "Debug",
+      "exeSha256": "aff21af8067cbc1a6a65f224b91b3030c845d3f7aafb6a0cc8f77ad185939d9d",
+      "externalReader": false,
+      "readerPid": null,
+      "probePid": 42612,
+      "exitCode": 0,
+      "logSha256": "ac0e6e2cdc5abf395616de3551a97196e4634eee4aa5ad92094acf417000c70c"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "6b9c1d8f2d60a15cf8086b6a873282bc3477a35cc939a819996976db9efb432b",
+      "externalReader": true,
+      "readerPid": 29528,
+      "probePid": 24068,
+      "exitCode": 1,
+      "logSha256": "9e67cfeb101d104ba7fa62b0950cbd49cdff483a2b4e0f45a5e14373aeee082f"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "6b9c1d8f2d60a15cf8086b6a873282bc3477a35cc939a819996976db9efb432b",
+      "externalReader": false,
+      "readerPid": null,
+      "probePid": 10380,
+      "exitCode": 0,
+      "logSha256": "5b9143828cd6430dd1bc0b0c81e1f2f4b2ce77338b54c0b79a8521c3e0afa996"
+    }
+  ],
+  "originalDirectoryRuns": [
+    {
+      "configuration": "Debug",
+      "cycles": 1000,
+      "exitCode": 0,
+      "handleCheckpoints": [
+        [
+          "250",
+          "183",
+          "183",
+          "0",
+          "0"
+        ],
+        [
+          "500",
+          "183",
+          "183",
+          "0",
+          "0"
+        ],
+        [
+          "750",
+          "183",
+          "183",
+          "0",
+          "0"
+        ],
+        [
+          "1000",
+          "183",
+          "183",
+          "0",
+          "0"
+        ]
+      ],
+      "temporaryFileRemoved": true,
+      "exeSha256": "aff21af8067cbc1a6a65f224b91b3030c845d3f7aafb6a0cc8f77ad185939d9d",
+      "logSha256": "b922ba38680aa5a72bf41db6709edb7af2c3eb38b1aacc241452575993715a45"
+    },
+    {
+      "configuration": "Release",
+      "cycles": 1000,
+      "exitCode": 0,
+      "handleCheckpoints": [
+        [
+          "250",
+          "173",
+          "173",
+          "0",
+          "0"
+        ],
+        [
+          "500",
+          "173",
+          "173",
+          "0",
+          "0"
+        ],
+        [
+          "750",
+          "173",
+          "173",
+          "0",
+          "0"
+        ],
+        [
+          "1000",
+          "173",
+          "173",
+          "0",
+          "0"
+        ]
+      ],
+      "temporaryFileRemoved": true,
+      "exeSha256": "6b9c1d8f2d60a15cf8086b6a873282bc3477a35cc939a819996976db9efb432b",
+      "logSha256": "22385e5f596cd947ef2b1b890aad6374a810d092907a31a242077ddd46de4bc2"
+    }
+  ]
+}
