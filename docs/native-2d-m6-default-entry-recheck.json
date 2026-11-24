@@ -1,0 +1,64 @@
+{
+  "candidate": "4621cdd1b8",
+  "artifacts": "native/tests/2d-poc/build/m6-default-entry-4621cdd1b8",
+  "fixture": "native/tests/2d-poc/fixtures/check-default-native-entry.cjs",
+  "fullFeatureStaticAudit": {
+    "sha256": "4a46db4b953fed02a6cbd9f7d0dff0bcaf2a6d87702ee86f59799e55a3fbc253",
+    "modules": 84,
+    "boundaryImports": 73,
+    "dynamicGraphEdges": 0
+  },
+  "scope": "Full-feature bundle was rebuilt and audited statically. Deploying it to the reduced GPU executable failed during audio initialization. Runtime checks use the matching fresh Windows GPU-feature bundle and its public cc entry.",
+  "runtime": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "entry": {
+        "assets": [
+          "SpriteFrame",
+          "SpriteAtlas",
+          "Font",
+          "TTFFont",
+          "BitmapFont",
+          "LabelAtlas"
+        ],
+        "components": [
+          "UITransform",
+          "Sprite",
+          "Label",
+          "Graphics",
+          "Mask",
+          "RichText"
+        ]
+      },
+      "gpuBundleSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "exeSha256": "794752DCCF715CC4F2876DBBBDFB907116A4971ADE6F5A19737244AA0A0E118C",
+      "logSha256": "DF7598C959B556B562DB99D69E4D1D70D4061405365F40480CF05A1B4454711E"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "entry": {
+        "assets": [
+          "SpriteFrame",
+          "SpriteAtlas",
+          "Font",
+          "TTFFont",
+          "BitmapFont",
+          "LabelAtlas"
+        ],
+        "components": [
+          "UITransform",
+          "Sprite",
+          "Label",
+          "Graphics",
+          "Mask",
+          "RichText"
+        ]
+      },
+      "gpuBundleSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "exeSha256": "4DF1AD926653E815CFAEB3BE956BF7E333C4D056D74BF9123EEF19ACA075B080",
+      "logSha256": "20ABC2290711DBD1CDD30DCD1DE6F386274B00F00FAA33AABCD47013653AEAF2"
+    }
+  ]
+}
