@@ -1,0 +1,25 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "artifacts": "native/tests/2d-poc/build/m6-native-core-8ee11b673e",
+  "scope": "Normal no-argument Windows native core suite, including RichText retained-wrapper stress and JSB scene recording.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "buildDirectory": "native/tests/2d-poc/native/out",
+      "buildExit": 0,
+      "runExit": 0,
+      "exeSha256": "aff21af8067cbc1a6a65f224b91b3030c845d3f7aafb6a0cc8f77ad185939d9d",
+      "runLogSha256": "0859bad2c3bfcf000cdf216b031193b1fc17ad39b9249e7c218e93ba99515132",
+      "buildLogSha256": "9832f9ed2b1a48ca3e42cb8f7e03082c5f6fdac91f2f005102aa06b53d96fd0c"
+    },
+    {
+      "configuration": "Release",
+      "buildDirectory": "native/tests/2d-poc/native/out-release2",
+      "buildExit": 0,
+      "runExit": 0,
+      "exeSha256": "6b9c1d8f2d60a15cf8086b6a873282bc3477a35cc939a819996976db9efb432b",
+      "runLogSha256": "95c5bb8df1d054a87baa4f7f3899a174b05ec41843e95647e50a4655d5e76bc6",
+      "buildLogSha256": "0226783a7f8caab64738b37760cd29185b88703afe831c0e74a2f72098d11683"
+    }
+  ]
+}
