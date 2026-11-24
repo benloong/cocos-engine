@@ -1,0 +1,96 @@
+{
+  "date": "2026-11-24",
+  "baseRevision": "7a7749f31543ab3b6ad008fe919a18188f28a314",
+  "scope": "Native-only SpriteFrame clone lifecycle with ordinary Sprite; test-only change",
+  "matrix": {
+    "rotation": 2,
+    "flipUVX": 2,
+    "flipUVY": 2,
+    "trimmedGeometry": 2,
+    "packable": 2,
+    "spriteTypes": [
+      "simple",
+      "sliced",
+      "tiled"
+    ],
+    "sizeModes": [
+      "custom",
+      "trimmed",
+      "raw"
+    ],
+    "combinations": 288,
+    "repeats": 4,
+    "cyclesPerConfiguration": 1152,
+    "retainedFrameWrappers": 3456,
+    "assertionsPerConfiguration": 16133
+  },
+  "sourceSha256": {
+    "native/tests/2d-poc/build-sprite-frame-lifetime-probe.cjs": "53864a4a1d15160105b29511ccb5910f8a56f3e972c8b439de81d335ee21e145",
+    "native/tests/2d-poc/run-windows-jsb-probes.ps1": "8182b8f98eeaf61f1eeb07df410bfede9db88e358b358051261d55b18c0e74d4",
+    "cocos/2d/assets/sprite-frame.jsb.ts": "385e47bf253d824d431eb89eb752d79cdd10c636a01496e2b8d1f072135c68dc",
+    "cocos/2d/assets/sprite-frame-vertices.ts": "e188ecc641bfb2cf5ae25bfae091083017c71a087e3712636aac455a6ed0ff0f",
+    "native/cocos/2d/assets/SpriteFrame.h": "5e2decd6627c440c5e3768712b615abc809ff4ddef2fad9cbb3bc6ae0f90f754",
+    "native/cocos/2d/components/Sprite.cpp": "82dfbffad9b1da8ab3751c49583066a2cf855c9600eb3daa4f5720fa2137d438",
+    "native/tests/2d-poc/native/main.cpp": "6207f8cbb635fb8e04daf4e9744508570692471c5f8fa4b1cd4518381ea9fdac"
+  },
+  "generatedProbeSha256": "8b3af2bd561d20d3ae4240239f07895f8d15dcd5aeaf1e7165f2754d5903cb06",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-frame-clone-lifetime/Debug.log",
+      "logSha256": "868e9b6580da9b0878184fe28d3478905bb2f7852a09ac70a4e4bf4bee5b5bd6",
+      "executable": "native/tests/2d-poc/native/out/cc2d_native_poc.exe",
+      "executableSha256": "4dc2c0f490d0ad20a3dbe4ba1b96a98a8191576a4e8e8e8fada5140de07918d0",
+      "requiredOutput": [
+        "sprite frame clone lifetime: PASS (1152 cycles, 3456 retained frames, 16133 assertions)",
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ]
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "log": "native/tests/2d-poc/build/m6-frame-clone-lifetime/Release.log",
+      "logSha256": "29a333420e1123f2b3c09d31319f07836a1a0001fc012e400dea71b5c1a13b52",
+      "executable": "native/tests/2d-poc/native/out-release2/cc2d_native_poc.exe",
+      "executableSha256": "e1d0974f13a85ac7d2825d07d539b780e8a56c3f8778963a2332caf0f6aee136",
+      "requiredOutput": [
+        "sprite frame clone lifetime: PASS (1152 cycles, 3456 retained frames, 16133 assertions)",
+        "jsb shell integration: OK",
+        "jsb scene record: OK",
+        "native 2D PoC: PASS"
+      ]
+    }
+  ],
+  "negativeControl": {
+    "configuration": "Release",
+    "mutation": "Replace source.clone() and clone.clone() with aliases to source",
+    "exitCode": 1,
+    "expectedError": "cycle 0: clone math views have independent identity",
+    "log": "native/tests/2d-poc/build/m6-frame-clone-lifetime/alias-negative.log",
+    "logSha256": "754883eb5995761c84ef81efc9f752ba6f550310af7deaa2bccf0da676df2742"
+  },
+  "nativeJest": {
+    "exitCode": 0,
+    "passed": 6,
+    "skippedWeb": 4,
+    "log": "native/tests/2d-poc/build/m6-frame-clone-lifetime/native-frame-jest.log",
+    "logSha256": "e1677a06ba11c996f8285e346ef945f153337d076be515e78c8b65b00dfcb1f7"
+  },
+  "otherChecks": {
+    "generatorSyntax": "PASS",
+    "powershellRunnerParse": "PASS",
+    "thinShell": "43 checks, 0 failures",
+    "auditBaseline": "PASS; declaration baseline does not establish full API parity"
+  },
+  "limits": [
+    "No GPU pixel or descriptor readback is claimed.",
+    "Retained wrappers are checked for destroyed state and cleared texture; this is not a process heap or native refcount leak measurement.",
+    "Real Creator imports, Prefab instantiation, asynchronous downloads and cross-scene cache ownership remain separate acceptance items.",
+    "Dynamic atlas remains disabled in Native; no SpriteRenderer or ModelRenderer is constructed by the new probe.",
+    "No Web implementation or Web test is changed or run.",
+    "The final M6 candidate is not signed off."
+  ]
+}
