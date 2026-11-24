@@ -1,0 +1,10 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "command": "node scripts/compile-native-ts.js --no-clean",
+  "scope": "Windows host, OPEN_HARMONY preserveType generation and type check",
+  "artifacts": "native/tests/2d-poc/build/m6-native-ts-8ee11b673e",
+  "compiledExportFiles": 23,
+  "typescript": "4.9.5",
+  "logSha256": "ade2b74c43c2be95a69d82b9cd194c14588d93b99480d9c156fd061a9ec124f1",
+  "exitCode": 0
+}
