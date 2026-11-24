@@ -1,0 +1,585 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "scope": "Diagnostic Windows Release runs; original six-pair CPU gate remains failed. Fixed affinity applies to the whole child process. One logical CPU per physical core in both restricted modes.",
+  "artifacts": "native/tests/2d-poc/build/m6-cpu-topology-a8b23abfcf",
+  "order": [
+    "U",
+    "P",
+    "E",
+    "E",
+    "P",
+    "U"
+  ],
+  "modes": {
+    "U": "default scheduling",
+    "P": "performance cores only",
+    "E": "efficiency cores only"
+  },
+  "processorSamples": "Batch timer entry and exit plus JSB counter read. These observations do not continuously trace scheduling or directly sample prepare.",
+  "batchThreadCycles": "Sum of QueryThreadCycleTime deltas over batch timer scopes, not elapsed time.",
+  "topology": [
+    {
+      "group": 0,
+      "logical": 0,
+      "core": 0,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 1,
+      "core": 0,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 2,
+      "core": 2,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 3,
+      "core": 2,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 4,
+      "core": 4,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 5,
+      "core": 4,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 6,
+      "core": 6,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 7,
+      "core": 6,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 8,
+      "core": 8,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 9,
+      "core": 8,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 10,
+      "core": 10,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 11,
+      "core": 10,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 12,
+      "core": 12,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 13,
+      "core": 12,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 14,
+      "core": 14,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 15,
+      "core": 14,
+      "efficiencyClass": 1
+    },
+    {
+      "group": 0,
+      "logical": 16,
+      "core": 16,
+      "efficiencyClass": 0
+    },
+    {
+      "group": 0,
+      "logical": 17,
+      "core": 17,
+      "efficiencyClass": 0
+    },
+    {
+      "group": 0,
+      "logical": 18,
+      "core": 18,
+      "efficiencyClass": 0
+    },
+    {
+      "group": 0,
+      "logical": 19,
+      "core": 19,
+      "efficiencyClass": 0
+    },
+    {
+      "group": 0,
+      "logical": 20,
+      "core": 20,
+      "efficiencyClass": 0
+    },
+    {
+      "group": 0,
+      "logical": 21,
+      "core": 21,
+      "efficiencyClass": 0
+    },
+    {
+      "group": 0,
+      "logical": 22,
+      "core": 22,
+      "efficiencyClass": 0
+    },
+    {
+      "group": 0,
+      "logical": 23,
+      "core": 23,
+      "efficiencyClass": 0
+    }
+  ],
+  "workloadSha256": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+  "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb",
+  "exeSha256": "82036e88c9d79a83a83a49b004d2e46b729ba242d1c080417b9a2ccac4079778",
+  "runs": [
+    {
+      "file": "1-U.json",
+      "mode": "U",
+      "sha256": "9fc8711d094a2f0727fc1a972fa704cb2dbcb7499bcd27050ddd7bc450a004b9",
+      "mixedDirty": {
+        "medians": {
+          "cpuMs": 4.220000000000088,
+          "prepareMs": 2.1195000000043365,
+          "batchMs": 1.4691,
+          "batchThreadCycles": 4906369
+        },
+        "byObservedClass": {
+          "P": {
+            "frames": 120,
+            "cpuMs": 4.220000000000088,
+            "prepareMs": 2.1195000000043365,
+            "batchMs": 1.4691,
+            "batchThreadCycles": 4906369
+          }
+        },
+        "framesObservedOnMultipleLogicalProcessors": 16,
+        "byReadProcessor": {
+          "0": {
+            "frames": 11,
+            "cpuMs": 4.945200000002211
+          },
+          "1": {
+            "frames": 1,
+            "cpuMs": 2.273999999996624
+          },
+          "2": {
+            "frames": 29,
+            "cpuMs": 4.422700000002386
+          },
+          "4": {
+            "frames": 12,
+            "cpuMs": 5.00845000000262
+          },
+          "6": {
+            "frames": 10,
+            "cpuMs": 3.9897999999977882
+          },
+          "8": {
+            "frames": 15,
+            "cpuMs": 4.677300000002503
+          },
+          "9": {
+            "frames": 8,
+            "cpuMs": 3.6571999999993885
+          },
+          "10": {
+            "frames": 24,
+            "cpuMs": 3.8324000000043363
+          },
+          "11": {
+            "frames": 2,
+            "cpuMs": 4.404049999994383
+          },
+          "12": {
+            "frames": 4,
+            "cpuMs": 4.328050000000815
+          },
+          "14": {
+            "frames": 4,
+            "cpuMs": 4.709700000001223
+          }
+        },
+        "fastest30": {
+          "cpuMs": 2.6537000000025612,
+          "prepareMs": 1.3754999999982829,
+          "batchMs": 0.9480500000000001,
+          "batchThreadCycles": 3205742.5
+        },
+        "slowest30": {
+          "cpuMs": 6.382300000002416,
+          "prepareMs": 3.6379999999990105,
+          "batchMs": 2.0269500000000003,
+          "batchThreadCycles": 6826430
+        }
+      }
+    },
+    {
+      "file": "2-P.json",
+      "mode": "P",
+      "sha256": "bb37f85b14e1f10967a31d35e70e17c0b4c737f897314a0fa29ccc1f02956aa2",
+      "mixedDirty": {
+        "medians": {
+          "cpuMs": 4.63725000000294,
+          "prepareMs": 2.250500000001921,
+          "batchMs": 1.8272,
+          "batchThreadCycles": 6137019
+        },
+        "byObservedClass": {
+          "P": {
+            "frames": 120,
+            "cpuMs": 4.63725000000294,
+            "prepareMs": 2.250500000001921,
+            "batchMs": 1.8272,
+            "batchThreadCycles": 6137019
+          }
+        },
+        "framesObservedOnMultipleLogicalProcessors": 13,
+        "byReadProcessor": {
+          "0": {
+            "frames": 4,
+            "cpuMs": 4.010949999996653
+          },
+          "2": {
+            "frames": 28,
+            "cpuMs": 4.664250000003929
+          },
+          "4": {
+            "frames": 14,
+            "cpuMs": 5.130699999997818
+          },
+          "6": {
+            "frames": 14,
+            "cpuMs": 5.481699999996886
+          },
+          "8": {
+            "frames": 20,
+            "cpuMs": 4.096800000000524
+          },
+          "10": {
+            "frames": 16,
+            "cpuMs": 3.9101999999987194
+          },
+          "12": {
+            "frames": 15,
+            "cpuMs": 4.545400000000989
+          },
+          "14": {
+            "frames": 9,
+            "cpuMs": 4.893400000005995
+          }
+        },
+        "fastest30": {
+          "cpuMs": 2.420199999999389,
+          "prepareMs": 1.1204999999972642,
+          "batchMs": 0.9116500000000001,
+          "batchThreadCycles": 3096878.5
+        },
+        "slowest30": {
+          "cpuMs": 6.656400000001106,
+          "prepareMs": 3.3114999999997963,
+          "batchMs": 2.1363000000000003,
+          "batchThreadCycles": 7206682
+        }
+      }
+    },
+    {
+      "file": "3-E.json",
+      "mode": "E",
+      "sha256": "ae869f1d4c1ba87039c04851529ff948f14b454ab012aa6a3cf6db6125a1942e",
+      "mixedDirty": {
+        "medians": {
+          "cpuMs": 6.066650000001019,
+          "prepareMs": 2.7804999999971187,
+          "batchMs": 2.2226,
+          "batchThreadCycles": 7074577
+        },
+        "byObservedClass": {
+          "E": {
+            "frames": 120,
+            "cpuMs": 6.066650000001019,
+            "prepareMs": 2.7804999999971187,
+            "batchMs": 2.2226,
+            "batchThreadCycles": 7074577
+          }
+        },
+        "framesObservedOnMultipleLogicalProcessors": 80,
+        "byReadProcessor": {
+          "16": {
+            "frames": 48,
+            "cpuMs": 5.915199999997206
+          },
+          "18": {
+            "frames": 5,
+            "cpuMs": 5.26200000000291
+          },
+          "19": {
+            "frames": 16,
+            "cpuMs": 9.005399999998923
+          },
+          "20": {
+            "frames": 17,
+            "cpuMs": 8.02030000000006
+          },
+          "21": {
+            "frames": 18,
+            "cpuMs": 5.866049999996216
+          },
+          "22": {
+            "frames": 12,
+            "cpuMs": 3.7171500000005526
+          },
+          "23": {
+            "frames": 4,
+            "cpuMs": 5.524049999999244
+          }
+        },
+        "fastest30": {
+          "cpuMs": 3.133950000002008,
+          "prepareMs": 1.3209999999999127,
+          "batchMs": 1.3411,
+          "batchThreadCycles": 4517571
+        },
+        "slowest30": {
+          "cpuMs": 11.45289999999706,
+          "prepareMs": 6.17500000000291,
+          "batchMs": 3.75555,
+          "batchThreadCycles": 11437141.5
+        }
+      }
+    },
+    {
+      "file": "4-E.json",
+      "mode": "E",
+      "sha256": "26ba734c623c542aa3fb933c32e87a9e3f42d86c2021731d169710ae16abfe9f",
+      "mixedDirty": {
+        "medians": {
+          "cpuMs": 3.8395500000029976,
+          "prepareMs": 1.6244999999980791,
+          "batchMs": 1.631,
+          "batchThreadCycles": 5543141.5
+        },
+        "byObservedClass": {
+          "E": {
+            "frames": 120,
+            "cpuMs": 3.8395500000029976,
+            "prepareMs": 1.6244999999980791,
+            "batchMs": 1.631,
+            "batchThreadCycles": 5543141.5
+          }
+        },
+        "framesObservedOnMultipleLogicalProcessors": 11,
+        "byReadProcessor": {
+          "16": {
+            "frames": 53,
+            "cpuMs": 3.7017999999990105
+          },
+          "17": {
+            "frames": 7,
+            "cpuMs": 3.799200000002794
+          },
+          "18": {
+            "frames": 1,
+            "cpuMs": 4.880199999995809
+          },
+          "19": {
+            "frames": 13,
+            "cpuMs": 4.729799999999301
+          },
+          "20": {
+            "frames": 2,
+            "cpuMs": 3.4159000000021535
+          },
+          "21": {
+            "frames": 28,
+            "cpuMs": 3.5610499999981666
+          },
+          "22": {
+            "frames": 9,
+            "cpuMs": 4.260200000008032
+          },
+          "23": {
+            "frames": 7,
+            "cpuMs": 5.694900000005297
+          }
+        },
+        "fastest30": {
+          "cpuMs": 2.9426000000026487,
+          "prepareMs": 1.1185000000004948,
+          "batchMs": 1.43175,
+          "batchThreadCycles": 4867232
+        },
+        "slowest30": {
+          "cpuMs": 7.386000000004104,
+          "prepareMs": 3.587499999997817,
+          "batchMs": 2.774,
+          "batchThreadCycles": 9413171.5
+        }
+      }
+    },
+    {
+      "file": "5-P.json",
+      "mode": "P",
+      "sha256": "8e728793a01ec05b525bfd7532f84f4d69a8db310fb77e0b0fb7c7e76ddded47",
+      "mixedDirty": {
+        "medians": {
+          "cpuMs": 1.4362499999979046,
+          "prepareMs": 0.628500000000713,
+          "batchMs": 0.62195,
+          "batchThreadCycles": 2109077
+        },
+        "byObservedClass": {
+          "P": {
+            "frames": 120,
+            "cpuMs": 1.4362499999979046,
+            "prepareMs": 0.628500000000713,
+            "batchMs": 0.62195,
+            "batchThreadCycles": 2109077
+          }
+        },
+        "framesObservedOnMultipleLogicalProcessors": 9,
+        "byReadProcessor": {
+          "6": {
+            "frames": 3,
+            "cpuMs": 1.3019999999981082
+          },
+          "8": {
+            "frames": 90,
+            "cpuMs": 1.4476499999994616
+          },
+          "10": {
+            "frames": 19,
+            "cpuMs": 1.3403000000008731
+          },
+          "12": {
+            "frames": 6,
+            "cpuMs": 1.5488500000041183
+          },
+          "14": {
+            "frames": 2,
+            "cpuMs": 1.608500000000553
+          }
+        },
+        "fastest30": {
+          "cpuMs": 1.2489000000012807,
+          "prepareMs": 0.5130000000008295,
+          "batchMs": 0.5586,
+          "batchThreadCycles": 1898870
+        },
+        "slowest30": {
+          "cpuMs": 1.860450000001819,
+          "prepareMs": 0.9075000000011642,
+          "batchMs": 0.72265,
+          "batchThreadCycles": 2442331.5
+        }
+      }
+    },
+    {
+      "file": "6-U.json",
+      "mode": "U",
+      "sha256": "c27fe198fdbdd2d8a7feb031e5c6aac2a43bf9c76abe20528d2f5e58ef983d40",
+      "mixedDirty": {
+        "medians": {
+          "cpuMs": 1.706850000000495,
+          "prepareMs": 0.7660000000014406,
+          "batchMs": 0.7330000000000001,
+          "batchThreadCycles": 2480955
+        },
+        "byObservedClass": {
+          "P": {
+            "frames": 120,
+            "cpuMs": 1.706850000000495,
+            "prepareMs": 0.7660000000014406,
+            "batchMs": 0.7330000000000001,
+            "batchThreadCycles": 2480955
+          }
+        },
+        "framesObservedOnMultipleLogicalProcessors": 17,
+        "byReadProcessor": {
+          "0": {
+            "frames": 2,
+            "cpuMs": 2.0030500000022116
+          },
+          "2": {
+            "frames": 1,
+            "cpuMs": 1.4055999999990103
+          },
+          "7": {
+            "frames": 2,
+            "cpuMs": 1.5348999999994906
+          },
+          "8": {
+            "frames": 78,
+            "cpuMs": 1.6717000000008877
+          },
+          "9": {
+            "frames": 2,
+            "cpuMs": 2.868349999998836
+          },
+          "10": {
+            "frames": 19,
+            "cpuMs": 2.162300000005268
+          },
+          "11": {
+            "frames": 8,
+            "cpuMs": 1.6004500000001165
+          },
+          "12": {
+            "frames": 6,
+            "cpuMs": 1.7528999999998836
+          },
+          "14": {
+            "frames": 2,
+            "cpuMs": 1.3637500000011933
+          }
+        },
+        "fastest30": {
+          "cpuMs": 1.356949999999709,
+          "prepareMs": 0.5580000000009022,
+          "batchMs": 0.56155,
+          "batchThreadCycles": 1905021.5
+        },
+        "slowest30": {
+          "cpuMs": 2.2658999999994327,
+          "prepareMs": 1.0499999999992724,
+          "batchMs": 0.86965,
+          "batchThreadCycles": 2924100
+        }
+      }
+    }
+  ]
+}
