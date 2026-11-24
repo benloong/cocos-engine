@@ -1,0 +1,38 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "command": "run-native-log-visibility-tests.ps1 -NativeExe <candidate executable>",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "157910088CBB7EA8E789CF81D4B94EB8768D971AE9B07246EBBBE5DB7F9FDEF8",
+      "result": {
+        "passed": true,
+        "failure": null,
+        "childAliveBeforeRelease": true,
+        "visibleBeforeRelease": true,
+        "visibleAfterExit": true,
+        "exitCode": 0,
+        "elapsedSeconds": 0.1041081,
+        "stdout": "native/tests/2d-poc/build/log-visibility/m6-29833647c3-Debug-973b310b4fa5415a91602f6a796d697b/stdout.log",
+        "stderr": "native/tests/2d-poc/build/log-visibility/m6-29833647c3-Debug-973b310b4fa5415a91602f6a796d697b/stderr.log"
+      },
+      "reportSha256": "E96DBC548C6169C2B661CB2417A86325B047EA4FC604934CD51769BF156F51C6"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "7A4B40C60A93F4080401A8B7A1D53289F4D94517E5EDB62138E1EBCF26C0B704",
+      "result": {
+        "passed": true,
+        "failure": null,
+        "childAliveBeforeRelease": true,
+        "visibleBeforeRelease": true,
+        "visibleAfterExit": true,
+        "exitCode": 0,
+        "elapsedSeconds": 0.0809304,
+        "stdout": "native/tests/2d-poc/build/log-visibility/m6-29833647c3-Release-46fb41ce70a644abaac007ec346d303e/stdout.log",
+        "stderr": "native/tests/2d-poc/build/log-visibility/m6-29833647c3-Release-46fb41ce70a644abaac007ec346d303e/stderr.log"
+      },
+      "reportSha256": "24B8F8DB2C586BF1C625C78CB9E1FB7EA41B16BF7636AB546FF04F915E442C96"
+    }
+  ]
+}
