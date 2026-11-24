@@ -38,7 +38,13 @@ RenderEntity::RenderEntity(RenderEntityType type) : _renderEntityType(type) {
     _entityAttrLayout.useLocal = 0;
     _entityAttrLayout.paddings = 0;
 
-    _entitySharedBufferActor.initialize(&_entityAttrLayout, sizeof(EntityAttrLayout));
+}
+
+se::Object* RenderEntity::getEntitySharedBufferForJS() const {
+    if (!_entitySharedBufferActor.getSharedArrayBufferObject()) {
+        _entitySharedBufferActor.initialize(&_entityAttrLayout, sizeof(_entityAttrLayout));
+    }
+    return _entitySharedBufferActor.getSharedArrayBufferObject();
 }
 
 RenderEntity::~RenderEntity() {

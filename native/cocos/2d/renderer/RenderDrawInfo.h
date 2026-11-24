@@ -218,7 +218,7 @@ public:
         return reinterpret_cast<Render2dLayout*>(_sharedBuffer + dataOffset * sizeof(float));
     }
 
-    inline se::Object* getAttrSharedBufferForJS() const { return _attrSharedBufferActor.getSharedArrayBufferObject(); }
+    se::Object* getAttrSharedBufferForJS() const;
 
     gfx::InputAssembler* requestIA(gfx::Device* device);
     void uploadBuffers();
@@ -281,9 +281,10 @@ private:
         uint32_t _vbCount{0};
         uint32_t _ibCount{0};
         ccstd::hash_t _dataHash{0};
-    } _drawInfoAttrs{};
+    };
+    mutable DrawInfoAttrs _drawInfoAttrs{};
 
-    bindings::NativeMemorySharedToScriptActor _attrSharedBufferActor;
+    mutable bindings::NativeMemorySharedToScriptActor _attrSharedBufferActor;
     // weak reference
     Material* _material{nullptr};
     // weak reference

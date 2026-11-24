@@ -40,7 +40,13 @@ RenderDrawInfo::RenderDrawInfo() {
     _drawInfoAttrs._isMeshBuffer = 0;
     _drawInfoAttrs._isVertexPositionInWorld = 0;
     _drawInfoAttrs._padding = 0;
-    _attrSharedBufferActor.initialize(&_drawInfoAttrs, sizeof(_drawInfoAttrs));
+}
+
+se::Object* RenderDrawInfo::getAttrSharedBufferForJS() const {
+    if (!_attrSharedBufferActor.getSharedArrayBufferObject()) {
+        _attrSharedBufferActor.initialize(&_drawInfoAttrs, sizeof(_drawInfoAttrs));
+    }
+    return _attrSharedBufferActor.getSharedArrayBufferObject();
 }
 
 RenderDrawInfo::~RenderDrawInfo() {

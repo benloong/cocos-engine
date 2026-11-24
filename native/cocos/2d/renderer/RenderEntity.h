@@ -129,7 +129,7 @@ public:
     RenderDrawInfo* getDynamicRenderDrawInfo(uint32_t index);
     ccstd::vector<RenderDrawInfo*>& getDynamicRenderDrawInfos();
 
-    inline se::Object* getEntitySharedBufferForJS() const { return _entitySharedBufferActor.getSharedArrayBufferObject(); }
+    se::Object* getEntitySharedBufferForJS() const;
 
     inline bool getVBColorDirty() const { return _vbColorDirty; }
     inline void setVBColorDirty(bool vbColorDirty) { _vbColorDirty = vbColorDirty; }
@@ -176,13 +176,13 @@ private:
     // weak reference
     Node* _renderTransform{nullptr};
 
-    bindings::NativeMemorySharedToScriptActor _entitySharedBufferActor;
+    mutable bindings::NativeMemorySharedToScriptActor _entitySharedBufferActor;
 
     union {
         std::array<RenderDrawInfo, RenderEntity::STATIC_DRAW_INFO_CAPACITY> _staticDrawInfos;
         ccstd::vector<RenderDrawInfo*> _dynamicDrawInfos;
     };
-    EntityAttrLayout _entityAttrLayout;
+    mutable EntityAttrLayout _entityAttrLayout;
 
     StencilStage _stencilStage{StencilStage::DISABLED};
     RenderEntityType _renderEntityType{RenderEntityType::STATIC};
