@@ -1,0 +1,90 @@
+{
+  "candidate": "b1aa57b792",
+  "artifacts": "native/tests/2d-poc/build/m6-local-alias-b1aa57b792",
+  "reference": "native/tests/2d-poc/build/m6-richtext-03b5254ea7/handle-verified",
+  "scope": "Native application; two distinct local paths ending in Shared.ttf, both load orders and both release orders.",
+  "fontA": "2D403C658025F377D943E401785927D8B58C5D26CF89D82B2A6CDEF9949EFC16",
+  "fontB": "E64E508B2AA2880F907E470C4550980EC4C0694D103A43F36150AC3F93189BEE",
+  "configurations": [
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "identicalRgbaCaptures": 62,
+      "alias": {
+        "checkpoints": [
+          {
+            "name": "font-alias-both-0",
+            "widths": [
+              95.9765625,
+              101.9296875
+            ]
+          },
+          {
+            "name": "font-alias-only-1",
+            "widths": [
+              101.9296875
+            ]
+          },
+          {
+            "name": "font-alias-both-1",
+            "widths": [
+              95.9765625,
+              101.9296875
+            ]
+          },
+          {
+            "name": "font-alias-only-0",
+            "widths": [
+              95.9765625
+            ]
+          }
+        ],
+        "released": 4
+      },
+      "exeSha256": "879D60D34AADD42E5F33FA53498DE03251171ECF71EA7DFAB7274D5AE4311678",
+      "ccJsSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "fixtureScriptSha256": "DC6035EEC0345CE2CE05FB796FB077664BCB9EA99DC3D81BDC1AB10917E99451",
+      "manifestSha256": "CF477FBA323C56DE67E4EDF9591336D2A7069D06B59CAEC78ADEC032B5873C34"
+    },
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "identicalRgbaCaptures": 62,
+      "alias": {
+        "checkpoints": [
+          {
+            "name": "font-alias-both-0",
+            "widths": [
+              95.9765625,
+              101.9296875
+            ]
+          },
+          {
+            "name": "font-alias-only-1",
+            "widths": [
+              101.9296875
+            ]
+          },
+          {
+            "name": "font-alias-both-1",
+            "widths": [
+              95.9765625,
+              101.9296875
+            ]
+          },
+          {
+            "name": "font-alias-only-0",
+            "widths": [
+              95.9765625
+            ]
+          }
+        ],
+        "released": 4
+      },
+      "exeSha256": "C0B0143AF3BB2D77B5AA1A9BB490D8054D6CA752F1D7675AE4A78E986F2AC240",
+      "ccJsSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "fixtureScriptSha256": "CF30E637E3B1FADF186664A9D8C202F8F9CD1AA80E86A6E451F1DB15D8D8AF4D",
+      "manifestSha256": "CF477FBA323C56DE67E4EDF9591336D2A7069D06B59CAEC78ADEC032B5873C34"
+    }
+  ]
+}
