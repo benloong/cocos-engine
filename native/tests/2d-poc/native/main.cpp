@@ -719,10 +719,9 @@ bool checkDirectWriteFileRelease(const std::filesystem::path &path, const char *
 }
 
 bool exerciseDirectWriteFile(const std::filesystem::path &path, const char *fixture, float expectedWidth) {
-    std::error_code error;
-    if (!std::filesystem::copy_file(std::filesystem::u8path(fixture), path,
-                                    std::filesystem::copy_options::overwrite_existing, error)) {
-        std::fprintf(stderr, "Replacing the test font failed: %s\n", error.message().c_str());
+    const auto fixturePath = std::filesystem::u8path(fixture);
+    if (!CopyFileW(fixturePath.c_str(), path.c_str(), FALSE)) {
+        reportDirectWriteFileFailure(path, "valid-font-overwrite", GetLastError());
         return false;
     }
     const std::string source = path.u8string();
@@ -745,11 +744,23 @@ bool exerciseDirectWriteFile(const std::filesystem::path &path, const char *fixt
     second.reset();
     if (!checkDirectWriteFileRelease(path, "after-valid-font-release")) return false;
     {
-        std::ofstream invalid(path, std::ios::binary | std::ios::trunc);
-        invalid.write("invalid", 7);
-        invalid.close();
-        if (!invalid) {
-            std::fprintf(stderr, "M6_FONT_FILE_FAILURE stage=invalid-file-write\n");
+        HANDLE invalid = CreateFileW(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                     nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (invalid == INVALID_HANDLE_VALUE) {
+            reportDirectWriteFileFailure(path, "invalid-file-truncate", GetLastError());
+            return false;
+        }
+        DWORD written = 0;
+        const BOOL success = WriteFile(invalid, "invalid", 7, &written, nullptr);
+        const DWORD writeError = success ? ERROR_SUCCESS : GetLastError();
+        const BOOL closed = CloseHandle(invalid);
+        const DWORD closeError = closed ? ERROR_SUCCESS : GetLastError();
+        if (!success || written != 7) {
+            reportDirectWriteFileFailure(path, "invalid-file-write", success ? ERROR_WRITE_FAULT : writeError);
+            return false;
+        }
+        if (!closed) {
+            reportDirectWriteFileFailure(path, "invalid-file-close", closeError);
             return false;
         }
     }

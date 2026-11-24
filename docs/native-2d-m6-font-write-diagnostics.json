@@ -1,0 +1,49 @@
+{
+  "artifacts": "native/tests/2d-poc/build/m6-font-gate-6255b6c179/write-diagnostics",
+  "method": "Recompiled the test main and linked against existing candidate libraries. The ordinary file probe ran with and without an externally mapped valid font. A separate test-only entry called the same exerciseDirectWriteFile function with an already mapped seven-byte destination to check the first overwrite deterministically. The mapping process closed its reader handle and kept the view until after the probe exited.",
+  "result": "Both mapped controls in both configurations reported the expected stage and Win32 error 1224, and listed the known external PID. Both ordinary runs without a held mapping exited zero after 1000 cycles. No historical failure is reclassified.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "control": "overwrite",
+      "expectedExitCode": 1,
+      "observedStage": "valid-font-overwrite",
+      "logSha256": "2b7ee31700c2c29f19118283c5cc91a8430145ddca44bb4951031e5c47fe3555"
+    },
+    {
+      "configuration": "Debug",
+      "control": "mapped",
+      "expectedExitCode": 1,
+      "observedStage": "invalid-file-truncate",
+      "logSha256": "f39b3b71f94f9d7a9cbcf43f4d6e8e32db2905ac5be43ad6962761bc0e4bd055"
+    },
+    {
+      "configuration": "Debug",
+      "control": "normal",
+      "expectedExitCode": 0,
+      "observedStage": null,
+      "logSha256": "8a6b968e0043c8daaac6c6fd3842dea1b34be3a8701abc040399bc3f0396b80d"
+    },
+    {
+      "configuration": "Release",
+      "control": "overwrite",
+      "expectedExitCode": 1,
+      "observedStage": "valid-font-overwrite",
+      "logSha256": "19d6c2218005d3abe6cec046657aefe2a9b9918be622a81461c80fce4852182b"
+    },
+    {
+      "configuration": "Release",
+      "control": "mapped",
+      "expectedExitCode": 1,
+      "observedStage": "invalid-file-truncate",
+      "logSha256": "dfe1731424188b47ec6aa9156eed5af41e45f1588ea4b24780722fa6fff8ff16"
+    },
+    {
+      "configuration": "Release",
+      "control": "normal",
+      "expectedExitCode": 0,
+      "observedStage": null,
+      "logSha256": "fc7f0289e7cd1ea68ac366dd6425ddbbadc878897106c253cdbe9bda6920c487"
+    }
+  ]
+}
