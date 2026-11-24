@@ -1,0 +1,41 @@
+{
+  "verificationBase": "02ba6063d6",
+  "deploymentSource": "m6-graphics-redraw-eacd1b4c8b GPU binaries and engine bundle",
+  "artifacts": "native/tests/2d-poc/build/m6-graphics-access-02ba6063d6",
+  "fixture": "native/tests/2d-poc/fixtures/check-graphics-backend-access.cjs",
+  "scope": "Accessors on Graphics.prototype record and reject reads and writes during creation, eight clear/redraw pixel comparisons, and destruction. External callers accessing those fields remain incompatible.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": {
+        "cycles": 8,
+        "guardedFields": [
+          "impl",
+          "model",
+          "graphicsNativeProxy"
+        ],
+        "accesses": []
+      },
+      "exeSha256": "49BD668420D9B55D8AD9BC1CBC3A9CAA11BFB41C2DCCC699BCFC9AB1A4D60494",
+      "bundleSha256": "7BECC6F0D6D1578CDF931A100DC549427AD7FEBA6EAB099E113610D13E2D5E49",
+      "scenarioSha256": "6DC01B12C665E94E0C38DF9F41FE8A84C59AC16BFA9F0990E427BEA0EFEC129D"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": {
+        "cycles": 8,
+        "guardedFields": [
+          "impl",
+          "model",
+          "graphicsNativeProxy"
+        ],
+        "accesses": []
+      },
+      "exeSha256": "151B59288BCB2E21080766595AC4726EBE4F132011007B72CCF5ED11132B255F",
+      "bundleSha256": "7BECC6F0D6D1578CDF931A100DC549427AD7FEBA6EAB099E113610D13E2D5E49",
+      "scenarioSha256": "02894E799F0A5A141A695BAA5FC548842334FC7C24295D473578A417428C34B6"
+    }
+  ]
+}
