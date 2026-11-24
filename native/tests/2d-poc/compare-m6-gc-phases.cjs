@@ -5,6 +5,8 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
+const measuredPhases = require('./read-m6-gc-phases.cjs');
+
 const revision = process.argv[2];
 assert.match(revision || '', /^[a-f0-9]{10}$/, 'Supply a ten-character candidate revision');
 const build = path.join(__dirname, 'build');
@@ -19,43 +21,6 @@ const median = values => {
     const sorted = [...values].sort((a, b) => a - b);
     return (sorted[(sorted.length - 1) >> 1] + sorted[sorted.length >> 1]) / 2;
 };
-
-function measuredPhases (log, cases) {
-    const rows = {};
-    let active = null;
-    let entry;
-    for (const line of log.split(/\r?\n/)) {
-        const begin = /M6_GC_BEGIN (\w+\/\w+)$/.exec(line);
-        const end = /M6_PERF_PHASE (\w+\/\w+)$/.exec(line);
-        if (begin) {
-            assert.equal(active, null);
-            active = begin[1];
-            entry = null;
-        } else if (end) {
-            assert.equal(end[1], active);
-            assert.ok(entry, 'Missing major collection for ' + active);
-            assert(!Object.hasOwn(rows, active));
-            rows[active] = entry;
-            active = null;
-        } else if (active && line.includes(' gc=mc ')) {
-            assert.equal(entry, null, 'Multiple major collections for ' + active);
-            entry = {};
-            const metrics = Object.fromEntries([...line.matchAll(/ ([\w.]+)=([\d.]+)(?=\s|$)/g)].map(m => [m[1], Number(m[2])]));
-            for (const field of [...fields, 'total_size_before', 'total_size_after']) {
-                assert(Number.isFinite(metrics[field]) && metrics[field] >= 0, 'Invalid ' + active + '/' + field);
-                entry[field] = metrics[field];
-            }
-        }
-    }
-    assert.equal(active, null);
-    assert.deepEqual(Object.keys(rows), ids);
-    assert.deepEqual(cases.map(c => c.name + '/' + c.phase), ids);
-    for (const c of cases) {
-        assert.equal(c.samples.length, 120);
-        assert.equal(c.gcTrace.events.filter(e => e.type === 4 && (e.flags & 4)).length, 1);
-    }
-    return rows;
-}
 
 const rounds = [];
 const samples = { before: [], after: [] };
@@ -88,7 +53,7 @@ for (let round = 1; round <= 6; ++round) {
         assert.equal(result.backend, 'native');
         assert.equal(result.renderer, official.configs[arm].renderer);
         assert.equal(result.vendor, official.configs[arm].vendor);
-        const phases = measuredPhases(fs.readFileSync(prefix + '.log', 'utf8'), result.cases);
+        const phases = measuredPhases(fs.readFileSync(prefix + '.log', 'utf8'), result.cases, ids, fields);
         samples[arm].push(phases);
         pair[arm] = { resultSha256: hash(prefix + '.json'), logSha256: hash(prefix + '.log'), mixedDirty: phases['mixed/dirty'] };
     }

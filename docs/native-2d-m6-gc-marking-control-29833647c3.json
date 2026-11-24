@@ -1,0 +1,660 @@
+{
+  "measuredCollections": 192,
+  "artifacts": "native/tests/2d-poc/build/m6-gc-foreground-mark-29833647c3",
+  "method": "Four counterbalanced launch orders. Serial disables both parallel and concurrent marking on both builds. Background timer values are not instruction counts. Forced GC acceptance uses the uninstrumented gate.",
+  "priorLabelSteady": [
+    {
+      "round": 1,
+      "before": {
+        "backgroundMarkMs": 13.8,
+        "parallelClosureMs": 2.4
+      },
+      "after": {
+        "backgroundMarkMs": 22,
+        "parallelClosureMs": 6.6
+      }
+    },
+    {
+      "round": 2,
+      "after": {
+        "backgroundMarkMs": 14.9,
+        "parallelClosureMs": 6.1
+      },
+      "before": {
+        "backgroundMarkMs": 11.9,
+        "parallelClosureMs": 2.7
+      }
+    },
+    {
+      "round": 3,
+      "before": {
+        "backgroundMarkMs": 9.4,
+        "parallelClosureMs": 2
+      },
+      "after": {
+        "backgroundMarkMs": 48.5,
+        "parallelClosureMs": 7.7
+      }
+    },
+    {
+      "round": 4,
+      "after": {
+        "backgroundMarkMs": 9.1,
+        "parallelClosureMs": 2.8
+      },
+      "before": {
+        "backgroundMarkMs": 11.4,
+        "parallelClosureMs": 2.2
+      }
+    },
+    {
+      "round": 5,
+      "before": {
+        "backgroundMarkMs": 10.5,
+        "parallelClosureMs": 3.2
+      },
+      "after": {
+        "backgroundMarkMs": 15.2,
+        "parallelClosureMs": 4.4
+      }
+    },
+    {
+      "round": 6,
+      "after": {
+        "backgroundMarkMs": 8.7,
+        "parallelClosureMs": 2.1
+      },
+      "before": {
+        "backgroundMarkMs": 10.3,
+        "parallelClosureMs": 2
+      }
+    }
+  ],
+  "workloadSha256": "38251182e48dfb70e48a82ef6aec35c86a07a13e2d0f29fcdd526c5df79c8c97",
+  "configs": {
+    "default-before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "executableSha256": "e522862471f021b47f268da2c757a2c2f0840a48a956e5001466c63a5ab0aa3f",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669"
+    },
+    "default-after": {
+      "revision": "29833647c3de9625d1f4073b02f1a230a8645f75",
+      "executableSha256": "a6aadb8ffec4f96af76c93951b648974073e5af26412c019ffd2a1bd9910ab00",
+      "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb"
+    },
+    "serial-after": {
+      "revision": "29833647c3de9625d1f4073b02f1a230a8645f75",
+      "executableSha256": "5a2bf6e2a0687ea54fac99a6ef077be97830b50cf9da15876d72604d68553b22",
+      "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb"
+    },
+    "serial-before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "executableSha256": "91b6ba8df92646e5c8a639a4231d47a732ed4a427d88fc3ef8ece81f5c9316a9",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669"
+    }
+  },
+  "comparison": {
+    "labels/steady": {
+      "default": {
+        "pause": {
+          "baselineMedianMs": 12.6,
+          "candidateMedianMs": 8.75,
+          "pairedDeltaMedianMs": 3.7500000000000004
+        },
+        "mark": {
+          "baselineMedianMs": 10.8,
+          "candidateMedianMs": 5.5,
+          "pairedDeltaMedianMs": 2.3
+        },
+        "mark.full_closure_parallel": {
+          "baselineMedianMs": 10.65,
+          "candidateMedianMs": 5.35,
+          "pairedDeltaMedianMs": 2.25
+        },
+        "mark.full_closure": {
+          "baselineMedianMs": 0,
+          "candidateMedianMs": 0,
+          "pairedDeltaMedianMs": 0
+        },
+        "background.mark": {
+          "baselineMedianMs": 16.4,
+          "candidateMedianMs": 21.549999999999997,
+          "pairedDeltaMedianMs": 9
+        }
+      },
+      "serial": {
+        "pause": {
+          "baselineMedianMs": 8,
+          "candidateMedianMs": 8.149999999999999,
+          "pairedDeltaMedianMs": 0.3499999999999992
+        },
+        "mark": {
+          "baselineMedianMs": 6.5,
+          "candidateMedianMs": 6.550000000000001,
+          "pairedDeltaMedianMs": 0.1499999999999999
+        },
+        "mark.full_closure_parallel": {
+          "baselineMedianMs": 0,
+          "candidateMedianMs": 0,
+          "pairedDeltaMedianMs": 0
+        },
+        "mark.full_closure": {
+          "baselineMedianMs": 6.4,
+          "candidateMedianMs": 6.449999999999999,
+          "pairedDeltaMedianMs": 0.1499999999999999
+        },
+        "background.mark": {
+          "baselineMedianMs": 0,
+          "candidateMedianMs": 0,
+          "pairedDeltaMedianMs": 0
+        }
+      }
+    },
+    "mixed/dirty": {
+      "default": {
+        "pause": {
+          "baselineMedianMs": 6.75,
+          "candidateMedianMs": 5.55,
+          "pairedDeltaMedianMs": -1.2000000000000002
+        },
+        "mark": {
+          "baselineMedianMs": 4.300000000000001,
+          "candidateMedianMs": 4.449999999999999,
+          "pairedDeltaMedianMs": 0.2999999999999998
+        },
+        "mark.full_closure_parallel": {
+          "baselineMedianMs": 4.1,
+          "candidateMedianMs": 4.25,
+          "pairedDeltaMedianMs": 0.3500000000000003
+        },
+        "mark.full_closure": {
+          "baselineMedianMs": 0,
+          "candidateMedianMs": 0,
+          "pairedDeltaMedianMs": 0
+        },
+        "background.mark": {
+          "baselineMedianMs": 21.45,
+          "candidateMedianMs": 18.15,
+          "pairedDeltaMedianMs": -3.4499999999999993
+        }
+      },
+      "serial": {
+        "pause": {
+          "baselineMedianMs": 13.600000000000001,
+          "candidateMedianMs": 12.850000000000001,
+          "pairedDeltaMedianMs": -2.75
+        },
+        "mark": {
+          "baselineMedianMs": 11.100000000000001,
+          "candidateMedianMs": 12,
+          "pairedDeltaMedianMs": -1.3000000000000007
+        },
+        "mark.full_closure_parallel": {
+          "baselineMedianMs": 0,
+          "candidateMedianMs": 0,
+          "pairedDeltaMedianMs": 0
+        },
+        "mark.full_closure": {
+          "baselineMedianMs": 10.899999999999999,
+          "candidateMedianMs": 11.7,
+          "pairedDeltaMedianMs": -1.3499999999999988
+        },
+        "background.mark": {
+          "baselineMedianMs": 0,
+          "candidateMedianMs": 0,
+          "pairedDeltaMedianMs": 0
+        }
+      }
+    }
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "order": [
+        "default-before",
+        "default-after",
+        "serial-after",
+        "serial-before"
+      ],
+      "runs": {
+        "default-before": {
+          "rawSha256": "89c3f5a4da528b6fb7bd1e179cf6082fdf29d9b5e3900087c649c9106f087cf9",
+          "logSha256": "6a78731417725673fa161b11cd314f8a61b17641a8b7e850e7fdd1d4b3280360",
+          "cases": {
+            "labels/steady": {
+              "pause": 4.4,
+              "mark": 2.8,
+              "mark.full_closure_parallel": 2.7,
+              "mark.full_closure": 0,
+              "background.mark": 13.2,
+              "total_size_before": 16161884,
+              "total_size_after": 15451156
+            },
+            "mixed/dirty": {
+              "pause": 6.6,
+              "mark": 4.4,
+              "mark.full_closure_parallel": 4.2,
+              "mark.full_closure": 0,
+              "background.mark": 21,
+              "total_size_before": 28556352,
+              "total_size_after": 22299928
+            }
+          }
+        },
+        "default-after": {
+          "rawSha256": "d021f99d7d5b63ca54af9391be8878fd2ed2697c13d9cc4b2b5251cb5baab0d2",
+          "logSha256": "ef0e76b626a95503c77a6082d797600e6d2c5bb0600e32fd92c76ba8f6c1ba47",
+          "cases": {
+            "labels/steady": {
+              "pause": 3.8,
+              "mark": 2.4,
+              "mark.full_closure_parallel": 2.3,
+              "mark.full_closure": 0,
+              "background.mark": 10.3,
+              "total_size_before": 13951908,
+              "total_size_after": 13170304
+            },
+            "mixed/dirty": {
+              "pause": 4.3,
+              "mark": 3.4,
+              "mark.full_closure_parallel": 3.2,
+              "mark.full_closure": 0,
+              "background.mark": 17.1,
+              "total_size_before": 18066560,
+              "total_size_after": 17318036
+            }
+          }
+        },
+        "serial-after": {
+          "rawSha256": "a9b4e9849a304353b621f7f1ef85ed31667ecdc4efe035ac583640b4ab1c2a08",
+          "logSha256": "47f8d5e9e5ef642786f756ac0187397fd559459adadb6e36711b3422802a560b",
+          "cases": {
+            "labels/steady": {
+              "pause": 8.1,
+              "mark": 6.4,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 6.3,
+              "background.mark": 0,
+              "total_size_before": 13902220,
+              "total_size_after": 13170176
+            },
+            "mixed/dirty": {
+              "pause": 11.9,
+              "mark": 11.1,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 10.8,
+              "background.mark": 0,
+              "total_size_before": 18057476,
+              "total_size_after": 17317668
+            }
+          }
+        },
+        "serial-before": {
+          "rawSha256": "855f99a41068b161118807f59f4f763d76571680191cd340ede905fa0758ca58",
+          "logSha256": "9d6c81f09ad5219a5d3f28c3d79aee4c7976409596e6e37b2841dbf3fe063dac",
+          "cases": {
+            "labels/steady": {
+              "pause": 7.7,
+              "mark": 6.4,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 6.3,
+              "background.mark": 0,
+              "total_size_before": 16164160,
+              "total_size_after": 15454036
+            },
+            "mixed/dirty": {
+              "pause": 13.9,
+              "mark": 11.8,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 11.6,
+              "background.mark": 0,
+              "total_size_before": 28384544,
+              "total_size_after": 22286408
+            }
+          }
+        }
+      }
+    },
+    {
+      "round": 2,
+      "order": [
+        "default-after",
+        "serial-before",
+        "default-before",
+        "serial-after"
+      ],
+      "runs": {
+        "default-after": {
+          "rawSha256": "5ea384ad960e086a6b01ae536ff22284857409826dd9e7bf1a563a379b5cd277",
+          "logSha256": "5002e0a30d5536a385eb7d6ee76f855eee993f53c3e1fa35f0ccb7edca61ff27",
+          "cases": {
+            "labels/steady": {
+              "pause": 13.3,
+              "mark": 8.6,
+              "mark.full_closure_parallel": 8.4,
+              "mark.full_closure": 0,
+              "background.mark": 32.8,
+              "total_size_before": 13942532,
+              "total_size_after": 13170176
+            },
+            "mixed/dirty": {
+              "pause": 6,
+              "mark": 5.1,
+              "mark.full_closure_parallel": 4.9,
+              "mark.full_closure": 0,
+              "background.mark": 19.1,
+              "total_size_before": 18065004,
+              "total_size_after": 17317636
+            }
+          }
+        },
+        "serial-before": {
+          "rawSha256": "0f5b467a77b4e9094400748e83099ac0f26243f81da404465f477ca5aad97690",
+          "logSha256": "b6c68372f3c60cab3af87c26c2002eed35d22b558d7ed93ed41a81ebc3669284",
+          "cases": {
+            "labels/steady": {
+              "pause": 13.2,
+              "mark": 11.1,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 11,
+              "background.mark": 0,
+              "total_size_before": 16157124,
+              "total_size_after": 15450300
+            },
+            "mixed/dirty": {
+              "pause": 12.7,
+              "mark": 10.4,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 10.2,
+              "background.mark": 0,
+              "total_size_before": 28546792,
+              "total_size_after": 22284024
+            }
+          }
+        },
+        "default-before": {
+          "rawSha256": "b34b07eb5b7ea74cf0e743f1b51262288dc76f4f72105e78e05b2e1dab5e6896",
+          "logSha256": "76988c1d9395ecb7424252471b7ddb4d8a4b5c38f19a6ae31e18b17e15212654",
+          "cases": {
+            "labels/steady": {
+              "pause": 5.2,
+              "mark": 3.6,
+              "mark.full_closure_parallel": 3.5,
+              "mark.full_closure": 0,
+              "background.mark": 11.9,
+              "total_size_before": 16148520,
+              "total_size_after": 15444912
+            },
+            "mixed/dirty": {
+              "pause": 6.8,
+              "mark": 4.2,
+              "mark.full_closure_parallel": 4,
+              "mark.full_closure": 0,
+              "background.mark": 22.5,
+              "total_size_before": 28438068,
+              "total_size_after": 22298208
+            }
+          }
+        },
+        "serial-after": {
+          "rawSha256": "4a659b98e0a70b21147281dc494e70d1c509154391f93fa1728c5def10be213e",
+          "logSha256": "e0d8c85d42e9a5ff2820a0c5bc621fd4037ad943326c5b0cc5f99334747c3905",
+          "cases": {
+            "labels/steady": {
+              "pause": 7.1,
+              "mark": 5.3,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 5.2,
+              "background.mark": 0,
+              "total_size_before": 13974772,
+              "total_size_after": 13170176
+            },
+            "mixed/dirty": {
+              "pause": 13.8,
+              "mark": 12.9,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 12.6,
+              "background.mark": 0,
+              "total_size_before": 18070196,
+              "total_size_after": 17317764
+            }
+          }
+        }
+      }
+    },
+    {
+      "round": 3,
+      "order": [
+        "serial-before",
+        "serial-after",
+        "default-after",
+        "default-before"
+      ],
+      "runs": {
+        "serial-before": {
+          "rawSha256": "fb29d5fb1621d7a0c0831fd7ca57c12ef536b5c5271f4bc02db6bc3a8c5c7d8c",
+          "logSha256": "5077b133a26278a1b0f3024d0432313f4099b43b38ab5312711463aea3dc0182",
+          "cases": {
+            "labels/steady": {
+              "pause": 8.3,
+              "mark": 6.6,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 6.5,
+              "background.mark": 0,
+              "total_size_before": 16162992,
+              "total_size_after": 15450512
+            },
+            "mixed/dirty": {
+              "pause": 13.3,
+              "mark": 10.4,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 10.2,
+              "background.mark": 0,
+              "total_size_before": 28531876,
+              "total_size_after": 22298396
+            }
+          }
+        },
+        "serial-after": {
+          "rawSha256": "5f22bcafeef071b9e716577e1e9bc88194df85056a6df94817d1a7ebdc6ecfe9",
+          "logSha256": "a2d96cded42c11bc8c5e846ad11e0e785b5f204958796c123c646de7c8538162",
+          "cases": {
+            "labels/steady": {
+              "pause": 8.6,
+              "mark": 7.2,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 7.1,
+              "background.mark": 0,
+              "total_size_before": 13984004,
+              "total_size_after": 13170292
+            },
+            "mixed/dirty": {
+              "pause": 9.8,
+              "mark": 8.5,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 8.3,
+              "background.mark": 0,
+              "total_size_before": 18136844,
+              "total_size_after": 17318012
+            }
+          }
+        },
+        "default-after": {
+          "rawSha256": "9922cb38c431375f6579a53aa2f6534e61d80505474b1e3b62b7d57cadb4a4bd",
+          "logSha256": "658fa7eacc0434743469f11934afd3bbb4d88af67946c9752b7faf2d43a9a922",
+          "cases": {
+            "labels/steady": {
+              "pause": 83.1,
+              "mark": 80.9,
+              "mark.full_closure_parallel": 80.8,
+              "mark.full_closure": 0,
+              "background.mark": 163.8,
+              "total_size_before": 13926608,
+              "total_size_after": 13170752
+            },
+            "mixed/dirty": {
+              "pause": 5.1,
+              "mark": 3.8,
+              "mark.full_closure_parallel": 3.6,
+              "mark.full_closure": 0,
+              "background.mark": 17.2,
+              "total_size_before": 18084252,
+              "total_size_after": 17318404
+            }
+          }
+        },
+        "default-before": {
+          "rawSha256": "76f59e1f7227be66ae1c345e83671bfa6ab5e96a52472b5fed05df774a02c51d",
+          "logSha256": "64178ca45f81895ad695028e3f41d3a7c07e8bc20ac7f8c83f45c616687a74e4",
+          "cases": {
+            "labels/steady": {
+              "pause": 20,
+              "mark": 18,
+              "mark.full_closure_parallel": 17.8,
+              "mark.full_closure": 0,
+              "background.mark": 52.8,
+              "total_size_before": 16148812,
+              "total_size_after": 15445124
+            },
+            "mixed/dirty": {
+              "pause": 6.7,
+              "mark": 4.1,
+              "mark.full_closure_parallel": 3.8,
+              "mark.full_closure": 0,
+              "background.mark": 20.7,
+              "total_size_before": 28336448,
+              "total_size_after": 22286264
+            }
+          }
+        }
+      }
+    },
+    {
+      "round": 4,
+      "order": [
+        "serial-after",
+        "default-before",
+        "serial-before",
+        "default-after"
+      ],
+      "runs": {
+        "serial-after": {
+          "rawSha256": "3daf093cc0e82d0adb2bd4338c4c9071bf74a321e2631296dabeaafce3b2a323",
+          "logSha256": "43b0a534eb1c98a448b4e8f6b95db0bf138f87460189722c6604da75ffd293c6",
+          "cases": {
+            "labels/steady": {
+              "pause": 8.2,
+              "mark": 6.7,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 6.6,
+              "background.mark": 0,
+              "total_size_before": 13901900,
+              "total_size_after": 13171056
+            },
+            "mixed/dirty": {
+              "pause": 14.5,
+              "mark": 12.9,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 12.6,
+              "background.mark": 0,
+              "total_size_before": 18070156,
+              "total_size_after": 17318800
+            }
+          }
+        },
+        "default-before": {
+          "rawSha256": "703b2d2b0b35816a338f5e1818feab0921d5bd242e1a3225f06200677a48b8d9",
+          "logSha256": "b4fb0b042bf23bd5739e48dbbddca8b83c93e7c0fd51146e206f9b06f07d09e7",
+          "cases": {
+            "labels/steady": {
+              "pause": 29.3,
+              "mark": 26.9,
+              "mark.full_closure_parallel": 26.7,
+              "mark.full_closure": 0,
+              "background.mark": 19.6,
+              "total_size_before": 16156312,
+              "total_size_after": 15451540
+            },
+            "mixed/dirty": {
+              "pause": 7.3,
+              "mark": 4.4,
+              "mark.full_closure_parallel": 4.2,
+              "mark.full_closure": 0,
+              "background.mark": 21.9,
+              "total_size_before": 28510360,
+              "total_size_after": 22326768
+            }
+          }
+        },
+        "serial-before": {
+          "rawSha256": "439c54dddc6d69735a42b8b605e9bb6e82aa3bf18fa5ae6b4e410a3d4c6a0467",
+          "logSha256": "e7e81615a59eb29d3fb722205dbcf152c3457f34be1f17ab49847e8e659fe194",
+          "cases": {
+            "labels/steady": {
+              "pause": 7.7,
+              "mark": 6.4,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 6.3,
+              "background.mark": 0,
+              "total_size_before": 16154204,
+              "total_size_after": 15449704
+            },
+            "mixed/dirty": {
+              "pause": 20.4,
+              "mark": 18,
+              "mark.full_closure_parallel": 0,
+              "mark.full_closure": 17.8,
+              "background.mark": 0,
+              "total_size_before": 28452916,
+              "total_size_after": 22309252
+            }
+          }
+        },
+        "default-after": {
+          "rawSha256": "ae612292f9e1df69cd78b79256bd9dfb14930213614665ceca0fa34d2572681c",
+          "logSha256": "ba161abac0723055fec099eecc9c83e78594f59c9c334c5847e5485c7abdcc88",
+          "cases": {
+            "labels/steady": {
+              "pause": 4.2,
+              "mark": 1.9,
+              "mark.full_closure_parallel": 1.8,
+              "mark.full_closure": 0,
+              "background.mark": 9.7,
+              "total_size_before": 13958404,
+              "total_size_after": 13172200
+            },
+            "mixed/dirty": {
+              "pause": 9.1,
+              "mark": 7.1,
+              "mark.full_closure_parallel": 6.9,
+              "mark.full_closure": 0,
+              "background.mark": 27,
+              "total_size_before": 18083208,
+              "total_size_after": 17316436
+            }
+          }
+        }
+      }
+    }
+  ],
+  "excludedAttempts": [
+    {
+      "stage": "parallel-only pilot, stopped before completing balanced series",
+      "file": "../m6-gc-serial-mark-29833647c3/m6-perf-before.log.err",
+      "message": "Check failed: heap()->concurrent_marking()->IsStopped().",
+      "sha256": "36bc71dcdb8d5e52ca46711d89b25ac2d2f0c93167f1ef2b81976265cb68e117"
+    },
+    {
+      "stage": "second block, first incomplete startup",
+      "file": "2-default-before.display.log",
+      "message": "No displays available",
+      "sha256": "c2930d89f55a44ee5a60356a85159a95acc9f432370936a3136ca9f02611af1a"
+    },
+    {
+      "stage": "second block, second incomplete startup",
+      "file": "2-default-before.display-2.log",
+      "message": "No displays available",
+      "sha256": "9c62b3449bda908d2ecf187528c52e16e9984808dc88ef903b419cd0fc13e1f3"
+    }
+  ]
+}
