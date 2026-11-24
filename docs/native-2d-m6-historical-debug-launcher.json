@@ -1,0 +1,57 @@
+{
+  "candidate": "03b5254ea7",
+  "artifacts": "native/tests/2d-poc/build/m6-richtext-03b5254ea7",
+  "runs": [
+    {
+      "run": "richtext-Debug",
+      "appSha256": "f77506ca8d821d1080de5c2a1772428cd05f1546af122f7d82974e692927e739",
+      "stdoutSha256": "7a3677757af1b1b361cc7a170af5b50b0793c24ae18af597acbdabfef4f7d5db",
+      "captureCount": 56,
+      "done": false
+    },
+    {
+      "run": "serial-release/richtext-Release",
+      "appSha256": "9b11e15c236295420d6e557b874017966b915d7c9c047e0b019b4dfacb0f41cd",
+      "stdoutSha256": "ad160e0402daec04353b2f6c2bbf6a4d33b2cf82a7bdeff7966e7158295e648f",
+      "captureCount": 56,
+      "done": false
+    },
+    {
+      "run": "handle-verified/richtext-Debug",
+      "appSha256": "f77506ca8d821d1080de5c2a1772428cd05f1546af122f7d82974e692927e739",
+      "stdoutSha256": "4bcf6e428c457581231c26fa5f49408f61a677f6113653ad3c33db515adb7907",
+      "captureCount": 62,
+      "done": true
+    },
+    {
+      "run": "handle-verified/richtext-Release",
+      "appSha256": "9b11e15c236295420d6e557b874017966b915d7c9c047e0b019b4dfacb0f41cd",
+      "stdoutSha256": "d173cc63018127deb45e75b827c806947935311d4985458bfcb5b156d3bea235",
+      "captureCount": 62,
+      "done": true
+    }
+  ],
+  "commonStartupDiagnostics": [
+    "Error initializing DB",
+    "Error in localStorage.setItem",
+    "Unexpected end of JSON input"
+  ],
+  "launcher": {
+    "scriptSha256": "c6d6c50db98535c2a43272708af5946cc7ec2000ee83b7199d928cc2f9b7dd46",
+    "runLogSha256": "5cc01c0c8af05078072647f91e18e0423ba18233004a070e5386a0f90c1e0544",
+    "throwLine": 71,
+    "secondsBetweenRunLogCreationAndLastWrite": 29.95,
+    "finding": "The launcher observed HasExited before cleanup. Its 180-second timeout and its own Stop-Process cleanup did not initiate this exit. The native exit code is absent."
+  },
+  "captureEvidence": {
+    "commonPrefix": 56,
+    "last": "richtext-lifecycle-disabled",
+    "firstMissing": "richtext-lifecycle-rebuilt",
+    "filesFirstCreatedAfterFailedRun": [
+      "richtext-lifecycle-destroyed",
+      "richtext-lifecycle-rebuilt"
+    ],
+    "method": "Compared ordered stdout markers in all four runs, and Windows creation timestamps of the initial Debug capture files with the last write of its outer run.log. Later writes prevent attributing current pixel contents to the failed run."
+  },
+  "conclusion": "The same Debug binary also completed all 62 captures with the same three startup diagnostics. Those messages alone do not explain the exit. The evidence does not identify the terminating operation or prove that Debug shared the Release crash cause."
+}
