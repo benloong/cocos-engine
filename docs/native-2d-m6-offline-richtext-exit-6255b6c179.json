@@ -1,0 +1,64 @@
+{
+  "candidate": "6255b6c179b821a5d28f58dba9bc43582039f176",
+  "engineBundleSha256": "5f181f4375ad66eef58f01137cc3a7b87f800a66020b30c15d32d09bb9772383",
+  "artifacts": "native/tests/2d-poc/build/m6-offline-exit-6255b6c179",
+  "baseline": "docs/native-2d-m6-offline-richtext-lifecycle.json",
+  "method": "Current Windows document-project binaries and freshly built scoped Native engine bundle with the archived offline fixture; only capture/writable paths relocated. Debug launcher rebuilt with the script debugger disabled. App wrote its manifest then called game.end(). Each capture matched all 262144 bytes of the corresponding archived image. Lifecycle manifest checked in full.",
+  "setupFailure": "The first Debug launch used the full document bundle with the scoped scenario. Profiler.generateNode raised a TypeError before the fixture started and the launcher stopped it after 150 seconds. All six runs listed here used the scoped candidate bundle.",
+  "runs": [
+    {
+      "round": 1,
+      "configuration": "Debug",
+      "normalExit": 0,
+      "capturesMatched": 58,
+      "exeSha256": "05ec80a96b85a36dc0215bd1fd1c9aff8f63bf8f71ff312e4aec64763eae8d3a",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "4c822a0c8ad92284f16601988f060d03656b02bfebf987fdea1859cfb14bb221"
+    },
+    {
+      "round": 1,
+      "configuration": "Release",
+      "normalExit": 0,
+      "capturesMatched": 58,
+      "exeSha256": "a83d80454f31470b189ca48d5222f57a802beec3dee8b08541ac63870aa6763c",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "482a75195569826135eda73a1bc180eeaec2c4e7485e8e666c3b1e866a597a4c"
+    },
+    {
+      "round": 2,
+      "configuration": "Debug",
+      "normalExit": 0,
+      "capturesMatched": 58,
+      "exeSha256": "05ec80a96b85a36dc0215bd1fd1c9aff8f63bf8f71ff312e4aec64763eae8d3a",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "923cb9429f175aadb0ac32569ae5cbff5de88d7b2b24e7329d6f9c9a9d663d34"
+    },
+    {
+      "round": 2,
+      "configuration": "Release",
+      "normalExit": 0,
+      "capturesMatched": 58,
+      "exeSha256": "a83d80454f31470b189ca48d5222f57a802beec3dee8b08541ac63870aa6763c",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "9fdcefc38d049325d446a8365cb5c964275c7a5f5e529a34a73c039b1bf2dbb2"
+    },
+    {
+      "round": 3,
+      "configuration": "Debug",
+      "normalExit": 0,
+      "capturesMatched": 58,
+      "exeSha256": "05ec80a96b85a36dc0215bd1fd1c9aff8f63bf8f71ff312e4aec64763eae8d3a",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "312c479dc84cfee6f5202035c7410b05fc23dbd8253ecf353cb96bf787061ba3"
+    },
+    {
+      "round": 3,
+      "configuration": "Release",
+      "normalExit": 0,
+      "capturesMatched": 58,
+      "exeSha256": "a83d80454f31470b189ca48d5222f57a802beec3dee8b08541ac63870aa6763c",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "6fc08f9d213afc4ce2321a22b2b4bca82c3f7a38f772f5d6e6219ecdc282362d"
+    }
+  ]
+}
