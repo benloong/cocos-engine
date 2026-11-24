@@ -1,0 +1,130 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "artifacts": "native/tests/2d-poc/build/m6-gc-handles-29833647c3/construction",
+  "method": "One offline run per arm, candidate first. After the twelve ordinary workload phases, create a common parent, add 128 Nodes, add UITransforms, add Sprites, assign sizeMode and a shared SpriteFrame, then destroy the parent and clear arrays. Each checkpoint waits two frames and forces GC before sampling. Byte differences are whole-isolate measurements; no GC latency acceptance claim.",
+  "probeSha256": "f21348d8534839c3010cae535eb4c15d3efebe6ddc2e485331aee517172c30e7",
+  "workloadSha256": "6384c034f5d63131bf0d0f8798b04ba5ad45ec6d0b14ea0e96933dcf3b8027ff",
+  "configs": {
+    "before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "exeSha256": "9de0ddbc9849d97e5107dc5b7b0779c94a92133295ba9e9339dce12a86ee8202",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669"
+    },
+    "after": {
+      "revision": "29833647c3de9625d1f4073b02f1a230a8645f75",
+      "exeSha256": "18da8b0ddcfdd14be6499787c7588da00fb90c678a9ba1f640189eb8019fecfc",
+      "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb"
+    }
+  },
+  "columns": [
+    "nonempty strong JSB-class handles",
+    "nonempty weak JSB-class handles",
+    "native pointer map entries",
+    "all V8 used global handle bytes"
+  ],
+  "runs": {
+    "after": {
+      "resultSha256": "47990748d952d0ae60ca987201623778bd9ebc6b90d2d87efb6c2245ddf283bf",
+      "measurements": {
+        "empty": [
+          0,
+          1392,
+          1392,
+          79296
+        ],
+        "nodes": [
+          0,
+          1520,
+          1520,
+          87488
+        ],
+        "transforms": [
+          0,
+          1776,
+          1776,
+          99776
+        ],
+        "sprites": [
+          0,
+          2160,
+          2160,
+          153024
+        ],
+        "frames": [
+          0,
+          2160,
+          2160,
+          153056
+        ],
+        "destroyed": [
+          0,
+          1394,
+          1394,
+          79392
+        ]
+      },
+      "globalHandleByteChanges": {
+        "nodes": 8192,
+        "transforms": 12288,
+        "sprites": 53248,
+        "frames": 32,
+        "destroyed": -73664
+      }
+    },
+    "before": {
+      "resultSha256": "2274966342920bc723352c97f0c7fa5ff7803ca5b241ebe9eb0b0700998a9c8b",
+      "measurements": {
+        "empty": [
+          0,
+          1434,
+          1434,
+          80448
+        ],
+        "nodes": [
+          0,
+          1562,
+          1562,
+          88640
+        ],
+        "transforms": [
+          0,
+          1690,
+          1690,
+          92736
+        ],
+        "sprites": [
+          0,
+          2074,
+          2074,
+          125504
+        ],
+        "frames": [
+          0,
+          2074,
+          2074,
+          125504
+        ],
+        "destroyed": [
+          0,
+          1436,
+          1436,
+          80544
+        ]
+      },
+      "globalHandleByteChanges": {
+        "nodes": 8192,
+        "transforms": 4096,
+        "sprites": 32768,
+        "frames": 0,
+        "destroyed": -44960
+      }
+    }
+  },
+  "incrementalGapBytes": {
+    "nodes": 0,
+    "transforms": 8192,
+    "sprites": 20480,
+    "frames": 32,
+    "destroyed": -28704
+  }
+}
