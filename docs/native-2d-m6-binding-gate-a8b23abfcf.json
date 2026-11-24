@@ -1,0 +1,71 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "artifacts": "native/tests/2d-poc/build/m6-binding-gate-a8b23abfcf",
+  "scope": "Regenerated 2d, assets and scene SWIG bindings from the detached candidate using the Debug and Release Ninja rule arguments and isolated output directories. Each generated file matched its candidate build input.",
+  "swigSha256": "DB71309139430A97BE7184322BEBE8B8D9B6A98E35519162BD2B5552B18BED9A",
+  "metadataClasses": 6,
+  "metadataTestsPassed": 4,
+  "metadataTestLogSha256": "75A6D6E2244BB139DF2759CE6E3492D83F6625EC2DA392205FD0D5E8AC4989B8",
+  "matches": [
+    {
+      "build": "out",
+      "file": "jsb_2d_auto.cpp",
+      "sha256": "A7ED6578F2E47AE7177976945BEA9AAA2F0FF3F72590343498CE65EC8F603D68"
+    },
+    {
+      "build": "out",
+      "file": "jsb_2d_auto.h",
+      "sha256": "EC3F1B60B03D41A0DEF7EFC310732066AE77698704329CBF9DE7F9E82200AC80"
+    },
+    {
+      "build": "out",
+      "file": "jsb_assets_auto.cpp",
+      "sha256": "F8317ADA8678F8115C0F2CAEB8E52A3B45FAA582894794E6E33F23229656C218"
+    },
+    {
+      "build": "out",
+      "file": "jsb_assets_auto.h",
+      "sha256": "8F82B84325A49A5496ACF9A63DDC413741F2A28DC5BA70DEAA7EBF4197466692"
+    },
+    {
+      "build": "out",
+      "file": "jsb_scene_auto.cpp",
+      "sha256": "8921815D8468C1B714E531B55A1D821D14A5B96538522EACE6067BC321C126EB"
+    },
+    {
+      "build": "out",
+      "file": "jsb_scene_auto.h",
+      "sha256": "EF5444846D175DB8D097B58C4417466D08766F6C651A0AF6E50636C50BDD4173"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_2d_auto.cpp",
+      "sha256": "A7ED6578F2E47AE7177976945BEA9AAA2F0FF3F72590343498CE65EC8F603D68"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_2d_auto.h",
+      "sha256": "EC3F1B60B03D41A0DEF7EFC310732066AE77698704329CBF9DE7F9E82200AC80"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_assets_auto.cpp",
+      "sha256": "F8317ADA8678F8115C0F2CAEB8E52A3B45FAA582894794E6E33F23229656C218"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_assets_auto.h",
+      "sha256": "8F82B84325A49A5496ACF9A63DDC413741F2A28DC5BA70DEAA7EBF4197466692"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_scene_auto.cpp",
+      "sha256": "8921815D8468C1B714E531B55A1D821D14A5B96538522EACE6067BC321C126EB"
+    },
+    {
+      "build": "out-release2",
+      "file": "jsb_scene_auto.h",
+      "sha256": "EF5444846D175DB8D097B58C4417466D08766F6C651A0AF6E50636C50BDD4173"
+    }
+  ]
+}
