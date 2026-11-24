@@ -1,0 +1,13 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "artifacts": "native/tests/2d-poc/build/m6-ts-a8b23abfcf",
+  "command": "node scripts/compile-native-ts.js --no-clean",
+  "platformPreset": "OPEN_HARMONY preserveType, Windows x64 host; TypeScript generation and type check only",
+  "setup": "Detached candidate checkout, local node_modules and native/external junctions, copied installed pal, DebugInfos generated from candidate source. Initial missing PAL and DebugInfos setup logs retained.",
+  "node": "v24.18.1",
+  "typescript": "4.9.5",
+  "generatedExportFiles": 23,
+  "exitCode": 0,
+  "result": "compile successfully!",
+  "logSha256": "847FAFCDBFD8F31E87DC5D639EC7EABCEED36320A3B299FD36652128A6959B9F"
+}
