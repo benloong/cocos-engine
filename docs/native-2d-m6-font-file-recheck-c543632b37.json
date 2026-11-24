@@ -1,0 +1,89 @@
+{
+  "candidate": "c543632b37",
+  "artifacts": "native/tests/2d-poc/build/m6-font-recheck-20261124-154133",
+  "debugExecutableSha256": "ABC384481ADF53E7E8DC63F995689A8140AF9A8F42DA8D301EA290632E8826EC",
+  "releaseExecutableSha256": "EB615F1A6A6862867C0001A72E66232C134FDC39638AA5AADB06F95EEA4310DA",
+  "checks": "All runs rejected the held-reader control with error 32, deleted the temporary source, and retained baseline process and GDI counts at 250, 500, 750 and 1000 cycles.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "log": "Debug-1.log",
+      "directory": "repository root",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 234,
+      "gdi": 0,
+      "sha256": "B831A24F70CE69EF5EEC6151188BFD0F69B37605107F042BB68554B76B58405F"
+    },
+    {
+      "configuration": "Release",
+      "log": "Release-1.log",
+      "directory": "repository root",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 224,
+      "gdi": 0,
+      "sha256": "A9A55837340932E5C7E2120A64DAC4237585F5441B305208B3E00A43C003D72E"
+    },
+    {
+      "configuration": "Debug",
+      "log": "Debug-2.log",
+      "directory": "repository root",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 234,
+      "gdi": 0,
+      "sha256": "DBCF63424427D14C52CB6E0E13F071A2F912FF69E922CEBE6D7CE7C73E2EDF14"
+    },
+    {
+      "configuration": "Release",
+      "log": "Release-2.log",
+      "directory": "repository root",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 224,
+      "gdi": 0,
+      "sha256": "F12BB6C01248D167004F5EFE44B8A19088873F2A0B26EB8F15006B7FFC93882A"
+    },
+    {
+      "configuration": "Debug",
+      "log": "Debug-3.log",
+      "directory": "repository root",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 234,
+      "gdi": 0,
+      "sha256": "4D2E2757570E2270D8B95745371FFB140C4894D773DE7BAB8DF68C64CA6EB9B8"
+    },
+    {
+      "configuration": "Release",
+      "log": "Release-3.log",
+      "directory": "repository root",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 224,
+      "gdi": 0,
+      "sha256": "65358D8A41C237E1C370AC77AA637B754D85B23B5A299BB031D1EF666038BC8D"
+    },
+    {
+      "configuration": "Debug",
+      "log": "Debug-default.log",
+      "directory": "executable directory",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 234,
+      "gdi": 0,
+      "sha256": "86D9F8CD83F0141F3019E973B1F36FD460C1617D3CBBD58C5E1ECFB2E3E86A4B"
+    },
+    {
+      "configuration": "Release",
+      "log": "Release-default.log",
+      "directory": "executable directory",
+      "exitCode": 0,
+      "cycles": 1000,
+      "handles": 224,
+      "gdi": 0,
+      "sha256": "97C6286D97A00966048B536842331EB263A9A42B54533FAF031CA8CF7F1FAED4"
+    }
+  ]
+}
