@@ -1,0 +1,325 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "artifacts": "native/tests/2d-poc/build/m6-gc-handles-29833647c3/activation",
+  "configs": {
+    "before": {
+      "revision": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+      "exeSha256": "9de0ddbc9849d97e5107dc5b7b0779c94a92133295ba9e9339dce12a86ee8202",
+      "engineSha256": "e8464fdd6a672b0f029af6980518957d1582fbd3dbe79bee1d523aa0e6315669"
+    },
+    "after": {
+      "revision": "29833647c3de9625d1f4073b02f1a230a8645f75",
+      "exeSha256": "18da8b0ddcfdd14be6499787c7588da00fb90c678a9ba1f640189eb8019fecfc",
+      "engineSha256": "318397ec6af3acd2263b1fc56484113f10c028dda01ba749c3dad069f158c0fb"
+    }
+  },
+  "columns": [
+    "nonempty strong JSB-class handles",
+    "nonempty weak JSB-class handles",
+    "native pointer map entries",
+    "all V8 used global handle bytes"
+  ],
+  "probeSha256": "f21348d8534839c3010cae535eb4c15d3efebe6ddc2e485331aee517172c30e7",
+  "fixtureSha256": "75f2394f81b5936320b69d61e9ec6ed23d57ad872507b9b9032f93dfce8da18c",
+  "method": "Two counterbalanced pairs, 128 nodes per run. After each step wait two frames and collect. On the candidate also create raw n2d.Sprite peers, attach, detach and release them before adding inactive Sprite components. The raw peer loop can retain its final loop variable until function exit; compare within-stage deltas.",
+  "changes": {
+    "before": {
+      "inactive Sprite creation": [
+        0,
+        256,
+        256,
+        28672
+      ],
+      "activation": [
+        0,
+        128,
+        128,
+        4096
+      ]
+    },
+    "after": {
+      "inactive Sprite creation": [
+        0,
+        256,
+        256,
+        28672
+      ],
+      "activation": [
+        0,
+        128,
+        128,
+        24576
+      ],
+      "native peer creation": [
+        0,
+        128,
+        128,
+        24576
+      ],
+      "peer attachment": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "runs": [
+    {
+      "round": 1,
+      "arm": "before",
+      "resultSha256": "ee96b065cca00207366e8e48897ee4672b8214474b84ba77ba6e937f9b46e2fa",
+      "checkpoints": {
+        "empty": [
+          0,
+          1434,
+          1434,
+          80448
+        ],
+        "nodes": [
+          0,
+          1562,
+          1562,
+          88640
+        ],
+        "transforms": [
+          0,
+          1690,
+          1690,
+          92736
+        ],
+        "inactive": [
+          0,
+          1690,
+          1690,
+          92736
+        ],
+        "constructed": [
+          0,
+          1946,
+          1946,
+          121408
+        ],
+        "sprites": [
+          0,
+          2074,
+          2074,
+          125504
+        ],
+        "frames": [
+          0,
+          2074,
+          2074,
+          125504
+        ],
+        "destroyed": [
+          0,
+          1436,
+          1436,
+          80544
+        ]
+      }
+    },
+    {
+      "round": 1,
+      "arm": "after",
+      "resultSha256": "e081abaeeeb87b1ba0af5a43e0a2118a0ffb5d09b26d75676b4325fed6624875",
+      "checkpoints": {
+        "empty": [
+          0,
+          1392,
+          1392,
+          79296
+        ],
+        "nodes": [
+          0,
+          1520,
+          1520,
+          87488
+        ],
+        "transforms": [
+          0,
+          1776,
+          1776,
+          99776
+        ],
+        "peers": [
+          0,
+          1904,
+          1904,
+          124352
+        ],
+        "attached": [
+          0,
+          1904,
+          1904,
+          124352
+        ],
+        "released": [
+          0,
+          1777,
+          1777,
+          99968
+        ],
+        "inactive": [
+          0,
+          1777,
+          1777,
+          99968
+        ],
+        "constructed": [
+          0,
+          2033,
+          2033,
+          128640
+        ],
+        "sprites": [
+          0,
+          2161,
+          2161,
+          153216
+        ],
+        "frames": [
+          0,
+          2161,
+          2161,
+          153248
+        ],
+        "destroyed": [
+          0,
+          1395,
+          1395,
+          79584
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "arm": "after",
+      "resultSha256": "640e829a2272e2541bc4f53b281bfe3cf2e94f77f5df0b89b10ab0d377be7b52",
+      "checkpoints": {
+        "empty": [
+          0,
+          1392,
+          1392,
+          79296
+        ],
+        "nodes": [
+          0,
+          1520,
+          1520,
+          87488
+        ],
+        "transforms": [
+          0,
+          1776,
+          1776,
+          99776
+        ],
+        "peers": [
+          0,
+          1904,
+          1904,
+          124352
+        ],
+        "attached": [
+          0,
+          1904,
+          1904,
+          124352
+        ],
+        "released": [
+          0,
+          1777,
+          1777,
+          99968
+        ],
+        "inactive": [
+          0,
+          1777,
+          1777,
+          99968
+        ],
+        "constructed": [
+          0,
+          2033,
+          2033,
+          128640
+        ],
+        "sprites": [
+          0,
+          2161,
+          2161,
+          153216
+        ],
+        "frames": [
+          0,
+          2161,
+          2161,
+          153248
+        ],
+        "destroyed": [
+          0,
+          1395,
+          1395,
+          79584
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "arm": "before",
+      "resultSha256": "a62c6c987d909881991f720ba30247568f2b55fc0116b05c2de3a28386b09a1f",
+      "checkpoints": {
+        "empty": [
+          0,
+          1434,
+          1434,
+          80448
+        ],
+        "nodes": [
+          0,
+          1562,
+          1562,
+          88640
+        ],
+        "transforms": [
+          0,
+          1690,
+          1690,
+          92736
+        ],
+        "inactive": [
+          0,
+          1690,
+          1690,
+          92736
+        ],
+        "constructed": [
+          0,
+          1946,
+          1946,
+          121408
+        ],
+        "sprites": [
+          0,
+          2074,
+          2074,
+          125504
+        ],
+        "frames": [
+          0,
+          2074,
+          2074,
+          125504
+        ],
+        "destroyed": [
+          0,
+          1436,
+          1436,
+          80544
+        ]
+      }
+    }
+  ]
+}
