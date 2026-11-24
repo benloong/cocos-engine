@@ -1,0 +1,43 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "artifacts": "native/tests/2d-poc/build/m6-font-reader-29833647c3",
+  "scope": "Known external file reader followed by a separate 1000-cycle run without that reader.",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "157910088cbb7ea8e789cf81d4b94eb8768d971ae9b07246ebbbe5db7f9fdef8",
+      "externalReader": true,
+      "readerPid": 28076,
+      "probePid": 24108,
+      "exitCode": 1,
+      "logSha256": "c65987a7b0119d01257c51dcdd58b4c3a3df997ca199371736dca6c57a3dfe9f"
+    },
+    {
+      "configuration": "Debug",
+      "exeSha256": "157910088cbb7ea8e789cf81d4b94eb8768d971ae9b07246ebbbe5db7f9fdef8",
+      "externalReader": false,
+      "readerPid": null,
+      "probePid": 37872,
+      "exitCode": 0,
+      "logSha256": "d10fe52ebf6287cf9494185dac1cd1beb171bab9327194002d380cb5e535905d"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "7a4b40c60a93f4080401a8b7a1d53289f4d94517e5edb62138e1ebcf26c0b704",
+      "externalReader": true,
+      "readerPid": 28076,
+      "probePid": 41444,
+      "exitCode": 1,
+      "logSha256": "6d459a61e25e972d6dee2f8026680a7f27c23872335408ee5e20b56f4e0ce5e9"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "7a4b40c60a93f4080401a8b7a1d53289f4d94517e5edb62138e1ebcf26c0b704",
+      "externalReader": false,
+      "readerPid": null,
+      "probePid": 42708,
+      "exitCode": 0,
+      "logSha256": "810d2f98938e722a0f047eabbe8aa01cdec748440f310ecf58ff720bcc1d9502"
+    }
+  ]
+}
