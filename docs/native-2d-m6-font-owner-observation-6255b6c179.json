@@ -1,0 +1,75 @@
+{
+  "candidate": "6255b6c179",
+  "artifacts": "native/tests/2d-poc/build/m6-font-gate-6255b6c179",
+  "method": "Six Debug runs in the historical directory. A separate process opened only the temporary font named by the probe, with zero desired access and all sharing modes. It polled FileProcessIdsUsingFileInformation (47) on that handle and excluded itself and the font probe. Spans group adjacent samples of the same owner within 3 ms.",
+  "observerSha256": "ca0604a69ff15eeccf9a4b1ffa67157a38383bfd6bc0a5c1c6f3a3f70075d28a",
+  "externalOwner": {
+    "5348": "MsMpEng"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "probePid": 40508,
+      "ownerSpans": 103,
+      "scans": 390,
+      "exitCode": 0,
+      "traceSha256": "e8c26a1764dfabc090ccdb4d911745493b33fe0124f9936ea06ff3d1e05c7994",
+      "logSha256": "0abaae1a69937132e697f33d406b70c4e01138f2f628638af07a0eec46821ff7"
+    },
+    {
+      "run": 2,
+      "probePid": 27924,
+      "ownerSpans": 67,
+      "scans": 356,
+      "exitCode": 0,
+      "traceSha256": "91c1e0ba5c24f9e9d69c9ef131db61d57509ff7e6f3b82d55aaf5c5963f62210",
+      "logSha256": "de8113bdd8b8d1be0ad12f0ffe29f196043642d9d619ec1640406c27b0c1d07a"
+    },
+    {
+      "run": 3,
+      "probePid": 36256,
+      "ownerSpans": 80,
+      "scans": 360,
+      "exitCode": 0,
+      "traceSha256": "053fb53b1c86be696049fa64a12da754bc7cebcbc34590f09d76da6764360e7f",
+      "logSha256": "dfa53535c46b4880762d52c53a53f90d24d8fe8f3125f901977064e4ac21df4d"
+    },
+    {
+      "run": 4,
+      "probePid": 42212,
+      "ownerSpans": 81,
+      "scans": 361,
+      "exitCode": 0,
+      "traceSha256": "5eab7121bc1db23a986a57fe25d32bdcf67a5826e0b88a3faf1dd531dfc89677",
+      "logSha256": "663431565e3174bb5690bd3150907450198d9e0c639da334c538d0264f228db0"
+    },
+    {
+      "run": 5,
+      "probePid": 39732,
+      "ownerSpans": 80,
+      "scans": 360,
+      "exitCode": 0,
+      "traceSha256": "630e4d8b9f5a5a48db5380000e82e7aedca9670e2e99e312d500fd358af0e62b",
+      "logSha256": "e21c2d6e6cbf78451f1720c459a6187a19b5f56ccbc2f20f32239243050af02b"
+    },
+    {
+      "run": 6,
+      "probePid": 33236,
+      "ownerSpans": 60,
+      "scans": 278,
+      "exitCode": 0,
+      "traceSha256": "a7696e779ede53bd29e9aa7ddf63ef8610373606bc85ff2371102a0b364716e4",
+      "logSha256": "59dd4cd4d11c3fc5e052e899a0b6e986fdf264efa2a88f37a225da4f6c1b1265"
+    }
+  ],
+  "copyOnlyControl": {
+    "fixtureSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16",
+    "testPid": 28060,
+    "copiesAttempted": 1000,
+    "counts": {
+      "openOk": 1000
+    },
+    "matched": []
+  },
+  "limit": "The six observed probes passed. The independent copy-only control found no sharing violation. No matching owner was captured during the previous cycle-88 failure."
+}
