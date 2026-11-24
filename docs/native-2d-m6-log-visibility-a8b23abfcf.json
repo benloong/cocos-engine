@@ -1,0 +1,27 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "scope": "Redirected kernel and script output from a running Windows child, checked after its ready signal and before allowing it to exit.",
+  "command": "run-native-log-visibility-tests.ps1 -NativeExe <candidate executable>",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exeSha256": "9E42AECBB62257B7FD960C90A43EAB1D9048360364911103DEA1E595E33ECB45",
+      "childAliveBeforeRelease": true,
+      "kernelAndScriptVisibleBeforeRelease": true,
+      "visibleAfterExit": true,
+      "exitCode": 0,
+      "report": "native/tests/2d-poc/build/log-visibility/m6-a8b23abfcf-Debug-f794486525ca4907883d1ed1b2fa3559/result.json",
+      "reportSha256": "F2EBF9A40A69710A6B6173BE8B03449A4924B38DDF7D39F07A97FEF512506660"
+    },
+    {
+      "configuration": "Release",
+      "exeSha256": "F5D7C15D1FEAFE3FE67A0D034B025AB0E164A2F47636F352E7C311FB424D1308",
+      "childAliveBeforeRelease": true,
+      "kernelAndScriptVisibleBeforeRelease": true,
+      "visibleAfterExit": true,
+      "exitCode": 0,
+      "report": "native/tests/2d-poc/build/log-visibility/m6-a8b23abfcf-Release-00adb8c8623f4bd4b419e50b6ce1ce91/result.json",
+      "reportSha256": "3317D03005CE77DFE9E2C21D62B8BF687B7EA2571D5C629AC23678156E96DDEC"
+    }
+  ]
+}
