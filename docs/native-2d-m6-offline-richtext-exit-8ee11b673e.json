@@ -1,0 +1,63 @@
+{
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "artifacts": "native/tests/2d-poc/build/m6-offline-exit-8ee11b673e",
+  "baseline": "native-2d-m6-offline-richtext-exit-6255b6c179.json",
+  "scope": "Rebuilt the full Windows document-project executable for each configuration, including jsb_scene_manual.cpp and V8 Object.cpp. Used the archived offline RichText fixture and unchanged JS bundle. Debug used the debugger-disabled launcher. Each run wrote a fresh manifest, called game.end() and exited on its own. Coverage ends before HTTP font cases.",
+  "engineBundleSha256": "5f181f4375ad66eef58f01137cc3a7b87f800a66020b30c15d32d09bb9772383",
+  "runs": [
+    {
+      "round": 1,
+      "configuration": "Release",
+      "exitCode": 0,
+      "matchingCaptures": 58,
+      "executableSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "ef0416384e03132a6bc71ab71eaee1ea78d727e6545e9209de84219b9278e83e"
+    },
+    {
+      "round": 1,
+      "configuration": "Debug",
+      "exitCode": 0,
+      "matchingCaptures": 58,
+      "executableSha256": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "36de51edf67b20df6174e16c6da312d27ff8e067d833c83d1290b31224bfb038"
+    },
+    {
+      "round": 2,
+      "configuration": "Release",
+      "exitCode": 0,
+      "matchingCaptures": 58,
+      "executableSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "11513df5283630bdd7c5bea77c315effedf54b3193d56952729bdcc1f2594a10"
+    },
+    {
+      "round": 2,
+      "configuration": "Debug",
+      "exitCode": 0,
+      "matchingCaptures": 58,
+      "executableSha256": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "7ce90a9a80541f44ad6b08644dc79d86ab433759f0522b5d341ef3e564304fbf"
+    },
+    {
+      "round": 3,
+      "configuration": "Release",
+      "exitCode": 0,
+      "matchingCaptures": 58,
+      "executableSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "aea862c281b446286b22bb87f686f00cdbceecae106d2738e28bf1498ec5a470"
+    },
+    {
+      "round": 3,
+      "configuration": "Debug",
+      "exitCode": 0,
+      "matchingCaptures": 58,
+      "executableSha256": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+      "manifestSha256": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb",
+      "logSha256": "63c02eea329c1730589d378c1e41bf901510307c5b7573a4292f9ba94cfbabf1"
+    }
+  ]
+}
