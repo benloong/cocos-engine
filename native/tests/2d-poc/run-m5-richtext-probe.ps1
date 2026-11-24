@@ -16,6 +16,8 @@ $watch = [System.Diagnostics.Stopwatch]::StartNew()
 $proc = Start-Process $AppExe -WorkingDirectory (Split-Path $AppExe) `
     -WindowStyle Hidden `
     -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru
+# Retain the native handle so early-exit diagnostics keep a usable ExitCode.
+$nativeProcessHandle = $proc.Handle
 $passed = $false
 $failure = $null
 $samples = [System.Collections.Generic.List[object]]::new()
