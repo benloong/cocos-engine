@@ -1,0 +1,34 @@
+{
+  "candidate": "6decea9fa3",
+  "fixture": "native/tests/2d-poc/fixtures/check-mask-pending-frame.cjs",
+  "scope": "Pending SpriteFrame on a detached Mask, host Sprite reuse through scene activation, replacement after switching to Graphics and back.",
+  "artifacts": "native/tests/2d-poc/build/m6-mask-pending-6decea9fa3",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "cases": [
+        "unset",
+        "frame",
+        "null"
+      ],
+      "exitCode": 0,
+      "appSha256": "C2EF42AFE25B5A064284DA9FBB7C114E7C4C01E6EA0712D0B2012FBF07CC3463",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "7C461569205DECF78B9E373D174CCA61965B95B6A0C922F0371F64FADC204C69",
+      "logSha256": "08321D2E574C423C9B3E7E4E699C8CB291D2D483DA5F04FC36A9AA46A756AB82"
+    },
+    {
+      "configuration": "Release",
+      "cases": [
+        "unset",
+        "frame",
+        "null"
+      ],
+      "exitCode": 0,
+      "appSha256": "E7FC0A3D959DC09D66A54174D51E84118D20CBD9067EA4509AC69B27AE5C9F24",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "scenarioSha256": "7C461569205DECF78B9E373D174CCA61965B95B6A0C922F0371F64FADC204C69",
+      "logSha256": "BBA02B1B6177A128081FBC5276845A6307CC00D147561542BF45FBAA3BC59EAF"
+    }
+  ]
+}
