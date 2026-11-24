@@ -1,0 +1,31 @@
+{
+  "candidate": "29833647c3de9625d1f4073b02f1a230a8645f75",
+  "scope": "Windows x64 native 2D core suite with Label line width reuse, including V8 bindings and scene record.",
+  "artifacts": "native/tests/2d-poc/build/m6-native-core-29833647c3",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "buildDirectory": "native/tests/2d-poc/native/out",
+      "buildExit": 0,
+      "runExit": 0,
+      "sceneRecord": "OK",
+      "core": "PASS",
+      "exeSha256": "157910088CBB7EA8E789CF81D4B94EB8768D971AE9B07246EBBBE5DB7F9FDEF8",
+      "generatedBindingSha256": "A7ED6578F2E47AE7177976945BEA9AAA2F0FF3F72590343498CE65EC8F603D68",
+      "buildLogSha256": "37D4568D736B81159E55A58F9D1DCA10229C3921C410D554860D35C25D158228",
+      "runLogSha256": "D85F4F9BB40EC9070AC481B8B2FE7F70BB4D4B62C1FDEB497BD5E067D0A30D1A"
+    },
+    {
+      "configuration": "Release",
+      "buildDirectory": "native/tests/2d-poc/native/out-release2",
+      "buildExit": 0,
+      "runExit": 0,
+      "sceneRecord": "OK",
+      "core": "PASS",
+      "exeSha256": "7A4B40C60A93F4080401A8B7A1D53289F4D94517E5EDB62138E1EBCF26C0B704",
+      "generatedBindingSha256": "A7ED6578F2E47AE7177976945BEA9AAA2F0FF3F72590343498CE65EC8F603D68",
+      "buildLogSha256": "37D4568D736B81159E55A58F9D1DCA10229C3921C410D554860D35C25D158228",
+      "runLogSha256": "DD7984C7D3CF97B5CCC6608CC45CE27D29E37FF20ACE659DFB9658CD9593321F"
+    }
+  ]
+}
