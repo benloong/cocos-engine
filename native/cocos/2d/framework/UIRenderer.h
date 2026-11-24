@@ -89,10 +89,14 @@ protected:
     enum DirtyFlag : uint32_t { GEOMETRY = 1, COLOR = 2 };
     void markRenderDirty(uint32_t flags = GEOMETRY) {
         _pendingFlags |= flags;
-        UIRendererManager::getInstance().markDirtyRenderer(this);
+        auto &manager = UIRendererManager::getInstance();
+        if (manager._currentRenderer == this) _deferredFlags |= flags;
+        manager.markDirtyRenderer(this);
     }
     uint32_t renderDirtyFlags() const { return _pendingFlags; }
-    void clearRenderDirty() { _pendingFlags = 0; }
+    void clearRenderDirty() {
+        _pendingFlags = UIRendererManager::getInstance()._currentRenderer == this ? _deferredFlags : 0;
+    }
     virtual void onMaterialChanged() {}
     virtual Material *getBuiltinMaterial() const;
     Color _color{255, 255, 255, 255};
@@ -109,6 +113,8 @@ private:
     friend class UIRendererManager;
     int32_t _internalId{-1};
     int64_t _dirtyVersion{-1};
+    int64_t _updatedVersion{-1};
+    uint32_t _deferredFlags{0};
     uint32_t _pendingFlags{0}; // Detached components can still be measured synchronously.
 };
 

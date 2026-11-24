@@ -2824,10 +2824,14 @@ void testDirtyRenderers() {
     class Probe final : public cc::UIRenderer {
     public:
         std::function<void()> run;
+        bool clearAfterCallback{false};
         void invalidate() { markRenderDirty(); }
+        void invalidateColor() { markRenderDirty(COLOR); }
+        uint32_t pending() const { return renderDirtyFlags(); }
         void updateRenderer() override {
-            clearRenderDirty();
+            if (!clearAfterCallback) clearRenderDirty();
             run();
+            if (clearAfterCallback) clearRenderDirty();
         }
     };
     auto &manager = cc::UIRendererManager::getInstance();
@@ -2862,14 +2866,13 @@ void testDirtyRenderers() {
     manager.updateAllDirtyRenderers();
     check(updates == 2, "destruction cancels queued work");
     // Removing the next item cancels its pending entry. Appends during a callback
-    // are visited in the same pass, and repeated marks of the current item coalesce.
+    // are visited in the same pass; marks before an update still coalesce.
     cc::Node root("manager-parity");
     Probe first, second, third, fourth;
     for (auto *item : {&first, &second, &third, &fourth}) item->setNode(&root);
     std::vector<int> order;
     first.run = [&] {
         order.push_back(1);
-        manager.markDirtyRenderer(&first);
         second.setEnabled(false);
         second.setEnabled(true);
         manager.markDirtyRenderer(&fourth);
@@ -2905,6 +2908,68 @@ void testDirtyRenderers() {
         check(visited == std::vector<int>{1, 2, 3},
               removeCurrent ? "self removal preserves every remaining dirty renderer"
                             : "removing an updated renderer preserves outstanding queue indices");
+    }
+
+
+    {
+        Probe renderer;
+        renderer.setNode(&root);
+        renderer.clearAfterCallback = true;
+        int count = 0;
+        renderer.run = [&] {
+            if (++count == 1) {
+                renderer.invalidateColor();
+                renderer.invalidateColor();
+            }
+        };
+        renderer.invalidate();
+        manager.updateAllDirtyRenderers();
+        check(count == 1 && renderer.pending() == 2, "self invalidation survives the update's trailing dirty clear");
+        manager.updateAllDirtyRenderers();
+        check(count == 2 && renderer.pending() == 0, "self invalidation updates exactly once in the next flush");
+        manager.updateAllDirtyRenderers();
+        check(count == 2, "deferred update becomes idle after consuming its flags");
+    }
+    {
+        Probe a, b;
+        a.setNode(&root); b.setNode(&root);
+        int count = 0;
+        a.run = [&] { ++count; };
+        b.run = [&] { a.invalidateColor(); a.invalidateColor(); };
+        a.invalidate(); b.invalidate();
+        manager.updateAllDirtyRenderers();
+        check(count == 1 && a.pending() == 2, "later renderer preserves invalidation of an already updated renderer");
+        manager.updateAllDirtyRenderers();
+        check(count == 2 && a.pending() == 0, "cross-renderer invalidation is consumed in the next flush");
+    }
+    {
+        Probe renderer;
+        renderer.setNode(&root);
+        int count = 0;
+        renderer.run = [&] {
+            if (++count == 1) {
+                renderer.setEnabled(false);
+                renderer.invalidate();
+                renderer.setEnabled(true);
+            }
+        };
+        renderer.invalidate();
+        manager.updateAllDirtyRenderers();
+        check(count == 1, "disable-enable during update cannot repeat within the current flush");
+        manager.updateAllDirtyRenderers();
+        check(count == 2, "disable-enable preserves the deferred update");
+    }
+    {
+        auto a = std::make_unique<Probe>();
+        Probe b;
+        a->setNode(&root); b.setNode(&root);
+        int count = 0;
+        a->run = [&] { ++count; a->invalidateColor(); };
+        b.run = [&] { a.reset(); };
+        a->invalidate(); b.invalidate();
+        manager.updateAllDirtyRenderers();
+        manager.updateAllDirtyRenderers();
+        check(count == 1 && !a, "destruction cancels an already queued deferred update");
     }
 
 }

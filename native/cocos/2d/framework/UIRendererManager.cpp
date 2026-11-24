@@ -48,24 +48,28 @@ void UIRendererManager::removeRenderer(UIRenderer *renderer) {
     _allRenderers[id] = _allRenderers.back();
     _allRenderers.pop_back();
     renderer->_internalId = -1;
-    if (renderer->_dirtyVersion == _dirtyVersion) {
-        auto it = std::find(_dirtyRenderers.begin(), _dirtyRenderers.end(), renderer);
-        CC_ASSERT(it != _dirtyRenderers.end());
+    if (renderer->_dirtyVersion == _dirtyVersion || (_updating && renderer->_dirtyVersion == _dirtyVersion + 1)) {
+        auto &queue = renderer->_dirtyVersion == _dirtyVersion ? _dirtyRenderers : _nextDirtyRenderers;
+        auto it = std::find(queue.begin(), queue.end(), renderer);
+        CC_ASSERT(it != queue.end());
         if (_updating) {
             // Keep every outstanding index stable while callbacks mutate the queue.
             *it = nullptr;
         } else {
-            *it = _dirtyRenderers.back();
-            _dirtyRenderers.pop_back();
+            *it = queue.back();
+            queue.pop_back();
         }
         renderer->_dirtyVersion = -1;
     }
 }
 
 void UIRendererManager::markDirtyRenderer(UIRenderer *renderer) {
-    if (renderer->_dirtyVersion == _dirtyVersion || renderer->_internalId == -1) return;
-    _dirtyRenderers.push_back(renderer);
-    renderer->_dirtyVersion = _dirtyVersion;
+    if (renderer->_internalId == -1) return;
+    const bool deferred = _updating && renderer->_updatedVersion == _dirtyVersion;
+    const auto version = _dirtyVersion + (deferred ? 1 : 0);
+    if (renderer->_dirtyVersion == version) return;
+    (deferred ? _nextDirtyRenderers : _dirtyRenderers).push_back(renderer);
+    renderer->_dirtyVersion = version;
 }
 
 void UIRendererManager::updateAllDirtyRenderers() {
@@ -73,9 +77,18 @@ void UIRendererManager::updateAllDirtyRenderers() {
     _updating = true;
     for (size_t i = 0; i < _dirtyRenderers.size(); ++i) {
         UIRenderer *renderer = _dirtyRenderers[i];
-        if (renderer) renderer->updateRenderer();
+        if (!renderer) continue;
+        _dirtyRenderers[i] = nullptr;
+        renderer->_dirtyVersion = -1;
+        renderer->_updatedVersion = _dirtyVersion;
+        renderer->_deferredFlags = 0;
+        _currentRenderer = renderer;
+        renderer->updateRenderer();
+        // The callback can destroy renderer; do not access it after returning.
+        _currentRenderer = nullptr;
     }
     _dirtyRenderers.clear();
+    _dirtyRenderers.swap(_nextDirtyRenderers);
     ++_dirtyVersion;
     _updating = false;
 }

@@ -135,15 +135,15 @@
     },
     {
       "file": "native/cocos/2d/framework/UIRenderer.h",
-      "sha256": "f9bbc4d41a891efcb91a0ca0fc411160a781120a9df19ea651d658ab7b34dcc0"
+      "sha256": "046396e645c6b8cdd3d1534d2823a1e29ee5e15b7578428b4197e56a2ae77a99"
     },
     {
       "file": "native/cocos/2d/framework/UIRendererManager.cpp",
-      "sha256": "11f641e8a890f19c3bd55df1248ed42f51c609e47bb1de9a535f8fd090a73951"
+      "sha256": "2a82495f4c8e1ae3acd5c15f5bded168ada8440e25f419f0bfda8b69ac8b0354"
     },
     {
       "file": "native/cocos/2d/framework/UIRendererManager.h",
-      "sha256": "89e094a6fa95a6171fcc39e6c7e8290f94c7f27e3da847eb4c10bb6cf3441a7b"
+      "sha256": "37cbcac875869dbb2c26ae6692308976e7a679b4d6377fab1bb73336fbaf8330"
     },
     {
       "file": "native/cocos/2d/framework/UITransform.cpp",

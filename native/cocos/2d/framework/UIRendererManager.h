@@ -41,8 +41,11 @@ public:
     void updateAllDirtyRenderers();
 
 private:
+    friend class UIRenderer;
     std::vector<UIRenderer *> _allRenderers;
     std::vector<UIRenderer *> _dirtyRenderers;
+    std::vector<UIRenderer *> _nextDirtyRenderers;
+    UIRenderer *_currentRenderer{nullptr};
     int64_t _dirtyVersion{0};
     bool _updating{false};
 };
