@@ -1,0 +1,90 @@
+{
+  "candidate": "f354774108",
+  "artifacts": "native/tests/2d-poc/build/m6-full-app-f354774108",
+  "scope": "Audited full-feature Windows cc.js, deployed with the document project resources and rebuilt audio-enabled application. Gate launchers stop processes after collecting results.",
+  "fullFeatureBundleSha256": "4A46DB4B953FED02A6CBD9F7D0DFF0BCAF2A6D87702EE86F59799E55A3FBC253",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "applicationSha256": "9F9139293548AF32E40E245F6A4CD113BFD5ED5D4717FEE1E32C10E27F32CB57",
+      "scenarioSha256": "1024dea2ea1aa017c8d8ed56f3653786ab7b444c728cc8be9aa88bc40c645cf1",
+      "atlasCycles": 1000,
+      "assetChecks": 5000,
+      "gpuChecks": 22,
+      "resourceSamples": 11,
+      "stages": [
+        {
+          "stage": "m2-pixel",
+          "gateExitCode": 0,
+          "logSha256": "3C54C0882DCF32D7B4D58ED715B227BDA7DF7832FC2AACFC288973CAB4793AA3"
+        },
+        {
+          "stage": "m3-label",
+          "gateExitCode": 0,
+          "logSha256": "265BB2422D8341E795BA22902B8145F917B199A6D59456E9375810305C05F393"
+        },
+        {
+          "stage": "m4-mask",
+          "gateExitCode": 0,
+          "logSha256": "76B7AC89F44FD10A838DEA6EF78D4C7C0D3D29B39604BF95F99A5240102C6389"
+        },
+        {
+          "stage": "m4-extra",
+          "gateExitCode": 0,
+          "logSha256": "6B7CD4A34B66CAFD7D681FFA78C54999A412C3765E1FE9D2F7244D81AAC50BCC"
+        },
+        {
+          "stage": "m5-richtext",
+          "gateExitCode": 0,
+          "logSha256": "392957F1F6A10A5EC76C2B5DC28FCF613546D39EBE11B1DC7CAE87CD1931EF77"
+        },
+        {
+          "stage": "atlas-stress",
+          "gateExitCode": 0,
+          "logSha256": "781B244150A64885BCE2C09B26BBB6F01F73D2BF7E23FAD9E9F3C060A1E871B5"
+        }
+      ]
+    },
+    {
+      "configuration": "Release",
+      "applicationSha256": "ABB410D01A1B52E74131B933B5E1F3A620D14D8856AD5EB2EFF4331FB0DD1E01",
+      "scenarioSha256": "1024dea2ea1aa017c8d8ed56f3653786ab7b444c728cc8be9aa88bc40c645cf1",
+      "atlasCycles": 1000,
+      "assetChecks": 5000,
+      "gpuChecks": 22,
+      "resourceSamples": 11,
+      "stages": [
+        {
+          "stage": "m2-pixel",
+          "gateExitCode": 0,
+          "logSha256": "C48DB1C2C47250D801A7619B8CDA0F696E4AAA9A248676C0895221CF54970C9B"
+        },
+        {
+          "stage": "m3-label",
+          "gateExitCode": 0,
+          "logSha256": "5050EC69C20DB7CB2725A722182869DF668CD4AB28AE7EF984877F5F18AD130B"
+        },
+        {
+          "stage": "m4-mask",
+          "gateExitCode": 0,
+          "logSha256": "76B7AC89F44FD10A838DEA6EF78D4C7C0D3D29B39604BF95F99A5240102C6389"
+        },
+        {
+          "stage": "m4-extra",
+          "gateExitCode": 0,
+          "logSha256": "6B7CD4A34B66CAFD7D681FFA78C54999A412C3765E1FE9D2F7244D81AAC50BCC"
+        },
+        {
+          "stage": "m5-richtext",
+          "gateExitCode": 0,
+          "logSha256": "A55011D957C3B97E56CB6AAEFE2FC239CC47A6EB479254D70DB18005C0EE2F6B"
+        },
+        {
+          "stage": "atlas-stress",
+          "gateExitCode": 0,
+          "logSha256": "D0D1A999346E549D1D45C735FB030DA620E191A8753F343ADD56C86853754073"
+        }
+      ]
+    }
+  ]
+}
