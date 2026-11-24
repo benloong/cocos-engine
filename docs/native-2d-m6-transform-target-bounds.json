@@ -1,0 +1,74 @@
+{
+  "candidate": "6ac9f67533",
+  "artifacts": "native/tests/2d-poc/build/m6-target-bounds-6ac9f67533",
+  "fixture": "native/tests/2d-poc/fixtures/check-transform-target-bounds.cjs",
+  "scope": "Identity source and direct child, rotated translated nonuniform target. Check active and inactive child, zero child width, zero parent height and exclusion of distant grandchild.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "bounds": [
+        [
+          -7.000000953674316,
+          -1,
+          5.000000953674316,
+          5
+        ],
+        [
+          -4.000000476837158,
+          -1,
+          2.000000238418579,
+          2
+        ],
+        [
+          -4.000000476837158,
+          -1,
+          2.000000238418579,
+          2
+        ],
+        [
+          -7.000000953674316,
+          0.9999998211860657,
+          3.000000476837158,
+          3.000000238418579
+        ]
+      ],
+      "exeSha256": "C2EF42AFE25B5A064284DA9FBB7C114E7C4C01E6EA0712D0B2012FBF07CC3463",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "logSha256": "C54E464B47EE3DD47335A93AAB02FFC800E5F2F221853721088864F4D6DAEDFB"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "bounds": [
+        [
+          -7.000000953674316,
+          -1,
+          5.000000953674316,
+          5
+        ],
+        [
+          -4.000000476837158,
+          -1,
+          2.000000238418579,
+          2
+        ],
+        [
+          -4.000000476837158,
+          -1,
+          2.000000238418579,
+          2
+        ],
+        [
+          -7.000000953674316,
+          0.9999998211860657,
+          3.000000476837158,
+          3.000000238418579
+        ]
+      ],
+      "exeSha256": "E7FC0A3D959DC09D66A54174D51E84118D20CBD9067EA4509AC69B27AE5C9F24",
+      "engineSha256": "BA82AFE94C1FFAB33A452A99E663F5B0395F9EBA9DFDB9A962905B64B0E7F22F",
+      "logSha256": "948C1FD9701ED853E83F1FE6445AC41E16082A5F4215860C56F97B7C2E4B25B4"
+    }
+  ]
+}
