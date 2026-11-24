@@ -1,0 +1,135 @@
+{
+  "candidate": "6255b6c179",
+  "artifacts": "native/tests/2d-poc/build/m6-font-gate-6255b6c179/paced-filesystem",
+  "scope": "Windows filesystem-only controls using the repository directory and the two DirectWrite probe fixtures. No engine or DirectWrite process was started by the control.",
+  "initialObservation": {
+    "scriptSha256": "73ac1d71ce6e226418b7efce39d379d59800236f8aed5d331f38a74173ea564e",
+    "temporaryFile": "m6f8952.tmp",
+    "operation": "CopyFileW replacing seven invalid bytes with a fixture",
+    "error": 1224,
+    "subsequentUnlinkError": 32,
+    "laterExclusiveOpenError": 0,
+    "laterFileSize": 7,
+    "laterExternalPids": [],
+    "removedAfterRecheck": true,
+    "limit": "The first run terminated on the copy exception before writing its per-round results. It did not capture the PID at failure."
+  },
+  "controls": {
+    "mappedView": {
+      "scriptSha256": "9145eef386afb015a91e62862fe0a6836e71259457a2b4597890ef8e5fe2cb38",
+      "method": "A child mapped the seven bytes read-only and closed its reader and section handles. The parent tested exclusive open and fixture replacement while the view existed, then repeated the copy after unmapping.",
+      "results": [
+        {
+          "exclusiveOpenError": 0,
+          "copyError": 1224,
+          "copyAfterUnmap": true
+        },
+        {
+          "exclusiveOpenError": 0,
+          "copyError": 1224,
+          "copyAfterUnmap": true
+        },
+        {
+          "exclusiveOpenError": 0,
+          "copyError": 1224,
+          "copyAfterUnmap": true
+        }
+      ]
+    },
+    "reader": {
+      "scriptSha256": "9e0f5645612e0785a9786bc79936d006a0cd6a19a5cedd5ef156b4c1e8819eea",
+      "method": "Sample file users before opening the child reader, during its lifetime immediately after the failed exclusive open, and after closing it.",
+      "results": [
+        {
+          "reader": 16340,
+          "before": [],
+          "error": 32,
+          "during": [
+            16340
+          ],
+          "after": [],
+          "afterError": 0
+        },
+        {
+          "reader": 3832,
+          "before": [],
+          "error": 32,
+          "during": [
+            3832
+          ],
+          "after": [],
+          "afterError": 0
+        },
+        {
+          "reader": 41128,
+          "before": [],
+          "error": 32,
+          "during": [
+            41128
+          ],
+          "after": [],
+          "afterError": 0
+        }
+      ]
+    }
+  },
+  "followup": {
+    "method": "Two runs of up to 250 replacements, requesting exclusive opens at offsets of 0, 1, 4 and 8 ms from each copy. File-user queries bracket every attempt. Offsets are requested minimum delays, not measured sampling times.",
+    "scriptSha256": "ba8d928338fe91a8816a4776059e01a2de8ad75c668fef978a70db5d1b4e958c",
+    "results": [
+      {
+        "round": 1,
+        "counts": [
+          {
+            "delayMs": 0,
+            "error": 0,
+            "n": 250
+          },
+          {
+            "delayMs": 1,
+            "error": 0,
+            "n": 250
+          },
+          {
+            "delayMs": 4,
+            "error": 0,
+            "n": 250
+          },
+          {
+            "delayMs": 8,
+            "error": 0,
+            "n": 250
+          }
+        ],
+        "failures": []
+      },
+      {
+        "round": 2,
+        "counts": [
+          {
+            "delayMs": 0,
+            "error": 0,
+            "n": 250
+          },
+          {
+            "delayMs": 1,
+            "error": 0,
+            "n": 250
+          },
+          {
+            "delayMs": 4,
+            "error": 0,
+            "n": 250
+          },
+          {
+            "delayMs": 8,
+            "error": 0,
+            "n": 250
+          }
+        ],
+        "failures": []
+      }
+    ]
+  },
+  "interpretation": "An overwrite can fail with a mapped-file error in the same directory without the engine running. A mapped view alone sufficed for error 1224 in the control and still allowed exclusive open. The historical error 32 occurred on exclusive open; its owner remains unknown."
+}
