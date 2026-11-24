@@ -1,0 +1,20 @@
+{
+  "candidate": "8ee11b673e",
+  "suite": "font",
+  "runs": [
+    {
+      "configuration": "Debug",
+      "exitCode": 0,
+      "result": "DirectWrite file cycles 1000 handles 252 -> 252 GDI 0 -> 0",
+      "log": "native/tests/2d-poc/build/m6-reaccept-f4b34b90ca1b4bb29f8e60661953eae6/Debug-font.log",
+      "sha256": "edd46cfe159f4eaaf3493c0c8760eb55599b3d99f08e976801861cab146aabc0"
+    },
+    {
+      "configuration": "Release",
+      "exitCode": 0,
+      "result": "DirectWrite file cycles 1000 handles 242 -> 242 GDI 0 -> 0",
+      "log": "native/tests/2d-poc/build/m6-reaccept-f4b34b90ca1b4bb29f8e60661953eae6/Release-font.log",
+      "sha256": "9bed9e4a10ee227e5ee5256c57674299b4142b763b5b6a76452dafadb47873e2"
+    }
+  ]
+}
