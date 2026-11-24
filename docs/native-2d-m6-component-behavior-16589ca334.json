@@ -1,0 +1,100 @@
+{
+  "candidate": "16589ca3342e17e62c9bfc358d9212a4abd3ccd3",
+  "scope": "Windows offline Jest component regression using the 18 M6 suites and prior Web exclusions, including newly added assertions.",
+  "artifacts": "native/tests/2d-poc/build/m6-behavior-16589ca334",
+  "bitmapFixture": "2327 generated cases evaluated by test_bitmap_layout.cpp built with g++ -std=c++17 -O2. CC_BITMAP_LAYOUT_FIXTURE points to bitmap-fixture.json.",
+  "fixtureSha256": "34CFA37BF46188674B5FE62360FBEEDED6E14B03E89E217457D9E527239D136D",
+  "passed": 128,
+  "failed": 0,
+  "excluded": [
+    "a generated rectangle mesh follows rotated atlas corners and live flips",
+    "authored polygon vertices retain native serialization, mesh bounds and independent clones",
+    "destroying a Web SpriteFrame releases its mesh at frame end and leaves the clone valid",
+    "native bitmap layout matches actual Web TextProcessing",
+    "Web bitmap font reloads edits to its assigned config",
+    "Web bitmap font reloads edits to its assigned config",
+    "Web font assets share one registration and can reuse preloaded data after release",
+    "Web generated mesh buffers, clone and texture refresh match the Windows JSB fixture",
+    "Web loader returns a raw alias for fonts/A,B.ttf",
+    "Web loader returns a raw alias for fonts/Alibaba PuHuiTi 3.0.ttf",
+    "Web loader returns a raw alias for fonts/Font3.0.ttf",
+    "Web registers only the successful font face when a timed-out request is retried"
+  ],
+  "suites": [
+    {
+      "file": "tests/ui/native-bitmap-layout-parity.test.ts",
+      "passed": 1
+    },
+    {
+      "file": "tests/ui/native-2d-m4-mask-shell.test.ts",
+      "passed": 7
+    },
+    {
+      "file": "tests/ui/native-2d-m1-shell.test.ts",
+      "passed": 2
+    },
+    {
+      "file": "tests/ui/native-render-root-lifecycle.test.ts",
+      "passed": 4
+    },
+    {
+      "file": "tests/assets/native-font-assets-jit.test.ts",
+      "passed": 21
+    },
+    {
+      "file": "tests/ui/native-2d-m6-richtext-shell.test.ts",
+      "passed": 8
+    },
+    {
+      "file": "tests/ui/native-2d-m3-label-shell.test.ts",
+      "passed": 16
+    },
+    {
+      "file": "tests/ui/native-2d-m2-sprite-frame-shell.test.ts",
+      "passed": 6
+    },
+    {
+      "file": "tests/ui/native-2d-m2-sprite-shell.test.ts",
+      "passed": 9
+    },
+    {
+      "file": "tests/scene-graph/native-node-constructor.test.ts",
+      "passed": 1
+    },
+    {
+      "file": "tests/assets/native-sprite-atlas.test.ts",
+      "passed": 8
+    },
+    {
+      "file": "tests/asset-manager/factory.test.ts",
+      "passed": 5
+    },
+    {
+      "file": "tests/ui/native-2d-m6-layout-shell.test.ts",
+      "passed": 8
+    },
+    {
+      "file": "tests/core/deserialize-jit.test.ts",
+      "passed": 4
+    },
+    {
+      "file": "tests/assets/native-font-assets.test.ts",
+      "passed": 20
+    },
+    {
+      "file": "tests/assets/native-material-instance.test.ts",
+      "passed": 3
+    },
+    {
+      "file": "tests/ui/font-loader.test.ts",
+      "passed": 2
+    },
+    {
+      "file": "tests/core/deserialize.test.ts",
+      "passed": 3
+    }
+  ],
+  "resultsSha256": "C65583B3B7110FF9BF8668AD27139C72FA768A46BE503A1A85193B10B17D0C7F",
+  "logSha256": "65ABE7B3D3B8D707C36A5E49FD0BEA56BBCCA026896BB62889804C5391FBC900",
+  "diagnostics": "Jest initialization logged mesh-codec WebAssembly instantiation errors. The selected assertions completed."
+}
