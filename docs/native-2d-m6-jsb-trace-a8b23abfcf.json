@@ -1,0 +1,40 @@
+{
+  "candidate": "a8b23abfcf1bed872cbd822b9c62604be79aa288",
+  "artifacts": "native/tests/2d-poc/build/m6-jsb-trace-a8b23abfcf",
+  "scope": "Windows GPU fixture with RECORD_JSB_INVOKING. Both native applications rebuilt against candidate-equivalent engine sources. cc.js built from detached candidate, historical scoped scene assets reused. Application calls game.end() after the last trace marker.",
+  "validator": "native/tests/2d-poc/summarize-jsb-trace.cjs",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "windows": 136,
+      "cases": 20,
+      "steadyWindows": 14,
+      "framesPerSteadyWindow": 60,
+      "directMigratedCallsInSteadyWindows": 0,
+      "managerUpdatesPerSteadyWindow": 60,
+      "independentAssetCases": 6,
+      "processExitCode": 0,
+      "exeSha256": "3EDD7FD1B5B0F068CB13BA7EB1BD19F538F337E4C4A50C32E906E127B729B039",
+      "engineSha256": "5F181F4375AD66EEF58F01137CC3A7B87F800A66020B30C15D32D09BB9772383",
+      "buildLogSha256": "7726C72A61D4E5917D22223EB543B4EDBBC1105BB65165982BCA1832F44323AA",
+      "traceSha256": "5072A7F7806574BC52D7CB0519023AB52C44F6F0F9270F245DA2583D61862138",
+      "stdoutSha256": "DA600C764F36997A81BF0FBBAFD237C32D7BEF36A0A9ABB48C536FC35A240DEA"
+    },
+    {
+      "configuration": "Release",
+      "windows": 136,
+      "cases": 20,
+      "steadyWindows": 14,
+      "framesPerSteadyWindow": 60,
+      "directMigratedCallsInSteadyWindows": 0,
+      "managerUpdatesPerSteadyWindow": 60,
+      "independentAssetCases": 6,
+      "processExitCode": 0,
+      "exeSha256": "9F2FD0D6C59ED266551FD089597C8FED65F4E0FABF4039DD514E53CC488DEB3D",
+      "engineSha256": "5F181F4375AD66EEF58F01137CC3A7B87F800A66020B30C15D32D09BB9772383",
+      "buildLogSha256": "2D53309C8261C37090E24278B64269C6F59F4068B9F978566D3F3FD59104DEB6",
+      "traceSha256": "596847B9A6A35CF1BD6B96DA05420F1B9306BAAC6C19ED759DD6524214E61A22",
+      "stdoutSha256": "020A5801D084BB80C9D05A24200615C1C68DFD4D613C48F67F93FDDB7BA608B2"
+    }
+  ]
+}
