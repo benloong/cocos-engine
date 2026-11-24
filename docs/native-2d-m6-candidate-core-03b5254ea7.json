@@ -1,0 +1,378 @@
+{
+  "date": "2026-11-24",
+  "candidate": "03b5254ea726f567a1bf5ddacf5d800a455703a6",
+  "engine": {
+    "sha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+    "sourceFiles": 474,
+    "modules2d": 84,
+    "features": [
+      "base",
+      "2d",
+      "rich-text",
+      "graphics",
+      "mask",
+      "ui",
+      "affine-transform",
+      "custom-pipeline",
+      "custom-pipeline-builtin-scripts"
+    ],
+    "receiptSha256": "484a22cb7490bc186a0b17d291677597751e8f29a036b09299cf557bb088636e",
+    "receipt": "native/tests/2d-poc/build/m6-candidate-03b5254ea7/engine-final/candidate-engine.json",
+    "cleanSource": true,
+    "webAssemblerBytes": 0
+  },
+  "sourceEquivalence": {
+    "candidate": "03b5254ea726f567a1bf5ddacf5d800a455703a6",
+    "nativeSourceHashMatches": 98,
+    "normalization": "CRLF -> LF as used by audit-m6.cjs",
+    "resourceFixtureChangesSince529cb53636": [],
+    "nativeSourceChangesSinceLastBuildE1f556f8a2": [],
+    "resourceSnapshot": "2b133a87ed6f4293cb2d7e5a9aa3c10071b79c524dfbf464fef5563b5c135de1",
+    "note": "Resources and Native binaries reused after source-equivalence checks; Native override rebuilt from clean candidate."
+  },
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "captures": 146,
+      "centers": 46,
+      "areas": 55,
+      "hits": 22,
+      "roots": 11,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "lifecycleChecks": 20,
+      "byteIdenticalToNativeReference": 146,
+      "maxChannelDifference": 0,
+      "lifecycle": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "live-scene",
+            "passed": true
+          },
+          {
+            "name": "mask-false-backend-created",
+            "passed": true
+          },
+          {
+            "name": "mask-false-load-state",
+            "passed": true
+          },
+          {
+            "name": "mask-false-destroy-queued",
+            "passed": true
+          },
+          {
+            "name": "mask-false-pending-read-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-false-helper-retired",
+            "passed": true
+          },
+          {
+            "name": "mask-false-owner-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-false-no-resurrection",
+            "passed": true
+          },
+          {
+            "name": "mask-true-backend-created",
+            "passed": true
+          },
+          {
+            "name": "mask-true-load-state",
+            "passed": true
+          },
+          {
+            "name": "mask-true-destroy-queued",
+            "passed": true
+          },
+          {
+            "name": "mask-true-pending-read-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-true-helper-retired",
+            "passed": true
+          },
+          {
+            "name": "mask-true-owner-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-true-no-resurrection",
+            "passed": true
+          },
+          {
+            "name": "graphics-builtin-available",
+            "passed": true
+          },
+          {
+            "name": "graphics-staged-slots",
+            "passed": true
+          },
+          {
+            "name": "graphics-preload-owner",
+            "passed": true
+          },
+          {
+            "name": "graphics-load-retains-instance",
+            "passed": true
+          },
+          {
+            "name": "graphics-destroy-releases-owner",
+            "passed": true
+          }
+        ]
+      },
+      "manifestSha256": "c0307c979af52849b25926dea5e39c3577c32969fcc03ddf9f961150c15f34f1",
+      "lifecycleSha256": "06f9321ed42a0f9708997a1f6d9a34637e03feda774dc63c498a624abdc480ac",
+      "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "executableSha256": "f77506ca8d821d1080de5c2a1772428cd05f1546af122f7d82974e692927e739",
+      "stdoutSha256": "0b89f9fe424ca4a0936ccbf80a35acc39cc2523cc369ddaeefa5a455993159ce",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mainSha256": "50d9ed317ba7aaabb3b054023529d627f72bcde7be51b607e30d3bebf590a6dc",
+      "deployedLifecycleFixtureSha256": "355ad74743c7db8c627108aefa6a9b78763544d5389e7966fe8768b87142151b"
+    },
+    {
+      "configuration": "Release",
+      "captures": 146,
+      "centers": 46,
+      "areas": 55,
+      "hits": 22,
+      "roots": 11,
+      "sceneCycles": 1000,
+      "sceneAssertions": 4998,
+      "lifecycleChecks": 20,
+      "byteIdenticalToNativeReference": 146,
+      "maxChannelDifference": 0,
+      "lifecycle": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "live-scene",
+            "passed": true
+          },
+          {
+            "name": "mask-false-backend-created",
+            "passed": true
+          },
+          {
+            "name": "mask-false-load-state",
+            "passed": true
+          },
+          {
+            "name": "mask-false-destroy-queued",
+            "passed": true
+          },
+          {
+            "name": "mask-false-pending-read-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-false-helper-retired",
+            "passed": true
+          },
+          {
+            "name": "mask-false-owner-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-false-no-resurrection",
+            "passed": true
+          },
+          {
+            "name": "mask-true-backend-created",
+            "passed": true
+          },
+          {
+            "name": "mask-true-load-state",
+            "passed": true
+          },
+          {
+            "name": "mask-true-destroy-queued",
+            "passed": true
+          },
+          {
+            "name": "mask-true-pending-read-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-true-helper-retired",
+            "passed": true
+          },
+          {
+            "name": "mask-true-owner-empty",
+            "passed": true
+          },
+          {
+            "name": "mask-true-no-resurrection",
+            "passed": true
+          },
+          {
+            "name": "graphics-builtin-available",
+            "passed": true
+          },
+          {
+            "name": "graphics-staged-slots",
+            "passed": true
+          },
+          {
+            "name": "graphics-preload-owner",
+            "passed": true
+          },
+          {
+            "name": "graphics-load-retains-instance",
+            "passed": true
+          },
+          {
+            "name": "graphics-destroy-releases-owner",
+            "passed": true
+          }
+        ]
+      },
+      "manifestSha256": "36b10179090d617925ad83aaa95e3d6665ec92e7000f4c4db7b27c435b9eb19f",
+      "lifecycleSha256": "06f9321ed42a0f9708997a1f6d9a34637e03feda774dc63c498a624abdc480ac",
+      "engineSha256": "95483396adbc0d44adf33aa34e630f339ec4312ed525a799acf5592f887f1d2a",
+      "executableSha256": "9b11e15c236295420d6e557b874017966b915d7c9c047e0b019b4dfacb0f41cd",
+      "stdoutSha256": "ff98785900470ca28dded7132137c57f7d32981f41f7642d186aac4fc1135a24",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mainSha256": "64d9d12e1666c0424de39bda040b93cbf1a50460531d5fa1400c9dd4d1605c56",
+      "deployedLifecycleFixtureSha256": "355ad74743c7db8c627108aefa6a9b78763544d5389e7966fe8768b87142151b"
+    }
+  ],
+  "validation": {
+    "file": "native/tests/2d-poc/build/m6-candidate-03b5254ea7/verified/validation.json",
+    "sha256": "2ea1c036f8789e47526fe9117eed13ac3c88e90a2a3ab3bd633b6f22de054c73",
+    "exitCode": 0
+  },
+  "runnerFinalRelease": {
+    "exitCode": 0,
+    "result": {
+      "diagnostics": [],
+      "configuration": "Release",
+      "executableSha256": "9B11E15C236295420D6E557B874017966B915D7C9C047E0B019B4DFACB0F41CD",
+      "reason": "complete",
+      "engineSha256": "95483396ADBC0D44ADF33AA34E630F339EC4312ED525A799ACF5592F887F1D2A",
+      "passed": true,
+      "seconds": 78.4972334
+    },
+    "lifecycle": {
+      "passed": true,
+      "checks": [
+        {
+          "name": "live-scene",
+          "passed": true
+        },
+        {
+          "name": "mask-false-backend-created",
+          "passed": true
+        },
+        {
+          "name": "mask-false-load-state",
+          "passed": true
+        },
+        {
+          "name": "mask-false-destroy-queued",
+          "passed": true
+        },
+        {
+          "name": "mask-false-pending-read-empty",
+          "passed": true
+        },
+        {
+          "name": "mask-false-helper-retired",
+          "passed": true
+        },
+        {
+          "name": "mask-false-owner-empty",
+          "passed": true
+        },
+        {
+          "name": "mask-false-no-resurrection",
+          "passed": true
+        },
+        {
+          "name": "mask-true-backend-created",
+          "passed": true
+        },
+        {
+          "name": "mask-true-load-state",
+          "passed": true
+        },
+        {
+          "name": "mask-true-destroy-queued",
+          "passed": true
+        },
+        {
+          "name": "mask-true-pending-read-empty",
+          "passed": true
+        },
+        {
+          "name": "mask-true-helper-retired",
+          "passed": true
+        },
+        {
+          "name": "mask-true-owner-empty",
+          "passed": true
+        },
+        {
+          "name": "mask-true-no-resurrection",
+          "passed": true
+        },
+        {
+          "name": "graphics-builtin-available",
+          "passed": true
+        },
+        {
+          "name": "graphics-staged-slots",
+          "passed": true
+        },
+        {
+          "name": "graphics-preload-owner",
+          "passed": true
+        },
+        {
+          "name": "graphics-load-retains-instance",
+          "passed": true
+        },
+        {
+          "name": "graphics-destroy-releases-owner",
+          "passed": true
+        }
+      ]
+    }
+  },
+  "negativePixelControl": {
+    "exitCode": 1,
+    "result": "One modified RGBA byte was rejected as Native pixel regression; original bytes and hash restored, validation passed again.",
+    "logSha256": "c3188cde90425c6c84f6d6424a4bec4d98f75efc307012248375a316920f63f9"
+  },
+  "toolSourceSha256": {
+    "native/tests/2d-poc/build-m6-candidate-engine.cjs": "b6a9c839c4bd5c192474e11bbf83bf97eebdbfe55bb81816321a099b551eb135",
+    "native/tests/2d-poc/run-m6-candidate-core.ps1": "f5b4ac9188b431335a17e68183a4cd19f0c7daa9e90e0497d34a0bd3062461d0",
+    "native/tests/2d-poc/validate-m6-candidate-core.cjs": "96772d17ef56d17988014e54d87f6a92e6b59b660d1b3bedf8b0f73b600c9b98",
+    "native/tests/2d-poc/fixtures/acceptance/M6CandidateLifecycle.js": "a34c84604f3d976b536573cd38aa767116dabad23c27833bf8d419b6670a6b3b"
+  },
+  "diagnostics": [
+    "Missing generated PAL, DebugInfos and const declarations were prepared in the clean checkout.",
+    "The initial all-feature recipe was replaced by the already approved nine-feature M6 core recipe; that initial build is not a passing result.",
+    "Visualizer Windows root-relative module IDs were corrected; the final build requires Label/Mask/Graphics input fingerprints and recorded 474 files.",
+    "The initial new lifecycle hook incorrectly captured global cc; it was fixed to import the SystemJS namespace and the whole matrix was rerun.",
+    "Candidate runtime manifest omits capture-time SHA values; validator records post-run SHA values and verifies retained reference hashes.",
+    "Initial runner inherited robocopy exit 1 although both app rows passed; explicit success exit was added and final Release rerun returned 0.",
+    "First verified lifecycle fixture had a UTF-8 BOM; final Release rerun uses the committed UTF-8 bytes without BOM."
+  ],
+  "limits": [
+    "Native binaries were reused from the e1f556f8a2 implementation build after verifying unchanged Native source; they were not rebuilt from scratch in this clean checkout.",
+    "CLI-generated application assets were reused after proving both fixture directories unchanged since 529cb53636; Native cc.js was freshly rebuilt and hash-checked on deployment.",
+    "Resources retain their historical snapshot label; engine provenance is the clean candidate revision and cc.js hash, not that label.",
+    "The process is stopped by the runner after completion because the application remains in its frame loop.",
+    "This signs off the listed core matrix and 20 real application checks, not the entire M6 plan.",
+    "RichText/font application, documentation-project gates, other API/resource combinations and final consolidated sign-off remain pending.",
+    "No Web or SpriteRenderer/ModelRenderer acceptance is added."
+  ]
+}
