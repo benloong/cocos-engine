@@ -199,19 +199,19 @@
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.cpp",
-      "sha256": "1a27ccecfc07f415c07ae9747236adb02d4384e84ea1d613d406e0946e936603"
+      "sha256": "cf1153356a08188b21e9ce5f160c5c4628f3ea20d6178fbf982708999eb89339"
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.h",
-      "sha256": "cfba9370de0c3a2ade604f4e958474e3d2b45af5777ba37c5d71c4760b55a6bb"
+      "sha256": "0e8c93100a9691cc705659ad62295bd6e74105ed954fa21e3db42a6f70f29ff8"
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.cpp",
-      "sha256": "c6b3876d4715695c01efdb3d683177a5f9c218b8c94a08883dc05cfb0c2fba2d"
+      "sha256": "02720ed7f2ae23cd6176d71c12f16978a3d98cb765351069ba9a37e4ce6a0c93"
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.h",
-      "sha256": "b2b59ad13ce10b228c913e8c49c08efa3c886d2d21dac1be364ddfe2441f5091"
+      "sha256": "93d8602b6b65d7ad2b0d0388ada69b7b4cdb65435bab035127216df93a3c4755"
     },
     {
       "file": "native/cocos/2d/renderer/RichTextLayout.cpp",
