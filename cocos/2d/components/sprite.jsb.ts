@@ -76,6 +76,12 @@ export class Sprite extends UIRenderer {
     private _native: any = null;
     private _fillCenterView: Vec2 | null = null;
 
+    get priority (): number { return super.priority; }
+    set priority (value: number) {
+        super.priority = value;
+        this._native?.setPriority(value);
+    }
+
     @type(SpriteAtlas)
     get spriteAtlas (): SpriteAtlas | null { return this._atlas; }
     set spriteAtlas (value: SpriteAtlas | null) { this._atlas = value; }

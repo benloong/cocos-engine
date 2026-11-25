@@ -59,6 +59,12 @@ export class Graphics extends UIRenderer {
     private _mask: any = null;
     private _nativeDestroyed = false;
 
+    get priority (): number { return super.priority; }
+    set priority (value: number) {
+        super.priority = value;
+        this._native?.setPriority(value);
+    }
+
     private _ensureNative (): any {
         if (this._nativeDestroyed || !this.isValid) return null;
         if (!this._native) {

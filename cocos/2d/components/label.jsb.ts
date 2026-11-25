@@ -184,6 +184,12 @@ export class Label extends UIRenderer {
     private _native: any = null;
     protected _contentWidth = 0;
 
+    get priority (): number { return super.priority; }
+    set priority (value: number) {
+        super.priority = value;
+        this._native?.setPriority(value);
+    }
+
     get contentWidth (): number { return this._native?.getTTFContentWidth() ?? this._contentWidth; }
     set contentWidth (width: number) {
         this._contentWidth = width;
