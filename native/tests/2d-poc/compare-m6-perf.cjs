@@ -58,6 +58,7 @@ for (const target of nativeOnly ? ['before', 'after'] : ['before', 'after', 'web
             if (result.samples.length !== 120 || result.samples.some(r => r.length !== 3 || r.some(x => !Number.isFinite(x) || x < 0) || !r[2])) {
                 throw new Error('Invalid samples: ' + file);
             }
+            if (gate && 'ttfStages' in result) throw new Error('Diagnostic stage counters in formal measurement: ' + file);
             if (gate && ('gcTrace' in result || !Number.isFinite(result.forcedGcMs) || result.forcedGcMs <= 0)) {
                 throw new Error('Invalid untraced forced collection: ' + file);
             }

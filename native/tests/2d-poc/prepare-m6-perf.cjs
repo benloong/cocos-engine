@@ -42,6 +42,18 @@ instrument('native/cocos/bindings/jswrapper/v8/HelperMacros.h', [
 ]);
 const hook = 'SE_BIND_FUNC(js_performance_now)';
 const labelStages = process.argv.includes('--label-stages');
+const meshAudit = process.argv.includes('--mesh-upload-audit');
+const meshHeader = path.join(source, 'native/cocos/M6MeshUploadAudit.h');
+if (meshAudit || fs.existsSync(meshHeader)) {
+    if (meshAudit && (key !== 'after' || platform !== 'WINDOWS' || labelStages || traceGc)) {
+        throw new Error('Mesh upload audit requires a dedicated Windows candidate measurement build');
+    }
+    for (const [file, edits] of Object.entries(require('./m6-mesh-upload-audit.cjs'))) {
+        instrument(file, meshAudit ? edits : []);
+    }
+    if (meshAudit) fs.copyFileSync(path.join(__dirname, 'm6-mesh-upload-audit.h'), meshHeader);
+    else fs.unlinkSync(meshHeader);
+}
 const labelFile = 'native/cocos/2d/components/Label.cpp';
 const timer = 'M6TtfTimer.h';
 if (labelStages) {
@@ -80,6 +92,7 @@ if (labelStages) {
     instrument(labelFile, []);
 }
 let bindings = fs.readFileSync(path.join(__dirname, 'm6-perf-bindings.inc'), 'utf8');
+if (meshAudit) bindings = '#include "M6MeshUploadAudit.h"\n' + bindings.replace('std::to_string(heap.used_heap_size())', 'std::to_string(heap.used_heap_size()) + m6mesh::drain()');
 if (labelStages) bindings = '#include "M6TtfTimer.h"\n' + bindings.replace('std::to_string(heap.used_heap_size())', 'std::to_string(heap.used_heap_size()) + M6TtfTimer::drain()');
 if (traceGc) bindings = '#define CC2D_M6_TRACE_GC\n' + bindings;
 const traceRegistration = traceGc ? '    __jsbObj->defineFunction("traceM6Gc", _SE(js_traceM6Gc));\n' : '';

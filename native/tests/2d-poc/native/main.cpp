@@ -410,6 +410,19 @@ void testUiBatchInputResources() {
     cc::RenderDrawInfo info;
     info.setIsMeshBuffer(true); info.setStride(8); info.setVbCount(4); info.setIbCount(6);
     auto *ia = info.requestIA(cc::Root::getInstance()->getDevice());
+    // JS-owned mesh arrays have no native write notifications.
+    float vertices[4 * 8]{};
+    uint16_t indices[]{0, 1, 2, 1, 3, 2};
+    info.setVDataBuffer(vertices);
+    info.setIDataBuffer(indices);
+    info.uploadBuffers();
+    check(ia->getVertexBuffers()[0]->getSize() == sizeof(vertices) && ia->getIndexBuffer()->getSize() == sizeof(indices),
+          "Untracked mesh uploads both initial buffers");
+    info.setVbCount(3);
+    info.setIbCount(3);
+    info.uploadBuffers();
+    check(ia->getVertexBuffers()[0]->getSize() == 3 * 8 * sizeof(float) && ia->getIndexBuffer()->getSize() == 3 * sizeof(uint16_t),
+          "Untracked mesh resubmits both buffers without native dirty flags");
     cc::IntrusivePtr<cc::gfx::InputAssembler> iaGuard(ia);
     cc::IntrusivePtr<cc::gfx::Buffer> vertexGuard(ia->getVertexBuffers()[0]);
     cc::IntrusivePtr<cc::gfx::Buffer> indexGuard(ia->getIndexBuffer());
