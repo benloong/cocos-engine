@@ -1,0 +1,302 @@
+{
+  "scope": "Windows x64 Native/JSB, Debug and Release, local assets and current serialized format",
+  "date": "2026-11-25",
+  "runtime": "36af6fdcf6c1185a97a069763b43fe6e2fbf06b7",
+  "packagedRepositoryRevision": "c9a19863e3bd4779fb5253c1724fa56648f49c98",
+  "behaviorFixtureRevision": "cb094dfdec12288eef2614d9462f1a90e1fc9f34",
+  "formalWindowsGatesPassed": true,
+  "build": "Fresh cocos-cli Windows export of cocos-m1-test, native override rebuild, CMake Debug/Release, resource hash checks. Debug player uses the same Debug engine with the debugger listener disabled.",
+  "M0": {
+    "fingerprintsRefreshed": 9,
+    "bitmapCasesPerBackend": 2327,
+    "case2307": {
+      "width": 8.5,
+      "height": 16,
+      "glyphs": 1
+    },
+    "nativeJest": {
+      "suites": 18,
+      "tests": 136
+    },
+    "assetManagerJest": {
+      "suites": 13,
+      "tests": 77
+    },
+    "existingSpriteFrameAndGraphicsJest": {
+      "suites": 2,
+      "tests": 3
+    },
+    "nativeSpriteFrameUv": true,
+    "geometryInputs": 786,
+    "nativeTS": true
+  },
+  "publicInterface": {
+    "classes": 15,
+    "members": 192,
+    "directCases": 75,
+    "otherCases": 7,
+    "compatibilityAndDeprecatedExcluded": true,
+    "inventoryDeclarationSha256": "a6f8aacfd0615048597202cbcf8df9544a3a2525624c20b88c5d53f2aacace78",
+    "screenCameraBeforeAndAfter": [
+      {
+        "fixture": "old",
+        "applicationSha256": "97114266e1985d0ff9cdf67ac6d6eab2bcac751703a15eeee45eacfe1a680545",
+        "beforeCase": {
+          "offscreen": true,
+          "hitNow": false,
+          "window": 1
+        },
+        "failedCases": [
+          "active window screen center and outside"
+        ],
+        "total": 82
+      },
+      {
+        "fixture": "fixed",
+        "applicationSha256": "97114266e1985d0ff9cdf67ac6d6eab2bcac751703a15eeee45eacfe1a680545",
+        "beforeCase": {
+          "offscreen": true,
+          "hitNow": false,
+          "window": 1
+        },
+        "failedCases": [],
+        "total": 82
+      }
+    ]
+  },
+  "bindings": {
+    "files": 12,
+    "metadataTests": 4
+  },
+  "windowsFeatureBuilds": 9,
+  "deployedGraphModules": 84,
+  "configs": {
+    "Debug": {
+      "executableSha256": "16f1240cdf382e805e0d59777a69ecbe9d4bd87a5ba64740177b84e11d514295",
+      "deployedEngineSha256": "ba8370cb78c66581c6d6362612bac2f429767db5de03f173331ac25d9200f13a",
+      "publicChecks": 11,
+      "behaviorCases": 82,
+      "priorityMatchedPixelsPerState": {
+        "Sprite": 4096,
+        "Label": 331,
+        "Graphics": 4096
+      },
+      "documentImages": 104,
+      "maximumDocumentChannelDelta": 0,
+      "core": {
+        "captures": 146,
+        "centers": 46,
+        "areas": 55,
+        "hits": 22,
+        "roots": 11,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "lifecycleChecks": 20
+      },
+      "maximumCoreChannelDelta": 0,
+      "offlineRichTextRuns": 3,
+      "offlineRichTextImagesPerRun": 58,
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "directWriteFileCycles": 1000,
+      "nativeJsbProbes": 7,
+      "traceWindows": 136,
+      "steadyDirectCalls": 0,
+      "normalM5Exit": 0,
+      "startupSeconds": [
+        42.0187957,
+        42.5644812,
+        41.8218122,
+        41.9296636,
+        42.0297959,
+        41.9366113,
+        41.8837281,
+        41.9294208,
+        42.503765,
+        41.7904437
+      ]
+    },
+    "Release": {
+      "executableSha256": "97114266e1985d0ff9cdf67ac6d6eab2bcac751703a15eeee45eacfe1a680545",
+      "deployedEngineSha256": "ba8370cb78c66581c6d6362612bac2f429767db5de03f173331ac25d9200f13a",
+      "publicChecks": 11,
+      "behaviorCases": 82,
+      "priorityMatchedPixelsPerState": {
+        "Sprite": 4096,
+        "Label": 331,
+        "Graphics": 4096
+      },
+      "documentImages": 104,
+      "maximumDocumentChannelDelta": 0,
+      "core": {
+        "captures": 146,
+        "centers": 46,
+        "areas": 55,
+        "hits": 22,
+        "roots": 11,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "lifecycleChecks": 20
+      },
+      "maximumCoreChannelDelta": 0,
+      "offlineRichTextRuns": 3,
+      "offlineRichTextImagesPerRun": 58,
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "directWriteFileCycles": 1000,
+      "nativeJsbProbes": 7,
+      "traceWindows": 136,
+      "steadyDirectCalls": 0,
+      "normalM5Exit": 0,
+      "startupSeconds": [
+        39.4515986,
+        38.9388879,
+        39.8220262,
+        39.4098975,
+        39.3660614,
+        39.2910613,
+        39.3324382,
+        39.3736049,
+        39.3151454,
+        39.8487113
+      ]
+    }
+  },
+  "M2Performance": {
+    "nativeSceneNsPerSprite": 152.3,
+    "nativePrepareNs": 280.3,
+    "jsSceneNsPerSprite": 513.5,
+    "jsUpdateRendererNs": 653.7,
+    "improvementPercent": 70.3,
+    "thresholdPercent": 30,
+    "pass": true
+  },
+  "M6ReleasePerformance": {
+    "baseline": "7e837342996a7a3c20b013d93e38f19ad3fac2c2",
+    "candidate": "36af6fdcf6c1185a97a069763b43fe6e2fbf06b7",
+    "freshPairs": 6,
+    "runOrder": [
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ],
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ],
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ]
+    ],
+    "workloadSha256": "e12702248ebf29c5b9f6c0541107c30df6640279b9f230f5c14df9a1515d1df7",
+    "scene": {
+      "files": 50,
+      "sha256": "10a8f524d2c13f6f99e01f43c545b3a73652a3f3065d1811d581421dcbe835d2",
+      "bootstrapSha256": "e657c2b786a0fd81bddfe62607248a573c8f7d5b869a130464def1e856751c3e"
+    },
+    "mixedDirtyReductionPercent": {
+      "cpuMs": 55.04095106019192,
+      "setterMs": 78.83832123237868,
+      "prepareMs": 63.37043748384408,
+      "batchMs": 0.6198220312979452,
+      "jsbCalls": 77.51141552511416,
+      "peakJsBytes": 43.718591911035176,
+      "forcedGcMs": 32.38703051644358
+    },
+    "targets": {
+      "cpu": true,
+      "jsb": true,
+      "peakJsHeap": true,
+      "forcedGc": true
+    },
+    "previousRawReplayMatches": true
+  },
+  "meshAudit": {
+    "evidence": "Replay of three previously collected diagnostic runs at the same runtime revision",
+    "checkedBuffers": 961224,
+    "source": "m6-batch-release.zip",
+    "sourceArchiveSha256": "099704e2da6cd804e25777073e75742f4943c280bbf14f4d6cd571f1119de3a1"
+  },
+  "diagnosticTrace": {
+    "incremental": "Auxiliary /Z7 Debug trace terminated during V8 finalization. Debugger caught an invalid heap pointer in the CanvasRenderingContext2D deleting destructor.",
+    "formal": "Both previously signed trace configurations were rebuilt and passed.",
+    "cause": "The old Ninja object for the generated Canvas constructor had no header dependencies recorded and allocated 424 bytes. The current same-source /Z7 and signed Debug configurations recorded the Canvas header and allocated 432 bytes.",
+    "recordedHeaderCounts": {
+      "incremental": 0,
+      "clean": 414,
+      "formal": 414
+    },
+    "cleanSameFlags": "Fresh /Z7 Debug and signed Debug trace each passed twice."
+  },
+  "scopeDeferred": [
+    "macOS",
+    "iOS",
+    "Android",
+    "OHOS",
+    "online transport",
+    "new ASan runs"
+  ],
+  "windowsGeneratorVerification": [
+    {
+      "mode": "automatic",
+      "CMAKE_GENERATOR": "Visual Studio 18 2026",
+      "CMAKE_GENERATOR_PLATFORM": "x64",
+      "CMAKE_GENERATOR_INSTANCE": "C:/Program Files/Microsoft Visual Studio/18/Community",
+      "solutionPlatform": "x64",
+      "configurations": [
+        "Debug",
+        "Release"
+      ]
+    },
+    {
+      "mode": "explicit",
+      "CMAKE_GENERATOR": "Visual Studio 18 2026",
+      "CMAKE_GENERATOR_PLATFORM": "",
+      "CMAKE_GENERATOR_INSTANCE": "C:/Program Files/Microsoft Visual Studio/18/Community",
+      "solutionPlatform": "x64",
+      "configurations": [
+        "Debug",
+        "Release"
+      ]
+    },
+    {
+      "mode": "cocos-m1-test",
+      "CMAKE_GENERATOR": "Visual Studio 18 2026",
+      "CMAKE_GENERATOR_PLATFORM": "",
+      "CMAKE_GENERATOR_INSTANCE": "C:/Program Files/Microsoft Visual Studio/18/Community",
+      "solutionPlatform": "x64",
+      "dir": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\cocos-m1-test\\build\\v26-CA2TD8\\game",
+      "artifacts": {
+        "Debug": "6534c96f757e342a670367cef5b1a6add1e6d16352d9d5dab04cfa88a07dd72f",
+        "Release": "90905552cfa7cba5b2f49c1023b587499f994f319dd70929cb7b3a732e622930"
+      },
+      "publicApiChecksPerConfiguration": 11
+    }
+  ],
+  "windowsGeneratorRevision": "4ae1712d5d7a1df346645da723ecb718170b3b3c",
+  "windowsGeneratorBuildLocation": "The final complete builds used a new directory under cocos-m1-test/build. An earlier temporary-directory trial exposed legacy tilde expansion of an 8.3 username, and a second could not write SWIG output below the system temp directory.",
+  "archive": {
+    "file": "windows-overall.zip",
+    "files": 940,
+    "sha256": "9d8e3322fbbdb19b10be4b63aa9ba607cca99a27b87a202f1b953723e18ecede"
+  }
+}

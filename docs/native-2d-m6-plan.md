@@ -1,5 +1,7 @@
 # Native 2D M6 剩余任务与终态验收
 
+> 2026-11-25 当前运行时 `36af6fdcf6` 已完成 Windows M0–M6 整体验收，含批处理优化后的双配置回归与同基准六对 Release 新采样。[整体验收](./native-2d-m6-gate.md#windows-overall)
+
 > 2026-11-25 候选 `f9df28d4c8` 完成 Windows Native/JSB 范围的 M6 签收。15 类、192 个现行公开成员完成行为映射，复杂字体、异步资产及 RichText 包装对象跨场景门槛在 Debug、Release 均通过。[本轮签收](./native-2d-m6-gate.md#windows-m6-behavior)
 
 > 此前在已提交候选 `05197fa63c` 上重跑 Windows M6 门禁。两种配置的功能、图形、生命周期、连续启动、JSB 追踪及 Release 的四项性能门槛均通过。完整公开接口行为、字体与资产边界以及 RichText 包装对象仍按本清单验收。[本次结果和原始证据](./native-2d-m6-gate.md#2026-11-25-提交后重跑-windows-m6-门禁)
