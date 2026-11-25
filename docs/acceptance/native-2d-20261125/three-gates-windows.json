@@ -1,0 +1,389 @@
+{
+  "date": "2026-11-25",
+  "candidate": "db6fc3770f74f3df08fc9381b0a28b49c7ca4d39",
+  "project": "cocos-m1-test",
+  "build": "cocos-cli windows export, project Native override, CMake Debug and Release. Debug relinked with remote debugger disabled.",
+  "declarationsSha256": "a6f8aacfd0615048597202cbcf8df9544a3a2525624c20b88c5d53f2aacace78",
+  "archive": "three-gates-windows.zip",
+  "archiveSha256": "c7830b09f50b4767091674e5486207e16e9dcd7efbadb8b62e6977dbea7e0e5e",
+  "localStage": "native/tests/2d-poc/build/three-gates-1795578840938/final",
+  "captureReference": "native/tests/2d-poc/build/m6-document-8ee11b673e",
+  "requestedGates": "PASS",
+  "rawM0Command": "FAIL in two Web font loader tests",
+  "case2307": {
+    "codePoint": "U+1F642",
+    "xAdvance": 17,
+    "fontSize": 8,
+    "sourceFontSize": 16,
+    "expectedWidth": 8.5,
+    "rawWebWidth": 0,
+    "MSVC": {
+      "Debug": 8.5,
+      "Release": 8.5
+    },
+    "casesPerMSVCConfiguration": 2327
+  },
+  "configs": {
+    "Debug": {
+      "executable": "offline.exe",
+      "exeSha256": "fe65aa9a674d867bc9c41166f3fa847c6ca685197950b45e9642428a46c30050",
+      "engineSha256": "683f3717894ad7ec2971e9a1f72392a138555eda3da02a9eebc541be5c9fe3e9",
+      "sceneSha256": "28eb991481450ca36962329959c8cb56c1ddef39d7231f74529025df2e534ae2",
+      "exportedResourceFiles": 43,
+      "publicChecks": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": {
+            "x": 400,
+            "y": 300
+          },
+          "outside": {
+            "x": 10,
+            "y": 10
+          },
+          "projected": [
+            400,
+            300
+          ],
+          "windowSize": {
+            "width": 800,
+            "height": 600
+          },
+          "screenTarget": true,
+          "hit": true,
+          "miss": false
+        },
+        {
+          "name": "M1.omittedWindow",
+          "passed": true,
+          "windowId": 1,
+          "omitted": false,
+          "explicitZero": false
+        },
+        {
+          "name": "M1.wrongWindow",
+          "passed": true,
+          "windowId": 1,
+          "wrongWindowId": 2,
+          "hit": false
+        },
+        {
+          "windowId": 1,
+          "projected": [
+            128,
+            128
+          ],
+          "size": [
+            256,
+            256
+          ],
+          "offscreenTarget": true,
+          "hit": false,
+          "name": "M1.offscreen",
+          "passed": true
+        },
+        {
+          "name": "publicMembers",
+          "passed": true,
+          "classes": 15,
+          "count": 192,
+          "missing": []
+        },
+        {
+          "name": "Sprite.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Label.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Graphics.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Mask.isHit.control",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Graphics.impl",
+          "passed": true,
+          "path": true,
+          "stable": true,
+          "writable": true,
+          "restored": true,
+          "released": true
+        }
+      ],
+      "application": [
+        {
+          "config": "Debug",
+          "stage": "m2-pixel",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m3-label",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m4-mask",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m4-extra",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m5-richtext",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m6-atlas-captures",
+          "pass": true,
+          "matches": 12,
+          "different": []
+        },
+        {
+          "config": "Debug",
+          "stage": "m6-bitmap-captures",
+          "pass": true,
+          "matches": 92,
+          "different": []
+        }
+      ]
+    },
+    "Release": {
+      "executable": "cocos-m1-test.exe",
+      "exeSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "engineSha256": "683f3717894ad7ec2971e9a1f72392a138555eda3da02a9eebc541be5c9fe3e9",
+      "sceneSha256": "28eb991481450ca36962329959c8cb56c1ddef39d7231f74529025df2e534ae2",
+      "exportedResourceFiles": 43,
+      "publicChecks": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": {
+            "x": 400,
+            "y": 300
+          },
+          "outside": {
+            "x": 10,
+            "y": 10
+          },
+          "projected": [
+            400,
+            300
+          ],
+          "windowSize": {
+            "width": 800,
+            "height": 600
+          },
+          "screenTarget": true,
+          "hit": true,
+          "miss": false
+        },
+        {
+          "name": "M1.omittedWindow",
+          "passed": true,
+          "windowId": 1,
+          "omitted": false,
+          "explicitZero": false
+        },
+        {
+          "name": "M1.wrongWindow",
+          "passed": true,
+          "windowId": 1,
+          "wrongWindowId": 2,
+          "hit": false
+        },
+        {
+          "windowId": 1,
+          "projected": [
+            128,
+            128
+          ],
+          "size": [
+            256,
+            256
+          ],
+          "offscreenTarget": true,
+          "hit": false,
+          "name": "M1.offscreen",
+          "passed": true
+        },
+        {
+          "name": "publicMembers",
+          "passed": true,
+          "classes": 15,
+          "count": 192,
+          "missing": []
+        },
+        {
+          "name": "Sprite.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Label.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Graphics.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Mask.isHit.control",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Graphics.impl",
+          "passed": true,
+          "path": true,
+          "stable": true,
+          "writable": true,
+          "restored": true,
+          "released": true
+        }
+      ],
+      "application": [
+        {
+          "config": "Release",
+          "stage": "m2-pixel",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m3-label",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m4-mask",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m4-extra",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m5-richtext",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m6-atlas-captures",
+          "pass": true,
+          "matches": 12,
+          "different": []
+        },
+        {
+          "config": "Release",
+          "stage": "m6-bitmap-captures",
+          "pass": true,
+          "matches": 92,
+          "different": []
+        }
+      ]
+    }
+  },
+  "releasePocPerformance": {
+    "nativeSceneNsPerSprite": 139.8,
+    "nativePrepareNs": 285.3,
+    "jsSceneNsPerSprite": 269.0,
+    "jsUpdateRendererNs": 223.0,
+    "improvementPercent": 48.0,
+    "thresholdPercent": 30,
+    "pass": true
+  },
+  "webFailures": {
+    "m0FontLoader": [
+      "timeout retry registers only the successful face",
+      "registrations and reuse of preloaded data after release"
+    ],
+    "separateSpriteFrameSuite": [
+      "dynamic atlas typed-array byte range",
+      "sprite stencil material alpha threshold"
+    ]
+  }
+}

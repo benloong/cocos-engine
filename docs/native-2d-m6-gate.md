@@ -1,5 +1,22 @@
 # Native 2D M6 Gate
 
+## 2026-11-25 M0 位图宽度与 M4 公开接口签收
+
+Windows Native/JSB 本轮三项均通过。候选 `db6fc3770f` 用 cocos-cli 重新导出 `cocos-m1-test`，重建 Native override，并用 CMake 构建 Debug、Release。Debug 使用同批对象重新链接并关闭远程调试监听，Release 使用项目生成的可执行文件。[双配置逐项结果](./acceptance/native-2d-20261125/three-gates-windows.json) · [构建日志、前后对照与 RGBA 原图](./acceptance/native-2d-20261125/three-gates-windows.zip)
+
+| 门槛 | 预期与实测 |
+|---|---|
+| M0 BitmapFont 2307 | `🙂` 的 BMFont 字形 ID 为 128578，横向步进 17，字号从 16 缩到 8。自然宽度应为 8.5。MSVC Debug、Release 都得到宽 8.5、高 16、一枚字形。Web 用两个 UTF-16 码元拼成的键 `5535756898` 查表，得到宽 0。旧验收误用了这个值。 |
+| M0 回归范围 | 两种 MSVC 配置各通过 2327 组。前 2307 组使用原文对照。后 20 组在参考布局中以未占用的 BMP 码点表示同一字形或缺字，Native 输入保持原 Unicode 标量，继续比较换行、字形位置、四顶点及 UV。单字在四种溢出模式下另有明确的尺寸断言。 |
+| M4 默认 Mask | 空宿主与自带 120×60 UITransform 的宿主均放在非原点。两种配置下中心命中、远端外点未命中，各只有一个 UITransform，已有变换保留实例与尺寸。旧 Release 在空宿主上缺少变换，中心未命中。 |
+| M4 Graphics.impl | 加载前取得的路径实现在激活后保持同一实例，支持替换、置空、恢复，销毁后读回 null。用 `impl.rect()` 构建 40×40 遮罩路径、用组件的 `fill()` 填充，两种配置各得到 1600 个红色像素。旧 Release 缺少 `impl`。M4 场景现通过实际 JSB 类型识别原生路径。 |
+
+两个配置各核对 15 个类的 192 个现行公开成员，缺失 0 项。M1 的窗口命中正负对照、M2–M5 应用探针及三种组件的动态 priority 遮挡顺序通过。各配置的 12 张图集和 92 张位图 RGBA 与归档基线逐字节一致，M5 正常退出。
+
+应用退出后另跑 Release PoC 的 M2 场景性能门槛，Native 为 139.8 ns/Sprite，JS 为 269.0 ns/Sprite，耗时下降 48.0%，门槛为 30%。
+
+跨端 M0 原脚本仍在 Web 字体加载器的超时重试和预加载数据复用两项失败，同组其余 85 项通过。脚本后续的 RichText 运行时、TypeScript 检查及 50 项末段 Jest 已单独复跑通过。另行复跑的 Web SpriteFrame 套件仍有两项失败，分别涉及动态图集上传的字节范围和 Sprite 模板材质的 Mask 阈值。以上结果保留在归档中。
+
 ## 2026-11-25 M1 窗口命中复验
 
 M1 命中门禁通过。Windows Debug、Release 的打包场景在 M2 切换相机前验证实际窗口的中心与外点，再在 M2 的 RenderTexture 上验证离屏未命中。两端的默认 ID 与错误窗口负向对照也通过。整体验收仍有默认 Mask 命中、Graphics.impl 和 M0 位图字体宽度差异。[M1 门禁](./native-2d-m1-gate.md) · [双配置验收数据](./acceptance/native-2d-20261125/m1-window-hit.json)

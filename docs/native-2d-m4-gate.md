@@ -1,5 +1,7 @@
 # Native 2D M4 Mask + Graphics Gate
 
+2026-11-25 的 cocos-cli 新包在 Windows Debug、Release 均通过默认 Mask 的世界坐标命中及 Graphics.impl 的生命周期、路径绘制与遮罩像素门槛。[验收记录](./native-2d-m6-gate.md#2026-11-25-m0-位图宽度与-m4-公开接口签收)
+
 > 结论：**Windows native M4 功能收口通过**。
 > 跨平台矩阵、Web 像素对照和 native 三角化性能结论不在本次 Windows 收口范围，按计划留给 M6/M4.3。
 

@@ -1,6 +1,6 @@
 # Native 2D M6 剩余任务与终态验收
 
-> 2026-11-25 从 cocos-cli 重打 `cocos-m1-test` 后，Windows Debug 和 Release 均复现下列 M6.1 公开接口失败，整体验收为 **NO-GO**。M0–M5 逐项判定、当天较早的归档包复验及此前签收记录见 [M6 Gate](./native-2d-m6-gate.md#2026-11-25-cli-新包整体验收)。
+> 2026-11-25 最新 Windows Debug、Release 已关闭 M0 位图宽度、默认 Mask 命中和 Graphics.impl 三项，动态 priority 和 M1 窗口命中复验通过。跨端 M0 总脚本仍有两项 Web 字体加载器失败。[当前门槛与复验数据](./native-2d-m6-gate.md#2026-11-25-m0-位图宽度与-m4-公开接口签收)
 
 > 范围沿用[总计划](./native-2d-module-sinking-plan.zh-CN.md)，仅 `cocos/2d` 及必要的 native/绑定/构建支持。后续复验限本地 Windows Debug/Release，不启动网络服务或下载依赖。ASan 数据保留为历史证据。
 > 本文是 M6 剩余任务与终态门禁的统一清单；历史数据保留在各阶段 report/gate 中。
@@ -79,6 +79,7 @@
 - [x] Label 启用时恢复字体。无字体资产且关闭系统字体时，按 Web 行为恢复系统字体；系统字体族为空时恢复 Arial。已配置的字体族和有效字体资产保留。修复前定向用例复现 useSystemFont 仍为 false，修复后 6 项 Label 契约测试通过。Web 与 Windows Debug/Release 实际场景验证重新启用及保留 Verdana，85 张图像逐字节一致，标准工程串行门禁通过。[当前快照与像素结果](./native-2d-m6-windows-web-gpu-results.json)
 - [x] Sprite 和 Label 的 JSB 壳继承 UIRenderer.color。编辑器改色在同步原生颜色后派发一次 COLOR_CHANGED，监听器收到独立副本；运行时改色和重复赋相同值的事件数均为 0。Web 类和 JSB 壳的编辑器/运行时契约由[定向测试](../tests/ui/native-2d-m3-label-shell.test.ts)覆盖，三端运行时赋值由[实际场景](../native/tests/2d-poc/fixtures/graphics-gpu/assets/scripts/M6GraphicsGpuProbe.ts)覆盖。
 - [ ] 完整组件 parity 仅核对各组件现行公开接口的行为，排除兼容接口和已弃用接口。通过真实场景与资源管线验证这些公开接口。
+  - [x] 2026-11-25 Windows Debug、Release 各核对 15 类的 192 个公开成员。三种组件的动态 priority、默认 Mask 命中和 Graphics.impl 路径绘制均通过实际场景复验。[逐项结果与适用范围](./native-2d-m6-gate.md#2026-11-25-m0-位图宽度与-m4-公开接口签收)
   - 2026-11-25 同一候选的 Windows Debug、Release 均复现三项失败：Sprite、Label、Graphics 加载后修改 `priority` 未更新原生组件，空节点上添加默认 Mask 后 `isHit` 未命中中心点，Graphics 实例缺少公开字段 `impl`。[复现条件与对照](./native-2d-m6-gate.md#2026-11-25-现行公开接口复验) · [双配置结果](./native-2d-m6-public-parity-8ee11b673e.json)
   - [x] 已绑定 BitmapFont 的 Label 改为 18.25 px、重复写入该字号、再更换字体族。旧 Windows Debug 调用六次字体 setter；现版 Debug/Release 均只调用一次 `setFontSize` 和一次 `setFont`，仍持有同一 BitmapFont。切回系统字体后以 23.75 px 实际绘制并回读到非空字形。Web 同序列保留位图字体身份、原始字号和目标字号。[Windows 探针](../native/tests/2d-poc/build-sprite-api-probe.cjs)、[Web 对照](../tests/ui/native-2d-m3-label-shell.test.ts)
   - [x] Windows DirectWrite Label 接收 TTF 小数字号。修复前 24、24.25 和 24.75 px 的自然宽度均为 95.9765625。修复后 24.25 和 24.75 px 的 Windows Debug/Release 宽度分别为 96.9763107 和 98.9758301，与 Web 的最大差小于 0.000054 px。三端在同一场景验证重绘、恢复 24 px 及 47 张既有图的逐图哈希。[复测记录](./native-2d-m6-richtext-configurations.json)
