@@ -17,11 +17,11 @@ globalThis.installM6Behavior = function install(cc, output) {
         if (type !== cc.UITransform) node.addComponent(cc.UITransform);
         return node.addComponent(type);
     }
-    const suite = { cc, check, frame, load, host, test(owner, members, name, run) {
+    const suite = { cc, check, frame, load, host, directory: output.slice(0, output.lastIndexOf('/')), test(owner, members, name, run) {
         tests.push({ owner, members: members.split(' ').filter(Boolean), name, run });
     } };
     require('m6-behavior/public.js'); globalThis.m6PublicContracts(suite);
-    // Resource suites are registered here alongside public contracts.
+    require('m6-behavior/resources.js'); globalThis.m6Resources(suite);
     async function execute() {
         const remaining = new Set(Object.entries(declared).flatMap(([owner, members]) =>
             members.map(m => owner + '.' + (m.isStatic ? '@' : '') + m.key)));

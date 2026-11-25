@@ -29,6 +29,8 @@ if ($Behavior) {
     Copy-Item -LiteralPath $suite -Destination $resources -Recurse
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../../../tests/fixtures/Thonburi.ttf') -Destination $resources
     $replacement = "return System.import('cc').then(cc => { require('m6-behavior/run.js'); globalThis.installM6Behavior(cc, $jsonPath); return application.start(); });"
+    $writable = (New-Item -ItemType Directory -Path (Join-Path $stage 'writable')).FullName.Replace('\', '/') + '/'
+    $source = 'jsb.fileUtils.setWritablePath(' + ($writable | ConvertTo-Json -Compress) + ");`n" + $source
 }
 [IO.File]::WriteAllText($main, $source.Replace($hook, $replacement))
 $process = Start-Process -FilePath (Join-Path $stage $exe.Name) -WorkingDirectory $stage -WindowStyle Hidden `
