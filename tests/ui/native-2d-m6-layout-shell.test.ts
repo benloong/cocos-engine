@@ -44,10 +44,14 @@ test('Graphics retains native drawing before onLoad and never recreates a destro
     expect(nativeGraphics.fillRect).toHaveBeenCalledWith(1, 2, 3, 4);
     expect(nativeGraphics.setLineWidth).toHaveBeenLastCalledWith(7);
     expect(nativeGraphics.setNode).not.toHaveBeenCalled();
+    const impl = graphics.impl;
+    expect(impl).toBe(nativeGraphics);
     graphics.onLoad();
     expect(create).toHaveBeenCalledTimes(1);
     expect(nativeGraphics.setNode).toHaveBeenLastCalledWith(node);
+    expect(graphics.impl).toBe(impl);
     graphics.onDestroy(); graphics.fillRect(5, 6, 7, 8);
+    expect(graphics.impl).toBeNull();
     expect(create).toHaveBeenCalledTimes(1);
     expect(nativeGraphics.fillRect).toHaveBeenCalledTimes(1);
 });
@@ -121,7 +125,6 @@ test('Graphics forwards legacy material refresh and supports a guarded model act
     graphics.customMaterial = null;
     expect(nativeGraphics.setMaterial).toHaveBeenLastCalledWith(null);
     expect(() => graphics.activeSubModel(0, 4, 6)).not.toThrow();
-    expect('impl' in graphics).toBe(false);
     expect(graphics.model).toBeUndefined();
     expect(graphics.graphicsNativeProxy).toBeUndefined();
     graphics.onDestroy();

@@ -73,7 +73,7 @@ export class M4ExtraProbe {
         gTransform.setContentSize(256, 256);
         const gMask = gMaskNode.addComponent(Mask);
         gMask.type = Mask.Type.GRAPHICS_STENCIL;
-        const gGraphics = gMask.subComp!;
+        const gGraphics = gMask.subComp as Graphics;
         const gSpriteNode = new Node('M4GraphicsMaskedSprite');
         gMaskNode.addChild(gSpriteNode);
         makeSprite(gSpriteNode);
@@ -81,7 +81,7 @@ export class M4ExtraProbe {
         setTimeout(() => {
             gGraphics.clear();
             gGraphics.fillColor = new Color(255, 255, 255, 255);
-            gGraphics.rect(-20, -20, 40, 40);
+            gGraphics.impl!.rect(-20, -20, 40, 40);
             gGraphics.fill();
             setTimeout(() => {
                 let graphicsRed = 0;

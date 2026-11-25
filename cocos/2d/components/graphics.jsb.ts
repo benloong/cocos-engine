@@ -31,6 +31,9 @@ import { bindNativeMaterialSlots, patchNativeMaterialAPIs, releaseNativeMaterial
 
 declare const n2d: any;
 
+type GraphicsPath = Pick<Graphics, 'clear' | 'moveTo' | 'lineTo' | 'close' | 'rect' | 'roundRect'
+    | 'circle' | 'ellipse' | 'arc' | 'bezierCurveTo' | 'quadraticCurveTo'>;
+
 /**
  * Metadata, lifecycle and command bridges. Native owns paths, triangulation
  * and local GPU mesh buffers, including the signed stroke-distance attribute.
@@ -58,6 +61,15 @@ export class Graphics extends UIRenderer {
     private _native: any = null;
     private _mask: any = null;
     private _nativeDestroyed = false;
+    private _pathOverride: GraphicsPath | null | undefined;
+
+    /** Current path implementation. The default writes directly into native geometry. */
+    get impl (): GraphicsPath | null {
+        return this._pathOverride === undefined ? this._ensureNative() : this._pathOverride;
+    }
+    set impl (value: GraphicsPath | null) {
+        if (!this._nativeDestroyed) this._pathOverride = value && value === this._native ? undefined : value;
+    }
 
     get priority (): number { return super.priority; }
     set priority (value: number) {
@@ -142,6 +154,7 @@ export class Graphics extends UIRenderer {
     private _destroyNative (): void {
         if (this._nativeDestroyed) return;
         this._nativeDestroyed = true;
+        this._pathOverride = null;
         this._setMask(null);
         releaseNativeMaterialSlots(this);
         if (this._native) {
@@ -202,58 +215,63 @@ export class Graphics extends UIRenderer {
     }
 
     public clear (): void {
-        this._native?.clear();
+        if (this._pathOverride === undefined) this._native?.clear();
+        else this._pathOverride?.clear();
     }
 
     public moveTo (x: number, y: number): void {
-        this._ensureNative()?.moveTo(x, y);
+        this.impl?.moveTo(x, y);
     }
 
     public lineTo (x: number, y: number): void {
-        this._ensureNative()?.lineTo(x, y);
+        this.impl?.lineTo(x, y);
     }
 
     public close (): void {
-        this._ensureNative()?.close();
+        this.impl?.close();
     }
 
     public rect (x: number, y: number, w: number, h: number): void {
-        this._ensureNative()?.rect(x, y, w, h);
+        this.impl?.rect(x, y, w, h);
     }
     public fillRect (x: number, y: number, w: number, h: number): void {
-        this._ensureNative()?.fillRect(x, y, w, h);
+        if (this._pathOverride === undefined) this._ensureNative()?.fillRect(x, y, w, h);
+        else {
+            this.rect(x, y, w, h);
+            this.fill();
+        }
     }
 
     public roundRect (x: number, y: number, w: number, h: number, radius: number): void {
-        this._ensureNative()?.roundRect(x, y, w, h, radius);
+        this.impl?.roundRect(x, y, w, h, radius);
     }
 
     public circle (x: number, y: number, radius: number): void {
-        this._ensureNative()?.circle(x, y, radius);
+        this.impl?.circle(x, y, radius);
     }
 
     public ellipse (x: number, y: number, radiusX: number, radiusY: number): void {
-        this._ensureNative()?.ellipse(x, y, radiusX, radiusY);
+        this.impl?.ellipse(x, y, radiusX, radiusY);
     }
 
     public arc (cx: number, cy: number, r: number, startAngle = 0, endAngle = 6.283185307, counterclockwise = false): void {
-        this._ensureNative()?.arc(cx, cy, r, startAngle, endAngle, counterclockwise);
+        this.impl?.arc(cx, cy, r, startAngle, endAngle, counterclockwise);
     }
 
     public bezierCurveTo (c1x: number, c1y: number, c2x: number, c2y: number, x: number, y: number): void {
-        this._ensureNative()?.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+        this.impl?.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
     }
 
     public quadraticCurveTo (cx: number, cy: number, x: number, y: number): void {
-        this._ensureNative()?.quadraticCurveTo(cx, cy, x, y);
+        this.impl?.quadraticCurveTo(cx, cy, x, y);
     }
 
     public fill (): void {
-        this._ensureNative()?.fill();
+        if (this._pathOverride !== null) this._ensureNative()?.fill();
     }
 
     public stroke (): void {
-        this._ensureNative()?.stroke();
+        if (this._pathOverride !== null) this._ensureNative()?.stroke();
     }
 }
 patchNativeMaterialAPIs(Graphics);

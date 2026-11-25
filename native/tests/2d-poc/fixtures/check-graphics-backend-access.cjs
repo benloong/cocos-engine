@@ -1,6 +1,6 @@
 module.exports = async function checkGraphicsBackendAccess(cc, parent, target, checkClearRedraw) {
     const prototype = cc.Graphics.prototype;
-    const fields = ['impl', 'model', 'graphicsNativeProxy'];
+    const fields = ['model', 'graphicsNativeProxy'];
     const installed = [];
     const accesses = [];
     try {

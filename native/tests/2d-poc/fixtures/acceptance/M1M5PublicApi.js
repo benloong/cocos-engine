@@ -97,11 +97,25 @@ globalThis.installM1M5PublicApi = function (cc, output) {
 
         check('Graphics.impl', () => {
             const host = new cc.Node('graphics');
+            host.active = false;
             scene.addChild(host);
             try {
                 const graphics = host.addComponent(cc.Graphics);
-                return { passed: 'impl' in graphics && (graphics.impl === null || typeof graphics.impl === 'object'),
-                    valueType: typeof graphics.impl };
+                const impl = graphics.impl;
+                const path = ['moveTo', 'lineTo', 'close', 'rect', 'clear'].every(key => typeof impl?.[key] === 'function');
+                host.active = true;
+                const stable = !!impl && graphics.impl === impl;
+                let calls = 0;
+                graphics.impl = { rect() { calls++; } };
+                graphics.rect(0, 0, 1, 1);
+                graphics.impl = null;
+                graphics.rect(0, 0, 1, 1);
+                const writable = calls === 1 && graphics.impl === null;
+                graphics.impl = impl;
+                const restored = graphics.impl === impl;
+                graphics._destroyImmediate();
+                const released = graphics.impl === null;
+                return { passed: path && stable && writable && restored && released, path, stable, writable, restored, released };
             } finally { host.destroy(); }
         });
         jsb.fileUtils.writeStringToFile(JSON.stringify(checks, null, 2), output);

@@ -415,7 +415,8 @@ export class M4Probe {
                         graphicsNode.layer = captureLayer;
                         graphicsNode.setPosition(0, 0, 0);
                         const graphics = graphicsNode.addComponent(Graphics);
-                        const implementation = sys.isNative && !('impl' in graphics) ? 'native' : 'js';
+                        const nativeGraphics = sys.isNative && (globalThis as any).n2d?.Graphics;
+                        const implementation = nativeGraphics && graphics.impl instanceof nativeGraphics ? 'native' : 'js';
                         graphics.fillColor = new Color(255, 0, 0, 255);
                         graphics.rect(-40, -40, 80, 80);
                         if (implementation === 'native') {

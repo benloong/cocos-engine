@@ -18,7 +18,7 @@ async function runLegacyGraphicsScene (openScene: (name: string) => Node, captur
     }
     const usesNativeMeshes = sys.isNative;
     if (typeof graphics.activeSubModel !== 'function' || (usesNativeMeshes
-        ? 'impl' in graphics || graphics.model !== undefined || graphics.graphicsNativeProxy !== undefined
+        ? !(graphics.impl instanceof (globalThis as any).n2d.Graphics) || graphics.model !== undefined || graphics.graphicsNativeProxy !== undefined
         : !graphics.impl || !graphics.model || Boolean(graphics.graphicsNativeProxy) !== sys.isNative)) {
         throw new Error('Unexpected legacy Graphics renderer surface');
     }
