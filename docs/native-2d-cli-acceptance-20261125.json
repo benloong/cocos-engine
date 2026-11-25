@@ -12,6 +12,7 @@
     "M5": "Windows RichText 阶段场景通过，含事件、布局、捕获和正常退出。"
   },
   "localArtifacts": "native/tests/2d-poc/build/cli-m0-m5-1795573241398",
+  "archivedEvidence": { "file": "docs/acceptance/native-2d-20261125/windows-evidence.zip", "directory": "before-priority/" },
   "finalApplication": "native/tests/2d-poc/build/cli-m0-m5-1795573241398/final",
   "baselineImagesAndLayout": "native/tests/2d-poc/build/m6-document-8ee11b673e",
   "build": {

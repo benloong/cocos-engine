@@ -19,8 +19,8 @@
 ## 构建与回归
 
 - 从 cocos-cli 目录对 `cocos-m1-test` 运行 Windows build，重新生成 Native override，然后用 CMake 增量编译 Debug 和 Release。最终的 ccbuild 已输出 `CCBUILD_DONE` 并生成产物，其 Node 进程仍驻留，核验产物后结束该进程并接续 CMake。两个配置的 43 个资源文件均与最终导出逐文件匹配。Debug 使用本轮对象重新链接并关闭启动器的远程调试，Release 使用常规可执行文件。
-- 双配置各通过 M2 Sprite、M3 Label、M4 Mask、M4 Extra、M5 RichText 五个应用入口。M5 均自然退出 0。每个配置的 12 张图集和 92 张字体 RGBA 捕获均与既有基准一致。[应用结果](../native/tests/2d-poc/build/priority-1795575542796/final/app-results.json)
-- 真实组件的调用记录确认两种配置下，Sprite、Label、Graphics 加载时均收到初始值 3，加载后均收到新值 100。Native TS 编译、像素夹具类型检查、三个定向 Jest 套件共 32 个用例均通过。[Debug 调用记录](../native/tests/2d-poc/build/priority-1795575542796/final/api-Debug/checks.json) · [Release 调用记录](../native/tests/2d-poc/build/priority-1795575542796/final/api-Release/checks.json)
+- 双配置各通过 M2 Sprite、M3 Label、M4 Mask、M4 Extra、M5 RichText 五个应用入口。M5 均自然退出 0。每个配置的 12 张图集和 92 张字体 RGBA 捕获均与既有基准一致。[应用结果](./acceptance/native-2d-20261125/app-results.json)
+- 真实组件的调用记录确认两种配置下，Sprite、Label、Graphics 加载时均收到初始值 3，加载后均收到新值 100。Native TS 编译、像素夹具类型检查、三个定向 Jest 套件共 32 个用例均通过。[Debug 调用记录](./acceptance/native-2d-20261125/public-api-Debug.json) · [Release 调用记录](./acceptance/native-2d-20261125/public-api-Release.json)
 - 整体验收仍有独立阻断。单参数 UITransform 中心点命中、默认 Mask.isHit 和 Graphics.impl 的既有失败仍可复现。M0 更新审计基线后通过 175 项 C++ 检查，仍在位图字体 U+1F642 的宽度对照失败，Native 为 8.5，Web 为 0。
 
 | 最终产物 | SHA-256 |
@@ -31,4 +31,4 @@
 | Debug 测试可执行文件 | `dfa84e02a1a0af320d812789a76b5655c22cbc691d10b047419660ea88ec872e` |
 | Release 测试可执行文件 | `8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78` |
 
-[旧引擎像素日志](../native/tests/2d-poc/build/priority-1795575542796/final/red-control/temp/cc-m4-mask-probe.log) · [Debug 像素日志](../native/tests/2d-poc/build/priority-1795575542796/final/app-Debug/m4-mask.log) · [Release 像素日志](../native/tests/2d-poc/build/priority-1795575542796/final/app-Release/m4-mask.log)
+归档含 275 个文件。`priority/` 保存本次运行的构建与应用日志、旧引擎负对照，以及 Debug 和 Release 各 104 份图集与字体 RGBA 捕获；`before-priority/` 保存修复前整体验收的总门禁、性能、公开接口和资源压力记录。ZIP 解压后的每个文件已与原始产物逐一核对 SHA-256。归档 SHA-256 为 `d38cef4dc025e774a0c0f8ec65d98dc4b6db42bace29a850eff7eaaa9e99f62c`。[三组遮挡采样结果](./acceptance/native-2d-20261125/priority-pixels.json) · [Windows 验收产物](./acceptance/native-2d-20261125/windows-evidence.zip)

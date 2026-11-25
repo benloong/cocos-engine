@@ -1,0 +1,71 @@
+{
+  "beforeRelease": [
+    {
+      "kind": "Sprite",
+      "samples": 4096,
+      "below": 4096,
+      "above": 0,
+      "restored": 4096
+    },
+    {
+      "kind": "Label",
+      "samples": 331,
+      "below": 331,
+      "above": 0,
+      "restored": 331
+    },
+    {
+      "kind": "Graphics",
+      "samples": 4096,
+      "below": 4096,
+      "above": 0,
+      "restored": 4096
+    }
+  ],
+  "Debug": [
+    {
+      "kind": "Sprite",
+      "samples": 4096,
+      "below": 4096,
+      "above": 4096,
+      "restored": 4096
+    },
+    {
+      "kind": "Label",
+      "samples": 331,
+      "below": 331,
+      "above": 331,
+      "restored": 331
+    },
+    {
+      "kind": "Graphics",
+      "samples": 4096,
+      "below": 4096,
+      "above": 4096,
+      "restored": 4096
+    }
+  ],
+  "Release": [
+    {
+      "kind": "Sprite",
+      "samples": 4096,
+      "below": 4096,
+      "above": 4096,
+      "restored": 4096
+    },
+    {
+      "kind": "Label",
+      "samples": 331,
+      "below": 331,
+      "above": 331,
+      "restored": 331
+    },
+    {
+      "kind": "Graphics",
+      "samples": 4096,
+      "below": 4096,
+      "above": 4096,
+      "restored": 4096
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "config": "Debug",
+    "stage": "m2-pixel",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Debug",
+    "stage": "m3-label",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Debug",
+    "stage": "m4-mask",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Debug",
+    "stage": "m4-extra",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Debug",
+    "stage": "m5-richtext",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Debug",
+    "stage": "m6-atlas-captures",
+    "pass": true,
+    "matches": 12,
+    "different": []
+  },
+  {
+    "config": "Debug",
+    "stage": "m6-bitmap-captures",
+    "pass": true,
+    "matches": 92,
+    "different": []
+  },
+  {
+    "config": "Release",
+    "stage": "m2-pixel",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Release",
+    "stage": "m3-label",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Release",
+    "stage": "m4-mask",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Release",
+    "stage": "m4-extra",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Release",
+    "stage": "m5-richtext",
+    "exit": 0,
+    "pass": true
+  },
+  {
+    "config": "Release",
+    "stage": "m6-atlas-captures",
+    "pass": true,
+    "matches": 12,
+    "different": []
+  },
+  {
+    "config": "Release",
+    "stage": "m6-bitmap-captures",
+    "pass": true,
+    "matches": 92,
+    "different": []
+  }
+]

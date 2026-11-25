@@ -1,0 +1,94 @@
+[
+  {
+    "name": "M1.activeWindow",
+    "passed": true,
+    "windowId": 1,
+    "center": true,
+    "outside": false,
+    "otherWindow": false
+  },
+  {
+    "name": "M1.cameraCenter",
+    "passed": false,
+    "center": false,
+    "outside": false,
+    "before": {
+      "offscreen": true,
+      "hit": false
+    },
+    "point": [
+      400,
+      300
+    ],
+    "projected": [
+      400,
+      300
+    ],
+    "windowId": 1,
+    "world": [
+      640,
+      480
+    ]
+  },
+  {
+    "name": "publicMembers",
+    "passed": false,
+    "classes": 15,
+    "count": 192,
+    "missing": [
+      "Graphics.impl"
+    ]
+  },
+  {
+    "name": "Sprite.priority",
+    "passed": true,
+    "initial": [
+      3
+    ],
+    "updated": [
+      100
+    ],
+    "publicValue": 100
+  },
+  {
+    "name": "Label.priority",
+    "passed": true,
+    "initial": [
+      3
+    ],
+    "updated": [
+      100
+    ],
+    "publicValue": 100
+  },
+  {
+    "name": "Graphics.priority",
+    "passed": true,
+    "initial": [
+      3
+    ],
+    "updated": [
+      100
+    ],
+    "publicValue": 100
+  },
+  {
+    "name": "Mask.isHit.bare",
+    "passed": false,
+    "center": false,
+    "outside": false,
+    "hostTransform": false
+  },
+  {
+    "name": "Mask.isHit.control",
+    "passed": true,
+    "center": true,
+    "outside": false,
+    "hostTransform": true
+  },
+  {
+    "name": "Graphics.impl",
+    "passed": false,
+    "valueType": "undefined"
+  }
+]
