@@ -353,6 +353,8 @@ foreach ($config in 'Debug', 'Release') {
 
 步骤 6–10 在每个配置的新资源副本上分别执行。M5 在夹具恢复节点和相机、调用 `rt.destroy()` 后记录一次 `M5_EXIT_REQUESTED`，并在启动预算内自然退出 0。记录强制结束的轮次为失败。发布包内没有运行器创建的退出标记时，测试场景保留正常的交互生命周期。
 
+M1 的 `M1_HIT` 与 `M1_HIT_OFFSCREEN` 各须由打包场景输出一次。屏幕相机使用自身的活动窗口 ID，物理窗口中心命中、外点未命中。省略 ID、显式 0 和另一个非零窗口 ID 在 Windows 场景中均未命中。切到 RenderTexture 后，使用同一窗口 ID 检查节点在纹理内的投影中心，也应未命中。公开接口运行器将这些结果写入 `checks.json`；单独检查可对同一新包的应用 stdout 执行 `node native/tests/2d-poc/check-m1-hit.cjs <stdout.log>`。
+
 ### 改动后的复验门槛
 
 | 改动 | 同一工作树须补跑的检查 |

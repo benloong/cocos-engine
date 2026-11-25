@@ -34,8 +34,12 @@ try {
     $process.Dispose()
 }
 
-$checks = @(Get-Content -LiteralPath $report -Raw | ConvertFrom-Json)
-$expected = 'publicMembers', 'M1.cameraCenter', 'M1.activeWindow', 'Sprite.priority', 'Label.priority', 'Graphics.priority', 'Mask.isHit.bare', 'Mask.isHit.control', 'Graphics.impl'
+$apiChecks = @(Get-Content -LiteralPath $report -Raw | ConvertFrom-Json)
+$m1Json = & node (Join-Path $PSScriptRoot 'check-m1-hit.cjs') (Join-Path $stage 'stdout.log')
+if (!$m1Json) { throw 'Packaged M1 window hit-test results missing or malformed' }
+$checks = @(($m1Json -join [Environment]::NewLine) | ConvertFrom-Json) + $apiChecks
+$checks | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $report -Encoding utf8
+$expected = 'M1.activeWindow', 'M1.omittedWindow', 'M1.wrongWindow', 'M1.offscreen', 'publicMembers', 'Sprite.priority', 'Label.priority', 'Graphics.priority', 'Mask.isHit.bare', 'Mask.isHit.control', 'Graphics.impl'
 if (Compare-Object $expected @($checks.name)) { throw 'Incomplete public API report' }
 $failed = @($checks | Where-Object { $_.passed -ne $true })
 if ($failed.Count) { throw "Failed public API checks: $($failed.name -join ', '). See $report" }
