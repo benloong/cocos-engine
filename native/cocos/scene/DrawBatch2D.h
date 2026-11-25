@@ -36,6 +36,7 @@
 namespace cc {
 
 class Material;
+class Batcher2d;
 
 namespace scene {
 
@@ -59,20 +60,23 @@ public:
     inline void setModel(Model *model) { _model = model; }
 
     inline const gfx::DrawInfo &getDrawInfo() const { return _drawInfo; }
-    inline gfx::InputAssembler *getInputAssembler() const { return _inputAssembler.get(); }
+    inline gfx::InputAssembler *getInputAssembler() const { return _inputAssembler; }
     inline gfx::DescriptorSet *getDescriptorSet() const { return _descriptorSet; }
     inline uint32_t getVisFlags() const { return _visFlags; }
     inline const ccstd::vector<gfx::Shader *> &getShaders() const { return _shaders; }
     inline const ccstd::vector<IntrusivePtr<Pass>> &getPasses() const { return _passes; }
     inline Model *getModel() const { return _model; }
 
-protected:
+private:
+    friend class cc::Batcher2d;
+    void retainInputAssembler(gfx::InputAssembler *ia, RefCounted *meshOwner);
     // The batch retains the IA and its borrowed buffers until clear().
     // Declaration order releases the IA before its buffers on destruction.
     ccstd::vector<IntrusivePtr<gfx::Buffer>> _vertexBuffers;
     IntrusivePtr<gfx::Buffer> _indexBuffer;
     IntrusivePtr<gfx::Buffer> _indirectBuffer;
-    IntrusivePtr<gfx::InputAssembler> _inputAssembler;
+    IntrusivePtr<RefCounted> _assemblerOwner;
+    gfx::InputAssembler *_inputAssembler{nullptr};
     IntrusivePtr<gfx::Texture> _sourceTexture;
     IntrusivePtr<gfx::Texture> _sampledTexture;
     gfx::DescriptorSet *_descriptorSet{nullptr};

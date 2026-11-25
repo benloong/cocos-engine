@@ -76,13 +76,13 @@ void RenderDrawInfo::uploadBuffers() {
     if (_drawInfoAttrs._vbCount == 0 || _drawInfoAttrs._ibCount == 0) return;
     if (!_tracksMeshChanges || _uploadVertices) {
         const uint32_t size = _drawInfoAttrs._vbCount * (_drawInfoAttrs._stride ? _drawInfoAttrs._stride : 9U) * sizeof(float);
-        auto *vBuffer = _ia->getVertexBuffers()[0];
+        auto *vBuffer = _mesh->ia->getVertexBuffers()[0];
         vBuffer->resize(size);
         vBuffer->update(_vDataBuffer);
         _uploadVertices = false;
     }
     if (!_tracksMeshChanges || _uploadIndices) {
-        auto *iBuffer = _ia->getIndexBuffer();
+        auto *iBuffer = _mesh->ia->getIndexBuffer();
         iBuffer->resize(_drawInfoAttrs._ibCount * sizeof(uint16_t));
         iBuffer->update(_iDataBuffer);
         _uploadIndices = false;
@@ -96,9 +96,7 @@ void RenderDrawInfo::resetMeshIA() { // NOLINT(readability-make-member-function-
 void RenderDrawInfo::destroy() {
     _tracksMeshChanges = false;
     _uploadVertices = _uploadIndices = true;
-    _vb = nullptr;
-    _ib = nullptr;
-    _ia = nullptr;
+    _mesh = nullptr;
     if (_localDSBF) {
         CC_SAFE_DELETE(_localDSBF->ds);
         CC_SAFE_DELETE(_localDSBF->uboBuf);
@@ -107,17 +105,18 @@ void RenderDrawInfo::destroy() {
 }
 
 gfx::InputAssembler* RenderDrawInfo::initIAInfo(gfx::Device* device) {
-    if (!_ia) {
+    if (!_mesh) {
+        _mesh = ccnew MeshResources();
         gfx::InputAssemblerInfo iaInfo = {};
         uint32_t vbStride = (_drawInfoAttrs._stride ? _drawInfoAttrs._stride : 9U) * sizeof(float);
         uint32_t ibStride = sizeof(uint16_t);
-        _vb = device->createBuffer({
+        _mesh->vertices = device->createBuffer({
             gfx::BufferUsageBit::VERTEX | gfx::BufferUsageBit::TRANSFER_DST,
             gfx::MemoryUsageBit::DEVICE | gfx::MemoryUsageBit::HOST,
             vbStride * 3,
             vbStride,
         });
-        _ib = device->createBuffer({
+        _mesh->indices = device->createBuffer({
             gfx::BufferUsageBit::INDEX | gfx::BufferUsageBit::TRANSFER_DST,
             gfx::MemoryUsageBit::DEVICE | gfx::MemoryUsageBit::HOST,
             ibStride * 3,
@@ -133,12 +132,12 @@ gfx::InputAssembler* RenderDrawInfo::initIAInfo(gfx::Device* device) {
         } else {
             iaInfo.attributes = *(Root::getInstance()->getBatcher2D()->getDefaultAttribute());
         }
-        iaInfo.vertexBuffers.emplace_back(_vb);
-        iaInfo.indexBuffer = _ib;
+        iaInfo.vertexBuffers.emplace_back(_mesh->vertices);
+        iaInfo.indexBuffer = _mesh->indices;
 
-        _ia = device->createInputAssembler(iaInfo);
+        _mesh->ia = device->createInputAssembler(iaInfo);
     }
-    return _ia;
+    return _mesh->ia;
 }
 
 void RenderDrawInfo::updateLocalDescriptorSet(Node* transform, const gfx::DescriptorSetLayout* dsLayout) {

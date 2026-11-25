@@ -66,23 +66,33 @@ void DrawBatch2D::fillPass(Material *mat, const gfx::DepthStencilState *depthSte
 }
 
 void DrawBatch2D::setInputAssembler(gfx::InputAssembler *ia) {
-    if (_inputAssembler.get() != ia) {
-        // Retain the replacement before dropping the old batch resources.
-        IntrusivePtr<gfx::InputAssembler> retained(ia);
-        const auto previousCount = _vertexBuffers.size();
-        if (ia) {
+    retainInputAssembler(ia, nullptr);
+}
+
+void DrawBatch2D::retainInputAssembler(gfx::InputAssembler *ia, RefCounted *meshOwner) {
+    if (_inputAssembler != ia) {
+        if (meshOwner || !ia) {
+            _assemblerOwner = meshOwner;
+            _vertexBuffers.clear();
+            _indexBuffer = nullptr;
+            _indirectBuffer = nullptr;
+        } else {
+            // A caller-owned IA borrows its buffers. Acquire the replacement
+            // resources before releasing those referenced by the previous IA.
+            const auto previousCount = _vertexBuffers.size();
             const auto &buffers = ia->getVertexBuffers();
             _vertexBuffers.reserve(previousCount + buffers.size());
             for (auto *buffer : buffers) {
                 _vertexBuffers.emplace_back(buffer);
             }
+            IntrusivePtr<gfx::Buffer> indexBuffer(ia->getIndexBuffer());
+            IntrusivePtr<gfx::Buffer> indirectBuffer(ia->getIndirectBuffer());
+            _assemblerOwner = ia;
+            _vertexBuffers.erase(_vertexBuffers.begin(), _vertexBuffers.begin() + previousCount);
+            _indexBuffer = std::move(indexBuffer);
+            _indirectBuffer = std::move(indirectBuffer);
         }
-        IntrusivePtr<gfx::Buffer> indexBuffer(ia ? ia->getIndexBuffer() : nullptr);
-        IntrusivePtr<gfx::Buffer> indirectBuffer(ia ? ia->getIndirectBuffer() : nullptr);
-        _inputAssembler = std::move(retained);
-        _vertexBuffers.erase(_vertexBuffers.begin(), _vertexBuffers.begin() + previousCount);
-        _indexBuffer = std::move(indexBuffer);
-        _indirectBuffer = std::move(indirectBuffer);
+        _inputAssembler = ia;
     }
     _drawInfo = ia ? ia->getDrawInfo() : gfx::DrawInfo{};
 }

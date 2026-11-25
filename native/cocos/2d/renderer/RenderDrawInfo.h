@@ -320,14 +320,18 @@ private:
     };
     LocalDSBF* _localDSBF{nullptr};
 
-    // ia
-    IntrusivePtr<gfx::InputAssembler> _ia;
-    IntrusivePtr<gfx::Buffer> _vb;
-    IntrusivePtr<gfx::Buffer> _ib;
+    // Submitted native draws can retain the three resources with a single reference.
+    struct MeshResources final : RefCounted {
+        IntrusivePtr<gfx::Buffer> vertices;
+        IntrusivePtr<gfx::Buffer> indices;
+        // Release the assembler before its borrowed buffers.
+        IntrusivePtr<gfx::InputAssembler> ia;
+    };
+    IntrusivePtr<MeshResources> _mesh;
 };
 
 #if defined(__x86_64__) || defined(__amd64__) || defined(__aarch64__)
-static_assert(sizeof(RenderDrawInfo) == 144, "Be carefull to add property to RenderDrawInfo which may cause the potential cache miss");
+static_assert(sizeof(RenderDrawInfo) == 128, "Check RenderDrawInfo size when adding properties");
 #endif
 
 } // namespace cc

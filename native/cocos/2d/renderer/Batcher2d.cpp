@@ -648,7 +648,7 @@ void Batcher2d::generateBatch(RenderEntity* entity, RenderDrawInfo* drawInfo) {
 
     auto* curdrawBatch = _drawBatchPool.alloc();
     curdrawBatch->setVisFlags(_currLayer);
-    curdrawBatch->setInputAssembler(ia);
+    curdrawBatch->retainInputAssembler(ia, drawInfo->_tracksMeshChanges ? drawInfo->_mesh.get() : nullptr);
     curdrawBatch->setSampledTexture(_currTexture);
     curdrawBatch->setFirstIndex(indexOffset);
     curdrawBatch->setIndexCount(indexCount);
