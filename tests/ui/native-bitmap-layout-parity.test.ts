@@ -40,20 +40,30 @@ const fixture = process.env.CC_BITMAP_LAYOUT_FIXTURE;
         }
     }
 });
-(fixture ? test : test.skip)('native bitmap layout matches actual Web TextProcessing', () => {
+// The bitmap font uses Unicode scalar IDs. Web looks up a surrogate pair by
+// concatenating its UTF-16 units. Use unused BMP IDs only in the reference
+// layout so it receives the same glyph metrics (or the same missing glyph).
+const referenceIds = new Map([[0x1F642, 0xE000], [0x1F7E0, 0xE001]]);
+function referenceId (code: number): number {
+    if (code <= 0xFFFF && code !== 0xE000 && code !== 0xE001) return code;
+    const alias = referenceIds.get(code);
+    if (alias === undefined) throw new Error(`Missing unambiguous reference glyph ID for ${code}`);
+    return alias;
+}
+(fixture ? test : test.skip)('native bitmap layout matches the reference geometry for the supplied glyph metrics', () => {
  const {inputs, backends} = JSON.parse(readFileSync(fixture!, 'utf8'));
  expect(inputs.length).toBeGreaterThan(2000); expect(backends.length).toBeGreaterThan(0);
  const processing = new TextProcessing(); const assembler:any = new BmfontUtils();
  try { for (const {name, outputs} of backends) { expect(outputs.length).toBe(inputs.length); inputs.forEach((input, index) => {
   const style=new TextStyle(), layout=new TextLayout(), data=new TextOutputLayoutData(), render=new TextOutputRenderData();
-  Object.assign(style,{fontSize:input.fontSize,actualFontSize:input.fontSize,originFontSize:input.sourceFontSize,fntConfig:{kerningDict:Object.fromEntries(input.kerning.map(([l,r,n])=>[(l<<16)|r,n]))}});
+  Object.assign(style,{fontSize:input.fontSize,actualFontSize:input.fontSize,originFontSize:input.sourceFontSize,fntConfig:{kerningDict:Object.fromEntries(input.kerning.map(([l,r,n])=>[(referenceId(l)<<16)|referenceId(r),n]))}});
   Object.assign(layout,{horizontalAlign:input.horizontal,verticalAlign:input.vertical,overFlow:input.overflow,wrapping:input.overflow===0?false:input.overflow===3||input.wrap,lineHeight:input.lineHeight,spacingX:input.spacing});
   data.nodeContentSize.set(input.width,input.height); render.uiTransAnchorX=0;render.uiTransAnchorY=0;
   shareLabelInfo.fontAtlas=new FontAtlas(null);shareLabelInfo.margin=0;shareLabelInfo.hash='';
-  for(const g of input.glyphs) shareLabelInfo.fontAtlas.addLetterDefinitions(String(g.code), {...g,valid:true} as any);
+  for(const g of input.glyphs) shareLabelInfo.fontAtlas.addLetterDefinitions(String(referenceId(g.code)), {...g,valid:true} as any);
   const f=input.frame;
   style.spriteFrame={texture:{width:f.textureWidth,height:f.textureHeight},isRotated:()=>f.rotated,getRect:()=>({x:f.x,y:f.y,width:f.width,height:f.height}),getOriginalSize:()=>({width:f.originalWidth,height:f.originalHeight}),getOffset:()=>({x:f.offsetX,y:f.offsetY})} as any;
-  const text=String.fromCodePoint(...input.text), glyphs:any[]=[];
+  const text=String.fromCodePoint(...input.text.map(referenceId)), glyphs:any[]=[];
   processing.processingString(true,style,layout,data,text);
   processing.generateRenderInfo(true,style,layout,data,render,text,(_style,_data,_render,_offset,_texture,rect,_rotated,x,y)=>{
    assembler.generateVertexData(_style,_data,_render,_offset,_texture,rect,_rotated,x,y);
