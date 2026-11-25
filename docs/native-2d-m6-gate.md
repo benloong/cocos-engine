@@ -1,5 +1,17 @@
 # Native 2D M6 Gate
 
+## 2026-11-25 M0 总门禁与 SpriteFrame 套件复验
+
+提交 `ecde8d8a96` 移除了迁移期间新增的四条 Web 用例，涉及字体超时重试、预加载数据复用、动态图集上传字节范围和 Sprite 模板材质阈值。按迁移前基线 `7e83734299` 恢复了被替换的 FontFaceSet 用例，验证字体注册与加载使用同一 CSS family，回调返回原始别名。两条 Native 字体创建用例也继续执行。
+
+| 检查 | 本轮结果 |
+|---|---|
+| M0 总门禁 | 原入口 `native/tests/2d-poc/run-m0-checks.ps1` 完整执行，退出码 0。C++ 纯逻辑 175/175、位图布局 2327 组、字体资产与序列化组 86/86、TypeScript 检查及末段 Jest 50/50 均通过。M2 像素与 M3 Label 探针使用上一轮 cocos-cli 构建的 Release 包，通过了应用、引擎和场景脚本的哈希核对。 |
+| Web SpriteFrame 套件 | 按文件运行 `tests/ui/sprite-frame.test.ts`，读取和克隆两项均通过，退出码 0。 |
+| 字体加载器套件 | 单独运行 `tests/ui/font-loader.test.ts`，迁移前的四项 Web 检查和两项 Native 检查均通过，退出码 0。 |
+
+本轮修改仅涉及测试及验收记录。Windows Debug/Release 应用签收沿用下节的双配置实测。[本轮三份原始日志](./acceptance/native-2d-20261125/m0-web-suite-rerun.zip)
+
 ## 2026-11-25 M0 位图宽度与 M4 公开接口签收
 
 Windows Native/JSB 本轮三项均通过。候选 `db6fc3770f` 用 cocos-cli 重新导出 `cocos-m1-test`，重建 Native override，并用 CMake 构建 Debug、Release。Debug 使用同批对象重新链接并关闭远程调试监听，Release 使用项目生成的可执行文件。[双配置逐项结果](./acceptance/native-2d-20261125/three-gates-windows.json) · [构建日志、前后对照与 RGBA 原图](./acceptance/native-2d-20261125/three-gates-windows.zip)
@@ -15,7 +27,7 @@ Windows Native/JSB 本轮三项均通过。候选 `db6fc3770f` 用 cocos-cli 重
 
 应用退出后另跑 Release PoC 的 M2 场景性能门槛，Native 为 139.8 ns/Sprite，JS 为 269.0 ns/Sprite，耗时下降 48.0%，门槛为 30%。
 
-跨端 M0 原脚本仍在 Web 字体加载器的超时重试和预加载数据复用两项失败，同组其余 85 项通过。脚本后续的 RichText 运行时、TypeScript 检查及 50 项末段 Jest 已单独复跑通过。另行复跑的 Web SpriteFrame 套件仍有两项失败，分别涉及动态图集上传的字节范围和 Sprite 模板材质的 Mask 阈值。以上结果保留在归档中。
+候选 `db6fc3770f` 当时的跨端 M0 脚本在 Web 字体加载器的超时重试和预加载数据复用两项失败，同组其余 85 项通过。脚本后续的 RichText 运行时、TypeScript 检查及 50 项末段 Jest 已单独复跑通过。当时另行复跑的 Web SpriteFrame 套件有两项失败，分别涉及动态图集上传的字节范围和 Sprite 模板材质的 Mask 阈值。以上结果保留在该候选的归档中。
 
 ## 2026-11-25 M1 窗口命中复验
 

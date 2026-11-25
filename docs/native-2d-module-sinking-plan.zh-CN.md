@@ -3,7 +3,7 @@
 > 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、Canvas/RenderRoot2D 及配套 assembler/assets/event）。已弃用的 `UIStaticBatch` 不纳入范围。`UIMeshRenderer`、`UIMesh`、`UISkew`、`Canvas`、`Camera`、`Widget`、`View` 明确不下沉，保持 JS。
 > 不包含：`cocos/ui` 控件（Button/ScrollView/EditBox/Widget/Layout 等）以及动画、粒子、骨骼、物理、3D UI 桥接、编辑器逻辑、用户脚本。范围已冻结，`cocos/ui` 不进入本次任何阶段。
 > 目标读者：引擎 2D/JSB/构建方向的同学。
-> 2026-11-25 最新 cocos-cli Windows Debug/Release 已关闭剩余三项 Windows 门槛。跨端 M0 原脚本仍有 Web 字体加载器失败。第 6 节保留各阶段当时的签收范围。[当前逐项结果](./native-2d-m6-gate.md#2026-11-25-m0-位图宽度与-m4-公开接口签收) · [M6 清单](./native-2d-m6-plan.md)
+> 2026-11-25 最新 cocos-cli Windows Debug/Release 已关闭剩余三项 Windows 门槛。跨端 M0 总脚本和 Web SpriteFrame 套件均已复验通过。第 6 节保留各阶段当时的签收范围。[本轮复验](./native-2d-m6-gate.md#2026-11-25-m0-总门禁与-spriteframe-套件复验) · [M6 清单](./native-2d-m6-plan.md)
 
 ---
 
