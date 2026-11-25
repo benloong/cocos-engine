@@ -380,6 +380,16 @@ node "$p/compare-m6-behavior.cjs" "$run/behavior-Debug" "$run/behavior-Release" 
 
 新的失败用例进入后续门禁，未受影响的原有断言和预算继续生效。原文档含 Web 对照的命令同时记录原始结果和 Windows JSB/Native 范围内的结果；跨端差异应保留用例编号、输入及两侧实测值。
 
+复用 Windows Ninja 的 M6 调用追踪构建目录时，先检查生成绑定对象记录的头文件依赖。以下命令在构建完成后执行，`$traceBuild` 指向本次追踪程序的 CMake 构建目录。缺少 Canvas 头文件依赖时，改用新目录按相同参数配置、构建并重新采集追踪。2026-11-25 的旧增量对象曾按 424 字节分配一个现为 432 字节的 Canvas 对象。
+
+```powershell
+$binding = 'CMakeFiles/cocos_engine.dir/generated/cocos/bindings/auto/jsb_cocos_auto.cpp.obj'
+$deps = ninja -C $traceBuild -t deps $binding
+if ($LASTEXITCODE -ne 0 -or !($deps -match '[/\\]CanvasRenderingContext2D\.h$')) {
+    throw 'Canvas binding header dependency missing from the trace build'
+}
+```
+
 全部通过后再提交：
 
 ```powershell
