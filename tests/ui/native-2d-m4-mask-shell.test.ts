@@ -78,10 +78,11 @@ test('Mask stores a pending SpriteFrame and uses its host Sprite for replacement
 
 test('Mask clamps geometric state and forwards world-space hit testing to native', () => {
     const { Mask } = require('../../cocos/2d/components/mask.jsb');
-    const node = new Node('rounded-mask'); node.addComponent(UITransform);
+    const node = new Node('rounded-mask');
     const mask: any = node.addComponent(Mask);
     mask.radius = 18;
     mask.onLoad();
+    expect(node.getComponents(UITransform)).toHaveLength(1);
     expect(nativeMask.setRadius).toHaveBeenLastCalledWith(18);
     mask.radius = -10;
     expect(mask.radius).toBe(0);

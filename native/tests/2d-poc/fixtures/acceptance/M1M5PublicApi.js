@@ -80,12 +80,17 @@ globalThis.installM1M5PublicApi = function (cc, output) {
                 const host = new cc.Node('mask');
                 scene.addChild(host);
                 try {
-                    if (withTransform) host.addComponent(cc.UITransform).setContentSize(100, 100);
+                    host.setPosition(73, -41, 0);
+                    const existing = withTransform ? host.addComponent(cc.UITransform) : null;
+                    if (existing) existing.setContentSize(120, 60);
                     const mask = host.addComponent(cc.Mask);
+                    const transforms = host.getComponents(cc.UITransform);
                     const world = host.worldPosition;
                     const center = mask.isHit(new cc.Vec2(world.x, world.y));
                     const outside = mask.isHit(new cc.Vec2(world.x + 1024, world.y + 1024));
-                    return { passed: center && !outside, center, outside, hostTransform: !!host.getComponent(cc.UITransform) };
+                    const hostTransform = transforms.length === 1 && (!existing || (transforms[0] === existing
+                        && existing.width === 120 && existing.height === 60));
+                    return { passed: center && !outside && hostTransform, center, outside, hostTransform };
                 } finally { host.destroy(); }
             });
         }

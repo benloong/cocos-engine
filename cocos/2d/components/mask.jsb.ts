@@ -22,7 +22,7 @@
  THE SOFTWARE.
 */
 
-import { ccclass, executeInEditMode, executionOrder, help, menu, serializable } from 'cc.decorator';
+import { ccclass, executeInEditMode, executionOrder, help, menu, requireComponent, serializable } from 'cc.decorator';
 import { SpriteFrame } from '../assets/sprite-frame';
 import { Component } from '../../scene-graph/component';
 import { Node } from '../../scene-graph/node';
@@ -46,6 +46,7 @@ export enum MaskType {
  * Native stencil lifecycle and state bridge.
  */
 @ccclass('cc.Mask')
+@requireComponent(UITransform)
 @help('i18n:cc.Mask')
 @executionOrder(110)
 @menu('2D/Mask')
@@ -77,6 +78,8 @@ export class Mask extends Component {
 
     public onLoad (): void {
         if (this._nativeDestroyed || !isValid(this, true)) return;
+        // Older native scenes can deserialize a Mask without adding its dependency.
+        if (!this.node.getComponent(UITransform)) this.node.addComponent(UITransform);
         this._native = new n2d.Mask();
         this._native.setType(this._type);
         this._native.setNode(this.node);

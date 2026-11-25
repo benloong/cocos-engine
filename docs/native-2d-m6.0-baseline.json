@@ -8461,6 +8461,7 @@
         ],
         "decorators": [
           "ccclass('cc.Mask')",
+          "requireComponent(UITransform)",
           "help('i18n:cc.Mask')",
           "executionOrder(110)",
           "menu('2D/Mask')",
@@ -15858,8 +15859,8 @@
     },
     {
       "file": "cocos/2d/components/mask.jsb.ts",
-      "sha256": "bbe5a4ff0de12a33b0dfa0ce63c89538405d9f7866b26c44127644926d2c8594",
-      "printedCodeLines": 261,
+      "sha256": "11f6653c7b115671cf85987073ad45eee997078645509dfe61affe339e268e7e",
+      "printedCodeLines": 264,
       "runtimeImports": [
         "cc.decorator",
         "../assets/sprite-frame",
@@ -15876,71 +15877,71 @@
       "nativeCalls": [
         {
           "expression": "this._native.setType",
-          "line": 81
+          "line": 84
         },
         {
           "expression": "this._native.setNode",
-          "line": 82
-        },
-        {
-          "expression": "this._native.setPriority",
           "line": 85
         },
         {
+          "expression": "this._native.setPriority",
+          "line": 88
+        },
+        {
           "expression": "this._native.setEnabled",
-          "line": 86
+          "line": 89
         },
         {
           "expression": "this._native?.setType",
-          "line": 91
+          "line": 94
         },
         {
           "expression": "this._native.setSegments",
-          "line": 98
+          "line": 101
         },
         {
           "expression": "this._native.setRadius",
-          "line": 99
+          "line": 102
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 105
+          "line": 108
         },
         {
           "expression": "this._native?.setEnabled",
-          "line": 113
+          "line": 116
         },
         {
           "expression": "this._native.setEnabled",
-          "line": 140
+          "line": 143
         },
         {
           "expression": "this._native.setNode",
-          "line": 141
+          "line": 144
         },
         {
           "expression": "this._native?.setType",
-          "line": 158
+          "line": 161
         },
         {
           "expression": "this._native?.setInverted",
-          "line": 181
+          "line": 184
         },
         {
           "expression": "this._native?.setSegments",
-          "line": 191
+          "line": 194
         },
         {
           "expression": "this._native?.setRadius",
-          "line": 285
+          "line": 288
         },
         {
           "expression": "this._native?.isHitWorldPointXY",
-          "line": 289
+          "line": 292
         },
         {
           "expression": "this._native?.setAlphaThreshold",
-          "line": 298
+          "line": 301
         }
       ],
       "allocations": [],
