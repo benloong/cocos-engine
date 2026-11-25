@@ -1,5 +1,7 @@
 # Native 2D M6 剩余任务与终态验收
 
+> 2026-11-25 在已提交候选 `05197fa63c` 上重跑 Windows M6 门禁。两种配置的功能、图形、生命周期、连续启动、JSB 追踪及 Release 的四项性能门槛均通过。完整公开接口行为、字体与资产边界以及 RichText 包装对象仍按本清单验收。[本次结果和原始证据](./native-2d-m6-gate.md#2026-11-25-提交后重跑-windows-m6-门禁)
+
 > 2026-11-25 Windows Debug、Release 已关闭 M0 位图宽度、默认 Mask 命中和 Graphics.impl 三项，动态 priority 和 M1 窗口命中复验通过。清理四条迁移期间新增的 Web 用例并恢复原字体用例后，跨端 M0 总门禁和 SpriteFrame 套件均通过。[本轮复验](./native-2d-m6-gate.md#2026-11-25-m0-总门禁与-spriteframe-套件复验) · [双配置签收](./native-2d-m6-gate.md#2026-11-25-m0-位图宽度与-m4-公开接口签收)
 
 > 范围沿用[总计划](./native-2d-module-sinking-plan.zh-CN.md)，仅 `cocos/2d` 及必要的 native/绑定/构建支持。后续复验限本地 Windows Debug/Release，不启动网络服务或下载依赖。ASan 数据保留为历史证据。

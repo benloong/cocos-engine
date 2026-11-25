@@ -1,0 +1,665 @@
+{
+  "candidate": "05197fa63cc2fa11eca2072b445d7c5754d1e2a1",
+  "date": "2026-11-25",
+  "platform": "Windows x64 Debug/Release Native/JSB",
+  "build": "Fresh cocos-cli document and GPU scene export, document engine override and CMake builds, dedicated candidate GPU engine. Document Debug relinked with debugging disabled. Trace, offline RichText, performance and PoC binaries reuse matching native inputs; candidate JS rebuilt.",
+  "localRun": "native/tests/2d-poc/build/m6-postcommit-1795580994330",
+  "coverage": "Current representative Windows gates; complete public behavioral coverage, complex font and asynchronous asset coverage, and remaining RichText wrapper cases are still open. Offline RichText stops before HTTP. Other platforms deferred.",
+  "sourceChecks": {
+    "M0": "pass",
+    "nativeTS": "pass",
+    "jestSuites": 18,
+    "jestPassed": 136,
+    "graphicsGeometryCases": 786,
+    "auditAndMetadataToolTests": 13,
+    "performanceContractTests": 13
+  },
+  "features": [
+    {
+      "platform": "WINDOWS",
+      "selected": [],
+      "exposed": [],
+      "webAssemblerBytes": 0,
+      "sha256": "cfd3df997a6b15ca46d74b2f140d6685edf4df01a4fa885ee9501e60fe700d6f"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d"
+      ],
+      "exposed": [
+        "Sprite"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "b6ba3b59f5d9a9017c94fac750bbeee27c12c1a52308d84ec2c017025ecfd89c"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d",
+        "rich-text"
+      ],
+      "exposed": [
+        "Sprite",
+        "RichText"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "fea67b4fed5496495b3b22a4c6e750d1f67bbf661317234c480500998b0c78b1"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d",
+        "mask"
+      ],
+      "exposed": [
+        "Sprite",
+        "Mask"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "d6ca0eaec83442818ce644b46cb1f9418220b353b6e27fc6c1f0f45daac3dd1a"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d",
+        "rich-text",
+        "mask"
+      ],
+      "exposed": [
+        "Sprite",
+        "RichText",
+        "Mask"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "c3176a797917b91904284826d51adb727c1088f078f1157a791b09038e79c2b9"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d",
+        "graphics"
+      ],
+      "exposed": [
+        "Sprite",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "887a2b7c32008672fd76e0b3b304c89ec404e3a3976caee9ea52e05a90088e82"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d",
+        "rich-text",
+        "graphics"
+      ],
+      "exposed": [
+        "Sprite",
+        "RichText",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "23056d91135f7635192b2972ea11041be3eaa37755ce9d598571c89664ca010f"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d",
+        "mask",
+        "graphics"
+      ],
+      "exposed": [
+        "Sprite",
+        "Mask",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "6bf4b5c244479bbe1a81641a3184d536bc8587ea67c9edf858d3c46263e2bff8"
+    },
+    {
+      "platform": "WINDOWS",
+      "selected": [
+        "2d",
+        "rich-text",
+        "mask",
+        "graphics"
+      ],
+      "exposed": [
+        "Sprite",
+        "RichText",
+        "Mask",
+        "Graphics"
+      ],
+      "webAssemblerBytes": 0,
+      "sha256": "f44465d1aeedca7620d6dd77363d99e04d3119a8673b23ebd839c8045af60b78"
+    }
+  ],
+  "configs": {
+    "Debug": {
+      "exe": "offline.exe",
+      "documentExeSha256": "7ff513a0a028b3791b6520b5887f97a38e71ac48f88a45208f0b516ef7aceb59",
+      "documentEngineSha256": "683f3717894ad7ec2971e9a1f72392a138555eda3da02a9eebc541be5c9fe3e9",
+      "documentSceneSha256": "28eb991481450ca36962329959c8cb56c1ddef39d7231f74529025df2e534ae2",
+      "deployedFilesVerified": 43,
+      "coreSceneEngineSha256": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+      "nativeCore": "pass",
+      "nativeJsbProbes": 7,
+      "fontCycles": 1000,
+      "fontLastSample": "DirectWrite file cycles 1000 handles 191 -> 191 GDI 0 -> 0",
+      "app": [
+        {
+          "config": "Debug",
+          "stage": "m2-pixel",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m3-label",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m4-mask",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m4-extra",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m5-richtext",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Debug",
+          "stage": "m6-atlas-captures",
+          "pass": true,
+          "matches": 12,
+          "different": []
+        },
+        {
+          "config": "Debug",
+          "stage": "m6-bitmap-captures",
+          "pass": true,
+          "matches": 92,
+          "different": []
+        }
+      ],
+      "api": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": {
+            "x": 400,
+            "y": 300
+          },
+          "outside": {
+            "x": 10,
+            "y": 10
+          },
+          "projected": [
+            400,
+            300
+          ],
+          "windowSize": {
+            "width": 800,
+            "height": 600
+          },
+          "screenTarget": true,
+          "hit": true,
+          "miss": false
+        },
+        {
+          "name": "M1.omittedWindow",
+          "passed": true,
+          "windowId": 1,
+          "omitted": false,
+          "explicitZero": false
+        },
+        {
+          "name": "M1.wrongWindow",
+          "passed": true,
+          "windowId": 1,
+          "wrongWindowId": 2,
+          "hit": false
+        },
+        {
+          "windowId": 1,
+          "projected": [
+            128,
+            128
+          ],
+          "size": [
+            256,
+            256
+          ],
+          "offscreenTarget": true,
+          "hit": false,
+          "name": "M1.offscreen",
+          "passed": true
+        },
+        {
+          "name": "publicMembers",
+          "passed": true,
+          "classes": 15,
+          "count": 192,
+          "missing": []
+        },
+        {
+          "name": "Sprite.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Label.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Graphics.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Mask.isHit.control",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Graphics.impl",
+          "passed": true,
+          "path": true,
+          "stable": true,
+          "writable": true,
+          "restored": true,
+          "released": true
+        }
+      ],
+      "core": {
+        "configuration": "Debug",
+        "captures": 146,
+        "centers": 46,
+        "areas": 55,
+        "hits": 22,
+        "roots": 11,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "lifecycleChecks": 20
+      },
+      "maxReferenceChannelDifference": 0,
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "richTextRuns": [
+        {
+          "config": "Debug",
+          "round": 1,
+          "exit": 0,
+          "images": 58,
+          "exe": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+          "engine": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+          "manifest": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb"
+        },
+        {
+          "config": "Debug",
+          "round": 2,
+          "exit": 0,
+          "images": 58,
+          "exe": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+          "engine": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+          "manifest": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb"
+        },
+        {
+          "config": "Debug",
+          "round": 3,
+          "exit": 0,
+          "images": 58,
+          "exe": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+          "engine": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+          "manifest": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb"
+        }
+      ],
+      "traceWindows": 136,
+      "steadyWindows": 14,
+      "directMigratedCalls": 0
+    },
+    "Release": {
+      "exe": "cocos-m1-test.exe",
+      "documentExeSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "documentEngineSha256": "683f3717894ad7ec2971e9a1f72392a138555eda3da02a9eebc541be5c9fe3e9",
+      "documentSceneSha256": "28eb991481450ca36962329959c8cb56c1ddef39d7231f74529025df2e534ae2",
+      "deployedFilesVerified": 43,
+      "coreSceneEngineSha256": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+      "nativeCore": "pass",
+      "nativeJsbProbes": 7,
+      "fontCycles": 1000,
+      "fontLastSample": "DirectWrite file cycles 1000 handles 181 -> 181 GDI 0 -> 0",
+      "app": [
+        {
+          "config": "Release",
+          "stage": "m2-pixel",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m3-label",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m4-mask",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m4-extra",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m5-richtext",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "config": "Release",
+          "stage": "m6-atlas-captures",
+          "pass": true,
+          "matches": 12,
+          "different": []
+        },
+        {
+          "config": "Release",
+          "stage": "m6-bitmap-captures",
+          "pass": true,
+          "matches": 92,
+          "different": []
+        }
+      ],
+      "api": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": {
+            "x": 400,
+            "y": 300
+          },
+          "outside": {
+            "x": 10,
+            "y": 10
+          },
+          "projected": [
+            400,
+            300
+          ],
+          "windowSize": {
+            "width": 800,
+            "height": 600
+          },
+          "screenTarget": true,
+          "hit": true,
+          "miss": false
+        },
+        {
+          "name": "M1.omittedWindow",
+          "passed": true,
+          "windowId": 1,
+          "omitted": false,
+          "explicitZero": false
+        },
+        {
+          "name": "M1.wrongWindow",
+          "passed": true,
+          "windowId": 1,
+          "wrongWindowId": 2,
+          "hit": false
+        },
+        {
+          "windowId": 1,
+          "projected": [
+            128,
+            128
+          ],
+          "size": [
+            256,
+            256
+          ],
+          "offscreenTarget": true,
+          "hit": false,
+          "name": "M1.offscreen",
+          "passed": true
+        },
+        {
+          "name": "publicMembers",
+          "passed": true,
+          "classes": 15,
+          "count": 192,
+          "missing": []
+        },
+        {
+          "name": "Sprite.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Label.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Graphics.priority",
+          "passed": true,
+          "initial": [
+            3
+          ],
+          "updated": [
+            100
+          ],
+          "publicValue": 100
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Mask.isHit.control",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Graphics.impl",
+          "passed": true,
+          "path": true,
+          "stable": true,
+          "writable": true,
+          "restored": true,
+          "released": true
+        }
+      ],
+      "core": {
+        "configuration": "Release",
+        "captures": 146,
+        "centers": 46,
+        "areas": 55,
+        "hits": 22,
+        "roots": 11,
+        "sceneCycles": 1000,
+        "sceneAssertions": 4998,
+        "lifecycleChecks": 20
+      },
+      "maxReferenceChannelDifference": 0,
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "richTextRuns": [
+        {
+          "config": "Release",
+          "round": 1,
+          "exit": 0,
+          "images": 58,
+          "exe": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+          "engine": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+          "manifest": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb"
+        },
+        {
+          "config": "Release",
+          "round": 2,
+          "exit": 0,
+          "images": 58,
+          "exe": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+          "engine": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+          "manifest": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb"
+        },
+        {
+          "config": "Release",
+          "round": 3,
+          "exit": 0,
+          "images": 58,
+          "exe": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+          "engine": "0dc7c6ef798bdd71a0820b4a0f1e90c6954e76ded041a850be3156edd7c30298",
+          "manifest": "d7cafb87b65c10872090cf82d06261148badf81df832d46873a499185104f5fb"
+        }
+      ],
+      "traceWindows": 136,
+      "steadyWindows": 14,
+      "directMigratedCalls": 0
+    }
+  },
+  "regeneratedBindingFiles": 12,
+  "documentBundleModules": 84,
+  "scheduling": {
+    "candidateImplementation": "05197fa63cc2fa11eca2072b445d7c5754d1e2a1",
+    "rounds": 10,
+    "timeoutSeconds": 45,
+    "expectedRuns": 20,
+    "completedRuns": 20,
+    "failedRuns": 0,
+    "passed": true,
+    "rangeSeconds": {
+      "Debug": [
+        41.306341,
+        42.8511811
+      ],
+      "Release": [
+        39.626307,
+        40.2498442
+      ]
+    }
+  },
+  "performance": {
+    "scope": "Windows Native only; current Web implementation excluded",
+    "rounds": 6,
+    "mixedDirtyReductionPercent": {
+      "cpuMs": 55.35644937587391,
+      "setterMs": 80.23097826088362,
+      "prepareMs": 66.68532251291236,
+      "batchMs": -9.513148542999295,
+      "jsbCalls": 77.51141552511416,
+      "peakJsBytes": 43.665688572951,
+      "forcedGcMs": 11.790833838094061
+    },
+    "targets": {
+      "cpu": true,
+      "jsb": true,
+      "peakJsHeap": true,
+      "forcedGc": true
+    },
+    "runOrder": [
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ],
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ],
+      [
+        "before",
+        "after"
+      ],
+      [
+        "after",
+        "before"
+      ]
+    ],
+    "instrumentedBinarySource": "8ee11b673e; native sources and instrumentation equivalent; candidate JS checkout 05197fa63c"
+  },
+  "windowsExecutedGates": "PASS",
+  "overallM6": "OPEN",
+  "evidence": {
+    "archive": "m6-postcommit-windows.zip",
+    "sha256": "4334359f38f1ac280aca72954c957ae08a17cc8ab4b9b12bfd0a27f35fe0d53a",
+    "files": 839,
+    "bytes": 1466103
+  }
+}
