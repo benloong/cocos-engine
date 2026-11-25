@@ -158,13 +158,21 @@ globalThis.m6PublicContracts = function publicContracts({ cc, test, check, host,
         const aabb = t.getComputeAABB();
         check(aabb.center.x === 20 && aabb.center.y === 25 && aabb.halfExtents.x === 10 && aabb.halfExtents.y === 5, 'AABB');
     });
-    test('UITransform', 'cameraPriority hitTest', 'active window screen center and outside', () => {
+    test('UITransform', 'cameraPriority hitTest', 'active window screen center and outside', async () => {
         const canvas = cc.director.getScene().getComponentInChildren(cc.Canvas);
-        const t = canvas.node.getComponent(cc.UITransform), camera = canvas.cameraComponent.camera;
+        const component = canvas.cameraComponent;
+        // The pixel probes temporarily render this camera into a RenderTexture.
+        const onScreen = () => component.targetTexture === null && !!component.camera.window?.swapchain;
+        for (let i = 0; i < 120 && !onScreen(); ++i) await frame();
+        check(onScreen(), 'canvas camera did not return to the screen within 120 frames');
+        const t = canvas.node.getComponent(cc.UITransform), camera = component.camera;
+        camera.update(true);
         const center = camera.worldToScreen(new cc.Vec3(), canvas.node.worldPosition);
         const p = new cc.Vec2(center.x,center.y), windowId = camera.systemWindowId;
-        check(t.cameraPriority === canvas.cameraComponent.priority && t.hitTest(p,windowId)
-            && !t.hitTest(new cc.Vec2(-100000,-100000),windowId) && !t.hitTest(p,windowId+123), 'camera or window filtering');
+        check(windowId > 0 && t.cameraPriority === component.priority, 'active window or camera priority');
+        check(t.hitTest(p,windowId), 'screen center missed with active window ID');
+        check(!t.hitTest(new cc.Vec2(-100000,-100000),windowId), 'outside point hit');
+        check(!t.hitTest(p) && !t.hitTest(p,0) && !t.hitTest(p,windowId+123), 'center hit with missing, zero or wrong window ID');
     });
     test('UITransform', 'onLoad onEnable onDisable onDestroy', 'register and detach transform from host', () => {
         const t = host(cc.UITransform), n = t.node;
