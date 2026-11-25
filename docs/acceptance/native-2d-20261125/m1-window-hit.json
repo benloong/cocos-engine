@@ -1,0 +1,225 @@
+{
+  "date": "2026-11-25",
+  "scope": "M1 Windows UITransform.hitTest",
+  "fixtureCommit": "d2e82f0066",
+  "gateCommit": "e7362fafae",
+  "verdict": "PASS",
+  "build": "Fresh cocos-cli windows export of cocos-m1-test, Native override, incremental CMake Debug and Release. Debug relinked with its remote debugger disabled.",
+  "verification": "The packaged M1Test emits one screen sample before M2 redirects the canvas camera, and one target-local sample while rendering to M2 RenderTexture. The independent M2 stdout gate and the public API runner produced identical M1 results.",
+  "configs": {
+    "Debug": {
+      "testedExecutable": "offline.exe",
+      "exeSha256": "c04d2db95fe27ec88f00129f378c2dc305ddb8618f81131286ccac5fb141901d",
+      "engineSha256": "c193ba220d5c1b106e5dd970e618711f8ff8041d110c294179e4a18c659a255a",
+      "sceneScriptSha256": "8ef0ea905bb86391fc20753762d8d7f56b37dbf62c5754aaa09d6ca1f7b509fa",
+      "exportedResourcesVerified": 43,
+      "hitChecks": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": {
+            "x": 400,
+            "y": 300
+          },
+          "outside": {
+            "x": 10,
+            "y": 10
+          },
+          "projected": [
+            400,
+            300
+          ],
+          "windowSize": {
+            "width": 800,
+            "height": 600
+          },
+          "screenTarget": true,
+          "hit": true,
+          "miss": false
+        },
+        {
+          "name": "M1.omittedWindow",
+          "passed": true,
+          "windowId": 1,
+          "omitted": false,
+          "explicitZero": false
+        },
+        {
+          "name": "M1.wrongWindow",
+          "passed": true,
+          "windowId": 1,
+          "wrongWindowId": 2,
+          "hit": false
+        },
+        {
+          "windowId": 1,
+          "projected": [
+            128,
+            128
+          ],
+          "size": [
+            256,
+            256
+          ],
+          "offscreenTarget": true,
+          "hit": false,
+          "name": "M1.offscreen",
+          "passed": true
+        }
+      ],
+      "publicGateFailures": [
+        "publicMembers",
+        "Mask.isHit.bare",
+        "Graphics.impl"
+      ],
+      "appStages": [
+        {
+          "stage": "m2-pixel",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m3-label",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m4-mask",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m4-extra",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m5-richtext",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m6-atlas-captures",
+          "pass": true,
+          "matches": 12
+        },
+        {
+          "stage": "m6-bitmap-captures",
+          "pass": true,
+          "matches": 92
+        }
+      ],
+      "m5ExitCode": 0
+    },
+    "Release": {
+      "testedExecutable": "cocos-m1-test.exe",
+      "exeSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "engineSha256": "c193ba220d5c1b106e5dd970e618711f8ff8041d110c294179e4a18c659a255a",
+      "sceneScriptSha256": "8ef0ea905bb86391fc20753762d8d7f56b37dbf62c5754aaa09d6ca1f7b509fa",
+      "exportedResourcesVerified": 43,
+      "hitChecks": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": {
+            "x": 400,
+            "y": 300
+          },
+          "outside": {
+            "x": 10,
+            "y": 10
+          },
+          "projected": [
+            400,
+            300
+          ],
+          "windowSize": {
+            "width": 800,
+            "height": 600
+          },
+          "screenTarget": true,
+          "hit": true,
+          "miss": false
+        },
+        {
+          "name": "M1.omittedWindow",
+          "passed": true,
+          "windowId": 1,
+          "omitted": false,
+          "explicitZero": false
+        },
+        {
+          "name": "M1.wrongWindow",
+          "passed": true,
+          "windowId": 1,
+          "wrongWindowId": 2,
+          "hit": false
+        },
+        {
+          "windowId": 1,
+          "projected": [
+            128,
+            128
+          ],
+          "size": [
+            256,
+            256
+          ],
+          "offscreenTarget": true,
+          "hit": false,
+          "name": "M1.offscreen",
+          "passed": true
+        }
+      ],
+      "publicGateFailures": [
+        "publicMembers",
+        "Mask.isHit.bare",
+        "Graphics.impl"
+      ],
+      "appStages": [
+        {
+          "stage": "m2-pixel",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m3-label",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m4-mask",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m4-extra",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m5-richtext",
+          "pass": true,
+          "matches": null
+        },
+        {
+          "stage": "m6-atlas-captures",
+          "pass": true,
+          "matches": 12
+        },
+        {
+          "stage": "m6-bitmap-captures",
+          "pass": true,
+          "matches": 92
+        }
+      ],
+      "m5ExitCode": 0
+    }
+  },
+  "m0": "175 C++ assertions passed; pre-existing U+1F642 bitmap width discrepancy: native 8.5, Web 0.",
+  "fixtureTypecheck": "No M1 diagnostic. The standalone project fixture check reported the same 10 dependency diagnostics before and after the change.",
+  "logs": "m1-window-hit-logs.zip",
+  "logsSha256": "049344d432e0ed108c4571645b585893afe3d3a17a4aa84ffdaaec95cb7ccc9e"
+}

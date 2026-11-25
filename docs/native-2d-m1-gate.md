@@ -2,7 +2,7 @@
 
 > 适用：`ui-transform.jsb.ts` / `ui-opacity.jsb.ts` 从候选壳切换为生产 override。
 > 当前：`ui-opacity` 与 `ui-transform` 均已启用。
-> 2026-11-25 CLI 新包复验，Windows Debug/Release 中显式传入活动窗口 ID 时中心点命中；下表历史用例的单参数调用在两个配置均未命中。M1 完整签收待该门槛收口。[本轮验收](./native-2d-m6-gate.md#2026-11-25-cli-新包整体验收)
+> 2026-11-25 已关闭 Windows M1 命中阻断。cocos-cli 重打的 Debug、Release 均通过屏幕正向断言以及默认窗口、错误窗口、离屏相机的负向对照。普通应用和公开接口运行器读取到相同结果。[双配置验收数据](./acceptance/native-2d-20261125/m1-window-hit.json) · [构建和应用日志](./acceptance/native-2d-20261125/m1-window-hit-logs.zip)
 
 ## 1. 当前证据
 
@@ -16,7 +16,8 @@
 | 真实引擎 JS bundle onLoad | **通过** | native `cc.js` 含 `n2d.UITransform`/`n2d.UIOpacity`；场景加载成功 |
 | 场景反序列化/prefab | **通过** | 真实场景 + `resources.load('M1Prefab', Prefab)` 的 prefab 加载/instantiate 均正确 |
 | 依赖组件 umbrella（Label/Sprite） | **通过（attach）** | Label `M1UMBRELLA` 与 Sprite 组件均共享 native UITransform 100×50；Sprite 无 frame，未验证渲染 |
-| `hitTest` 相机正向用例 | **通过** | physical window center `(400,300)` 命中，`(10,10)` 不命中；native camera 800×600 |
+| `hitTest` 屏幕正向用例 | **通过** | 800×600 屏幕相机，活动窗口 ID 1，传入该 ID 时节点投影中心 `(400,300)` 命中，外点 `(10,10)` 未命中。 |
+| `hitTest` 负向对照 | **通过** | 相同屏幕中心省略 ID、显式传 0、传错误 ID 2 均未命中。相机输出到 256×256 RenderTexture 时，传相机窗口 ID 1 查询纹理内投影中心 `(128,128)` 也未命中。 |
 | `isHit` UI 空间 | **通过** | UI 点经相机/visibleRect 转 world 后调用 native `containsWorldPointXY`；`(640,480)` 命中，`(10,10)` 不命中 |
 | 每帧 UITransform JSB getter 计数 | 基线 | 1000 次 `getBoundingBoxToWorld()` = 7 ms（Debug native） |
 | override 开关清单 | 已同步 | `m1-components.json` 与 `cc.config.json` 均为 enabled |
@@ -52,4 +53,4 @@
 
 ## 3. 当前建议
 
-`ui-transform` 已启用。真实 native 场景回归通过，但 prefab/clone、每帧 getter 计数和 `hitTest` 相机正向用例仍是 M1 收尾项；出现回归时按第 2 节回滚。
+`ui-transform` 已启用。命中门禁读取打包场景在两种相机状态下的实测输出。Prefab/clone 和每帧 getter 计数沿用各自的验收记录。

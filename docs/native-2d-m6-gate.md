@@ -1,5 +1,9 @@
 # Native 2D M6 Gate
 
+## 2026-11-25 M1 窗口命中复验
+
+M1 命中门禁通过。Windows Debug、Release 的打包场景在 M2 切换相机前验证实际窗口的中心与外点，再在 M2 的 RenderTexture 上验证离屏未命中。两端的默认 ID 与错误窗口负向对照也通过。整体验收仍有默认 Mask 命中、Graphics.impl 和 M0 位图字体宽度差异。[M1 门禁](./native-2d-m1-gate.md) · [双配置验收数据](./acceptance/native-2d-20261125/m1-window-hit.json)
+
 ## 2026-11-25 动态 priority 像素复验
 
 Sprite、Label 和 Graphics 加载后修改 `priority` 的问题已修复。Windows Debug、Release 新包均通过原生转发与实际遮挡顺序门禁；整体验收仍有其他阻断项。[修复前后像素、构建与复验数据](./native-2d-priority-order-20261125.md)
