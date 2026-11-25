@@ -1,5 +1,9 @@
 # Native 2D M6 Gate
 
+## 2026-11-25 动态 priority 像素复验
+
+Sprite、Label 和 Graphics 加载后修改 `priority` 的问题已修复。Windows Debug、Release 新包均通过原生转发与实际遮挡顺序门禁；整体验收仍有其他阻断项。[修复前后像素、构建与复验数据](./native-2d-priority-order-20261125.md)
+
 ## Windows 最终签收 · 2026-11-24
 
 **GO — 实现候选 `8ee11b673e`。** 用户确认历史 Debug 提前退出和字体共享冲突已处理，关闭这两项阻断。历史记录保留当时的观测，具体退出原因和占用进程未从原始日志确定。
