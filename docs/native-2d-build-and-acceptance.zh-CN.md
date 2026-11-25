@@ -349,6 +349,7 @@ foreach ($config in 'Debug', 'Release') {
 14. 涉及字体图集采样的节点追加第 7.9 节原始像素对照
 15. 两个配置各执行 run-m1-m5-public-api.ps1，保留 checks.json
 16. run-m2-perf.ps1 使用 Release PoC，对照当前源码的 Jest 基准，CPU 提升至少 30%
+17. 两个配置各执行 run-m1-m5-public-api.ps1 -Behavior，再用 compare-m6-behavior.cjs 核对两份结果
 ```
 
 步骤 6–10 在每个配置的新资源副本上分别执行。M5 在夹具恢复节点和相机、调用 `rt.destroy()` 后记录一次 `M5_EXIT_REQUESTED`，并在启动预算内自然退出 0。记录强制结束的轮次为失败。发布包内没有运行器创建的退出标记时，测试场景保留正常的交互生命周期。
@@ -356,6 +357,17 @@ foreach ($config in 'Debug', 'Release') {
 M1 的 `M1_HIT` 与 `M1_HIT_OFFSCREEN` 各须由打包场景输出一次。屏幕相机使用自身的活动窗口 ID，物理窗口中心命中、外点未命中。省略 ID、显式 0 和另一个非零窗口 ID 在 Windows 场景中均未命中。切到 RenderTexture 后，使用同一窗口 ID 检查节点在纹理内的投影中心，也应未命中。公开接口运行器将这些结果写入 `checks.json`；单独检查可对同一新包的应用 stdout 执行 `node native/tests/2d-poc/check-m1-hit.cjs <stdout.log>`。
 
 ### 改动后的复验门槛
+
+步骤 17 使用步骤 4 的打包程序、当前生成的 `cc.d.ts` 和两个新的输出目录。运行器会逐项记录公开成员、执行的行为用例及失败原因。静态成员在汇总文件中带有 `static.` 标记，继承成员在声明它的类下验收。以下命令在引擎仓库根目录执行，`$debugExe` 和 `$releaseExe` 指向本轮打包程序。
+
+```powershell
+$p = 'native/tests/2d-poc'
+& "$p/run-m1-m5-public-api.ps1" -Behavior -AppExe $debugExe -OutputDirectory "$run/behavior-Debug"
+& "$p/run-m1-m5-public-api.ps1" -Behavior -AppExe $releaseExe -OutputDirectory "$run/behavior-Release"
+node "$p/compare-m6-behavior.cjs" "$run/behavior-Debug" "$run/behavior-Release" "$run/behavior.json"
+```
+
+公开成员映射缺失或重复、字体或资产场景缺失、任一断言失败、双配置观测不同，均阻断签收。新增门槛包括字体 GPU 字形覆盖与布局、延迟依赖和取消后的目标文件、动态场景资产引用计数，以及 RichText 文本和图片包装对象在换场景后的身份、事件、回收与销毁。修改相关实现后，须保留打包程序的正向和负向对照结果。
 
 | 改动 | 同一工作树须补跑的检查 |
 |---|---|

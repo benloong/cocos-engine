@@ -1,0 +1,165 @@
+{
+  "date": "2026-11-25",
+  "candidate": "f9df28d4c81938434f39ed6dc1c56028e4ea5b95",
+  "scope": "Windows x64 Native/JSB Debug and Release, local assets",
+  "build": "cocos-cli export of cocos-m1-test, engine override, CMake Debug and Release. Debug relink disables the debugger listener.",
+  "before": {
+    "candidate": "61436a3d4b6ed3033f1edfb26df12db6cdecc72c",
+    "releaseExecutable": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+    "engine": "683f3717894ad7ec2971e9a1f72392a138555eda3da02a9eebc541be5c9fe3e9",
+    "failures": {
+      "balance persistent node and dynamic scene asset references": "Error: scene refCount deltas 1,2,3,2,2",
+      "retained, pooled and collected segment wrappers across scene launches": "Error: layer listeners [0,1,1,1,1]",
+      "reload imported prefab and cloned frame across three scene changes": "Error: old scene assets or retained clone: [0,[false,null],[false,0],[true,2],[true,3],[true,3],[true,0]]"
+    }
+  },
+  "configurations": {
+    "Debug": {
+      "executable": "offline.exe",
+      "executableSha256": "b0475c146de0382e11bedbe4772481e7caa8cd454eece7deb12d6b6444f78fe6",
+      "documentEngineSha256": "ba8370cb78c66581c6d6362612bac2f429767db5de03f173331ac25d9200f13a",
+      "sceneSha256": "28eb991481450ca36962329959c8cb56c1ddef39d7231f74529025df2e534ae2",
+      "publicApiChecks": 11,
+      "additionalBehavior": 82,
+      "publicMappingMissing": 0,
+      "publicMappingUnexpected": 0,
+      "sceneWindows": 1000,
+      "rootChecks": 11,
+      "sceneAssertions": 4998,
+      "lifecycleChecks": 20,
+      "coreCaptures": 146,
+      "maxPixelDifference": 0,
+      "documentCaptures": 104,
+      "offlineRichTextCapturesPerRun": 58,
+      "offlineRichTextRuns": 3,
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "nativeProbes": 7,
+      "fontFileCycles": 1000,
+      "traceWindows": 136,
+      "startupSeconds": [
+        42.2644954,
+        41.7379373,
+        41.7387447,
+        41.7549493,
+        41.7358431,
+        41.7876029,
+        41.6975407,
+        41.3342417,
+        41.3322803,
+        41.7225576
+      ]
+    },
+    "Release": {
+      "executable": "cocos-m1-test.exe",
+      "executableSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "documentEngineSha256": "ba8370cb78c66581c6d6362612bac2f429767db5de03f173331ac25d9200f13a",
+      "sceneSha256": "28eb991481450ca36962329959c8cb56c1ddef39d7231f74529025df2e534ae2",
+      "publicApiChecks": 11,
+      "additionalBehavior": 82,
+      "publicMappingMissing": 0,
+      "publicMappingUnexpected": 0,
+      "sceneWindows": 1000,
+      "rootChecks": 11,
+      "sceneAssertions": 4998,
+      "lifecycleChecks": 20,
+      "coreCaptures": 146,
+      "maxPixelDifference": 0,
+      "documentCaptures": 104,
+      "offlineRichTextCapturesPerRun": 58,
+      "offlineRichTextRuns": 3,
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "nativeProbes": 7,
+      "fontFileCycles": 1000,
+      "traceWindows": 136,
+      "startupSeconds": [
+        39.7009688,
+        39.688522,
+        39.698764,
+        39.7676553,
+        39.7104111,
+        39.7419857,
+        39.8319055,
+        39.7676953,
+        39.7324748,
+        39.8671885
+      ]
+    }
+  },
+  "publicClasses": {
+    "SpriteAtlas": 4,
+    "TTFFont": 0,
+    "LabelAtlas": 0,
+    "BitmapFont": 4,
+    "Font": 0,
+    "SpriteFrame": 34,
+    "UIRenderer": 13,
+    "UITransform": 21,
+    "RenderRoot2D": 3,
+    "Sprite": 18,
+    "UIOpacity": 3,
+    "Label": 31,
+    "Mask": 13,
+    "RichText": 20,
+    "Graphics": 28
+  },
+  "publicMembers": 192,
+  "behaviorCases": 82,
+  "publicBehaviorMap": "m6-public-behavior.json",
+  "declarationSha256": "a6f8aacfd0615048597202cbcf8df9544a3a2525624c20b88c5d53f2aacace78",
+  "staging": {
+    "font": "tests/fixtures/Thonburi.ttf",
+    "fontSha256": "2d403c658025f377d943e401785927d8b58c5d26cf89d82b2a6cdef9949efc16"
+  },
+  "nativeJest": {
+    "suites": 18,
+    "tests": 136
+  },
+  "assetManagerJest": {
+    "suites": 13,
+    "tests": 77
+  },
+  "additionalChecks": {
+    "M0": "pass",
+    "nativeTS": "pass",
+    "bindingFiles": 12,
+    "graphicsGeometryInputs": 786,
+    "windowsFeatureBuilds": 9
+  },
+  "performance": {
+    "rounds": 6,
+    "mixedDirtyReductionPercent": {
+      "cpuMs": 54.01814534323197,
+      "setterMs": 79.07940161104331,
+      "prepareMs": 65.99972210636443,
+      "batchMs": -10.306850704633552,
+      "jsbCalls": 77.51141552511416,
+      "peakJsBytes": 43.65841264986323,
+      "forcedGcMs": 25.956079271548916
+    },
+    "passed": {
+      "cpu": true,
+      "jsb": true,
+      "peakJsHeap": true,
+      "forcedGc": true
+    }
+  },
+  "scheduling": {
+    "passed": true,
+    "roundsPerConfiguration": 10,
+    "timeoutSeconds": 45
+  },
+  "artifacts": "native/tests/2d-poc/build/m6-windows-f9df28d4c8-1795583583877",
+  "archive": {
+    "file": "m6-windows-behavior.zip",
+    "files": 797,
+    "sha256": "f2285dd48b97d6a19e217235a4b6a4a137583af31eef32b62e289175f89ad824"
+  }
+}
