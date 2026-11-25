@@ -37,6 +37,17 @@ try {
     }
     if ($lines.Count -lt 2) { throw "expected 2 M4_MASK_PIXEL lines, got $($lines.Count)" }
 
+    $priorityRows = @(Select-String -LiteralPath $log -SimpleMatch 'NATIVE_PRIORITY_PIXELS ' | ForEach-Object {
+        ($_.Line -split 'NATIVE_PRIORITY_PIXELS ', 2)[1] | ConvertFrom-Json
+    })
+    if (Compare-Object @('Sprite', 'Label', 'Graphics') @($priorityRows.kind)) { throw 'Incomplete priority pixel captures' }
+    foreach ($row in $priorityRows) {
+        Write-Host ("  priority pixels {0}: samples={1}, below={2}, above={3}, restored={4}" -f $row.kind, $row.samples, $row.below, $row.above, $row.restored)
+        if ($row.samples -lt 32 -or $row.below -ne $row.samples -or $row.above -ne $row.samples -or $row.restored -ne $row.samples) {
+            throw "Incorrect dynamic priority render order for $($row.kind)"
+        }
+    }
+
     $entries = @()
     foreach ($line in $lines) {
         $json = $line.Line.Substring($line.Line.IndexOf('M4_MASK_PIXEL ') + 14)

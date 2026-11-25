@@ -25,6 +25,7 @@ import {
     UITransform,
 } from 'cc';
 import { verifyStaticAtlas } from './StaticAtlasProbe';
+import { verifyPriorityOrder } from './PriorityOrderProbe';
 
 /** M4 Mask + Graphics probe. */
 export class M4Probe {
@@ -368,6 +369,7 @@ export class M4Probe {
             maskNode.active = false;
             try {
                 await verifyStaticAtlas(parent, captureLayer, renderTexture, stress);
+                if (sys.isNative && !stress) await verifyPriorityOrder(parent, captureLayer, renderTexture, frame);
             } catch (error) {
                 console.error('M6_STATIC_ATLAS_ERROR ' + String(error));
                 throw error;
