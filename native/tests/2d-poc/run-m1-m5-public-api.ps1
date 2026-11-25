@@ -2,6 +2,7 @@ param(
     [Parameter(Mandatory)][string]$AppExe,
     [Parameter(Mandatory)][string]$OutputDirectory,
     [int]$TimeoutSeconds = 120,
+    [switch]$Behavior,
     [string]$Declarations = (Join-Path $PSScriptRoot '../../../bin/.declarations/cc.d.ts')
 )
 $ErrorActionPreference = 'Stop'
@@ -23,6 +24,12 @@ $source = [IO.File]::ReadAllText($main)
 $hook = 'return application.start();'
 if ([regex]::Matches($source, [regex]::Escape($hook)).Count -ne 1) { throw 'Expected one application.start hook' }
 $replacement = "return System.import('cc').then(cc => { require('M1M5PublicApi.js'); globalThis.installM1M5PublicApi(cc, $jsonPath); return application.start(); });"
+if ($Behavior) {
+    $suite = Join-Path $PSScriptRoot 'fixtures/acceptance/m6-behavior'
+    Copy-Item -LiteralPath $suite -Destination $resources -Recurse
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../../../tests/fixtures/Thonburi.ttf') -Destination $resources
+    $replacement = "return System.import('cc').then(cc => { require('m6-behavior/run.js'); globalThis.installM6Behavior(cc, $jsonPath); return application.start(); });"
+}
 [IO.File]::WriteAllText($main, $source.Replace($hook, $replacement))
 $process = Start-Process -FilePath (Join-Path $stage $exe.Name) -WorkingDirectory $stage -WindowStyle Hidden `
     -RedirectStandardOutput (Join-Path $stage 'stdout.log') -RedirectStandardError (Join-Path $stage 'stderr.log') -PassThru
@@ -34,6 +41,14 @@ try {
     $process.Dispose()
 }
 
+if ($Behavior) {
+    $result = Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
+    if ($result.complete -ne $true -or $result.passed -ne $true) {
+        throw "M6 behavior failed. See $report"
+    }
+    Write-Output "M6 passed $($result.cases.Count) behavior cases. See $report"
+    return
+}
 $apiChecks = @(Get-Content -LiteralPath $report -Raw | ConvertFrom-Json)
 $m1Json = & node (Join-Path $PSScriptRoot 'check-m1-hit.cjs') (Join-Path $stage 'stdout.log')
 if (!$m1Json) { throw 'Packaged M1 window hit-test results missing or malformed' }
