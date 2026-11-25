@@ -22,6 +22,7 @@ globalThis.installM6Behavior = function install(cc, output) {
     } };
     require('m6-behavior/public.js'); globalThis.m6PublicContracts(suite);
     require('m6-behavior/resources.js'); globalThis.m6Resources(suite);
+    require('m6-behavior/scenes.js'); globalThis.m6SceneLifetimes(suite);
     async function execute() {
         const remaining = new Set(Object.entries(declared).flatMap(([owner, members]) =>
             members.map(m => owner + '.' + (m.isStatic ? '@' : '') + m.key)));

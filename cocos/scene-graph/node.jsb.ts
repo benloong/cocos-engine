@@ -292,7 +292,7 @@ const REGISTERED_EVENT_MASK_LAYER_CHANGED = (1 << 3);
 const REGISTERED_EVENT_MASK_SIBLING_ORDER_CHANGED = (1 << 4);
 const REGISTERED_EVENT_MASK_LIGHT_PROBE_BAKING_CHANGED = (1 << 5);
 
-nodeProto.on = function (type, callback, target, useCapture: any = false) {
+function enableNativeNodeEvent (this: typeof nodeProto, type: string): void {
     switch (type) {
         case NodeEventType.TRANSFORM_CHANGED:
             this._eventMask |= TRANSFORM_ON;
@@ -337,6 +337,10 @@ nodeProto.on = function (type, callback, target, useCapture: any = false) {
         default:
             break;
     }
+}
+
+nodeProto.on = function (type, callback, target, useCapture: any = false) {
+    enableNativeNodeEvent.call(this, type);
     this._eventProcessor.on(type, callback, target, useCapture);
 };
 
@@ -360,6 +364,7 @@ nodeProto.off = function (type: string, callback?, target?, useCapture = false) 
 };
 
 nodeProto.once = function (type: string, callback, target?: unknown, useCapture?: any) {
+    enableNativeNodeEvent.call(this, type);
     this._eventProcessor.once(type, callback, target, useCapture);
 };
 

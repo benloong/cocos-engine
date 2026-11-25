@@ -189,18 +189,21 @@ export class ReleaseManager {
         }
 
         // transfer refs from persist nodes to new scene
-        const sceneDeps = dependUtil._depends.get(newScene.uuid);
+        let sceneDeps = dependUtil._depends.get(newScene.uuid);
         if (sceneDeps) { sceneDeps.persistDeps = []; }
         for (const key in persistNodes) {
             const node = persistNodes[key];
             const deps = this._persistNodeDeps.get(node.uuid) as string[];
+            if (!deps.length) { continue; }
+            // Runtime-created scenes have no importer record. Track their references
+            // as well so leaving the scene balances every addRef below.
+            sceneDeps ??= dependUtil._depends.add(newScene.uuid, { deps: [], persistDeps: [] });
             for (const dep of deps) {
                 const dependAsset = assets.get(dep);
                 if (dependAsset) {
                     dependAsset.addRef();
                 }
             }
-            if (!sceneDeps) { continue; }
             sceneDeps.persistDeps!.push(...deps);
         }
     }
