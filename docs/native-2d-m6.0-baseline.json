@@ -71,7 +71,7 @@
     },
     {
       "file": "native/cocos/2d/components/Graphics.cpp",
-      "sha256": "05408c9f3ef4621017b96f38325d78dc948e62fee312ae02590d808d67fa4270"
+      "sha256": "26f8cc9e19ffec2165eb3359588a0abbd911615efa1d27aac4d211530d75e132"
     },
     {
       "file": "native/cocos/2d/components/Graphics.h",
@@ -103,11 +103,11 @@
     },
     {
       "file": "native/cocos/2d/components/Sprite.cpp",
-      "sha256": "82dfbffad9b1da8ab3751c49583066a2cf855c9600eb3daa4f5720fa2137d438"
+      "sha256": "a1234bc6dd7136f34d6c6576a91c5c6f0bf1fcb9697d815760fa571082804911"
     },
     {
       "file": "native/cocos/2d/components/Sprite.h",
-      "sha256": "0ba08e7ebe4af1b1dda6fba1cc662a7dbde5b709389b8f13b3cdd2aeae057d16"
+      "sha256": "98d167e0a057bb472854757c1b0a79da309a08d61bc5f2f90f13f7afd6b35626"
     },
     {
       "file": "native/cocos/2d/framework/RenderRoot2D.cpp",
@@ -179,7 +179,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.cpp",
-      "sha256": "052303328b77c8276e6bc5f27bbf7ae892f0617ad97f7b1543504c388eb9f637"
+      "sha256": "80b5d480389b6e7f80ac7432e33a51232c592e9e4edfea8d00a4076cc22f965f"
     },
     {
       "file": "native/cocos/2d/renderer/Batcher2d.h",
@@ -199,11 +199,11 @@
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.cpp",
-      "sha256": "cf1153356a08188b21e9ce5f160c5c4628f3ea20d6178fbf982708999eb89339"
+      "sha256": "f6ed179b73699259650e1dc228c2462bb81d1c88dbe327a36932c4fa197b49a6"
     },
     {
       "file": "native/cocos/2d/renderer/RenderDrawInfo.h",
-      "sha256": "0e8c93100a9691cc705659ad62295bd6e74105ed954fa21e3db42a6f70f29ff8"
+      "sha256": "6b243c8136f6ac2b176fae8417405688f5e21203e2fc6147296474ecb27a41bb"
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.cpp",
@@ -211,7 +211,7 @@
     },
     {
       "file": "native/cocos/2d/renderer/RenderEntity.h",
-      "sha256": "93d8602b6b65d7ad2b0d0388ada69b7b4cdb65435bab035127216df93a3c4755"
+      "sha256": "26e561c8a75c2c57e289d865c0a64e1ca0b13e3dc9668576a2d02ded26870478"
     },
     {
       "file": "native/cocos/2d/renderer/RichTextLayout.cpp",
@@ -375,11 +375,11 @@
     },
     {
       "file": "native/cocos/scene/DrawBatch2D.cpp",
-      "sha256": "ae38a7dc393dbf83f4b43a00f4e95d84f466f77be634115d3d53839032793b7e"
+      "sha256": "f83b3b4effb702cbdde9baabcdd592c847d64a12b4e4f433efb6c5f8b9047dbb"
     },
     {
       "file": "native/cocos/scene/DrawBatch2D.h",
-      "sha256": "4286d63e708ae2b4fe1f6c1c65cd4dad3e9af14a83b56133637d3b9ea8105571"
+      "sha256": "6aaf47d57952e4151400aae561ce56cca0bdbb40a2dabd4b2f9af2e3a9e56bb4"
     },
     {
       "file": "native/tools/swig-config/2d.i",
