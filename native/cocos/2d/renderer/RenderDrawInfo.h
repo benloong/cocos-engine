@@ -255,13 +255,24 @@ public:
     }
 
 private:
+    friend class Graphics;
     friend class Sprite;
     friend class Batcher2d;
     friend class RenderEntity;
     void markSpriteVerticesUpdated(bool geometryChanged);
+    // Only native writers can track in-place changes. JS-owned arrays may change between draws.
+    void markMeshDirty(bool vertices, bool indices) {
+        _tracksMeshChanges = true;
+        _uploadVertices |= vertices;
+        _uploadIndices |= indices;
+    }
+    bool needsMeshUpload() const { return !_tracksMeshChanges || _uploadVertices || _uploadIndices; }
     uint64_t _spriteVertexRevision{0};
     uint64_t _spriteGeometryRevision{0};
     bool _batchableSpriteMesh{false};
+    bool _tracksMeshChanges{false};
+    bool _uploadVertices{true};
+    bool _uploadIndices{true};
     CC_DISALLOW_COPY_MOVE_ASSIGN(RenderDrawInfo);
     void destroy();
 

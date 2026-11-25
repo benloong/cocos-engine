@@ -58,6 +58,7 @@ void RenderDrawInfo::markSpriteVerticesUpdated(bool geometryChanged) {
     static uint64_t revision = 0; // Sprite mesh writes run on the scene thread.
     _spriteVertexRevision = ++revision;
     if (geometryChanged) _spriteGeometryRevision = revision;
+    markMeshDirty(true, geometryChanged);
 }
 
 void RenderDrawInfo::changeMeshBuffer() {
@@ -73,14 +74,19 @@ gfx::InputAssembler* RenderDrawInfo::requestIA(gfx::Device* device) {
 void RenderDrawInfo::uploadBuffers() {
     CC_ASSERT(_drawInfoAttrs._isMeshBuffer && _drawInfoAttrs._drawInfoType == RenderDrawInfoType::COMP);
     if (_drawInfoAttrs._vbCount == 0 || _drawInfoAttrs._ibCount == 0) return;
-    uint32_t size = _drawInfoAttrs._vbCount * (_drawInfoAttrs._stride ? _drawInfoAttrs._stride : 9U) * sizeof(float);
-    gfx::Buffer* vBuffer = _ia->getVertexBuffers()[0];
-    vBuffer->resize(size);
-    vBuffer->update(_vDataBuffer);
-    gfx::Buffer* iBuffer = _ia->getIndexBuffer();
-    uint32_t iSize = _drawInfoAttrs._ibCount * 2;
-    iBuffer->resize(iSize);
-    iBuffer->update(_iDataBuffer);
+    if (!_tracksMeshChanges || _uploadVertices) {
+        const uint32_t size = _drawInfoAttrs._vbCount * (_drawInfoAttrs._stride ? _drawInfoAttrs._stride : 9U) * sizeof(float);
+        auto *vBuffer = _ia->getVertexBuffers()[0];
+        vBuffer->resize(size);
+        vBuffer->update(_vDataBuffer);
+        _uploadVertices = false;
+    }
+    if (!_tracksMeshChanges || _uploadIndices) {
+        auto *iBuffer = _ia->getIndexBuffer();
+        iBuffer->resize(_drawInfoAttrs._ibCount * sizeof(uint16_t));
+        iBuffer->update(_iDataBuffer);
+        _uploadIndices = false;
+    }
 }
 
 void RenderDrawInfo::resetMeshIA() { // NOLINT(readability-make-member-function-const)
@@ -88,6 +94,8 @@ void RenderDrawInfo::resetMeshIA() { // NOLINT(readability-make-member-function-
 }
 
 void RenderDrawInfo::destroy() {
+    _tracksMeshChanges = false;
+    _uploadVertices = _uploadIndices = true;
     _vb = nullptr;
     _ib = nullptr;
     _ia = nullptr;

@@ -124,6 +124,7 @@ void Graphics::rebuildChunks() {
         }
     }
     _chunks.resize(used);
+    for (auto &item : _chunks) item->draw.markMeshDirty(true, true);
 }
 void Graphics::updateRenderer() {
     if (!renderDirtyFlags()) return;

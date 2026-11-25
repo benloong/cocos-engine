@@ -381,6 +381,7 @@ void Batcher2d::SpriteMeshPage::append(RenderDrawInfo *source) {
     }
     if (usedSlots == slots.size()) {
         slots.push_back({0, 0, vertexEnd, indexEnd});
+        draw.markMeshDirty(true, true);
         vertices.resize(static_cast<size_t>(vertexEnd) * 9);
         indices.resize(indexEnd);
     }
@@ -389,12 +390,16 @@ void Batcher2d::SpriteMeshPage::append(RenderDrawInfo *source) {
         const auto *v = source->getVDataBuffer();
         std::copy_n(v, static_cast<size_t>(source->getVbCount()) * 9, vertices.data() + static_cast<size_t>(base) * 9);
         slot.vertexRevision = source->_spriteVertexRevision;
+        draw.markMeshDirty(true, false);
     }
     if (slot.geometryRevision != source->_spriteGeometryRevision) {
         const auto *idx = source->getIDataBuffer();
         for (uint32_t i = 0; i < source->getIbCount(); ++i) {
             const auto rebased = static_cast<uint16_t>(base + idx[i]);
-            if (indices[indexStart + i] != rebased) indices[indexStart + i] = rebased;
+            if (indices[indexStart + i] != rebased) {
+                indices[indexStart + i] = rebased;
+                draw.markMeshDirty(false, true);
+            }
         }
         slot.geometryRevision = source->_spriteGeometryRevision;
     }
@@ -402,6 +407,7 @@ void Batcher2d::SpriteMeshPage::append(RenderDrawInfo *source) {
 }
 
 void Batcher2d::SpriteMeshPage::finish() {
+    if (usedSlots < slots.size()) draw.markMeshDirty(true, true);
     slots.resize(usedSlots);
     draw.setIbCount(slots.back().indexEnd);
     draw.setVDataBuffer(vertices.data());
@@ -616,7 +622,7 @@ void Batcher2d::generateBatch(RenderEntity* entity, RenderDrawInfo* drawInfo) {
         ia = drawInfo->requestIA(getDevice());
         indexOffset = drawInfo->getIndexOffset();
         indexCount = drawInfo->getIbCount();
-        _meshRenderDrawInfo.emplace_back(drawInfo);
+        if (drawInfo->needsMeshUpload()) _meshRenderDrawInfo.emplace_back(drawInfo);
     } else {
         UIMeshBuffer* currMeshBuffer = drawInfo->getMeshBuffer();
 
