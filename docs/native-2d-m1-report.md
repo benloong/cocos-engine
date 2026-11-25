@@ -306,5 +306,5 @@ native engine bundle 中同时存在 `n2d.UITransform` 和 `n2d.UIOpacity`；
 2. 测试脚本在 `onLoad` 读取 bbox 时子节点 UITransform 尚未 onLoad，改为 `start()`；
 3. Creator 的 native 引擎缓存可能复用旧 `cc.js`，用 `@cocos/ccbuild`（`platform: WINDOWS`）重建并复制到 `proj/Resources/src/`。
 
-构建环境备注：VS18 下需 `CC_USE_NINJA=1` 并在 `vcvars64.bat` 环境中运行；
+本次历史构建在 VS18 的 `vcvars64.bat` 环境中使用了 `CC_USE_NINJA=1`。当前 Windows 打包直接选择 Visual Studio 2026，见[现行构建流程](./native-2d-build-and-acceptance.zh-CN.md#5-编译-native-app)。
 v4 native 还需要 `bin/adapter/native` 和已构建的 `scripts/native-pack-tool`。

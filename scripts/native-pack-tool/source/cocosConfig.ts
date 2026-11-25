@@ -6,7 +6,7 @@ export const cocosConfig = {
         windows: {
             generators: [
                 {
-                    G: 'Ninja',
+                    G: 'Visual Studio 18 2026',
                     V: '2026',
                 },
                 {

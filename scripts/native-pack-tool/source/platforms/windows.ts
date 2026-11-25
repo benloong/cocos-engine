@@ -118,15 +118,12 @@ export class WindowsPackTool extends NativePackTool {
             return []; // use cmake default option -G
         }
         const opt = visualstudioGenerators.filter((x) => x.G === availableGenerators[0])[0];
-        ret.push('-A', this.params.platformParams.targetPlatform);
+        ret.push(`-G"${opt.G}"`, '-A', this.params.platformParams.targetPlatform);
         console.log(` using ${opt.G}`);
         return ret;
     }
 
     getCmakeGenerator() {
-        if (process.env.CC_USE_NINJA === '1') {
-            return '2026';
-        }
         return this.params.platformParams.vsVersion || '';
     }
 

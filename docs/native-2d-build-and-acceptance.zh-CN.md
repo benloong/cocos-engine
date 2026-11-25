@@ -125,17 +125,7 @@ robocopy $data $res /E /NFL /NDL /NJH /NJS /NP
 
 ## 5. 编译 native app
 
-Windows Ninja 构建会从 MSVC 的原始 `/showIncludes` 输出提取依赖前缀。2026-11-23 发现 UTF-8 输出被旧 CMake 缓存按本机代码页解码，导致头文件依赖遗漏。旧增量构建出现 Label 透明度及 Graphics 提交错误，干净重建后相应检查通过。
-
-已有错误前缀的构建目录需要在更新引擎后重新配置并执行一次干净构建，重新建立依赖记录。`$sourceDir` 和 `$buildDir` 分别指向对应的 CMake 源目录和 Ninja 构建目录。
-
-```powershell
-cmake -S $sourceDir -B $buildDir
-cmake --build $buildDir --clean-first --parallel 8
-ninja -C $buildDir -t deps
-```
-
-本机验证中，原生测试入口已记录 616 个头文件依赖，调整 `RenderEntity.h` 的修改时间可触发重编译。随后恢复了头文件时间戳。干净 Debug 原生测试和六组 JSB 探针通过。
+Windows x64 打包使用 Visual Studio 生成器。可在平台参数中指定 `vsVersion: "2026"`。自动选择时先探测 `Visual Studio 18 2026`，再依次探测已有的旧版 Visual Studio。CMake 会将生成器写入构建目录；从历史 Ninja 工程切换时，选择新的构建目录。
 
 CLI build 会生成：
 
@@ -143,12 +133,13 @@ CLI build 会生成：
 cocos-m1-test/build/windows/proj/cocos-m1-test.slnx
 ```
 
-命令行编译（推荐）：
+在引擎仓库根目录，可以直接编译 CLI 生成的两个配置，并检查生成器和架构。
 
 ```powershell
-cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" && `
-  cmake --build C:\Users\wangbenlong\Works\cocos-engine-worktrees\cocos-m1-test\build\windows\proj `
-  --config Debug -- /m:4"
+$buildDir = '../cocos-m1-test/build/windows/proj'
+Select-String -Path "$buildDir/CMakeCache.txt" -Pattern '^CMAKE_GENERATOR(?:_PLATFORM)?:INTERNAL='
+cmake --build $buildDir --config Debug --target cocos-m1-test --parallel 4
+cmake --build $buildDir --config Release --target cocos-m1-test --parallel 4
 ```
 
 或使用项目脚本：
@@ -380,15 +371,7 @@ node "$p/compare-m6-behavior.cjs" "$run/behavior-Debug" "$run/behavior-Release" 
 
 新的失败用例进入后续门禁，未受影响的原有断言和预算继续生效。原文档含 Web 对照的命令同时记录原始结果和 Windows JSB/Native 范围内的结果；跨端差异应保留用例编号、输入及两侧实测值。
 
-复用 Windows Ninja 的 M6 调用追踪构建目录时，先检查生成绑定对象记录的头文件依赖。以下命令在构建完成后执行，`$traceBuild` 指向本次追踪程序的 CMake 构建目录。缺少 Canvas 头文件依赖时，改用新目录按相同参数配置、构建并重新采集追踪。2026-11-25 的旧增量对象曾按 424 字节分配一个现为 432 字节的 Canvas 对象。
-
-```powershell
-$binding = 'CMakeFiles/cocos_engine.dir/generated/cocos/bindings/auto/jsb_cocos_auto.cpp.obj'
-$deps = ninja -C $traceBuild -t deps $binding
-if ($LASTEXITCODE -ne 0 -or !($deps -match '[/\\]CanvasRenderingContext2D\.h$')) {
-    throw 'Canvas binding header dependency missing from the trace build'
-}
-```
+复用 Windows 调用追踪构建目录时，核对生成绑定 `jsb_cocos_auto.cpp` 的头文件依赖包含 `CanvasRenderingContext2D.h`。Visual Studio 工程可在对应配置的 `CL.read.1.tlog` 中核对。缺少该依赖时，从新目录构建后重新采集。2026-11-25 的历史 Ninja 增量对象曾按 424 字节分配一个现为 432 字节的 Canvas 对象。
 
 全部通过后再提交：
 
