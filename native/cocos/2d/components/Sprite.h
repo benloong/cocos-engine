@@ -129,7 +129,7 @@ private:
     std::vector<LabelMeshChunk> _labelChunks;
     void invalidateBuiltinMaterial() { if (!_material) _materialInstance = nullptr; markRenderDirty(); }
     Material *getBuiltinMaterial() const override;
-    void updateVertexColors(float opacity);
+    void updateVertexColors(float opacity, bool indicesChanged);
     void applySizeMode();
 
     UITransform *_transform{nullptr};

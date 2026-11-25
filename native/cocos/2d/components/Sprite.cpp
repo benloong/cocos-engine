@@ -382,7 +382,7 @@ void Sprite::updateRenderer() {
     if (!dirty) return;
     const float opacity = _entity->getOpacity();
     if (dirty == COLOR) {
-        updateVertexColors(opacity);
+        updateVertexColors(opacity, false);
         clearRenderDirty();
         return;
     }
@@ -427,7 +427,8 @@ void Sprite::prepare(float opacity) {
     auto clearGeometry = [&]() {
         _entity->setStaticDrawInfoSize(0); clearRenderDirty(); _lastOpacity = opacity;
     };
-    if (renderDirtyFlags() & GEOMETRY) {
+    bool indicesChanged = (renderDirtyFlags() & GEOMETRY) != 0;
+    if (indicesChanged) {
         uint32_t vertexCount = 0;
         uint32_t indexCount = 0;
 
@@ -549,7 +550,10 @@ void Sprite::prepare(float opacity) {
                 _vertices[offset + 3] = quad.vertices[i].uv.x;
                 _vertices[offset + 4] = quad.vertices[i].uv.y;
             }
-            _indices.assign(quad.indices, quad.indices + INDEX_COUNT);
+            // Layout, UV and transform changes keep the topology of an existing quad.
+            indicesChanged = _entity->getStaticDrawInfoSize() == 0 || _indices.size() != INDEX_COUNT
+                || !std::equal(quad.indices, quad.indices + INDEX_COUNT, _indices.begin());
+            if (indicesChanged) _indices.assign(quad.indices, quad.indices + INDEX_COUNT);
         }
 
         // Web sliced/radial UV paths do not apply quad flip flags. Other modes mirror
@@ -588,7 +592,7 @@ void Sprite::prepare(float opacity) {
 
     }
 
-    updateVertexColors(opacity);
+    updateVertexColors(opacity, indicesChanged);
     clearRenderDirty();
 }
 
@@ -643,15 +647,14 @@ void Sprite::prepareLabelQuads(Material *material, float opacity) {
     }
     _entity->setPriority(_priority); _entity->setColor(_color); _entity->setEnabled(isEnabled());
     _entity->setFillColorType(FillColorType::VERTEX);
-    updateVertexColors(opacity);
+    updateVertexColors(opacity, (renderDirtyFlags() & GEOMETRY) != 0);
     clearRenderDirty();
 }
 
-void Sprite::updateVertexColors(float opacity) {
+void Sprite::updateVertexColors(float opacity, bool indicesChanged) {
     const float red = _color.r / 255.F;
     const float green = _color.g / 255.F;
     const float blue = _color.b / 255.F;
-    const bool geometryChanged = renderDirtyFlags() & GEOMETRY;
     const auto count = _entity->getStaticDrawInfoSize();
     for (uint32_t i = 0; i < count; ++i) {
         auto *draw = _entity->getStaticRenderDrawInfo(i);
@@ -664,7 +667,7 @@ void Sprite::updateVertexColors(float opacity) {
             rgba[2] = blue;
             rgba[3] = opacity;
         }
-        draw->markSpriteVerticesUpdated(geometryChanged);
+        draw->markSpriteVerticesUpdated(indicesChanged);
     }
     _entity->setOpacity(opacity);
     _lastOpacity = opacity;
