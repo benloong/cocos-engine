@@ -1,5 +1,11 @@
 # Native 2D M6 Gate
 
+## 2026-11-25 Windows Release 批处理优化复验
+
+最终实现 `36af6fdcf6` 相对同轮迁移前基准 `7e83734299`，混合变更帧四项门禁全部通过。CPU 合计下降 55.00%，JSB 调用下降 77.51%，JS 堆峰值下降 43.69%，强制 GC 耗时下降 25.79%。批处理子阶段由 0.812175 变为 0.816500 ms/帧，增加 0.53%。[函数定位、直接对照与门槛](./native-2d-m6-performance.md#windows-release-batch)
+
+混合变更帧每帧的网格上传由 682 次降至 25–29 次，静止帧降至零。逐字节审计覆盖 961,224 次跳过上传，全部一致。Release 的 146 张核心渲染图与优化前逐字节一致，22 项命中、11 项渲染根检查、1,000 次场景切换、4,998 个场景断言和 20 项生命周期检查通过。原生 PoC 通过，含外部 IA、缓冲所有权和 JS 共享网格更新回归。[逐轮记录](./acceptance/native-2d-20261125/m6-batch-release.json) · [原始样本及图像](./acceptance/native-2d-20261125/m6-batch-release.zip)
+
 <a id="windows-m6-behavior"></a>
 
 ## 2026-11-25 Windows Native/JSB 剩余三项签收
