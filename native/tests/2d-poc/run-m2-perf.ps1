@@ -14,6 +14,7 @@ $nativeSamples = @()
 $nativePrepareNs = $null
 for ($i = 0; $i -lt 5; ++$i) {
     $nativeOutput = & $NativeExe 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "Native benchmark exited with $LASTEXITCODE" }
     $nativeSceneMatch = [regex]::Match(($nativeOutput -join "`n"), 'native sprite scene: \d+ sprites, [\d.]+ us total, ([\d.]+) ns/sprite')
     if (-not $nativeSceneMatch.Success) {
         throw "Could not parse native sprite scene benchmark output."
@@ -38,7 +39,8 @@ $jsSamples = @()
 $jsUpdateNs = $null
 try {
     for ($i = 0; $i -lt 3; ++$i) {
-        $jestOutput = & $jest --config (Join-Path $repoRoot 'jest.config.js') --runInBand 'tests/ui/native-2d-poc-bench.test.ts' 2>&1
+        $jestOutput = & $jest --config (Join-Path $repoRoot 'jest.config.js') --runInBand --runTestsByPath (Join-Path $repoRoot 'tests/ui/native-2d-poc-bench.test.ts') 2>&1
+        if ($LASTEXITCODE -ne 0) { throw "Jest benchmark exited with ${LASTEXITCODE}: $($jestOutput -join [Environment]::NewLine)" }
         $jsSceneMatch = [regex]::Match(($jestOutput -join "`n"), 'JS sprite scene: \d+ sprites, [\d.]+ us total, ([\d.]+) ns/sprite')
         if (-not $jsSceneMatch.Success) {
             throw "Could not parse JS sprite scene benchmark output."

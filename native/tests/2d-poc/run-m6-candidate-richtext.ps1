@@ -1,13 +1,13 @@
-param([Parameter(Mandatory)][string]$Repository,[Parameter(Mandatory)][string]$OutputRoot,[Parameter(Mandatory)][string]$EngineDirectory,[string[]]$Configurations=@('Debug','Release'))
+param([Parameter(Mandatory)][string]$Repository,[Parameter(Mandatory)][string]$OutputRoot,[Parameter(Mandatory)][string]$EngineDirectory,[ValidateSet('Debug','Release')][string[]]$Configurations=@('Debug','Release'))
 $ErrorActionPreference='Stop'
 $core=Join-Path $Repository 'native/tests/2d-poc/build/m6-core-accept-2026-11-23T14-54-24-737Z'
 $engine=Get-Content -Raw (Join-Path $EngineDirectory 'candidate-engine.json') | ConvertFrom-Json
 $rows=@()
 foreach($cfg in $Configurations) {
- $referenceConfig=if($cfg -eq 'ASan'){'Debug'}else{$cfg}
+ $referenceConfig=$cfg
  $old=Join-Path $core "richtext-$referenceConfig"
  $stage=Join-Path $OutputRoot "richtext-$cfg"
- $folder=switch($cfg){'Debug'{'gpu-win'} 'Release'{'gpu-win-release'} 'ASan'{'gpu-win-asan'} default{throw 'Unknown Native configuration'}}
+ $folder=switch($cfg){'Debug'{'gpu-win'} 'Release'{'gpu-win-release'} default{throw 'Unknown Native configuration'}}
  $bin=Join-Path $Repository "native/tests/2d-poc/build/$folder"
  if(Test-Path -LiteralPath $stage){throw "Stage must be new: $stage"}
  New-Item -ItemType Directory -Force $stage | Out-Null

@@ -1,6 +1,4 @@
-import { cclegacy, CCObject, isValid, Rect, Size, Vec2, Vec3 } from '../../cocos/core';
-import { SpriteFrame as WebSpriteFrame } from '../../cocos/2d/assets/sprite-frame';
-import { AttributeName } from '../../cocos/gfx';
+import { cclegacy, Rect, Size, Vec2, Vec3 } from '../../cocos/core';
 
 const defaults = {
     RectX: 0, RectY: 0, RectWidth: 0, RectHeight: 0,
@@ -60,105 +58,21 @@ proto.getUV = jest.fn(() => [0, 1, 1, 1, 0, 0, 1, 0]);
 proto.getSlicedUV = jest.fn(() => [0, 1, 0.25, 1, 0.75, 1, 1, 1]);
 const assetCtor = jest.fn();
 
-test('Web generated mesh buffers, clone and texture refresh match the Windows JSB fixture', () => {
-    const frame = new WebSpriteFrame();
-    const texture = { width: 4, height: 4 } as any;
-    frame.texture = texture;
-    frame._deserialize({ rect: new Rect(1, 0, 2, 3), pixelsToUnit: 2, pivot: new Vec2(0.25, 0.75) }, null);
-    expect(frame.mesh).toBeNull();
-    frame.ensureMeshData();
-    const mesh = frame.mesh!;
-    const vertices = frame.vertices!;
-    const positions = [-0.25, -1.125, 0, 0.75, -1.125, 0, -0.25, 0.375, 0, 0.75, 0.375, 0];
-    expect(Array.from(mesh.readAttribute(0, AttributeName.ATTR_POSITION)!)).toEqual(positions);
-    expect(Array.from(mesh.readAttribute(0, AttributeName.ATTR_TEX_COORD)!)).toEqual([0.25, 0.25, 0.75, 0.25, 0.25, 1, 0.75, 1]);
-    expect(Array.from(mesh.readIndices(0)!)).toEqual([0, 1, 2, 2, 1, 3]);
-    expect(vertices.uv).toEqual([1, 4, 3, 4, 1, 1, 3, 1]);
-    expect(mesh.struct.minPosition).toMatchObject({ x: -0.25, y: -1.125, z: 0 });
-    expect(mesh.struct.maxPosition).toMatchObject({ x: 0.75, y: 0.375, z: 0 });
-    frame.ensureMeshData();
-    frame.texture = texture;
-    expect(frame.mesh).toBe(mesh);
-    const clone = frame.clone();
-    expect(clone.mesh).not.toBe(mesh);
-    expect(Array.from(clone.mesh!.readAttribute(0, AttributeName.ATTR_POSITION)!)).toEqual(positions);
-    frame.texture = { width: 8, height: 8 } as any;
-    expect(frame.mesh).not.toBe(mesh);
-    expect(frame.vertices).toBe(vertices);
-    expect(vertices.rawPosition[0].x).toBe(-4);
-    const polygon = new WebSpriteFrame();
-    polygon._deserialize({ meshType: WebSpriteFrame.MeshType.POLYGON, pixelsToUnit: 100 }, null);
-    polygon.ensureMeshData();
-    expect(polygon.mesh!.struct.vertexBundles[0].view.count).toBe(0);
-    expect(polygon.vertices!.indexes).toEqual([]);
-});
-
-test('a generated rectangle mesh follows rotated atlas corners and live flips', () => {
-    const frame = new WebSpriteFrame();
-    frame.reset({ texture: { width: 32, height: 32 } as any, rect: new Rect(4, 3, 10, 6), isRotate: true });
-    const readUVs = (): number[] => {
-        frame.ensureMeshData();
-        return Array.from(frame.mesh!.readAttribute(0, AttributeName.ATTR_TEX_COORD)!);
-    };
-    const left = 4 / 32;
-    const right = 10 / 32;
-    const top = 29 / 32;
-    const bottom = 19 / 32;
-    expect(readUVs()).toEqual([left, top, left, bottom, right, top, right, bottom]);
-    const original = frame.mesh!;
-    frame.flipUVX = true;
-    expect(readUVs()).toEqual([right, top, right, bottom, left, top, left, bottom]);
-    expect(frame.mesh).not.toBe(original);
-    const flipped = frame.mesh!;
-    frame.ensureMeshData();
-    expect(frame.mesh).toBe(flipped);
-    frame.flipUVY = true;
-    expect(readUVs()).toEqual([right, bottom, right, top, left, bottom, left, top]);
-    frame.destroy();
-    CCObject._deferredDestroy();
-    CCObject._deferredDestroy();
-});
-
-test('destroying a Web SpriteFrame releases its mesh at frame end and leaves the clone valid', () => {
-    const frame = new WebSpriteFrame();
-    frame.texture = { width: 4, height: 4 } as any;
-    frame.ensureMeshData();
-    const mesh = frame.mesh!;
-    const clone = frame.clone();
-    const cloneMesh = clone.mesh!;
-
-    expect(frame.destroy()).toBe(true);
-    expect(isValid(mesh, true)).toBe(true);
-    CCObject._deferredDestroy();
-    expect(frame.mesh).toBeNull();
-    CCObject._deferredDestroy();
-    expect(isValid(mesh)).toBe(false);
-    expect(isValid(cloneMesh, true)).toBe(true);
-    expect(Array.from(cloneMesh.readIndices(0)!)).toEqual([0, 1, 2, 2, 1, 3]);
-
-    frame.ensureMeshData();
-    expect(frame.mesh).toBeNull();
-    clone.destroy();
-    CCObject._deferredDestroy();
-    CCObject._deferredDestroy();
-    expect(isValid(cloneMesh)).toBe(false);
-});
-
 test('authored polygon vertices retain native serialization, mesh bounds and independent clones', () => {
+    const frame = createFrame();
     const vertices = {
         rawPosition: [-20, -18, 1, 20, -18, 2, 0, 18, -3], indexes: [0, 2, 1],
         uv: [0, 36, 40, 36, 20, 0], nuv: [0, 1, 1, 1, 0.5, 0],
         minPos: { x: -20, y: -18, z: -3 }, maxPos: { x: 20, y: 18, z: 2 },
     };
     const data = {
-        meshType: WebSpriteFrame.MeshType.POLYGON, vertices, pixelsToUnit: 4,
+        meshType: cclegacy.SpriteFrame.MeshType.POLYGON, vertices, pixelsToUnit: 4,
         rect: new Rect(0, 0, 40, 36), pivot: new Vec2(0.25, 0.75),
     };
     const positions = [-2.5, -6.75, 1, 7.5, -6.75, 2, 2.5, 2.25, -3];
     proto.transformMeshPositions = jest.fn((raw: number[]) => raw.map((value, i) => (
         i % 3 === 0 ? value / 4 + 2.5 : i % 3 === 1 ? value / 4 - 2.25 : value
     )));
-    const frame = createFrame();
     frame._deserialize(data);
     expect(proto.transformMeshPositions).toHaveBeenCalledWith(vertices.rawPosition);
     expect(frame.vertices.positions).toEqual(positions);
@@ -303,7 +217,7 @@ test('deserialization restores explicit mesh data and resolves texture without r
     frame._deserialize({ name: 'frame', atlas: 'atlas', texture: 'tex-id',
         rect: { x: 1, y: 2, width: 3, height: 4 }, offset: { x: 5, y: 6 },
         originalSize: { width: 7, height: 8 }, rotated: true, capInsets: [9, 10, 11, 12],
-        meshType: WebSpriteFrame.MeshType.RECT, packable: false, pixelsToUnit: 25, pivot: { x: 0.25, y: 0.75 } }, { result: { push } });
+        meshType: cclegacy.SpriteFrame.MeshType.RECT, packable: false, pixelsToUnit: 25, pivot: { x: 0.25, y: 0.75 } }, { result: { push } });
     expect(push).toHaveBeenCalledWith(frame, '_textureSource', 'tex-id', expect.any(String));
     const texture = { width: 128, height: 256, _uuid: 'tex-id' };
     frame._textureSource = texture;

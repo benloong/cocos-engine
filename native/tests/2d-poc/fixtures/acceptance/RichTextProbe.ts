@@ -11,8 +11,10 @@ import {
     Canvas,
     Color,
     director,
+    game,
     gfx,
     Label,
+    native as nativePlatform,
     Node,
     Rect,
     RenderTexture,
@@ -21,6 +23,7 @@ import {
     Sprite,
     SpriteAtlas,
     SpriteFrame,
+    sys,
     Texture2D,
     UITransform,
     Vec2,
@@ -290,6 +293,10 @@ export class RichTextProbe {
             camera.orthoHeight = oldOrtho;
             camera.targetTexture = oldTarget;
             rt.destroy();
+            if (sys.isNative && nativePlatform.fileUtils.isFileExist(nativePlatform.fileUtils.getDefaultResourceRootPath() + 'm5-require-normal-exit')) {
+                console.log('M5_EXIT_REQUESTED');
+                game.end();
+            }
         }, 900);
     }
 }

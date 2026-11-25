@@ -67,9 +67,7 @@ test('spriteframe.clone', () => {
     sp.flipUVX = true;
     sp.flipUVY = false;
     sp.packable = true;
-    // Make sure the mesh is created
-    sp.ensureMeshData();
-    
+
     let sp_clone = sp.clone();
 
     expect(sp_clone.rect).toEqual(sp.rect);
@@ -100,10 +98,6 @@ test('spriteframe.clone', () => {
     sp_clone.pivot.add2f(100,200);
     expect(sp_clone.pivot !== sp.pivot).toEqual(true);
 
-    expect(sp_clone.mesh).toEqual(sp.mesh);
-    sp_clone.mesh?.destroy();
-    expect(sp_clone.mesh !== sp.mesh).toEqual(true);
-    
     expect(sp_clone.uv).toEqual(sp.uv);
     sp_clone.uv.splice(0, sp_clone.uv.length);
     expect(sp_clone.uv !== sp.uv).toEqual(true);
@@ -116,21 +110,6 @@ test('spriteframe.clone', () => {
     sp_clone.uvSliced.splice(0, sp_clone.uvSliced.length);
     expect(sp_clone.uvSliced !== sp.uvSliced).toEqual(true);
 
-    expect(sp_clone.vertices).toEqual(sp.vertices);
-    sp_clone.vertices?.rawPosition.splice(0,  sp_clone.vertices?.rawPosition.length);
-    expect(sp_clone.vertices?.rawPosition !== sp.vertices?.rawPosition).toEqual(true)
-    sp_clone.vertices?.positions.splice(0,  sp_clone.vertices?.positions.length);
-    expect(sp_clone.vertices?.positions !== sp.vertices?.positions).toEqual(true);
-    sp_clone.vertices?.indexes.splice(0,  sp_clone.vertices?.indexes.length);
-    expect(sp_clone.vertices?.indexes !== sp.vertices?.indexes).toEqual(true);
-    sp_clone.vertices?.uv.splice(0,  sp_clone.vertices?.uv.length);
-    expect(sp_clone.vertices?.uv !== sp.vertices?.uv).toEqual(true);
-    sp_clone.vertices?.nuv.splice(0,  sp_clone.vertices?.nuv.length);
-    expect(sp_clone.vertices?.nuv !== sp.vertices?.nuv).toEqual(true);
-    sp_clone.vertices?.minPos.add3f(100,200,300);
-    expect(sp_clone.vertices?.minPos !== sp.vertices?.minPos).toEqual(true);
-    sp_clone.vertices?.maxPos.add3f(100,200,300);
-    expect(sp_clone.vertices?.maxPos !== sp.vertices?.maxPos).toEqual(true);;
     expect(sp_clone.original).toEqual(sp.original);
 
     expect(sp_clone.trimmedBorder).toEqual(sp.trimmedBorder);

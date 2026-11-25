@@ -14,9 +14,18 @@ $reportPath = Join-Path $LogDirectory "$run.json"
 $binarySha = (Get-FileHash -LiteralPath $AppExe -Algorithm SHA256).Hash.ToLowerInvariant()
 $started = (Get-Date).ToUniversalTime()
 $watch = [System.Diagnostics.Stopwatch]::StartNew()
-$proc = Start-Process $AppExe -WorkingDirectory (Split-Path $AppExe) `
+$exitMarker = Join-Path (Split-Path (Resolve-Path -LiteralPath $AppExe)) 'm5-require-normal-exit'
+if ($RequireNormalExit) {
+    [IO.File]::Open($exitMarker, [IO.FileMode]::CreateNew).Dispose()
+}
+try {
+    $proc = Start-Process $AppExe -WorkingDirectory (Split-Path $AppExe) `
     -WindowStyle Hidden `
     -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru
+} catch {
+    if ($RequireNormalExit) { [IO.File]::Delete($exitMarker) }
+    throw
+}
 # Retain the native handle so early-exit diagnostics keep a usable ExitCode.
 $nativeProcessHandle = $proc.Handle
 $passed = $false
@@ -118,6 +127,9 @@ try {
         $remaining = [Math]::Max(0, [int]($deadline - (Get-Date)).TotalMilliseconds)
         if (-not $proc.WaitForExit($remaining)) { throw 'RichText app did not exit after completion' }
         if ($proc.ExitCode -ne 0) { throw "RichText app exited with code $($proc.ExitCode)" }
+        if (@(Select-String -LiteralPath $log -SimpleMatch 'M5_EXIT_REQUESTED').Count -ne 1) {
+            throw 'Missing or duplicate RichText fixture exit request'
+        }
         Write-Host 'M5 RichText app exit: 0'
     }
     $passed = $true
@@ -131,6 +143,7 @@ try {
     if (-not $aliveAtResult) { $exitBeforeCleanup = $proc.ExitCode }
     $elapsed = $watch.Elapsed.TotalSeconds
     if ($aliveAtResult) { $proc.Kill(); $null = $proc.WaitForExit(5000) }
+    if ($RequireNormalExit) { [IO.File]::Delete($exitMarker) }
     $timeline = @()
     if (Test-Path -LiteralPath $log) {
         $timeline = @(Get-Content -LiteralPath $log | Select-String -Pattern 'M1_TEST_NODE|M4_MASK_PIXEL|M4_GRAPHICS |M4_NESTED_MASK|M6_BITMAP|M5_' | ForEach-Object { $_.Line })
