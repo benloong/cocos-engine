@@ -1,0 +1,488 @@
+{
+  "date": "2026-11-25",
+  "worktreeHead": "d9bf6a317c9a5232924851faf28170cd2301ef74",
+  "verdict": "NO-GO",
+  "scope": "Windows Debug/Release JSB + Native. Only current public interfaces. Web comparisons are retained wherever a documented command executes them.",
+  "milestones": {
+    "M0": "原始总门禁失败。C++ 175/175 和 Sprite quad 通过。BitmapFont case 2307 的 Web 对照失败。",
+    "M1": "历史单参数窗口中心命中门槛未通过。实际窗口 ID 的中心、外点和错误窗口对照通过。",
+    "M2": "五种 Sprite 像素与 Release 性能门槛通过；加载后 priority 没有转发。",
+    "M3": "Label 应用用例通过；继承的 priority 没有转发。另有位图布局的 Web 参考差异。",
+    "M4": "Mask/Graphics GPU 通过；默认 Mask.isHit、Graphics.impl 和继承的 priority 失败。",
+    "M5": "Windows RichText 阶段场景通过，含事件、布局、捕获和正常退出。"
+  },
+  "localArtifacts": "native/tests/2d-poc/build/cli-m0-m5-1795573241398",
+  "finalApplication": "native/tests/2d-poc/build/cli-m0-m5-1795573241398/final",
+  "baselineImagesAndLayout": "native/tests/2d-poc/build/m6-document-8ee11b673e",
+  "build": {
+    "project": "../cocos-m1-test",
+    "cli": "C:/Users/wangbenlong/Works/cocos-cli",
+    "steps": [
+      "sync-acceptance-probes.cjs",
+      "cocos-cli/dist/cli.js --no-interactive build --project <project> --platform windows --build-config <project>/m1-build-config.json",
+      "project/tools/build-engine.cjs",
+      "copy data to Resources",
+      "incremental cmake --build for Debug and Release",
+      "stage fresh data and verify export/deployment hashes"
+    ],
+    "debugVariant": "Current Debug objects relinked with the launcher remote debugger disabled. Release uses the stock CLI project executable.",
+    "poc": "Separate from the new CLI app; hash-verified existing native PoC binaries were executed again."
+  },
+  "inputHashes": {
+    "bin/.declarations/cc.d.ts": "48812e2845aaa0a00429ba0358ad20c979d90d95452d0ab9325a69c6e249cde2",
+    "cc.config.json": "31a1ca8323994266678d76c2f2135d25546ded3db0f135097c637c4e32841ace",
+    "jest.config.js": "de29dcfdc062643db8142beb4fd4126dc85f91709953cbdf3f7a22a821e7ad88",
+    "native/tests/2d-poc/fixtures/acceptance/RichTextProbe.ts": "bd9ccf6d0fb3e268ab853375972cf330e5995a12640741ce6adc275a4be04277",
+    "native/tests/2d-poc/fixtures/acceptance/M1M5PublicApi.js": "6f416d56558799da2ace8eb2817265aafa23e557690401ccc54f82eff6e1c83f",
+    "native/tests/2d-poc/build-public-api-inventory.cjs": "02f84f6ec59d7cd6b230366a15fd830d5d67001447312b39345879bd99d38f3d",
+    "native/tests/2d-poc/run-m1-m5-public-api.ps1": "fab69cf0c2f19a8238a2cb711b933a045e052585df5ca59f9aae7a75e3339789",
+    "native/tests/2d-poc/run-m5-richtext-probe.ps1": "262a6c47dcf4a6abb46e2b8538903f7279598e20863578e85d93c340cf6143a9",
+    "native/tests/2d-poc/run-m2-perf.ps1": "5598f98e37f8aa491f113c07254975756be326e60593e4884799583c689df971"
+  },
+  "configurations": {
+    "Debug": {
+      "stockExeSha256": "1522ba54cc05702d72511f25893fea1b474e9cc2da1ba24fc1bffe45fdbf77a0",
+      "testedExeSha256": "0067d5f6d7ad3403657ff1e0bd88fcf51c705e684879fa30187f18973d3b67d3",
+      "engineEntrySha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "9b4b83a16fe3c5e10265304a24325198eeda6a78d8ac849d19f9009eecfe09ff",
+      "resourceFileCount": 43,
+      "resourceManifestSha256": "3ad509c29d4629d7cd6d55256a1b59cfa2b8d3cb394bb8a6d8e807483bc7bfd2",
+      "appStages": [
+        "m2-pixel",
+        "m3-label",
+        "m4-mask",
+        "m4-extra",
+        "m5-richtext"
+      ],
+      "exactBaselineImages": [
+        {
+          "group": "m6-atlas-captures",
+          "count": 12
+        },
+        {
+          "group": "m6-bitmap-captures",
+          "count": 92
+        }
+      ],
+      "exactLayoutRows": 80,
+      "richText": {
+        "children": 10,
+        "labels": 9,
+        "sprites": 1,
+        "elapsedSeconds": 42.442236,
+        "exitCode": 0,
+        "killedForCleanup": false
+      },
+      "publicChecks": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": true,
+          "outside": false,
+          "otherWindow": false
+        },
+        {
+          "name": "M1.cameraCenter",
+          "passed": false,
+          "center": false,
+          "outside": false,
+          "before": {
+            "offscreen": true,
+            "hit": false
+          },
+          "point": [
+            400,
+            300
+          ],
+          "projected": [
+            400,
+            300
+          ],
+          "windowId": 1,
+          "world": [
+            640,
+            480
+          ]
+        },
+        {
+          "name": "publicMembers",
+          "passed": false,
+          "classes": 15,
+          "count": 192,
+          "missing": [
+            "Graphics.impl"
+          ]
+        },
+        {
+          "name": "Sprite.priority",
+          "passed": false,
+          "initial": [
+            3
+          ],
+          "updated": [],
+          "publicValue": 100
+        },
+        {
+          "name": "Label.priority",
+          "passed": false,
+          "initial": [
+            3
+          ],
+          "updated": [],
+          "publicValue": 100
+        },
+        {
+          "name": "Graphics.priority",
+          "passed": false,
+          "initial": [
+            3
+          ],
+          "updated": [],
+          "publicValue": 100
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "passed": false,
+          "center": false,
+          "outside": false,
+          "hostTransform": false
+        },
+        {
+          "name": "Mask.isHit.control",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Graphics.impl",
+          "passed": false,
+          "valueType": "undefined"
+        }
+      ],
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "standalonePoc": {
+        "exeSha256": "aff21af8067cbc1a6a65f224b91b3030c845d3f7aafb6a0cc8f77ad185939d9d",
+        "passed": [
+          "core",
+          "font-file",
+          "font-assets",
+          "layout",
+          "renderer-manager",
+          "richtext-runtime",
+          "sprite-api",
+          "sprite-atlas",
+          "sprite-frame-lifetime"
+        ]
+      }
+    },
+    "Release": {
+      "stockExeSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "testedExeSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "engineEntrySha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "scenarioSha256": "9b4b83a16fe3c5e10265304a24325198eeda6a78d8ac849d19f9009eecfe09ff",
+      "resourceFileCount": 43,
+      "resourceManifestSha256": "3ad509c29d4629d7cd6d55256a1b59cfa2b8d3cb394bb8a6d8e807483bc7bfd2",
+      "appStages": [
+        "m2-pixel",
+        "m3-label",
+        "m4-mask",
+        "m4-extra",
+        "m5-richtext"
+      ],
+      "exactBaselineImages": [
+        {
+          "group": "m6-atlas-captures",
+          "count": 12
+        },
+        {
+          "group": "m6-bitmap-captures",
+          "count": 92
+        }
+      ],
+      "exactLayoutRows": 80,
+      "richText": {
+        "children": 10,
+        "labels": 9,
+        "sprites": 1,
+        "elapsedSeconds": 39.3490923,
+        "exitCode": 0,
+        "killedForCleanup": false
+      },
+      "publicChecks": [
+        {
+          "name": "M1.activeWindow",
+          "passed": true,
+          "windowId": 1,
+          "center": true,
+          "outside": false,
+          "otherWindow": false
+        },
+        {
+          "name": "M1.cameraCenter",
+          "passed": false,
+          "center": false,
+          "outside": false,
+          "before": {
+            "offscreen": true,
+            "hit": false
+          },
+          "point": [
+            400,
+            300
+          ],
+          "projected": [
+            400,
+            300
+          ],
+          "windowId": 1,
+          "world": [
+            640,
+            480
+          ]
+        },
+        {
+          "name": "publicMembers",
+          "passed": false,
+          "classes": 15,
+          "count": 192,
+          "missing": [
+            "Graphics.impl"
+          ]
+        },
+        {
+          "name": "Sprite.priority",
+          "passed": false,
+          "initial": [
+            3
+          ],
+          "updated": [],
+          "publicValue": 100
+        },
+        {
+          "name": "Label.priority",
+          "passed": false,
+          "initial": [
+            3
+          ],
+          "updated": [],
+          "publicValue": 100
+        },
+        {
+          "name": "Graphics.priority",
+          "passed": false,
+          "initial": [
+            3
+          ],
+          "updated": [],
+          "publicValue": 100
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "passed": false,
+          "center": false,
+          "outside": false,
+          "hostTransform": false
+        },
+        {
+          "name": "Mask.isHit.control",
+          "passed": true,
+          "center": true,
+          "outside": false,
+          "hostTransform": true
+        },
+        {
+          "name": "Graphics.impl",
+          "passed": false,
+          "valueType": "undefined"
+        }
+      ],
+      "staticAtlas": {
+        "cycles": 1000,
+        "checkedAssets": 5000,
+        "pixelChecks": 22
+      },
+      "standalonePoc": {
+        "exeSha256": "6b9c1d8f2d60a15cf8086b6a873282bc3477a35cc939a819996976db9efb432b",
+        "passed": [
+          "core",
+          "font-file",
+          "font-assets",
+          "layout",
+          "renderer-manager",
+          "richtext-runtime",
+          "sprite-api",
+          "sprite-atlas",
+          "sprite-frame-lifetime"
+        ]
+      }
+    }
+  },
+  "m0": {
+    "originalExit": 1,
+    "cppPassed": 175,
+    "bitmapCase": 2307,
+    "unicode": "U+1F642",
+    "nativeWidth": 8.5,
+    "webWidth": 0,
+    "quad": {
+      "checkedVertices": 4,
+      "triangles": 2,
+      "diffPixels": 0,
+      "maxChannelDelta": 0
+    },
+    "continuation": [
+      {
+        "name": "run-m6-richtext-parser-parity",
+        "exit": 0
+      },
+      {
+        "name": "run-m6-richtext-layout-parity",
+        "exit": 0
+      },
+      {
+        "name": "run-m6-sprite-frame-tests",
+        "exit": 0
+      },
+      {
+        "name": "test-compare-png",
+        "exit": 0
+      },
+      {
+        "name": "test-visual-check",
+        "exit": 0
+      },
+      {
+        "name": "check-thin-shell",
+        "exit": 0
+      },
+      {
+        "name": "check-m1-shells",
+        "exit": 0
+      },
+      {
+        "name": "generate-manager",
+        "exit": 0
+      },
+      {
+        "name": "directwrite",
+        "exit": 0
+      },
+      {
+        "name": "renderer-manager",
+        "exit": 0
+      },
+      {
+        "name": "run-native-log-visibility-tests",
+        "exit": 0
+      },
+      {
+        "name": "run-sprite-quad-parity",
+        "exit": 1
+      },
+      {
+        "name": "run-m6-sprite-atlas-tests",
+        "exit": 0
+      },
+      {
+        "name": "run-m6-sprite-api-tests",
+        "exit": 0
+      },
+      {
+        "name": "run-m6-layout-tests",
+        "exit": 0
+      },
+      {
+        "name": "run-m6-font-assets-tests",
+        "exit": 1
+      },
+      {
+        "name": "run-m6-richtext-runtime-tests",
+        "exit": 0
+      },
+      {
+        "name": "tsc",
+        "exit": 0
+      },
+      {
+        "name": "jest",
+        "exit": 1
+      }
+    ],
+    "quadRerunExit": 0,
+    "quadInitialFailure": "Jest collected archived source copies from native/tests/2d-poc/build. The current source suite and quad image comparison passed after excluding generated artifacts.",
+    "mixedJest": {
+      "passed": 67,
+      "failed": 2,
+      "failures": [
+        "dynamic atlas uploads memory image views with their byte range and preserves native-image upload",
+        "Sprite stencil applies the Mask threshold when creating or refreshing its material"
+      ]
+    },
+    "fontAssetSuite": {
+      "passed": 85,
+      "failed": 2,
+      "failures": [
+        "Web registers only the successful font face when a timed-out request is retried",
+        "Web font assets share one registration and can reuse preloaded data after release"
+      ]
+    },
+    "thinShell": {
+      "checks": 43,
+      "m1Checks": 18,
+      "uiTransformCodeLines": 251,
+      "m1ScriptLimit": 300,
+      "m0OriginalPocTarget": 200
+    },
+    "nativeTypecheck": "PASS",
+    "projectTypecheck": "PASS",
+    "nativeJest": {
+      "suites": 18,
+      "passed": 127,
+      "excluded": 10
+    }
+  },
+  "declarations": {
+    "freshSha256": "a6f8aacfd0615048597202cbcf8df9544a3a2525624c20b88c5d53f2aacace78",
+    "cachedSha256": "48812e2845aaa0a00429ba0358ad20c979d90d95452d0ab9325a69c6e249cde2",
+    "freshInventorySha256": "fc44ef65512cfcf026b1d9bbc220a027235e19c93a780f42004b152d693de5dc",
+    "cachedInventorySha256": "fc44ef65512cfcf026b1d9bbc220a027235e19c93a780f42004b152d693de5dc",
+    "used": "freshly generated declarations; identical scoped member lists"
+  },
+  "spritePerformance": {
+    "afterApplicationRuns": {
+      "nativeSceneNsPerSprite": 160.7,
+      "nativePrepareNs": 283.5,
+      "jsSceneNsPerSprite": 471.6,
+      "jsUpdateRendererNs": 449.6,
+      "improvementPercent": 65.9,
+      "thresholdPercent": 30,
+      "pass": true
+    },
+    "earlierSample": {
+      "nativeSceneNsPerSprite": 189.1,
+      "nativePrepareNs": 284.6,
+      "jsSceneNsPerSprite": 663.1,
+      "jsUpdateRendererNs": 420.5,
+      "improvementPercent": 71.5,
+      "thresholdPercent": 30,
+      "pass": true
+    }
+  },
+  "fixtureRebuilds": [
+    "First fresh export: M5 assertions and pixels passed but both apps timed out without an exit request.",
+    "Second fresh export (fixture-rebuild): a local boolean shadowed the native module and broke the new exit request; both runs failed.",
+    "Final export: corrected the module alias and the gated request followed cleanup; both processes exited 0."
+  ],
+  "observations": [
+    "Both M5 stdout logs also contain a writable directory creation error and a missing cc.PhysicsMaterial message. The reported 2D assertions and captures completed.",
+    "M1 default windowId is 0, active Windows camera ID is 1. The original M1Test call occurred with the camera targeting a RenderTexture. The same screen point was also tested with the camera restored to the window.",
+    "192 direct public members of 15 types were checked for presence. Behavioral tests cover targeted scenarios; this count is not a behavioral pass count.",
+    "No new Web build or other platform application was run. The raw image and layout references are previous accepted captures. M6 retains seven open checklist items."
+  ]
+}

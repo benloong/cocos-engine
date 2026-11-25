@@ -1,0 +1,251 @@
+{
+  "snapshot": "525db267fdab5cddca0c8e124eb667b2fe3d081d20752217cf7a3f8e0dbd3721",
+  "web": {
+    "manifestSha256": "e46bf98b5bbb9ff45876dcf3dd2ba2842260b8865ca209091bc0205f6e755309",
+    "engineSha256": "0a818eab125026946f22677f411fd9ac2078e850ee0f349c5c1352f56fc72dae",
+    "environment": {
+      "os": "Windows",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (NVIDIA)"
+    }
+  },
+  "runs": {
+    "Debug": {
+      "graphicsMaskImplementation": "native",
+      "executableSha256": "4317855b3387643b2c3a95645db05796dd9838f0823e4955d8c44955e31e88c3",
+      "engineSha256": "5c5b23c49ce96959903a388048f14430887ecc84851accc0da58dda4d8eeb4b4",
+      "manifestSha256": "8229476daa2bbf36e3f51adfcbc91da1976935d3e1db48c119ea8a2372c49efc",
+      "comparisonSha256": "2d2dd343be2b8c0bf47c7ad8f65bbc434e0df722a405fff53272f4c987335efd",
+      "byteIdenticalCaptures": 175,
+      "hitTests": 22,
+      "sceneCycles": 1000,
+      "graphicsPrefabChecks": {
+        "prefab": true,
+        "styles": true,
+        "rendererSurface": true,
+        "materialForwarding": true,
+        "retainedGeometry": true,
+        "released": true
+      },
+      "graphicsCaptures": [
+        {
+          "name": "scene-legacy-graphics-initial",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 6400,
+          "pass": true,
+          "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+          "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "scene-legacy-graphics-material",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 0,
+          "pass": true,
+          "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        },
+        {
+          "name": "scene-legacy-graphics-material-restored",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 6400,
+          "pass": true,
+          "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+          "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "scene-legacy-graphics-released",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 0,
+          "pass": true,
+          "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        }
+      ]
+    },
+    "Release": {
+      "graphicsMaskImplementation": "native",
+      "executableSha256": "50b2d8d135abee115b5b94b8e74a2546678742ee3eb640438923d3a8a91c4982",
+      "engineSha256": "5c5b23c49ce96959903a388048f14430887ecc84851accc0da58dda4d8eeb4b4",
+      "manifestSha256": "28ec929b54020e85f59c958ebbbf57f67c716b470a345a4efcffb7233daa8fb4",
+      "comparisonSha256": "2d2dd343be2b8c0bf47c7ad8f65bbc434e0df722a405fff53272f4c987335efd",
+      "byteIdenticalCaptures": 175,
+      "hitTests": 22,
+      "sceneCycles": 1000,
+      "graphicsPrefabChecks": {
+        "prefab": true,
+        "styles": true,
+        "rendererSurface": true,
+        "materialForwarding": true,
+        "retainedGeometry": true,
+        "released": true
+      },
+      "graphicsCaptures": [
+        {
+          "name": "scene-legacy-graphics-initial",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 6400,
+          "pass": true,
+          "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+          "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "scene-legacy-graphics-material",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 0,
+          "pass": true,
+          "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        },
+        {
+          "name": "scene-legacy-graphics-material-restored",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 6400,
+          "pass": true,
+          "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+          "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "scene-legacy-graphics-released",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 0,
+          "pass": true,
+          "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        }
+      ]
+    },
+    "Rollback-Release": {
+      "graphicsMaskImplementation": "js",
+      "executableSha256": "50b2d8d135abee115b5b94b8e74a2546678742ee3eb640438923d3a8a91c4982",
+      "engineSha256": "0035eebd86600daf7f5585bc2c80dc521c5218591b162c4f79b2a63eb40ffd35",
+      "manifestSha256": "51db6131cd2103695ef9748cd788f1281999f756425c217b615391a59b38b3c3",
+      "comparisonSha256": "2d2dd343be2b8c0bf47c7ad8f65bbc434e0df722a405fff53272f4c987335efd",
+      "byteIdenticalCaptures": 175,
+      "hitTests": 22,
+      "sceneCycles": 1000,
+      "graphicsPrefabChecks": {
+        "prefab": true,
+        "styles": true,
+        "rendererSurface": true,
+        "materialForwarding": true,
+        "retainedGeometry": true,
+        "released": true
+      },
+      "graphicsCaptures": [
+        {
+          "name": "scene-legacy-graphics-initial",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 6400,
+          "pass": true,
+          "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+          "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "scene-legacy-graphics-material",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 0,
+          "pass": true,
+          "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        },
+        {
+          "name": "scene-legacy-graphics-material-restored",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 6400,
+          "pass": true,
+          "nativeSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24",
+          "webSha256": "7918393e6edb24c889d663a9649ac31d24adda3d7886317574656f9955b0de24"
+        },
+        {
+          "name": "scene-legacy-graphics-released",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 0,
+          "pass": true,
+          "nativeSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "webSha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8"
+        }
+      ]
+    }
+  },
+  "originalM4": {
+    "opaquePixels": 6400,
+    "implementation": "native",
+    "executable": "existing Windows Release",
+    "executableSha256": "6f7680b40f5c4101f4b40500f1329e0096b3531fe416e6d38e9244557aa36af2",
+    "engineSha256": "cd886dfeb3a266c498c0a420cd89a017781b01afd39f144f1b474b3161c5d858",
+    "sceneSha256": "a83c59877cb37ac2a3fa305543bfa34df859b566b4c56890c3b49f077ab0be30",
+    "probeSha256": "a7bc3d7a1f4f78dc07a80be538a64ee16e49fd7d1ef4433696d1dd6ab004d089",
+    "logSha256": "76b7ac89f44fd10a838dea6ef78d4c7c0d3d29b39604bf95f99a5240102c6389",
+    "rebuild": {
+      "status": "passed",
+      "cause": "MSBuild custom rule could not change directory to the CLI engine junction",
+      "priorFailureLogSha256": "5f8d801ea05e74e0e035f0b1a4f1839737eb7d5670b68a4d35eb7ddd5f00e0d9",
+      "bindingsLogSha256": "a80ad910bd48ce070d6dc429ddaabdeb46b13cb97a9c549663cbec17d6558c94",
+      "nativeBuildLogSha256": "a1701658286274a97e5907f0872ff2e4fe7f82368d85b511e0e8023ccfdd82e1"
+    },
+    "currentRelease": {
+      "opaquePixels": 6400,
+      "implementation": "native",
+      "executableSha256": "16e145b368d78cc6cbd51e701c081225960c1dad832f88bc4985f38e9730e62e",
+      "bundleSha256": "f7b0b25afa570d6c3da08ac32d96af8aea4c8e666634208252396a3405e69eb8",
+      "sceneSha256": "a83c59877cb37ac2a3fa305543bfa34df859b566b4c56890c3b49f077ab0be30",
+      "probeSha256": "a7bc3d7a1f4f78dc07a80be538a64ee16e49fd7d1ef4433696d1dd6ab004d089",
+      "launcherSha256": "dc4fbbae4d4929f400735345923db1b44ce5f6f40e52818e602d3cf96cd78835",
+      "generatedBindingSha256": "7971167816f54bebfeb188ebdc9660cfe690039ad4957bf98134d2fdecef3210",
+      "packagingLogSha256": "f88928b2acba8e9ddaf0c02c9d2ef0f23fbc073138648d81c502dc7774b76a76",
+      "probeLogSha256": "76b7ac89f44fd10a838dea6ef78d4c7c0d3d29b39604bf95f99a5240102c6389"
+    }
+  },
+  "checks": {
+    "nativePoc": {
+      "Debug": {
+        "pass": true,
+        "logSha256": "9badbcc3f3e73d3ec921a46f974104973c463f5ffd5bd3c9d719537447e88373"
+      },
+      "Release": {
+        "pass": true,
+        "logSha256": "3280efecdda3e6aab5ac0b1704773b792c2e9330503faf4ff6989f3994e7bd43"
+      }
+    },
+    "jest": {
+      "passed": 1489,
+      "logSha256": "c1a7800223ebaabb5f6747a0a85c7b57f455ec06ddfc27ebf1d89272b328bc30"
+    },
+    "geometry": {
+      "cases": 786,
+      "logSha256": "cd4b8ca81a934ac33f3466bf3c40426f37d5ca84a9e2cb28dd5a9cc01d205b78"
+    },
+    "typescript": {
+      "engine": true,
+      "native": true
+    },
+    "thinShell": {
+      "checks": 57,
+      "failures": 0
+    }
+  }
+}

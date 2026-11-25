@@ -1,0 +1,98 @@
+{
+  "baseCommit": "68af105c8ddd439dc0b23785659653f669d07222",
+  "snapshot": "4aabead3e65667a86928856f57d3349090f5461c1a4b3713cf0a522877a03e1e",
+  "before": {
+    "focusedJestFailures": 4,
+    "logSha256": "a42bd9e18e6c264abfc679868d561075f27a933be8f366e30f3ee32de6b14831",
+    "debugRenderingFailure": "Legacy SpriteFrame restored the wrong mesh or packing defaults",
+    "debugAppLogSha256": "d801bdfc243a477e6e32fc03d397c2dd29020aff62d52619267717f7a3e3dafa"
+  },
+  "localChecks": {
+    "focusedJestPassed": 61,
+    "focusedJestLogSha256": "3741f1b950da6803ff566bb66c383f4ef4c70145b3c2d9f51cb97a483d140641",
+    "fullJestPassed": 1483,
+    "fullJestLogSha256": "0a86236e450fa1f832ec0042b668d02da3a5ff96edc67f861e1960b72c16079a",
+    "webTypeScriptPassed": true,
+    "nativeTypeScriptPassed": true,
+    "nativeTypeScriptLogSha256": "262e7cc292fb57a5049c82e23ec66ccfaf6d8773621a293f13c676e269879f60",
+    "generatedFixtureTypeScriptDiagnostics": {
+      "before": 39,
+      "after": 39
+    },
+    "thinShellChecksPassed": 57,
+    "nativeJsbConfigurationsPassed": 2,
+    "nativeJsbLogSha256": "32a25cec097281aa16c4919512121d0ff7b5b568b63dc231df7f5d8ac820be68"
+  },
+  "web": {
+    "captures": 163,
+    "manifestSha256": "55c2ed3d6916831570a44dca0d3791af625ac0e1dd25d88ff124624d05bcf837",
+    "engineSha256": "b0442446983d62948874580943b9ea5184662c21b3e52b1466296797e495d582",
+    "importedLegacyPrefabSha256": "4e7cf323c28e3fbdc9df23e6f9f2e917539b6f270afee09b832293fdb756b17a",
+    "logSha256": "db1a9456c9542ce83dc2f4d224aa048bb684a3a0216bdc8b44131f75ec23e19f"
+  },
+  "configurations": {
+    "Debug-native": {
+      "byteIdentical": 163,
+      "sameAsPriorNative": 163,
+      "sceneSwitches": 1000,
+      "sceneAssertions": 4998,
+      "inactiveSpriteCenterDetached": true,
+      "bitmapFontRoundTrip": true,
+      "labelAtlasRoundTrip": true,
+      "bitmapReloadWidths": [
+        40,
+        42,
+        37,
+        40
+      ],
+      "executableSha256": "ddb8dc63b48965c75cb222b4b7e8161feeea2a8c42977e6fa1c00e8f8fe2f747",
+      "engineSha256": "7e30dbcf0eb32b12acb5c9f3387111cf62bf00e792a7c43f9aa14d1e7a829247",
+      "importedLegacyPrefabSha256": "4e7cf323c28e3fbdc9df23e6f9f2e917539b6f270afee09b832293fdb756b17a",
+      "manifestSha256": "ace529f4a66703f37620e9652c3fdd4d92d399e89e1d013a218596554e2a11ad",
+      "comparisonSha256": "f316b0fcbbc9c456db77a96246b382b529fbf445a5442130f8f1f54ef337e454",
+      "logSha256": "4b76593cea1b7489044e1362800ed9e83f67f28b9695414bd316f26b30b5a127"
+    },
+    "Release-native": {
+      "byteIdentical": 163,
+      "sameAsPriorNative": 163,
+      "sceneSwitches": 1000,
+      "sceneAssertions": 4998,
+      "inactiveSpriteCenterDetached": true,
+      "bitmapFontRoundTrip": true,
+      "labelAtlasRoundTrip": true,
+      "bitmapReloadWidths": [
+        40,
+        42,
+        37,
+        40
+      ],
+      "executableSha256": "9efa7916c3d276e3abac51838096cfb9411523b5cfd0cbd087409bf3bbc9a0e0",
+      "engineSha256": "7e30dbcf0eb32b12acb5c9f3387111cf62bf00e792a7c43f9aa14d1e7a829247",
+      "importedLegacyPrefabSha256": "4e7cf323c28e3fbdc9df23e6f9f2e917539b6f270afee09b832293fdb756b17a",
+      "manifestSha256": "8675a6826044386117a5df63f643d5506d816c2259a1d08fcdf706f86539a913",
+      "comparisonSha256": "f316b0fcbbc9c456db77a96246b382b529fbf445a5442130f8f1f54ef337e454",
+      "logSha256": "1b589366cb1c08d77c1d0eba74ed3c17b25d5eed957a66681dec7132d14f75bd"
+    },
+    "Release-fallback": {
+      "byteIdentical": 163,
+      "sameAsPriorNative": 163,
+      "sceneSwitches": 1000,
+      "sceneAssertions": 4998,
+      "inactiveSpriteCenterDetached": true,
+      "bitmapFontRoundTrip": true,
+      "labelAtlasRoundTrip": true,
+      "bitmapReloadWidths": [
+        40,
+        42,
+        37,
+        40
+      ],
+      "executableSha256": "9efa7916c3d276e3abac51838096cfb9411523b5cfd0cbd087409bf3bbc9a0e0",
+      "engineSha256": "8e792ba83d1112bc15498267d0c0b70fbbfa63c2dc48fe8d4c9d7e05fdedc48c",
+      "importedLegacyPrefabSha256": "4e7cf323c28e3fbdc9df23e6f9f2e917539b6f270afee09b832293fdb756b17a",
+      "manifestSha256": "b441e87b16ee40ea28c77496de1568f1855118d37558355248a65c8ea354f6ab",
+      "comparisonSha256": "f316b0fcbbc9c456db77a96246b382b529fbf445a5442130f8f1f54ef337e454",
+      "logSha256": "fa5b222d55a7c165f097b6e29ef46be024c4bd0186771f5c2953ee4b1f1f95c2"
+    }
+  }
+}

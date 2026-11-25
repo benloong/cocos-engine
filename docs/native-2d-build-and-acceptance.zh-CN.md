@@ -336,18 +336,33 @@ foreach ($config in 'Debug', 'Release') {
 1. CLI build windows
 2. tools/build-engine.cjs
 3. robocopy data -> Resources
-4. cmake --build ... Debug
+4. cmake --build ... Debug 和 Release，逐文件核对导出和部署的 Resources
 5. run-m0-checks.ps1
 6. run-m2-pixel-probe.ps1
 7. run-m3-label-probe.ps1
 8. run-m4-mask-probe.ps1
 9. run-m4-extra-probe.ps1
-10. run-m5-richtext-probe.ps1
+10. run-m5-richtext-probe.ps1 -RequireNormalExit -TimeoutSeconds 120（两个配置）
 11. run-m6-sprite-frame-tests.ps1
 12. 定向 Jest
 13. 涉及动态合图/Mask 的节点追加第 7.8 节原始像素对照
 14. 涉及字体图集采样的节点追加第 7.9 节原始像素对照
+15. 两个配置各执行 run-m1-m5-public-api.ps1，保留 checks.json
+16. run-m2-perf.ps1 使用 Release PoC，对照当前源码的 Jest 基准，CPU 提升至少 30%
 ```
+
+步骤 6–10 在每个配置的新资源副本上分别执行。M5 在夹具恢复节点和相机、调用 `rt.destroy()` 后记录一次 `M5_EXIT_REQUESTED`，并在启动预算内自然退出 0。记录强制结束的轮次为失败。发布包内没有运行器创建的退出标记时，测试场景保留正常的交互生命周期。
+
+### 改动后的复验门槛
+
+| 改动 | 同一工作树须补跑的检查 |
+|---|---|
+| 组件、原生 C++、JSB、生成绑定、override 或构建选择 | 重新从 cocos-cli 导出测试工程、构建 override、同步资源并编译 Windows Debug/Release。保留输入和部署哈希，重新执行完整门禁。 |
+| 现行公开接口的声明、默认值、转发或生命周期 | 用 `npm run build:declaration` 刷新声明，运行器从源码和声明重新生成公开成员清单。在真实组件上加入能在修复前失败的行为断言，覆盖默认创建、加载前后修改及必要的对照。兼容接口与已弃用接口排除。 |
+| 命中、渲染、文本或资源行为 | 命中分别断言默认参数、实际输入窗口、错误窗口及外点。渲染与文本按受影响场景比对像素、布局及事件。调整基准或容差时记录契约变更、旧值、新值与依据。 |
+| 应用夹具、脚本或基准工具 | 应用夹具从源文件同步后重新打包，双配置验证信号、产物、超时及退出码。测试工具只采集当前源码的用例，并检查子进程退出码。前一轮失败保留在记录中。 |
+
+新的失败用例进入后续门禁，未受影响的原有断言和预算继续生效。原文档含 Web 对照的命令同时记录原始结果和 Windows JSB/Native 范围内的结果；跨端差异应保留用例编号、输入及两侧实测值。
 
 全部通过后再提交：
 
@@ -402,7 +417,9 @@ build/windows/data/src/cocos-js/cc.js
 - 检查 `Resources/src/settings.json` 是否同步；
 - 不要手改 `application.js`。
 
-## 10. 当前门禁结果（最近一次）
+## 10. 历次门禁结果
+
+2026-11-25 从 cocos-cli 重打的 M0–M5 结果见[本轮签收记录](./native-2d-m6-gate.md#2026-11-25-cli-新包整体验收)。以下记录对应此前各次验收。
 
 ```text
 M2 pixel probe: PASS

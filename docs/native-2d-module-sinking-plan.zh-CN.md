@@ -3,7 +3,7 @@
 > 范围：**仅 `cocos/2d` 模块**（UITransform、UIRenderer、Sprite、Label、Mask、Graphics、RichText、UIOpacity、Canvas/RenderRoot2D 及配套 assembler/assets/event）。已弃用的 `UIStaticBatch` 不纳入范围。`UIMeshRenderer`、`UIMesh`、`UISkew`、`Canvas`、`Camera`、`Widget`、`View` 明确不下沉，保持 JS。
 > 不包含：`cocos/ui` 控件（Button/ScrollView/EditBox/Widget/Layout 等）以及动画、粒子、骨骼、物理、3D UI 桥接、编辑器逻辑、用户脚本。范围已冻结，`cocos/ui` 不进入本次任何阶段。
 > 目标读者：引擎 2D/JSB/构建方向的同学。
-> 更新：2026-11-16。M6 未收口：M2 阶段完成，M3/M4/M5 有 Windows 功能验收记录；SpriteFrame 基础数据/UV 已新增 Windows 定向验证，见 [M6.1 报告](./native-2d-m6.1-sprite-frame.md)。RichText、Graphics、其余资产及场景/平台验收仍有欠项；统一任务和终态门禁见 [M6 计划](./native-2d-m6-plan.md)。
+> 2026-11-25 从 cocos-cli 重打 Windows Debug/Release 后，M0–M5 合并签收仍为 **NO-GO**。当前新包的公开接口、应用、对照和性能结果见 [M6 Gate](./native-2d-m6-gate.md#2026-11-25-cli-新包整体验收)和 [M6 清单](./native-2d-m6-plan.md)。第 6 节各阶段的进度说明保留了当时的签收范围。
 
 ---
 
@@ -202,7 +202,7 @@
 1. 编辑器与序列化元数据：`@ccclass`、`@property`、`@serializable`、`@type`、`@menu`、`@help`、`@executeInEditMode`、`@requireComponent` 等。
 2. 序列化字段的 accessor、默认值、类型声明；字段名和序列化格式必须与 Web 版逐一对齐。
 3. 生命周期转发与注册：`onLoad` attach、`onEnable/onDisable`、`onDestroy` detach、`__preload` 等；只做转发，不写业务。
-4. 公开 API 的签名与转发：包括 deprecated 别名、枚举、静态常量、`Assembler` 等仍被外部引用的静态字段（native 下可为兼容占位，不加载 JS assembler 实现）。
+4. 逐类核对现行公开 API 的签名和转发行为，覆盖公开属性、方法、枚举和静态成员。兼容接口和已弃用接口（含弃用别名）排除在组件 parity 验收范围外。
 
 薄壳**禁止**包含：
 
@@ -321,13 +321,13 @@
 
 ### M6：终态欠项、资产、事件与硬化（原估 4~5 周，待重估）
 
-> 状态：**未收口**。以 [M6 剩余任务与终态验收](./native-2d-m6-plan.md) 为统一执行清单。构建/运行/验收命令见 [Cocos CLI 与 native 验收流程](./native-2d-build-and-acceptance.zh-CN.md)。
+> 候选 `8ee11b673e` 曾通过 11 月 24 日的 Windows 门禁。现行公开接口复验发现三项差异，整体验收待修复。[最新结论](./native-2d-m6-gate.md#2026-11-25-现行公开接口复验) · [构建及复验命令](./native-2d-build-and-acceptance.zh-CN.md)
 
 - M6.0：API/parity、薄壳残留、历史遗留和工具链基线；
 - M6.1：SpriteFrame UV/状态一致性，SpriteAtlas 依赖解析与 native 表同步，字体/图集资产、克隆/释放；
 - M6.2：RichText HTML 解析、样式、分段和布局 native 化，保留 JS 事件桥接；
 - M6.3：承接 M4.3，Graphics native 三角化/GPU buffer、描边语义、批量提交性能和 Mask 回归；
-- M6.4：事件、RenderRoot2D 多 root/Camera、生命周期/线程、1000 次加载卸载与全平台 Debug/Release；
+- M6.4：事件、RenderRoot2D 多 root/Camera、生命周期/线程、1000 次加载卸载与 Windows Debug/Release；macOS、iOS、Android、OHOS 暂缓；
 - M6.5：CPU ≥50%、JSB ≥70%、JS 堆 ≥30% 改善目标，薄壳自动检查、CI/裁剪组合、回退演练和最终 Gate。
 
 退出标准：所有终态阻断项及平台矩阵有候选版本证据，不能以阶段通过、mock 测试或 colored sanity 替代。Component 基类继续保留 JS 身份，完整迁移不进入 M6；见 [评估结论](./native-2d-m6-component-eval.md)。

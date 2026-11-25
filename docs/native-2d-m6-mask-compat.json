@@ -1,0 +1,215 @@
+{
+  "snapshot": "cbb557df867db12ff1a3a6163eb98f27c76851767c89e9f023ab5b80d9ad992a",
+  "web": {
+    "manifestSha256": "f974f6a62c0c52bdd2f37e77b5dade58898f6a59475a5d98342869385458a661",
+    "engineSha256": "185774340439516c807fa7377e30f48525d673d5352fdbc32b23cfb737dc569d",
+    "environment": {
+      "os": "Windows",
+      "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4080 (0x00002704) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (NVIDIA)"
+    }
+  },
+  "runs": {
+    "Debug": {
+      "graphicsMaskImplementation": "native",
+      "executableSha256": "16bf5cf6e10c80be82cdb2a754b184e1954f230c85bb00f5fcc319a9673633f8",
+      "engineSha256": "e384d3b0e6bd2a64f5fceb772a32d87cb140f2fc19523c1dc56ef643abe83e70",
+      "manifestSha256": "99fad03b544205393187e40a42923baae3a1c1856184c4c044ee29000d3561cc",
+      "comparisonSha256": "47ae222baf331449a5165d03f1823cd290f4bb7b4df3e6ea9ad5fbebb2df37c0",
+      "byteIdenticalCaptures": 171,
+      "hitTests": 22,
+      "sceneCycles": 1000,
+      "maskPrefabChecks": {
+        "spritePrefab": true,
+        "graphicsPrefab": true,
+        "materialForwarding": true,
+        "stencilUpdates": true,
+        "released": true
+      },
+      "maskCaptures": [
+        {
+          "name": "scene-legacy-mask-sprite",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 1024,
+          "pass": true,
+          "nativeSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "webSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c"
+        },
+        {
+          "name": "scene-legacy-mask-sprite-inverted",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 3072,
+          "pass": true,
+          "nativeSha256": "ce97cf32d5f15fb990fede7b68aaeb94d04b403b0da9ea62abf0524d252f0590",
+          "webSha256": "ce97cf32d5f15fb990fede7b68aaeb94d04b403b0da9ea62abf0524d252f0590"
+        },
+        {
+          "name": "scene-legacy-mask-graphics",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 1024,
+          "pass": true,
+          "nativeSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "webSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c"
+        },
+        {
+          "name": "scene-legacy-mask-graphics-updated",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 512,
+          "pass": true,
+          "nativeSha256": "d9d80cadc190c42c59e9911b118f3b4bab5c14ab18e412342a0d6f862b5ec175",
+          "webSha256": "d9d80cadc190c42c59e9911b118f3b4bab5c14ab18e412342a0d6f862b5ec175"
+        }
+      ]
+    },
+    "Release": {
+      "graphicsMaskImplementation": "native",
+      "executableSha256": "709ff025c2d5faca36a4ad63ff4d8cc0c0d78394535d0df3c265291132675a34",
+      "engineSha256": "e384d3b0e6bd2a64f5fceb772a32d87cb140f2fc19523c1dc56ef643abe83e70",
+      "manifestSha256": "623f23ba7d69c9bc267dfd3e9a37c8c824a8dcaa8bb43b2430214edc67de7cc6",
+      "comparisonSha256": "47ae222baf331449a5165d03f1823cd290f4bb7b4df3e6ea9ad5fbebb2df37c0",
+      "byteIdenticalCaptures": 171,
+      "hitTests": 22,
+      "sceneCycles": 1000,
+      "maskPrefabChecks": {
+        "spritePrefab": true,
+        "graphicsPrefab": true,
+        "materialForwarding": true,
+        "stencilUpdates": true,
+        "released": true
+      },
+      "maskCaptures": [
+        {
+          "name": "scene-legacy-mask-sprite",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 1024,
+          "pass": true,
+          "nativeSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "webSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c"
+        },
+        {
+          "name": "scene-legacy-mask-sprite-inverted",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 3072,
+          "pass": true,
+          "nativeSha256": "ce97cf32d5f15fb990fede7b68aaeb94d04b403b0da9ea62abf0524d252f0590",
+          "webSha256": "ce97cf32d5f15fb990fede7b68aaeb94d04b403b0da9ea62abf0524d252f0590"
+        },
+        {
+          "name": "scene-legacy-mask-graphics",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 1024,
+          "pass": true,
+          "nativeSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "webSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c"
+        },
+        {
+          "name": "scene-legacy-mask-graphics-updated",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 512,
+          "pass": true,
+          "nativeSha256": "d9d80cadc190c42c59e9911b118f3b4bab5c14ab18e412342a0d6f862b5ec175",
+          "webSha256": "d9d80cadc190c42c59e9911b118f3b4bab5c14ab18e412342a0d6f862b5ec175"
+        }
+      ]
+    },
+    "Rollback-Release": {
+      "graphicsMaskImplementation": "js",
+      "executableSha256": "709ff025c2d5faca36a4ad63ff4d8cc0c0d78394535d0df3c265291132675a34",
+      "engineSha256": "37b57baa0ea7128e08beec63eb1439a72ce5a3cdf41db8afb8892d495ca67472",
+      "manifestSha256": "67ab822af49159d782484d59812901350cd7c894e736ad3f6b010f01935eb93f",
+      "comparisonSha256": "47ae222baf331449a5165d03f1823cd290f4bb7b4df3e6ea9ad5fbebb2df37c0",
+      "byteIdenticalCaptures": 171,
+      "hitTests": 22,
+      "sceneCycles": 1000,
+      "maskPrefabChecks": {
+        "spritePrefab": true,
+        "graphicsPrefab": true,
+        "materialForwarding": true,
+        "stencilUpdates": true,
+        "released": true
+      },
+      "maskCaptures": [
+        {
+          "name": "scene-legacy-mask-sprite",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 1024,
+          "pass": true,
+          "nativeSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "webSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c"
+        },
+        {
+          "name": "scene-legacy-mask-sprite-inverted",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 3072,
+          "pass": true,
+          "nativeSha256": "ce97cf32d5f15fb990fede7b68aaeb94d04b403b0da9ea62abf0524d252f0590",
+          "webSha256": "ce97cf32d5f15fb990fede7b68aaeb94d04b403b0da9ea62abf0524d252f0590"
+        },
+        {
+          "name": "scene-legacy-mask-graphics",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 1024,
+          "pass": true,
+          "nativeSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "webSha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c"
+        },
+        {
+          "name": "scene-legacy-mask-graphics-updated",
+          "max": 0,
+          "pixels": 0,
+          "channels": 0,
+          "colored": 512,
+          "pass": true,
+          "nativeSha256": "d9d80cadc190c42c59e9911b118f3b4bab5c14ab18e412342a0d6f862b5ec175",
+          "webSha256": "d9d80cadc190c42c59e9911b118f3b4bab5c14ab18e412342a0d6f862b5ec175"
+        }
+      ]
+    }
+  },
+  "checks": {
+    "nativePoc": {
+      "Debug": {
+        "pass": true,
+        "logSha256": "99aab9638d72d7033bdd58bfd363a9a822e0dc87a56d409a4d5452f54ecce891"
+      },
+      "Release": {
+        "pass": true,
+        "logSha256": "44f8665a39cf307a9e85159cb6bc60ca0f7d30bcb01ea45f8614c4bf3b175a53"
+      }
+    },
+    "jest": {
+      "passed": 1487,
+      "logSha256": "7e6fc4cb460aa809dbea144c2366e5e4acb2402b26d9f3f5f9c7344ba07f7f64"
+    },
+    "typescript": {
+      "engine": true,
+      "native": true
+    },
+    "thinShell": {
+      "checks": 57,
+      "failures": 0
+    }
+  }
+}

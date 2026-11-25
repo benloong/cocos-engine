@@ -1,0 +1,150 @@
+{
+  "baseCommit": "68af105c8ddd439dc0b23785659653f669d07222",
+  "snapshot": "1c95dd42110bbaeff4becd141f07384bf979f19bebdff411966332cb35b42a9d",
+  "rendererChecks": {
+    "inheritedPreDestroy": true,
+    "unloadedPreDestroy": true,
+    "explicitBlendUpdate": true,
+    "nativeBitmapTint": "RGBA",
+    "nativeTtfTint": "alpha",
+    "nativeAssemblerData": null,
+    "webAssemblerInternals": [
+      "textStyle",
+      "textLayout",
+      "textLayoutData",
+      "textRenderData"
+    ]
+  },
+  "localChecks": {
+    "fullJestPassed": 1485,
+    "fullJestLogSha256": "cfe9d8b240c2824c483d1af4de08327f7bc67191d0f9f488f1577ce935721593",
+    "redJestLogSha256": "93eb180d71d133c7480c24715d0de74bdb3e884adcc88af131b984ea43407b84",
+    "actualJsbConfigurations": 2,
+    "actualJsbLogSha256": "ad5d77b6701f82800363d4e018ebaed8c637afc23bf633b6c68435f51fc2476f",
+    "webTypeScript": true,
+    "nativeTypeScript": true,
+    "nativeTypeScriptLogSha256": "f9cdf7c8fa5cef281efcbeb7724b8b515c8d0434915fc08a88452516eaa96a38",
+    "standaloneFixtureDiagnostics": {
+      "before": 39,
+      "after": 39
+    },
+    "thinShellChecksPassed": 57
+  },
+  "standaloneSpriteInputs": {
+    "pngSha256": "4d6d179d4958f0536ec5a9df75003fd8583739aa12da780596c1f57732ea180e",
+    "metadataSha256": "7451e6e667c991122d8e618038bea37d0ffb9382fc3136c61d342ba036f73d27",
+    "legacyPrefabSha256": "a6e52f2d74e18a99cba3385ada163641816147c44d125bc0211233686af0712c",
+    "ids": [
+      "72c84532-7db0-4e3f-8eb5-4b59f545b128",
+      "65a9391d-ffee-4413-a20c-c3820d38d0f9@f9941",
+      "65a9391d-ffee-4413-a20c-c3820d38d0f9@6c48a",
+      "65a9391d-ffee-4413-a20c-c3820d38d0f9"
+    ]
+  },
+  "web": {
+    "captures": 167,
+    "manifestSha256": "25effb10a286beb5d0ff7f34b58da863fbc0d9419235ab09c689df496fb0db6b",
+    "logSha256": "36272d5ad8e359e958fed5f470871a79f661950db1bda2736ab566304345f0a4"
+  },
+  "configurations": {
+    "Debug": {
+      "labelImplementation": "native",
+      "byteIdentical": 167,
+      "sameAsPrior": 163,
+      "sceneSwitches": 1000,
+      "executableSha256": "9258fe9d7bf725910c0512396fa1aba0b75a4f84a93baf7616d3e526b58baa3a",
+      "engineSha256": "3633d5ead58cb84300703686ff1161688207fd2fb988cc6bfc2d90b85fbbca4d",
+      "manifestSha256": "a323089e71da9bcc29610d117d352b46b8703570d4a93d93c2f547cac56b4c96",
+      "comparisonSha256": "929f62963c2283b661f823081247283d8260e2b6140bd36709e8f28cd4f503ca",
+      "appLogSha256": "807a40a49f25a653ca3f76d70e1b33a2cd0e5907c36667b7c73290a593e067d0",
+      "standaloneImages": [
+        {
+          "name": "scene-standalone-sprite-first",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-clone",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-cold",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-final",
+          "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "colored": 0
+        }
+      ]
+    },
+    "Release": {
+      "labelImplementation": "native",
+      "byteIdentical": 167,
+      "sameAsPrior": 163,
+      "sceneSwitches": 1000,
+      "executableSha256": "2816cbaf62bdb6f4b133b926dac79d0893da7781101caf79b0ea1d2716c123e2",
+      "engineSha256": "3633d5ead58cb84300703686ff1161688207fd2fb988cc6bfc2d90b85fbbca4d",
+      "manifestSha256": "790d0511600c387e92c8020a19c8bbbc097c7f9c6a6c73fbe2ba4b048ff3b9c2",
+      "comparisonSha256": "929f62963c2283b661f823081247283d8260e2b6140bd36709e8f28cd4f503ca",
+      "appLogSha256": "a1ff961c286451fa43b5a3fdfa920339ac0a2bb648690ed8989487d244e3f1c7",
+      "standaloneImages": [
+        {
+          "name": "scene-standalone-sprite-first",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-clone",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-cold",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-final",
+          "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "colored": 0
+        }
+      ]
+    },
+    "fallback": {
+      "labelImplementation": "js",
+      "byteIdentical": 167,
+      "sameAsPrior": 163,
+      "sceneSwitches": 1000,
+      "executableSha256": "2816cbaf62bdb6f4b133b926dac79d0893da7781101caf79b0ea1d2716c123e2",
+      "engineSha256": "8e792ba83d1112bc15498267d0c0b70fbbfa63c2dc48fe8d4c9d7e05fdedc48c",
+      "manifestSha256": "42697d0ff68717298f095e7a182109852aebd089c345081b1b0c60a2cbe03798",
+      "comparisonSha256": "929f62963c2283b661f823081247283d8260e2b6140bd36709e8f28cd4f503ca",
+      "appLogSha256": "532927d60adfac18bd6aa65a7991ff15336e1e03f8f4cdbbda72f7e9813159f2",
+      "standaloneImages": [
+        {
+          "name": "scene-standalone-sprite-first",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-clone",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-cold",
+          "sha256": "37ed4e89875102fe998d515eca1b66c55428bdc4e015b94407838eae92ebf70c",
+          "colored": 1024
+        },
+        {
+          "name": "scene-standalone-sprite-final",
+          "sha256": "b7997c60612a8f60f104b19583162aaac7dde1f1ab2e8ef7c9b935550e2b0aa8",
+          "colored": 0
+        }
+      ]
+    }
+  }
+}

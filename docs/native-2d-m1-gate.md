@@ -2,6 +2,7 @@
 
 > 适用：`ui-transform.jsb.ts` / `ui-opacity.jsb.ts` 从候选壳切换为生产 override。
 > 当前：`ui-opacity` 与 `ui-transform` 均已启用。
+> 2026-11-25 CLI 新包复验，Windows Debug/Release 中显式传入活动窗口 ID 时中心点命中；下表历史用例的单参数调用在两个配置均未命中。M1 完整签收待该门槛收口。[本轮验收](./native-2d-m6-gate.md#2026-11-25-cli-新包整体验收)
 
 ## 1. 当前证据
 

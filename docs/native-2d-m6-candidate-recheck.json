@@ -1580,7 +1580,7 @@
   ],
   "acceptanceScope": {
     "effectiveDate": "2026-11-23",
-    "decision": "User requested excluding the existing Web implementation from M6 acceptance.",
+    "decision": "User excluded existing Web acceptance and SpriteRenderer/ModelRenderer related acceptance from M6.",
     "targets": [
       "JSB thin layer",
       "Native implementation"
@@ -1593,7 +1593,8 @@
       "Existing Web implementation TypeScript and full Jest acceptance",
       "Existing Web engine bundles and application builds",
       "Existing Web dynamic atlas, assets, font loading and GPU applications",
-      "Mandatory runtime, layout and pixel parity against the current Web implementation"
+      "Mandatory runtime, layout and pixel parity against the current Web implementation",
+      "SpriteRenderer and ModelRenderer implementation, JSB wrappers and related mesh/model/descriptor/lifetime acceptance"
     ],
     "references": "Existing Web results and comparisons remain optional diagnostic references.",
     "nativeRequirements": [
@@ -1606,10 +1607,12 @@
       "Native performance and stability"
     ],
     "previousResults": "All historical runs and localRechecks retain their original scope, counts, failures and fingerprints as measured.",
-    "latestCandidate": "d91cd90f12",
+    "latestCandidate": "554d747561",
     "latestCandidateStatus": "NO-GO",
-    "remainingNativeBlockers": [],
-    "mixedJestAssertions": "The reported JSB/Native failures are resolved by the individually committed test-entry corrections. A clean committed snapshot passed 63 Native assertions across 8 suites, with 11 Web/reference checks excluded.",
+    "remainingNativeBlockers": [
+      "Debug DirectWrite source exclusive-open gate fails under workspace; diagnostic observed transient sharing violation after valid font release, lock owner unresolved"
+    ],
+    "mixedJestAssertions": "18 suites and 119 Native assertions passed under the current scope; 11 Web/reference checks and one generated-mesh check excluded.",
     "bitmapLayout": "Native U+1F642 advance 17 at scale 0.5 yields line width 8.5. Four overflow modes passed independent expected-value checks."
   },
   "fixRechecks": [
@@ -1618,7 +1621,7 @@
       "codeRevision": "d91cd90f12",
       "committedJestSnapshot": "4773a636bb",
       "acceptanceScopeCommit": "01395b028a",
-      "status": "PASS_FOR_REPORTED_NATIVE_FAILURES",
+      "status": "PARTIALLY_VERIFIED",
       "overallM6Status": "NO-GO",
       "fixes": [
         {
@@ -1663,7 +1666,7 @@
         }
       ],
       "rootCause": {
-        "nativeRuntimeFailures": "Stale incremental C++ objects after Ninja lost header dependencies. All four listed Native runtime failures cleared after clean rebuilds.",
+        "nativeRuntimeFailures": "Debug Label preflight passed with a clean C++ build. Application passes used workspace JSB drafts, so the Graphics and RichText application failures still require a freshly packed committed-source recheck.",
         "compilerOutputEncoding": "UTF-8",
         "oldDecodedPrefix": "娉ㄦ剰: 鍖呭惈鏂囦欢:  ",
         "correctedPrefix": "注意: 包含文件:  ",
@@ -1696,9 +1699,8 @@
         "executableSha256": "ffe9a9a6bd74999d58777d525ea1f98d6aac19659926581e1b3857712edbc8bc"
       },
       "applicationRuntimeSources": {
-        "equivalentCommittedRuntimeRevision": "5cdc896f3c",
         "committedRuntimeSourceDiff": [],
-        "notes": "Existing candidate JS engine bundles were reused because committed TS/C++ runtime source code is unchanged. Native applications were rebuilt in clean separate Debug and Release directories. Existing workspace SpriteFrame/SpriteRenderer drafts are excluded from these commits.",
+        "notes": "Corrected provenance. The reused application JS bundle contains the uncommitted sprite-frame.jsb.ts refreshRectMesh changes and the new sprite-renderer.jsb.ts override. Its SHA-256 is fcb88fdbfedba1912972b2b15b191d5a00efff16736db1327386697a8844fe0d. Comparing committed source revisions did not establish the provenance of this existing bundle. Clean C++ builds and these workspace JSB drafts passed the recorded application checks. A freshly packed committed-source application recheck is outstanding.",
         "bundles": [
           {
             "mode": "graphics",
@@ -1710,7 +1712,14 @@
             "file": "native/tests/2d-poc/build/richtext-gpu-project/build/windows/data/src/cocos-js/cc.js",
             "sha256": "fcb88fdbfedba1912972b2b15b191d5a00efff16736db1327386697a8844fe0d"
           }
-        ]
+        ],
+        "equivalentCommittedNativeCppRevision": "5cdc896f3c",
+        "includesWorkspaceDrafts": [
+          "cocos/2d/assets/sprite-frame.jsb.ts",
+          "cocos/2d/framework/sprite-renderer.jsb.ts",
+          "cc.config.json"
+        ],
+        "committedApplicationBundleVerified": false
       },
       "applications": {
         "Debug": {
@@ -1757,7 +1766,9 @@
                 "cancelledAndResumed": true
               }
             }
-          }
+          },
+          "committedSourceApplicationVerified": false,
+          "jsBundleScope": "workspace JSB drafts"
         },
         "Release": {
           "executable": "native/tests/2d-poc/build/m6-fix-app-Release/native-2d-m6-gpu.exe",
@@ -1803,7 +1814,9 @@
                 "cancelledAndResumed": true
               }
             }
-          }
+          },
+          "committedSourceApplicationVerified": false,
+          "jsBundleScope": "workspace JSB drafts"
         }
       },
       "nativeImageComparison": {
@@ -3481,7 +3494,8 @@
               "differingChannels": 0
             }
           ]
-        }
+        },
+        "provenance": "237 recorded image pairs remain valid observations for the workspace-draft application bundles."
       },
       "performance": "Not rerun for these test-entry and build-dependency corrections. Prior measurements retain their original candidate revision.",
       "remainingGateWork": [
@@ -3538,6 +3552,1134 @@
           "sha256": "5a35d15d43e431504a82f844f0adf8525fae3b607c8b7a1f0207e8b6d7cba14c"
         }
       ]
+    }
+  ],
+  "fullRechecks": [
+    {
+      "date": "2026-11-23",
+      "codeRevision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "status": "NO-GO",
+      "scope": [
+        "Windows Debug",
+        "Windows Release",
+        "JSB and Native",
+        "Current serialized formats",
+        "Default Native path"
+      ],
+      "excluded": [
+        "Current Web implementation tests and cross-Web parity",
+        "Legacy serialized data compatibility",
+        "Deprecated Label APIs",
+        "Component TS rollback",
+        "SpriteRenderer migration or new JSB override",
+        "CI/workflow changes"
+      ],
+      "discardedChanges": {
+        "spriteFrameMatchesHead": true,
+        "sha256": "385e47bf253d824d431eb89eb752d79cdd10c636a01496e2b8d1f072135c68dc",
+        "spriteRendererOverrideExists": false
+      },
+      "provenance": {
+        "source": {
+          "file": "native/tests/2d-poc/build/m6-full-529cb53636/source-provenance.json",
+          "sha256": "56554edc4b701cd37710f20808b1755a1ed08b428846e47388a44f655782c9e0"
+        },
+        "packages": {
+          "commit": "529cb5363685961f22647b10f547bc248c04e2a7",
+          "source": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-full-source-529cb53636",
+          "files": [
+            {
+              "path": "cc.config.json",
+              "sha256": "31a1ca8323994266678d76c2f2135d25546ded3db0f135097c637c4e32841ace",
+              "matchesHead": true
+            },
+            {
+              "path": "cocos/2d/assets/sprite-frame.jsb.ts",
+              "sha256": "385e47bf253d824d431eb89eb752d79cdd10c636a01496e2b8d1f072135c68dc",
+              "matchesHead": true
+            },
+            {
+              "path": "cocos/2d/framework/sprite-renderer.ts",
+              "sha256": "5fd244ad0760268eb54055159a70d74378e17bd60f42db9411bd6021a9f346c7",
+              "matchesHead": true
+            },
+            {
+              "path": "cocos/root.jsb.ts",
+              "sha256": "8f41dd94fc4b7650b0849c13b403bfc39aefc51902649acfafca43431d0211b9",
+              "matchesHead": true
+            },
+            {
+              "path": "cocos/scene-graph/node.jsb.ts",
+              "sha256": "90b91f18ed7fce60480a315e006fe513f86999a359082f0c6f14a68d2090200f",
+              "matchesHead": true
+            }
+          ],
+          "packages": [
+            {
+              "project": "graphics-gpu-project",
+              "file": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-full-source-529cb53636\\native\\tests\\2d-poc\\build\\graphics-gpu-project\\build\\windows\\data\\src\\cocos-js\\cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba",
+              "bytes": 2391503,
+              "removedDraftMarkers": {
+                "refreshRectMesh": false,
+                "observedFrame": false,
+                "boundMesh": false
+              }
+            },
+            {
+              "project": "richtext-gpu-project",
+              "file": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-full-source-529cb53636\\native\\tests\\2d-poc\\build\\richtext-gpu-project\\build\\windows\\data\\src\\cocos-js\\cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba",
+              "bytes": 2391503,
+              "removedDraftMarkers": {
+                "refreshRectMesh": false,
+                "observedFrame": false,
+                "boundMesh": false
+              }
+            },
+            {
+              "project": "m6-graphics-old-project",
+              "file": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-full-source-529cb53636\\native\\tests\\2d-poc\\build\\m6-graphics-old-project\\build\\windows\\data\\src\\cocos-js\\cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba",
+              "bytes": 2391503,
+              "removedDraftMarkers": {
+                "refreshRectMesh": false,
+                "observedFrame": false,
+                "boundMesh": false
+              },
+              "scope": "Native 2D features; broad unresolved external-module package retained separately"
+            }
+          ],
+          "initialDocumentPackage": {
+            "project": "m6-graphics-old-project",
+            "file": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-full-source-529cb53636\\native\\tests\\2d-poc\\build\\m6-graphics-old-project\\build\\windows\\data\\src\\cocos-js\\cc.js",
+            "sha256": "d1f5abd1ac40ac9ad589c9607c668d910945e05affb0df0280a8cb2ad7bba841",
+            "bytes": 3053819,
+            "removedDraftMarkers": {
+              "refreshRectMesh": false,
+              "observedFrame": false,
+              "boundMesh": false
+            }
+          }
+        },
+        "stagedPackages": [
+          {
+            "kind": "app",
+            "configuration": "Debug",
+            "deployed": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-app-Debug/Resources/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "generated": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/richtext-gpu-project/build/windows/data/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "matchesGenerated": true
+          },
+          {
+            "kind": "app",
+            "configuration": "Release",
+            "deployed": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-app-Release/Resources/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "generated": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/richtext-gpu-project/build/windows/data/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "matchesGenerated": true
+          },
+          {
+            "kind": "doc",
+            "configuration": "Debug",
+            "deployed": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-doc-Debug/Resources/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "generated": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/m6-graphics-old-project/build/windows/data/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "matchesGenerated": true
+          },
+          {
+            "kind": "doc",
+            "configuration": "Release",
+            "deployed": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-doc-Release/Resources/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "generated": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/m6-graphics-old-project/build/windows/data/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "matchesGenerated": true
+          },
+          {
+            "kind": "trace",
+            "configuration": "Debug",
+            "deployed": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-trace-Debug/Resources/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "generated": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/graphics-gpu-project/build/windows/data/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "matchesGenerated": true
+          },
+          {
+            "kind": "trace",
+            "configuration": "Release",
+            "deployed": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-trace-Release/Resources/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "generated": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/graphics-gpu-project/build/windows/data/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "matchesGenerated": true
+          },
+          {
+            "kind": "asan",
+            "configuration": null,
+            "deployed": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-asan/Resources/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "generated": {
+              "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/richtext-gpu-project/build/windows/data/src/cocos-js/cc.js",
+              "sha256": "1bc8cd683c4d95d438525541ec52d2c9aa08f7677decf63f020670a694e224ba"
+            },
+            "matchesGenerated": true
+          }
+        ],
+        "binaries": {
+          "file": "native/tests/2d-poc/build/m6-full-529cb53636/native-binary-provenance.json",
+          "sha256": "62b380fd2fc9209ed0f830ad00155c895a912a085fea86335cb817487dd17454"
+        }
+      },
+      "staticChecks": [
+        {
+          "exitCode": 0,
+          "name": "metadata"
+        },
+        {
+          "exitCode": 0,
+          "name": "baseline"
+        },
+        {
+          "exitCode": 0,
+          "name": "thin-shell"
+        },
+        {
+          "exitCode": 0,
+          "name": "m1-shell"
+        },
+        {
+          "exitCode": 0,
+          "name": "audit-tools"
+        },
+        {
+          "exitCode": 0,
+          "name": "native-ts"
+        },
+        {
+          "exitCode": 0,
+          "name": "poc"
+        }
+      ],
+      "toolTests": {
+        "passed": 13,
+        "failed": 0
+      },
+      "standaloneCpp": {
+        "checks": 175,
+        "failed": 0
+      },
+      "nativeJest": {
+        "suitesPassed": 18,
+        "suitesFailed": 0,
+        "testsPassed": 120,
+        "testsFailed": 0,
+        "excludedTests": 11,
+        "report": {
+          "file": "native/tests/2d-poc/build/m6-full-529cb53636/native-jest-results.json",
+          "sha256": "16acc94ba13047fad46346808eb19bb6f08903291542473f5f37352b34122984"
+        }
+      },
+      "nativeConsole": {
+        "initial": [
+          {
+            "round": 1,
+            "configuration": "Debug",
+            "kind": "cpp",
+            "exitCode": 0
+          },
+          {
+            "round": 2,
+            "configuration": "Debug",
+            "kind": "cpp",
+            "exitCode": 0
+          },
+          {
+            "round": 3,
+            "configuration": "Debug",
+            "kind": "cpp",
+            "exitCode": 1
+          },
+          {
+            "configuration": "Debug",
+            "kind": "jsb",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "log-visibility",
+            "exitCode": 0
+          },
+          {
+            "round": 1,
+            "configuration": "Release",
+            "kind": "cpp",
+            "exitCode": 0
+          },
+          {
+            "round": 2,
+            "configuration": "Release",
+            "kind": "cpp",
+            "exitCode": 0
+          },
+          {
+            "round": 3,
+            "configuration": "Release",
+            "kind": "cpp",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "jsb",
+            "exitCode": 1
+          },
+          {
+            "configuration": "Release",
+            "kind": "log-visibility",
+            "exitCode": 0
+          }
+        ],
+        "final": [
+          {
+            "configuration": "Debug",
+            "kind": "native-isolated",
+            "round": 1,
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "native-isolated",
+            "round": 2,
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "native-isolated",
+            "round": 3,
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "jsb-isolated",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "font-file",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "native-isolated",
+            "round": 1,
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "native-isolated",
+            "round": 2,
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "native-isolated",
+            "round": 3,
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "jsb-isolated",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "font-file",
+            "exitCode": 0
+          }
+        ],
+        "initialAnomalies": [
+          {
+            "kind": "Debug DirectWrite process handles",
+            "observed": "397 -> 403 during initial round 3",
+            "final": "Not reproduced in three final runs and six final JSB preflights; cause remains unconfirmed"
+          },
+          {
+            "kind": "Release font-assets alias and Native Label selection",
+            "observed": "Initial font-assets shell integration assertion failed",
+            "final": "Not reproduced in final six-probe run; cause remains unconfirmed"
+          },
+          {
+            "kind": "Normal Debug RichText retry exited early",
+            "observed": "Process exited after richtext-lifecycle-disabled; no completed HTTP requests",
+            "final": "Preserved as an unexplained first-run observation; final serial result is recorded separately",
+            "evidence": {
+              "file": "native/tests/2d-poc/build/m6-full-529cb53636/richtext-retry-Debug-run.log",
+              "sha256": "1c771df3b57fbf632dab423beab062abcfa1191d8e6673c29ea5e60fd83d7c1f"
+            }
+          }
+        ]
+      },
+      "builds": [
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "directory": "C:/Users/wangbenlong/Works/cocos-engine-worktrees/v4/native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-app-Debug",
+          "kind": "app"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "directory": "C:/Users/wangbenlong/Works/cocos-engine-worktrees/v4/native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-app-Release",
+          "kind": "app"
+        },
+        {
+          "configuration": "Debug",
+          "exitCode": 0,
+          "directory": "C:/Users/wangbenlong/Works/cocos-engine-worktrees/v4/native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-doc-Debug",
+          "kind": "doc"
+        },
+        {
+          "configuration": "Release",
+          "exitCode": 0,
+          "directory": "C:/Users/wangbenlong/Works/cocos-engine-worktrees/v4/native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-doc-Release",
+          "kind": "doc"
+        },
+        {
+          "directory": "C:/Users/wangbenlong/Works/cocos-engine-worktrees/v4/native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-trace-Debug",
+          "kind": "trace",
+          "exitCode": 0,
+          "retryReason": "Preserve MSVC default WIN32 WINDOWS GR EHsc options when adding invocation diagnostic define",
+          "configuration": "Debug"
+        },
+        {
+          "directory": "C:/Users/wangbenlong/Works/cocos-engine-worktrees/v4/native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-trace-Release",
+          "kind": "trace",
+          "exitCode": 0,
+          "retryReason": "Preserve MSVC default WIN32 WINDOWS GR EHsc options when adding invocation diagnostic define",
+          "configuration": "Release"
+        }
+      ],
+      "graphics": {
+        "Debug": {
+          "configuration": "Debug",
+          "kind": "graphics",
+          "endedUtc": "2026-11-23T11:10:12.6809363Z",
+          "exitCode": 1,
+          "freshCaptures": 18,
+          "lastCapture": "packed-polygon-mesh-restored",
+          "diagnostics": [
+            "19:07:20 [ERROR]: glDrawElements(glPrimitive, drawInfo.indexCount, gpuInputAssembler->glIndexType, offset) returned GL error: 0x505"
+          ],
+          "log": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/gui-retry/graphics-Debug/graphics-gpu-native.log",
+            "sha256": "7d9e3966892ff10b846a3fca26910df5e3b6c0931fca377c235298a946e7e555"
+          },
+          "runner": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/gui-retry/graphics-Debug-run.log",
+            "sha256": "516a1200a64be51566224313df477a3dc5b22f5cdf3658e19cf869050600b71d"
+          }
+        },
+        "Release": {
+          "configuration": "Release",
+          "kind": "graphics",
+          "endedUtc": "2026-11-23T11:12:00.1295239Z",
+          "exitCode": 1,
+          "freshCaptures": 22,
+          "lastCapture": "mesh-rect-flat-0",
+          "diagnostics": [
+            "19:11:59 [DEBUG]: JS: M6_GPU_FAIL Error: Bound mesh does not address the current source corners"
+          ],
+          "log": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/gui-retry/graphics-Release/graphics-gpu-native.log",
+            "sha256": "bb3fc7c5a4904e2420e709f0e18d1b1505420d57260365f3270408cf19cc7c6f"
+          },
+          "runner": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/gui-retry/graphics-Release-run.log",
+            "sha256": "6da5408d1b3f8455dacc64c75e32af8ef03ac6a7acffec0de9c76e38b1224e04"
+          }
+        }
+      },
+      "richText": {
+        "Debug": {
+          "exitCode": 0,
+          "captures": 62,
+          "fontLifecycle": {
+            "cycles": 1000,
+            "cacheHits": 1000,
+            "bytesPerLoad": 223404,
+            "assignmentFailureRolledBack": true,
+            "retrySucceeded": true,
+            "missingRejected": true,
+            "deferredDestroyFinished": true,
+            "cacheBefore": 22,
+            "cacheAfter": 22,
+            "http": {
+              "interrupted": true,
+              "loaded": true,
+              "bytes": 223404,
+              "cachePathResolved": true,
+              "width": 95.9765625,
+              "released": true,
+              "cacheRemoved": true,
+              "missingRejected": true,
+              "failedFilesRemoved": true,
+              "cancelledAndResumed": true
+            }
+          },
+          "http": {
+            "font": {
+              "interrupted": 1,
+              "complete": 31,
+              "cancelled": 1,
+              "resumed": 1
+            },
+            "aliases": {
+              "a": 1,
+              "b": 1
+            },
+            "missing": 6,
+            "queued": 0
+          },
+          "manifest": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/richtext-final-Debug/manifest.json",
+            "sha256": "d83fa8744087f9f067c0e977f3427d279b8c63ac7b6d9ace4dbcaab660e8ebce"
+          },
+          "fontHandles": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/font-handles-final-Debug.json",
+            "sha256": "19202a1b7a9908388c47d4ecbabe20d26df79487466e959a535caf79cb8a1d6f"
+          }
+        },
+        "Release": {
+          "exitCode": 0,
+          "captures": 62,
+          "fontLifecycle": {
+            "cycles": 1000,
+            "cacheHits": 1000,
+            "bytesPerLoad": 223404,
+            "assignmentFailureRolledBack": true,
+            "retrySucceeded": true,
+            "missingRejected": true,
+            "deferredDestroyFinished": true,
+            "cacheBefore": 22,
+            "cacheAfter": 22,
+            "http": {
+              "interrupted": true,
+              "loaded": true,
+              "bytes": 223404,
+              "cachePathResolved": true,
+              "width": 95.9765625,
+              "released": true,
+              "cacheRemoved": true,
+              "missingRejected": true,
+              "failedFilesRemoved": true,
+              "cancelledAndResumed": true
+            }
+          },
+          "http": {
+            "font": {
+              "interrupted": 1,
+              "complete": 31,
+              "cancelled": 1,
+              "resumed": 1
+            },
+            "aliases": {
+              "a": 1,
+              "b": 1
+            },
+            "missing": 6,
+            "queued": 0
+          },
+          "manifest": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/richtext-final-Release/manifest.json",
+            "sha256": "63c6850bfe1e8ccb75926cacac065fa7290a4bd847027bbd6177b6de12cb7217"
+          },
+          "fontHandles": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/font-handles-final-Release.json",
+            "sha256": "0ebf428231ad7e9f409a0d8550a7caa92c3aecde9ab06c1006c5a933bdfa391b"
+          }
+        }
+      },
+      "nativeConfigurationPixels": {
+        "richText": {
+          "count": 62,
+          "tolerance": 1,
+          "passed": true,
+          "maxDifference": 0
+        },
+        "documentProject": {
+          "m6-atlas-captures": {
+            "count": 12,
+            "tolerance": 1,
+            "passed": true,
+            "maxDifference": 0
+          },
+          "m6-bitmap-captures": {
+            "count": 92,
+            "tolerance": 1,
+            "passed": true,
+            "maxDifference": 0
+          }
+        }
+      },
+      "documentProject": {
+        "scenarios": [
+          {
+            "configuration": "Debug",
+            "kind": "doc-m2-pixel",
+            "endedUtc": "2026-11-23T11:13:33.5771820Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m3-label",
+            "endedUtc": "2026-11-23T11:13:38.6714303Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m4-mask",
+            "endedUtc": "2026-11-23T11:13:59.2273688Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m4-extra",
+            "endedUtc": "2026-11-23T11:14:22.2591351Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m5-richtext",
+            "endedUtc": "2026-11-23T11:15:02.8192537Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Debug",
+            "kind": "static-atlas",
+            "endedUtc": "2026-11-23T11:18:45.6352469Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "doc-m2-pixel",
+            "endedUtc": "2026-11-23T11:18:50.1942812Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "doc-m3-label",
+            "endedUtc": "2026-11-23T11:18:55.2260912Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "doc-m4-mask",
+            "endedUtc": "2026-11-23T11:19:15.7570670Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "doc-m4-extra",
+            "endedUtc": "2026-11-23T11:19:38.3660392Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "doc-m5-richtext",
+            "endedUtc": "2026-11-23T11:20:18.4696244Z",
+            "exitCode": 0
+          },
+          {
+            "configuration": "Release",
+            "kind": "static-atlas",
+            "endedUtc": "2026-11-23T11:23:54.2247275Z",
+            "exitCode": 0
+          }
+        ],
+        "currentFormat": {
+          "scope": "Current scene and prefab serialized class names",
+          "oldComponentClassMatches": false
+        },
+        "packageRecovery": {
+          "features": [
+            "base",
+            "2d",
+            "rich-text",
+            "graphics",
+            "mask",
+            "ui",
+            "affine-transform",
+            "custom-pipeline",
+            "custom-pipeline-builtin-scripts"
+          ],
+          "reason": "Original broad package had unresolved DragonBones/Box2D externals before any M2-M5 code ran",
+          "scope": "Native 2D feature set used by Graphics/RichText full applications",
+          "ccJsSha256": "1BC8CD683C4D95D438525541EC52D2C9AA08F7677DECF63F020670A694E224BA"
+        },
+        "scheduling": {
+          "runs": 20,
+          "passed": true,
+          "roundsPerConfiguration": 10,
+          "maxSeconds": 40.2449262
+        }
+      },
+      "features": [
+        {
+          "platform": "WINDOWS",
+          "selected": [],
+          "exposed": [],
+          "webAssemblerBytes": 0,
+          "sha256": "cfd3df997a6b15ca46d74b2f140d6685edf4df01a4fa885ee9501e60fe700d6f"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d"
+          ],
+          "exposed": [
+            "Sprite"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "6150b3acdd353d4cd7861c788c0c8be5e3e113b0e9b533806c4820a41bee40c9"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d",
+            "rich-text"
+          ],
+          "exposed": [
+            "Sprite",
+            "RichText"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "5b7573088c6169ab0a022fa6f44a07bf3a77be1d10f4e7af58a6ad4afcea1f5d"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d",
+            "mask"
+          ],
+          "exposed": [
+            "Sprite",
+            "Mask"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "39258be75a45935646bec0153c153beb28fd63201432722f8e990c405afe825f"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d",
+            "rich-text",
+            "mask"
+          ],
+          "exposed": [
+            "Sprite",
+            "RichText",
+            "Mask"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "ac06d2f005bd6da084f288554c3bc6d65b4716b7ec9ee380a38a61bafbaf4e56"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d",
+            "graphics"
+          ],
+          "exposed": [
+            "Sprite",
+            "Graphics"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "b5b01f1c14bab85c677be2fd62246ab55f1e8a158e500df7b42e1a232048ace8"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d",
+            "rich-text",
+            "graphics"
+          ],
+          "exposed": [
+            "Sprite",
+            "RichText",
+            "Graphics"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "bd8aa2d51d66417e0d316982d643675a6fe322c6d0c9dd9013c7311ad380f43f"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d",
+            "mask",
+            "graphics"
+          ],
+          "exposed": [
+            "Sprite",
+            "Mask",
+            "Graphics"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "6f3bb8758883e1d2e5b2d7228a00258c9472c15ad4ecbb1b0428f976f1c6937d"
+        },
+        {
+          "platform": "WINDOWS",
+          "selected": [
+            "2d",
+            "rich-text",
+            "mask",
+            "graphics"
+          ],
+          "exposed": [
+            "Sprite",
+            "RichText",
+            "Mask",
+            "Graphics"
+          ],
+          "webAssemblerBytes": 0,
+          "sha256": "fd02c24a38b9366c1c0d58b9fcdac3972262687cf234888b8f96b6f0f81c42cd"
+        }
+      ],
+      "deploymentAudit": {
+        "scope": "Deployment hash and Web assembler checks retained; same Native 2D feature list as application",
+        "exitCode": 0,
+        "report": {
+          "file": "native/tests/2d-poc/build/m6-full-529cb53636/native-bundle-audit.json",
+          "sha256": "5920faf4798e6745dc9e55f07629dbb03a3b8af9e274e16ba957b445b9840898"
+        }
+      },
+      "trace": {
+        "Debug": {
+          "exitCode": 0,
+          "report": {
+            "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-trace-Debug/trace.json",
+            "sha256": "2d182e5b9cc62615b86a489254b72b83a735b980f564fe4c098dbacf5445862f"
+          }
+        },
+        "Release": {
+          "exitCode": 0,
+          "report": {
+            "file": "native/tests/2d-poc/build/m6-full-source-529cb53636/native/tests/2d-poc/build/full-trace-Release/trace.json",
+            "sha256": "6be06aac15e5690f0b1ccff5b86b2392df9019b63900e129e89af02d364e50e0"
+          }
+        }
+      },
+      "asan": {
+        "results": [
+          {
+            "exitCode": 1,
+            "kind": "asan-graphics"
+          },
+          {
+            "exitCode": 0,
+            "kind": "asan-richtext"
+          }
+        ],
+        "diagnostic": {
+          "kind": "heap-use-after-free",
+          "access": "READ of size 4 on T25 through gpuInputAssembler->gpuIndexBuffer->glBuffer",
+          "location": "native/cocos/renderer/gfx-gles3/GLES3Commands.cpp:2378",
+          "freedAt": "GLES3Buffer::doDestroy, native/cocos/renderer/gfx-gles3/GLES3Buffer.cpp:82, reached by BufferAgent destructor message",
+          "evidence": {
+            "file": "native/tests/2d-poc/build/m6-full-529cb53636/asan-graphics/graphics-gpu-native.err.log",
+            "sha256": "1022af312fc494f2adc30f05cc291fdfa7d048d86c7da2f9c4e7d75a46e4d7d8"
+          }
+        }
+      },
+      "performance": {
+        "scope": "Windows Native only; current Web implementation excluded by acceptance scope",
+        "rounds": 6,
+        "targets": {
+          "cpu": true,
+          "jsb": true,
+          "peakJsHeap": true,
+          "forcedGc": true
+        },
+        "reductionPercent": {
+          "cpuMs": 61.25166085513365,
+          "setterMs": 81.38084632518859,
+          "prepareMs": 74.28187919466775,
+          "batchMs": -5.817531305903412,
+          "jsbCalls": 77.51141552511416,
+          "peakJsBytes": 41.8429912332035,
+          "forcedGcMs": 28.36210357289797
+        },
+        "before": {
+          "cpuMs": 3.7066750000021464,
+          "setterMs": 1.1225000000004002,
+          "prepareMs": 1.862500000000182,
+          "batchMs": 0.69875,
+          "jsbCalls": 876,
+          "peakJsBytes": 30061608,
+          "forcedGcMs": 4.98200000000179
+        },
+        "after": {
+          "cpuMs": 1.4362749999988067,
+          "setterMs": 0.20899999999983265,
+          "prepareMs": 0.4789999999993597,
+          "batchMs": 0.7394000000000001,
+          "jsbCalls": 197,
+          "peakJsBytes": 17482932,
+          "forcedGcMs": 3.5689999999995052
+        },
+        "gc": {
+          "pairs": [
+            {
+              "beforeMs": 5.63300000000163,
+              "afterMs": 3.3079999999972642
+            },
+            {
+              "beforeMs": 4.793000000001484,
+              "afterMs": 3.4730000000017753
+            },
+            {
+              "beforeMs": 5.047000000002299,
+              "afterMs": 3.6890000000021246
+            },
+            {
+              "beforeMs": 5.787000000000262,
+              "afterMs": 4.362999999997555
+            },
+            {
+              "beforeMs": 4.748999999999796,
+              "afterMs": 3.5309999999990396
+            },
+            {
+              "beforeMs": 4.917000000001281,
+              "afterMs": 3.606999999999971
+            }
+          ],
+          "improvedPairs": 6,
+          "medianPairedDeltaMs": -1.3389999999999418
+        },
+        "scene": {
+          "files": 29,
+          "sha256": "5e380d2ccbe3af6b589b6bfe9209e015554425a2404aa849ccf2767099f75a93",
+          "bootstrapSha256": "e657c2b786a0fd81bddfe62607248a573c8f7d5b869a130464def1e856751c3e"
+        },
+        "report": {
+          "file": "native/tests/2d-poc/build/m6-full-529cb53636/performance-native-comparison.json",
+          "sha256": "e0505d446845f23c793930c10d2c18469951eda6620c33a95e1c10e286bad939"
+        },
+        "comparisonAdjustment": {
+          "source": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-full-source-529cb53636\\native\\tests\\2d-poc\\compare-m6-perf.cjs",
+          "sourceSha256": "c9a7e7255c3e2fd3f55466b3192af43a01bec9b8c57decba4432411cd017ad36",
+          "scopeAdjustment": "Only targets loop restricted to before/after and a scope field added; all six-pair sample, CPU stage, V8, renderer, GC, bundle and shared-scene validations retained."
+        },
+        "batchStageObservation": {
+          "beforeMs": 0.69875,
+          "afterMs": 0.7394000000000001,
+          "increasePercent": 5.817531305903412,
+          "note": "No separate batch-stage target; whole-frame CPU meets the agreed target."
+        }
+      },
+      "runRecoveries": [
+        "CLI generated assets and scripts, but its MSBuild configure failed FTK1011 on nested long paths; independently compiled the same projects with Ninja",
+        "Initial broad document bundle could not resolve DragonBones/Box2D externals before M2-M5; used the freshly generated Native 2D feature bundle for scoped M2-M5 acceptance",
+        "First RichText attempt overlapped a font reader and sandbox blocked localhost font requests",
+        "GUI retry added a duplicate writable-directory override that failed the font-cache path assertion; final runs use the unmodified runner directory logic",
+        "First trace command replaced MSVC defaults; rebuilt with default WIN32/WINDOWS/GR/EHsc plus the diagnostic define"
+      ],
+      "remainingGateWork": [
+        "Resolve Native mesh source-corner binding and index-buffer lifetime failures; repeat Graphics full application in Debug/Release/ASan",
+        "Investigate first-run handle, font-alias and Debug RichText early-exit observations",
+        "Complete final M6 Native acceptance on the repaired candidate"
+      ],
+      "evidence": {
+        "file": "native/tests/2d-poc/build/m6-full-529cb53636/full-report.json",
+        "sha256": "06718d7e63b3203d409146df41c849dbd405fce8684208603b5edb57b670a5d6"
+      },
+      "applicationAttempts": {
+        "initial": [
+          {
+            "configuration": "Debug",
+            "kind": "graphics",
+            "exitCode": 1,
+            "endedUtc": "2026-11-23T11:00:05.3057527Z"
+          },
+          {
+            "configuration": "Debug",
+            "kind": "richtext",
+            "exitCode": 1,
+            "endedUtc": "2026-11-23T11:00:08.1716051Z"
+          },
+          {
+            "configuration": "Release",
+            "kind": "graphics",
+            "exitCode": 1,
+            "endedUtc": "2026-11-23T11:00:18.3927203Z"
+          },
+          {
+            "configuration": "Release",
+            "kind": "richtext",
+            "exitCode": 1,
+            "endedUtc": "2026-11-23T11:01:12.3376594Z"
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m2-pixel",
+            "exitCode": 1,
+            "endedUtc": "2026-11-23T11:03:53.6128105Z"
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m3-label",
+            "exitCode": 1,
+            "endedUtc": "2026-11-23T11:04:14.6079482Z"
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m4-mask",
+            "exitCode": 1,
+            "endedUtc": "2026-11-23T11:05:15.5289305Z"
+          },
+          {
+            "configuration": "Debug",
+            "kind": "doc-m4-extra",
+            "exitCode": -1,
+            "endedUtc": "2026-11-23T11:06:02.1481821Z"
+          }
+        ],
+        "firstUnsandboxedRichTextRetry": [
+          {
+            "exitCode": 1,
+            "configuration": "Debug",
+            "reason": "Console font-reader tests completed; localhost HTTP requires unsandboxed local application execution"
+          },
+          {
+            "exitCode": 0,
+            "configuration": "Release",
+            "reason": "Console font-reader tests completed; localhost HTTP requires unsandboxed local application execution"
+          }
+        ],
+        "initialReleaseGraphicsRunner": {
+          "file": "native/tests/2d-poc/build/m6-full-529cb53636/graphics-Release-run.log",
+          "sha256": "09d90a67cf6bef646860fdf26c565f2ce5f18d8d701ebb88df28fa23d96896f4"
+        }
+      }
+    }
+  ],
+  "uiOpacityFixRechecks": [
+    {
+      "candidate": "529cb53636 + local UIOpacity fix",
+      "report": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-uiopacity-fix-20261123T152115Z\\summary.json",
+      "status": "UIOpacity fix verified; M6 pending final signoff",
+      "postFixASanRun": false
+    }
+  ],
+  "remainingAcceptanceRechecks": [
+    {
+      "candidate": "554d747561",
+      "report": "C:\\Users\\wangbenlong\\Works\\cocos-engine-worktrees\\v4\\native\\tests\\2d-poc\\build\\m6-remaining-554d747561\\summary.json",
+      "status": "NO-GO",
+      "blocker": "Font source exclusive-open stability failure",
+      "implementationChanges": false,
+      "passed": [
+        "Native TS and 119 Native assertions",
+        "Windows Debug/Release M2-M5 and 1000 atlas cycles",
+        "62 RichText captures and font/HTTP lifecycle per configuration",
+        "20 sequential launches",
+        "272 JSB windows and full deployed Native chunk audit"
+      ],
+      "notClosed": [
+        "Root cause and resolution of the font exclusive-open failure",
+        "Complete public and compatibility API behavior signoff",
+        "Remaining complex-font, font-frame/configuration and current-format asset lifecycle signoff",
+        "Remaining RichText extreme lifecycle and Node wrapper combinations",
+        "M6.4 and M6.5 final signoff"
+      ]
+    }
+  ],
+  "scopedRechecks": [
+    {
+      "date": "2026-11-23",
+      "codeRevision": "529cb5363685961f22647b10f547bc248c04e2a7",
+      "status": "NO-GO",
+      "report": "native/tests/2d-poc/build/m6-core-accept-2026-11-23T14-54-24-737Z/summary.json",
+      "selection": "native/tests/2d-poc/build/m6-core-accept-2026-11-23T14-54-24-737Z/case-scope.json",
+      "graphics": "native/tests/2d-poc/build/m6-core-accept-2026-11-23T14-54-24-737Z/core-validation.json",
+      "richText": "native/tests/2d-poc/build/m6-core-accept-2026-11-23T14-54-24-737Z/richtext-validation.json",
+      "blocker": {
+        "component": "UIOpacity",
+        "configurations": [
+          "Debug",
+          "Release"
+        ],
+        "expectedDisabledLocalOpacity": 1,
+        "actualDisabledLocalOpacity": 0.250980406999588,
+        "evidence": "native/tests/2d-poc/build/m6-core-accept-2026-11-23T14-54-24-737Z/opacity-application-results.json"
+      },
+      "previousAcceptanceScope": {
+        "effectiveDate": "2026-11-23",
+        "decision": "User requested excluding the existing Web implementation from M6 acceptance.",
+        "targets": [
+          "JSB thin layer",
+          "Native implementation"
+        ],
+        "platforms": [
+          "Windows Debug",
+          "Windows Release"
+        ],
+        "excludedFromGate": [
+          "Existing Web implementation TypeScript and full Jest acceptance",
+          "Existing Web engine bundles and application builds",
+          "Existing Web dynamic atlas, assets, font loading and GPU applications",
+          "Mandatory runtime, layout and pixel parity against the current Web implementation"
+        ],
+        "references": "Existing Web results and comparisons remain optional diagnostic references.",
+        "nativeRequirements": [
+          "Native TypeScript",
+          "JSB and Native targeted assertions",
+          "Current-format serialization",
+          "Native API and rendering",
+          "Native events and resource lifecycle",
+          "Native extreme object lifecycle",
+          "Native performance and stability"
+        ],
+        "previousResults": "All historical runs and localRechecks retain their original scope, counts, failures and fingerprints as measured.",
+        "latestCandidate": "d91cd90f12",
+        "latestCandidateStatus": "NO-GO",
+        "remainingNativeBlockers": [
+          "Graphics Debug requires recheck with a freshly packed committed-source JS bundle",
+          "Graphics Release rectangle mesh requires recheck with a freshly packed committed-source JS bundle",
+          "RichText Release activation rebuild requires recheck with a freshly packed committed-source JS bundle"
+        ],
+        "mixedJestAssertions": "The reported JSB/Native failures are resolved by the individually committed test-entry corrections. A clean committed snapshot passed 63 Native assertions across 8 suites, with 11 Web/reference checks excluded.",
+        "bitmapLayout": "Native U+1F642 advance 17 at scale 0.5 yields line width 8.5. Four overflow modes passed independent expected-value checks."
+      }
     }
   ]
 }

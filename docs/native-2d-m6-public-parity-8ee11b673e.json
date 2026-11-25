@@ -1,0 +1,261 @@
+{
+  "date": "2026-11-25",
+  "candidate": "8ee11b673e9e77bd6c9ebf380250a14d5bbf6777",
+  "worktreeHead": "d9bf6a317c9a5232924851faf28170cd2301ef74",
+  "overall": "NO-GO",
+  "localArtifacts": "native/tests/2d-poc/build/public-parity-1795572295121",
+  "declarationsSha256": "48812e2845aaa0a00429ba0358ad20c979d90d95452d0ab9325a69c6e249cde2",
+  "scope": "Current public component APIs on Windows. Excludes compatibility and deprecated APIs. The member-presence sample covers direct public names from 15 declarations, excluding underscore names and private/protected/internal/deprecated members. Accessor exclusions combine source and declaration tags for both accessors. UIRenderer instance members were inspected on Sprite.",
+  "classCounts": [
+    {
+      "name": "SpriteAtlas",
+      "count": 4
+    },
+    {
+      "name": "TTFFont",
+      "count": 0
+    },
+    {
+      "name": "LabelAtlas",
+      "count": 0
+    },
+    {
+      "name": "BitmapFont",
+      "count": 4
+    },
+    {
+      "name": "Font",
+      "count": 0
+    },
+    {
+      "name": "SpriteFrame",
+      "count": 34
+    },
+    {
+      "name": "UIRenderer",
+      "count": 13
+    },
+    {
+      "name": "UITransform",
+      "count": 21
+    },
+    {
+      "name": "RenderRoot2D",
+      "count": 3
+    },
+    {
+      "name": "Sprite",
+      "count": 18
+    },
+    {
+      "name": "UIOpacity",
+      "count": 3
+    },
+    {
+      "name": "Label",
+      "count": 31
+    },
+    {
+      "name": "Mask",
+      "count": 13
+    },
+    {
+      "name": "RichText",
+      "count": 20
+    },
+    {
+      "name": "Graphics",
+      "count": 28
+    }
+  ],
+  "behaviorProbeSha256": "9cfc2b7a694e82a451721b4c303b63112cc0e13fe58df44b9b1d9c97b485ca7e",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "documentExeSha256": "d3b82d36a207508aa724435b256c53a7a669ac704758d57456176d8004abee1b",
+      "documentEngineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "coreExeSha256": "aff21af8067cbc1a6a65f224b91b3030c845d3f7aafb6a0cc8f77ad185939d9d",
+      "coreAndProbePasses": 9,
+      "directWrite": "DirectWrite file cycles 1000 handles 191 -> 191 GDI 0 -> 0",
+      "documentStagesPassed": [
+        "m2-pixel",
+        "m3-label",
+        "m4-mask",
+        "m4-extra",
+        "m5-richtext"
+      ],
+      "documentM5Exit": 0,
+      "matchingPixelCaptures": {
+        "m6-atlas-captures": 12,
+        "m6-bitmap-captures": 92
+      },
+      "runtimeChecks": [
+        {
+          "name": "Sprite.priority",
+          "initial": [
+            3
+          ],
+          "after": [],
+          "publicValue": 100,
+          "positiveControl": true,
+          "passed": false
+        },
+        {
+          "name": "Label.priority",
+          "initial": [
+            3
+          ],
+          "after": [],
+          "publicValue": 100,
+          "positiveControl": true,
+          "passed": false
+        },
+        {
+          "name": "Graphics.priority",
+          "initial": [
+            3
+          ],
+          "after": [],
+          "publicValue": 100,
+          "positiveControl": true,
+          "passed": false
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "hasTransform": false,
+          "centerHit": false,
+          "outsideHit": false,
+          "passed": false
+        },
+        {
+          "name": "Mask.isHit.control",
+          "hasTransform": true,
+          "centerHit": true,
+          "outsideHit": false,
+          "passed": true
+        },
+        {
+          "name": "Graphics.impl",
+          "present": false,
+          "valueType": "undefined"
+        }
+      ],
+      "declaredSurface": 192,
+      "absentMembers": [
+        "Graphics.impl"
+      ]
+    },
+    {
+      "configuration": "Release",
+      "documentExeSha256": "8c514284c554110e53fa4231e24adb2e354fbcbb0c2159b4df3f2f270d820d78",
+      "documentEngineSha256": "ba82afe94c1ffab33a452a99e663f5b0395f9eba9dfdb9a962905b64b0e7f22f",
+      "coreExeSha256": "6b9c1d8f2d60a15cf8086b6a873282bc3477a35cc939a819996976db9efb432b",
+      "coreAndProbePasses": 9,
+      "directWrite": "DirectWrite file cycles 1000 handles 181 -> 181 GDI 0 -> 0",
+      "documentStagesPassed": [
+        "m2-pixel",
+        "m3-label",
+        "m4-mask",
+        "m4-extra",
+        "m5-richtext"
+      ],
+      "documentM5Exit": 0,
+      "matchingPixelCaptures": {
+        "m6-atlas-captures": 12,
+        "m6-bitmap-captures": 92
+      },
+      "runtimeChecks": [
+        {
+          "name": "Sprite.priority",
+          "initial": [
+            3
+          ],
+          "after": [],
+          "publicValue": 100,
+          "positiveControl": true,
+          "passed": false
+        },
+        {
+          "name": "Label.priority",
+          "initial": [
+            3
+          ],
+          "after": [],
+          "publicValue": 100,
+          "positiveControl": true,
+          "passed": false
+        },
+        {
+          "name": "Graphics.priority",
+          "initial": [
+            3
+          ],
+          "after": [],
+          "publicValue": 100,
+          "positiveControl": true,
+          "passed": false
+        },
+        {
+          "name": "Mask.isHit.bare",
+          "hasTransform": false,
+          "centerHit": false,
+          "outsideHit": false,
+          "passed": false
+        },
+        {
+          "name": "Mask.isHit.control",
+          "hasTransform": true,
+          "centerHit": true,
+          "outsideHit": false,
+          "passed": true
+        },
+        {
+          "name": "Graphics.impl",
+          "present": false,
+          "valueType": "undefined"
+        }
+      ],
+      "declaredSurface": 192,
+      "absentMembers": [
+        "Graphics.impl"
+      ]
+    }
+  ],
+  "scopedJest": {
+    "suites": 18,
+    "passed": 127,
+    "failed": 0,
+    "excluded": 10
+  },
+  "staticChecks": [
+    {
+      "name": "metadata",
+      "exitCode": 0
+    },
+    {
+      "name": "thin-shell",
+      "exitCode": 0
+    },
+    {
+      "name": "m1-shell",
+      "exitCode": 0
+    },
+    {
+      "name": "tools",
+      "exitCode": 0
+    },
+    {
+      "name": "native-ts",
+      "exitCode": 0
+    }
+  ],
+  "archivedEvidence": {
+    "bindings": 12,
+    "featureVariants": 9,
+    "steadyWindowsPerConfiguration": 14,
+    "directMigratedCallsInSteadyWindows": 0,
+    "atlasCyclesPerConfiguration": 1000,
+    "archivedOfflineCaptures": 348
+  },
+  "performanceSource": "Replay of twelve candidate samples, six matched pairs. See native-2d-m6-performance-8ee11b673e.json."
+}
